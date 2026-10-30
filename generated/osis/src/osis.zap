@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 17 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 22 operations — 22 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   74 structs (50 @derive(Json)), 5 enums, 9 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -109,8 +109,9 @@ struct ChangeProgressStage:
     Optional[str] Description
     Optional[DateTime] LastUpdatedAt
 
-# no @derive(Json): member(s) ChangeProgressStages: list[ChangeProgressStage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangeProgressStages: list[ChangeProgressStage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeProgressStatus:
     Optional[DateTime] StartTime
     Optional[ChangeProgressStatuses] Status
@@ -153,8 +154,9 @@ struct CreatePipelineRequest:
     Optional[list[Tag]] Tags
     Optional[str] PipelineRoleArn
 
-# no @derive(Json): member(s) Pipeline: Pipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipeline: Pipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePipelineResponse:
     Optional[Pipeline] Pipeline
 
@@ -213,8 +215,9 @@ struct GetPipelineBlueprintResponse:
 struct GetPipelineChangeProgressRequest:
     str PipelineName
 
-# no @derive(Json): member(s) ChangeProgressStatuses: list[ChangeProgressStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangeProgressStatuses: list[ChangeProgressStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPipelineChangeProgressResponse:
     Optional[list[ChangeProgressStatus]] ChangeProgressStatuses
 
@@ -223,8 +226,9 @@ struct GetPipelineChangeProgressResponse:
 struct GetPipelineRequest:
     str PipelineName
 
-# no @derive(Json): member(s) Pipeline: Pipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipeline: Pipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPipelineResponse:
     Optional[Pipeline] Pipeline
 
@@ -259,8 +263,9 @@ struct ListPipelineBlueprintsRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Blueprints: list[PipelineBlueprintSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blueprints: list[PipelineBlueprintSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineBlueprintsResponse:
     Optional[list[PipelineBlueprintSummary]] Blueprints
 
@@ -270,8 +275,9 @@ struct ListPipelineEndpointConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PipelineEndpointConnections: list[PipelineEndpointConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineEndpointConnections: list[PipelineEndpointConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineEndpointConnectionsResponse:
     Optional[str] NextToken
     Optional[list[PipelineEndpointConnection]] PipelineEndpointConnections
@@ -282,8 +288,9 @@ struct ListPipelineEndpointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PipelineEndpoints: list[PipelineEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineEndpoints: list[PipelineEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineEndpointsResponse:
     Optional[str] NextToken
     Optional[list[PipelineEndpoint]] PipelineEndpoints
@@ -294,8 +301,9 @@ struct ListPipelinesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Pipelines: list[PipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipelines: list[PipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelinesResponse:
     Optional[str] NextToken
     Optional[list[PipelineSummary]] Pipelines
@@ -305,8 +313,9 @@ struct ListPipelinesResponse:
 struct ListTagsForResourceRequest:
     str Arn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -315,8 +324,9 @@ struct LogPublishingOptions:
     Optional[bool] IsLoggingEnabled
     Optional[CloudWatchLogDestination] CloudWatchLogDestination
 
-# no @derive(Json): member(s) IngestEndpointUrls: list[str], VpcEndpoints: list[VpcEndpoint], ServiceVpcEndpoints: list[ServiceVpcEndpoint], Destinations: list[PipelineDestination], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IngestEndpointUrls: list[str], VpcEndpoints: list[VpcEndpoint], ServiceVpcEndpoints: list[ServiceVpcEndpoint], Destinations: list[PipelineDestination], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Pipeline:
     Optional[str] PipelineName
     Optional[str] PipelineArn
@@ -360,8 +370,9 @@ struct PipelineDestination:
     Optional[str] ServiceName
     Optional[str] Endpoint
 
-# no @derive(Json): member(s) VpcOptions: PipelineEndpointVpcOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcOptions: PipelineEndpointVpcOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineEndpoint:
     Optional[str] PipelineArn
     Optional[str] EndpointId
@@ -377,8 +388,9 @@ struct PipelineEndpointConnection:
     Optional[PipelineEndpointStatus] Status
     Optional[str] VpcEndpointOwner
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineEndpointVpcOptions:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
@@ -387,8 +399,9 @@ struct PipelineEndpointVpcOptions:
 struct PipelineStatusReason:
     Optional[str] Description
 
-# no @derive(Json): member(s) Destinations: list[PipelineDestination], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[PipelineDestination], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineSummary:
     Optional[PipelineStatus] Status
     Optional[PipelineStatusReason] StatusReason
@@ -442,8 +455,9 @@ struct ServiceVpcEndpoint:
 struct StartPipelineRequest:
     str PipelineName
 
-# no @derive(Json): member(s) Pipeline: Pipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipeline: Pipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartPipelineResponse:
     Optional[Pipeline] Pipeline
 
@@ -452,8 +466,9 @@ struct StartPipelineResponse:
 struct StopPipelineRequest:
     str PipelineName
 
-# no @derive(Json): member(s) Pipeline: Pipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipeline: Pipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopPipelineResponse:
     Optional[Pipeline] Pipeline
 
@@ -496,8 +511,9 @@ struct UpdatePipelineRequest:
     Optional[EncryptionAtRestOptions] EncryptionAtRestOptions
     Optional[str] PipelineRoleArn
 
-# no @derive(Json): member(s) Pipeline: Pipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipeline: Pipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipelineResponse:
     Optional[Pipeline] Pipeline
 
@@ -506,8 +522,9 @@ struct UpdatePipelineResponse:
 struct ValidatePipelineRequest:
     str PipelineConfigurationBody
 
-# no @derive(Json): member(s) Errors: list[ValidationMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[ValidationMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidatePipelineResponse:
     Optional[bool] isValid
     Optional[list[ValidationMessage]] Errors
@@ -526,15 +543,17 @@ struct VpcAttachmentOptions:
     bool AttachToVpc
     Optional[str] CidrBlock
 
-# no @derive(Json): member(s) VpcOptions: VpcOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcOptions: VpcOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpoint:
     Optional[str] VpcEndpointId
     Optional[str] VpcId
     Optional[VpcOptions] VpcOptions
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcOptions:
     list[str] SubnetIds
     Optional[list[str]] SecurityGroupIds
@@ -582,15 +601,6 @@ def osis_error_from_code(str code) -> OSISError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreatePipeline (document member `VpcOptions: VpcOptions` is not serializable by derive)
-#   CreatePipelineEndpoint (document member `VpcOptions: PipelineEndpointVpcOptions` is not serializable by derive)
-#   RevokePipelineEndpointConnections (document member `EndpointIds: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -615,10 +625,123 @@ struct ValidatePipelineDocument:
     # document members of ValidatePipeline
     str PipelineConfigurationBody
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def osis_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def osis_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def osis_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize PipelineEndpointVpcOptions to a compact JSON object (declaration order).
+def pipeline_endpoint_vpc_options_to_json(PipelineEndpointVpcOptions v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(osis_json_str(x1))
+        parts.append("\"SubnetIds\":" + osis_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(osis_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + osis_json_arr(e3))
+    return osis_json_obj(parts)
+
+# Serialize VpcOptions to a compact JSON object (declaration order).
+def vpc_options_to_json(VpcOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(osis_json_str(x0))
+    parts.append("\"SubnetIds\":" + osis_json_arr(e0))
+    if v.SecurityGroupIds.is_some():
+        auto u1 = v.SecurityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(osis_json_str(x2))
+        parts.append("\"SecurityGroupIds\":" + osis_json_arr(e2))
+    if v.VpcAttachmentOptions.is_some():
+        auto u3 = v.VpcAttachmentOptions.unwrap()
+        parts.append("\"VpcAttachmentOptions\":" + u3.to_json())
+    if v.VpcEndpointManagement.is_some():
+        auto u4 = v.VpcEndpointManagement.unwrap()
+        parts.append("\"VpcEndpointManagement\":" + u4.to_json())
+    return osis_json_obj(parts)
+
 # A bound OSIS client: credentials + region, threaded into every operation.
 struct OSISClient:
     core.Credentials creds
     str region
+
+    # CreatePipeline  POST /2022-01-01/osis/createPipeline
+    # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ValidationException
+    def create_pipeline(self, CreatePipelineRequest input) -> str:
+        auto host = endpoints.regional_host(osis_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/createPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PipelineName\":" + osis_json_str(input.PipelineName))
+        parts.append("\"MinUnits\":" + str(input.MinUnits))
+        parts.append("\"MaxUnits\":" + str(input.MaxUnits))
+        parts.append("\"PipelineConfigurationBody\":" + osis_json_str(input.PipelineConfigurationBody))
+        if input.LogPublishingOptions.is_some():
+            auto u0 = input.LogPublishingOptions.unwrap()
+            parts.append("\"LogPublishingOptions\":" + u0.to_json())
+        if input.VpcOptions.is_some():
+            auto u1 = input.VpcOptions.unwrap()
+            parts.append("\"VpcOptions\":" + vpc_options_to_json(u1))
+        if input.BufferOptions.is_some():
+            auto u2 = input.BufferOptions.unwrap()
+            parts.append("\"BufferOptions\":" + u2.to_json())
+        if input.EncryptionAtRestOptions.is_some():
+            auto u3 = input.EncryptionAtRestOptions.unwrap()
+            parts.append("\"EncryptionAtRestOptions\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + osis_json_arr(e5))
+        if input.PipelineRoleArn.is_some():
+            auto u6 = input.PipelineRoleArn.unwrap()
+            parts.append("\"PipelineRoleArn\":" + osis_json_str(u6))
+        auto bp = restjson.rest_json_document(b, osis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
+
+    # CreatePipelineEndpoint  POST /2022-01-01/osis/createPipelineEndpoint
+    # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def create_pipeline_endpoint(self, CreatePipelineEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(osis_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/createPipelineEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PipelineArn\":" + osis_json_str(input.PipelineArn))
+        parts.append("\"VpcOptions\":" + pipeline_endpoint_vpc_options_to_json(input.VpcOptions))
+        auto bp = restjson.rest_json_document(b, osis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
 
     # DeletePipeline  DELETE /2022-01-01/osis/deletePipeline/{PipelineName}
     # errors: AccessDeniedException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
@@ -749,6 +872,20 @@ struct OSISClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
 
+    # RevokePipelineEndpointConnections  POST /2022-01-01/osis/revokePipelineEndpointConnections
+    # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ValidationException
+    def revoke_pipeline_endpoint_connections(self, RevokePipelineEndpointConnectionsRequest input) -> str:
+        auto host = endpoints.regional_host(osis_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/revokePipelineEndpointConnections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PipelineArn\":" + osis_json_str(input.PipelineArn))
+        list[str] e0 = []
+        for x0 in input.EndpointIds:
+            e0.append(osis_json_str(x0))
+        parts.append("\"EndpointIds\":" + osis_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, osis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
+
     # StartPipeline  PUT /2022-01-01/osis/startPipeline/{PipelineName}
     # errors: AccessDeniedException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def start_pipeline(self, StartPipelineRequest input) -> str:
@@ -766,6 +903,36 @@ struct OSISClient:
         labels["PipelineName"] = input.PipelineName
         auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/stopPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
+
+    # TagResource  POST /2022-01-01/osis/tagResource/
+    # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(osis_service(), self.region)
+        dict[str, str] query = {}
+        query["arn"] = input.Arn
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/tagResource/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + osis_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, osis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
+
+    # UntagResource  POST /2022-01-01/osis/untagResource/
+    # errors: AccessDeniedException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(osis_service(), self.region)
+        dict[str, str] query = {}
+        query["arn"] = input.Arn
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/untagResource/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(osis_json_str(x0))
+        parts.append("\"TagKeys\":" + osis_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, osis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
 
     # UpdatePipeline  PUT /2022-01-01/osis/updatePipeline/{PipelineName}
     # errors: AccessDeniedException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException

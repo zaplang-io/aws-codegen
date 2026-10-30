@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 18 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 24 operations — 23 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   73 structs (46 @derive(Json)), 12 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -198,8 +198,9 @@ struct ApiGatewayProxySummary:
     Optional[str] StageName
     Optional[str] VpcLinkId
 
-# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationSummary:
     Optional[ApiGatewayProxySummary] ApiGatewayProxy
     Optional[str] ApplicationId
@@ -233,8 +234,9 @@ struct CreateApplicationRequest:
     Optional[dict[str, str]] Tags
     str VpcId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationResponse:
     Optional[ApiGatewayProxyInput] ApiGatewayProxy
     Optional[str] ApplicationId
@@ -259,8 +261,9 @@ struct CreateEnvironmentRequest:
     NetworkFabricType NetworkFabricType
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedTime
@@ -285,8 +288,9 @@ struct CreateRouteRequest:
     Optional[dict[str, str]] Tags
     Optional[UriPathRouteInput] UriPathRoute
 
-# no @derive(Json): member(s) Tags: dict[str, str], UriPathRoute: UriPathRouteInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], UriPathRoute: UriPathRouteInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouteResponse:
     Optional[str] ApplicationId
     Optional[str] Arn
@@ -315,8 +319,9 @@ struct CreateServiceRequest:
     Optional[UrlEndpointInput] UrlEndpoint
     Optional[str] VpcId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceResponse:
     Optional[str] ApplicationId
     Optional[str] Arn
@@ -410,8 +415,9 @@ struct DeleteServiceResponse:
     Optional[str] ServiceId
     Optional[ServiceState] State
 
-# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentSummary:
     Optional[str] Arn
     Optional[DateTime] CreatedTime
@@ -426,8 +432,9 @@ struct EnvironmentSummary:
     Optional[dict[str, str]] Tags
     Optional[str] TransitGatewayId
 
-# no @derive(Json): member(s) CidrBlocks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CidrBlocks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentVpc:
     Optional[str] AccountId
     Optional[list[str]] CidrBlocks
@@ -437,8 +444,9 @@ struct EnvironmentVpc:
     Optional[str] VpcId
     Optional[str] VpcName
 
-# no @derive(Json): member(s) AdditionalDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorResponse:
     Optional[str] AccountId
     Optional[dict[str, str]] AdditionalDetails
@@ -453,8 +461,9 @@ struct GetApplicationRequest:
     str ApplicationIdentifier
     str EnvironmentIdentifier
 
-# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     Optional[ApiGatewayProxyConfig] ApiGatewayProxy
     Optional[str] ApplicationId
@@ -476,8 +485,9 @@ struct GetApplicationResponse:
 struct GetEnvironmentRequest:
     str EnvironmentIdentifier
 
-# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedTime
@@ -508,8 +518,9 @@ struct GetRouteRequest:
     str EnvironmentIdentifier
     str RouteIdentifier
 
-# no @derive(Json): member(s) Error: ErrorResponse, Methods: list[HttpMethod], PathResourceToId: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Methods: list[HttpMethod], PathResourceToId: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouteResponse:
     Optional[bool] AppendSourcePath
     Optional[str] ApplicationId
@@ -537,8 +548,9 @@ struct GetServiceRequest:
     str EnvironmentIdentifier
     str ServiceIdentifier
 
-# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceResponse:
     Optional[str] ApplicationId
     Optional[str] Arn
@@ -585,8 +597,9 @@ struct ListApplicationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationSummaryList: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationSummaryList: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[list[ApplicationSummary]] ApplicationSummaryList
     Optional[str] NextToken
@@ -598,8 +611,9 @@ struct ListEnvironmentVpcsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EnvironmentVpcList: list[EnvironmentVpc] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentVpcList: list[EnvironmentVpc] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentVpcsResponse:
     Optional[list[EnvironmentVpc]] EnvironmentVpcList
     Optional[str] NextToken
@@ -610,8 +624,9 @@ struct ListEnvironmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EnvironmentSummaryList: list[EnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentSummaryList: list[EnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsResponse:
     Optional[list[EnvironmentSummary]] EnvironmentSummaryList
     Optional[str] NextToken
@@ -624,8 +639,9 @@ struct ListRoutesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RouteSummaryList: list[RouteSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSummaryList: list[RouteSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutesResponse:
     Optional[str] NextToken
     Optional[list[RouteSummary]] RouteSummaryList
@@ -638,8 +654,9 @@ struct ListServicesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceSummaryList: list[ServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceSummaryList: list[ServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesResponse:
     Optional[str] NextToken
     Optional[list[ServiceSummary]] ServiceSummaryList
@@ -649,8 +666,9 @@ struct ListServicesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -671,8 +689,9 @@ struct ResourceNotFoundException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) Error: ErrorResponse, Methods: list[HttpMethod], PathResourceToId: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Methods: list[HttpMethod], PathResourceToId: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteSummary:
     Optional[bool] AppendSourcePath
     Optional[str] ApplicationId
@@ -701,8 +720,9 @@ struct ServiceQuotaExceededException:
     str ResourceType
     str ServiceCode
 
-# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceSummary:
     Optional[str] ApplicationId
     Optional[str] Arn
@@ -768,8 +788,9 @@ struct UpdateRouteResponse:
     Optional[str] ServiceId
     Optional[RouteState] State
 
-# no @derive(Json): member(s) Methods: list[HttpMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Methods: list[HttpMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UriPathRouteInput:
     RouteActivationState ActivationState
     Optional[bool] AppendSourcePath
@@ -837,11 +858,6 @@ def refactor_spaces_error_from_code(str code) -> Migration_Hub_Refactor_SpacesEr
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApplication (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateEnvironment (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRoute (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateService (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -858,10 +874,172 @@ struct UpdateRouteDocument:
     # document members of UpdateRoute
     RouteActivationState ActivationState
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def refactor_spaces_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def refactor_spaces_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def refactor_spaces_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize UriPathRouteInput to a compact JSON object (declaration order).
+def uri_path_route_input_to_json(UriPathRouteInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ActivationState\":" + v.ActivationState.to_json())
+    if v.AppendSourcePath.is_some():
+        auto u0 = v.AppendSourcePath.unwrap()
+        parts.append("\"AppendSourcePath\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IncludeChildPaths.is_some():
+        auto u1 = v.IncludeChildPaths.unwrap()
+        parts.append("\"IncludeChildPaths\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Methods.is_some():
+        auto u2 = v.Methods.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Methods\":" + refactor_spaces_json_arr(e3))
+    parts.append("\"SourcePath\":" + refactor_spaces_json_str(v.SourcePath))
+    return refactor_spaces_json_obj(parts)
+
 # A bound Migration_Hub_Refactor_Spaces client: credentials + region, threaded into every operation.
 struct Migration_Hub_Refactor_SpacesClient:
     core.Credentials creds
     str region
+
+    # CreateApplication  POST /environments/{EnvironmentIdentifier}/applications
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
+        dict[str, str] labels = {}
+        labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApiGatewayProxy.is_some():
+            auto u0 = input.ApiGatewayProxy.unwrap()
+            parts.append("\"ApiGatewayProxy\":" + u0.to_json())
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + refactor_spaces_json_str(u1))
+        parts.append("\"Name\":" + refactor_spaces_json_str(input.Name))
+        parts.append("\"ProxyType\":" + refactor_spaces_json_str(input.ProxyType))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(refactor_spaces_json_str(k3) + ":" + refactor_spaces_json_str(u2[k3]))
+            parts.append("\"Tags\":" + refactor_spaces_json_obj(m3))
+        parts.append("\"VpcId\":" + refactor_spaces_json_str(input.VpcId))
+        auto bp = restjson.rest_json_document(b, refactor_spaces_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
+
+    # CreateEnvironment  POST /environments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment(self, CreateEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + refactor_spaces_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + refactor_spaces_json_str(u1))
+        parts.append("\"Name\":" + refactor_spaces_json_str(input.Name))
+        parts.append("\"NetworkFabricType\":" + input.NetworkFabricType.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(refactor_spaces_json_str(k3) + ":" + refactor_spaces_json_str(u2[k3]))
+            parts.append("\"Tags\":" + refactor_spaces_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, refactor_spaces_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
+
+    # CreateRoute  POST /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_route(self, CreateRouteRequest input) -> str:
+        auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + refactor_spaces_json_str(u0))
+        if input.DefaultRoute.is_some():
+            auto u1 = input.DefaultRoute.unwrap()
+            parts.append("\"DefaultRoute\":" + u1.to_json())
+        parts.append("\"RouteType\":" + input.RouteType.to_json())
+        parts.append("\"ServiceIdentifier\":" + refactor_spaces_json_str(input.ServiceIdentifier))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(refactor_spaces_json_str(k3) + ":" + refactor_spaces_json_str(u2[k3]))
+            parts.append("\"Tags\":" + refactor_spaces_json_obj(m3))
+        if input.UriPathRoute.is_some():
+            auto u4 = input.UriPathRoute.unwrap()
+            parts.append("\"UriPathRoute\":" + uri_path_route_input_to_json(u4))
+        auto bp = restjson.rest_json_document(b, refactor_spaces_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
+
+    # CreateService  POST /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service(self, CreateServiceRequest input) -> str:
+        auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + refactor_spaces_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + refactor_spaces_json_str(u1))
+        parts.append("\"EndpointType\":" + input.EndpointType.to_json())
+        if input.LambdaEndpoint.is_some():
+            auto u2 = input.LambdaEndpoint.unwrap()
+            parts.append("\"LambdaEndpoint\":" + u2.to_json())
+        parts.append("\"Name\":" + refactor_spaces_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(refactor_spaces_json_str(k4) + ":" + refactor_spaces_json_str(u3[k4]))
+            parts.append("\"Tags\":" + refactor_spaces_json_obj(m4))
+        if input.UrlEndpoint.is_some():
+            auto u5 = input.UrlEndpoint.unwrap()
+            parts.append("\"UrlEndpoint\":" + u5.to_json())
+        if input.VpcId.is_some():
+            auto u6 = input.VpcId.unwrap()
+            parts.append("\"VpcId\":" + refactor_spaces_json_str(u6))
+        auto bp = restjson.rest_json_document(b, refactor_spaces_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
 
     # DeleteApplication  DELETE /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1049,6 +1227,21 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(Policy=input.Policy, ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(refactor_spaces_json_str(k0) + ":" + refactor_spaces_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + refactor_spaces_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, refactor_spaces_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
 
     # UpdateRoute  PATCH /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}

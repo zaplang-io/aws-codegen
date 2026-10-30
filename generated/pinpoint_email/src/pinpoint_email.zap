@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 42 operations — 29 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 42 operations — 38 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   130 structs (93 @derive(Json)), 10 enums, 10 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Pinpoint_Email rest-json protocol: SigV4 service "ses" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -152,8 +153,9 @@ struct Body:
     Optional[Content] Text
     Optional[Content] Html
 
-# no @derive(Json): member(s) DimensionConfigurations: list[CloudWatchDimensionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionConfigurations: list[CloudWatchDimensionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchDestination:
     list[CloudWatchDimensionConfiguration] DimensionConfigurations
 
@@ -230,15 +232,17 @@ struct CreateEmailIdentityRequest:
     str EmailIdentity
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) DkimAttributes: DkimAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DkimAttributes: DkimAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEmailIdentityResponse:
     Optional[IdentityType] IdentityType
     Optional[bool] VerifiedForSendingStatus
     Optional[DkimAttributes] DkimAttributes
 
-# no @derive(Json): member(s) DomainIspPlacements: list[DomainIspPlacement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainIspPlacements: list[DomainIspPlacement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DailyVolume:
     Optional[DateTime] StartDate
     Optional[VolumeStatistics] VolumeStatistics
@@ -306,22 +310,25 @@ struct DeliveryOptions:
     Optional[TlsPolicy] TlsPolicy
     Optional[str] SendingPoolName
 
-# no @derive(Json): member(s) ToAddresses: list[str], CcAddresses: list[str], BccAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ToAddresses: list[str], CcAddresses: list[str], BccAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Destination:
     Optional[list[str]] ToAddresses
     Optional[list[str]] CcAddresses
     Optional[list[str]] BccAddresses
 
-# no @derive(Json): member(s) Tokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DkimAttributes:
     Optional[bool] SigningEnabled
     Optional[DkimStatus] Status
     Optional[list[str]] Tokens
 
-# no @derive(Json): member(s) SendingIps: list[str], Esps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SendingIps: list[str], Esps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainDeliverabilityCampaign:
     Optional[str] CampaignId
     Optional[str] ImageUrl
@@ -338,8 +345,9 @@ struct DomainDeliverabilityCampaign:
     Optional[int64] ProjectedVolume
     Optional[list[str]] Esps
 
-# no @derive(Json): member(s) InboxPlacementTrackingOption: InboxPlacementTrackingOption not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InboxPlacementTrackingOption: InboxPlacementTrackingOption not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainDeliverabilityTrackingOption:
     Optional[str] Domain
     Optional[DateTime] SubscriptionStartDate
@@ -359,8 +367,9 @@ struct EmailContent:
     Optional[RawMessage] Raw
     Optional[Template] Template
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType], CloudWatchDestination: CloudWatchDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType], CloudWatchDestination: CloudWatchDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDestination:
     str Name
     Optional[bool] Enabled
@@ -370,8 +379,9 @@ struct EventDestination:
     Optional[SnsDestination] SnsDestination
     Optional[PinpointDestination] PinpointDestination
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType], CloudWatchDestination: CloudWatchDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType], CloudWatchDestination: CloudWatchDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDestinationDefinition:
     Optional[bool] Enabled
     Optional[list[EventType]] MatchingEventTypes
@@ -399,8 +409,9 @@ struct GetAccountResponse:
 struct GetBlacklistReportsRequest:
     list[str] BlacklistItemNames
 
-# no @derive(Json): member(s) BlacklistReport: dict[str, list[BlacklistEntry]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlacklistReport: dict[str, list[BlacklistEntry]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBlacklistReportsResponse:
     dict[str, list[BlacklistEntry]] BlacklistReport
 
@@ -409,8 +420,9 @@ struct GetBlacklistReportsResponse:
 struct GetConfigurationSetEventDestinationsRequest:
     str ConfigurationSetName
 
-# no @derive(Json): member(s) EventDestinations: list[EventDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestinations: list[EventDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationSetEventDestinationsResponse:
     Optional[list[EventDestination]] EventDestinations
 
@@ -419,8 +431,9 @@ struct GetConfigurationSetEventDestinationsResponse:
 struct GetConfigurationSetRequest:
     str ConfigurationSetName
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationSetResponse:
     Optional[str] ConfigurationSetName
     Optional[TrackingOptions] TrackingOptions
@@ -445,8 +458,9 @@ struct GetDedicatedIpsRequest:
     Optional[str] NextToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) DedicatedIps: list[DedicatedIp] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DedicatedIps: list[DedicatedIp] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDedicatedIpsResponse:
     Optional[list[DedicatedIp]] DedicatedIps
     Optional[str] NextToken
@@ -457,8 +471,9 @@ struct GetDeliverabilityDashboardOptionsRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ActiveSubscribedDomains: list[DomainDeliverabilityTrackingOption], PendingExpirationSubscribedDomains: list[DomainDeliverabilityTrackingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveSubscribedDomains: list[DomainDeliverabilityTrackingOption], PendingExpirationSubscribedDomains: list[DomainDeliverabilityTrackingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeliverabilityDashboardOptionsResponse:
     bool DashboardEnabled
     Optional[DateTime] SubscriptionExpiryDate
@@ -471,8 +486,9 @@ struct GetDeliverabilityDashboardOptionsResponse:
 struct GetDeliverabilityTestReportRequest:
     str ReportId
 
-# no @derive(Json): member(s) IspPlacements: list[IspPlacement], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IspPlacements: list[IspPlacement], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeliverabilityTestReportResponse:
     DeliverabilityTestReport DeliverabilityTestReport
     PlacementStatistics OverallPlacement
@@ -485,8 +501,9 @@ struct GetDeliverabilityTestReportResponse:
 struct GetDomainDeliverabilityCampaignRequest:
     str CampaignId
 
-# no @derive(Json): member(s) DomainDeliverabilityCampaign: DomainDeliverabilityCampaign not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainDeliverabilityCampaign: DomainDeliverabilityCampaign not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainDeliverabilityCampaignResponse:
     DomainDeliverabilityCampaign DomainDeliverabilityCampaign
 
@@ -497,8 +514,9 @@ struct GetDomainStatisticsReportRequest:
     DateTime StartDate
     DateTime EndDate
 
-# no @derive(Json): member(s) OverallVolume: OverallVolume, DailyVolumes: list[DailyVolume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverallVolume: OverallVolume, DailyVolumes: list[DailyVolume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainStatisticsReportResponse:
     OverallVolume OverallVolume
     list[DailyVolume] DailyVolumes
@@ -508,8 +526,9 @@ struct GetDomainStatisticsReportResponse:
 struct GetEmailIdentityRequest:
     str EmailIdentity
 
-# no @derive(Json): member(s) DkimAttributes: DkimAttributes, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DkimAttributes: DkimAttributes, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEmailIdentityResponse:
     Optional[IdentityType] IdentityType
     Optional[bool] FeedbackForwardingStatus
@@ -524,8 +543,9 @@ struct IdentityInfo:
     Optional[str] IdentityName
     Optional[bool] SendingEnabled
 
-# no @derive(Json): member(s) TrackedIsps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrackedIsps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InboxPlacementTrackingOption:
     Optional[bool] Global
     Optional[list[str]] TrackedIsps
@@ -551,8 +571,9 @@ struct ListConfigurationSetsRequest:
     Optional[str] NextToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) ConfigurationSets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationSets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationSetsResponse:
     Optional[list[str]] ConfigurationSets
     Optional[str] NextToken
@@ -563,8 +584,9 @@ struct ListDedicatedIpPoolsRequest:
     Optional[str] NextToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) DedicatedIpPools: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DedicatedIpPools: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDedicatedIpPoolsResponse:
     Optional[list[str]] DedicatedIpPools
     Optional[str] NextToken
@@ -575,8 +597,9 @@ struct ListDeliverabilityTestReportsRequest:
     Optional[str] NextToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) DeliverabilityTestReports: list[DeliverabilityTestReport] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliverabilityTestReports: list[DeliverabilityTestReport] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeliverabilityTestReportsResponse:
     list[DeliverabilityTestReport] DeliverabilityTestReports
     Optional[str] NextToken
@@ -590,8 +613,9 @@ struct ListDomainDeliverabilityCampaignsRequest:
     Optional[str] NextToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) DomainDeliverabilityCampaigns: list[DomainDeliverabilityCampaign] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainDeliverabilityCampaigns: list[DomainDeliverabilityCampaign] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainDeliverabilityCampaignsResponse:
     list[DomainDeliverabilityCampaign] DomainDeliverabilityCampaigns
     Optional[str] NextToken
@@ -602,8 +626,9 @@ struct ListEmailIdentitiesRequest:
     Optional[str] NextToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) EmailIdentities: list[IdentityInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmailIdentities: list[IdentityInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEmailIdentitiesResponse:
     Optional[list[IdentityInfo]] EmailIdentities
     Optional[str] NextToken
@@ -613,8 +638,9 @@ struct ListEmailIdentitiesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     list[Tag] Tags
 
@@ -649,8 +675,9 @@ struct NotFoundException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DomainIspPlacements: list[DomainIspPlacement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainIspPlacements: list[DomainIspPlacement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OverallVolume:
     Optional[VolumeStatistics] VolumeStatistics
     Optional[float64] ReadRatePercent
@@ -950,19 +977,10 @@ def email_error_from_code(str code) -> Pinpoint_EmailError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConfigurationSet (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateConfigurationSetEventDestination (document member `EventDestination: EventDestinationDefinition` is not serializable by derive)
-#   CreateDedicatedIpPool (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateDeliverabilityTestReport (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateEmailIdentity (document member `Tags: list[Tag]` is not serializable by derive)
 #   GetBlacklistReports (httpQuery `BlacklistItemNames` has unsupported type list[str])
 #   GetDomainStatisticsReport (httpQuery `StartDate` has unsupported type DateTime)
 #   ListDomainDeliverabilityCampaigns (httpQuery `StartDate` has unsupported type DateTime)
-#   PutDeliverabilityDashboardOption (document member `SubscribedDomains: list[DomainDeliverabilityTrackingOption]` is not serializable by derive)
-#   SendEmail (document member `Destination: Destination` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateConfigurationSetEventDestination (document member `EventDestination: EventDestinationDefinition` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1024,10 +1042,219 @@ struct PutEmailIdentityMailFromAttributesDocument:
     Optional[str] MailFromDomain
     Optional[BehaviorOnMxFailure] BehaviorOnMxFailure
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def email_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def email_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def email_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CloudWatchDestination to a compact JSON object (declaration order).
+def cloud_watch_destination_to_json(CloudWatchDestination v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DimensionConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"DimensionConfigurations\":" + email_json_arr(e0))
+    return email_json_obj(parts)
+
+# Serialize Destination to a compact JSON object (declaration order).
+def destination_to_json(Destination v) -> str:
+    list[str] parts = []
+    if v.ToAddresses.is_some():
+        auto u0 = v.ToAddresses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(email_json_str(x1))
+        parts.append("\"ToAddresses\":" + email_json_arr(e1))
+    if v.CcAddresses.is_some():
+        auto u2 = v.CcAddresses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(email_json_str(x3))
+        parts.append("\"CcAddresses\":" + email_json_arr(e3))
+    if v.BccAddresses.is_some():
+        auto u4 = v.BccAddresses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(email_json_str(x5))
+        parts.append("\"BccAddresses\":" + email_json_arr(e5))
+    return email_json_obj(parts)
+
+# Serialize DomainDeliverabilityTrackingOption to a compact JSON object (declaration order).
+def domain_deliverability_tracking_option_to_json(DomainDeliverabilityTrackingOption v) -> str:
+    list[str] parts = []
+    if v.Domain.is_some():
+        auto u0 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + email_json_str(u0))
+    if v.SubscriptionStartDate.is_some():
+        auto u1 = v.SubscriptionStartDate.unwrap()
+        parts.append("\"SubscriptionStartDate\":" + str(datetime.to_timestamp(u1)))
+    if v.InboxPlacementTrackingOption.is_some():
+        auto u2 = v.InboxPlacementTrackingOption.unwrap()
+        parts.append("\"InboxPlacementTrackingOption\":" + inbox_placement_tracking_option_to_json(u2))
+    return email_json_obj(parts)
+
+# Serialize EventDestinationDefinition to a compact JSON object (declaration order).
+def event_destination_definition_to_json(EventDestinationDefinition v) -> str:
+    list[str] parts = []
+    if v.Enabled.is_some():
+        auto u0 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.MatchingEventTypes.is_some():
+        auto u1 = v.MatchingEventTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"MatchingEventTypes\":" + email_json_arr(e2))
+    if v.KinesisFirehoseDestination.is_some():
+        auto u3 = v.KinesisFirehoseDestination.unwrap()
+        parts.append("\"KinesisFirehoseDestination\":" + u3.to_json())
+    if v.CloudWatchDestination.is_some():
+        auto u4 = v.CloudWatchDestination.unwrap()
+        parts.append("\"CloudWatchDestination\":" + cloud_watch_destination_to_json(u4))
+    if v.SnsDestination.is_some():
+        auto u5 = v.SnsDestination.unwrap()
+        parts.append("\"SnsDestination\":" + u5.to_json())
+    if v.PinpointDestination.is_some():
+        auto u6 = v.PinpointDestination.unwrap()
+        parts.append("\"PinpointDestination\":" + u6.to_json())
+    return email_json_obj(parts)
+
+# Serialize InboxPlacementTrackingOption to a compact JSON object (declaration order).
+def inbox_placement_tracking_option_to_json(InboxPlacementTrackingOption v) -> str:
+    list[str] parts = []
+    if v.Global.is_some():
+        auto u0 = v.Global.unwrap()
+        parts.append("\"Global\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.TrackedIsps.is_some():
+        auto u1 = v.TrackedIsps.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(email_json_str(x2))
+        parts.append("\"TrackedIsps\":" + email_json_arr(e2))
+    return email_json_obj(parts)
+
 # A bound Pinpoint_Email client: credentials + region, threaded into every operation.
 struct Pinpoint_EmailClient:
     core.Credentials creds
     str region
+
+    # CreateConfigurationSet  POST /v1/email/configuration-sets
+    # errors: AlreadyExistsException, BadRequestException, ConcurrentModificationException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def create_configuration_set(self, CreateConfigurationSetRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/configuration-sets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ConfigurationSetName\":" + email_json_str(input.ConfigurationSetName))
+        if input.TrackingOptions.is_some():
+            auto u0 = input.TrackingOptions.unwrap()
+            parts.append("\"TrackingOptions\":" + u0.to_json())
+        if input.DeliveryOptions.is_some():
+            auto u1 = input.DeliveryOptions.unwrap()
+            parts.append("\"DeliveryOptions\":" + u1.to_json())
+        if input.ReputationOptions.is_some():
+            auto u2 = input.ReputationOptions.unwrap()
+            parts.append("\"ReputationOptions\":" + u2.to_json())
+        if input.SendingOptions.is_some():
+            auto u3 = input.SendingOptions.unwrap()
+            parts.append("\"SendingOptions\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + email_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # CreateConfigurationSetEventDestination  POST /v1/email/configuration-sets/{ConfigurationSetName}/event-destinations
+    # errors: AlreadyExistsException, BadRequestException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def create_configuration_set_event_destination(self, CreateConfigurationSetEventDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConfigurationSetName"] = input.ConfigurationSetName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"EventDestinationName\":" + email_json_str(input.EventDestinationName))
+        parts.append("\"EventDestination\":" + event_destination_definition_to_json(input.EventDestination))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # CreateDedicatedIpPool  POST /v1/email/dedicated-ip-pools
+    # errors: AlreadyExistsException, BadRequestException, ConcurrentModificationException, LimitExceededException, TooManyRequestsException
+    def create_dedicated_ip_pool(self, CreateDedicatedIpPoolRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/dedicated-ip-pools", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PoolName\":" + email_json_str(input.PoolName))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + email_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # CreateDeliverabilityTestReport  POST /v1/email/deliverability-dashboard/test
+    # errors: AccountSuspendedException, BadRequestException, ConcurrentModificationException, LimitExceededException, MailFromDomainNotVerifiedException, MessageRejected, NotFoundException, SendingPausedException, TooManyRequestsException
+    def create_deliverability_test_report(self, CreateDeliverabilityTestReportRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/deliverability-dashboard/test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ReportName.is_some():
+            auto u0 = input.ReportName.unwrap()
+            parts.append("\"ReportName\":" + email_json_str(u0))
+        parts.append("\"FromEmailAddress\":" + email_json_str(input.FromEmailAddress))
+        parts.append("\"Content\":" + input.Content.to_json())
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + email_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # CreateEmailIdentity  POST /v1/email/identities
+    # errors: BadRequestException, ConcurrentModificationException, LimitExceededException, TooManyRequestsException
+    def create_email_identity(self, CreateEmailIdentityRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/identities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"EmailIdentity\":" + email_json_str(input.EmailIdentity))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + email_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
 
     # DeleteConfigurationSet  DELETE /v1/email/configuration-sets/{ConfigurationSetName}
     # errors: BadRequestException, ConcurrentModificationException, NotFoundException, TooManyRequestsException
@@ -1289,6 +1516,22 @@ struct Pinpoint_EmailClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
 
+    # PutDeliverabilityDashboardOption  PUT /v1/email/deliverability-dashboard
+    # errors: AlreadyExistsException, BadRequestException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def put_deliverability_dashboard_option(self, PutDeliverabilityDashboardOptionRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/deliverability-dashboard", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DashboardEnabled\":" + json.dumps(JsonValue.Bool(input.DashboardEnabled)))
+        if input.SubscribedDomains.is_some():
+            auto u0 = input.SubscribedDomains.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(domain_deliverability_tracking_option_to_json(x1))
+            parts.append("\"SubscribedDomains\":" + email_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
     # PutEmailIdentityDkimAttributes  PUT /v1/email/identities/{EmailIdentity}/dkim
     # errors: BadRequestException, NotFoundException, TooManyRequestsException
     def put_email_identity_dkim_attributes(self, PutEmailIdentityDkimAttributesRequest input) -> str:
@@ -1320,6 +1563,65 @@ struct Pinpoint_EmailClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/mail-from", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutEmailIdentityMailFromAttributesDocument(MailFromDomain=input.MailFromDomain, BehaviorOnMxFailure=input.BehaviorOnMxFailure)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # SendEmail  POST /v1/email/outbound-emails
+    # errors: AccountSuspendedException, BadRequestException, LimitExceededException, MailFromDomainNotVerifiedException, MessageRejected, NotFoundException, SendingPausedException, TooManyRequestsException
+    def send_email(self, SendEmailRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/outbound-emails", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FromEmailAddress.is_some():
+            auto u0 = input.FromEmailAddress.unwrap()
+            parts.append("\"FromEmailAddress\":" + email_json_str(u0))
+        parts.append("\"Destination\":" + destination_to_json(input.Destination))
+        if input.ReplyToAddresses.is_some():
+            auto u1 = input.ReplyToAddresses.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(email_json_str(x2))
+            parts.append("\"ReplyToAddresses\":" + email_json_arr(e2))
+        if input.FeedbackForwardingEmailAddress.is_some():
+            auto u3 = input.FeedbackForwardingEmailAddress.unwrap()
+            parts.append("\"FeedbackForwardingEmailAddress\":" + email_json_str(u3))
+        parts.append("\"Content\":" + input.Content.to_json())
+        if input.EmailTags.is_some():
+            auto u4 = input.EmailTags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"EmailTags\":" + email_json_arr(e5))
+        if input.ConfigurationSetName.is_some():
+            auto u6 = input.ConfigurationSetName.unwrap()
+            parts.append("\"ConfigurationSetName\":" + email_json_str(u6))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # TagResource  POST /v1/email/tags
+    # errors: BadRequestException, ConcurrentModificationException, NotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + email_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + email_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
+
+    # UpdateConfigurationSetEventDestination  PUT /v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException
+    def update_configuration_set_event_destination(self, UpdateConfigurationSetEventDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConfigurationSetName"] = input.ConfigurationSetName
+        labels["EventDestinationName"] = input.EventDestinationName
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"EventDestination\":" + event_destination_definition_to_json(input.EventDestination))
+        auto bp = restjson.rest_json_document(b, email_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
 
     # Paginator for GetDedicatedIps — yields each Response page, threading the

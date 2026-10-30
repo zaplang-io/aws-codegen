@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 14 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   53 structs (42 @derive(Json)), 4 enums, 13 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -170,8 +170,9 @@ struct GetBulkPublishDetailsResponse:
 struct GetCognitoEventsRequest:
     str IdentityPoolId
 
-# no @derive(Json): member(s) Events: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCognitoEventsResponse:
     Optional[dict[str, str]] Events
 
@@ -180,8 +181,9 @@ struct GetCognitoEventsResponse:
 struct GetIdentityPoolConfigurationRequest:
     str IdentityPoolId
 
-# no @derive(Json): member(s) PushSync: PushSync not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PushSync: PushSync not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentityPoolConfigurationResponse:
     Optional[str] IdentityPoolId
     Optional[PushSync] PushSync
@@ -234,8 +236,9 @@ struct ListDatasetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Datasets: list[Dataset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Datasets: list[Dataset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     Optional[list[Dataset]] Datasets
     Optional[int64] Count
@@ -247,8 +250,9 @@ struct ListIdentityPoolUsageRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) IdentityPoolUsages: list[IdentityPoolUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityPoolUsages: list[IdentityPoolUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityPoolUsageResponse:
     Optional[list[IdentityPoolUsage]] IdentityPoolUsages
     Optional[int64] MaxResults
@@ -266,8 +270,9 @@ struct ListRecordsRequest:
     Optional[int64] MaxResults
     Optional[str] SyncSessionToken
 
-# no @derive(Json): member(s) Records: list[Record], MergedDatasetNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record], MergedDatasetNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecordsResponse:
     Optional[list[Record]] Records
     Optional[str] NextToken
@@ -283,8 +288,9 @@ struct ListRecordsResponse:
 struct NotAuthorizedException:
     str message
 
-# no @derive(Json): member(s) ApplicationArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PushSync:
     Optional[list[str]] ApplicationArns
     Optional[str] RoleArn
@@ -339,8 +345,9 @@ struct SetIdentityPoolConfigurationRequest:
     Optional[PushSync] PushSync
     Optional[CognitoStreams] CognitoStreams
 
-# no @derive(Json): member(s) PushSync: PushSync not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PushSync: PushSync not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetIdentityPoolConfigurationResponse:
     Optional[str] IdentityPoolId
     Optional[PushSync] PushSync
@@ -387,8 +394,9 @@ struct UpdateRecordsRequest:
     str SyncSessionToken
     Optional[str] ClientContext
 
-# no @derive(Json): member(s) Records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecordsResponse:
     Optional[list[Record]] Records
 
@@ -445,13 +453,6 @@ def cognito_sync_error_from_code(str code) -> Cognito_SyncError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   SetCognitoEvents (document member `Events: dict[str, str]` is not serializable by derive)
-#   SetIdentityPoolConfiguration (document member `PushSync: PushSync` is not serializable by derive)
-#   UpdateRecords (document member `RecordPatches: list[RecordPatch]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -460,6 +461,50 @@ struct RegisterDeviceDocument:
     # document members of RegisterDevice
     Platform Platform
     str Token
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cognito_sync_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cognito_sync_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cognito_sync_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize PushSync to a compact JSON object (declaration order).
+def push_sync_to_json(PushSync v) -> str:
+    list[str] parts = []
+    if v.ApplicationArns.is_some():
+        auto u0 = v.ApplicationArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cognito_sync_json_str(x1))
+        parts.append("\"ApplicationArns\":" + cognito_sync_json_arr(e1))
+    if v.RoleArn.is_some():
+        auto u2 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + cognito_sync_json_str(u2))
+    return cognito_sync_json_obj(parts)
 
 # A bound Cognito_Sync client: credentials + region, threaded into every operation.
 struct Cognito_SyncClient:
@@ -602,6 +647,38 @@ struct Cognito_SyncClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cognito_sync_service(), self.region, host)
 
+    # SetCognitoEvents  POST /identitypools/{IdentityPoolId}/events
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def set_cognito_events(self, SetCognitoEventsRequest input) -> str:
+        auto host = endpoints.regional_host(cognito_sync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["IdentityPoolId"] = input.IdentityPoolId
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Events.keys()):
+            m0.append(cognito_sync_json_str(k0) + ":" + cognito_sync_json_str(input.Events[k0]))
+        parts.append("\"Events\":" + cognito_sync_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, cognito_sync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cognito_sync_service(), self.region, host)
+
+    # SetIdentityPoolConfiguration  POST /identitypools/{IdentityPoolId}/configuration
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def set_identity_pool_configuration(self, SetIdentityPoolConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(cognito_sync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["IdentityPoolId"] = input.IdentityPoolId
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.PushSync.is_some():
+            auto u0 = input.PushSync.unwrap()
+            parts.append("\"PushSync\":" + push_sync_to_json(u0))
+        if input.CognitoStreams.is_some():
+            auto u1 = input.CognitoStreams.unwrap()
+            parts.append("\"CognitoStreams\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, cognito_sync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cognito_sync_service(), self.region, host)
+
     # SubscribeToDataset  POST /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}
     # errors: InternalErrorException, InvalidConfigurationException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
     def subscribe_to_dataset(self, SubscribeToDatasetRequest input) -> str:
@@ -625,6 +702,32 @@ struct Cognito_SyncClient:
         labels["DeviceId"] = input.DeviceId
         auto b = binding.HttpBinding(method="DELETE", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
+
+    # UpdateRecords  POST /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}
+    # errors: InternalErrorException, InvalidLambdaFunctionOutputException, InvalidParameterException, LambdaThrottledException, LimitExceededException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def update_records(self, UpdateRecordsRequest input) -> str:
+        auto host = endpoints.regional_host(cognito_sync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["IdentityPoolId"] = input.IdentityPoolId
+        labels["IdentityId"] = input.IdentityId
+        labels["DatasetName"] = input.DatasetName
+        dict[str, str] headers = {}
+        if input.ClientContext.is_some():
+            headers["x-amz-Client-Context"] = input.ClientContext.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DeviceId.is_some():
+            auto u0 = input.DeviceId.unwrap()
+            parts.append("\"DeviceId\":" + cognito_sync_json_str(u0))
+        if input.RecordPatches.is_some():
+            auto u1 = input.RecordPatches.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"RecordPatches\":" + cognito_sync_json_arr(e2))
+        parts.append("\"SyncSessionToken\":" + cognito_sync_json_str(input.SyncSessionToken))
+        auto bp = restjson.rest_json_document(b, cognito_sync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cognito_sync_service(), self.region, host)
 
 # Construct a Cognito_SyncClient bound to credentials + region.
 def cognito_sync_client(core.Credentials creds, str region) -> Cognito_SyncClient:

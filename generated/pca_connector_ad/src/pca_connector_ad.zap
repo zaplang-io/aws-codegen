@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 19 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 24 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   89 structs (59 @derive(Json)), 18 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -304,8 +304,9 @@ struct AccessRights:
     Optional[AccessRight] AutoEnroll
     Optional[AccessRight] Enroll
 
-# no @derive(Json): member(s) Policies: list[ApplicationPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[ApplicationPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationPolicies:
     Optional[bool] Critical
     list[ApplicationPolicy] Policies
@@ -326,8 +327,9 @@ struct ConflictException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) VpcInformation: VpcInformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcInformation: VpcInformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connector:
     Optional[str] Arn
     Optional[str] CertificateAuthorityArn
@@ -339,8 +341,9 @@ struct Connector:
     Optional[DateTime] UpdatedAt
     Optional[VpcInformation] VpcInformation
 
-# no @derive(Json): member(s) VpcInformation: VpcInformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcInformation: VpcInformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorSummary:
     Optional[str] Arn
     Optional[str] CertificateAuthorityArn
@@ -474,20 +477,23 @@ struct EnrollmentFlagsV4:
     Optional[bool] RemoveInvalidCertificateFromPersonalStore
     Optional[bool] UserInteractionRequired
 
-# no @derive(Json): member(s) ApplicationPolicies: ApplicationPolicies not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationPolicies: ApplicationPolicies not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtensionsV2:
     Optional[ApplicationPolicies] ApplicationPolicies
     KeyUsage KeyUsage
 
-# no @derive(Json): member(s) ApplicationPolicies: ApplicationPolicies not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationPolicies: ApplicationPolicies not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtensionsV3:
     Optional[ApplicationPolicies] ApplicationPolicies
     KeyUsage KeyUsage
 
-# no @derive(Json): member(s) ApplicationPolicies: ApplicationPolicies not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationPolicies: ApplicationPolicies not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtensionsV4:
     Optional[ApplicationPolicies] ApplicationPolicies
     KeyUsage KeyUsage
@@ -512,8 +518,9 @@ struct GeneralFlagsV4:
 struct GetConnectorRequest:
     str ConnectorArn
 
-# no @derive(Json): member(s) Connector: Connector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connector: Connector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectorResponse:
     Optional[Connector] Connector
 
@@ -551,8 +558,9 @@ struct GetTemplateGroupAccessControlEntryResponse:
 struct GetTemplateRequest:
     str TemplateArn
 
-# no @derive(Json): member(s) Template: Template not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Template: Template not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemplateResponse:
     Optional[Template] Template
 
@@ -590,8 +598,9 @@ struct ListConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Connectors: list[ConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connectors: list[ConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[list[ConnectorSummary]] Connectors
     Optional[str] NextToken
@@ -602,8 +611,9 @@ struct ListDirectoryRegistrationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DirectoryRegistrations: list[DirectoryRegistrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectoryRegistrations: list[DirectoryRegistrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDirectoryRegistrationsResponse:
     Optional[list[DirectoryRegistrationSummary]] DirectoryRegistrations
     Optional[str] NextToken
@@ -615,8 +625,9 @@ struct ListServicePrincipalNamesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServicePrincipalNames: list[ServicePrincipalNameSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServicePrincipalNames: list[ServicePrincipalNameSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicePrincipalNamesResponse:
     Optional[str] NextToken
     Optional[list[ServicePrincipalNameSummary]] ServicePrincipalNames
@@ -626,8 +637,9 @@ struct ListServicePrincipalNamesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -638,8 +650,9 @@ struct ListTemplateGroupAccessControlEntriesRequest:
     Optional[str] NextToken
     str TemplateArn
 
-# no @derive(Json): member(s) AccessControlEntries: list[AccessControlEntrySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlEntries: list[AccessControlEntrySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateGroupAccessControlEntriesResponse:
     Optional[list[AccessControlEntrySummary]] AccessControlEntries
     Optional[str] NextToken
@@ -651,21 +664,24 @@ struct ListTemplatesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Templates: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Templates: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplatesResponse:
     Optional[str] NextToken
     Optional[list[TemplateSummary]] Templates
 
-# no @derive(Json): member(s) CryptoProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CryptoProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateKeyAttributesV2:
     Optional[list[str]] CryptoProviders
     KeySpec KeySpec
     int64 MinimalKeyLength
 
-# no @derive(Json): member(s) CryptoProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CryptoProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateKeyAttributesV3:
     PrivateKeyAlgorithm Algorithm
     Optional[list[str]] CryptoProviders
@@ -673,8 +689,9 @@ struct PrivateKeyAttributesV3:
     KeyUsageProperty KeyUsageProperty
     int64 MinimalKeyLength
 
-# no @derive(Json): member(s) CryptoProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CryptoProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateKeyAttributesV4:
     Optional[PrivateKeyAlgorithm] Algorithm
     Optional[list[str]] CryptoProviders
@@ -781,8 +798,9 @@ struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) Definition: TemplateDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: TemplateDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Template:
     Optional[str] Arn
     Optional[str] ConnectorArn
@@ -795,8 +813,9 @@ struct Template:
     Optional[TemplateStatus] Status
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) TemplateV2: TemplateV2, TemplateV3: TemplateV3, TemplateV4: TemplateV4 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateV2: TemplateV2, TemplateV3: TemplateV3, TemplateV4: TemplateV4 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateDefinition:
     Optional[TemplateV2] TemplateV2
     Optional[TemplateV3] TemplateV3
@@ -807,8 +826,9 @@ struct TemplateRevision:
     int64 MajorRevision
     int64 MinorRevision
 
-# no @derive(Json): member(s) Definition: TemplateDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: TemplateDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateSummary:
     Optional[str] Arn
     Optional[str] ConnectorArn
@@ -821,8 +841,9 @@ struct TemplateSummary:
     Optional[TemplateStatus] Status
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) Extensions: ExtensionsV2, PrivateKeyAttributes: PrivateKeyAttributesV2, SupersededTemplates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Extensions: ExtensionsV2, PrivateKeyAttributes: PrivateKeyAttributesV2, SupersededTemplates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateV2:
     CertificateValidity CertificateValidity
     EnrollmentFlagsV2 EnrollmentFlags
@@ -833,8 +854,9 @@ struct TemplateV2:
     SubjectNameFlagsV2 SubjectNameFlags
     Optional[list[str]] SupersededTemplates
 
-# no @derive(Json): member(s) Extensions: ExtensionsV3, PrivateKeyAttributes: PrivateKeyAttributesV3, SupersededTemplates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Extensions: ExtensionsV3, PrivateKeyAttributes: PrivateKeyAttributesV3, SupersededTemplates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateV3:
     CertificateValidity CertificateValidity
     EnrollmentFlagsV3 EnrollmentFlags
@@ -846,8 +868,9 @@ struct TemplateV3:
     SubjectNameFlagsV3 SubjectNameFlags
     Optional[list[str]] SupersededTemplates
 
-# no @derive(Json): member(s) Extensions: ExtensionsV4, PrivateKeyAttributes: PrivateKeyAttributesV4, SupersededTemplates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Extensions: ExtensionsV4, PrivateKeyAttributes: PrivateKeyAttributesV4, SupersededTemplates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateV4:
     CertificateValidity CertificateValidity
     EnrollmentFlagsV4 EnrollmentFlags
@@ -896,8 +919,9 @@ struct ValidityPeriod:
     int64 Period
     ValidityPeriodType PeriodType
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcInformation:
     Optional[IpAddressType] IpAddressType
     list[str] SecurityGroupIds
@@ -940,12 +964,7 @@ def pca_connector_ad_error_from_code(str code) -> Pca_Connector_AdError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConnector (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateDirectoryRegistration (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTemplate (document member `Definition: TemplateDefinition` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateTemplate (document member `Definition: TemplateDefinition` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -969,10 +988,250 @@ struct UpdateTemplateGroupAccessControlEntryDocument:
     Optional[AccessRights] AccessRights
     Optional[str] GroupDisplayName
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def pca_connector_ad_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def pca_connector_ad_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def pca_connector_ad_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApplicationPolicies to a compact JSON object (declaration order).
+def application_policies_to_json(ApplicationPolicies v) -> str:
+    list[str] parts = []
+    if v.Critical.is_some():
+        auto u0 = v.Critical.unwrap()
+        parts.append("\"Critical\":" + json.dumps(JsonValue.Bool(u0)))
+    list[str] e1 = []
+    for x1 in v.Policies:
+        e1.append(x1.to_json())
+    parts.append("\"Policies\":" + pca_connector_ad_json_arr(e1))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize ExtensionsV2 to a compact JSON object (declaration order).
+def extensions_v2_to_json(ExtensionsV2 v) -> str:
+    list[str] parts = []
+    if v.ApplicationPolicies.is_some():
+        auto u0 = v.ApplicationPolicies.unwrap()
+        parts.append("\"ApplicationPolicies\":" + application_policies_to_json(u0))
+    parts.append("\"KeyUsage\":" + v.KeyUsage.to_json())
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize ExtensionsV3 to a compact JSON object (declaration order).
+def extensions_v3_to_json(ExtensionsV3 v) -> str:
+    list[str] parts = []
+    if v.ApplicationPolicies.is_some():
+        auto u0 = v.ApplicationPolicies.unwrap()
+        parts.append("\"ApplicationPolicies\":" + application_policies_to_json(u0))
+    parts.append("\"KeyUsage\":" + v.KeyUsage.to_json())
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize ExtensionsV4 to a compact JSON object (declaration order).
+def extensions_v4_to_json(ExtensionsV4 v) -> str:
+    list[str] parts = []
+    if v.ApplicationPolicies.is_some():
+        auto u0 = v.ApplicationPolicies.unwrap()
+        parts.append("\"ApplicationPolicies\":" + application_policies_to_json(u0))
+    parts.append("\"KeyUsage\":" + v.KeyUsage.to_json())
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize PrivateKeyAttributesV2 to a compact JSON object (declaration order).
+def private_key_attributes_v2_to_json(PrivateKeyAttributesV2 v) -> str:
+    list[str] parts = []
+    if v.CryptoProviders.is_some():
+        auto u0 = v.CryptoProviders.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pca_connector_ad_json_str(x1))
+        parts.append("\"CryptoProviders\":" + pca_connector_ad_json_arr(e1))
+    parts.append("\"KeySpec\":" + v.KeySpec.to_json())
+    parts.append("\"MinimalKeyLength\":" + str(v.MinimalKeyLength))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize PrivateKeyAttributesV3 to a compact JSON object (declaration order).
+def private_key_attributes_v3_to_json(PrivateKeyAttributesV3 v) -> str:
+    list[str] parts = []
+    parts.append("\"Algorithm\":" + v.Algorithm.to_json())
+    if v.CryptoProviders.is_some():
+        auto u0 = v.CryptoProviders.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pca_connector_ad_json_str(x1))
+        parts.append("\"CryptoProviders\":" + pca_connector_ad_json_arr(e1))
+    parts.append("\"KeySpec\":" + v.KeySpec.to_json())
+    parts.append("\"KeyUsageProperty\":" + v.KeyUsageProperty.to_json())
+    parts.append("\"MinimalKeyLength\":" + str(v.MinimalKeyLength))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize PrivateKeyAttributesV4 to a compact JSON object (declaration order).
+def private_key_attributes_v4_to_json(PrivateKeyAttributesV4 v) -> str:
+    list[str] parts = []
+    if v.Algorithm.is_some():
+        auto u0 = v.Algorithm.unwrap()
+        parts.append("\"Algorithm\":" + u0.to_json())
+    if v.CryptoProviders.is_some():
+        auto u1 = v.CryptoProviders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(pca_connector_ad_json_str(x2))
+        parts.append("\"CryptoProviders\":" + pca_connector_ad_json_arr(e2))
+    parts.append("\"KeySpec\":" + v.KeySpec.to_json())
+    if v.KeyUsageProperty.is_some():
+        auto u3 = v.KeyUsageProperty.unwrap()
+        parts.append("\"KeyUsageProperty\":" + u3.to_json())
+    parts.append("\"MinimalKeyLength\":" + str(v.MinimalKeyLength))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize TemplateDefinition to a compact JSON object (declaration order).
+def template_definition_to_json(TemplateDefinition v) -> str:
+    list[str] parts = []
+    if v.TemplateV2.is_some():
+        auto u0 = v.TemplateV2.unwrap()
+        parts.append("\"TemplateV2\":" + template_v2_to_json(u0))
+    if v.TemplateV3.is_some():
+        auto u1 = v.TemplateV3.unwrap()
+        parts.append("\"TemplateV3\":" + template_v3_to_json(u1))
+    if v.TemplateV4.is_some():
+        auto u2 = v.TemplateV4.unwrap()
+        parts.append("\"TemplateV4\":" + template_v4_to_json(u2))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize TemplateV2 to a compact JSON object (declaration order).
+def template_v2_to_json(TemplateV2 v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateValidity\":" + v.CertificateValidity.to_json())
+    parts.append("\"EnrollmentFlags\":" + v.EnrollmentFlags.to_json())
+    parts.append("\"Extensions\":" + extensions_v2_to_json(v.Extensions))
+    parts.append("\"GeneralFlags\":" + v.GeneralFlags.to_json())
+    parts.append("\"PrivateKeyAttributes\":" + private_key_attributes_v2_to_json(v.PrivateKeyAttributes))
+    parts.append("\"PrivateKeyFlags\":" + v.PrivateKeyFlags.to_json())
+    parts.append("\"SubjectNameFlags\":" + v.SubjectNameFlags.to_json())
+    if v.SupersededTemplates.is_some():
+        auto u0 = v.SupersededTemplates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pca_connector_ad_json_str(x1))
+        parts.append("\"SupersededTemplates\":" + pca_connector_ad_json_arr(e1))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize TemplateV3 to a compact JSON object (declaration order).
+def template_v3_to_json(TemplateV3 v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateValidity\":" + v.CertificateValidity.to_json())
+    parts.append("\"EnrollmentFlags\":" + v.EnrollmentFlags.to_json())
+    parts.append("\"Extensions\":" + extensions_v3_to_json(v.Extensions))
+    parts.append("\"GeneralFlags\":" + v.GeneralFlags.to_json())
+    parts.append("\"HashAlgorithm\":" + v.HashAlgorithm.to_json())
+    parts.append("\"PrivateKeyAttributes\":" + private_key_attributes_v3_to_json(v.PrivateKeyAttributes))
+    parts.append("\"PrivateKeyFlags\":" + v.PrivateKeyFlags.to_json())
+    parts.append("\"SubjectNameFlags\":" + v.SubjectNameFlags.to_json())
+    if v.SupersededTemplates.is_some():
+        auto u0 = v.SupersededTemplates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pca_connector_ad_json_str(x1))
+        parts.append("\"SupersededTemplates\":" + pca_connector_ad_json_arr(e1))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize TemplateV4 to a compact JSON object (declaration order).
+def template_v4_to_json(TemplateV4 v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateValidity\":" + v.CertificateValidity.to_json())
+    parts.append("\"EnrollmentFlags\":" + v.EnrollmentFlags.to_json())
+    parts.append("\"Extensions\":" + extensions_v4_to_json(v.Extensions))
+    parts.append("\"GeneralFlags\":" + v.GeneralFlags.to_json())
+    if v.HashAlgorithm.is_some():
+        auto u0 = v.HashAlgorithm.unwrap()
+        parts.append("\"HashAlgorithm\":" + u0.to_json())
+    parts.append("\"PrivateKeyAttributes\":" + private_key_attributes_v4_to_json(v.PrivateKeyAttributes))
+    parts.append("\"PrivateKeyFlags\":" + v.PrivateKeyFlags.to_json())
+    parts.append("\"SubjectNameFlags\":" + v.SubjectNameFlags.to_json())
+    if v.SupersededTemplates.is_some():
+        auto u1 = v.SupersededTemplates.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(pca_connector_ad_json_str(x2))
+        parts.append("\"SupersededTemplates\":" + pca_connector_ad_json_arr(e2))
+    return pca_connector_ad_json_obj(parts)
+
+# Serialize VpcInformation to a compact JSON object (declaration order).
+def vpc_information_to_json(VpcInformation v) -> str:
+    list[str] parts = []
+    if v.IpAddressType.is_some():
+        auto u0 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(pca_connector_ad_json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + pca_connector_ad_json_arr(e1))
+    return pca_connector_ad_json_obj(parts)
+
 # A bound Pca_Connector_Ad client: credentials + region, threaded into every operation.
 struct Pca_Connector_AdClient:
     core.Credentials creds
     str region
+
+    # CreateConnector  POST /connectors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CertificateAuthorityArn\":" + pca_connector_ad_json_str(input.CertificateAuthorityArn))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + pca_connector_ad_json_str(u0))
+        parts.append("\"DirectoryId\":" + pca_connector_ad_json_str(input.DirectoryId))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(pca_connector_ad_json_str(k2) + ":" + pca_connector_ad_json_str(u1[k2]))
+            parts.append("\"Tags\":" + pca_connector_ad_json_obj(m2))
+        parts.append("\"VpcInformation\":" + vpc_information_to_json(input.VpcInformation))
+        auto bp = restjson.rest_json_document(b, pca_connector_ad_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
+
+    # CreateDirectoryRegistration  POST /directoryRegistrations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_directory_registration(self, CreateDirectoryRegistrationRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/directoryRegistrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + pca_connector_ad_json_str(u0))
+        parts.append("\"DirectoryId\":" + pca_connector_ad_json_str(input.DirectoryId))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(pca_connector_ad_json_str(k2) + ":" + pca_connector_ad_json_str(u1[k2]))
+            parts.append("\"Tags\":" + pca_connector_ad_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, pca_connector_ad_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
 
     # CreateServicePrincipalName  POST /directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -984,6 +1243,27 @@ struct Pca_Connector_AdClient:
         auto b = binding.HttpBinding(method="POST", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateServicePrincipalNameDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
+
+    # CreateTemplate  POST /templates
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_template(self, CreateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + pca_connector_ad_json_str(u0))
+        parts.append("\"ConnectorArn\":" + pca_connector_ad_json_str(input.ConnectorArn))
+        parts.append("\"Definition\":" + template_definition_to_json(input.Definition))
+        parts.append("\"Name\":" + pca_connector_ad_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(pca_connector_ad_json_str(k2) + ":" + pca_connector_ad_json_str(u1[k2]))
+            parts.append("\"Tags\":" + pca_connector_ad_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, pca_connector_ad_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
 
     # CreateTemplateGroupAccessControlEntry  POST /templates/{TemplateArn}/accessControlEntries
@@ -1164,6 +1444,38 @@ struct Pca_Connector_AdClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(pca_connector_ad_json_str(k0) + ":" + pca_connector_ad_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + pca_connector_ad_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, pca_connector_ad_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
+
+    # UpdateTemplate  PATCH /templates/{TemplateArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_template(self, UpdateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TemplateArn"] = input.TemplateArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Definition.is_some():
+            auto u0 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + template_definition_to_json(u0))
+        if input.ReenrollAllCertificateHolders.is_some():
+            auto u1 = input.ReenrollAllCertificateHolders.unwrap()
+            parts.append("\"ReenrollAllCertificateHolders\":" + json.dumps(JsonValue.Bool(u1)))
+        auto bp = restjson.rest_json_document(b, pca_connector_ad_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
 
     # UpdateTemplateGroupAccessControlEntry  PATCH /templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

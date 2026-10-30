@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 1 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 5 operations — 4 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   25 structs (16 @derive(Json)), 1 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -82,8 +82,9 @@ struct DescribeJobExecutionRequest:
     Optional[bool] includeJobDocument
     Optional[int64] executionNumber
 
-# no @derive(Json): member(s) execution: JobExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) execution: JobExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobExecutionResponse:
     Optional[JobExecution] execution
 
@@ -92,8 +93,9 @@ struct DescribeJobExecutionResponse:
 struct GetPendingJobExecutionsRequest:
     str thingName
 
-# no @derive(Json): member(s) inProgressJobs: list[JobExecutionSummary], queuedJobs: list[JobExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inProgressJobs: list[JobExecutionSummary], queuedJobs: list[JobExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPendingJobExecutionsResponse:
     Optional[list[JobExecutionSummary]] inProgressJobs
     Optional[list[JobExecutionSummary]] queuedJobs
@@ -110,8 +112,9 @@ struct InvalidRequestException:
 struct InvalidStateTransitionException:
     Optional[str] message
 
-# no @derive(Json): member(s) statusDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobExecution:
     Optional[str] jobId
     Optional[str] thingName
@@ -125,8 +128,9 @@ struct JobExecution:
     Optional[int64] executionNumber
     Optional[str] jobDocument
 
-# no @derive(Json): member(s) statusDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobExecutionState:
     Optional[JobExecutionStatus] status
     Optional[dict[str, str]] statusDetails
@@ -173,8 +177,9 @@ struct StartNextPendingJobExecutionRequest:
     Optional[dict[str, str]] statusDetails
     Optional[int64] stepTimeoutInMinutes
 
-# no @derive(Json): member(s) execution: JobExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) execution: JobExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNextPendingJobExecutionResponse:
     Optional[JobExecution] execution
 
@@ -200,8 +205,9 @@ struct UpdateJobExecutionRequest:
     Optional[bool] includeJobDocument
     Optional[int64] executionNumber
 
-# no @derive(Json): member(s) executionState: JobExecutionState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionState: JobExecutionState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateJobExecutionResponse:
     Optional[JobExecutionState] executionState
     Optional[str] jobDocument
@@ -261,9 +267,6 @@ def data_jobs_iot_error_from_code(str code) -> IoT_Jobs_Data_PlaneError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   DescribeJobExecution (httpQuery `includeJobDocument` has unsupported type bool)
-#   StartCommandExecution (document member `parameters: dict[str, CommandParameterValue]` is not serializable by derive)
-#   StartNextPendingJobExecution (document member `statusDetails: dict[str, str]` is not serializable by derive)
-#   UpdateJobExecution (document member `statusDetails: dict[str, str]` is not serializable by derive)
 
 # A bound IoT_Jobs_Data_Plane client: credentials + region, threaded into every operation.
 struct IoT_Jobs_Data_PlaneClient:
@@ -278,6 +281,83 @@ struct IoT_Jobs_Data_PlaneClient:
         labels["thingName"] = input.thingName
         auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_jobs_iot_service(), self.region, host)
+
+    # StartCommandExecution  POST /command-executions
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_command_execution(self, StartCommandExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/command-executions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"targetArn\":" + data_jobs_iot_json_str(input.targetArn))
+        parts.append("\"commandArn\":" + data_jobs_iot_json_str(input.commandArn))
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(data_jobs_iot_json_str(k1) + ":" + u0[k1].to_json())
+            parts.append("\"parameters\":" + data_jobs_iot_json_obj(m1))
+        if input.executionTimeoutSeconds.is_some():
+            auto u2 = input.executionTimeoutSeconds.unwrap()
+            parts.append("\"executionTimeoutSeconds\":" + str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + data_jobs_iot_json_str(u3))
+        auto bp = restjson.rest_json_document(b, data_jobs_iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_jobs_iot_service(), self.region, host)
+
+    # StartNextPendingJobExecution  PUT /things/{thingName}/jobs/$next
+    # errors: CertificateValidationException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def start_next_pending_job_execution(self, StartNextPendingJobExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingName"] = input.thingName
+        auto b = binding.HttpBinding(method="PUT", path_template="/things/{thingName}/jobs/$next", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.statusDetails.is_some():
+            auto u0 = input.statusDetails.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(data_jobs_iot_json_str(k1) + ":" + data_jobs_iot_json_str(u0[k1]))
+            parts.append("\"statusDetails\":" + data_jobs_iot_json_obj(m1))
+        if input.stepTimeoutInMinutes.is_some():
+            auto u2 = input.stepTimeoutInMinutes.unwrap()
+            parts.append("\"stepTimeoutInMinutes\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, data_jobs_iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_jobs_iot_service(), self.region, host)
+
+    # UpdateJobExecution  POST /things/{thingName}/jobs/{jobId}
+    # errors: CertificateValidationException, InvalidRequestException, InvalidStateTransitionException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_job_execution(self, UpdateJobExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        labels["thingName"] = input.thingName
+        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"status\":" + input.status.to_json())
+        if input.statusDetails.is_some():
+            auto u0 = input.statusDetails.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(data_jobs_iot_json_str(k1) + ":" + data_jobs_iot_json_str(u0[k1]))
+            parts.append("\"statusDetails\":" + data_jobs_iot_json_obj(m1))
+        if input.stepTimeoutInMinutes.is_some():
+            auto u2 = input.stepTimeoutInMinutes.unwrap()
+            parts.append("\"stepTimeoutInMinutes\":" + str(u2))
+        if input.expectedVersion.is_some():
+            auto u3 = input.expectedVersion.unwrap()
+            parts.append("\"expectedVersion\":" + str(u3))
+        if input.includeJobExecutionState.is_some():
+            auto u4 = input.includeJobExecutionState.unwrap()
+            parts.append("\"includeJobExecutionState\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.includeJobDocument.is_some():
+            auto u5 = input.includeJobDocument.unwrap()
+            parts.append("\"includeJobDocument\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.executionNumber.is_some():
+            auto u6 = input.executionNumber.unwrap()
+            parts.append("\"executionNumber\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, data_jobs_iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_jobs_iot_service(), self.region, host)
 
 # Construct a IoT_Jobs_Data_PlaneClient bound to credentials + region.
 def data_jobs_iot_client(core.Credentials creds, str region) -> IoT_Jobs_Data_PlaneClient:

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 123 operations — 87 with a generated method,
-#   36 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 123 operations — 122 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   734 structs (413 @derive(Json)), 343 enums, 9 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -2949,8 +2949,9 @@ struct AribSourceSettings:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) InputChannelLevels: list[InputChannelLevel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputChannelLevels: list[InputChannelLevel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioChannelMapping:
     list[InputChannelLevel] InputChannelLevels
     int64 OutputChannel
@@ -2965,8 +2966,9 @@ struct AudioCodecSettings:
     Optional[PassThroughSettings] PassThroughSettings
     Optional[WavSettings] WavSettings
 
-# no @derive(Json): member(s) RemixSettings: RemixSettings, AudioDashRoles: list[DashRoleAudio] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemixSettings: RemixSettings, AudioDashRoles: list[DashRoleAudio] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioDescription:
     Optional[AudioNormalizationSettings] AudioNormalizationSettings
     str AudioSelectorName
@@ -3016,35 +3018,40 @@ struct AudioOnlyHlsSettings:
     Optional[AudioOnlyHlsTrackType] AudioTrackType
     Optional[AudioOnlyHlsSegmentType] SegmentType
 
-# no @derive(Json): member(s) PremixSettings: AudioPreMixerSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PremixSettings: AudioPreMixerSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioPid:
     Optional[AudioDolbyEDecode] DolbyEDecode
     int64 Pid
     Optional[AudioPreMixerSettings] PremixSettings
 
-# no @derive(Json): member(s) Pids: list[AudioPid] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pids: list[AudioPid] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioPidSelection:
     int64 Pid
     Optional[list[AudioPid]] Pids
 
-# no @derive(Json): member(s) RemixSettings: RemixSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemixSettings: RemixSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioPreMixerSettings:
     Optional[AudioNormalizationSettings] AudioNormalizationSettings
     Optional[int64] Channels
     Optional[float64] GainDb
     Optional[RemixSettings] RemixSettings
 
-# no @derive(Json): member(s) SelectorSettings: AudioSelectorSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectorSettings: AudioSelectorSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioSelector:
     str Name
     Optional[AudioSelectorSettings] SelectorSettings
 
-# no @derive(Json): member(s) AudioPidSelection: AudioPidSelection, AudioTrackSelection: AudioTrackSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioPidSelection: AudioPidSelection, AudioTrackSelection: AudioTrackSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioSelectorSettings:
     Optional[AudioHlsRenditionSelection] AudioHlsRenditionSelection
     Optional[AudioLanguageSelection] AudioLanguageSelection
@@ -3056,14 +3063,16 @@ struct AudioSilenceFailoverSettings:
     str AudioSelectorName
     Optional[int64] AudioSilenceThresholdMsec
 
-# no @derive(Json): member(s) PremixSettings: AudioPreMixerSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PremixSettings: AudioPreMixerSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioTrack:
     int64 Track
     Optional[AudioPreMixerSettings] PremixSettings
 
-# no @derive(Json): member(s) Tracks: list[AudioTrack] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tracks: list[AudioTrack] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioTrackSelection:
     list[AudioTrack] Tracks
     Optional[AudioDolbyEDecode] DolbyEDecode
@@ -3077,8 +3086,9 @@ struct AutoFilterSettings:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) FailoverConditions: list[FailoverCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailoverConditions: list[FailoverCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomaticInputFailoverSettings:
     Optional[int64] ErrorClearTimeMsec
     Optional[list[FailoverCondition]] FailoverConditions
@@ -3160,8 +3170,9 @@ struct BandwidthReductionFilterSettings:
     Optional[BandwidthReductionPostFilterSharpening] PostFilterSharpening
     Optional[BandwidthReductionFilterStrength] Strength
 
-# no @derive(Json): member(s) ChannelIds: list[str], InputIds: list[str], InputSecurityGroupIds: list[str], MultiplexIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], InputIds: list[str], InputSecurityGroupIds: list[str], MultiplexIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDelete:
     Optional[list[str]] ChannelIds
     Optional[list[str]] InputIds
@@ -3176,14 +3187,16 @@ struct BatchDeleteRequest:
     Optional[list[str]] InputSecurityGroupIds
     Optional[list[str]] MultiplexIds
 
-# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteResponse:
     Optional[list[BatchFailedResultModel]] Failed
     Optional[list[BatchSuccessfulResultModel]] Successful
 
-# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteResultModel:
     Optional[list[BatchFailedResultModel]] Failed
     Optional[list[BatchSuccessfulResultModel]] Successful
@@ -3195,28 +3208,33 @@ struct BatchFailedResultModel:
     Optional[str] Id
     Optional[str] Message
 
-# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchScheduleActionCreateRequest:
     list[ScheduleAction] ScheduleActions
 
-# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchScheduleActionCreateResult:
     list[ScheduleAction] ScheduleActions
 
-# no @derive(Json): member(s) ActionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchScheduleActionDeleteRequest:
     list[str] ActionNames
 
-# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchScheduleActionDeleteResult:
     list[ScheduleAction] ScheduleActions
 
-# no @derive(Json): member(s) ChannelIds: list[str], MultiplexIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], MultiplexIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStart:
     Optional[list[str]] ChannelIds
     Optional[list[str]] MultiplexIds
@@ -3227,20 +3245,23 @@ struct BatchStartRequest:
     Optional[list[str]] ChannelIds
     Optional[list[str]] MultiplexIds
 
-# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStartResponse:
     Optional[list[BatchFailedResultModel]] Failed
     Optional[list[BatchSuccessfulResultModel]] Successful
 
-# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStartResultModel:
     Optional[list[BatchFailedResultModel]] Failed
     Optional[list[BatchSuccessfulResultModel]] Successful
 
-# no @derive(Json): member(s) ChannelIds: list[str], MultiplexIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], MultiplexIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStop:
     Optional[list[str]] ChannelIds
     Optional[list[str]] MultiplexIds
@@ -3251,14 +3272,16 @@ struct BatchStopRequest:
     Optional[list[str]] ChannelIds
     Optional[list[str]] MultiplexIds
 
-# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStopResponse:
     Optional[list[BatchFailedResultModel]] Failed
     Optional[list[BatchSuccessfulResultModel]] Successful
 
-# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchFailedResultModel], Successful: list[BatchSuccessfulResultModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStopResultModel:
     Optional[list[BatchFailedResultModel]] Failed
     Optional[list[BatchSuccessfulResultModel]] Successful
@@ -3276,14 +3299,16 @@ struct BatchUpdateScheduleRequest:
     Optional[BatchScheduleActionCreateRequest] Creates
     Optional[BatchScheduleActionDeleteRequest] Deletes
 
-# no @derive(Json): member(s) Creates: BatchScheduleActionCreateResult, Deletes: BatchScheduleActionDeleteResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Creates: BatchScheduleActionCreateResult, Deletes: BatchScheduleActionDeleteResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateScheduleResponse:
     Optional[BatchScheduleActionCreateResult] Creates
     Optional[BatchScheduleActionDeleteResult] Deletes
 
-# no @derive(Json): member(s) Creates: BatchScheduleActionCreateResult, Deletes: BatchScheduleActionDeleteResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Creates: BatchScheduleActionCreateResult, Deletes: BatchScheduleActionDeleteResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateScheduleResult:
     Optional[BatchScheduleActionCreateResult] Creates
     Optional[BatchScheduleActionDeleteResult] Deletes
@@ -3327,8 +3352,9 @@ struct CancelInputDeviceTransferResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CaptionDashRoles: list[DashRoleCaption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CaptionDashRoles: list[DashRoleCaption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptionDescription:
     Optional[AccessibilityType] Accessibility
     str CaptionSelectorName
@@ -3389,8 +3415,9 @@ struct CaptionSelectorSettings:
 struct CdiInputSpecification:
     Optional[CdiInputResolution] Resolution
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Channel:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -3428,8 +3455,9 @@ struct ChannelAlert:
     Optional[DateTime] SetTimestamp
     Optional[ChannelAlertState] State
 
-# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelConfigurationValidationError:
     Optional[str] Message
     Optional[list[ValidationError]] ValidationErrors
@@ -3448,8 +3476,9 @@ struct ChannelEngineVersionResponse:
     Optional[DateTime] ExpirationDate
     Optional[str] Version
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], InputAttachments: list[InputAttachment], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, UsedChannelEngineVersions: list[ChannelEngineVersionResponse], LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], InputAttachments: list[InputAttachment], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, UsedChannelEngineVersions: list[ChannelEngineVersionResponse], LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelSummary:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -3484,8 +3513,9 @@ struct ClaimDeviceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchAlarmTemplateGroupSummary:
     str Arn
     DateTime CreatedAt
@@ -3496,8 +3526,9 @@ struct CloudWatchAlarmTemplateGroupSummary:
     Optional[dict[str, str]] Tags
     int64 TemplateCount
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchAlarmTemplateSummary:
     str Arn
     CloudWatchAlarmTemplateComparisonOperator ComparisonOperator
@@ -3530,26 +3561,30 @@ struct ClusterAlert:
     Optional[DateTime] SetTimestamp
     Optional[ClusterAlertState] State
 
-# no @derive(Json): member(s) InterfaceMappings: list[InterfaceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InterfaceMappings: list[InterfaceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterNetworkSettings:
     Optional[str] DefaultRoute
     Optional[list[InterfaceMapping]] InterfaceMappings
 
-# no @derive(Json): member(s) InterfaceMappings: list[InterfaceMappingCreateRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InterfaceMappings: list[InterfaceMappingCreateRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterNetworkSettingsCreateRequest:
     Optional[str] DefaultRoute
     Optional[list[InterfaceMappingCreateRequest]] InterfaceMappings
 
-# no @derive(Json): member(s) InterfaceMappings: list[InterfaceMappingUpdateRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InterfaceMappings: list[InterfaceMappingUpdateRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterNetworkSettingsUpdateRequest:
     Optional[str] DefaultRoute
     Optional[list[InterfaceMappingUpdateRequest]] InterfaceMappings
 
-# no @derive(Json): member(s) AdditionalDestinationsAlternateDestinations: list[OutputLocationRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalDestinationsAlternateDestinations: list[OutputLocationRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafIngestAbWatermarkerIrdetoSettings:
     Optional[list[OutputLocationRef]] AdditionalDestinationsAlternateDestinations
     OutputLocationRef AlternateDestination
@@ -3565,8 +3600,9 @@ struct CmafIngestCaptionLanguageMapping:
     int64 CaptionChannel
     str LanguageCode
 
-# no @derive(Json): member(s) CaptionLanguageMappings: list[CmafIngestCaptionLanguageMapping], AdditionalDestinations: list[AdditionalDestinations], WatermarkingSettings: CmafIngestWatermarkingSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CaptionLanguageMappings: list[CmafIngestCaptionLanguageMapping], AdditionalDestinations: list[AdditionalDestinations], WatermarkingSettings: CmafIngestWatermarkingSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafIngestGroupSettings:
     OutputLocationRef Destination
     Optional[CmafNielsenId3Behavior] NielsenId3Behavior
@@ -3591,8 +3627,9 @@ struct CmafIngestGroupSettings:
 struct CmafIngestOutputSettings:
     Optional[str] NameModifier
 
-# no @derive(Json): member(s) CmafIngestAbWatermarkerIrdetoSettings: CmafIngestAbWatermarkerIrdetoSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafIngestAbWatermarkerIrdetoSettings: CmafIngestAbWatermarkerIrdetoSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafIngestWatermarkingSettings:
     Optional[CmafIngestAbWatermarkerIrdetoSettings] CmafIngestAbWatermarkerIrdetoSettings
 
@@ -3602,8 +3639,9 @@ struct ColorCorrection:
     ColorSpace OutputColorSpace
     str Uri
 
-# no @derive(Json): member(s) GlobalColorCorrections: list[ColorCorrection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalColorCorrections: list[ColorCorrection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColorCorrectionSettings:
     list[ColorCorrection] GlobalColorCorrections
 
@@ -3620,8 +3658,9 @@ struct ConflictException:
 struct ConflictExceptionResponseContent:
     Optional[str] Message
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], Tags: dict[str, str], Vpc: VpcOutputSettings, ChannelSecurityGroups: list[str], InferenceSettings: InferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], Tags: dict[str, str], Vpc: VpcOutputSettings, ChannelSecurityGroups: list[str], InferenceSettings: InferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannel:
     Optional[CdiInputSpecification] CdiInputSpecification
     Optional[ChannelClass] ChannelClass
@@ -3653,8 +3692,9 @@ struct CreateChannelPlacementGroupRequest:
     Optional[str] RequestId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelPlacementGroupResponse:
     Optional[str] Arn
     Optional[list[str]] Channels
@@ -3688,13 +3728,15 @@ struct CreateChannelRequest:
     Optional[list[str]] ChannelSecurityGroups
     Optional[InferenceSettings] InferenceSettings
 
-# no @derive(Json): member(s) Channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelResponse:
     Optional[Channel] Channel
 
-# no @derive(Json): member(s) Channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelResultModel:
     Optional[Channel] Channel
 
@@ -3706,16 +3748,18 @@ struct CreateCloudWatchAlarmTemplateGroupRequest:
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudWatchAlarmTemplateGroupRequestContent:
     Optional[str] Description
     str Name
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudWatchAlarmTemplateGroupResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -3725,8 +3769,9 @@ struct CreateCloudWatchAlarmTemplateGroupResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudWatchAlarmTemplateGroupResponseContent:
     str Arn
     DateTime CreatedAt
@@ -3754,8 +3799,9 @@ struct CreateCloudWatchAlarmTemplateRequest:
     CloudWatchAlarmTemplateTreatMissingData TreatMissingData
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudWatchAlarmTemplateRequestContent:
     CloudWatchAlarmTemplateComparisonOperator ComparisonOperator
     Optional[int64] DatapointsToAlarm
@@ -3772,8 +3818,9 @@ struct CreateCloudWatchAlarmTemplateRequestContent:
     CloudWatchAlarmTemplateTreatMissingData TreatMissingData
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudWatchAlarmTemplateResponse:
     Optional[str] Arn
     Optional[CloudWatchAlarmTemplateComparisonOperator] ComparisonOperator
@@ -3793,8 +3840,9 @@ struct CreateCloudWatchAlarmTemplateResponse:
     Optional[float64] Threshold
     Optional[CloudWatchAlarmTemplateTreatMissingData] TreatMissingData
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudWatchAlarmTemplateResponseContent:
     str Arn
     CloudWatchAlarmTemplateComparisonOperator ComparisonOperator
@@ -3824,8 +3872,9 @@ struct CreateClusterRequest:
     Optional[str] RequestId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -3844,16 +3893,18 @@ struct CreateEventBridgeRuleTemplateGroupRequest:
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBridgeRuleTemplateGroupRequestContent:
     Optional[str] Description
     str Name
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBridgeRuleTemplateGroupResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -3863,8 +3914,9 @@ struct CreateEventBridgeRuleTemplateGroupResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBridgeRuleTemplateGroupResponseContent:
     str Arn
     DateTime CreatedAt
@@ -3885,8 +3937,9 @@ struct CreateEventBridgeRuleTemplateRequest:
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBridgeRuleTemplateRequestContent:
     Optional[str] Description
     Optional[list[EventBridgeRuleTemplateTarget]] EventTargets
@@ -3896,8 +3949,9 @@ struct CreateEventBridgeRuleTemplateRequestContent:
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBridgeRuleTemplateResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -3910,8 +3964,9 @@ struct CreateEventBridgeRuleTemplateResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBridgeRuleTemplateResponseContent:
     str Arn
     DateTime CreatedAt
@@ -3924,8 +3979,9 @@ struct CreateEventBridgeRuleTemplateResponseContent:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Destinations: list[InputDestinationRequest], InputDevices: list[InputDeviceSettings], InputSecurityGroups: list[str], MediaConnectFlows: list[MediaConnectFlowRequest], Sources: list[InputSourceRequest], Tags: dict[str, str], Vpc: InputVpcRequest, SrtSettings: SrtSettingsRequest, MulticastSettings: MulticastSettingsCreateRequest, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str], RouterSettings: RouterSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[InputDestinationRequest], InputDevices: list[InputDeviceSettings], InputSecurityGroups: list[str], MediaConnectFlows: list[MediaConnectFlowRequest], Sources: list[InputSourceRequest], Tags: dict[str, str], Vpc: InputVpcRequest, SrtSettings: SrtSettingsRequest, MulticastSettings: MulticastSettingsCreateRequest, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str], RouterSettings: RouterSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInput:
     Optional[list[InputDestinationRequest]] Destinations
     Optional[list[InputDeviceSettings]] InputDevices
@@ -3966,13 +4022,15 @@ struct CreateInputRequest:
     Optional[list[str]] SdiSources
     Optional[RouterSettings] RouterSettings
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInputResponse:
     Optional[Input] Input
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInputResultModel:
     Optional[Input] Input
 
@@ -3982,18 +4040,21 @@ struct CreateInputSecurityGroupRequest:
     Optional[dict[str, str]] Tags
     Optional[list[InputWhitelistRuleCidr]] WhitelistRules
 
-# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInputSecurityGroupResponse:
     Optional[InputSecurityGroup] SecurityGroup
 
-# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInputSecurityGroupResultModel:
     Optional[InputSecurityGroup] SecurityGroup
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiplex:
     list[str] AvailabilityZones
     MultiplexSettings MultiplexSettings
@@ -4015,13 +4076,15 @@ struct CreateMultiplexProgramRequest:
     str ProgramName
     str RequestId
 
-# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiplexProgramResponse:
     Optional[MultiplexProgram] MultiplexProgram
 
-# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiplexProgramResultModel:
     Optional[MultiplexProgram] MultiplexProgram
 
@@ -4034,13 +4097,15 @@ struct CreateMultiplexRequest:
     str RequestId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Multiplex: Multiplex not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiplex: Multiplex not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiplexResponse:
     Optional[Multiplex] Multiplex
 
-# no @derive(Json): member(s) Multiplex: Multiplex not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiplex: Multiplex not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiplexResultModel:
     Optional[Multiplex] Multiplex
 
@@ -4053,8 +4118,9 @@ struct CreateNetworkRequest:
     Optional[list[RouteCreateRequest]] Routes
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNetworkResponse:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -4092,8 +4158,9 @@ struct CreateNodeRequest:
     Optional[NodeRole] Role
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNodeResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -4107,8 +4174,9 @@ struct CreateNodeResponse:
     Optional[NodeState] State
     Optional[list[SdiSourceMapping]] SdiSourceMappings
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnerInput:
     Optional[str] RequestId
     Optional[dict[str, str]] Tags
@@ -4120,13 +4188,15 @@ struct CreatePartnerInputRequest:
     Optional[str] RequestId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnerInputResponse:
     Optional[Input] Input
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnerInputResultModel:
     Optional[Input] Input
 
@@ -4139,8 +4209,9 @@ struct CreateSdiSourceRequest:
     Optional[dict[str, str]] Tags
     Optional[SdiSourceType] Type
 
-# no @derive(Json): member(s) SdiSource: SdiSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SdiSource: SdiSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSdiSourceResponse:
     Optional[SdiSource] SdiSource
 
@@ -4155,8 +4226,9 @@ struct CreateSignalMapRequest:
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIdentifiers: list[str], EventBridgeRuleTemplateGroupIdentifiers: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIdentifiers: list[str], EventBridgeRuleTemplateGroupIdentifiers: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSignalMapRequestContent:
     Optional[list[str]] CloudWatchAlarmTemplateGroupIdentifiers
     Optional[str] Description
@@ -4166,8 +4238,9 @@ struct CreateSignalMapRequestContent:
     Optional[dict[str, str]] Tags
     Optional[str] RequestId
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSignalMapResponse:
     Optional[str] Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -4188,8 +4261,9 @@ struct CreateSignalMapResponse:
     Optional[SignalMapStatus] Status
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSignalMapResponseContent:
     str Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -4222,8 +4296,9 @@ struct DeleteChannelPlacementGroupRequest:
     str ChannelPlacementGroupId
     str ClusterId
 
-# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteChannelPlacementGroupResponse:
     Optional[str] Arn
     Optional[list[str]] Channels
@@ -4238,8 +4313,9 @@ struct DeleteChannelPlacementGroupResponse:
 struct DeleteChannelRequest:
     str ChannelId
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteChannelResponse:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -4280,8 +4356,9 @@ struct DeleteCloudWatchAlarmTemplateRequest:
 struct DeleteClusterRequest:
     str ClusterId
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -4328,8 +4405,9 @@ struct DeleteMultiplexProgramRequest:
     str MultiplexId
     str ProgramName
 
-# no @derive(Json): member(s) PacketIdentifiersMap: MultiplexProgramPacketIdentifiersMap, PipelineDetails: list[MultiplexProgramPipelineDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PacketIdentifiersMap: MultiplexProgramPacketIdentifiersMap, PipelineDetails: list[MultiplexProgramPipelineDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMultiplexProgramResponse:
     Optional[str] ChannelId
     Optional[MultiplexProgramSettings] MultiplexProgramSettings
@@ -4342,8 +4420,9 @@ struct DeleteMultiplexProgramResponse:
 struct DeleteMultiplexRequest:
     str MultiplexId
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMultiplexResponse:
     Optional[str] Arn
     Optional[list[str]] AvailabilityZones
@@ -4361,8 +4440,9 @@ struct DeleteMultiplexResponse:
 struct DeleteNetworkRequest:
     str NetworkId
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteNetworkResponse:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -4378,8 +4458,9 @@ struct DeleteNodeRequest:
     str ClusterId
     str NodeId
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteNodeResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -4398,8 +4479,9 @@ struct DeleteNodeResponse:
 struct DeleteReservationRequest:
     str ReservationId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteReservationResponse:
     Optional[str] Arn
     Optional[int64] Count
@@ -4436,8 +4518,9 @@ struct DeleteScheduleResponse:
 struct DeleteSdiSourceRequest:
     str SdiSourceId
 
-# no @derive(Json): member(s) SdiSource: SdiSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SdiSource: SdiSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSdiSourceResponse:
     Optional[SdiSource] SdiSource
 
@@ -4477,8 +4560,9 @@ struct DescribeChannelPlacementGroupRequest:
     str ChannelPlacementGroupId
     str ClusterId
 
-# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelPlacementGroupResponse:
     Optional[str] Arn
     Optional[list[str]] Channels
@@ -4488,8 +4572,9 @@ struct DescribeChannelPlacementGroupResponse:
     Optional[list[str]] Nodes
     Optional[ChannelPlacementGroupState] State
 
-# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelPlacementGroupResult:
     Optional[str] Arn
     Optional[list[str]] Channels
@@ -4499,8 +4584,9 @@ struct DescribeChannelPlacementGroupResult:
     Optional[list[str]] Nodes
     Optional[ChannelPlacementGroupState] State
 
-# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelPlacementGroupSummary:
     Optional[str] Arn
     Optional[list[str]] Channels
@@ -4515,8 +4601,9 @@ struct DescribeChannelPlacementGroupSummary:
 struct DescribeChannelRequest:
     str ChannelId
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelResponse:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -4547,8 +4634,9 @@ struct DescribeChannelResponse:
 struct DescribeClusterRequest:
     str ClusterId
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -4559,8 +4647,9 @@ struct DescribeClusterResponse:
     Optional[ClusterNetworkSettings] NetworkSettings
     Optional[ClusterState] State
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterResult:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -4571,8 +4660,9 @@ struct DescribeClusterResult:
     Optional[ClusterNetworkSettings] NetworkSettings
     Optional[ClusterState] State
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterSummary:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -4588,8 +4678,9 @@ struct DescribeFollowerChannelSettings:
     Optional[LinkedChannelType] LinkedChannelType
     Optional[str] PrimaryChannelArn
 
-# no @derive(Json): member(s) AudioFeedInputs: list[AudioFeedInput], EnrichmentMethods: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioFeedInputs: list[AudioFeedInput], EnrichmentMethods: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInferenceSettings:
     Optional[str] FeedArn
     Optional[list[AudioFeedInput]] AudioFeedInputs
@@ -4600,8 +4691,9 @@ struct DescribeInferenceSettings:
 struct DescribeInputDeviceRequest:
     str InputDeviceId
 
-# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInputDeviceResponse:
     Optional[str] Arn
     Optional[InputDeviceConnectionState] ConnectionState
@@ -4639,8 +4731,9 @@ struct DescribeInputDeviceThumbnailResponse:
 struct DescribeInputRequest:
     str InputId
 
-# no @derive(Json): member(s) AttachedChannels: list[str], Destinations: list[InputDestination], InputDevices: list[InputDeviceSettings], InputPartnerIds: list[str], MediaConnectFlows: list[MediaConnectFlow], SecurityGroups: list[str], Sources: list[InputSource], Tags: dict[str, str], SrtSettings: SrtSettings, MulticastSettings: MulticastSettings, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str], RouterSettings: RouterInputSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedChannels: list[str], Destinations: list[InputDestination], InputDevices: list[InputDeviceSettings], InputPartnerIds: list[str], MediaConnectFlows: list[MediaConnectFlow], SecurityGroups: list[str], Sources: list[InputSource], Tags: dict[str, str], SrtSettings: SrtSettings, MulticastSettings: MulticastSettings, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str], RouterSettings: RouterInputSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInputResponse:
     Optional[str] Arn
     Optional[list[str]] AttachedChannels
@@ -4670,8 +4763,9 @@ struct DescribeInputResponse:
 struct DescribeInputSecurityGroupRequest:
     str InputSecurityGroupId
 
-# no @derive(Json): member(s) Inputs: list[str], Tags: dict[str, str], WhitelistRules: list[InputWhitelistRule], Channels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Tags: dict[str, str], WhitelistRules: list[InputWhitelistRule], Channels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInputSecurityGroupResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -4681,8 +4775,9 @@ struct DescribeInputSecurityGroupResponse:
     Optional[list[InputWhitelistRule]] WhitelistRules
     Optional[list[str]] Channels
 
-# no @derive(Json): member(s) PrimaryChannelSettings: DescribePrimaryChannelSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryChannelSettings: DescribePrimaryChannelSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLinkedChannelSettings:
     Optional[DescribeFollowerChannelSettings] FollowerChannelSettings
     Optional[DescribePrimaryChannelSettings] PrimaryChannelSettings
@@ -4693,8 +4788,9 @@ struct DescribeMultiplexProgramRequest:
     str MultiplexId
     str ProgramName
 
-# no @derive(Json): member(s) PacketIdentifiersMap: MultiplexProgramPacketIdentifiersMap, PipelineDetails: list[MultiplexProgramPipelineDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PacketIdentifiersMap: MultiplexProgramPacketIdentifiersMap, PipelineDetails: list[MultiplexProgramPipelineDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMultiplexProgramResponse:
     Optional[str] ChannelId
     Optional[MultiplexProgramSettings] MultiplexProgramSettings
@@ -4707,8 +4803,9 @@ struct DescribeMultiplexProgramResponse:
 struct DescribeMultiplexRequest:
     str MultiplexId
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMultiplexResponse:
     Optional[str] Arn
     Optional[list[str]] AvailabilityZones
@@ -4726,8 +4823,9 @@ struct DescribeMultiplexResponse:
 struct DescribeNetworkRequest:
     str NetworkId
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNetworkResponse:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -4737,8 +4835,9 @@ struct DescribeNetworkResponse:
     Optional[list[Route]] Routes
     Optional[NetworkState] State
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNetworkResult:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -4748,8 +4847,9 @@ struct DescribeNetworkResult:
     Optional[list[Route]] Routes
     Optional[NetworkState] State
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNetworkSummary:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -4765,8 +4865,9 @@ struct DescribeNodeRequest:
     str ClusterId
     str NodeId
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNodeResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -4780,8 +4881,9 @@ struct DescribeNodeResponse:
     Optional[NodeState] State
     Optional[list[SdiSourceMapping]] SdiSourceMappings
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNodeResult:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -4795,8 +4897,9 @@ struct DescribeNodeResult:
     Optional[NodeState] State
     Optional[list[SdiSourceMapping]] SdiSourceMappings
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNodeSummary:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -4830,8 +4933,9 @@ struct DescribeOfferingResponse:
     Optional[ReservationResourceSpecification] ResourceSpecification
     Optional[float64] UsagePrice
 
-# no @derive(Json): member(s) FollowingChannelArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FollowingChannelArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePrimaryChannelSettings:
     Optional[list[str]] FollowingChannelArns
     Optional[LinkedChannelType] LinkedChannelType
@@ -4841,8 +4945,9 @@ struct DescribePrimaryChannelSettings:
 struct DescribeReservationRequest:
     str ReservationId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReservationResponse:
     Optional[str] Arn
     Optional[int64] Count
@@ -4871,8 +4976,9 @@ struct DescribeScheduleRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScheduleResponse:
     Optional[str] NextToken
     Optional[list[ScheduleAction]] ScheduleActions
@@ -4882,8 +4988,9 @@ struct DescribeScheduleResponse:
 struct DescribeSdiSourceRequest:
     str SdiSourceId
 
-# no @derive(Json): member(s) SdiSource: SdiSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SdiSource: SdiSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSdiSourceResponse:
     Optional[SdiSource] SdiSource
 
@@ -4894,13 +5001,15 @@ struct DescribeThumbnailsRequest:
     str PipelineId
     str ThumbnailType
 
-# no @derive(Json): member(s) ThumbnailDetails: list[ThumbnailDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThumbnailDetails: list[ThumbnailDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThumbnailsResponse:
     Optional[list[ThumbnailDetail]] ThumbnailDetails
 
-# no @derive(Json): member(s) ThumbnailDetails: list[ThumbnailDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThumbnailDetails: list[ThumbnailDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThumbnailsResultModel:
     Optional[list[ThumbnailDetail]] ThumbnailDetails
 
@@ -5024,8 +5133,9 @@ struct Empty:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AudioDescriptions: list[AudioDescription], CaptionDescriptions: list[CaptionDescription], OutputGroups: list[OutputGroup], VideoDescriptions: list[VideoDescription], ColorCorrectionSettings: ColorCorrectionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioDescriptions: list[AudioDescription], CaptionDescriptions: list[CaptionDescription], OutputGroups: list[OutputGroup], VideoDescriptions: list[VideoDescription], ColorCorrectionSettings: ColorCorrectionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncoderSettings:
     list[AudioDescription] AudioDescriptions
     Optional[AvailBlanking] AvailBlanking
@@ -5056,8 +5166,9 @@ struct Esam:
     Optional[str] Username
     Optional[str] ZoneIdentity
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventBridgeRuleTemplateGroupSummary:
     str Arn
     DateTime CreatedAt
@@ -5068,8 +5179,9 @@ struct EventBridgeRuleTemplateGroupSummary:
     Optional[dict[str, str]] Tags
     int64 TemplateCount
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventBridgeRuleTemplateSummary:
     str Arn
     DateTime CreatedAt
@@ -5172,8 +5284,9 @@ struct GatewayTimeoutException:
 struct GetCloudWatchAlarmTemplateGroupRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudWatchAlarmTemplateGroupResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -5183,8 +5296,9 @@ struct GetCloudWatchAlarmTemplateGroupResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudWatchAlarmTemplateGroupResponseContent:
     str Arn
     DateTime CreatedAt
@@ -5199,8 +5313,9 @@ struct GetCloudWatchAlarmTemplateGroupResponseContent:
 struct GetCloudWatchAlarmTemplateRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudWatchAlarmTemplateResponse:
     Optional[str] Arn
     Optional[CloudWatchAlarmTemplateComparisonOperator] ComparisonOperator
@@ -5220,8 +5335,9 @@ struct GetCloudWatchAlarmTemplateResponse:
     Optional[float64] Threshold
     Optional[CloudWatchAlarmTemplateTreatMissingData] TreatMissingData
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudWatchAlarmTemplateResponseContent:
     str Arn
     CloudWatchAlarmTemplateComparisonOperator ComparisonOperator
@@ -5246,8 +5362,9 @@ struct GetCloudWatchAlarmTemplateResponseContent:
 struct GetEventBridgeRuleTemplateGroupRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventBridgeRuleTemplateGroupResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -5257,8 +5374,9 @@ struct GetEventBridgeRuleTemplateGroupResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventBridgeRuleTemplateGroupResponseContent:
     str Arn
     DateTime CreatedAt
@@ -5273,8 +5391,9 @@ struct GetEventBridgeRuleTemplateGroupResponseContent:
 struct GetEventBridgeRuleTemplateRequest:
     str Identifier
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventBridgeRuleTemplateResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -5287,8 +5406,9 @@ struct GetEventBridgeRuleTemplateResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventBridgeRuleTemplateResponseContent:
     str Arn
     DateTime CreatedAt
@@ -5306,8 +5426,9 @@ struct GetEventBridgeRuleTemplateResponseContent:
 struct GetSignalMapRequest:
     str Identifier
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSignalMapResponse:
     Optional[str] Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -5328,8 +5449,9 @@ struct GetSignalMapResponse:
     Optional[SignalMapStatus] Status
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSignalMapResponseContent:
     str Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -5519,8 +5641,9 @@ struct HlsCdnSettings:
     Optional[HlsS3Settings] HlsS3Settings
     Optional[HlsWebdavSettings] HlsWebdavSettings
 
-# no @derive(Json): member(s) AdMarkers: list[HlsAdMarkers], CaptionLanguageMappings: list[CaptionLanguageMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdMarkers: list[HlsAdMarkers], CaptionLanguageMappings: list[CaptionLanguageMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsGroupSettings:
     Optional[list[HlsAdMarkers]] AdMarkers
     Optional[str] BaseUrlContent
@@ -5632,15 +5755,17 @@ struct ImmediateModeScheduleActionStartSettings:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AudioFeedInputs: list[AudioFeedInput], EnrichmentMethods: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioFeedInputs: list[AudioFeedInput], EnrichmentMethods: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceSettings:
     Optional[str] FeedArn
     Optional[list[AudioFeedInput]] AudioFeedInputs
     Optional[list[str]] EnrichmentMethods
 
-# no @derive(Json): member(s) AttachedChannels: list[str], Destinations: list[InputDestination], InputDevices: list[InputDeviceSettings], InputPartnerIds: list[str], MediaConnectFlows: list[MediaConnectFlow], SecurityGroups: list[str], Sources: list[InputSource], Tags: dict[str, str], SrtSettings: SrtSettings, MulticastSettings: MulticastSettings, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str], RouterSettings: RouterInputSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedChannels: list[str], Destinations: list[InputDestination], InputDevices: list[InputDeviceSettings], InputPartnerIds: list[str], MediaConnectFlows: list[MediaConnectFlow], SecurityGroups: list[str], Sources: list[InputSource], Tags: dict[str, str], SrtSettings: SrtSettings, MulticastSettings: MulticastSettings, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str], RouterSettings: RouterInputSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Input:
     Optional[str] Arn
     Optional[list[str]] AttachedChannels
@@ -5665,8 +5790,9 @@ struct Input:
     Optional[list[str]] SdiSources
     Optional[RouterInputSettings] RouterSettings
 
-# no @derive(Json): member(s) AutomaticInputFailoverSettings: AutomaticInputFailoverSettings, InputSettings: InputSettings, LogicalInterfaceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomaticInputFailoverSettings: AutomaticInputFailoverSettings, InputSettings: InputSettings, LogicalInterfaceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputAttachment:
     Optional[AutomaticInputFailoverSettings] AutomaticInputFailoverSettings
     Optional[str] InputAttachmentName
@@ -5685,8 +5811,9 @@ struct InputClippingSettings:
     Optional[StartTimecode] StartTimecode
     Optional[StopTimecode] StopTimecode
 
-# no @derive(Json): member(s) NetworkRoutes: list[InputDestinationRoute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkRoutes: list[InputDestinationRoute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDestination:
     Optional[str] Ip
     Optional[str] Port
@@ -5695,8 +5822,9 @@ struct InputDestination:
     Optional[str] Network
     Optional[list[InputDestinationRoute]] NetworkRoutes
 
-# no @derive(Json): member(s) NetworkRoutes: list[InputRequestDestinationRoute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkRoutes: list[InputRequestDestinationRoute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDestinationRequest:
     Optional[str] StreamName
     Optional[str] Network
@@ -5713,8 +5841,9 @@ struct InputDestinationVpc:
     Optional[str] AvailabilityZone
     Optional[str] NetworkInterfaceId
 
-# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDevice:
     Optional[str] Arn
     Optional[InputDeviceConnectionState] ConnectionState
@@ -5738,8 +5867,9 @@ struct InputDeviceConfigurableAudioChannelPairConfig:
     Optional[int64] Id
     Optional[InputDeviceConfigurableAudioChannelPairProfile] Profile
 
-# no @derive(Json): member(s) AudioChannelPairs: list[InputDeviceConfigurableAudioChannelPairConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioChannelPairs: list[InputDeviceConfigurableAudioChannelPairConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDeviceConfigurableSettings:
     Optional[InputDeviceConfiguredInput] ConfiguredInput
     Optional[int64] MaxBitrate
@@ -5749,8 +5879,9 @@ struct InputDeviceConfigurableSettings:
     Optional[list[InputDeviceConfigurableAudioChannelPairConfig]] AudioChannelPairs
     Optional[str] InputResolution
 
-# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDeviceConfigurationValidationError:
     Optional[str] Message
     Optional[list[ValidationError]] ValidationErrors
@@ -5781,8 +5912,9 @@ struct InputDeviceMediaConnectSettings:
     Optional[str] SecretArn
     Optional[str] SourceName
 
-# no @derive(Json): member(s) DnsAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDeviceNetworkSettings:
     Optional[list[str]] DnsAddresses
     Optional[str] Gateway
@@ -5798,8 +5930,9 @@ struct InputDeviceRequest:
 struct InputDeviceSettings:
     Optional[str] Id
 
-# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDeviceSummary:
     Optional[str] Arn
     Optional[InputDeviceConnectionState] ConnectionState
@@ -5823,8 +5956,9 @@ struct InputDeviceUhdAudioChannelPairConfig:
     Optional[int64] Id
     Optional[InputDeviceUhdAudioChannelPairProfile] Profile
 
-# no @derive(Json): member(s) AudioChannelPairs: list[InputDeviceUhdAudioChannelPairConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioChannelPairs: list[InputDeviceUhdAudioChannelPairConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDeviceUhdSettings:
     Optional[InputDeviceActiveInput] ActiveInput
     Optional[InputDeviceConfiguredInput] ConfiguredInput
@@ -5858,8 +5992,9 @@ struct InputLossBehavior:
 struct InputLossFailoverSettings:
     Optional[int64] InputLossThresholdMsec
 
-# no @derive(Json): member(s) UrlPath: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UrlPath: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputPrepareScheduleActionSettings:
     Optional[str] InputAttachmentNameReference
     Optional[InputClippingSettings] InputClippingSettings
@@ -5875,8 +6010,9 @@ struct InputSdpLocation:
     Optional[int64] MediaIndex
     Optional[str] SdpUrl
 
-# no @derive(Json): member(s) Inputs: list[str], Tags: dict[str, str], WhitelistRules: list[InputWhitelistRule], Channels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Tags: dict[str, str], WhitelistRules: list[InputWhitelistRule], Channels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputSecurityGroup:
     Optional[str] Arn
     Optional[str] Id
@@ -5886,14 +6022,16 @@ struct InputSecurityGroup:
     Optional[list[InputWhitelistRule]] WhitelistRules
     Optional[list[str]] Channels
 
-# no @derive(Json): member(s) Tags: dict[str, str], WhitelistRules: list[InputWhitelistRuleCidr] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], WhitelistRules: list[InputWhitelistRuleCidr] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputSecurityGroupWhitelistRequest:
     Optional[dict[str, str]] Tags
     Optional[list[InputWhitelistRuleCidr]] WhitelistRules
 
-# no @derive(Json): member(s) AudioSelectors: list[AudioSelector], CaptionSelectors: list[CaptionSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioSelectors: list[AudioSelector], CaptionSelectors: list[CaptionSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputSettings:
     Optional[list[AudioSelector]] AudioSelectors
     Optional[list[CaptionSelector]] CaptionSelectors
@@ -5925,15 +6063,17 @@ struct InputSpecification:
     Optional[InputMaximumBitrate] MaximumBitrate
     Optional[InputResolution] Resolution
 
-# no @derive(Json): member(s) UrlPath: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UrlPath: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputSwitchScheduleActionSettings:
     str InputAttachmentNameReference
     Optional[InputClippingSettings] InputClippingSettings
     Optional[list[str]] UrlPath
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputVpcRequest:
     Optional[list[str]] SecurityGroupIds
     list[str] SubnetIds
@@ -6010,14 +6150,16 @@ struct ListAlertsRequest:
     Optional[str] NextToken
     Optional[str] StateFilter
 
-# no @derive(Json): member(s) Alerts: list[ChannelAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alerts: list[ChannelAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAlertsResponse:
     Optional[list[ChannelAlert]] Alerts
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Alerts: list[ChannelAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alerts: list[ChannelAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAlertsResultModel:
     Optional[list[ChannelAlert]] Alerts
     Optional[str] NextToken
@@ -6029,14 +6171,16 @@ struct ListChannelPlacementGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[DescribeChannelPlacementGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[DescribeChannelPlacementGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelPlacementGroupsResponse:
     Optional[list[DescribeChannelPlacementGroupSummary]] ChannelPlacementGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[DescribeChannelPlacementGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[DescribeChannelPlacementGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelPlacementGroupsResult:
     Optional[list[DescribeChannelPlacementGroupSummary]] ChannelPlacementGroups
     Optional[str] NextToken
@@ -6047,14 +6191,16 @@ struct ListChannelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[ChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[list[ChannelSummary]] Channels
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[ChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResultModel:
     Optional[list[ChannelSummary]] Channels
     Optional[str] NextToken
@@ -6067,14 +6213,16 @@ struct ListCloudWatchAlarmTemplateGroupsRequest:
     Optional[str] Scope
     Optional[str] SignalMapIdentifier
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroups: list[CloudWatchAlarmTemplateGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroups: list[CloudWatchAlarmTemplateGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudWatchAlarmTemplateGroupsResponse:
     Optional[list[CloudWatchAlarmTemplateGroupSummary]] CloudWatchAlarmTemplateGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroups: list[CloudWatchAlarmTemplateGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroups: list[CloudWatchAlarmTemplateGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudWatchAlarmTemplateGroupsResponseContent:
     list[CloudWatchAlarmTemplateGroupSummary] CloudWatchAlarmTemplateGroups
     Optional[str] NextToken
@@ -6088,14 +6236,16 @@ struct ListCloudWatchAlarmTemplatesRequest:
     Optional[str] Scope
     Optional[str] SignalMapIdentifier
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplates: list[CloudWatchAlarmTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplates: list[CloudWatchAlarmTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudWatchAlarmTemplatesResponse:
     Optional[list[CloudWatchAlarmTemplateSummary]] CloudWatchAlarmTemplates
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplates: list[CloudWatchAlarmTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplates: list[CloudWatchAlarmTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudWatchAlarmTemplatesResponseContent:
     list[CloudWatchAlarmTemplateSummary] CloudWatchAlarmTemplates
     Optional[str] NextToken
@@ -6108,14 +6258,16 @@ struct ListClusterAlertsRequest:
     Optional[str] NextToken
     Optional[str] StateFilter
 
-# no @derive(Json): member(s) Alerts: list[ClusterAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alerts: list[ClusterAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterAlertsResponse:
     Optional[list[ClusterAlert]] Alerts
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Alerts: list[ClusterAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alerts: list[ClusterAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterAlertsResultModel:
     Optional[list[ClusterAlert]] Alerts
     Optional[str] NextToken
@@ -6126,14 +6278,16 @@ struct ListClustersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Clusters: list[DescribeClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[DescribeClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     Optional[list[DescribeClusterSummary]] Clusters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Clusters: list[DescribeClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[DescribeClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResult:
     Optional[list[DescribeClusterSummary]] Clusters
     Optional[str] NextToken
@@ -6145,14 +6299,16 @@ struct ListEventBridgeRuleTemplateGroupsRequest:
     Optional[str] NextToken
     Optional[str] SignalMapIdentifier
 
-# no @derive(Json): member(s) EventBridgeRuleTemplateGroups: list[EventBridgeRuleTemplateGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBridgeRuleTemplateGroups: list[EventBridgeRuleTemplateGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventBridgeRuleTemplateGroupsResponse:
     Optional[list[EventBridgeRuleTemplateGroupSummary]] EventBridgeRuleTemplateGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EventBridgeRuleTemplateGroups: list[EventBridgeRuleTemplateGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBridgeRuleTemplateGroups: list[EventBridgeRuleTemplateGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventBridgeRuleTemplateGroupsResponseContent:
     list[EventBridgeRuleTemplateGroupSummary] EventBridgeRuleTemplateGroups
     Optional[str] NextToken
@@ -6165,14 +6321,16 @@ struct ListEventBridgeRuleTemplatesRequest:
     Optional[str] NextToken
     Optional[str] SignalMapIdentifier
 
-# no @derive(Json): member(s) EventBridgeRuleTemplates: list[EventBridgeRuleTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBridgeRuleTemplates: list[EventBridgeRuleTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventBridgeRuleTemplatesResponse:
     Optional[list[EventBridgeRuleTemplateSummary]] EventBridgeRuleTemplates
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EventBridgeRuleTemplates: list[EventBridgeRuleTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBridgeRuleTemplates: list[EventBridgeRuleTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventBridgeRuleTemplatesResponseContent:
     list[EventBridgeRuleTemplateSummary] EventBridgeRuleTemplates
     Optional[str] NextToken
@@ -6184,14 +6342,16 @@ struct ListInputDeviceTransfersRequest:
     Optional[str] NextToken
     str TransferType
 
-# no @derive(Json): member(s) InputDeviceTransfers: list[TransferringInputDeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDeviceTransfers: list[TransferringInputDeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputDeviceTransfersResponse:
     Optional[list[TransferringInputDeviceSummary]] InputDeviceTransfers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InputDeviceTransfers: list[TransferringInputDeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDeviceTransfers: list[TransferringInputDeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputDeviceTransfersResultModel:
     Optional[list[TransferringInputDeviceSummary]] InputDeviceTransfers
     Optional[str] NextToken
@@ -6202,14 +6362,16 @@ struct ListInputDevicesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InputDevices: list[InputDeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDevices: list[InputDeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputDevicesResponse:
     Optional[list[InputDeviceSummary]] InputDevices
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InputDevices: list[InputDeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDevices: list[InputDeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputDevicesResultModel:
     Optional[list[InputDeviceSummary]] InputDevices
     Optional[str] NextToken
@@ -6220,14 +6382,16 @@ struct ListInputSecurityGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InputSecurityGroups: list[InputSecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputSecurityGroups: list[InputSecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputSecurityGroupsResponse:
     Optional[list[InputSecurityGroup]] InputSecurityGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InputSecurityGroups: list[InputSecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputSecurityGroups: list[InputSecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputSecurityGroupsResultModel:
     Optional[list[InputSecurityGroup]] InputSecurityGroups
     Optional[str] NextToken
@@ -6238,14 +6402,16 @@ struct ListInputsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Inputs: list[Input] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[Input] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputsResponse:
     Optional[list[Input]] Inputs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Inputs: list[Input] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[Input] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInputsResultModel:
     Optional[list[Input]] Inputs
     Optional[str] NextToken
@@ -6258,14 +6424,16 @@ struct ListMultiplexAlertsRequest:
     Optional[str] NextToken
     Optional[str] StateFilter
 
-# no @derive(Json): member(s) Alerts: list[MultiplexAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alerts: list[MultiplexAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultiplexAlertsResponse:
     Optional[list[MultiplexAlert]] Alerts
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Alerts: list[MultiplexAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alerts: list[MultiplexAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultiplexAlertsResultModel:
     Optional[list[MultiplexAlert]] Alerts
     Optional[str] NextToken
@@ -6277,14 +6445,16 @@ struct ListMultiplexProgramsRequest:
     str MultiplexId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiplexPrograms: list[MultiplexProgramSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiplexPrograms: list[MultiplexProgramSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultiplexProgramsResponse:
     Optional[list[MultiplexProgramSummary]] MultiplexPrograms
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiplexPrograms: list[MultiplexProgramSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiplexPrograms: list[MultiplexProgramSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultiplexProgramsResultModel:
     Optional[list[MultiplexProgramSummary]] MultiplexPrograms
     Optional[str] NextToken
@@ -6295,14 +6465,16 @@ struct ListMultiplexesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Multiplexes: list[MultiplexSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiplexes: list[MultiplexSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultiplexesResponse:
     Optional[list[MultiplexSummary]] Multiplexes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Multiplexes: list[MultiplexSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiplexes: list[MultiplexSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultiplexesResultModel:
     Optional[list[MultiplexSummary]] Multiplexes
     Optional[str] NextToken
@@ -6313,14 +6485,16 @@ struct ListNetworksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Networks: list[DescribeNetworkSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Networks: list[DescribeNetworkSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworksResponse:
     Optional[list[DescribeNetworkSummary]] Networks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Networks: list[DescribeNetworkSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Networks: list[DescribeNetworkSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworksResult:
     Optional[list[DescribeNetworkSummary]] Networks
     Optional[str] NextToken
@@ -6332,14 +6506,16 @@ struct ListNodesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Nodes: list[DescribeNodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[DescribeNodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesResponse:
     Optional[str] NextToken
     Optional[list[DescribeNodeSummary]] Nodes
 
-# no @derive(Json): member(s) Nodes: list[DescribeNodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[DescribeNodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesResult:
     Optional[str] NextToken
     Optional[list[DescribeNodeSummary]] Nodes
@@ -6360,14 +6536,16 @@ struct ListOfferingsRequest:
     Optional[str] SpecialFeature
     Optional[str] VideoQuality
 
-# no @derive(Json): member(s) Offerings: list[Offering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Offerings: list[Offering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOfferingsResponse:
     Optional[str] NextToken
     Optional[list[Offering]] Offerings
 
-# no @derive(Json): member(s) Offerings: list[Offering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Offerings: list[Offering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOfferingsResultModel:
     Optional[str] NextToken
     Optional[list[Offering]] Offerings
@@ -6386,14 +6564,16 @@ struct ListReservationsRequest:
     Optional[str] SpecialFeature
     Optional[str] VideoQuality
 
-# no @derive(Json): member(s) Reservations: list[Reservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservations: list[Reservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReservationsResponse:
     Optional[str] NextToken
     Optional[list[Reservation]] Reservations
 
-# no @derive(Json): member(s) Reservations: list[Reservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservations: list[Reservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReservationsResultModel:
     Optional[str] NextToken
     Optional[list[Reservation]] Reservations
@@ -6404,8 +6584,9 @@ struct ListSdiSourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SdiSources: list[SdiSourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SdiSources: list[SdiSourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSdiSourcesResponse:
     Optional[str] NextToken
     Optional[list[SdiSourceSummary]] SdiSources
@@ -6418,14 +6599,16 @@ struct ListSignalMapsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SignalMaps: list[SignalMapSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SignalMaps: list[SignalMapSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSignalMapsResponse:
     Optional[str] NextToken
     Optional[list[SignalMapSummary]] SignalMaps
 
-# no @derive(Json): member(s) SignalMaps: list[SignalMapSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SignalMaps: list[SignalMapSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSignalMapsResponseContent:
     Optional[str] NextToken
     list[SignalMapSummary] SignalMaps
@@ -6435,8 +6618,9 @@ struct ListSignalMapsResponseContent:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -6446,8 +6630,9 @@ struct ListVersionsRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Versions: list[ChannelEngineVersionResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[ChannelEngineVersionResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVersionsResponse:
     Optional[list[ChannelEngineVersionResponse]] Versions
 
@@ -6554,8 +6739,9 @@ struct MediaConnectFlowRequest:
 struct MediaConnectRouterContainerSettings:
     Optional[M2tsSettings] M2tsSettings
 
-# no @derive(Json): member(s) AvailabilityZones: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaConnectRouterGroupSettings:
     Optional[list[str]] AvailabilityZones
 
@@ -6583,8 +6769,9 @@ struct MediaConnectRouterOutputSettings:
 struct MediaPackageAdditionalDestinations:
     OutputLocationRef Destination
 
-# no @derive(Json): member(s) MediapackageV2GroupSettings: MediaPackageV2GroupSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediapackageV2GroupSettings: MediaPackageV2GroupSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPackageGroupSettings:
     OutputLocationRef Destination
     Optional[MediaPackageV2GroupSettings] MediapackageV2GroupSettings
@@ -6597,13 +6784,15 @@ struct MediaPackageOutputDestinationSettings:
     Optional[str] ChannelEndpointId
     Optional[str] MediaPackageRegionName
 
-# no @derive(Json): member(s) MediaPackageV2DestinationSettings: MediaPackageV2DestinationSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaPackageV2DestinationSettings: MediaPackageV2DestinationSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPackageOutputSettings:
     Optional[MediaPackageV2DestinationSettings] MediaPackageV2DestinationSettings
 
-# no @derive(Json): member(s) AdditionalDestinationsAlternateDestinations: list[OutputLocationRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalDestinationsAlternateDestinations: list[OutputLocationRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPackageV2AbWatermarkerIrdetoSettings:
     Optional[list[OutputLocationRef]] AdditionalDestinationsAlternateDestinations
     OutputLocationRef AlternateDestination
@@ -6614,8 +6803,9 @@ struct MediaPackageV2AbWatermarkerIrdetoSettings:
     AbWatermarkingProfile Profile
     Optional[AbWatermarkerIdLength] WatermarkIdLength
 
-# no @derive(Json): member(s) OutputUsage: list[OutputUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputUsage: list[OutputUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPackageV2DestinationSettings:
     Optional[str] AudioGroupId
     Optional[str] AudioRenditionSets
@@ -6623,8 +6813,9 @@ struct MediaPackageV2DestinationSettings:
     Optional[HlsDefault] HlsDefault
     Optional[list[OutputUsage]] OutputUsage
 
-# no @derive(Json): member(s) CaptionLanguageMappings: list[CaptionLanguageMapping], AdditionalDestinations: list[MediaPackageAdditionalDestinations], WatermarkingSettings: MediaPackageV2WatermarkingSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CaptionLanguageMappings: list[CaptionLanguageMapping], AdditionalDestinations: list[MediaPackageAdditionalDestinations], WatermarkingSettings: MediaPackageV2WatermarkingSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPackageV2GroupSettings:
     Optional[list[CaptionLanguageMapping]] CaptionLanguageMappings
     Optional[CmafId3Behavior] Id3Behavior
@@ -6639,13 +6830,15 @@ struct MediaPackageV2GroupSettings:
     Optional[list[MediaPackageAdditionalDestinations]] AdditionalDestinations
     Optional[MediaPackageV2WatermarkingSettings] WatermarkingSettings
 
-# no @derive(Json): member(s) MediaPackageV2AbWatermarkerIrdetoSettings: MediaPackageV2AbWatermarkerIrdetoSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaPackageV2AbWatermarkerIrdetoSettings: MediaPackageV2AbWatermarkerIrdetoSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPackageV2WatermarkingSettings:
     Optional[MediaPackageV2AbWatermarkerIrdetoSettings] MediaPackageV2AbWatermarkerIrdetoSettings
 
-# no @derive(Json): member(s) Destinations: list[MediaResourceNeighbor], Sources: list[MediaResourceNeighbor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[MediaResourceNeighbor], Sources: list[MediaResourceNeighbor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaResource:
     Optional[list[MediaResourceNeighbor]] Destinations
     Optional[str] Name
@@ -6744,18 +6937,21 @@ struct MsSmoothOutputSettings:
 struct MulticastInputSettings:
     Optional[str] SourceIpAddress
 
-# no @derive(Json): member(s) Sources: list[MulticastSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[MulticastSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MulticastSettings:
     Optional[list[MulticastSource]] Sources
 
-# no @derive(Json): member(s) Sources: list[MulticastSourceCreateRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[MulticastSourceCreateRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MulticastSettingsCreateRequest:
     Optional[list[MulticastSourceCreateRequest]] Sources
 
-# no @derive(Json): member(s) Sources: list[MulticastSourceUpdateRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[MulticastSourceUpdateRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MulticastSettingsUpdateRequest:
     Optional[list[MulticastSourceUpdateRequest]] Sources
 
@@ -6780,8 +6976,9 @@ struct MulticastSourceUpdateRequest:
     Optional[str] SecondarySourceIp
     Optional[str] SecondaryUrl
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Multiplex:
     Optional[str] Arn
     Optional[list[str]] AvailabilityZones
@@ -6806,8 +7003,9 @@ struct MultiplexAlert:
     Optional[DateTime] SetTimestamp
     Optional[MultiplexAlertState] State
 
-# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiplexConfigurationValidationError:
     Optional[str] Message
     Optional[list[ValidationError]] ValidationErrors
@@ -6851,8 +7049,9 @@ struct MultiplexOutputSettings:
     OutputLocationRef Destination
     Optional[MultiplexContainerSettings] ContainerSettings
 
-# no @derive(Json): member(s) PacketIdentifiersMap: MultiplexProgramPacketIdentifiersMap, PipelineDetails: list[MultiplexProgramPipelineDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PacketIdentifiersMap: MultiplexProgramPacketIdentifiersMap, PipelineDetails: list[MultiplexProgramPipelineDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiplexProgram:
     Optional[str] ChannelId
     Optional[MultiplexProgramSettings] MultiplexProgramSettings
@@ -6865,8 +7064,9 @@ struct MultiplexProgramChannelDestinationSettings:
     Optional[str] MultiplexId
     Optional[str] ProgramName
 
-# no @derive(Json): member(s) AudioPids: list[int64], DvbSubPids: list[int64], KlvDataPids: list[int64], Scte27Pids: list[int64], DvbTeletextPids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioPids: list[int64], DvbSubPids: list[int64], KlvDataPids: list[int64], Scte27Pids: list[int64], DvbTeletextPids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiplexProgramPacketIdentifiersMap:
     Optional[list[int64]] AudioPids
     Optional[list[int64]] DvbSubPids
@@ -6925,8 +7125,9 @@ struct MultiplexStatmuxVideoSettings:
     Optional[int64] MinimumBitrate
     Optional[int64] Priority
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiplexSummary:
     Optional[str] Arn
     Optional[list[str]] AvailabilityZones
@@ -6979,14 +7180,16 @@ struct NielsenWatermarksSettings:
     Optional[NielsenNaesIiNw] NielsenNaesIiNwSettings
     Optional[NielsenNwOnly] NielsenNwOnlySettings
 
-# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeConfigurationValidationError:
     Optional[str] Message
     Optional[list[ValidationError]] ValidationErrors
 
-# no @derive(Json): member(s) PhysicalInterfaceIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhysicalInterfaceIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeInterfaceMapping:
     Optional[str] LogicalInterfaceName
     Optional[NetworkInterfaceMode] NetworkInterfaceMode
@@ -7026,8 +7229,9 @@ struct Offering:
     Optional[ReservationResourceSpecification] ResourceSpecification
     Optional[float64] UsagePrice
 
-# no @derive(Json): member(s) AudioDescriptionNames: list[str], CaptionDescriptionNames: list[str], OutputSettings: OutputSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioDescriptionNames: list[str], CaptionDescriptionNames: list[str], OutputSettings: OutputSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Output:
     Optional[list[str]] AudioDescriptionNames
     Optional[list[str]] CaptionDescriptionNames
@@ -7035,8 +7239,9 @@ struct Output:
     OutputSettings OutputSettings
     Optional[str] VideoDescriptionName
 
-# no @derive(Json): member(s) MediaPackageSettings: list[MediaPackageOutputDestinationSettings], Settings: list[OutputDestinationSettings], SrtSettings: list[SrtOutputDestinationSettings], LogicalInterfaceNames: list[str], MediaConnectRouterSettings: list[MediaConnectRouterOutputDestinationSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaPackageSettings: list[MediaPackageOutputDestinationSettings], Settings: list[OutputDestinationSettings], SrtSettings: list[SrtOutputDestinationSettings], LogicalInterfaceNames: list[str], MediaConnectRouterSettings: list[MediaConnectRouterOutputDestinationSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputDestination:
     Optional[str] Id
     Optional[list[MediaPackageOutputDestinationSettings]] MediaPackageSettings
@@ -7054,15 +7259,17 @@ struct OutputDestinationSettings:
     Optional[str] Username
     Optional[str] VirtualSourceAddress
 
-# no @derive(Json): member(s) OutputGroupSettings: OutputGroupSettings, Outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputGroupSettings: OutputGroupSettings, Outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputGroup:
     Optional[str] Name
     OutputGroupSettings OutputGroupSettings
     list[Output] Outputs
 
-# no @derive(Json): member(s) HlsGroupSettings: HlsGroupSettings, MediaPackageGroupSettings: MediaPackageGroupSettings, RtmpGroupSettings: RtmpGroupSettings, CmafIngestGroupSettings: CmafIngestGroupSettings, MediaConnectRouterGroupSettings: MediaConnectRouterGroupSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsGroupSettings: HlsGroupSettings, MediaPackageGroupSettings: MediaPackageGroupSettings, RtmpGroupSettings: RtmpGroupSettings, CmafIngestGroupSettings: CmafIngestGroupSettings, MediaConnectRouterGroupSettings: MediaConnectRouterGroupSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputGroupSettings:
     Optional[ArchiveGroupSettings] ArchiveGroupSettings
     Optional[FrameCaptureGroupSettings] FrameCaptureGroupSettings
@@ -7086,8 +7293,9 @@ struct OutputLockingSettings:
     Optional[PipelineLockingSettings] PipelineLockingSettings
     Optional[DisabledLockingSettings] DisabledLockingSettings
 
-# no @derive(Json): member(s) MediaPackageOutputSettings: MediaPackageOutputSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaPackageOutputSettings: MediaPackageOutputSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputSettings:
     Optional[ArchiveOutputSettings] ArchiveOutputSettings
     Optional[FrameCaptureOutputSettings] FrameCaptureOutputSettings
@@ -7106,8 +7314,9 @@ struct PassThroughSettings:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Pipelines: list[PipelinePauseStateSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipelines: list[PipelinePauseStateSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PauseStateScheduleActionSettings:
     Optional[list[PipelinePauseStateSettings]] Pipelines
 
@@ -7115,8 +7324,9 @@ struct PauseStateScheduleActionSettings:
 struct PerceptualFilterSettings:
     PerceptualFilterStrength Strength
 
-# no @derive(Json): member(s) MediaConnectRouterOutputConnectionMap: dict[str, MediaConnectRouterOutputConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaConnectRouterOutputConnectionMap: dict[str, MediaConnectRouterOutputConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineDetail:
     Optional[str] ActiveInputAttachmentName
     Optional[str] ActiveInputSwitchActionName
@@ -7139,8 +7349,9 @@ struct PipelinePauseStateSettings:
 struct PrimaryChannelSettings:
     Optional[LinkedChannelType] LinkedChannelType
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseOffering:
     int64 Count
     Optional[str] Name
@@ -7160,13 +7371,15 @@ struct PurchaseOfferingRequest:
     Optional[str] Start
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Reservation: Reservation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservation: Reservation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseOfferingResponse:
     Optional[Reservation] Reservation
 
-# no @derive(Json): member(s) Reservation: Reservation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservation: Reservation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseOfferingResultModel:
     Optional[Reservation] Reservation
 
@@ -7210,8 +7423,9 @@ struct RejectInputDeviceTransferResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ChannelMappings: list[AudioChannelMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelMappings: list[AudioChannelMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemixSettings:
     list[AudioChannelMapping] ChannelMappings
     Optional[int64] ChannelsIn
@@ -7222,8 +7436,9 @@ struct RenewalSettings:
     Optional[ReservationAutomaticRenewal] AutomaticRenewal
     Optional[int64] RenewalCount
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Reservation:
     Optional[str] Arn
     Optional[int64] Count
@@ -7270,8 +7485,9 @@ struct RestartChannelPipelinesRequest:
     str ChannelId
     Optional[list[ChannelPipelineIdToRestart]] PipelineIds
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestartChannelPipelinesResponse:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -7322,15 +7538,17 @@ struct RouterDestination:
 struct RouterDestinationSettings:
     str AvailabilityZoneName
 
-# no @derive(Json): member(s) Destinations: list[RouterDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[RouterDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputSettings:
     Optional[list[RouterDestination]] Destinations
     Optional[RouterEncryptionType] EncryptionType
     Optional[str] SecretArn
 
-# no @derive(Json): member(s) Destinations: list[RouterDestinationSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[RouterDestinationSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterSettings:
     Optional[list[RouterDestinationSettings]] Destinations
     Optional[RouterEncryptionType] EncryptionType
@@ -7341,8 +7559,9 @@ struct RtmpCaptionInfoDestinationSettings:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AdMarkers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdMarkers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RtmpGroupSettings:
     Optional[list[str]] AdMarkers
     Optional[AuthenticationScheme] AuthenticationScheme
@@ -7360,15 +7579,17 @@ struct RtmpOutputSettings:
     OutputLocationRef Destination
     Optional[int64] NumRetries
 
-# no @derive(Json): member(s) ScheduleActionSettings: ScheduleActionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleActionSettings: ScheduleActionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleAction:
     str ActionName
     ScheduleActionSettings ScheduleActionSettings
     ScheduleActionStartSettings ScheduleActionStartSettings
 
-# no @derive(Json): member(s) InputPrepareSettings: InputPrepareScheduleActionSettings, InputSwitchSettings: InputSwitchScheduleActionSettings, PauseStateSettings: PauseStateScheduleActionSettings, Scte35TimeSignalSettings: Scte35TimeSignalScheduleActionSettings, StaticImageOutputActivateSettings: StaticImageOutputActivateScheduleActionSettings, StaticImageOutputDeactivateSettings: StaticImageOutputDeactivateScheduleActionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputPrepareSettings: InputPrepareScheduleActionSettings, InputSwitchSettings: InputSwitchScheduleActionSettings, PauseStateSettings: PauseStateScheduleActionSettings, Scte35TimeSignalSettings: Scte35TimeSignalScheduleActionSettings, StaticImageOutputActivateSettings: StaticImageOutputActivateScheduleActionSettings, StaticImageOutputDeactivateSettings: StaticImageOutputDeactivateScheduleActionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleActionSettings:
     Optional[HlsId3SegmentTaggingScheduleActionSettings] HlsId3SegmentTaggingSettings
     Optional[HlsTimedMetadataScheduleActionSettings] HlsTimedMetadataSettings
@@ -7399,8 +7620,9 @@ struct ScheduleDeleteResultModel:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleActions: list[ScheduleAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleDescribeResultModel:
     Optional[str] NextToken
     list[ScheduleAction] ScheduleActions
@@ -7480,13 +7702,15 @@ struct Scte35TimeSignalApos:
     Optional[Scte35AposNoRegionalBlackoutBehavior] NoRegionalBlackoutFlag
     Optional[Scte35AposWebDeliveryAllowedBehavior] WebDeliveryAllowedFlag
 
-# no @derive(Json): member(s) Scte35Descriptors: list[Scte35Descriptor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scte35Descriptors: list[Scte35Descriptor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scte35TimeSignalScheduleActionSettings:
     list[Scte35Descriptor] Scte35Descriptors
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SdiSource:
     Optional[str] Arn
     Optional[str] Id
@@ -7508,8 +7732,9 @@ struct SdiSourceMappingUpdateRequest:
     Optional[int64] ChannelNumber
     Optional[str] SdiSource
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SdiSourceSummary:
     Optional[str] Arn
     Optional[str] Id
@@ -7519,8 +7744,9 @@ struct SdiSourceSummary:
     Optional[SdiSourceState] State
     Optional[SdiSourceType] Type
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignalMapSummary:
     str Arn
     DateTime CreatedAt
@@ -7537,20 +7763,23 @@ struct SmartSubtitleSourceSettings:
     Optional[CaptionSynchronizationMode] CaptionSynchronizationMode
     Optional[str] InferenceFeedOutput
 
-# no @derive(Json): member(s) SdpSettings: Smpte2110ReceiverGroupSdpSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SdpSettings: Smpte2110ReceiverGroupSdpSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Smpte2110ReceiverGroup:
     Optional[Smpte2110ReceiverGroupSdpSettings] SdpSettings
 
-# no @derive(Json): member(s) AncillarySdps: list[InputSdpLocation], AudioSdps: list[InputSdpLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AncillarySdps: list[InputSdpLocation], AudioSdps: list[InputSdpLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Smpte2110ReceiverGroupSdpSettings:
     Optional[list[InputSdpLocation]] AncillarySdps
     Optional[list[InputSdpLocation]] AudioSdps
     Optional[InputSdpLocation] VideoSdp
 
-# no @derive(Json): member(s) Smpte2110ReceiverGroups: list[Smpte2110ReceiverGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Smpte2110ReceiverGroups: list[Smpte2110ReceiverGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Smpte2110ReceiverGroupSettings:
     Optional[list[Smpte2110ReceiverGroup]] Smpte2110ReceiverGroups
 
@@ -7631,14 +7860,16 @@ struct SrtOutputSettings:
     Optional[SrtEncryptionType] EncryptionType
     Optional[int64] Latency
 
-# no @derive(Json): member(s) SrtCallerSources: list[SrtCallerSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SrtCallerSources: list[SrtCallerSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SrtSettings:
     Optional[list[SrtCallerSource]] SrtCallerSources
     Optional[SrtListenerSettings] SrtListenerSettings
 
-# no @derive(Json): member(s) SrtCallerSources: list[SrtCallerSourceRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SrtCallerSources: list[SrtCallerSourceRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SrtSettingsRequest:
     Optional[list[SrtCallerSourceRequest]] SrtCallerSources
     Optional[SrtListenerSettingsRequest] SrtListenerSettings
@@ -7653,8 +7884,9 @@ struct StandardHlsSettings:
 struct StartChannelRequest:
     str ChannelId
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartChannelResponse:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -7685,8 +7917,9 @@ struct StartChannelResponse:
 struct StartDeleteMonitorDeploymentRequest:
     str Identifier
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDeleteMonitorDeploymentResponse:
     Optional[str] Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -7707,8 +7940,9 @@ struct StartDeleteMonitorDeploymentResponse:
     Optional[SignalMapStatus] Status
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDeleteMonitorDeploymentResponseContent:
     str Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -7759,8 +7993,9 @@ struct StartMonitorDeploymentRequest:
 struct StartMonitorDeploymentRequestContent:
     Optional[bool] DryRun
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMonitorDeploymentResponse:
     Optional[str] Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -7781,8 +8016,9 @@ struct StartMonitorDeploymentResponse:
     Optional[SignalMapStatus] Status
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMonitorDeploymentResponseContent:
     str Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -7808,8 +8044,9 @@ struct StartMonitorDeploymentResponseContent:
 struct StartMultiplexRequest:
     str MultiplexId
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMultiplexResponse:
     Optional[str] Arn
     Optional[list[str]] AvailabilityZones
@@ -7837,8 +8074,9 @@ struct StartUpdateSignalMapRequest:
     str Identifier
     Optional[str] Name
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIdentifiers: list[str], EventBridgeRuleTemplateGroupIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIdentifiers: list[str], EventBridgeRuleTemplateGroupIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartUpdateSignalMapRequestContent:
     Optional[list[str]] CloudWatchAlarmTemplateGroupIdentifiers
     Optional[str] Description
@@ -7847,8 +8085,9 @@ struct StartUpdateSignalMapRequestContent:
     Optional[bool] ForceRediscovery
     Optional[str] Name
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartUpdateSignalMapResponse:
     Optional[str] Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -7869,8 +8108,9 @@ struct StartUpdateSignalMapResponse:
     Optional[SignalMapStatus] Status
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmTemplateGroupIds: list[str], EventBridgeRuleTemplateGroupIds: list[str], FailedMediaResourceMap: dict[str, MediaResource], MediaResourceMap: dict[str, MediaResource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartUpdateSignalMapResponseContent:
     str Arn
     Optional[list[str]] CloudWatchAlarmTemplateGroupIds
@@ -7909,8 +8149,9 @@ struct StaticImageDeactivateScheduleActionSettings:
     Optional[int64] FadeOut
     Optional[int64] Layer
 
-# no @derive(Json): member(s) OutputNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StaticImageOutputActivateScheduleActionSettings:
     Optional[int64] Duration
     Optional[int64] FadeIn
@@ -7924,8 +8165,9 @@ struct StaticImageOutputActivateScheduleActionSettings:
     list[str] OutputNames
     Optional[int64] Width
 
-# no @derive(Json): member(s) OutputNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StaticImageOutputDeactivateScheduleActionSettings:
     Optional[int64] FadeOut
     Optional[int64] Layer
@@ -7941,8 +8183,9 @@ struct StaticKeySettings:
 struct StopChannelRequest:
     str ChannelId
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EgressEndpoints: list[ChannelEgressEndpoint], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], PipelineDetails: list[PipelineDetail], Tags: dict[str, str], Vpc: VpcOutputSettingsDescription, LinkedChannelSettings: DescribeLinkedChannelSettings, ChannelSecurityGroups: list[str], InferenceSettings: DescribeInferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopChannelResponse:
     Optional[str] Arn
     Optional[CdiInputSpecification] CdiInputSpecification
@@ -7983,8 +8226,9 @@ struct StopInputDeviceResponse:
 struct StopMultiplexRequest:
     str MultiplexId
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], Destinations: list[MultiplexOutputDestination], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopMultiplexResponse:
     Optional[str] Arn
     Optional[list[str]] AvailabilityZones
@@ -8007,8 +8251,9 @@ struct SuccessfulMonitorDeployment:
     str DetailsUri
     SignalMapMonitorDeploymentStatus Status
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagsModel:
     Optional[dict[str, str]] Tags
 
@@ -8047,8 +8292,9 @@ struct ThumbnailConfiguration:
 struct ThumbnailData:
     Optional[str] Body
 
-# no @derive(Json): member(s) Thumbnails: list[Thumbnail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Thumbnails: list[Thumbnail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThumbnailDetail:
     Optional[str] PipelineId
     Optional[list[Thumbnail]] Thumbnails
@@ -8129,8 +8375,9 @@ struct UdpOutputSettings:
     OutputLocationRef Destination
     Optional[FecOutputSettings] FecOutputSettings
 
-# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationErrors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnprocessableEntityException:
     Optional[str] Message
     Optional[list[ValidationError]] ValidationErrors
@@ -8152,8 +8399,9 @@ struct UpdateAccountConfigurationResponse:
 struct UpdateAccountConfigurationResultModel:
     Optional[AccountConfiguration] AccountConfiguration
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], ChannelSecurityGroups: list[str], InferenceSettings: InferenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination], EncoderSettings: EncoderSettings, InputAttachments: list[InputAttachment], ChannelSecurityGroups: list[str], InferenceSettings: InferenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannel:
     Optional[CdiInputSpecification] CdiInputSpecification
     Optional[list[OutputDestination]] Destinations
@@ -8172,8 +8420,9 @@ struct UpdateChannel:
     Optional[InferenceSettings] InferenceSettings
     Optional[SpecialRouterSettings] SpecialRouterSettings
 
-# no @derive(Json): member(s) Destinations: list[OutputDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[OutputDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelClass:
     ChannelClass ChannelClass
     Optional[list[OutputDestination]] Destinations
@@ -8185,8 +8434,9 @@ struct UpdateChannelClassRequest:
     str ChannelId
     Optional[list[OutputDestination]] Destinations
 
-# no @derive(Json): member(s) Channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelClassResponse:
     Optional[Channel] Channel
 
@@ -8198,8 +8448,9 @@ struct UpdateChannelPlacementGroupRequest:
     Optional[str] Name
     Optional[list[str]] Nodes
 
-# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[str], Nodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelPlacementGroupResponse:
     Optional[str] Arn
     Optional[list[str]] Channels
@@ -8230,13 +8481,15 @@ struct UpdateChannelRequest:
     Optional[InferenceSettings] InferenceSettings
     Optional[SpecialRouterSettings] SpecialRouterSettings
 
-# no @derive(Json): member(s) Channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelResponse:
     Optional[Channel] Channel
 
-# no @derive(Json): member(s) Channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelResultModel:
     Optional[Channel] Channel
 
@@ -8250,8 +8503,9 @@ struct UpdateCloudWatchAlarmTemplateGroupRequest:
 struct UpdateCloudWatchAlarmTemplateGroupRequestContent:
     Optional[str] Description
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudWatchAlarmTemplateGroupResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -8261,8 +8515,9 @@ struct UpdateCloudWatchAlarmTemplateGroupResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudWatchAlarmTemplateGroupResponseContent:
     str Arn
     DateTime CreatedAt
@@ -8304,8 +8559,9 @@ struct UpdateCloudWatchAlarmTemplateRequestContent:
     Optional[float64] Threshold
     Optional[CloudWatchAlarmTemplateTreatMissingData] TreatMissingData
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudWatchAlarmTemplateResponse:
     Optional[str] Arn
     Optional[CloudWatchAlarmTemplateComparisonOperator] ComparisonOperator
@@ -8325,8 +8581,9 @@ struct UpdateCloudWatchAlarmTemplateResponse:
     Optional[float64] Threshold
     Optional[CloudWatchAlarmTemplateTreatMissingData] TreatMissingData
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudWatchAlarmTemplateResponseContent:
     str Arn
     CloudWatchAlarmTemplateComparisonOperator ComparisonOperator
@@ -8353,8 +8610,9 @@ struct UpdateClusterRequest:
     Optional[str] Name
     Optional[ClusterNetworkSettingsUpdateRequest] NetworkSettings
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -8364,8 +8622,9 @@ struct UpdateClusterResponse:
     Optional[ClusterNetworkSettings] NetworkSettings
     Optional[ClusterState] State
 
-# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelIds: list[str], NetworkSettings: ClusterNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResult:
     Optional[str] Arn
     Optional[list[str]] ChannelIds
@@ -8385,8 +8644,9 @@ struct UpdateEventBridgeRuleTemplateGroupRequest:
 struct UpdateEventBridgeRuleTemplateGroupRequestContent:
     Optional[str] Description
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventBridgeRuleTemplateGroupResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -8396,8 +8656,9 @@ struct UpdateEventBridgeRuleTemplateGroupResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventBridgeRuleTemplateGroupResponseContent:
     str Arn
     DateTime CreatedAt
@@ -8417,8 +8678,9 @@ struct UpdateEventBridgeRuleTemplateRequest:
     str Identifier
     Optional[str] Name
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventBridgeRuleTemplateRequestContent:
     Optional[str] Description
     Optional[list[EventBridgeRuleTemplateTarget]] EventTargets
@@ -8426,8 +8688,9 @@ struct UpdateEventBridgeRuleTemplateRequestContent:
     Optional[str] GroupIdentifier
     Optional[str] Name
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventBridgeRuleTemplateResponse:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -8440,8 +8703,9 @@ struct UpdateEventBridgeRuleTemplateResponse:
     Optional[str] Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTargets: list[EventBridgeRuleTemplateTarget], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventBridgeRuleTemplateResponseContent:
     str Arn
     DateTime CreatedAt
@@ -8454,8 +8718,9 @@ struct UpdateEventBridgeRuleTemplateResponseContent:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Destinations: list[InputDestinationRequest], InputDevices: list[InputDeviceRequest], InputSecurityGroups: list[str], MediaConnectFlows: list[MediaConnectFlowRequest], Sources: list[InputSourceRequest], SrtSettings: SrtSettingsRequest, MulticastSettings: MulticastSettingsUpdateRequest, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[InputDestinationRequest], InputDevices: list[InputDeviceRequest], InputSecurityGroups: list[str], MediaConnectFlows: list[MediaConnectFlowRequest], Sources: list[InputSourceRequest], SrtSettings: SrtSettingsRequest, MulticastSettings: MulticastSettingsUpdateRequest, Smpte2110ReceiverGroupSettings: Smpte2110ReceiverGroupSettings, SdiSources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInput:
     Optional[list[InputDestinationRequest]] Destinations
     Optional[list[InputDeviceRequest]] InputDevices
@@ -8470,8 +8735,9 @@ struct UpdateInput:
     Optional[list[str]] SdiSources
     Optional[SpecialRouterSettings] SpecialRouterSettings
 
-# no @derive(Json): member(s) HdDeviceSettings: InputDeviceConfigurableSettings, UhdDeviceSettings: InputDeviceConfigurableSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HdDeviceSettings: InputDeviceConfigurableSettings, UhdDeviceSettings: InputDeviceConfigurableSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInputDevice:
     Optional[InputDeviceConfigurableSettings] HdDeviceSettings
     Optional[str] Name
@@ -8487,8 +8753,9 @@ struct UpdateInputDeviceRequest:
     Optional[InputDeviceConfigurableSettings] UhdDeviceSettings
     Optional[str] AvailabilityZone
 
-# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkSettings: InputDeviceNetworkSettings, UhdDeviceSettings: InputDeviceUhdSettings, Tags: dict[str, str], MedialiveInputArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInputDeviceResponse:
     Optional[str] Arn
     Optional[InputDeviceConnectionState] ConnectionState
@@ -8524,13 +8791,15 @@ struct UpdateInputRequest:
     Optional[list[str]] SdiSources
     Optional[SpecialRouterSettings] SpecialRouterSettings
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInputResponse:
     Optional[Input] Input
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInputResultModel:
     Optional[Input] Input
 
@@ -8541,18 +8810,21 @@ struct UpdateInputSecurityGroupRequest:
     Optional[dict[str, str]] Tags
     Optional[list[InputWhitelistRuleCidr]] WhitelistRules
 
-# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInputSecurityGroupResponse:
     Optional[InputSecurityGroup] SecurityGroup
 
-# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroup: InputSecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInputSecurityGroupResultModel:
     Optional[InputSecurityGroup] SecurityGroup
 
-# no @derive(Json): member(s) PacketIdentifiersMapping: dict[str, MultiplexProgramPacketIdentifiersMap] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PacketIdentifiersMapping: dict[str, MultiplexProgramPacketIdentifiersMap] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMultiplex:
     Optional[MultiplexSettings] MultiplexSettings
     Optional[str] Name
@@ -8569,13 +8841,15 @@ struct UpdateMultiplexProgramRequest:
     Optional[MultiplexProgramSettings] MultiplexProgramSettings
     str ProgramName
 
-# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMultiplexProgramResponse:
     Optional[MultiplexProgram] MultiplexProgram
 
-# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiplexProgram: MultiplexProgram not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMultiplexProgramResultModel:
     Optional[MultiplexProgram] MultiplexProgram
 
@@ -8587,13 +8861,15 @@ struct UpdateMultiplexRequest:
     Optional[str] Name
     Optional[dict[str, MultiplexProgramPacketIdentifiersMap]] PacketIdentifiersMapping
 
-# no @derive(Json): member(s) Multiplex: Multiplex not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiplex: Multiplex not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMultiplexResponse:
     Optional[Multiplex] Multiplex
 
-# no @derive(Json): member(s) Multiplex: Multiplex not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiplex: Multiplex not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMultiplexResultModel:
     Optional[Multiplex] Multiplex
 
@@ -8605,8 +8881,9 @@ struct UpdateNetworkRequest:
     str NetworkId
     Optional[list[RouteUpdateRequest]] Routes
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkResponse:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -8616,8 +8893,9 @@ struct UpdateNetworkResponse:
     Optional[list[Route]] Routes
     Optional[NetworkState] State
 
-# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedClusterIds: list[str], IpPools: list[IpPool], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkResult:
     Optional[str] Arn
     Optional[list[str]] AssociatedClusterIds
@@ -8636,8 +8914,9 @@ struct UpdateNodeRequest:
     Optional[NodeRole] Role
     Optional[list[SdiSourceMappingUpdateRequest]] SdiSourceMappings
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNodeResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -8658,8 +8937,9 @@ struct UpdateNodeStateRequest:
     str NodeId
     Optional[UpdateNodeState] State
 
-# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelPlacementGroups: list[str], NodeInterfaceMappings: list[NodeInterfaceMapping], SdiSourceMappings: list[SdiSourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNodeStateResponse:
     Optional[str] Arn
     Optional[list[str]] ChannelPlacementGroups
@@ -8685,13 +8965,15 @@ struct UpdateReservationRequest:
     Optional[RenewalSettings] RenewalSettings
     str ReservationId
 
-# no @derive(Json): member(s) Reservation: Reservation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservation: Reservation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReservationResponse:
     Optional[Reservation] Reservation
 
-# no @derive(Json): member(s) Reservation: Reservation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservation: Reservation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReservationResultModel:
     Optional[Reservation] Reservation
 
@@ -8703,8 +8985,9 @@ struct UpdateSdiSourceRequest:
     str SdiSourceId
     Optional[SdiSourceType] Type
 
-# no @derive(Json): member(s) SdiSource: SdiSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SdiSource: SdiSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSdiSourceResponse:
     Optional[SdiSource] SdiSource
 
@@ -8770,15 +9053,17 @@ struct VideoSelectorSettings:
     Optional[VideoSelectorPid] VideoSelectorPid
     Optional[VideoSelectorProgramId] VideoSelectorProgramId
 
-# no @derive(Json): member(s) PublicAddressAllocationIds: list[str], SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PublicAddressAllocationIds: list[str], SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcOutputSettings:
     Optional[list[str]] PublicAddressAllocationIds
     Optional[list[str]] SecurityGroupIds
     list[str] SubnetIds
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], NetworkInterfaceIds: list[str], SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], NetworkInterfaceIds: list[str], SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcOutputSettingsDescription:
     Optional[list[str]] AvailabilityZones
     Optional[list[str]] NetworkInterfaceIds
@@ -8840,42 +9125,7 @@ def medialive_error_from_code(str code) -> MediaLiveError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDelete (document member `ChannelIds: list[str]` is not serializable by derive)
-#   BatchStart (document member `ChannelIds: list[str]` is not serializable by derive)
-#   BatchStop (document member `ChannelIds: list[str]` is not serializable by derive)
-#   BatchUpdateSchedule (document member `Creates: BatchScheduleActionCreateRequest` is not serializable by derive)
-#   CreateChannel (document member `Destinations: list[OutputDestination]` is not serializable by derive)
-#   CreateChannelPlacementGroup (document member `Nodes: list[str]` is not serializable by derive)
-#   CreateCloudWatchAlarmTemplate (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateCloudWatchAlarmTemplateGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateCluster (document member `NetworkSettings: ClusterNetworkSettingsCreateRequest` is not serializable by derive)
-#   CreateEventBridgeRuleTemplate (document member `EventTargets: list[EventBridgeRuleTemplateTarget]` is not serializable by derive)
-#   CreateEventBridgeRuleTemplateGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateInput (document member `Destinations: list[InputDestinationRequest]` is not serializable by derive)
-#   CreateInputSecurityGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateMultiplex (document member `AvailabilityZones: list[str]` is not serializable by derive)
-#   CreateNetwork (document member `IpPools: list[IpPoolCreateRequest]` is not serializable by derive)
-#   CreateNode (document member `NodeInterfaceMappings: list[NodeInterfaceMappingCreateRequest]` is not serializable by derive)
-#   CreateNodeRegistrationScript (document member `NodeInterfaceMappings: list[NodeInterfaceMapping]` is not serializable by derive)
-#   CreatePartnerInput (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateSdiSource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateSignalMap (document member `CloudWatchAlarmTemplateGroupIdentifiers: list[str]` is not serializable by derive)
-#   CreateTags (document member `Tags: dict[str, str]` is not serializable by derive)
 #   DeleteTags (httpQuery `TagKeys` has unsupported type list[str])
-#   PurchaseOffering (document member `Tags: dict[str, str]` is not serializable by derive)
-#   RestartChannelPipelines (document member `PipelineIds: list[ChannelPipelineIdToRestart]` is not serializable by derive)
-#   StartUpdateSignalMap (document member `CloudWatchAlarmTemplateGroupIdentifiers: list[str]` is not serializable by derive)
-#   UpdateChannel (document member `Destinations: list[OutputDestination]` is not serializable by derive)
-#   UpdateChannelClass (document member `Destinations: list[OutputDestination]` is not serializable by derive)
-#   UpdateChannelPlacementGroup (document member `Nodes: list[str]` is not serializable by derive)
-#   UpdateCluster (document member `NetworkSettings: ClusterNetworkSettingsUpdateRequest` is not serializable by derive)
-#   UpdateEventBridgeRuleTemplate (document member `EventTargets: list[EventBridgeRuleTemplateTarget]` is not serializable by derive)
-#   UpdateInput (document member `Destinations: list[InputDestinationRequest]` is not serializable by derive)
-#   UpdateInputDevice (document member `HdDeviceSettings: InputDeviceConfigurableSettings` is not serializable by derive)
-#   UpdateInputSecurityGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UpdateMultiplex (document member `PacketIdentifiersMapping: dict[str, MultiplexProgramPacketIdentifiersMap]` is not serializable by derive)
-#   UpdateNetwork (document member `IpPools: list[IpPoolUpdateRequest]` is not serializable by derive)
-#   UpdateNode (document member `SdiSourceMappings: list[SdiSourceMappingUpdateRequest]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -8963,6 +9213,1420 @@ struct UpdateSdiSourceDocument:
     Optional[str] Name
     Optional[SdiSourceType] Type
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def medialive_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def medialive_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def medialive_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AudioChannelMapping to a compact JSON object (declaration order).
+def audio_channel_mapping_to_json(AudioChannelMapping v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.InputChannelLevels:
+        e0.append(x0.to_json())
+    parts.append("\"inputChannelLevels\":" + medialive_json_arr(e0))
+    parts.append("\"outputChannel\":" + str(v.OutputChannel))
+    return medialive_json_obj(parts)
+
+# Serialize AudioDescription to a compact JSON object (declaration order).
+def audio_description_to_json(AudioDescription v) -> str:
+    list[str] parts = []
+    if v.AudioNormalizationSettings.is_some():
+        auto u0 = v.AudioNormalizationSettings.unwrap()
+        parts.append("\"audioNormalizationSettings\":" + u0.to_json())
+    parts.append("\"audioSelectorName\":" + medialive_json_str(v.AudioSelectorName))
+    if v.AudioType.is_some():
+        auto u1 = v.AudioType.unwrap()
+        parts.append("\"audioType\":" + u1.to_json())
+    if v.AudioTypeControl.is_some():
+        auto u2 = v.AudioTypeControl.unwrap()
+        parts.append("\"audioTypeControl\":" + u2.to_json())
+    if v.AudioWatermarkingSettings.is_some():
+        auto u3 = v.AudioWatermarkingSettings.unwrap()
+        parts.append("\"audioWatermarkingSettings\":" + u3.to_json())
+    if v.CodecSettings.is_some():
+        auto u4 = v.CodecSettings.unwrap()
+        parts.append("\"codecSettings\":" + u4.to_json())
+    if v.LanguageCode.is_some():
+        auto u5 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + medialive_json_str(u5))
+    if v.LanguageCodeControl.is_some():
+        auto u6 = v.LanguageCodeControl.unwrap()
+        parts.append("\"languageCodeControl\":" + u6.to_json())
+    parts.append("\"name\":" + medialive_json_str(v.Name))
+    if v.RemixSettings.is_some():
+        auto u7 = v.RemixSettings.unwrap()
+        parts.append("\"remixSettings\":" + remix_settings_to_json(u7))
+    if v.StreamName.is_some():
+        auto u8 = v.StreamName.unwrap()
+        parts.append("\"streamName\":" + medialive_json_str(u8))
+    if v.AudioDashRoles.is_some():
+        auto u9 = v.AudioDashRoles.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"audioDashRoles\":" + medialive_json_arr(e10))
+    if v.DvbDashAccessibility.is_some():
+        auto u11 = v.DvbDashAccessibility.unwrap()
+        parts.append("\"dvbDashAccessibility\":" + u11.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize AudioPid to a compact JSON object (declaration order).
+def audio_pid_to_json(AudioPid v) -> str:
+    list[str] parts = []
+    if v.DolbyEDecode.is_some():
+        auto u0 = v.DolbyEDecode.unwrap()
+        parts.append("\"dolbyEDecode\":" + u0.to_json())
+    parts.append("\"pid\":" + str(v.Pid))
+    if v.PremixSettings.is_some():
+        auto u1 = v.PremixSettings.unwrap()
+        parts.append("\"premixSettings\":" + audio_pre_mixer_settings_to_json(u1))
+    return medialive_json_obj(parts)
+
+# Serialize AudioPidSelection to a compact JSON object (declaration order).
+def audio_pid_selection_to_json(AudioPidSelection v) -> str:
+    list[str] parts = []
+    parts.append("\"pid\":" + str(v.Pid))
+    if v.Pids.is_some():
+        auto u0 = v.Pids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(audio_pid_to_json(x1))
+        parts.append("\"pids\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize AudioPreMixerSettings to a compact JSON object (declaration order).
+def audio_pre_mixer_settings_to_json(AudioPreMixerSettings v) -> str:
+    list[str] parts = []
+    if v.AudioNormalizationSettings.is_some():
+        auto u0 = v.AudioNormalizationSettings.unwrap()
+        parts.append("\"audioNormalizationSettings\":" + u0.to_json())
+    if v.Channels.is_some():
+        auto u1 = v.Channels.unwrap()
+        parts.append("\"channels\":" + str(u1))
+    if v.GainDb.is_some():
+        auto u2 = v.GainDb.unwrap()
+        parts.append("\"gainDb\":" + str(u2))
+    if v.RemixSettings.is_some():
+        auto u3 = v.RemixSettings.unwrap()
+        parts.append("\"remixSettings\":" + remix_settings_to_json(u3))
+    return medialive_json_obj(parts)
+
+# Serialize AudioSelector to a compact JSON object (declaration order).
+def audio_selector_to_json(AudioSelector v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + medialive_json_str(v.Name))
+    if v.SelectorSettings.is_some():
+        auto u0 = v.SelectorSettings.unwrap()
+        parts.append("\"selectorSettings\":" + audio_selector_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize AudioSelectorSettings to a compact JSON object (declaration order).
+def audio_selector_settings_to_json(AudioSelectorSettings v) -> str:
+    list[str] parts = []
+    if v.AudioHlsRenditionSelection.is_some():
+        auto u0 = v.AudioHlsRenditionSelection.unwrap()
+        parts.append("\"audioHlsRenditionSelection\":" + u0.to_json())
+    if v.AudioLanguageSelection.is_some():
+        auto u1 = v.AudioLanguageSelection.unwrap()
+        parts.append("\"audioLanguageSelection\":" + u1.to_json())
+    if v.AudioPidSelection.is_some():
+        auto u2 = v.AudioPidSelection.unwrap()
+        parts.append("\"audioPidSelection\":" + audio_pid_selection_to_json(u2))
+    if v.AudioTrackSelection.is_some():
+        auto u3 = v.AudioTrackSelection.unwrap()
+        parts.append("\"audioTrackSelection\":" + audio_track_selection_to_json(u3))
+    return medialive_json_obj(parts)
+
+# Serialize AudioTrack to a compact JSON object (declaration order).
+def audio_track_to_json(AudioTrack v) -> str:
+    list[str] parts = []
+    parts.append("\"track\":" + str(v.Track))
+    if v.PremixSettings.is_some():
+        auto u0 = v.PremixSettings.unwrap()
+        parts.append("\"premixSettings\":" + audio_pre_mixer_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize AudioTrackSelection to a compact JSON object (declaration order).
+def audio_track_selection_to_json(AudioTrackSelection v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Tracks:
+        e0.append(audio_track_to_json(x0))
+    parts.append("\"tracks\":" + medialive_json_arr(e0))
+    if v.DolbyEDecode.is_some():
+        auto u1 = v.DolbyEDecode.unwrap()
+        parts.append("\"dolbyEDecode\":" + u1.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize AutomaticInputFailoverSettings to a compact JSON object (declaration order).
+def automatic_input_failover_settings_to_json(AutomaticInputFailoverSettings v) -> str:
+    list[str] parts = []
+    if v.ErrorClearTimeMsec.is_some():
+        auto u0 = v.ErrorClearTimeMsec.unwrap()
+        parts.append("\"errorClearTimeMsec\":" + str(u0))
+    if v.FailoverConditions.is_some():
+        auto u1 = v.FailoverConditions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"failoverConditions\":" + medialive_json_arr(e2))
+    if v.InputPreference.is_some():
+        auto u3 = v.InputPreference.unwrap()
+        parts.append("\"inputPreference\":" + u3.to_json())
+    parts.append("\"secondaryInputId\":" + medialive_json_str(v.SecondaryInputId))
+    return medialive_json_obj(parts)
+
+# Serialize BatchScheduleActionCreateRequest to a compact JSON object (declaration order).
+def batch_schedule_action_create_request_to_json(BatchScheduleActionCreateRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ScheduleActions:
+        e0.append(schedule_action_to_json(x0))
+    parts.append("\"scheduleActions\":" + medialive_json_arr(e0))
+    return medialive_json_obj(parts)
+
+# Serialize BatchScheduleActionDeleteRequest to a compact JSON object (declaration order).
+def batch_schedule_action_delete_request_to_json(BatchScheduleActionDeleteRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ActionNames:
+        e0.append(medialive_json_str(x0))
+    parts.append("\"actionNames\":" + medialive_json_arr(e0))
+    return medialive_json_obj(parts)
+
+# Serialize CaptionDescription to a compact JSON object (declaration order).
+def caption_description_to_json(CaptionDescription v) -> str:
+    list[str] parts = []
+    if v.Accessibility.is_some():
+        auto u0 = v.Accessibility.unwrap()
+        parts.append("\"accessibility\":" + u0.to_json())
+    parts.append("\"captionSelectorName\":" + medialive_json_str(v.CaptionSelectorName))
+    if v.DestinationSettings.is_some():
+        auto u1 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + u1.to_json())
+    if v.LanguageCode.is_some():
+        auto u2 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + medialive_json_str(u2))
+    if v.LanguageDescription.is_some():
+        auto u3 = v.LanguageDescription.unwrap()
+        parts.append("\"languageDescription\":" + medialive_json_str(u3))
+    parts.append("\"name\":" + medialive_json_str(v.Name))
+    if v.CaptionDashRoles.is_some():
+        auto u4 = v.CaptionDashRoles.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"captionDashRoles\":" + medialive_json_arr(e5))
+    if v.DvbDashAccessibility.is_some():
+        auto u6 = v.DvbDashAccessibility.unwrap()
+        parts.append("\"dvbDashAccessibility\":" + u6.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize ClusterNetworkSettingsCreateRequest to a compact JSON object (declaration order).
+def cluster_network_settings_create_request_to_json(ClusterNetworkSettingsCreateRequest v) -> str:
+    list[str] parts = []
+    if v.DefaultRoute.is_some():
+        auto u0 = v.DefaultRoute.unwrap()
+        parts.append("\"defaultRoute\":" + medialive_json_str(u0))
+    if v.InterfaceMappings.is_some():
+        auto u1 = v.InterfaceMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"interfaceMappings\":" + medialive_json_arr(e2))
+    return medialive_json_obj(parts)
+
+# Serialize ClusterNetworkSettingsUpdateRequest to a compact JSON object (declaration order).
+def cluster_network_settings_update_request_to_json(ClusterNetworkSettingsUpdateRequest v) -> str:
+    list[str] parts = []
+    if v.DefaultRoute.is_some():
+        auto u0 = v.DefaultRoute.unwrap()
+        parts.append("\"defaultRoute\":" + medialive_json_str(u0))
+    if v.InterfaceMappings.is_some():
+        auto u1 = v.InterfaceMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"interfaceMappings\":" + medialive_json_arr(e2))
+    return medialive_json_obj(parts)
+
+# Serialize CmafIngestAbWatermarkerIrdetoSettings to a compact JSON object (declaration order).
+def cmaf_ingest_ab_watermarker_irdeto_settings_to_json(CmafIngestAbWatermarkerIrdetoSettings v) -> str:
+    list[str] parts = []
+    if v.AdditionalDestinationsAlternateDestinations.is_some():
+        auto u0 = v.AdditionalDestinationsAlternateDestinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"additionalDestinationsAlternateDestinations\":" + medialive_json_arr(e1))
+    parts.append("\"alternateDestination\":" + v.AlternateDestination.to_json())
+    if v.CustomProfile.is_some():
+        auto u2 = v.CustomProfile.unwrap()
+        parts.append("\"customProfile\":" + u2.to_json())
+    if v.License.is_some():
+        auto u3 = v.License.unwrap()
+        parts.append("\"license\":" + medialive_json_str(u3))
+    parts.append("\"operatorId\":" + str(v.OperatorId))
+    if v.PolyPeriod.is_some():
+        auto u4 = v.PolyPeriod.unwrap()
+        parts.append("\"polyPeriod\":" + str(u4))
+    parts.append("\"profile\":" + v.Profile.to_json())
+    if v.WatermarkIdLength.is_some():
+        auto u5 = v.WatermarkIdLength.unwrap()
+        parts.append("\"watermarkIdLength\":" + u5.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize CmafIngestGroupSettings to a compact JSON object (declaration order).
+def cmaf_ingest_group_settings_to_json(CmafIngestGroupSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"destination\":" + v.Destination.to_json())
+    if v.NielsenId3Behavior.is_some():
+        auto u0 = v.NielsenId3Behavior.unwrap()
+        parts.append("\"nielsenId3Behavior\":" + u0.to_json())
+    if v.Scte35Type.is_some():
+        auto u1 = v.Scte35Type.unwrap()
+        parts.append("\"scte35Type\":" + u1.to_json())
+    if v.SegmentLength.is_some():
+        auto u2 = v.SegmentLength.unwrap()
+        parts.append("\"segmentLength\":" + str(u2))
+    if v.SegmentLengthUnits.is_some():
+        auto u3 = v.SegmentLengthUnits.unwrap()
+        parts.append("\"segmentLengthUnits\":" + u3.to_json())
+    if v.SendDelayMs.is_some():
+        auto u4 = v.SendDelayMs.unwrap()
+        parts.append("\"sendDelayMs\":" + str(u4))
+    if v.KlvBehavior.is_some():
+        auto u5 = v.KlvBehavior.unwrap()
+        parts.append("\"klvBehavior\":" + u5.to_json())
+    if v.KlvNameModifier.is_some():
+        auto u6 = v.KlvNameModifier.unwrap()
+        parts.append("\"klvNameModifier\":" + medialive_json_str(u6))
+    if v.NielsenId3NameModifier.is_some():
+        auto u7 = v.NielsenId3NameModifier.unwrap()
+        parts.append("\"nielsenId3NameModifier\":" + medialive_json_str(u7))
+    if v.Scte35NameModifier.is_some():
+        auto u8 = v.Scte35NameModifier.unwrap()
+        parts.append("\"scte35NameModifier\":" + medialive_json_str(u8))
+    if v.Id3Behavior.is_some():
+        auto u9 = v.Id3Behavior.unwrap()
+        parts.append("\"id3Behavior\":" + u9.to_json())
+    if v.Id3NameModifier.is_some():
+        auto u10 = v.Id3NameModifier.unwrap()
+        parts.append("\"id3NameModifier\":" + medialive_json_str(u10))
+    if v.CaptionLanguageMappings.is_some():
+        auto u11 = v.CaptionLanguageMappings.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"captionLanguageMappings\":" + medialive_json_arr(e12))
+    if v.TimedMetadataId3Frame.is_some():
+        auto u13 = v.TimedMetadataId3Frame.unwrap()
+        parts.append("\"timedMetadataId3Frame\":" + u13.to_json())
+    if v.TimedMetadataId3Period.is_some():
+        auto u14 = v.TimedMetadataId3Period.unwrap()
+        parts.append("\"timedMetadataId3Period\":" + str(u14))
+    if v.TimedMetadataPassthrough.is_some():
+        auto u15 = v.TimedMetadataPassthrough.unwrap()
+        parts.append("\"timedMetadataPassthrough\":" + u15.to_json())
+    if v.AdditionalDestinations.is_some():
+        auto u16 = v.AdditionalDestinations.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"additionalDestinations\":" + medialive_json_arr(e17))
+    if v.WatermarkingSettings.is_some():
+        auto u18 = v.WatermarkingSettings.unwrap()
+        parts.append("\"watermarkingSettings\":" + cmaf_ingest_watermarking_settings_to_json(u18))
+    return medialive_json_obj(parts)
+
+# Serialize CmafIngestWatermarkingSettings to a compact JSON object (declaration order).
+def cmaf_ingest_watermarking_settings_to_json(CmafIngestWatermarkingSettings v) -> str:
+    list[str] parts = []
+    if v.CmafIngestAbWatermarkerIrdetoSettings.is_some():
+        auto u0 = v.CmafIngestAbWatermarkerIrdetoSettings.unwrap()
+        parts.append("\"cmafIngestAbWatermarkerIrdetoSettings\":" + cmaf_ingest_ab_watermarker_irdeto_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize ColorCorrectionSettings to a compact JSON object (declaration order).
+def color_correction_settings_to_json(ColorCorrectionSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.GlobalColorCorrections:
+        e0.append(x0.to_json())
+    parts.append("\"globalColorCorrections\":" + medialive_json_arr(e0))
+    return medialive_json_obj(parts)
+
+# Serialize EncoderSettings to a compact JSON object (declaration order).
+def encoder_settings_to_json(EncoderSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AudioDescriptions:
+        e0.append(audio_description_to_json(x0))
+    parts.append("\"audioDescriptions\":" + medialive_json_arr(e0))
+    if v.AvailBlanking.is_some():
+        auto u1 = v.AvailBlanking.unwrap()
+        parts.append("\"availBlanking\":" + u1.to_json())
+    if v.AvailConfiguration.is_some():
+        auto u2 = v.AvailConfiguration.unwrap()
+        parts.append("\"availConfiguration\":" + u2.to_json())
+    if v.BlackoutSlate.is_some():
+        auto u3 = v.BlackoutSlate.unwrap()
+        parts.append("\"blackoutSlate\":" + u3.to_json())
+    if v.CaptionDescriptions.is_some():
+        auto u4 = v.CaptionDescriptions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(caption_description_to_json(x5))
+        parts.append("\"captionDescriptions\":" + medialive_json_arr(e5))
+    if v.FeatureActivations.is_some():
+        auto u6 = v.FeatureActivations.unwrap()
+        parts.append("\"featureActivations\":" + u6.to_json())
+    if v.GlobalConfiguration.is_some():
+        auto u7 = v.GlobalConfiguration.unwrap()
+        parts.append("\"globalConfiguration\":" + u7.to_json())
+    if v.MotionGraphicsConfiguration.is_some():
+        auto u8 = v.MotionGraphicsConfiguration.unwrap()
+        parts.append("\"motionGraphicsConfiguration\":" + u8.to_json())
+    if v.NielsenConfiguration.is_some():
+        auto u9 = v.NielsenConfiguration.unwrap()
+        parts.append("\"nielsenConfiguration\":" + u9.to_json())
+    list[str] e10 = []
+    for x10 in v.OutputGroups:
+        e10.append(output_group_to_json(x10))
+    parts.append("\"outputGroups\":" + medialive_json_arr(e10))
+    parts.append("\"timecodeConfig\":" + v.TimecodeConfig.to_json())
+    list[str] e11 = []
+    for x11 in v.VideoDescriptions:
+        e11.append(x11.to_json())
+    parts.append("\"videoDescriptions\":" + medialive_json_arr(e11))
+    if v.ThumbnailConfiguration.is_some():
+        auto u12 = v.ThumbnailConfiguration.unwrap()
+        parts.append("\"thumbnailConfiguration\":" + u12.to_json())
+    if v.ColorCorrectionSettings.is_some():
+        auto u13 = v.ColorCorrectionSettings.unwrap()
+        parts.append("\"colorCorrectionSettings\":" + color_correction_settings_to_json(u13))
+    return medialive_json_obj(parts)
+
+# Serialize HlsGroupSettings to a compact JSON object (declaration order).
+def hls_group_settings_to_json(HlsGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AdMarkers.is_some():
+        auto u0 = v.AdMarkers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"adMarkers\":" + medialive_json_arr(e1))
+    if v.BaseUrlContent.is_some():
+        auto u2 = v.BaseUrlContent.unwrap()
+        parts.append("\"baseUrlContent\":" + medialive_json_str(u2))
+    if v.BaseUrlContent1.is_some():
+        auto u3 = v.BaseUrlContent1.unwrap()
+        parts.append("\"baseUrlContent1\":" + medialive_json_str(u3))
+    if v.BaseUrlManifest.is_some():
+        auto u4 = v.BaseUrlManifest.unwrap()
+        parts.append("\"baseUrlManifest\":" + medialive_json_str(u4))
+    if v.BaseUrlManifest1.is_some():
+        auto u5 = v.BaseUrlManifest1.unwrap()
+        parts.append("\"baseUrlManifest1\":" + medialive_json_str(u5))
+    if v.CaptionLanguageMappings.is_some():
+        auto u6 = v.CaptionLanguageMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"captionLanguageMappings\":" + medialive_json_arr(e7))
+    if v.CaptionLanguageSetting.is_some():
+        auto u8 = v.CaptionLanguageSetting.unwrap()
+        parts.append("\"captionLanguageSetting\":" + u8.to_json())
+    if v.ClientCache.is_some():
+        auto u9 = v.ClientCache.unwrap()
+        parts.append("\"clientCache\":" + u9.to_json())
+    if v.CodecSpecification.is_some():
+        auto u10 = v.CodecSpecification.unwrap()
+        parts.append("\"codecSpecification\":" + u10.to_json())
+    if v.ConstantIv.is_some():
+        auto u11 = v.ConstantIv.unwrap()
+        parts.append("\"constantIv\":" + medialive_json_str(u11))
+    parts.append("\"destination\":" + v.Destination.to_json())
+    if v.DirectoryStructure.is_some():
+        auto u12 = v.DirectoryStructure.unwrap()
+        parts.append("\"directoryStructure\":" + u12.to_json())
+    if v.DiscontinuityTags.is_some():
+        auto u13 = v.DiscontinuityTags.unwrap()
+        parts.append("\"discontinuityTags\":" + u13.to_json())
+    if v.EncryptionType.is_some():
+        auto u14 = v.EncryptionType.unwrap()
+        parts.append("\"encryptionType\":" + u14.to_json())
+    if v.HlsCdnSettings.is_some():
+        auto u15 = v.HlsCdnSettings.unwrap()
+        parts.append("\"hlsCdnSettings\":" + u15.to_json())
+    if v.HlsId3SegmentTagging.is_some():
+        auto u16 = v.HlsId3SegmentTagging.unwrap()
+        parts.append("\"hlsId3SegmentTagging\":" + u16.to_json())
+    if v.IFrameOnlyPlaylists.is_some():
+        auto u17 = v.IFrameOnlyPlaylists.unwrap()
+        parts.append("\"iFrameOnlyPlaylists\":" + u17.to_json())
+    if v.IncompleteSegmentBehavior.is_some():
+        auto u18 = v.IncompleteSegmentBehavior.unwrap()
+        parts.append("\"incompleteSegmentBehavior\":" + u18.to_json())
+    if v.IndexNSegments.is_some():
+        auto u19 = v.IndexNSegments.unwrap()
+        parts.append("\"indexNSegments\":" + str(u19))
+    if v.InputLossAction.is_some():
+        auto u20 = v.InputLossAction.unwrap()
+        parts.append("\"inputLossAction\":" + u20.to_json())
+    if v.IvInManifest.is_some():
+        auto u21 = v.IvInManifest.unwrap()
+        parts.append("\"ivInManifest\":" + u21.to_json())
+    if v.IvSource.is_some():
+        auto u22 = v.IvSource.unwrap()
+        parts.append("\"ivSource\":" + u22.to_json())
+    if v.KeepSegments.is_some():
+        auto u23 = v.KeepSegments.unwrap()
+        parts.append("\"keepSegments\":" + str(u23))
+    if v.KeyFormat.is_some():
+        auto u24 = v.KeyFormat.unwrap()
+        parts.append("\"keyFormat\":" + medialive_json_str(u24))
+    if v.KeyFormatVersions.is_some():
+        auto u25 = v.KeyFormatVersions.unwrap()
+        parts.append("\"keyFormatVersions\":" + medialive_json_str(u25))
+    if v.KeyProviderSettings.is_some():
+        auto u26 = v.KeyProviderSettings.unwrap()
+        parts.append("\"keyProviderSettings\":" + u26.to_json())
+    if v.ManifestCompression.is_some():
+        auto u27 = v.ManifestCompression.unwrap()
+        parts.append("\"manifestCompression\":" + u27.to_json())
+    if v.ManifestDurationFormat.is_some():
+        auto u28 = v.ManifestDurationFormat.unwrap()
+        parts.append("\"manifestDurationFormat\":" + u28.to_json())
+    if v.MinSegmentLength.is_some():
+        auto u29 = v.MinSegmentLength.unwrap()
+        parts.append("\"minSegmentLength\":" + str(u29))
+    if v.Mode.is_some():
+        auto u30 = v.Mode.unwrap()
+        parts.append("\"mode\":" + u30.to_json())
+    if v.OutputSelection.is_some():
+        auto u31 = v.OutputSelection.unwrap()
+        parts.append("\"outputSelection\":" + u31.to_json())
+    if v.ProgramDateTime.is_some():
+        auto u32 = v.ProgramDateTime.unwrap()
+        parts.append("\"programDateTime\":" + u32.to_json())
+    if v.ProgramDateTimeClock.is_some():
+        auto u33 = v.ProgramDateTimeClock.unwrap()
+        parts.append("\"programDateTimeClock\":" + u33.to_json())
+    if v.ProgramDateTimePeriod.is_some():
+        auto u34 = v.ProgramDateTimePeriod.unwrap()
+        parts.append("\"programDateTimePeriod\":" + str(u34))
+    if v.RedundantManifest.is_some():
+        auto u35 = v.RedundantManifest.unwrap()
+        parts.append("\"redundantManifest\":" + u35.to_json())
+    if v.SegmentLength.is_some():
+        auto u36 = v.SegmentLength.unwrap()
+        parts.append("\"segmentLength\":" + str(u36))
+    if v.SegmentationMode.is_some():
+        auto u37 = v.SegmentationMode.unwrap()
+        parts.append("\"segmentationMode\":" + u37.to_json())
+    if v.SegmentsPerSubdirectory.is_some():
+        auto u38 = v.SegmentsPerSubdirectory.unwrap()
+        parts.append("\"segmentsPerSubdirectory\":" + str(u38))
+    if v.StreamInfResolution.is_some():
+        auto u39 = v.StreamInfResolution.unwrap()
+        parts.append("\"streamInfResolution\":" + u39.to_json())
+    if v.TimedMetadataId3Frame.is_some():
+        auto u40 = v.TimedMetadataId3Frame.unwrap()
+        parts.append("\"timedMetadataId3Frame\":" + u40.to_json())
+    if v.TimedMetadataId3Period.is_some():
+        auto u41 = v.TimedMetadataId3Period.unwrap()
+        parts.append("\"timedMetadataId3Period\":" + str(u41))
+    if v.TimestampDeltaMilliseconds.is_some():
+        auto u42 = v.TimestampDeltaMilliseconds.unwrap()
+        parts.append("\"timestampDeltaMilliseconds\":" + str(u42))
+    if v.TsFileMode.is_some():
+        auto u43 = v.TsFileMode.unwrap()
+        parts.append("\"tsFileMode\":" + u43.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize InferenceSettings to a compact JSON object (declaration order).
+def inference_settings_to_json(InferenceSettings v) -> str:
+    list[str] parts = []
+    if v.FeedArn.is_some():
+        auto u0 = v.FeedArn.unwrap()
+        parts.append("\"feedArn\":" + medialive_json_str(u0))
+    if v.AudioFeedInputs.is_some():
+        auto u1 = v.AudioFeedInputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"audioFeedInputs\":" + medialive_json_arr(e2))
+    if v.EnrichmentMethods.is_some():
+        auto u3 = v.EnrichmentMethods.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(medialive_json_str(x4))
+        parts.append("\"enrichmentMethods\":" + medialive_json_arr(e4))
+    return medialive_json_obj(parts)
+
+# Serialize InputAttachment to a compact JSON object (declaration order).
+def input_attachment_to_json(InputAttachment v) -> str:
+    list[str] parts = []
+    if v.AutomaticInputFailoverSettings.is_some():
+        auto u0 = v.AutomaticInputFailoverSettings.unwrap()
+        parts.append("\"automaticInputFailoverSettings\":" + automatic_input_failover_settings_to_json(u0))
+    if v.InputAttachmentName.is_some():
+        auto u1 = v.InputAttachmentName.unwrap()
+        parts.append("\"inputAttachmentName\":" + medialive_json_str(u1))
+    if v.InputId.is_some():
+        auto u2 = v.InputId.unwrap()
+        parts.append("\"inputId\":" + medialive_json_str(u2))
+    if v.InputSettings.is_some():
+        auto u3 = v.InputSettings.unwrap()
+        parts.append("\"inputSettings\":" + input_settings_to_json(u3))
+    if v.LogicalInterfaceNames.is_some():
+        auto u4 = v.LogicalInterfaceNames.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(medialive_json_str(x5))
+        parts.append("\"logicalInterfaceNames\":" + medialive_json_arr(e5))
+    return medialive_json_obj(parts)
+
+# Serialize InputDestinationRequest to a compact JSON object (declaration order).
+def input_destination_request_to_json(InputDestinationRequest v) -> str:
+    list[str] parts = []
+    if v.StreamName.is_some():
+        auto u0 = v.StreamName.unwrap()
+        parts.append("\"streamName\":" + medialive_json_str(u0))
+    if v.Network.is_some():
+        auto u1 = v.Network.unwrap()
+        parts.append("\"network\":" + medialive_json_str(u1))
+    if v.NetworkRoutes.is_some():
+        auto u2 = v.NetworkRoutes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"networkRoutes\":" + medialive_json_arr(e3))
+    if v.StaticIpAddress.is_some():
+        auto u4 = v.StaticIpAddress.unwrap()
+        parts.append("\"staticIpAddress\":" + medialive_json_str(u4))
+    return medialive_json_obj(parts)
+
+# Serialize InputDeviceConfigurableSettings to a compact JSON object (declaration order).
+def input_device_configurable_settings_to_json(InputDeviceConfigurableSettings v) -> str:
+    list[str] parts = []
+    if v.ConfiguredInput.is_some():
+        auto u0 = v.ConfiguredInput.unwrap()
+        parts.append("\"configuredInput\":" + u0.to_json())
+    if v.MaxBitrate.is_some():
+        auto u1 = v.MaxBitrate.unwrap()
+        parts.append("\"maxBitrate\":" + str(u1))
+    if v.LatencyMs.is_some():
+        auto u2 = v.LatencyMs.unwrap()
+        parts.append("\"latencyMs\":" + str(u2))
+    if v.Codec.is_some():
+        auto u3 = v.Codec.unwrap()
+        parts.append("\"codec\":" + u3.to_json())
+    if v.MediaconnectSettings.is_some():
+        auto u4 = v.MediaconnectSettings.unwrap()
+        parts.append("\"mediaconnectSettings\":" + u4.to_json())
+    if v.AudioChannelPairs.is_some():
+        auto u5 = v.AudioChannelPairs.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"audioChannelPairs\":" + medialive_json_arr(e6))
+    if v.InputResolution.is_some():
+        auto u7 = v.InputResolution.unwrap()
+        parts.append("\"inputResolution\":" + medialive_json_str(u7))
+    return medialive_json_obj(parts)
+
+# Serialize InputPrepareScheduleActionSettings to a compact JSON object (declaration order).
+def input_prepare_schedule_action_settings_to_json(InputPrepareScheduleActionSettings v) -> str:
+    list[str] parts = []
+    if v.InputAttachmentNameReference.is_some():
+        auto u0 = v.InputAttachmentNameReference.unwrap()
+        parts.append("\"inputAttachmentNameReference\":" + medialive_json_str(u0))
+    if v.InputClippingSettings.is_some():
+        auto u1 = v.InputClippingSettings.unwrap()
+        parts.append("\"inputClippingSettings\":" + u1.to_json())
+    if v.UrlPath.is_some():
+        auto u2 = v.UrlPath.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(medialive_json_str(x3))
+        parts.append("\"urlPath\":" + medialive_json_arr(e3))
+    return medialive_json_obj(parts)
+
+# Serialize InputSettings to a compact JSON object (declaration order).
+def input_settings_to_json(InputSettings v) -> str:
+    list[str] parts = []
+    if v.AudioSelectors.is_some():
+        auto u0 = v.AudioSelectors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(audio_selector_to_json(x1))
+        parts.append("\"audioSelectors\":" + medialive_json_arr(e1))
+    if v.CaptionSelectors.is_some():
+        auto u2 = v.CaptionSelectors.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"captionSelectors\":" + medialive_json_arr(e3))
+    if v.DeblockFilter.is_some():
+        auto u4 = v.DeblockFilter.unwrap()
+        parts.append("\"deblockFilter\":" + u4.to_json())
+    if v.DenoiseFilter.is_some():
+        auto u5 = v.DenoiseFilter.unwrap()
+        parts.append("\"denoiseFilter\":" + u5.to_json())
+    if v.FilterStrength.is_some():
+        auto u6 = v.FilterStrength.unwrap()
+        parts.append("\"filterStrength\":" + str(u6))
+    if v.InputFilter.is_some():
+        auto u7 = v.InputFilter.unwrap()
+        parts.append("\"inputFilter\":" + u7.to_json())
+    if v.NetworkInputSettings.is_some():
+        auto u8 = v.NetworkInputSettings.unwrap()
+        parts.append("\"networkInputSettings\":" + u8.to_json())
+    if v.Scte35Pid.is_some():
+        auto u9 = v.Scte35Pid.unwrap()
+        parts.append("\"scte35Pid\":" + str(u9))
+    if v.Smpte2038DataPreference.is_some():
+        auto u10 = v.Smpte2038DataPreference.unwrap()
+        parts.append("\"smpte2038DataPreference\":" + u10.to_json())
+    if v.SourceEndBehavior.is_some():
+        auto u11 = v.SourceEndBehavior.unwrap()
+        parts.append("\"sourceEndBehavior\":" + u11.to_json())
+    if v.VideoSelector.is_some():
+        auto u12 = v.VideoSelector.unwrap()
+        parts.append("\"videoSelector\":" + u12.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize InputSwitchScheduleActionSettings to a compact JSON object (declaration order).
+def input_switch_schedule_action_settings_to_json(InputSwitchScheduleActionSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"inputAttachmentNameReference\":" + medialive_json_str(v.InputAttachmentNameReference))
+    if v.InputClippingSettings.is_some():
+        auto u0 = v.InputClippingSettings.unwrap()
+        parts.append("\"inputClippingSettings\":" + u0.to_json())
+    if v.UrlPath.is_some():
+        auto u1 = v.UrlPath.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(medialive_json_str(x2))
+        parts.append("\"urlPath\":" + medialive_json_arr(e2))
+    return medialive_json_obj(parts)
+
+# Serialize InputVpcRequest to a compact JSON object (declaration order).
+def input_vpc_request_to_json(InputVpcRequest v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(medialive_json_str(x1))
+        parts.append("\"securityGroupIds\":" + medialive_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.SubnetIds:
+        e2.append(medialive_json_str(x2))
+    parts.append("\"subnetIds\":" + medialive_json_arr(e2))
+    return medialive_json_obj(parts)
+
+# Serialize MediaConnectRouterGroupSettings to a compact JSON object (declaration order).
+def media_connect_router_group_settings_to_json(MediaConnectRouterGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(medialive_json_str(x1))
+        parts.append("\"availabilityZones\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize MediaPackageGroupSettings to a compact JSON object (declaration order).
+def media_package_group_settings_to_json(MediaPackageGroupSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"destination\":" + v.Destination.to_json())
+    if v.MediapackageV2GroupSettings.is_some():
+        auto u0 = v.MediapackageV2GroupSettings.unwrap()
+        parts.append("\"mediapackageV2GroupSettings\":" + media_package_v2_group_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize MediaPackageOutputSettings to a compact JSON object (declaration order).
+def media_package_output_settings_to_json(MediaPackageOutputSettings v) -> str:
+    list[str] parts = []
+    if v.MediaPackageV2DestinationSettings.is_some():
+        auto u0 = v.MediaPackageV2DestinationSettings.unwrap()
+        parts.append("\"mediaPackageV2DestinationSettings\":" + media_package_v2_destination_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize MediaPackageV2AbWatermarkerIrdetoSettings to a compact JSON object (declaration order).
+def media_package_v2_ab_watermarker_irdeto_settings_to_json(MediaPackageV2AbWatermarkerIrdetoSettings v) -> str:
+    list[str] parts = []
+    if v.AdditionalDestinationsAlternateDestinations.is_some():
+        auto u0 = v.AdditionalDestinationsAlternateDestinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"additionalDestinationsAlternateDestinations\":" + medialive_json_arr(e1))
+    parts.append("\"alternateDestination\":" + v.AlternateDestination.to_json())
+    if v.CustomProfile.is_some():
+        auto u2 = v.CustomProfile.unwrap()
+        parts.append("\"customProfile\":" + u2.to_json())
+    if v.License.is_some():
+        auto u3 = v.License.unwrap()
+        parts.append("\"license\":" + medialive_json_str(u3))
+    parts.append("\"operatorId\":" + str(v.OperatorId))
+    if v.PolyPeriod.is_some():
+        auto u4 = v.PolyPeriod.unwrap()
+        parts.append("\"polyPeriod\":" + str(u4))
+    parts.append("\"profile\":" + v.Profile.to_json())
+    if v.WatermarkIdLength.is_some():
+        auto u5 = v.WatermarkIdLength.unwrap()
+        parts.append("\"watermarkIdLength\":" + u5.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize MediaPackageV2DestinationSettings to a compact JSON object (declaration order).
+def media_package_v2_destination_settings_to_json(MediaPackageV2DestinationSettings v) -> str:
+    list[str] parts = []
+    if v.AudioGroupId.is_some():
+        auto u0 = v.AudioGroupId.unwrap()
+        parts.append("\"audioGroupId\":" + medialive_json_str(u0))
+    if v.AudioRenditionSets.is_some():
+        auto u1 = v.AudioRenditionSets.unwrap()
+        parts.append("\"audioRenditionSets\":" + medialive_json_str(u1))
+    if v.HlsAutoSelect.is_some():
+        auto u2 = v.HlsAutoSelect.unwrap()
+        parts.append("\"hlsAutoSelect\":" + u2.to_json())
+    if v.HlsDefault.is_some():
+        auto u3 = v.HlsDefault.unwrap()
+        parts.append("\"hlsDefault\":" + u3.to_json())
+    if v.OutputUsage.is_some():
+        auto u4 = v.OutputUsage.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"outputUsage\":" + medialive_json_arr(e5))
+    return medialive_json_obj(parts)
+
+# Serialize MediaPackageV2GroupSettings to a compact JSON object (declaration order).
+def media_package_v2_group_settings_to_json(MediaPackageV2GroupSettings v) -> str:
+    list[str] parts = []
+    if v.CaptionLanguageMappings.is_some():
+        auto u0 = v.CaptionLanguageMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"captionLanguageMappings\":" + medialive_json_arr(e1))
+    if v.Id3Behavior.is_some():
+        auto u2 = v.Id3Behavior.unwrap()
+        parts.append("\"id3Behavior\":" + u2.to_json())
+    if v.KlvBehavior.is_some():
+        auto u3 = v.KlvBehavior.unwrap()
+        parts.append("\"klvBehavior\":" + u3.to_json())
+    if v.NielsenId3Behavior.is_some():
+        auto u4 = v.NielsenId3Behavior.unwrap()
+        parts.append("\"nielsenId3Behavior\":" + u4.to_json())
+    if v.Scte35Type.is_some():
+        auto u5 = v.Scte35Type.unwrap()
+        parts.append("\"scte35Type\":" + u5.to_json())
+    if v.SegmentLength.is_some():
+        auto u6 = v.SegmentLength.unwrap()
+        parts.append("\"segmentLength\":" + str(u6))
+    if v.SegmentLengthUnits.is_some():
+        auto u7 = v.SegmentLengthUnits.unwrap()
+        parts.append("\"segmentLengthUnits\":" + u7.to_json())
+    if v.TimedMetadataId3Frame.is_some():
+        auto u8 = v.TimedMetadataId3Frame.unwrap()
+        parts.append("\"timedMetadataId3Frame\":" + u8.to_json())
+    if v.TimedMetadataId3Period.is_some():
+        auto u9 = v.TimedMetadataId3Period.unwrap()
+        parts.append("\"timedMetadataId3Period\":" + str(u9))
+    if v.TimedMetadataPassthrough.is_some():
+        auto u10 = v.TimedMetadataPassthrough.unwrap()
+        parts.append("\"timedMetadataPassthrough\":" + u10.to_json())
+    if v.AdditionalDestinations.is_some():
+        auto u11 = v.AdditionalDestinations.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"additionalDestinations\":" + medialive_json_arr(e12))
+    if v.WatermarkingSettings.is_some():
+        auto u13 = v.WatermarkingSettings.unwrap()
+        parts.append("\"watermarkingSettings\":" + media_package_v2_watermarking_settings_to_json(u13))
+    return medialive_json_obj(parts)
+
+# Serialize MediaPackageV2WatermarkingSettings to a compact JSON object (declaration order).
+def media_package_v2_watermarking_settings_to_json(MediaPackageV2WatermarkingSettings v) -> str:
+    list[str] parts = []
+    if v.MediaPackageV2AbWatermarkerIrdetoSettings.is_some():
+        auto u0 = v.MediaPackageV2AbWatermarkerIrdetoSettings.unwrap()
+        parts.append("\"mediaPackageV2AbWatermarkerIrdetoSettings\":" + media_package_v2_ab_watermarker_irdeto_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize MulticastSettingsCreateRequest to a compact JSON object (declaration order).
+def multicast_settings_create_request_to_json(MulticastSettingsCreateRequest v) -> str:
+    list[str] parts = []
+    if v.Sources.is_some():
+        auto u0 = v.Sources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"sources\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize MulticastSettingsUpdateRequest to a compact JSON object (declaration order).
+def multicast_settings_update_request_to_json(MulticastSettingsUpdateRequest v) -> str:
+    list[str] parts = []
+    if v.Sources.is_some():
+        auto u0 = v.Sources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"sources\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize MultiplexProgramPacketIdentifiersMap to a compact JSON object (declaration order).
+def multiplex_program_packet_identifiers_map_to_json(MultiplexProgramPacketIdentifiersMap v) -> str:
+    list[str] parts = []
+    if v.AudioPids.is_some():
+        auto u0 = v.AudioPids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"audioPids\":" + medialive_json_arr(e1))
+    if v.DvbSubPids.is_some():
+        auto u2 = v.DvbSubPids.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"dvbSubPids\":" + medialive_json_arr(e3))
+    if v.DvbTeletextPid.is_some():
+        auto u4 = v.DvbTeletextPid.unwrap()
+        parts.append("\"dvbTeletextPid\":" + str(u4))
+    if v.EtvPlatformPid.is_some():
+        auto u5 = v.EtvPlatformPid.unwrap()
+        parts.append("\"etvPlatformPid\":" + str(u5))
+    if v.EtvSignalPid.is_some():
+        auto u6 = v.EtvSignalPid.unwrap()
+        parts.append("\"etvSignalPid\":" + str(u6))
+    if v.KlvDataPids.is_some():
+        auto u7 = v.KlvDataPids.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(str(x8))
+        parts.append("\"klvDataPids\":" + medialive_json_arr(e8))
+    if v.PcrPid.is_some():
+        auto u9 = v.PcrPid.unwrap()
+        parts.append("\"pcrPid\":" + str(u9))
+    if v.PmtPid.is_some():
+        auto u10 = v.PmtPid.unwrap()
+        parts.append("\"pmtPid\":" + str(u10))
+    if v.PrivateMetadataPid.is_some():
+        auto u11 = v.PrivateMetadataPid.unwrap()
+        parts.append("\"privateMetadataPid\":" + str(u11))
+    if v.Scte27Pids.is_some():
+        auto u12 = v.Scte27Pids.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(str(x13))
+        parts.append("\"scte27Pids\":" + medialive_json_arr(e13))
+    if v.Scte35Pid.is_some():
+        auto u14 = v.Scte35Pid.unwrap()
+        parts.append("\"scte35Pid\":" + str(u14))
+    if v.TimedMetadataPid.is_some():
+        auto u15 = v.TimedMetadataPid.unwrap()
+        parts.append("\"timedMetadataPid\":" + str(u15))
+    if v.VideoPid.is_some():
+        auto u16 = v.VideoPid.unwrap()
+        parts.append("\"videoPid\":" + str(u16))
+    if v.AribCaptionsPid.is_some():
+        auto u17 = v.AribCaptionsPid.unwrap()
+        parts.append("\"aribCaptionsPid\":" + str(u17))
+    if v.DvbTeletextPids.is_some():
+        auto u18 = v.DvbTeletextPids.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(str(x19))
+        parts.append("\"dvbTeletextPids\":" + medialive_json_arr(e19))
+    if v.EcmPid.is_some():
+        auto u20 = v.EcmPid.unwrap()
+        parts.append("\"ecmPid\":" + str(u20))
+    if v.Smpte2038Pid.is_some():
+        auto u21 = v.Smpte2038Pid.unwrap()
+        parts.append("\"smpte2038Pid\":" + str(u21))
+    return medialive_json_obj(parts)
+
+# Serialize NodeInterfaceMapping to a compact JSON object (declaration order).
+def node_interface_mapping_to_json(NodeInterfaceMapping v) -> str:
+    list[str] parts = []
+    if v.LogicalInterfaceName.is_some():
+        auto u0 = v.LogicalInterfaceName.unwrap()
+        parts.append("\"logicalInterfaceName\":" + medialive_json_str(u0))
+    if v.NetworkInterfaceMode.is_some():
+        auto u1 = v.NetworkInterfaceMode.unwrap()
+        parts.append("\"networkInterfaceMode\":" + u1.to_json())
+    if v.PhysicalInterfaceName.is_some():
+        auto u2 = v.PhysicalInterfaceName.unwrap()
+        parts.append("\"physicalInterfaceName\":" + medialive_json_str(u2))
+    if v.PhysicalInterfaceIpAddresses.is_some():
+        auto u3 = v.PhysicalInterfaceIpAddresses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(medialive_json_str(x4))
+        parts.append("\"physicalInterfaceIpAddresses\":" + medialive_json_arr(e4))
+    return medialive_json_obj(parts)
+
+# Serialize Output to a compact JSON object (declaration order).
+def output_to_json(Output v) -> str:
+    list[str] parts = []
+    if v.AudioDescriptionNames.is_some():
+        auto u0 = v.AudioDescriptionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(medialive_json_str(x1))
+        parts.append("\"audioDescriptionNames\":" + medialive_json_arr(e1))
+    if v.CaptionDescriptionNames.is_some():
+        auto u2 = v.CaptionDescriptionNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(medialive_json_str(x3))
+        parts.append("\"captionDescriptionNames\":" + medialive_json_arr(e3))
+    if v.OutputName.is_some():
+        auto u4 = v.OutputName.unwrap()
+        parts.append("\"outputName\":" + medialive_json_str(u4))
+    parts.append("\"outputSettings\":" + output_settings_to_json(v.OutputSettings))
+    if v.VideoDescriptionName.is_some():
+        auto u5 = v.VideoDescriptionName.unwrap()
+        parts.append("\"videoDescriptionName\":" + medialive_json_str(u5))
+    return medialive_json_obj(parts)
+
+# Serialize OutputDestination to a compact JSON object (declaration order).
+def output_destination_to_json(OutputDestination v) -> str:
+    list[str] parts = []
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        parts.append("\"id\":" + medialive_json_str(u0))
+    if v.MediaPackageSettings.is_some():
+        auto u1 = v.MediaPackageSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"mediaPackageSettings\":" + medialive_json_arr(e2))
+    if v.MultiplexSettings.is_some():
+        auto u3 = v.MultiplexSettings.unwrap()
+        parts.append("\"multiplexSettings\":" + u3.to_json())
+    if v.Settings.is_some():
+        auto u4 = v.Settings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"settings\":" + medialive_json_arr(e5))
+    if v.SrtSettings.is_some():
+        auto u6 = v.SrtSettings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"srtSettings\":" + medialive_json_arr(e7))
+    if v.LogicalInterfaceNames.is_some():
+        auto u8 = v.LogicalInterfaceNames.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(medialive_json_str(x9))
+        parts.append("\"logicalInterfaceNames\":" + medialive_json_arr(e9))
+    if v.MediaConnectRouterSettings.is_some():
+        auto u10 = v.MediaConnectRouterSettings.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"mediaConnectRouterSettings\":" + medialive_json_arr(e11))
+    return medialive_json_obj(parts)
+
+# Serialize OutputGroup to a compact JSON object (declaration order).
+def output_group_to_json(OutputGroup v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"name\":" + medialive_json_str(u0))
+    parts.append("\"outputGroupSettings\":" + output_group_settings_to_json(v.OutputGroupSettings))
+    list[str] e1 = []
+    for x1 in v.Outputs:
+        e1.append(output_to_json(x1))
+    parts.append("\"outputs\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize OutputGroupSettings to a compact JSON object (declaration order).
+def output_group_settings_to_json(OutputGroupSettings v) -> str:
+    list[str] parts = []
+    if v.ArchiveGroupSettings.is_some():
+        auto u0 = v.ArchiveGroupSettings.unwrap()
+        parts.append("\"archiveGroupSettings\":" + u0.to_json())
+    if v.FrameCaptureGroupSettings.is_some():
+        auto u1 = v.FrameCaptureGroupSettings.unwrap()
+        parts.append("\"frameCaptureGroupSettings\":" + u1.to_json())
+    if v.HlsGroupSettings.is_some():
+        auto u2 = v.HlsGroupSettings.unwrap()
+        parts.append("\"hlsGroupSettings\":" + hls_group_settings_to_json(u2))
+    if v.MediaPackageGroupSettings.is_some():
+        auto u3 = v.MediaPackageGroupSettings.unwrap()
+        parts.append("\"mediaPackageGroupSettings\":" + media_package_group_settings_to_json(u3))
+    if v.MsSmoothGroupSettings.is_some():
+        auto u4 = v.MsSmoothGroupSettings.unwrap()
+        parts.append("\"msSmoothGroupSettings\":" + u4.to_json())
+    if v.MultiplexGroupSettings.is_some():
+        auto u5 = v.MultiplexGroupSettings.unwrap()
+        parts.append("\"multiplexGroupSettings\":" + u5.to_json())
+    if v.RtmpGroupSettings.is_some():
+        auto u6 = v.RtmpGroupSettings.unwrap()
+        parts.append("\"rtmpGroupSettings\":" + rtmp_group_settings_to_json(u6))
+    if v.UdpGroupSettings.is_some():
+        auto u7 = v.UdpGroupSettings.unwrap()
+        parts.append("\"udpGroupSettings\":" + u7.to_json())
+    if v.CmafIngestGroupSettings.is_some():
+        auto u8 = v.CmafIngestGroupSettings.unwrap()
+        parts.append("\"cmafIngestGroupSettings\":" + cmaf_ingest_group_settings_to_json(u8))
+    if v.SrtGroupSettings.is_some():
+        auto u9 = v.SrtGroupSettings.unwrap()
+        parts.append("\"srtGroupSettings\":" + u9.to_json())
+    if v.MediaConnectRouterGroupSettings.is_some():
+        auto u10 = v.MediaConnectRouterGroupSettings.unwrap()
+        parts.append("\"mediaConnectRouterGroupSettings\":" + media_connect_router_group_settings_to_json(u10))
+    return medialive_json_obj(parts)
+
+# Serialize OutputSettings to a compact JSON object (declaration order).
+def output_settings_to_json(OutputSettings v) -> str:
+    list[str] parts = []
+    if v.ArchiveOutputSettings.is_some():
+        auto u0 = v.ArchiveOutputSettings.unwrap()
+        parts.append("\"archiveOutputSettings\":" + u0.to_json())
+    if v.FrameCaptureOutputSettings.is_some():
+        auto u1 = v.FrameCaptureOutputSettings.unwrap()
+        parts.append("\"frameCaptureOutputSettings\":" + u1.to_json())
+    if v.HlsOutputSettings.is_some():
+        auto u2 = v.HlsOutputSettings.unwrap()
+        parts.append("\"hlsOutputSettings\":" + u2.to_json())
+    if v.MediaPackageOutputSettings.is_some():
+        auto u3 = v.MediaPackageOutputSettings.unwrap()
+        parts.append("\"mediaPackageOutputSettings\":" + media_package_output_settings_to_json(u3))
+    if v.MsSmoothOutputSettings.is_some():
+        auto u4 = v.MsSmoothOutputSettings.unwrap()
+        parts.append("\"msSmoothOutputSettings\":" + u4.to_json())
+    if v.MultiplexOutputSettings.is_some():
+        auto u5 = v.MultiplexOutputSettings.unwrap()
+        parts.append("\"multiplexOutputSettings\":" + u5.to_json())
+    if v.RtmpOutputSettings.is_some():
+        auto u6 = v.RtmpOutputSettings.unwrap()
+        parts.append("\"rtmpOutputSettings\":" + u6.to_json())
+    if v.UdpOutputSettings.is_some():
+        auto u7 = v.UdpOutputSettings.unwrap()
+        parts.append("\"udpOutputSettings\":" + u7.to_json())
+    if v.CmafIngestOutputSettings.is_some():
+        auto u8 = v.CmafIngestOutputSettings.unwrap()
+        parts.append("\"cmafIngestOutputSettings\":" + u8.to_json())
+    if v.SrtOutputSettings.is_some():
+        auto u9 = v.SrtOutputSettings.unwrap()
+        parts.append("\"srtOutputSettings\":" + u9.to_json())
+    if v.MediaConnectRouterOutputSettings.is_some():
+        auto u10 = v.MediaConnectRouterOutputSettings.unwrap()
+        parts.append("\"mediaConnectRouterOutputSettings\":" + u10.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize PauseStateScheduleActionSettings to a compact JSON object (declaration order).
+def pause_state_schedule_action_settings_to_json(PauseStateScheduleActionSettings v) -> str:
+    list[str] parts = []
+    if v.Pipelines.is_some():
+        auto u0 = v.Pipelines.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"pipelines\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize RemixSettings to a compact JSON object (declaration order).
+def remix_settings_to_json(RemixSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ChannelMappings:
+        e0.append(audio_channel_mapping_to_json(x0))
+    parts.append("\"channelMappings\":" + medialive_json_arr(e0))
+    if v.ChannelsIn.is_some():
+        auto u1 = v.ChannelsIn.unwrap()
+        parts.append("\"channelsIn\":" + str(u1))
+    if v.ChannelsOut.is_some():
+        auto u2 = v.ChannelsOut.unwrap()
+        parts.append("\"channelsOut\":" + str(u2))
+    return medialive_json_obj(parts)
+
+# Serialize RouterSettings to a compact JSON object (declaration order).
+def router_settings_to_json(RouterSettings v) -> str:
+    list[str] parts = []
+    if v.Destinations.is_some():
+        auto u0 = v.Destinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"destinations\":" + medialive_json_arr(e1))
+    if v.EncryptionType.is_some():
+        auto u2 = v.EncryptionType.unwrap()
+        parts.append("\"encryptionType\":" + u2.to_json())
+    if v.SecretArn.is_some():
+        auto u3 = v.SecretArn.unwrap()
+        parts.append("\"secretArn\":" + medialive_json_str(u3))
+    return medialive_json_obj(parts)
+
+# Serialize RtmpGroupSettings to a compact JSON object (declaration order).
+def rtmp_group_settings_to_json(RtmpGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AdMarkers.is_some():
+        auto u0 = v.AdMarkers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(medialive_json_str(x1))
+        parts.append("\"adMarkers\":" + medialive_json_arr(e1))
+    if v.AuthenticationScheme.is_some():
+        auto u2 = v.AuthenticationScheme.unwrap()
+        parts.append("\"authenticationScheme\":" + u2.to_json())
+    if v.CacheFullBehavior.is_some():
+        auto u3 = v.CacheFullBehavior.unwrap()
+        parts.append("\"cacheFullBehavior\":" + u3.to_json())
+    if v.CacheLength.is_some():
+        auto u4 = v.CacheLength.unwrap()
+        parts.append("\"cacheLength\":" + str(u4))
+    if v.CaptionData.is_some():
+        auto u5 = v.CaptionData.unwrap()
+        parts.append("\"captionData\":" + u5.to_json())
+    if v.InputLossAction.is_some():
+        auto u6 = v.InputLossAction.unwrap()
+        parts.append("\"inputLossAction\":" + u6.to_json())
+    if v.RestartDelay.is_some():
+        auto u7 = v.RestartDelay.unwrap()
+        parts.append("\"restartDelay\":" + str(u7))
+    if v.IncludeFillerNalUnits.is_some():
+        auto u8 = v.IncludeFillerNalUnits.unwrap()
+        parts.append("\"includeFillerNalUnits\":" + u8.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize ScheduleAction to a compact JSON object (declaration order).
+def schedule_action_to_json(ScheduleAction v) -> str:
+    list[str] parts = []
+    parts.append("\"actionName\":" + medialive_json_str(v.ActionName))
+    parts.append("\"scheduleActionSettings\":" + schedule_action_settings_to_json(v.ScheduleActionSettings))
+    parts.append("\"scheduleActionStartSettings\":" + v.ScheduleActionStartSettings.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize ScheduleActionSettings to a compact JSON object (declaration order).
+def schedule_action_settings_to_json(ScheduleActionSettings v) -> str:
+    list[str] parts = []
+    if v.HlsId3SegmentTaggingSettings.is_some():
+        auto u0 = v.HlsId3SegmentTaggingSettings.unwrap()
+        parts.append("\"hlsId3SegmentTaggingSettings\":" + u0.to_json())
+    if v.HlsTimedMetadataSettings.is_some():
+        auto u1 = v.HlsTimedMetadataSettings.unwrap()
+        parts.append("\"hlsTimedMetadataSettings\":" + u1.to_json())
+    if v.InputPrepareSettings.is_some():
+        auto u2 = v.InputPrepareSettings.unwrap()
+        parts.append("\"inputPrepareSettings\":" + input_prepare_schedule_action_settings_to_json(u2))
+    if v.InputSwitchSettings.is_some():
+        auto u3 = v.InputSwitchSettings.unwrap()
+        parts.append("\"inputSwitchSettings\":" + input_switch_schedule_action_settings_to_json(u3))
+    if v.MotionGraphicsImageActivateSettings.is_some():
+        auto u4 = v.MotionGraphicsImageActivateSettings.unwrap()
+        parts.append("\"motionGraphicsImageActivateSettings\":" + u4.to_json())
+    if v.MotionGraphicsImageDeactivateSettings.is_some():
+        auto u5 = v.MotionGraphicsImageDeactivateSettings.unwrap()
+        parts.append("\"motionGraphicsImageDeactivateSettings\":" + u5.to_json())
+    if v.PauseStateSettings.is_some():
+        auto u6 = v.PauseStateSettings.unwrap()
+        parts.append("\"pauseStateSettings\":" + pause_state_schedule_action_settings_to_json(u6))
+    if v.Scte35InputSettings.is_some():
+        auto u7 = v.Scte35InputSettings.unwrap()
+        parts.append("\"scte35InputSettings\":" + u7.to_json())
+    if v.Scte35ReturnToNetworkSettings.is_some():
+        auto u8 = v.Scte35ReturnToNetworkSettings.unwrap()
+        parts.append("\"scte35ReturnToNetworkSettings\":" + u8.to_json())
+    if v.Scte35SpliceInsertSettings.is_some():
+        auto u9 = v.Scte35SpliceInsertSettings.unwrap()
+        parts.append("\"scte35SpliceInsertSettings\":" + u9.to_json())
+    if v.Scte35TimeSignalSettings.is_some():
+        auto u10 = v.Scte35TimeSignalSettings.unwrap()
+        parts.append("\"scte35TimeSignalSettings\":" + scte35_time_signal_schedule_action_settings_to_json(u10))
+    if v.StaticImageActivateSettings.is_some():
+        auto u11 = v.StaticImageActivateSettings.unwrap()
+        parts.append("\"staticImageActivateSettings\":" + u11.to_json())
+    if v.StaticImageDeactivateSettings.is_some():
+        auto u12 = v.StaticImageDeactivateSettings.unwrap()
+        parts.append("\"staticImageDeactivateSettings\":" + u12.to_json())
+    if v.StaticImageOutputActivateSettings.is_some():
+        auto u13 = v.StaticImageOutputActivateSettings.unwrap()
+        parts.append("\"staticImageOutputActivateSettings\":" + static_image_output_activate_schedule_action_settings_to_json(u13))
+    if v.StaticImageOutputDeactivateSettings.is_some():
+        auto u14 = v.StaticImageOutputDeactivateSettings.unwrap()
+        parts.append("\"staticImageOutputDeactivateSettings\":" + static_image_output_deactivate_schedule_action_settings_to_json(u14))
+    if v.Id3SegmentTaggingSettings.is_some():
+        auto u15 = v.Id3SegmentTaggingSettings.unwrap()
+        parts.append("\"id3SegmentTaggingSettings\":" + u15.to_json())
+    if v.TimedMetadataSettings.is_some():
+        auto u16 = v.TimedMetadataSettings.unwrap()
+        parts.append("\"timedMetadataSettings\":" + u16.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize Scte35TimeSignalScheduleActionSettings to a compact JSON object (declaration order).
+def scte35_time_signal_schedule_action_settings_to_json(Scte35TimeSignalScheduleActionSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Scte35Descriptors:
+        e0.append(x0.to_json())
+    parts.append("\"scte35Descriptors\":" + medialive_json_arr(e0))
+    return medialive_json_obj(parts)
+
+# Serialize Smpte2110ReceiverGroup to a compact JSON object (declaration order).
+def smpte2110_receiver_group_to_json(Smpte2110ReceiverGroup v) -> str:
+    list[str] parts = []
+    if v.SdpSettings.is_some():
+        auto u0 = v.SdpSettings.unwrap()
+        parts.append("\"sdpSettings\":" + smpte2110_receiver_group_sdp_settings_to_json(u0))
+    return medialive_json_obj(parts)
+
+# Serialize Smpte2110ReceiverGroupSdpSettings to a compact JSON object (declaration order).
+def smpte2110_receiver_group_sdp_settings_to_json(Smpte2110ReceiverGroupSdpSettings v) -> str:
+    list[str] parts = []
+    if v.AncillarySdps.is_some():
+        auto u0 = v.AncillarySdps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ancillarySdps\":" + medialive_json_arr(e1))
+    if v.AudioSdps.is_some():
+        auto u2 = v.AudioSdps.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"audioSdps\":" + medialive_json_arr(e3))
+    if v.VideoSdp.is_some():
+        auto u4 = v.VideoSdp.unwrap()
+        parts.append("\"videoSdp\":" + u4.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize Smpte2110ReceiverGroupSettings to a compact JSON object (declaration order).
+def smpte2110_receiver_group_settings_to_json(Smpte2110ReceiverGroupSettings v) -> str:
+    list[str] parts = []
+    if v.Smpte2110ReceiverGroups.is_some():
+        auto u0 = v.Smpte2110ReceiverGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(smpte2110_receiver_group_to_json(x1))
+        parts.append("\"smpte2110ReceiverGroups\":" + medialive_json_arr(e1))
+    return medialive_json_obj(parts)
+
+# Serialize SrtSettingsRequest to a compact JSON object (declaration order).
+def srt_settings_request_to_json(SrtSettingsRequest v) -> str:
+    list[str] parts = []
+    if v.SrtCallerSources.is_some():
+        auto u0 = v.SrtCallerSources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"srtCallerSources\":" + medialive_json_arr(e1))
+    if v.SrtListenerSettings.is_some():
+        auto u2 = v.SrtListenerSettings.unwrap()
+        parts.append("\"srtListenerSettings\":" + u2.to_json())
+    return medialive_json_obj(parts)
+
+# Serialize StaticImageOutputActivateScheduleActionSettings to a compact JSON object (declaration order).
+def static_image_output_activate_schedule_action_settings_to_json(StaticImageOutputActivateScheduleActionSettings v) -> str:
+    list[str] parts = []
+    if v.Duration.is_some():
+        auto u0 = v.Duration.unwrap()
+        parts.append("\"duration\":" + str(u0))
+    if v.FadeIn.is_some():
+        auto u1 = v.FadeIn.unwrap()
+        parts.append("\"fadeIn\":" + str(u1))
+    if v.FadeOut.is_some():
+        auto u2 = v.FadeOut.unwrap()
+        parts.append("\"fadeOut\":" + str(u2))
+    if v.Height.is_some():
+        auto u3 = v.Height.unwrap()
+        parts.append("\"height\":" + str(u3))
+    parts.append("\"image\":" + v.Image.to_json())
+    if v.ImageX.is_some():
+        auto u4 = v.ImageX.unwrap()
+        parts.append("\"imageX\":" + str(u4))
+    if v.ImageY.is_some():
+        auto u5 = v.ImageY.unwrap()
+        parts.append("\"imageY\":" + str(u5))
+    if v.Layer.is_some():
+        auto u6 = v.Layer.unwrap()
+        parts.append("\"layer\":" + str(u6))
+    if v.Opacity.is_some():
+        auto u7 = v.Opacity.unwrap()
+        parts.append("\"opacity\":" + str(u7))
+    list[str] e8 = []
+    for x8 in v.OutputNames:
+        e8.append(medialive_json_str(x8))
+    parts.append("\"outputNames\":" + medialive_json_arr(e8))
+    if v.Width.is_some():
+        auto u9 = v.Width.unwrap()
+        parts.append("\"width\":" + str(u9))
+    return medialive_json_obj(parts)
+
+# Serialize StaticImageOutputDeactivateScheduleActionSettings to a compact JSON object (declaration order).
+def static_image_output_deactivate_schedule_action_settings_to_json(StaticImageOutputDeactivateScheduleActionSettings v) -> str:
+    list[str] parts = []
+    if v.FadeOut.is_some():
+        auto u0 = v.FadeOut.unwrap()
+        parts.append("\"fadeOut\":" + str(u0))
+    if v.Layer.is_some():
+        auto u1 = v.Layer.unwrap()
+        parts.append("\"layer\":" + str(u1))
+    list[str] e2 = []
+    for x2 in v.OutputNames:
+        e2.append(medialive_json_str(x2))
+    parts.append("\"outputNames\":" + medialive_json_arr(e2))
+    return medialive_json_obj(parts)
+
+# Serialize VpcOutputSettings to a compact JSON object (declaration order).
+def vpc_output_settings_to_json(VpcOutputSettings v) -> str:
+    list[str] parts = []
+    if v.PublicAddressAllocationIds.is_some():
+        auto u0 = v.PublicAddressAllocationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(medialive_json_str(x1))
+        parts.append("\"publicAddressAllocationIds\":" + medialive_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(medialive_json_str(x3))
+        parts.append("\"securityGroupIds\":" + medialive_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.SubnetIds:
+        e4.append(medialive_json_str(x4))
+    parts.append("\"subnetIds\":" + medialive_json_arr(e4))
+    return medialive_json_obj(parts)
+
 # A bound MediaLive client: credentials + region, threaded into every operation.
 struct MediaLiveClient:
     core.Credentials creds
@@ -8976,6 +10640,98 @@ struct MediaLiveClient:
         labels["inputDeviceId"] = input.InputDeviceId
         auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
+
+    # BatchDelete  POST /prod/batch/delete
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def batch_delete(self, BatchDeleteRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ChannelIds.is_some():
+            auto u0 = input.ChannelIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(medialive_json_str(x1))
+            parts.append("\"channelIds\":" + medialive_json_arr(e1))
+        if input.InputIds.is_some():
+            auto u2 = input.InputIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(medialive_json_str(x3))
+            parts.append("\"inputIds\":" + medialive_json_arr(e3))
+        if input.InputSecurityGroupIds.is_some():
+            auto u4 = input.InputSecurityGroupIds.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(medialive_json_str(x5))
+            parts.append("\"inputSecurityGroupIds\":" + medialive_json_arr(e5))
+        if input.MultiplexIds.is_some():
+            auto u6 = input.MultiplexIds.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(medialive_json_str(x7))
+            parts.append("\"multiplexIds\":" + medialive_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # BatchStart  POST /prod/batch/start
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def batch_start(self, BatchStartRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ChannelIds.is_some():
+            auto u0 = input.ChannelIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(medialive_json_str(x1))
+            parts.append("\"channelIds\":" + medialive_json_arr(e1))
+        if input.MultiplexIds.is_some():
+            auto u2 = input.MultiplexIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(medialive_json_str(x3))
+            parts.append("\"multiplexIds\":" + medialive_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # BatchStop  POST /prod/batch/stop
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def batch_stop(self, BatchStopRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ChannelIds.is_some():
+            auto u0 = input.ChannelIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(medialive_json_str(x1))
+            parts.append("\"channelIds\":" + medialive_json_arr(e1))
+        if input.MultiplexIds.is_some():
+            auto u2 = input.MultiplexIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(medialive_json_str(x3))
+            parts.append("\"multiplexIds\":" + medialive_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # BatchUpdateSchedule  PUT /prod/channels/{channelId}/schedule
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException, UnprocessableEntityException
+    def batch_update_schedule(self, BatchUpdateScheduleRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelId"] = input.ChannelId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Creates.is_some():
+            auto u0 = input.Creates.unwrap()
+            parts.append("\"creates\":" + batch_schedule_action_create_request_to_json(u0))
+        if input.Deletes.is_some():
+            auto u1 = input.Deletes.unwrap()
+            parts.append("\"deletes\":" + batch_schedule_action_delete_request_to_json(u1))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
     # CancelInputDeviceTransfer  POST /prod/inputDevices/{inputDeviceId}/cancel
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException, UnprocessableEntityException
@@ -8995,6 +10751,378 @@ struct MediaLiveClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
+    # CreateChannel  POST /prod/channels
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CdiInputSpecification.is_some():
+            auto u0 = input.CdiInputSpecification.unwrap()
+            parts.append("\"cdiInputSpecification\":" + u0.to_json())
+        if input.ChannelClass.is_some():
+            auto u1 = input.ChannelClass.unwrap()
+            parts.append("\"channelClass\":" + u1.to_json())
+        if input.Destinations.is_some():
+            auto u2 = input.Destinations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(output_destination_to_json(x3))
+            parts.append("\"destinations\":" + medialive_json_arr(e3))
+        if input.EncoderSettings.is_some():
+            auto u4 = input.EncoderSettings.unwrap()
+            parts.append("\"encoderSettings\":" + encoder_settings_to_json(u4))
+        if input.InputAttachments.is_some():
+            auto u5 = input.InputAttachments.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(input_attachment_to_json(x6))
+            parts.append("\"inputAttachments\":" + medialive_json_arr(e6))
+        if input.InputSpecification.is_some():
+            auto u7 = input.InputSpecification.unwrap()
+            parts.append("\"inputSpecification\":" + u7.to_json())
+        if input.LogLevel.is_some():
+            auto u8 = input.LogLevel.unwrap()
+            parts.append("\"logLevel\":" + u8.to_json())
+        if input.Maintenance.is_some():
+            auto u9 = input.Maintenance.unwrap()
+            parts.append("\"maintenance\":" + u9.to_json())
+        if input.Name.is_some():
+            auto u10 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u10))
+        if input.RequestId.is_some():
+            auto u11 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u11))
+        if input.Reserved.is_some():
+            auto u12 = input.Reserved.unwrap()
+            parts.append("\"reserved\":" + medialive_json_str(u12))
+        if input.RoleArn.is_some():
+            auto u13 = input.RoleArn.unwrap()
+            parts.append("\"roleArn\":" + medialive_json_str(u13))
+        if input.Tags.is_some():
+            auto u14 = input.Tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(medialive_json_str(k15) + ":" + medialive_json_str(u14[k15]))
+            parts.append("\"tags\":" + medialive_json_obj(m15))
+        if input.Vpc.is_some():
+            auto u16 = input.Vpc.unwrap()
+            parts.append("\"vpc\":" + vpc_output_settings_to_json(u16))
+        if input.AnywhereSettings.is_some():
+            auto u17 = input.AnywhereSettings.unwrap()
+            parts.append("\"anywhereSettings\":" + u17.to_json())
+        if input.ChannelEngineVersion.is_some():
+            auto u18 = input.ChannelEngineVersion.unwrap()
+            parts.append("\"channelEngineVersion\":" + u18.to_json())
+        if input.DryRun.is_some():
+            auto u19 = input.DryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u19)))
+        if input.LinkedChannelSettings.is_some():
+            auto u20 = input.LinkedChannelSettings.unwrap()
+            parts.append("\"linkedChannelSettings\":" + u20.to_json())
+        if input.ChannelSecurityGroups.is_some():
+            auto u21 = input.ChannelSecurityGroups.unwrap()
+            list[str] e22 = []
+            for x22 in u21:
+                e22.append(medialive_json_str(x22))
+            parts.append("\"channelSecurityGroups\":" + medialive_json_arr(e22))
+        if input.InferenceSettings.is_some():
+            auto u23 = input.InferenceSettings.unwrap()
+            parts.append("\"inferenceSettings\":" + inference_settings_to_json(u23))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateChannelPlacementGroup  POST /prod/clusters/{clusterId}/channelplacementgroups
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
+    def create_channel_placement_group(self, CreateChannelPlacementGroupRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterId"] = input.ClusterId
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/channelplacementgroups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u0))
+        if input.Nodes.is_some():
+            auto u1 = input.Nodes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(medialive_json_str(x2))
+            parts.append("\"nodes\":" + medialive_json_arr(e2))
+        if input.RequestId.is_some():
+            auto u3 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(medialive_json_str(k5) + ":" + medialive_json_str(u4[k5]))
+            parts.append("\"tags\":" + medialive_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateCloudWatchAlarmTemplate  POST /prod/cloudwatch-alarm-templates
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_cloud_watch_alarm_template(self, CreateCloudWatchAlarmTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/cloudwatch-alarm-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"comparisonOperator\":" + input.ComparisonOperator.to_json())
+        if input.DatapointsToAlarm.is_some():
+            auto u0 = input.DatapointsToAlarm.unwrap()
+            parts.append("\"datapointsToAlarm\":" + str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u1))
+        parts.append("\"evaluationPeriods\":" + str(input.EvaluationPeriods))
+        parts.append("\"groupIdentifier\":" + medialive_json_str(input.GroupIdentifier))
+        parts.append("\"metricName\":" + medialive_json_str(input.MetricName))
+        parts.append("\"name\":" + medialive_json_str(input.Name))
+        parts.append("\"period\":" + str(input.Period))
+        parts.append("\"statistic\":" + input.Statistic.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(medialive_json_str(k3) + ":" + medialive_json_str(u2[k3]))
+            parts.append("\"tags\":" + medialive_json_obj(m3))
+        parts.append("\"targetResourceType\":" + input.TargetResourceType.to_json())
+        parts.append("\"threshold\":" + str(input.Threshold))
+        parts.append("\"treatMissingData\":" + input.TreatMissingData.to_json())
+        if input.RequestId.is_some():
+            auto u4 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u4))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateCloudWatchAlarmTemplateGroup  POST /prod/cloudwatch-alarm-template-groups
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_cloud_watch_alarm_template_group(self, CreateCloudWatchAlarmTemplateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/cloudwatch-alarm-template-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u0))
+        parts.append("\"name\":" + medialive_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(medialive_json_str(k2) + ":" + medialive_json_str(u1[k2]))
+            parts.append("\"tags\":" + medialive_json_obj(m2))
+        if input.RequestId.is_some():
+            auto u3 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateCluster  POST /prod/clusters
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClusterType.is_some():
+            auto u0 = input.ClusterType.unwrap()
+            parts.append("\"clusterType\":" + medialive_json_str(u0))
+        if input.InstanceRoleArn.is_some():
+            auto u1 = input.InstanceRoleArn.unwrap()
+            parts.append("\"instanceRoleArn\":" + medialive_json_str(u1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u2))
+        if input.NetworkSettings.is_some():
+            auto u3 = input.NetworkSettings.unwrap()
+            parts.append("\"networkSettings\":" + cluster_network_settings_create_request_to_json(u3))
+        if input.RequestId.is_some():
+            auto u4 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u4))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(medialive_json_str(k6) + ":" + medialive_json_str(u5[k6]))
+            parts.append("\"tags\":" + medialive_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateEventBridgeRuleTemplate  POST /prod/eventbridge-rule-templates
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_event_bridge_rule_template(self, CreateEventBridgeRuleTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/eventbridge-rule-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u0))
+        if input.EventTargets.is_some():
+            auto u1 = input.EventTargets.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"eventTargets\":" + medialive_json_arr(e2))
+        parts.append("\"eventType\":" + input.EventType.to_json())
+        parts.append("\"groupIdentifier\":" + medialive_json_str(input.GroupIdentifier))
+        parts.append("\"name\":" + medialive_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(medialive_json_str(k4) + ":" + medialive_json_str(u3[k4]))
+            parts.append("\"tags\":" + medialive_json_obj(m4))
+        if input.RequestId.is_some():
+            auto u5 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u5))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateEventBridgeRuleTemplateGroup  POST /prod/eventbridge-rule-template-groups
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_event_bridge_rule_template_group(self, CreateEventBridgeRuleTemplateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/eventbridge-rule-template-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u0))
+        parts.append("\"name\":" + medialive_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(medialive_json_str(k2) + ":" + medialive_json_str(u1[k2]))
+            parts.append("\"tags\":" + medialive_json_obj(m2))
+        if input.RequestId.is_some():
+            auto u3 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateInput  POST /prod/inputs
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_input(self, CreateInputRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Destinations.is_some():
+            auto u0 = input.Destinations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(input_destination_request_to_json(x1))
+            parts.append("\"destinations\":" + medialive_json_arr(e1))
+        if input.InputDevices.is_some():
+            auto u2 = input.InputDevices.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"inputDevices\":" + medialive_json_arr(e3))
+        if input.InputSecurityGroups.is_some():
+            auto u4 = input.InputSecurityGroups.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(medialive_json_str(x5))
+            parts.append("\"inputSecurityGroups\":" + medialive_json_arr(e5))
+        if input.MediaConnectFlows.is_some():
+            auto u6 = input.MediaConnectFlows.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"mediaConnectFlows\":" + medialive_json_arr(e7))
+        if input.Name.is_some():
+            auto u8 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u8))
+        if input.RequestId.is_some():
+            auto u9 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u9))
+        if input.RoleArn.is_some():
+            auto u10 = input.RoleArn.unwrap()
+            parts.append("\"roleArn\":" + medialive_json_str(u10))
+        if input.Sources.is_some():
+            auto u11 = input.Sources.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"sources\":" + medialive_json_arr(e12))
+        if input.Tags.is_some():
+            auto u13 = input.Tags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(medialive_json_str(k14) + ":" + medialive_json_str(u13[k14]))
+            parts.append("\"tags\":" + medialive_json_obj(m14))
+        if input.Type.is_some():
+            auto u15 = input.Type.unwrap()
+            parts.append("\"type\":" + u15.to_json())
+        if input.Vpc.is_some():
+            auto u16 = input.Vpc.unwrap()
+            parts.append("\"vpc\":" + input_vpc_request_to_json(u16))
+        if input.SrtSettings.is_some():
+            auto u17 = input.SrtSettings.unwrap()
+            parts.append("\"srtSettings\":" + srt_settings_request_to_json(u17))
+        if input.InputNetworkLocation.is_some():
+            auto u18 = input.InputNetworkLocation.unwrap()
+            parts.append("\"inputNetworkLocation\":" + u18.to_json())
+        if input.MulticastSettings.is_some():
+            auto u19 = input.MulticastSettings.unwrap()
+            parts.append("\"multicastSettings\":" + multicast_settings_create_request_to_json(u19))
+        if input.Smpte2110ReceiverGroupSettings.is_some():
+            auto u20 = input.Smpte2110ReceiverGroupSettings.unwrap()
+            parts.append("\"smpte2110ReceiverGroupSettings\":" + smpte2110_receiver_group_settings_to_json(u20))
+        if input.SdiSources.is_some():
+            auto u21 = input.SdiSources.unwrap()
+            list[str] e22 = []
+            for x22 in u21:
+                e22.append(medialive_json_str(x22))
+            parts.append("\"sdiSources\":" + medialive_json_arr(e22))
+        if input.RouterSettings.is_some():
+            auto u23 = input.RouterSettings.unwrap()
+            parts.append("\"routerSettings\":" + router_settings_to_json(u23))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateInputSecurityGroup  POST /prod/inputSecurityGroups
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_input_security_group(self, CreateInputSecurityGroupRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputSecurityGroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(medialive_json_str(k1) + ":" + medialive_json_str(u0[k1]))
+            parts.append("\"tags\":" + medialive_json_obj(m1))
+        if input.WhitelistRules.is_some():
+            auto u2 = input.WhitelistRules.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"whitelistRules\":" + medialive_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateMultiplex  POST /prod/multiplexes
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
+    def create_multiplex(self, CreateMultiplexRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AvailabilityZones:
+            e0.append(medialive_json_str(x0))
+        parts.append("\"availabilityZones\":" + medialive_json_arr(e0))
+        parts.append("\"multiplexSettings\":" + input.MultiplexSettings.to_json())
+        parts.append("\"name\":" + medialive_json_str(input.Name))
+        parts.append("\"requestId\":" + medialive_json_str(input.RequestId))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(medialive_json_str(k2) + ":" + medialive_json_str(u1[k2]))
+            parts.append("\"tags\":" + medialive_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
     # CreateMultiplexProgram  POST /prod/multiplexes/{multiplexId}/programs
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
     def create_multiplex_program(self, CreateMultiplexProgramRequest input) -> str:
@@ -9004,6 +11132,199 @@ struct MediaLiveClient:
         auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/programs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMultiplexProgramDocument(MultiplexProgramSettings=input.MultiplexProgramSettings, ProgramName=input.ProgramName, RequestId=input.RequestId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateNetwork  POST /prod/networks
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_network(self, CreateNetworkRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.IpPools.is_some():
+            auto u0 = input.IpPools.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"ipPools\":" + medialive_json_arr(e1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u2))
+        if input.RequestId.is_some():
+            auto u3 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u3))
+        if input.Routes.is_some():
+            auto u4 = input.Routes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"routes\":" + medialive_json_arr(e5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(medialive_json_str(k7) + ":" + medialive_json_str(u6[k7]))
+            parts.append("\"tags\":" + medialive_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateNode  POST /prod/clusters/{clusterId}/nodes
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
+    def create_node(self, CreateNodeRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterId"] = input.ClusterId
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/nodes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u0))
+        if input.NodeInterfaceMappings.is_some():
+            auto u1 = input.NodeInterfaceMappings.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"nodeInterfaceMappings\":" + medialive_json_arr(e2))
+        if input.RequestId.is_some():
+            auto u3 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u3))
+        if input.Role.is_some():
+            auto u4 = input.Role.unwrap()
+            parts.append("\"role\":" + u4.to_json())
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(medialive_json_str(k6) + ":" + medialive_json_str(u5[k6]))
+            parts.append("\"tags\":" + medialive_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateNodeRegistrationScript  POST /prod/clusters/{clusterId}/nodeRegistrationScript
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_node_registration_script(self, CreateNodeRegistrationScriptRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterId"] = input.ClusterId
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/nodeRegistrationScript", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Id.is_some():
+            auto u0 = input.Id.unwrap()
+            parts.append("\"id\":" + medialive_json_str(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u1))
+        if input.NodeInterfaceMappings.is_some():
+            auto u2 = input.NodeInterfaceMappings.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(node_interface_mapping_to_json(x3))
+            parts.append("\"nodeInterfaceMappings\":" + medialive_json_arr(e3))
+        if input.RequestId.is_some():
+            auto u4 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u4))
+        if input.Role.is_some():
+            auto u5 = input.Role.unwrap()
+            parts.append("\"role\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreatePartnerInput  POST /prod/inputs/{inputId}/partners
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_partner_input(self, CreatePartnerInputRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["inputId"] = input.InputId
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputs/{inputId}/partners", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RequestId.is_some():
+            auto u0 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(medialive_json_str(k2) + ":" + medialive_json_str(u1[k2]))
+            parts.append("\"tags\":" + medialive_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateSdiSource  POST /prod/sdiSources
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def create_sdi_source(self, CreateSdiSourceRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/sdiSources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Mode.is_some():
+            auto u0 = input.Mode.unwrap()
+            parts.append("\"mode\":" + u0.to_json())
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u1))
+        if input.RequestId.is_some():
+            auto u2 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(medialive_json_str(k4) + ":" + medialive_json_str(u3[k4]))
+            parts.append("\"tags\":" + medialive_json_obj(m4))
+        if input.Type.is_some():
+            auto u5 = input.Type.unwrap()
+            parts.append("\"type\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateSignalMap  POST /prod/signal-maps
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_signal_map(self, CreateSignalMapRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/signal-maps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CloudWatchAlarmTemplateGroupIdentifiers.is_some():
+            auto u0 = input.CloudWatchAlarmTemplateGroupIdentifiers.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(medialive_json_str(x1))
+            parts.append("\"cloudWatchAlarmTemplateGroupIdentifiers\":" + medialive_json_arr(e1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u2))
+        parts.append("\"discoveryEntryPointArn\":" + medialive_json_str(input.DiscoveryEntryPointArn))
+        if input.EventBridgeRuleTemplateGroupIdentifiers.is_some():
+            auto u3 = input.EventBridgeRuleTemplateGroupIdentifiers.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(medialive_json_str(x4))
+            parts.append("\"eventBridgeRuleTemplateGroupIdentifiers\":" + medialive_json_arr(e4))
+        parts.append("\"name\":" + medialive_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(medialive_json_str(k6) + ":" + medialive_json_str(u5[k6]))
+            parts.append("\"tags\":" + medialive_json_obj(m6))
+        if input.RequestId.is_some():
+            auto u7 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u7))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # CreateTags  POST /prod/tags/{resource-arn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def create_tags(self, CreateTagsRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(medialive_json_str(k1) + ":" + medialive_json_str(u0[k1]))
+            parts.append("\"tags\":" + medialive_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
     # DeleteChannel  DELETE /prod/channels/{channelId}
@@ -9726,6 +12047,36 @@ struct MediaLiveClient:
         auto b = binding.HttpBinding(method="GET", path_template="/prod/versions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
+    # PurchaseOffering  POST /prod/offerings/{offeringId}/purchase
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def purchase_offering(self, PurchaseOfferingRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["offeringId"] = input.OfferingId
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/offerings/{offeringId}/purchase", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"count\":" + str(input.Count))
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u0))
+        if input.RenewalSettings.is_some():
+            auto u1 = input.RenewalSettings.unwrap()
+            parts.append("\"renewalSettings\":" + u1.to_json())
+        if input.RequestId.is_some():
+            auto u2 = input.RequestId.unwrap()
+            parts.append("\"requestId\":" + medialive_json_str(u2))
+        if input.Start.is_some():
+            auto u3 = input.Start.unwrap()
+            parts.append("\"start\":" + medialive_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(medialive_json_str(k5) + ":" + medialive_json_str(u4[k5]))
+            parts.append("\"tags\":" + medialive_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
     # RebootInputDevice  POST /prod/inputDevices/{inputDeviceId}/reboot
     # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException, UnprocessableEntityException
     def reboot_input_device(self, RebootInputDeviceRequest input) -> str:
@@ -9745,6 +12096,23 @@ struct MediaLiveClient:
         labels["inputDeviceId"] = input.InputDeviceId
         auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
+
+    # RestartChannelPipelines  POST /prod/channels/{channelId}/restartChannelPipelines
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def restart_channel_pipelines(self, RestartChannelPipelinesRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelId"] = input.ChannelId
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/restartChannelPipelines", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.PipelineIds.is_some():
+            auto u0 = input.PipelineIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"pipelineIds\":" + medialive_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
     # StartChannel  POST /prod/channels/{channelId}/start
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
@@ -9802,6 +12170,41 @@ struct MediaLiveClient:
         auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
+    # StartUpdateSignalMap  PATCH /prod/signal-maps/{identifier}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def start_update_signal_map(self, StartUpdateSignalMapRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CloudWatchAlarmTemplateGroupIdentifiers.is_some():
+            auto u0 = input.CloudWatchAlarmTemplateGroupIdentifiers.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(medialive_json_str(x1))
+            parts.append("\"cloudWatchAlarmTemplateGroupIdentifiers\":" + medialive_json_arr(e1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u2))
+        if input.DiscoveryEntryPointArn.is_some():
+            auto u3 = input.DiscoveryEntryPointArn.unwrap()
+            parts.append("\"discoveryEntryPointArn\":" + medialive_json_str(u3))
+        if input.EventBridgeRuleTemplateGroupIdentifiers.is_some():
+            auto u4 = input.EventBridgeRuleTemplateGroupIdentifiers.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(medialive_json_str(x5))
+            parts.append("\"eventBridgeRuleTemplateGroupIdentifiers\":" + medialive_json_arr(e5))
+        if input.ForceRediscovery.is_some():
+            auto u6 = input.ForceRediscovery.unwrap()
+            parts.append("\"forceRediscovery\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.Name.is_some():
+            auto u7 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u7))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
     # StopChannel  POST /prod/channels/{channelId}/stop
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def stop_channel(self, StopChannelRequest input) -> str:
@@ -9849,6 +12252,113 @@ struct MediaLiveClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
+    # UpdateChannel  PUT /prod/channels/{channelId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, UnprocessableEntityException
+    def update_channel(self, UpdateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelId"] = input.ChannelId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CdiInputSpecification.is_some():
+            auto u0 = input.CdiInputSpecification.unwrap()
+            parts.append("\"cdiInputSpecification\":" + u0.to_json())
+        if input.Destinations.is_some():
+            auto u1 = input.Destinations.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(output_destination_to_json(x2))
+            parts.append("\"destinations\":" + medialive_json_arr(e2))
+        if input.EncoderSettings.is_some():
+            auto u3 = input.EncoderSettings.unwrap()
+            parts.append("\"encoderSettings\":" + encoder_settings_to_json(u3))
+        if input.InputAttachments.is_some():
+            auto u4 = input.InputAttachments.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(input_attachment_to_json(x5))
+            parts.append("\"inputAttachments\":" + medialive_json_arr(e5))
+        if input.InputSpecification.is_some():
+            auto u6 = input.InputSpecification.unwrap()
+            parts.append("\"inputSpecification\":" + u6.to_json())
+        if input.LogLevel.is_some():
+            auto u7 = input.LogLevel.unwrap()
+            parts.append("\"logLevel\":" + u7.to_json())
+        if input.Maintenance.is_some():
+            auto u8 = input.Maintenance.unwrap()
+            parts.append("\"maintenance\":" + u8.to_json())
+        if input.Name.is_some():
+            auto u9 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u9))
+        if input.RoleArn.is_some():
+            auto u10 = input.RoleArn.unwrap()
+            parts.append("\"roleArn\":" + medialive_json_str(u10))
+        if input.ChannelEngineVersion.is_some():
+            auto u11 = input.ChannelEngineVersion.unwrap()
+            parts.append("\"channelEngineVersion\":" + u11.to_json())
+        if input.DryRun.is_some():
+            auto u12 = input.DryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u12)))
+        if input.AnywhereSettings.is_some():
+            auto u13 = input.AnywhereSettings.unwrap()
+            parts.append("\"anywhereSettings\":" + u13.to_json())
+        if input.LinkedChannelSettings.is_some():
+            auto u14 = input.LinkedChannelSettings.unwrap()
+            parts.append("\"linkedChannelSettings\":" + u14.to_json())
+        if input.ChannelSecurityGroups.is_some():
+            auto u15 = input.ChannelSecurityGroups.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(medialive_json_str(x16))
+            parts.append("\"channelSecurityGroups\":" + medialive_json_arr(e16))
+        if input.InferenceSettings.is_some():
+            auto u17 = input.InferenceSettings.unwrap()
+            parts.append("\"inferenceSettings\":" + inference_settings_to_json(u17))
+        if input.SpecialRouterSettings.is_some():
+            auto u18 = input.SpecialRouterSettings.unwrap()
+            parts.append("\"specialRouterSettings\":" + u18.to_json())
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateChannelClass  PUT /prod/channels/{channelId}/channelClass
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException, UnprocessableEntityException
+    def update_channel_class(self, UpdateChannelClassRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelId"] = input.ChannelId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}/channelClass", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"channelClass\":" + input.ChannelClass.to_json())
+        if input.Destinations.is_some():
+            auto u0 = input.Destinations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(output_destination_to_json(x1))
+            parts.append("\"destinations\":" + medialive_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateChannelPlacementGroup  PUT /prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
+    def update_channel_placement_group(self, UpdateChannelPlacementGroupRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelPlacementGroupId"] = input.ChannelPlacementGroupId
+        labels["clusterId"] = input.ClusterId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u0))
+        if input.Nodes.is_some():
+            auto u1 = input.Nodes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(medialive_json_str(x2))
+            parts.append("\"nodes\":" + medialive_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
     # UpdateCloudWatchAlarmTemplate  PATCH /prod/cloudwatch-alarm-templates/{identifier}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def update_cloud_watch_alarm_template(self, UpdateCloudWatchAlarmTemplateRequest input) -> str:
@@ -9871,6 +12381,52 @@ struct MediaLiveClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
+    # UpdateCluster  PUT /prod/clusters/{clusterId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def update_cluster(self, UpdateClusterRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterId"] = input.ClusterId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u0))
+        if input.NetworkSettings.is_some():
+            auto u1 = input.NetworkSettings.unwrap()
+            parts.append("\"networkSettings\":" + cluster_network_settings_update_request_to_json(u1))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateEventBridgeRuleTemplate  PATCH /prod/eventbridge-rule-templates/{identifier}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def update_event_bridge_rule_template(self, UpdateEventBridgeRuleTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + medialive_json_str(u0))
+        if input.EventTargets.is_some():
+            auto u1 = input.EventTargets.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"eventTargets\":" + medialive_json_arr(e2))
+        if input.EventType.is_some():
+            auto u3 = input.EventType.unwrap()
+            parts.append("\"eventType\":" + u3.to_json())
+        if input.GroupIdentifier.is_some():
+            auto u4 = input.GroupIdentifier.unwrap()
+            parts.append("\"groupIdentifier\":" + medialive_json_str(u4))
+        if input.Name.is_some():
+            auto u5 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u5))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
     # UpdateEventBridgeRuleTemplateGroup  PATCH /prod/eventbridge-rule-template-groups/{identifier}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def update_event_bridge_rule_template_group(self, UpdateEventBridgeRuleTemplateGroupRequest input) -> str:
@@ -9880,6 +12436,140 @@ struct MediaLiveClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventBridgeRuleTemplateGroupDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateInput  PUT /prod/inputs/{inputId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException
+    def update_input(self, UpdateInputRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["inputId"] = input.InputId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Destinations.is_some():
+            auto u0 = input.Destinations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(input_destination_request_to_json(x1))
+            parts.append("\"destinations\":" + medialive_json_arr(e1))
+        if input.InputDevices.is_some():
+            auto u2 = input.InputDevices.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"inputDevices\":" + medialive_json_arr(e3))
+        if input.InputSecurityGroups.is_some():
+            auto u4 = input.InputSecurityGroups.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(medialive_json_str(x5))
+            parts.append("\"inputSecurityGroups\":" + medialive_json_arr(e5))
+        if input.MediaConnectFlows.is_some():
+            auto u6 = input.MediaConnectFlows.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"mediaConnectFlows\":" + medialive_json_arr(e7))
+        if input.Name.is_some():
+            auto u8 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u8))
+        if input.RoleArn.is_some():
+            auto u9 = input.RoleArn.unwrap()
+            parts.append("\"roleArn\":" + medialive_json_str(u9))
+        if input.Sources.is_some():
+            auto u10 = input.Sources.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"sources\":" + medialive_json_arr(e11))
+        if input.SrtSettings.is_some():
+            auto u12 = input.SrtSettings.unwrap()
+            parts.append("\"srtSettings\":" + srt_settings_request_to_json(u12))
+        if input.MulticastSettings.is_some():
+            auto u13 = input.MulticastSettings.unwrap()
+            parts.append("\"multicastSettings\":" + multicast_settings_update_request_to_json(u13))
+        if input.Smpte2110ReceiverGroupSettings.is_some():
+            auto u14 = input.Smpte2110ReceiverGroupSettings.unwrap()
+            parts.append("\"smpte2110ReceiverGroupSettings\":" + smpte2110_receiver_group_settings_to_json(u14))
+        if input.SdiSources.is_some():
+            auto u15 = input.SdiSources.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(medialive_json_str(x16))
+            parts.append("\"sdiSources\":" + medialive_json_arr(e16))
+        if input.SpecialRouterSettings.is_some():
+            auto u17 = input.SpecialRouterSettings.unwrap()
+            parts.append("\"specialRouterSettings\":" + u17.to_json())
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateInputDevice  PUT /prod/inputDevices/{inputDeviceId}
+    # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException, UnprocessableEntityException
+    def update_input_device(self, UpdateInputDeviceRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["inputDeviceId"] = input.InputDeviceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputDevices/{inputDeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.HdDeviceSettings.is_some():
+            auto u0 = input.HdDeviceSettings.unwrap()
+            parts.append("\"hdDeviceSettings\":" + input_device_configurable_settings_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u1))
+        if input.UhdDeviceSettings.is_some():
+            auto u2 = input.UhdDeviceSettings.unwrap()
+            parts.append("\"uhdDeviceSettings\":" + input_device_configurable_settings_to_json(u2))
+        if input.AvailabilityZone.is_some():
+            auto u3 = input.AvailabilityZone.unwrap()
+            parts.append("\"availabilityZone\":" + medialive_json_str(u3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateInputSecurityGroup  PUT /prod/inputSecurityGroups/{inputSecurityGroupId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException
+    def update_input_security_group(self, UpdateInputSecurityGroupRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["inputSecurityGroupId"] = input.InputSecurityGroupId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(medialive_json_str(k1) + ":" + medialive_json_str(u0[k1]))
+            parts.append("\"tags\":" + medialive_json_obj(m1))
+        if input.WhitelistRules.is_some():
+            auto u2 = input.WhitelistRules.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"whitelistRules\":" + medialive_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateMultiplex  PUT /prod/multiplexes/{multiplexId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, UnprocessableEntityException
+    def update_multiplex(self, UpdateMultiplexRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["multiplexId"] = input.MultiplexId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MultiplexSettings.is_some():
+            auto u0 = input.MultiplexSettings.unwrap()
+            parts.append("\"multiplexSettings\":" + u0.to_json())
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u1))
+        if input.PacketIdentifiersMapping.is_some():
+            auto u2 = input.PacketIdentifiersMapping.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(medialive_json_str(k3) + ":" + multiplex_program_packet_identifiers_map_to_json(u2[k3]))
+            parts.append("\"packetIdentifiersMapping\":" + medialive_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
     # UpdateMultiplexProgram  PUT /prod/multiplexes/{multiplexId}/programs/{programName}
@@ -9892,6 +12582,56 @@ struct MediaLiveClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMultiplexProgramDocument(MultiplexProgramSettings=input.MultiplexProgramSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateNetwork  PUT /prod/networks/{networkId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def update_network(self, UpdateNetworkRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.NetworkId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.IpPools.is_some():
+            auto u0 = input.IpPools.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"ipPools\":" + medialive_json_arr(e1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u2))
+        if input.Routes.is_some():
+            auto u3 = input.Routes.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"routes\":" + medialive_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
+
+    # UpdateNode  PUT /prod/clusters/{clusterId}/nodes/{nodeId}
+    # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
+    def update_node(self, UpdateNodeRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterId"] = input.ClusterId
+        labels["nodeId"] = input.NodeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + medialive_json_str(u0))
+        if input.Role.is_some():
+            auto u1 = input.Role.unwrap()
+            parts.append("\"role\":" + u1.to_json())
+        if input.SdiSourceMappings.is_some():
+            auto u2 = input.SdiSourceMappings.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"sdiSourceMappings\":" + medialive_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, medialive_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
 
     # UpdateNodeState  PUT /prod/clusters/{clusterId}/nodes/{nodeId}/state

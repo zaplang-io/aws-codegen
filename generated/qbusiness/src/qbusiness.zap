@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 83 operations — 54 with a generated method,
-#   29 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 83 operations — 77 with a generated method,
+#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   330 structs (218 @derive(Json)), 55 enums, 10 error variants.
-#   16 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   17 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The QBusiness rest-json protocol: SigV4 service "qbusiness" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -540,14 +541,16 @@ struct APISchema:
     Optional[str] payload
     Optional[S3] s3
 
-# no @derive(Json): member(s) accessControls: list[AccessControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessControls: list[AccessControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessConfiguration:
     list[AccessControl] accessControls
     Optional[MemberRelation] memberRelation
 
-# no @derive(Json): member(s) principals: list[Principal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principals: list[Principal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessControl:
     list[Principal] principals
     Optional[MemberRelation] memberRelation
@@ -556,21 +559,24 @@ struct AccessControl:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) filterConfiguration: ActionFilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterConfiguration: ActionFilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionConfiguration:
     str action
     Optional[ActionFilterConfiguration] filterConfiguration
 
-# no @derive(Json): member(s) payload: dict[str, ActionExecutionPayloadField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: dict[str, ActionExecutionPayloadField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionExecution:
     str pluginId
     dict[str, ActionExecutionPayloadField] payload
     str payloadFieldNameSeparator
 
-# no @derive(Json): member(s) payload: dict[str, ActionExecutionPayloadField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: dict[str, ActionExecutionPayloadField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionExecutionEvent:
     str pluginId
     dict[str, ActionExecutionPayloadField] payload
@@ -580,8 +586,9 @@ struct ActionExecutionEvent:
 struct ActionExecutionPayloadField:
     ActionPayloadFieldValue value
 
-# no @derive(Json): member(s) documentAttributeFilter: AttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documentAttributeFilter: AttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionFilterConfiguration:
     AttributeFilter documentAttributeFilter
 
@@ -590,16 +597,18 @@ struct ActionPayloadFieldValue:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) payload: dict[str, ActionReviewPayloadField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: dict[str, ActionReviewPayloadField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionReview:
     Optional[str] pluginId
     Optional[PluginType] pluginType
     Optional[dict[str, ActionReviewPayloadField]] payload
     Optional[str] payloadFieldNameSeparator
 
-# no @derive(Json): member(s) payload: dict[str, ActionReviewPayloadField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: dict[str, ActionReviewPayloadField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionReviewEvent:
     Optional[str] conversationId
     Optional[str] userMessageId
@@ -609,8 +618,9 @@ struct ActionReviewEvent:
     Optional[dict[str, ActionReviewPayloadField]] payload
     Optional[str] payloadFieldNameSeparator
 
-# no @derive(Json): member(s) allowedValues: list[ActionReviewPayloadFieldAllowedValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[ActionReviewPayloadFieldAllowedValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionReviewPayloadField:
     Optional[str] displayName
     Optional[int64] displayOrder
@@ -719,8 +729,9 @@ struct AttachmentOutput:
 struct AttachmentsConfiguration:
     AttachmentsControlMode attachmentsControlMode
 
-# no @derive(Json): member(s) andAllFilters: list[AttributeFilter], orAllFilters: list[AttributeFilter], notFilter: AttributeFilter, equalsTo: DocumentAttribute, containsAll: DocumentAttribute, containsAny: DocumentAttribute, greaterThan: DocumentAttribute, greaterThanOrEquals: DocumentAttribute, lessThan: DocumentAttribute, lessThanOrEquals: DocumentAttribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) andAllFilters: list[AttributeFilter], orAllFilters: list[AttributeFilter], notFilter: AttributeFilter, equalsTo: DocumentAttribute, containsAll: DocumentAttribute, containsAny: DocumentAttribute, greaterThan: DocumentAttribute, greaterThanOrEquals: DocumentAttribute, lessThan: DocumentAttribute, lessThanOrEquals: DocumentAttribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeFilter:
     Optional[list[AttributeFilter]] andAllFilters
     Optional[list[AttributeFilter]] orAllFilters
@@ -753,13 +764,15 @@ struct AuthChallengeRequest:
 struct AuthChallengeRequestEvent:
     str authorizationUrl
 
-# no @derive(Json): member(s) responseMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthChallengeResponse:
     dict[str, str] responseMap
 
-# no @derive(Json): member(s) responseMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthChallengeResponseEvent:
     dict[str, str] responseMap
 
@@ -781,8 +794,9 @@ struct BatchDeleteDocumentRequest:
     list[DeleteDocument] documents
     Optional[str] dataSourceSyncId
 
-# no @derive(Json): member(s) failedDocuments: list[FailedDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedDocuments: list[FailedDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDocumentResponse:
     Optional[list[FailedDocument]] failedDocuments
 
@@ -795,26 +809,30 @@ struct BatchPutDocumentRequest:
     Optional[str] roleArn
     Optional[str] dataSourceSyncId
 
-# no @derive(Json): member(s) failedDocuments: list[FailedDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedDocuments: list[FailedDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutDocumentResponse:
     Optional[list[FailedDocument]] failedDocuments
 
-# no @derive(Json): member(s) blockedPhrases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockedPhrases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BlockedPhrasesConfiguration:
     Optional[list[str]] blockedPhrases
     Optional[str] systemMessageOverride
 
-# no @derive(Json): member(s) blockedPhrasesToCreateOrUpdate: list[str], blockedPhrasesToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockedPhrasesToCreateOrUpdate: list[str], blockedPhrasesToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BlockedPhrasesConfigurationUpdate:
     Optional[list[str]] blockedPhrasesToCreateOrUpdate
     Optional[list[str]] blockedPhrasesToDelete
     Optional[str] systemMessageOverride
 
-# no @derive(Json): member(s) enabledBrowserExtensions: list[BrowserExtension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledBrowserExtensions: list[BrowserExtension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrowserExtensionConfiguration:
     list[BrowserExtension] enabledBrowserExtensions
 
@@ -841,8 +859,9 @@ struct ChatInput:
     Optional[str] clientToken
     Optional[ChatInputStream] inputStream
 
-# no @derive(Json): member(s) configurationEvent: ConfigurationEvent, actionExecutionEvent: ActionExecutionEvent, authChallengeResponseEvent: AuthChallengeResponseEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationEvent: ConfigurationEvent, actionExecutionEvent: ActionExecutionEvent, authChallengeResponseEvent: AuthChallengeResponseEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatInputStream:
     Optional[ConfigurationEvent] configurationEvent
     Optional[TextInputEvent] textEvent
@@ -855,13 +874,15 @@ struct ChatInputStream:
 struct ChatModeConfiguration:
     Optional[PluginConfiguration] pluginConfiguration
 
-# no @derive(Json): member(s) outputStream: ChatOutputStream not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputStream: ChatOutputStream not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatOutput:
     Optional[ChatOutputStream] outputStream
 
-# no @derive(Json): member(s) metadataEvent: MetadataEvent, actionReviewEvent: ActionReviewEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataEvent: MetadataEvent, actionReviewEvent: ActionReviewEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatOutputStream:
     Optional[TextOutputEvent] textEvent
     Optional[MetadataEvent] metadataEvent
@@ -879,8 +900,9 @@ struct ChatResponseConfiguration:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) responseConfigurations: dict[str, ResponseConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseConfigurations: dict[str, ResponseConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatResponseConfigurationDetail:
     Optional[dict[str, ResponseConfiguration]] responseConfigurations
     Optional[str] responseConfigurationSummary
@@ -905,8 +927,9 @@ struct ChatSyncInput:
     Optional[ChatModeConfiguration] chatModeConfiguration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) actionReview: ActionReview, sourceAttributions: list[SourceAttribution], failedAttachments: list[AttachmentOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionReview: ActionReview, sourceAttributions: list[SourceAttribution], failedAttachments: list[AttachmentOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatSyncOutput:
     Optional[str] conversationId
     Optional[str] systemMessage
@@ -926,16 +949,18 @@ struct CheckDocumentAccessRequest:
     str documentId
     Optional[str] dataSourceId
 
-# no @derive(Json): member(s) userGroups: list[AssociatedGroup], userAliases: list[AssociatedUser], documentAcl: DocumentAcl not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userGroups: list[AssociatedGroup], userAliases: list[AssociatedUser], documentAcl: DocumentAcl not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckDocumentAccessResponse:
     Optional[list[AssociatedGroup]] userGroups
     Optional[list[AssociatedUser]] userAliases
     Optional[bool] hasAccess
     Optional[DocumentAcl] documentAcl
 
-# no @derive(Json): member(s) attributeFilter: AttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeFilter: AttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationEvent:
     Optional[ChatMode] chatMode
     Optional[ChatModeConfiguration] chatModeConfiguration
@@ -951,8 +976,9 @@ struct ConflictException:
 struct ContentBlockerRule:
     Optional[str] systemMessageOverride
 
-# no @derive(Json): member(s) eligibleDataSources: list[EligibleDataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eligibleDataSources: list[EligibleDataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentRetrievalRule:
     Optional[list[EligibleDataSource]] eligibleDataSources
 
@@ -1177,8 +1203,9 @@ struct CustomizationConfiguration:
     Optional[str] fontUrl
     Optional[str] faviconUrl
 
-# no @derive(Json): member(s) authenticationDetail: DataAccessorAuthenticationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authenticationDetail: DataAccessorAuthenticationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataAccessor:
     Optional[str] displayName
     Optional[str] dataAccessorId
@@ -1193,8 +1220,9 @@ struct DataAccessor:
 struct DataAccessorAuthenticationConfiguration:
     Optional[DataAccessorIdcTrustedTokenIssuerConfiguration] idcTrustedTokenIssuerConfiguration
 
-# no @derive(Json): member(s) externalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataAccessorAuthenticationDetail:
     DataAccessorAuthenticationType authenticationType
     Optional[DataAccessorAuthenticationConfiguration] authenticationConfiguration
@@ -1236,8 +1264,9 @@ struct DataSourceSyncJobMetrics:
     Optional[str] documentsFailed
     Optional[str] documentsScanned
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceVpcConfiguration:
     list[str] subnetIds
     list[str] securityGroupIds
@@ -1409,8 +1438,9 @@ struct DisassociatePermissionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) attributes: list[DocumentAttribute], accessConfiguration: AccessConfiguration, documentEnrichmentConfiguration: DocumentEnrichmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[DocumentAttribute], accessConfiguration: AccessConfiguration, documentEnrichmentConfiguration: DocumentEnrichmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Document:
     str id
     Optional[list[DocumentAttribute]] attributes
@@ -1421,14 +1451,16 @@ struct Document:
     Optional[DocumentEnrichmentConfiguration] documentEnrichmentConfiguration
     Optional[MediaExtractionConfiguration] mediaExtractionConfiguration
 
-# no @derive(Json): member(s) allowlist: DocumentAclMembership, denyList: DocumentAclMembership not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowlist: DocumentAclMembership, denyList: DocumentAclMembership not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAcl:
     Optional[DocumentAclMembership] allowlist
     Optional[DocumentAclMembership] denyList
 
-# no @derive(Json): member(s) users: list[DocumentAclUser], groups: list[DocumentAclGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) users: list[DocumentAclUser], groups: list[DocumentAclGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAclCondition:
     Optional[MemberRelation] memberRelation
     Optional[list[DocumentAclUser]] users
@@ -1439,8 +1471,9 @@ struct DocumentAclGroup:
     Optional[str] name
     Optional[MembershipType] type
 
-# no @derive(Json): member(s) conditions: list[DocumentAclCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[DocumentAclCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAclMembership:
     Optional[MemberRelation] memberRelation
     Optional[list[DocumentAclCondition]] conditions
@@ -1450,22 +1483,25 @@ struct DocumentAclUser:
     Optional[str] id
     Optional[MembershipType] type
 
-# no @derive(Json): member(s) value: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttribute:
     str name
     DocumentAttributeValue value
 
-# no @derive(Json): member(s) stringConfiguration: StringAttributeBoostingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringConfiguration: StringAttributeBoostingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeBoostingConfiguration:
     Optional[NumberAttributeBoostingConfiguration] numberConfiguration
     Optional[StringAttributeBoostingConfiguration] stringConfiguration
     Optional[DateAttributeBoostingConfiguration] dateConfiguration
     Optional[StringListAttributeBoostingConfiguration] stringListConfiguration
 
-# no @derive(Json): member(s) value: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeCondition:
     str key
     DocumentEnrichmentConditionOperator operator
@@ -1477,15 +1513,17 @@ struct DocumentAttributeConfiguration:
     Optional[AttributeType] type
     Optional[Status] search
 
-# no @derive(Json): member(s) value: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeTarget:
     str key
     Optional[DocumentAttributeValue] value
     Optional[str] attributeValueOperator
 
-# no @derive(Json): member(s) stringListValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringListValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeValue:
     Optional[str] stringValue
     Optional[list[str]] stringListValue
@@ -1505,8 +1543,9 @@ struct DocumentDetails:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) inlineConfigurations: list[InlineDocumentEnrichmentConfiguration], preExtractionHookConfiguration: HookConfiguration, postExtractionHookConfiguration: HookConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlineConfigurations: list[InlineDocumentEnrichmentConfiguration], preExtractionHookConfiguration: HookConfiguration, postExtractionHookConfiguration: HookConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentEnrichmentConfiguration:
     Optional[list[InlineDocumentEnrichmentConfiguration]] inlineConfigurations
     Optional[HookConfiguration] preExtractionHookConfiguration
@@ -1553,8 +1592,9 @@ struct FailedDocument:
 struct GetApplicationRequest:
     str applicationId
 
-# no @derive(Json): member(s) clientIdsForOIDC: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIdsForOIDC: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     Optional[str] displayName
     Optional[str] applicationId
@@ -1583,8 +1623,9 @@ struct GetChatControlsConfigurationRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) blockedPhrases: BlockedPhrasesConfiguration, topicConfigurations: list[TopicConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockedPhrases: BlockedPhrasesConfiguration, topicConfigurations: list[TopicConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChatControlsConfigurationResponse:
     Optional[ResponseScope] responseScope
     Optional[AppliedOrchestrationConfiguration] orchestrationConfiguration
@@ -1600,8 +1641,9 @@ struct GetChatResponseConfigurationRequest:
     str applicationId
     str chatResponseConfigurationId
 
-# no @derive(Json): member(s) inUseConfiguration: ChatResponseConfigurationDetail, lastUpdateConfiguration: ChatResponseConfigurationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inUseConfiguration: ChatResponseConfigurationDetail, lastUpdateConfiguration: ChatResponseConfigurationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChatResponseConfigurationResponse:
     Optional[str] chatResponseConfigurationId
     Optional[str] chatResponseConfigurationArn
@@ -1616,8 +1658,9 @@ struct GetDataAccessorRequest:
     str applicationId
     str dataAccessorId
 
-# no @derive(Json): member(s) actionConfigurations: list[ActionConfiguration], authenticationDetail: DataAccessorAuthenticationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionConfigurations: list[ActionConfiguration], authenticationDetail: DataAccessorAuthenticationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataAccessorResponse:
     Optional[str] displayName
     Optional[str] dataAccessorId
@@ -1637,8 +1680,9 @@ struct GetDataSourceRequest:
     str indexId
     str dataSourceId
 
-# no @derive(Json): member(s) vpcConfiguration: DataSourceVpcConfiguration, documentEnrichmentConfiguration: DocumentEnrichmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfiguration: DataSourceVpcConfiguration, documentEnrichmentConfiguration: DocumentEnrichmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataSourceResponse:
     Optional[str] applicationId
     Optional[str] indexId
@@ -1681,8 +1725,9 @@ struct GetGroupRequest:
     str groupName
     Optional[str] dataSourceId
 
-# no @derive(Json): member(s) statusHistory: list[GroupStatusDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusHistory: list[GroupStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGroupResponse:
     Optional[GroupStatusDetail] status
     Optional[list[GroupStatusDetail]] statusHistory
@@ -1693,8 +1738,9 @@ struct GetIndexRequest:
     str applicationId
     str indexId
 
-# no @derive(Json): member(s) documentAttributeConfigurations: list[DocumentAttributeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documentAttributeConfigurations: list[DocumentAttributeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIndexResponse:
     Optional[str] applicationId
     Optional[str] indexId
@@ -1759,8 +1805,9 @@ struct GetRetrieverRequest:
     str applicationId
     str retrieverId
 
-# no @derive(Json): member(s) configuration: RetrieverConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: RetrieverConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRetrieverResponse:
     Optional[str] applicationId
     Optional[str] retrieverId
@@ -1779,8 +1826,9 @@ struct GetUserRequest:
     str applicationId
     str userId
 
-# no @derive(Json): member(s) userAliases: list[UserAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAliases: list[UserAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserResponse:
     Optional[list[UserAlias]] userAliases
 
@@ -1790,8 +1838,9 @@ struct GetWebExperienceRequest:
     str applicationId
     str webExperienceId
 
-# no @derive(Json): member(s) origins: list[str], browserExtensionConfiguration: BrowserExtensionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) origins: list[str], browserExtensionConfiguration: BrowserExtensionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWebExperienceResponse:
     Optional[str] applicationId
     Optional[str] webExperienceId
@@ -1812,8 +1861,9 @@ struct GetWebExperienceResponse:
     Optional[BrowserExtensionConfiguration] browserExtensionConfiguration
     Optional[CustomizationConfiguration] customizationConfiguration
 
-# no @derive(Json): member(s) memberGroups: list[MemberGroup], memberUsers: list[MemberUser] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberGroups: list[MemberGroup], memberUsers: list[MemberUser] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupMembers:
     Optional[list[MemberGroup]] memberGroups
     Optional[list[MemberUser]] memberUsers
@@ -1833,8 +1883,9 @@ struct GroupSummary:
 struct HallucinationReductionConfiguration:
     Optional[HallucinationReductionControl] hallucinationReductionControl
 
-# no @derive(Json): member(s) invocationCondition: DocumentAttributeCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invocationCondition: DocumentAttributeCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HookConfiguration:
     Optional[DocumentAttributeCondition] invocationCondition
     Optional[str] lambdaArn
@@ -1876,8 +1927,9 @@ struct IndexCapacityConfiguration:
 struct IndexStatistics:
     Optional[TextDocumentStatistics] textDocumentStatistics
 
-# no @derive(Json): member(s) condition: DocumentAttributeCondition, target: DocumentAttributeTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) condition: DocumentAttributeCondition, target: DocumentAttributeTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineDocumentEnrichmentConfiguration:
     Optional[DocumentAttributeCondition] condition
     Optional[DocumentAttributeTarget] target
@@ -1912,8 +1964,9 @@ struct ListApplicationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) applications: list[Application] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applications: list[Application] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[str] nextToken
     Optional[list[Application]] applications
@@ -1927,8 +1980,9 @@ struct ListAttachmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) attachments: list[Attachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachments: list[Attachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachmentsResponse:
     Optional[list[Attachment]] attachments
     Optional[str] nextToken
@@ -1940,8 +1994,9 @@ struct ListChatResponseConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) chatResponseConfigurations: list[ChatResponseConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) chatResponseConfigurations: list[ChatResponseConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChatResponseConfigurationsResponse:
     Optional[list[ChatResponseConfiguration]] chatResponseConfigurations
     Optional[str] nextToken
@@ -1954,8 +2009,9 @@ struct ListConversationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) conversations: list[Conversation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conversations: list[Conversation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConversationsResponse:
     Optional[str] nextToken
     Optional[list[Conversation]] conversations
@@ -1967,8 +2023,9 @@ struct ListDataAccessorsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dataAccessors: list[DataAccessor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataAccessors: list[DataAccessor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataAccessorsResponse:
     Optional[list[DataAccessor]] dataAccessors
     Optional[str] nextToken
@@ -1986,8 +2043,9 @@ struct ListDataSourceSyncJobsRequest:
     # wire string of the DataSourceSyncJobStatus enum (querystring binding)
     Optional[str] statusFilter
 
-# no @derive(Json): member(s) history: list[DataSourceSyncJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) history: list[DataSourceSyncJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourceSyncJobsResponse:
     Optional[list[DataSourceSyncJob]] history
     Optional[str] nextToken
@@ -2000,8 +2058,9 @@ struct ListDataSourcesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dataSources: list[DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: list[DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourcesResponse:
     Optional[list[DataSource]] dataSources
     Optional[str] nextToken
@@ -2015,8 +2074,9 @@ struct ListDocumentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) documentDetailList: list[DocumentDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documentDetailList: list[DocumentDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentsResponse:
     Optional[list[DocumentDetails]] documentDetailList
     Optional[str] nextToken
@@ -2031,8 +2091,9 @@ struct ListGroupsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     Optional[str] nextToken
     Optional[list[GroupSummary]] items
@@ -2044,8 +2105,9 @@ struct ListIndicesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) indices: list[Index] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) indices: list[Index] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndicesResponse:
     Optional[str] nextToken
     Optional[list[Index]] indices
@@ -2059,8 +2121,9 @@ struct ListMessagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) messages: list[Message] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: list[Message] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMessagesResponse:
     Optional[list[Message]] messages
     Optional[str] nextToken
@@ -2073,8 +2136,9 @@ struct ListPluginActionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPluginActionsResponse:
     Optional[str] nextToken
     Optional[list[ActionSummary]] items
@@ -2087,8 +2151,9 @@ struct ListPluginTypeActionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPluginTypeActionsResponse:
     Optional[str] nextToken
     Optional[list[ActionSummary]] items
@@ -2099,8 +2164,9 @@ struct ListPluginTypeMetadataRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[PluginTypeMetadataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[PluginTypeMetadataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPluginTypeMetadataResponse:
     Optional[str] nextToken
     Optional[list[PluginTypeMetadataSummary]] items
@@ -2112,8 +2178,9 @@ struct ListPluginsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) plugins: list[Plugin] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) plugins: list[Plugin] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPluginsResponse:
     Optional[str] nextToken
     Optional[list[Plugin]] plugins
@@ -2125,8 +2192,9 @@ struct ListRetrieversRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) retrievers: list[Retriever] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) retrievers: list[Retriever] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRetrieversResponse:
     Optional[list[Retriever]] retrievers
     Optional[str] nextToken
@@ -2138,8 +2206,9 @@ struct ListSubscriptionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) subscriptions: list[Subscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptions: list[Subscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionsResponse:
     Optional[str] nextToken
     Optional[list[Subscription]] subscriptions
@@ -2149,8 +2218,9 @@ struct ListSubscriptionsResponse:
 struct ListTagsForResourceRequest:
     str resourceARN
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -2161,8 +2231,9 @@ struct ListWebExperiencesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) webExperiences: list[WebExperience] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webExperiences: list[WebExperience] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebExperiencesResponse:
     Optional[list[WebExperience]] webExperiences
     Optional[str] nextToken
@@ -2187,8 +2258,9 @@ struct MemberUser:
     str userId
     Optional[MembershipType] type
 
-# no @derive(Json): member(s) attachments: list[AttachmentOutput], sourceAttribution: list[SourceAttribution], actionReview: ActionReview, actionExecution: ActionExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachments: list[AttachmentOutput], sourceAttribution: list[SourceAttribution], actionReview: ActionReview, actionExecution: ActionExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Message:
     Optional[str] messageId
     Optional[str] body
@@ -2206,8 +2278,9 @@ struct MessageUsefulnessFeedback:
     Optional[str] comment
     DateTime submittedAt
 
-# no @derive(Json): member(s) sourceAttributions: list[SourceAttribution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceAttributions: list[SourceAttribution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataEvent:
     Optional[str] conversationId
     Optional[str] userMessageId
@@ -2215,8 +2288,9 @@ struct MetadataEvent:
     Optional[list[SourceAttribution]] sourceAttributions
     Optional[str] finalTextMessage
 
-# no @derive(Json): member(s) boostingOverride: dict[str, DocumentAttributeBoostingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) boostingOverride: dict[str, DocumentAttributeBoostingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NativeIndexConfiguration:
     str indexId
     Optional[int64] version
@@ -2248,8 +2322,9 @@ struct OpenIDConnectProviderConfiguration:
 struct OrchestrationConfiguration:
     OrchestrationControl control
 
-# no @derive(Json): member(s) conditionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PermissionCondition:
     str conditionOperator
     str conditionKey
@@ -2338,8 +2413,9 @@ struct QAppsConfiguration:
 struct QuickSightConfiguration:
     str clientNamespace
 
-# no @derive(Json): member(s) documentAttributes: list[DocumentAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documentAttributes: list[DocumentAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelevantContent:
     Optional[str] content
     Optional[str] documentId
@@ -2366,8 +2442,9 @@ struct Retriever:
     Optional[RetrieverStatus] status
     Optional[str] displayName
 
-# no @derive(Json): member(s) nativeIndexConfiguration: NativeIndexConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nativeIndexConfiguration: NativeIndexConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieverConfiguration:
     Optional[NativeIndexConfiguration] nativeIndexConfiguration
     Optional[KendraIndexConfiguration] kendraIndexConfiguration
@@ -2376,16 +2453,18 @@ struct RetrieverConfiguration:
 struct RetrieverContentSource:
     str retrieverId
 
-# no @derive(Json): member(s) includedUsersAndGroups: UsersAndGroups, excludedUsersAndGroups: UsersAndGroups, ruleConfiguration: RuleConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includedUsersAndGroups: UsersAndGroups, excludedUsersAndGroups: UsersAndGroups, ruleConfiguration: RuleConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     Optional[UsersAndGroups] includedUsersAndGroups
     Optional[UsersAndGroups] excludedUsersAndGroups
     RuleType ruleType
     Optional[RuleConfiguration] ruleConfiguration
 
-# no @derive(Json): member(s) contentRetrievalRule: ContentRetrievalRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentRetrievalRule: ContentRetrievalRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleConfiguration:
     Optional[ContentBlockerRule] contentBlockerRule
     Optional[ContentRetrievalRule] contentRetrievalRule
@@ -2420,8 +2499,9 @@ struct SearchRelevantContentRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) relevantContent: list[RelevantContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relevantContent: list[RelevantContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRelevantContentResponse:
     Optional[list[RelevantContent]] relevantContent
     Optional[str] nextToken
@@ -2436,8 +2516,9 @@ struct ServiceQuotaExceededException:
 struct SnippetExcerpt:
     Optional[str] text
 
-# no @derive(Json): member(s) textMessageSegments: list[TextSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textMessageSegments: list[TextSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceAttribution:
     Optional[str] title
     Optional[str] snippet
@@ -2478,8 +2559,9 @@ struct StopDataSourceSyncJobResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) attributeValueBoosting: dict[str, StringAttributeValueBoostingLevel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeValueBoosting: dict[str, StringAttributeValueBoostingLevel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringAttributeBoostingConfiguration:
     DocumentAttributeBoostingLevel boostingLevel
     Optional[dict[str, StringAttributeValueBoostingLevel]] attributeValueBoosting
@@ -2551,8 +2633,9 @@ struct TextSegment:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) exampleChatMessages: list[str], rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exampleChatMessages: list[str], rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicConfiguration:
     str name
     Optional[str] description
@@ -2720,8 +2803,9 @@ struct UpdateUserRequest:
     Optional[list[UserAlias]] userAliasesToUpdate
     Optional[list[UserAlias]] userAliasesToDelete
 
-# no @derive(Json): member(s) userAliasesAdded: list[UserAlias], userAliasesUpdated: list[UserAlias], userAliasesDeleted: list[UserAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAliasesAdded: list[UserAlias], userAliasesUpdated: list[UserAlias], userAliasesDeleted: list[UserAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserResponse:
     Optional[list[UserAlias]] userAliasesAdded
     Optional[list[UserAlias]] userAliasesUpdated
@@ -2754,14 +2838,16 @@ struct UserAlias:
     Optional[str] dataSourceId
     str userId
 
-# no @derive(Json): member(s) userIds: list[str], userGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userIds: list[str], userGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsersAndGroups:
     Optional[list[str]] userIds
     Optional[list[str]] userGroups
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -2843,42 +2929,18 @@ def qbusiness_error_from_code(str code) -> QBusinessError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociatePermission (document member `actions: list[str]` is not serializable by derive)
-#   BatchDeleteDocument (document member `documents: list[DeleteDocument]` is not serializable by derive)
-#   BatchPutDocument (document member `documents: list[Document]` is not serializable by derive)
 #   Chat (httpQuery `userGroups` has unsupported type list[str])
 #   ChatSync (httpQuery `userGroups` has unsupported type list[str])
-#   CreateApplication (document member `clientIdsForOIDC: list[str]` is not serializable by derive)
-#   CreateChatResponseConfiguration (document member `responseConfigurations: dict[str, ResponseConfiguration]` is not serializable by derive)
-#   CreateDataAccessor (document member `actionConfigurations: list[ActionConfiguration]` is not serializable by derive)
-#   CreateDataSource (document member `vpcConfiguration: DataSourceVpcConfiguration` is not serializable by derive)
-#   CreateIndex (document member `tags: list[Tag]` is not serializable by derive)
-#   CreatePlugin (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateRetriever (document member `configuration: RetrieverConfiguration` is not serializable by derive)
-#   CreateUser (document member `userAliases: list[UserAlias]` is not serializable by derive)
-#   CreateWebExperience (document member `origins: list[str]` is not serializable by derive)
 #   ListDataSourceSyncJobs (httpQuery `startTime` has unsupported type DateTime)
 #   ListDocuments (httpQuery `dataSourceIds` has unsupported type list[str])
 #   ListGroups (httpQuery `updatedEarlierThan` has unsupported type DateTime)
-#   PutGroup (document member `groupMembers: GroupMembers` is not serializable by derive)
-#   SearchRelevantContent (document member `attributeFilter: AttributeFilter` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateChatControlsConfiguration (document member `blockedPhrasesConfigurationUpdate: BlockedPhrasesConfigurationUpdate` is not serializable by derive)
-#   UpdateChatResponseConfiguration (document member `responseConfigurations: dict[str, ResponseConfiguration]` is not serializable by derive)
-#   UpdateDataAccessor (document member `actionConfigurations: list[ActionConfiguration]` is not serializable by derive)
-#   UpdateDataSource (document member `vpcConfiguration: DataSourceVpcConfiguration` is not serializable by derive)
-#   UpdateIndex (document member `documentAttributeConfigurations: list[DocumentAttributeConfiguration]` is not serializable by derive)
-#   UpdateRetriever (document member `configuration: RetrieverConfiguration` is not serializable by derive)
-#   UpdateUser (document member `userAliasesToUpdate: list[UserAlias]` is not serializable by derive)
-#   UpdateWebExperience (document member `origins: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListDataSourceSyncJobs (operation not generated)
 #   ListDocuments (operation not generated)
 #   ListGroups (operation not generated)
-#   SearchRelevantContent (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2927,10 +2989,527 @@ struct UpdateSubscriptionDocument:
     # document members of UpdateSubscription
     SubscriptionType type
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def qbusiness_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def qbusiness_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def qbusiness_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccessConfiguration to a compact JSON object (declaration order).
+def access_configuration_to_json(AccessConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.accessControls:
+        e0.append(access_control_to_json(x0))
+    parts.append("\"accessControls\":" + qbusiness_json_arr(e0))
+    if v.memberRelation.is_some():
+        auto u1 = v.memberRelation.unwrap()
+        parts.append("\"memberRelation\":" + u1.to_json())
+    return qbusiness_json_obj(parts)
+
+# Serialize AccessControl to a compact JSON object (declaration order).
+def access_control_to_json(AccessControl v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.principals:
+        e0.append(x0.to_json())
+    parts.append("\"principals\":" + qbusiness_json_arr(e0))
+    if v.memberRelation.is_some():
+        auto u1 = v.memberRelation.unwrap()
+        parts.append("\"memberRelation\":" + u1.to_json())
+    return qbusiness_json_obj(parts)
+
+# Serialize ActionConfiguration to a compact JSON object (declaration order).
+def action_configuration_to_json(ActionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + qbusiness_json_str(v.action))
+    if v.filterConfiguration.is_some():
+        auto u0 = v.filterConfiguration.unwrap()
+        parts.append("\"filterConfiguration\":" + action_filter_configuration_to_json(u0))
+    return qbusiness_json_obj(parts)
+
+# Serialize ActionFilterConfiguration to a compact JSON object (declaration order).
+def action_filter_configuration_to_json(ActionFilterConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"documentAttributeFilter\":" + attribute_filter_to_json(v.documentAttributeFilter))
+    return qbusiness_json_obj(parts)
+
+# Serialize AttributeFilter to a compact JSON object (declaration order).
+def attribute_filter_to_json(AttributeFilter v) -> str:
+    list[str] parts = []
+    if v.andAllFilters.is_some():
+        auto u0 = v.andAllFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_filter_to_json(x1))
+        parts.append("\"andAllFilters\":" + qbusiness_json_arr(e1))
+    if v.orAllFilters.is_some():
+        auto u2 = v.orAllFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(attribute_filter_to_json(x3))
+        parts.append("\"orAllFilters\":" + qbusiness_json_arr(e3))
+    if v.notFilter.is_some():
+        auto u4 = v.notFilter.unwrap()
+        parts.append("\"notFilter\":" + attribute_filter_to_json(u4))
+    if v.equalsTo.is_some():
+        auto u5 = v.equalsTo.unwrap()
+        parts.append("\"equalsTo\":" + document_attribute_to_json(u5))
+    if v.containsAll.is_some():
+        auto u6 = v.containsAll.unwrap()
+        parts.append("\"containsAll\":" + document_attribute_to_json(u6))
+    if v.containsAny.is_some():
+        auto u7 = v.containsAny.unwrap()
+        parts.append("\"containsAny\":" + document_attribute_to_json(u7))
+    if v.greaterThan.is_some():
+        auto u8 = v.greaterThan.unwrap()
+        parts.append("\"greaterThan\":" + document_attribute_to_json(u8))
+    if v.greaterThanOrEquals.is_some():
+        auto u9 = v.greaterThanOrEquals.unwrap()
+        parts.append("\"greaterThanOrEquals\":" + document_attribute_to_json(u9))
+    if v.lessThan.is_some():
+        auto u10 = v.lessThan.unwrap()
+        parts.append("\"lessThan\":" + document_attribute_to_json(u10))
+    if v.lessThanOrEquals.is_some():
+        auto u11 = v.lessThanOrEquals.unwrap()
+        parts.append("\"lessThanOrEquals\":" + document_attribute_to_json(u11))
+    return qbusiness_json_obj(parts)
+
+# Serialize BlockedPhrasesConfigurationUpdate to a compact JSON object (declaration order).
+def blocked_phrases_configuration_update_to_json(BlockedPhrasesConfigurationUpdate v) -> str:
+    list[str] parts = []
+    if v.blockedPhrasesToCreateOrUpdate.is_some():
+        auto u0 = v.blockedPhrasesToCreateOrUpdate.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(qbusiness_json_str(x1))
+        parts.append("\"blockedPhrasesToCreateOrUpdate\":" + qbusiness_json_arr(e1))
+    if v.blockedPhrasesToDelete.is_some():
+        auto u2 = v.blockedPhrasesToDelete.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(qbusiness_json_str(x3))
+        parts.append("\"blockedPhrasesToDelete\":" + qbusiness_json_arr(e3))
+    if v.systemMessageOverride.is_some():
+        auto u4 = v.systemMessageOverride.unwrap()
+        parts.append("\"systemMessageOverride\":" + qbusiness_json_str(u4))
+    return qbusiness_json_obj(parts)
+
+# Serialize BrowserExtensionConfiguration to a compact JSON object (declaration order).
+def browser_extension_configuration_to_json(BrowserExtensionConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.enabledBrowserExtensions:
+        e0.append(x0.to_json())
+    parts.append("\"enabledBrowserExtensions\":" + qbusiness_json_arr(e0))
+    return qbusiness_json_obj(parts)
+
+# Serialize ContentRetrievalRule to a compact JSON object (declaration order).
+def content_retrieval_rule_to_json(ContentRetrievalRule v) -> str:
+    list[str] parts = []
+    if v.eligibleDataSources.is_some():
+        auto u0 = v.eligibleDataSources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"eligibleDataSources\":" + qbusiness_json_arr(e1))
+    return qbusiness_json_obj(parts)
+
+# Serialize DataAccessorAuthenticationDetail to a compact JSON object (declaration order).
+def data_accessor_authentication_detail_to_json(DataAccessorAuthenticationDetail v) -> str:
+    list[str] parts = []
+    parts.append("\"authenticationType\":" + v.authenticationType.to_json())
+    if v.authenticationConfiguration.is_some():
+        auto u0 = v.authenticationConfiguration.unwrap()
+        parts.append("\"authenticationConfiguration\":" + u0.to_json())
+    if v.externalIds.is_some():
+        auto u1 = v.externalIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(qbusiness_json_str(x2))
+        parts.append("\"externalIds\":" + qbusiness_json_arr(e2))
+    return qbusiness_json_obj(parts)
+
+# Serialize DataSourceVpcConfiguration to a compact JSON object (declaration order).
+def data_source_vpc_configuration_to_json(DataSourceVpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(qbusiness_json_str(x0))
+    parts.append("\"subnetIds\":" + qbusiness_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.securityGroupIds:
+        e1.append(qbusiness_json_str(x1))
+    parts.append("\"securityGroupIds\":" + qbusiness_json_arr(e1))
+    return qbusiness_json_obj(parts)
+
+# Serialize Document to a compact JSON object (declaration order).
+def document_to_json(Document v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + qbusiness_json_str(v.id))
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(document_attribute_to_json(x1))
+        parts.append("\"attributes\":" + qbusiness_json_arr(e1))
+    if v.content.is_some():
+        auto u2 = v.content.unwrap()
+        parts.append("\"content\":" + u2.to_json())
+    if v.contentType.is_some():
+        auto u3 = v.contentType.unwrap()
+        parts.append("\"contentType\":" + u3.to_json())
+    if v.title.is_some():
+        auto u4 = v.title.unwrap()
+        parts.append("\"title\":" + qbusiness_json_str(u4))
+    if v.accessConfiguration.is_some():
+        auto u5 = v.accessConfiguration.unwrap()
+        parts.append("\"accessConfiguration\":" + access_configuration_to_json(u5))
+    if v.documentEnrichmentConfiguration.is_some():
+        auto u6 = v.documentEnrichmentConfiguration.unwrap()
+        parts.append("\"documentEnrichmentConfiguration\":" + document_enrichment_configuration_to_json(u6))
+    if v.mediaExtractionConfiguration.is_some():
+        auto u7 = v.mediaExtractionConfiguration.unwrap()
+        parts.append("\"mediaExtractionConfiguration\":" + u7.to_json())
+    return qbusiness_json_obj(parts)
+
+# Serialize DocumentAttribute to a compact JSON object (declaration order).
+def document_attribute_to_json(DocumentAttribute v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + qbusiness_json_str(v.name))
+    parts.append("\"value\":" + document_attribute_value_to_json(v.value))
+    return qbusiness_json_obj(parts)
+
+# Serialize DocumentAttributeBoostingConfiguration to a compact JSON object (declaration order).
+def document_attribute_boosting_configuration_to_json(DocumentAttributeBoostingConfiguration v) -> str:
+    list[str] parts = []
+    if v.numberConfiguration.is_some():
+        auto u0 = v.numberConfiguration.unwrap()
+        parts.append("\"numberConfiguration\":" + u0.to_json())
+    if v.stringConfiguration.is_some():
+        auto u1 = v.stringConfiguration.unwrap()
+        parts.append("\"stringConfiguration\":" + string_attribute_boosting_configuration_to_json(u1))
+    if v.dateConfiguration.is_some():
+        auto u2 = v.dateConfiguration.unwrap()
+        parts.append("\"dateConfiguration\":" + u2.to_json())
+    if v.stringListConfiguration.is_some():
+        auto u3 = v.stringListConfiguration.unwrap()
+        parts.append("\"stringListConfiguration\":" + u3.to_json())
+    return qbusiness_json_obj(parts)
+
+# Serialize DocumentAttributeCondition to a compact JSON object (declaration order).
+def document_attribute_condition_to_json(DocumentAttributeCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + qbusiness_json_str(v.key))
+    parts.append("\"operator\":" + v.operator.to_json())
+    if v.value.is_some():
+        auto u0 = v.value.unwrap()
+        parts.append("\"value\":" + document_attribute_value_to_json(u0))
+    return qbusiness_json_obj(parts)
+
+# Serialize DocumentAttributeTarget to a compact JSON object (declaration order).
+def document_attribute_target_to_json(DocumentAttributeTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + qbusiness_json_str(v.key))
+    if v.value.is_some():
+        auto u0 = v.value.unwrap()
+        parts.append("\"value\":" + document_attribute_value_to_json(u0))
+    if v.attributeValueOperator.is_some():
+        auto u1 = v.attributeValueOperator.unwrap()
+        parts.append("\"attributeValueOperator\":" + qbusiness_json_str(u1))
+    return qbusiness_json_obj(parts)
+
+# Serialize DocumentAttributeValue to a compact JSON object (declaration order).
+def document_attribute_value_to_json(DocumentAttributeValue v) -> str:
+    list[str] parts = []
+    if v.stringValue.is_some():
+        auto u0 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + qbusiness_json_str(u0))
+    if v.stringListValue.is_some():
+        auto u1 = v.stringListValue.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(qbusiness_json_str(x2))
+        parts.append("\"stringListValue\":" + qbusiness_json_arr(e2))
+    if v.longValue.is_some():
+        auto u3 = v.longValue.unwrap()
+        parts.append("\"longValue\":" + str(u3))
+    if v.dateValue.is_some():
+        auto u4 = v.dateValue.unwrap()
+        parts.append("\"dateValue\":" + str(datetime.to_timestamp(u4)))
+    return qbusiness_json_obj(parts)
+
+# Serialize DocumentEnrichmentConfiguration to a compact JSON object (declaration order).
+def document_enrichment_configuration_to_json(DocumentEnrichmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.inlineConfigurations.is_some():
+        auto u0 = v.inlineConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inline_document_enrichment_configuration_to_json(x1))
+        parts.append("\"inlineConfigurations\":" + qbusiness_json_arr(e1))
+    if v.preExtractionHookConfiguration.is_some():
+        auto u2 = v.preExtractionHookConfiguration.unwrap()
+        parts.append("\"preExtractionHookConfiguration\":" + hook_configuration_to_json(u2))
+    if v.postExtractionHookConfiguration.is_some():
+        auto u3 = v.postExtractionHookConfiguration.unwrap()
+        parts.append("\"postExtractionHookConfiguration\":" + hook_configuration_to_json(u3))
+    return qbusiness_json_obj(parts)
+
+# Serialize GroupMembers to a compact JSON object (declaration order).
+def group_members_to_json(GroupMembers v) -> str:
+    list[str] parts = []
+    if v.memberGroups.is_some():
+        auto u0 = v.memberGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"memberGroups\":" + qbusiness_json_arr(e1))
+    if v.memberUsers.is_some():
+        auto u2 = v.memberUsers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"memberUsers\":" + qbusiness_json_arr(e3))
+    if v.s3PathForGroupMembers.is_some():
+        auto u4 = v.s3PathForGroupMembers.unwrap()
+        parts.append("\"s3PathForGroupMembers\":" + u4.to_json())
+    return qbusiness_json_obj(parts)
+
+# Serialize HookConfiguration to a compact JSON object (declaration order).
+def hook_configuration_to_json(HookConfiguration v) -> str:
+    list[str] parts = []
+    if v.invocationCondition.is_some():
+        auto u0 = v.invocationCondition.unwrap()
+        parts.append("\"invocationCondition\":" + document_attribute_condition_to_json(u0))
+    if v.lambdaArn.is_some():
+        auto u1 = v.lambdaArn.unwrap()
+        parts.append("\"lambdaArn\":" + qbusiness_json_str(u1))
+    if v.s3BucketName.is_some():
+        auto u2 = v.s3BucketName.unwrap()
+        parts.append("\"s3BucketName\":" + qbusiness_json_str(u2))
+    if v.roleArn.is_some():
+        auto u3 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + qbusiness_json_str(u3))
+    return qbusiness_json_obj(parts)
+
+# Serialize InlineDocumentEnrichmentConfiguration to a compact JSON object (declaration order).
+def inline_document_enrichment_configuration_to_json(InlineDocumentEnrichmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.condition.is_some():
+        auto u0 = v.condition.unwrap()
+        parts.append("\"condition\":" + document_attribute_condition_to_json(u0))
+    if v.target.is_some():
+        auto u1 = v.target.unwrap()
+        parts.append("\"target\":" + document_attribute_target_to_json(u1))
+    if v.documentContentOperator.is_some():
+        auto u2 = v.documentContentOperator.unwrap()
+        parts.append("\"documentContentOperator\":" + qbusiness_json_str(u2))
+    return qbusiness_json_obj(parts)
+
+# Serialize NativeIndexConfiguration to a compact JSON object (declaration order).
+def native_index_configuration_to_json(NativeIndexConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"indexId\":" + qbusiness_json_str(v.indexId))
+    if v.version.is_some():
+        auto u0 = v.version.unwrap()
+        parts.append("\"version\":" + str(u0))
+    if v.boostingOverride.is_some():
+        auto u1 = v.boostingOverride.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(qbusiness_json_str(k2) + ":" + document_attribute_boosting_configuration_to_json(u1[k2]))
+        parts.append("\"boostingOverride\":" + qbusiness_json_obj(m2))
+    return qbusiness_json_obj(parts)
+
+# Serialize PermissionCondition to a compact JSON object (declaration order).
+def permission_condition_to_json(PermissionCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"conditionOperator\":" + qbusiness_json_str(v.conditionOperator))
+    parts.append("\"conditionKey\":" + qbusiness_json_str(v.conditionKey))
+    list[str] e0 = []
+    for x0 in v.conditionValues:
+        e0.append(qbusiness_json_str(x0))
+    parts.append("\"conditionValues\":" + qbusiness_json_arr(e0))
+    return qbusiness_json_obj(parts)
+
+# Serialize RetrieverConfiguration to a compact JSON object (declaration order).
+def retriever_configuration_to_json(RetrieverConfiguration v) -> str:
+    list[str] parts = []
+    if v.nativeIndexConfiguration.is_some():
+        auto u0 = v.nativeIndexConfiguration.unwrap()
+        parts.append("\"nativeIndexConfiguration\":" + native_index_configuration_to_json(u0))
+    if v.kendraIndexConfiguration.is_some():
+        auto u1 = v.kendraIndexConfiguration.unwrap()
+        parts.append("\"kendraIndexConfiguration\":" + u1.to_json())
+    return qbusiness_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    if v.includedUsersAndGroups.is_some():
+        auto u0 = v.includedUsersAndGroups.unwrap()
+        parts.append("\"includedUsersAndGroups\":" + users_and_groups_to_json(u0))
+    if v.excludedUsersAndGroups.is_some():
+        auto u1 = v.excludedUsersAndGroups.unwrap()
+        parts.append("\"excludedUsersAndGroups\":" + users_and_groups_to_json(u1))
+    parts.append("\"ruleType\":" + v.ruleType.to_json())
+    if v.ruleConfiguration.is_some():
+        auto u2 = v.ruleConfiguration.unwrap()
+        parts.append("\"ruleConfiguration\":" + rule_configuration_to_json(u2))
+    return qbusiness_json_obj(parts)
+
+# Serialize RuleConfiguration to a compact JSON object (declaration order).
+def rule_configuration_to_json(RuleConfiguration v) -> str:
+    list[str] parts = []
+    if v.contentBlockerRule.is_some():
+        auto u0 = v.contentBlockerRule.unwrap()
+        parts.append("\"contentBlockerRule\":" + u0.to_json())
+    if v.contentRetrievalRule.is_some():
+        auto u1 = v.contentRetrievalRule.unwrap()
+        parts.append("\"contentRetrievalRule\":" + content_retrieval_rule_to_json(u1))
+    return qbusiness_json_obj(parts)
+
+# Serialize StringAttributeBoostingConfiguration to a compact JSON object (declaration order).
+def string_attribute_boosting_configuration_to_json(StringAttributeBoostingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"boostingLevel\":" + v.boostingLevel.to_json())
+    if v.attributeValueBoosting.is_some():
+        auto u0 = v.attributeValueBoosting.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(qbusiness_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"attributeValueBoosting\":" + qbusiness_json_obj(m1))
+    return qbusiness_json_obj(parts)
+
+# Serialize TopicConfiguration to a compact JSON object (declaration order).
+def topic_configuration_to_json(TopicConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + qbusiness_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + qbusiness_json_str(u0))
+    if v.exampleChatMessages.is_some():
+        auto u1 = v.exampleChatMessages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(qbusiness_json_str(x2))
+        parts.append("\"exampleChatMessages\":" + qbusiness_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.rules:
+        e3.append(rule_to_json(x3))
+    parts.append("\"rules\":" + qbusiness_json_arr(e3))
+    return qbusiness_json_obj(parts)
+
+# Serialize UsersAndGroups to a compact JSON object (declaration order).
+def users_and_groups_to_json(UsersAndGroups v) -> str:
+    list[str] parts = []
+    if v.userIds.is_some():
+        auto u0 = v.userIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(qbusiness_json_str(x1))
+        parts.append("\"userIds\":" + qbusiness_json_arr(e1))
+    if v.userGroups.is_some():
+        auto u2 = v.userGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(qbusiness_json_str(x3))
+        parts.append("\"userGroups\":" + qbusiness_json_arr(e3))
+    return qbusiness_json_obj(parts)
+
 # A bound QBusiness client: credentials + region, threaded into every operation.
 struct QBusinessClient:
     core.Credentials creds
     str region
+
+    # AssociatePermission  POST /applications/{applicationId}/policy
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def associate_permission(self, AssociatePermissionRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"statementId\":" + qbusiness_json_str(input.statementId))
+        list[str] e0 = []
+        for x0 in input.actions:
+            e0.append(qbusiness_json_str(x0))
+        parts.append("\"actions\":" + qbusiness_json_arr(e0))
+        if input.conditions.is_some():
+            auto u1 = input.conditions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(permission_condition_to_json(x2))
+            parts.append("\"conditions\":" + qbusiness_json_arr(e2))
+        parts.append("\"principal\":" + qbusiness_json_str(input.principal))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # BatchDeleteDocument  POST /applications/{applicationId}/indices/{indexId}/documents/delete
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_document(self, BatchDeleteDocumentRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/documents/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.documents:
+            e0.append(x0.to_json())
+        parts.append("\"documents\":" + qbusiness_json_arr(e0))
+        if input.dataSourceSyncId.is_some():
+            auto u1 = input.dataSourceSyncId.unwrap()
+            parts.append("\"dataSourceSyncId\":" + qbusiness_json_str(u1))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # BatchPutDocument  POST /applications/{applicationId}/indices/{indexId}/documents
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_put_document(self, BatchPutDocumentRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/documents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.documents:
+            e0.append(document_to_json(x0))
+        parts.append("\"documents\":" + qbusiness_json_arr(e0))
+        if input.roleArn.is_some():
+            auto u1 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u1))
+        if input.dataSourceSyncId.is_some():
+            auto u2 = input.dataSourceSyncId.unwrap()
+            parts.append("\"dataSourceSyncId\":" + qbusiness_json_str(u2))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
     # CancelSubscription  DELETE /applications/{applicationId}/subscriptions/{subscriptionId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2969,6 +3548,241 @@ struct QBusinessClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
+    # CreateApplication  POST /applications
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u0))
+        if input.identityType.is_some():
+            auto u1 = input.identityType.unwrap()
+            parts.append("\"identityType\":" + u1.to_json())
+        if input.iamIdentityProviderArn.is_some():
+            auto u2 = input.iamIdentityProviderArn.unwrap()
+            parts.append("\"iamIdentityProviderArn\":" + qbusiness_json_str(u2))
+        if input.identityCenterInstanceArn.is_some():
+            auto u3 = input.identityCenterInstanceArn.unwrap()
+            parts.append("\"identityCenterInstanceArn\":" + qbusiness_json_str(u3))
+        if input.clientIdsForOIDC.is_some():
+            auto u4 = input.clientIdsForOIDC.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(qbusiness_json_str(x5))
+            parts.append("\"clientIdsForOIDC\":" + qbusiness_json_arr(e5))
+        if input.description.is_some():
+            auto u6 = input.description.unwrap()
+            parts.append("\"description\":" + qbusiness_json_str(u6))
+        if input.encryptionConfiguration.is_some():
+            auto u7 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u7.to_json())
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u10))
+        if input.attachmentsConfiguration.is_some():
+            auto u11 = input.attachmentsConfiguration.unwrap()
+            parts.append("\"attachmentsConfiguration\":" + u11.to_json())
+        if input.qAppsConfiguration.is_some():
+            auto u12 = input.qAppsConfiguration.unwrap()
+            parts.append("\"qAppsConfiguration\":" + u12.to_json())
+        if input.personalizationConfiguration.is_some():
+            auto u13 = input.personalizationConfiguration.unwrap()
+            parts.append("\"personalizationConfiguration\":" + u13.to_json())
+        if input.quickSightConfiguration.is_some():
+            auto u14 = input.quickSightConfiguration.unwrap()
+            parts.append("\"quickSightConfiguration\":" + u14.to_json())
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateChatResponseConfiguration  POST /applications/{applicationId}/chatresponseconfigurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_chat_response_configuration(self, CreateChatResponseConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/chatresponseconfigurations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u0))
+        list[str] m1 = []
+        for k1 in sorted(input.responseConfigurations.keys()):
+            m1.append(qbusiness_json_str(k1) + ":" + input.responseConfigurations[k1].to_json())
+        parts.append("\"responseConfigurations\":" + qbusiness_json_obj(m1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateDataAccessor  POST /applications/{applicationId}/dataaccessors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_accessor(self, CreateDataAccessorRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataaccessors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"principal\":" + qbusiness_json_str(input.principal))
+        list[str] e0 = []
+        for x0 in input.actionConfigurations:
+            e0.append(action_configuration_to_json(x0))
+        parts.append("\"actionConfigurations\":" + qbusiness_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u1))
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        if input.authenticationDetail.is_some():
+            auto u2 = input.authenticationDetail.unwrap()
+            parts.append("\"authenticationDetail\":" + data_accessor_authentication_detail_to_json(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateDataSource  POST /applications/{applicationId}/indices/{indexId}/datasources
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_source(self, CreateDataSourceRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        parts.append("\"configuration\":" + input.configuration.to_json())
+        if input.vpcConfiguration.is_some():
+            auto u0 = input.vpcConfiguration.unwrap()
+            parts.append("\"vpcConfiguration\":" + data_source_vpc_configuration_to_json(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + qbusiness_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e3))
+        if input.syncSchedule.is_some():
+            auto u4 = input.syncSchedule.unwrap()
+            parts.append("\"syncSchedule\":" + qbusiness_json_str(u4))
+        if input.roleArn.is_some():
+            auto u5 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u6))
+        if input.documentEnrichmentConfiguration.is_some():
+            auto u7 = input.documentEnrichmentConfiguration.unwrap()
+            parts.append("\"documentEnrichmentConfiguration\":" + document_enrichment_configuration_to_json(u7))
+        if input.mediaExtractionConfiguration.is_some():
+            auto u8 = input.mediaExtractionConfiguration.unwrap()
+            parts.append("\"mediaExtractionConfiguration\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateIndex  POST /applications/{applicationId}/indices
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_index(self, CreateIndexRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + qbusiness_json_str(u0))
+        if input.type.is_some():
+            auto u1 = input.type.unwrap()
+            parts.append("\"type\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e3))
+        if input.capacityConfiguration.is_some():
+            auto u4 = input.capacityConfiguration.unwrap()
+            parts.append("\"capacityConfiguration\":" + u4.to_json())
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u5))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreatePlugin  POST /applications/{applicationId}/plugins
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_plugin(self, CreatePluginRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/plugins", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"authConfiguration\":" + input.authConfiguration.to_json())
+        if input.serverUrl.is_some():
+            auto u0 = input.serverUrl.unwrap()
+            parts.append("\"serverUrl\":" + qbusiness_json_str(u0))
+        if input.customPluginConfiguration.is_some():
+            auto u1 = input.customPluginConfiguration.unwrap()
+            parts.append("\"customPluginConfiguration\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u4))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateRetriever  POST /applications/{applicationId}/retrievers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_retriever(self, CreateRetrieverRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/retrievers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
+        parts.append("\"configuration\":" + retriever_configuration_to_json(input.configuration))
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
     # CreateSubscription  POST /applications/{applicationId}/subscriptions
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_subscription(self, CreateSubscriptionRequest input) -> str:
@@ -2978,6 +3792,77 @@ struct QBusinessClient:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSubscriptionDocument(principal=input.principal, type=input.type, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateUser  POST /applications/{applicationId}/users
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"userId\":" + qbusiness_json_str(input.userId))
+        if input.userAliases.is_some():
+            auto u0 = input.userAliases.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"userAliases\":" + qbusiness_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u2))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # CreateWebExperience  POST /applications/{applicationId}/experiences
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_web_experience(self, CreateWebExperienceRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/experiences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + qbusiness_json_str(u0))
+        if input.subtitle.is_some():
+            auto u1 = input.subtitle.unwrap()
+            parts.append("\"subtitle\":" + qbusiness_json_str(u1))
+        if input.welcomeMessage.is_some():
+            auto u2 = input.welcomeMessage.unwrap()
+            parts.append("\"welcomeMessage\":" + qbusiness_json_str(u2))
+        if input.samplePromptsControlMode.is_some():
+            auto u3 = input.samplePromptsControlMode.unwrap()
+            parts.append("\"samplePromptsControlMode\":" + u3.to_json())
+        if input.origins.is_some():
+            auto u4 = input.origins.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(qbusiness_json_str(x5))
+            parts.append("\"origins\":" + qbusiness_json_arr(e5))
+        if input.roleArn.is_some():
+            auto u6 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"tags\":" + qbusiness_json_arr(e8))
+        if input.clientToken.is_some():
+            auto u9 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u9))
+        if input.identityProviderConfiguration.is_some():
+            auto u10 = input.identityProviderConfiguration.unwrap()
+            parts.append("\"identityProviderConfiguration\":" + u10.to_json())
+        if input.browserExtensionConfiguration.is_some():
+            auto u11 = input.browserExtensionConfiguration.unwrap()
+            parts.append("\"browserExtensionConfiguration\":" + browser_extension_configuration_to_json(u11))
+        if input.customizationConfiguration.is_some():
+            auto u12 = input.customizationConfiguration.unwrap()
+            parts.append("\"customizationConfiguration\":" + u12.to_json())
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
     # DeleteApplication  DELETE /applications/{applicationId}
@@ -3527,6 +4412,49 @@ struct QBusinessClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
+    # PutGroup  PUT /applications/{applicationId}/indices/{indexId}/groups
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def put_group(self, PutGroupRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}/groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"groupName\":" + qbusiness_json_str(input.groupName))
+        if input.dataSourceId.is_some():
+            auto u0 = input.dataSourceId.unwrap()
+            parts.append("\"dataSourceId\":" + qbusiness_json_str(u0))
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"groupMembers\":" + group_members_to_json(input.groupMembers))
+        if input.roleArn.is_some():
+            auto u1 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u1))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # SearchRelevantContent  POST /applications/{applicationId}/relevant-content
+    # errors: AccessDeniedException, InternalServerException, LicenseNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_relevant_content(self, SearchRelevantContentRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/relevant-content", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"queryText\":" + qbusiness_json_str(input.queryText))
+        parts.append("\"contentSource\":" + input.contentSource.to_json())
+        if input.attributeFilter.is_some():
+            auto u0 = input.attributeFilter.unwrap()
+            parts.append("\"attributeFilter\":" + attribute_filter_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + qbusiness_json_str(u2))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
     # StartDataSourceSyncJob  POST /applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/startsync
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_data_source_sync_job(self, StartDataSourceSyncJobRequest input) -> str:
@@ -3549,6 +4477,21 @@ struct QBusinessClient:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/stopsync", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
+    # TagResource  POST /v1/tags/{resourceARN}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceARN"] = input.resourceARN
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + qbusiness_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
     # UpdateApplication  PUT /applications/{applicationId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_application(self, UpdateApplicationRequest input) -> str:
@@ -3558,6 +4501,155 @@ struct QBusinessClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(identityCenterInstanceArn=input.identityCenterInstanceArn, displayName=input.displayName, description=input.description, roleArn=input.roleArn, attachmentsConfiguration=input.attachmentsConfiguration, qAppsConfiguration=input.qAppsConfiguration, personalizationConfiguration=input.personalizationConfiguration, autoSubscriptionConfiguration=input.autoSubscriptionConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateChatControlsConfiguration  PATCH /applications/{applicationId}/chatcontrols
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_chat_controls_configuration(self, UpdateChatControlsConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u0))
+        if input.responseScope.is_some():
+            auto u1 = input.responseScope.unwrap()
+            parts.append("\"responseScope\":" + u1.to_json())
+        if input.orchestrationConfiguration.is_some():
+            auto u2 = input.orchestrationConfiguration.unwrap()
+            parts.append("\"orchestrationConfiguration\":" + u2.to_json())
+        if input.blockedPhrasesConfigurationUpdate.is_some():
+            auto u3 = input.blockedPhrasesConfigurationUpdate.unwrap()
+            parts.append("\"blockedPhrasesConfigurationUpdate\":" + blocked_phrases_configuration_update_to_json(u3))
+        if input.topicConfigurationsToCreateOrUpdate.is_some():
+            auto u4 = input.topicConfigurationsToCreateOrUpdate.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(topic_configuration_to_json(x5))
+            parts.append("\"topicConfigurationsToCreateOrUpdate\":" + qbusiness_json_arr(e5))
+        if input.topicConfigurationsToDelete.is_some():
+            auto u6 = input.topicConfigurationsToDelete.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(topic_configuration_to_json(x7))
+            parts.append("\"topicConfigurationsToDelete\":" + qbusiness_json_arr(e7))
+        if input.creatorModeConfiguration.is_some():
+            auto u8 = input.creatorModeConfiguration.unwrap()
+            parts.append("\"creatorModeConfiguration\":" + u8.to_json())
+        if input.hallucinationReductionConfiguration.is_some():
+            auto u9 = input.hallucinationReductionConfiguration.unwrap()
+            parts.append("\"hallucinationReductionConfiguration\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateChatResponseConfiguration  PUT /applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_chat_response_configuration(self, UpdateChatResponseConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["chatResponseConfigurationId"] = input.chatResponseConfigurationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + qbusiness_json_str(u0))
+        list[str] m1 = []
+        for k1 in sorted(input.responseConfigurations.keys()):
+            m1.append(qbusiness_json_str(k1) + ":" + input.responseConfigurations[k1].to_json())
+        parts.append("\"responseConfigurations\":" + qbusiness_json_obj(m1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u2))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateDataAccessor  PUT /applications/{applicationId}/dataaccessors/{dataAccessorId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_data_accessor(self, UpdateDataAccessorRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["dataAccessorId"] = input.dataAccessorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.actionConfigurations:
+            e0.append(action_configuration_to_json(x0))
+        parts.append("\"actionConfigurations\":" + qbusiness_json_arr(e0))
+        if input.authenticationDetail.is_some():
+            auto u1 = input.authenticationDetail.unwrap()
+            parts.append("\"authenticationDetail\":" + data_accessor_authentication_detail_to_json(u1))
+        if input.displayName.is_some():
+            auto u2 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + qbusiness_json_str(u2))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateDataSource  PUT /applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_data_source(self, UpdateDataSourceRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        labels["dataSourceId"] = input.dataSourceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + qbusiness_json_str(u0))
+        if input.configuration.is_some():
+            auto u1 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + u1.to_json())
+        if input.vpcConfiguration.is_some():
+            auto u2 = input.vpcConfiguration.unwrap()
+            parts.append("\"vpcConfiguration\":" + data_source_vpc_configuration_to_json(u2))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + qbusiness_json_str(u3))
+        if input.syncSchedule.is_some():
+            auto u4 = input.syncSchedule.unwrap()
+            parts.append("\"syncSchedule\":" + qbusiness_json_str(u4))
+        if input.roleArn.is_some():
+            auto u5 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u5))
+        if input.documentEnrichmentConfiguration.is_some():
+            auto u6 = input.documentEnrichmentConfiguration.unwrap()
+            parts.append("\"documentEnrichmentConfiguration\":" + document_enrichment_configuration_to_json(u6))
+        if input.mediaExtractionConfiguration.is_some():
+            auto u7 = input.mediaExtractionConfiguration.unwrap()
+            parts.append("\"mediaExtractionConfiguration\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateIndex  PUT /applications/{applicationId}/indices/{indexId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_index(self, UpdateIndexRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + qbusiness_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + qbusiness_json_str(u1))
+        if input.capacityConfiguration.is_some():
+            auto u2 = input.capacityConfiguration.unwrap()
+            parts.append("\"capacityConfiguration\":" + u2.to_json())
+        if input.documentAttributeConfigurations.is_some():
+            auto u3 = input.documentAttributeConfigurations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"documentAttributeConfigurations\":" + qbusiness_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
     # UpdatePlugin  PUT /applications/{applicationId}/plugins/{pluginId}
@@ -3572,6 +4664,27 @@ struct QBusinessClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
+    # UpdateRetriever  PUT /applications/{applicationId}/retrievers/{retrieverId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_retriever(self, UpdateRetrieverRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["retrieverId"] = input.retrieverId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.configuration.is_some():
+            auto u0 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + retriever_configuration_to_json(u0))
+        if input.displayName.is_some():
+            auto u1 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + qbusiness_json_str(u1))
+        if input.roleArn.is_some():
+            auto u2 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u2))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
     # UpdateSubscription  PUT /applications/{applicationId}/subscriptions/{subscriptionId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_subscription(self, UpdateSubscriptionRequest input) -> str:
@@ -3582,6 +4695,75 @@ struct QBusinessClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriptionDocument(type=input.type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateUser  PUT /applications/{applicationId}/users/{userId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["userId"] = input.userId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.userAliasesToUpdate.is_some():
+            auto u0 = input.userAliasesToUpdate.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"userAliasesToUpdate\":" + qbusiness_json_arr(e1))
+        if input.userAliasesToDelete.is_some():
+            auto u2 = input.userAliasesToDelete.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"userAliasesToDelete\":" + qbusiness_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
+
+    # UpdateWebExperience  PUT /applications/{applicationId}/experiences/{webExperienceId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_web_experience(self, UpdateWebExperienceRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["webExperienceId"] = input.webExperienceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + qbusiness_json_str(u0))
+        if input.authenticationConfiguration.is_some():
+            auto u1 = input.authenticationConfiguration.unwrap()
+            parts.append("\"authenticationConfiguration\":" + u1.to_json())
+        if input.title.is_some():
+            auto u2 = input.title.unwrap()
+            parts.append("\"title\":" + qbusiness_json_str(u2))
+        if input.subtitle.is_some():
+            auto u3 = input.subtitle.unwrap()
+            parts.append("\"subtitle\":" + qbusiness_json_str(u3))
+        if input.welcomeMessage.is_some():
+            auto u4 = input.welcomeMessage.unwrap()
+            parts.append("\"welcomeMessage\":" + qbusiness_json_str(u4))
+        if input.samplePromptsControlMode.is_some():
+            auto u5 = input.samplePromptsControlMode.unwrap()
+            parts.append("\"samplePromptsControlMode\":" + u5.to_json())
+        if input.identityProviderConfiguration.is_some():
+            auto u6 = input.identityProviderConfiguration.unwrap()
+            parts.append("\"identityProviderConfiguration\":" + u6.to_json())
+        if input.origins.is_some():
+            auto u7 = input.origins.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(qbusiness_json_str(x8))
+            parts.append("\"origins\":" + qbusiness_json_arr(e8))
+        if input.browserExtensionConfiguration.is_some():
+            auto u9 = input.browserExtensionConfiguration.unwrap()
+            parts.append("\"browserExtensionConfiguration\":" + browser_extension_configuration_to_json(u9))
+        if input.customizationConfiguration.is_some():
+            auto u10 = input.customizationConfiguration.unwrap()
+            parts.append("\"customizationConfiguration\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
     # Paginator for GetChatControlsConfiguration — yields each Response page, threading the
@@ -3785,6 +4967,19 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         while True:
             auto raw = self.list_web_experiences(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchRelevantContent — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: relevantContent).
+    def paginate_search_relevant_content(self, SearchRelevantContentRequest input):
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        while True:
+            auto raw = self.search_relevant_content(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

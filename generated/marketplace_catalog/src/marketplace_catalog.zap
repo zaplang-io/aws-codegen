@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 9 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 15 operations — 15 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   179 structs (91 @derive(Json)), 31 enums, 8 error variants.
-#   2 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -341,13 +341,15 @@ struct AMISecuritySummary:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiProductEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: AmiProductEntityIdFilter, ProductTitle: AmiProductTitleFilter, Visibility: AmiProductVisibilityFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: AmiProductEntityIdFilter, ProductTitle: AmiProductTitleFilter, Visibility: AmiProductVisibilityFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiProductFilters:
     Optional[AmiProductEntityIdFilter] EntityId
     Optional[AmiProductLastModifiedDateFilter] LastModifiedDate
@@ -373,14 +375,16 @@ struct AmiProductSummary:
     Optional[str] ProductTitle
     Optional[AmiProductVisibilityString] Visibility
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiProductTitleFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[AmiProductVisibilityString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[AmiProductVisibilityString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiProductVisibilityFilter:
     Optional[list[AmiProductVisibilityString]] ValueList
 
@@ -410,8 +414,9 @@ struct AssessmentTargetSummary:
 struct BatchDescribeEntitiesRequest:
     list[EntityRequest] EntityRequestList
 
-# no @derive(Json): member(s) EntityDetails: dict[str, EntityDetail], Errors: dict[str, BatchDescribeErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityDetails: dict[str, EntityDetail], Errors: dict[str, BatchDescribeErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeEntitiesResponse:
     Optional[dict[str, EntityDetail]] EntityDetails
     Optional[dict[str, BatchDescribeErrorDetail]] Errors
@@ -432,8 +437,9 @@ struct CancelChangeSetResponse:
     Optional[str] ChangeSetId
     Optional[str] ChangeSetArn
 
-# no @derive(Json): member(s) EntityTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Change:
     str ChangeType
     Entity Entity
@@ -442,8 +448,9 @@ struct Change:
     Optional[JsonDocumentType] DetailsDocument
     Optional[str] ChangeName
 
-# no @derive(Json): member(s) EntityIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeSetSummaryListItem:
     Optional[str] ChangeSetId
     Optional[str] ChangeSetArn
@@ -454,8 +461,9 @@ struct ChangeSetSummaryListItem:
     Optional[list[str]] EntityIdList
     Optional[FailureCode] FailureCode
 
-# no @derive(Json): member(s) ErrorDetailList: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetailList: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeSummary:
     Optional[str] ChangeType
     Optional[Entity] Entity
@@ -464,13 +472,15 @@ struct ChangeSummary:
     Optional[list[ErrorDetail]] ErrorDetailList
     Optional[str] ChangeName
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerProductEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: ContainerProductEntityIdFilter, ProductTitle: ContainerProductTitleFilter, Visibility: ContainerProductVisibilityFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: ContainerProductEntityIdFilter, ProductTitle: ContainerProductTitleFilter, Visibility: ContainerProductVisibilityFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerProductFilters:
     Optional[ContainerProductEntityIdFilter] EntityId
     Optional[ContainerProductLastModifiedDateFilter] LastModifiedDate
@@ -496,14 +506,16 @@ struct ContainerProductSummary:
     Optional[str] ProductTitle
     Optional[ContainerProductVisibilityString] Visibility
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerProductTitleFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[ContainerProductVisibilityString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[ContainerProductVisibilityString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerProductVisibilityFilter:
     Optional[list[ContainerProductVisibilityString]] ValueList
 
@@ -515,27 +527,31 @@ struct ContainerSecurityFilters:
 struct ContainerSecuritySummary:
     Optional[str] DeliveryOptionId
 
-# no @derive(Json): member(s) Errors: list[ControlError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[ControlError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlAssessment:
     Optional[str] ControlId
     Optional[ControlAssessmentResult] ControlAssessmentResult
     Optional[list[ControlError]] Errors
 
-# no @derive(Json): member(s) Scope: list[ErrorScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scope: list[ErrorScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlError:
     Optional[str] Code
     Optional[str] Message
     Optional[list[ErrorScope]] Scope
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: DataProductEntityIdFilter, ProductTitle: DataProductTitleFilter, Visibility: DataProductVisibilityFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: DataProductEntityIdFilter, ProductTitle: DataProductTitleFilter, Visibility: DataProductVisibilityFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductFilters:
     Optional[DataProductEntityIdFilter] EntityId
     Optional[DataProductTitleFilter] ProductTitle
@@ -561,14 +577,16 @@ struct DataProductSummary:
     Optional[str] ProductTitle
     Optional[DataProductVisibilityString] Visibility
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductTitleFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[DataProductVisibilityString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[DataProductVisibilityString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductVisibilityFilter:
     Optional[list[DataProductVisibilityString]] ValueList
 
@@ -590,8 +608,9 @@ struct DescribeAssessmentRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ControlAssessments: list[ControlAssessment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlAssessments: list[ControlAssessment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentResponse:
     Optional[str] AssessmentArn
     Optional[str] AssessmentId
@@ -610,8 +629,9 @@ struct DescribeChangeSetRequest:
     str Catalog
     str ChangeSetId
 
-# no @derive(Json): member(s) ChangeSet: list[ChangeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangeSet: list[ChangeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChangeSetResponse:
     Optional[str] ChangeSetId
     Optional[str] ChangeSetArn
@@ -657,8 +677,9 @@ struct EntityRequest:
     str Catalog
     str EntityId
 
-# no @derive(Json): member(s) OfferSummary: OfferSummary, OfferSetSummary: OfferSetSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OfferSummary: OfferSummary, OfferSetSummary: OfferSetSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntitySummary:
     Optional[str] Name
     Optional[str] EntityType
@@ -677,8 +698,9 @@ struct EntitySummary:
     Optional[ExpressPrivateOfferConfigurationSummary] ExpressPrivateOfferConfigurationSummary
     Optional[SubsidiaryAuthorizationSummary] SubsidiaryAuthorizationSummary
 
-# no @derive(Json): member(s) DataProductFilters: DataProductFilters, SaaSProductFilters: SaaSProductFilters, AmiProductFilters: AmiProductFilters, OfferFilters: OfferFilters, ContainerProductFilters: ContainerProductFilters, ResaleAuthorizationFilters: ResaleAuthorizationFilters, MachineLearningProductFilters: MachineLearningProductFilters, OfferSetFilters: OfferSetFilters, ExpressPrivateOfferConfigurationFilters: ExpressPrivateOfferConfigurationFilters, SubsidiaryAuthorizationFilters: SubsidiaryAuthorizationFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataProductFilters: DataProductFilters, SaaSProductFilters: SaaSProductFilters, AmiProductFilters: AmiProductFilters, OfferFilters: OfferFilters, ContainerProductFilters: ContainerProductFilters, ResaleAuthorizationFilters: ResaleAuthorizationFilters, MachineLearningProductFilters: MachineLearningProductFilters, OfferSetFilters: OfferSetFilters, ExpressPrivateOfferConfigurationFilters: ExpressPrivateOfferConfigurationFilters, SubsidiaryAuthorizationFilters: SubsidiaryAuthorizationFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityTypeFilters:
     Optional[DataProductFilters] DataProductFilters
     Optional[SaaSProductFilters] SaaSProductFilters
@@ -714,20 +736,23 @@ struct ErrorScope:
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressPrivateOfferConfigurationEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: ExpressPrivateOfferConfigurationEntityIdFilter, ProductId: ExpressPrivateOfferConfigurationProductIdFilter, State: ExpressPrivateOfferConfigurationStateFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: ExpressPrivateOfferConfigurationEntityIdFilter, ProductId: ExpressPrivateOfferConfigurationProductIdFilter, State: ExpressPrivateOfferConfigurationStateFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressPrivateOfferConfigurationFilters:
     Optional[ExpressPrivateOfferConfigurationEntityIdFilter] EntityId
     Optional[ExpressPrivateOfferConfigurationProductIdFilter] ProductId
     Optional[ExpressPrivateOfferConfigurationStateFilter] State
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressPrivateOfferConfigurationProductIdFilter:
     Optional[list[str]] ValueList
 
@@ -736,8 +761,9 @@ struct ExpressPrivateOfferConfigurationSort:
     Optional[ExpressPrivateOfferConfigurationSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ValueList: list[ExpressPrivateOfferConfigurationStateString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[ExpressPrivateOfferConfigurationStateString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressPrivateOfferConfigurationStateFilter:
     Optional[list[ExpressPrivateOfferConfigurationStateString]] ValueList
 
@@ -746,8 +772,9 @@ struct ExpressPrivateOfferConfigurationSummary:
     Optional[str] ProductId
     Optional[ExpressPrivateOfferConfigurationStateString] State
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[str] Name
     Optional[list[str]] ValueList
@@ -790,8 +817,9 @@ struct ListAssessmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssessmentSummaryList: list[AssessmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssessmentSummaryList: list[AssessmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentsResponse:
     Optional[list[AssessmentSummary]] AssessmentSummaryList
     Optional[str] NextToken
@@ -805,8 +833,9 @@ struct ListChangeSetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ChangeSetSummaryList: list[ChangeSetSummaryListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangeSetSummaryList: list[ChangeSetSummaryListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChangeSetsResponse:
     Optional[list[ChangeSetSummaryListItem]] ChangeSetSummaryList
     Optional[str] NextToken
@@ -824,8 +853,9 @@ struct ListEntitiesRequest:
     Optional[EntityTypeFilters] EntityTypeFilters
     Optional[EntityTypeSort] EntityTypeSort
 
-# no @derive(Json): member(s) EntitySummaryList: list[EntitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitySummaryList: list[EntitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntitiesResponse:
     Optional[list[EntitySummary]] EntitySummaryList
     Optional[str] NextToken
@@ -835,19 +865,22 @@ struct ListEntitiesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] ResourceArn
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MachineLearningProductEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: MachineLearningProductEntityIdFilter, ProductTitle: MachineLearningProductTitleFilter, Visibility: MachineLearningProductVisibilityFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: MachineLearningProductEntityIdFilter, ProductTitle: MachineLearningProductTitleFilter, Visibility: MachineLearningProductVisibilityFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MachineLearningProductFilters:
     Optional[MachineLearningProductEntityIdFilter] EntityId
     Optional[MachineLearningProductLastModifiedDateFilter] LastModifiedDate
@@ -873,14 +906,16 @@ struct MachineLearningProductSummary:
     Optional[str] ProductTitle
     Optional[MachineLearningProductVisibilityString] Visibility
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MachineLearningProductTitleFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[MachineLearningProductVisibilityString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[MachineLearningProductVisibilityString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MachineLearningProductVisibilityFilter:
     Optional[list[MachineLearningProductVisibilityString]] ValueList
 
@@ -897,18 +932,21 @@ struct OfferAvailabilityEndDateFilterDateRange:
 struct OfferBuyerAccountsFilter:
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[OfferCreatedBySourceString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[OfferCreatedBySourceString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferCreatedBySourceFilter:
     Optional[list[OfferCreatedBySourceString]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: OfferEntityIdFilter, Name: OfferNameFilter, ProductId: OfferProductIdFilter, ResaleAuthorizationId: OfferResaleAuthorizationIdFilter, State: OfferStateFilter, Targeting: OfferTargetingFilter, OfferSetId: OfferSetIdFilter, TargetAgreementId: OfferTargetAgreementIdFilter, TargetAgreementIntent: OfferTargetAgreementIntentFilter, CreatedBySource: OfferCreatedBySourceFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: OfferEntityIdFilter, Name: OfferNameFilter, ProductId: OfferProductIdFilter, ResaleAuthorizationId: OfferResaleAuthorizationIdFilter, State: OfferStateFilter, Targeting: OfferTargetingFilter, OfferSetId: OfferSetIdFilter, TargetAgreementId: OfferTargetAgreementIdFilter, TargetAgreementIntent: OfferTargetAgreementIntentFilter, CreatedBySource: OfferCreatedBySourceFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferFilters:
     Optional[OfferEntityIdFilter] EntityId
     Optional[OfferNameFilter] Name
@@ -934,14 +972,16 @@ struct OfferLastModifiedDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferProductIdFilter:
     Optional[list[str]] ValueList
 
@@ -954,23 +994,27 @@ struct OfferReleaseDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferResaleAuthorizationIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetAssociatedOfferIdsFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: OfferSetEntityIdFilter, Name: OfferSetNameFilter, State: OfferSetStateFilter, AssociatedOfferIds: OfferSetAssociatedOfferIdsFilter, SolutionId: OfferSetSolutionIdFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: OfferSetEntityIdFilter, Name: OfferSetNameFilter, State: OfferSetStateFilter, AssociatedOfferIds: OfferSetAssociatedOfferIdsFilter, SolutionId: OfferSetSolutionIdFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetFilters:
     Optional[OfferSetEntityIdFilter] EntityId
     Optional[OfferSetNameFilter] Name
@@ -980,8 +1024,9 @@ struct OfferSetFilters:
     Optional[OfferSetSolutionIdFilter] SolutionId
     Optional[OfferSetLastModifiedDateFilter] LastModifiedDate
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetIdFilter:
     Optional[list[str]] ValueList
 
@@ -994,8 +1039,9 @@ struct OfferSetLastModifiedDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetNameFilter:
     Optional[list[str]] ValueList
 
@@ -1008,8 +1054,9 @@ struct OfferSetReleaseDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetSolutionIdFilter:
     Optional[list[str]] ValueList
 
@@ -1018,13 +1065,15 @@ struct OfferSetSort:
     Optional[OfferSetSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ValueList: list[OfferSetStateString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[OfferSetStateString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetStateFilter:
     Optional[list[OfferSetStateString]] ValueList
 
-# no @derive(Json): member(s) AssociatedOfferIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedOfferIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSetSummary:
     Optional[str] Name
     Optional[OfferSetStateString] State
@@ -1037,13 +1086,15 @@ struct OfferSort:
     Optional[OfferSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ValueList: list[OfferStateString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[OfferStateString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferStateFilter:
     Optional[list[OfferStateString]] ValueList
 
-# no @derive(Json): member(s) BuyerAccounts: list[str], Targeting: list[OfferTargetingString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BuyerAccounts: list[str], Targeting: list[OfferTargetingString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferSummary:
     Optional[str] Name
     Optional[str] ProductId
@@ -1058,18 +1109,21 @@ struct OfferSummary:
     Optional[str] TargetAgreementIntent
     Optional[OfferCreatedBySourceString] CreatedBySource
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferTargetAgreementIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferTargetAgreementIntentFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[OfferTargetingString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[OfferTargetingString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferTargetingFilter:
     Optional[list[OfferTargetingString]] ValueList
 
@@ -1084,8 +1138,9 @@ struct PutResourcePolicyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationAvailabilityEndDateFilter:
     Optional[ResaleAuthorizationAvailabilityEndDateFilterDateRange] DateRange
     Optional[list[str]] ValueList
@@ -1095,8 +1150,9 @@ struct ResaleAuthorizationAvailabilityEndDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationCreatedDateFilter:
     Optional[ResaleAuthorizationCreatedDateFilterDateRange] DateRange
     Optional[list[str]] ValueList
@@ -1106,13 +1162,15 @@ struct ResaleAuthorizationCreatedDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: ResaleAuthorizationEntityIdFilter, Name: ResaleAuthorizationNameFilter, ProductId: ResaleAuthorizationProductIdFilter, CreatedDate: ResaleAuthorizationCreatedDateFilter, AvailabilityEndDate: ResaleAuthorizationAvailabilityEndDateFilter, ManufacturerAccountId: ResaleAuthorizationManufacturerAccountIdFilter, ProductName: ResaleAuthorizationProductNameFilter, ManufacturerLegalName: ResaleAuthorizationManufacturerLegalNameFilter, ResellerAccountID: ResaleAuthorizationResellerAccountIDFilter, ResellerLegalName: ResaleAuthorizationResellerLegalNameFilter, Status: ResaleAuthorizationStatusFilter, OfferExtendedStatus: ResaleAuthorizationOfferExtendedStatusFilter, ResellerRole: ResaleAuthorizationResellerRoleFilter, SourceAuthorization: ResaleAuthorizationSourceAuthorizationFilter, IssuerAccountId: ResaleAuthorizationIssuerAccountIdFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: ResaleAuthorizationEntityIdFilter, Name: ResaleAuthorizationNameFilter, ProductId: ResaleAuthorizationProductIdFilter, CreatedDate: ResaleAuthorizationCreatedDateFilter, AvailabilityEndDate: ResaleAuthorizationAvailabilityEndDateFilter, ManufacturerAccountId: ResaleAuthorizationManufacturerAccountIdFilter, ProductName: ResaleAuthorizationProductNameFilter, ManufacturerLegalName: ResaleAuthorizationManufacturerLegalNameFilter, ResellerAccountID: ResaleAuthorizationResellerAccountIDFilter, ResellerLegalName: ResaleAuthorizationResellerLegalNameFilter, Status: ResaleAuthorizationStatusFilter, OfferExtendedStatus: ResaleAuthorizationOfferExtendedStatusFilter, ResellerRole: ResaleAuthorizationResellerRoleFilter, SourceAuthorization: ResaleAuthorizationSourceAuthorizationFilter, IssuerAccountId: ResaleAuthorizationIssuerAccountIdFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationFilters:
     Optional[ResaleAuthorizationEntityIdFilter] EntityId
     Optional[ResaleAuthorizationNameFilter] Name
@@ -1131,8 +1189,9 @@ struct ResaleAuthorizationFilters:
     Optional[ResaleAuthorizationSourceAuthorizationFilter] SourceAuthorization
     Optional[ResaleAuthorizationIssuerAccountIdFilter] IssuerAccountId
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationIssuerAccountIdFilter:
     Optional[list[str]] ValueList
 
@@ -1145,55 +1204,64 @@ struct ResaleAuthorizationLastModifiedDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationManufacturerAccountIdFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationManufacturerLegalNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationOfferExtendedStatusFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationProductIdFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationProductNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationResellerAccountIDFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationResellerLegalNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[ResaleAuthorizationResellerRoleString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[ResaleAuthorizationResellerRoleString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationResellerRoleFilter:
     Optional[list[ResaleAuthorizationResellerRoleString]] ValueList
 
@@ -1202,13 +1270,15 @@ struct ResaleAuthorizationSort:
     Optional[ResaleAuthorizationSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationSourceAuthorizationFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[ResaleAuthorizationStatusString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[ResaleAuthorizationStatusString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResaleAuthorizationStatusFilter:
     Optional[list[ResaleAuthorizationStatusString]] ValueList
 
@@ -1241,13 +1311,15 @@ struct ResourceNotFoundException:
 struct ResourceNotSupportedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SaaSProductEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: SaaSProductEntityIdFilter, ProductTitle: SaaSProductTitleFilter, Visibility: SaaSProductVisibilityFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: SaaSProductEntityIdFilter, ProductTitle: SaaSProductTitleFilter, Visibility: SaaSProductVisibilityFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SaaSProductFilters:
     Optional[SaaSProductEntityIdFilter] EntityId
     Optional[SaaSProductTitleFilter] ProductTitle
@@ -1273,14 +1345,16 @@ struct SaaSProductSummary:
     Optional[str] ProductTitle
     Optional[SaaSProductVisibilityString] Visibility
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SaaSProductTitleFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[SaaSProductVisibilityString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[SaaSProductVisibilityString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SaaSProductVisibilityFilter:
     Optional[list[SaaSProductVisibilityString]] ValueList
 
@@ -1317,13 +1391,15 @@ struct SubsidiaryAuthorizationCreatedDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationEntityIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) EntityId: SubsidiaryAuthorizationEntityIdFilter, Status: SubsidiaryAuthorizationStatusFilter, ResourceId: SubsidiaryAuthorizationResourceIdFilter, ResourceName: SubsidiaryAuthorizationResourceNameFilter, Name: SubsidiaryAuthorizationNameFilter, SubsidiaryAccountId: SubsidiaryAuthorizationSubsidiaryAccountIdFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityId: SubsidiaryAuthorizationEntityIdFilter, Status: SubsidiaryAuthorizationStatusFilter, ResourceId: SubsidiaryAuthorizationResourceIdFilter, ResourceName: SubsidiaryAuthorizationResourceNameFilter, Name: SubsidiaryAuthorizationNameFilter, SubsidiaryAccountId: SubsidiaryAuthorizationSubsidiaryAccountIdFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationFilters:
     Optional[SubsidiaryAuthorizationEntityIdFilter] EntityId
     Optional[SubsidiaryAuthorizationStatusFilter] Status
@@ -1343,19 +1419,22 @@ struct SubsidiaryAuthorizationLastModifiedDateFilterDateRange:
     Optional[str] AfterValue
     Optional[str] BeforeValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationResourceIdFilter:
     Optional[list[str]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationResourceNameFilter:
     Optional[list[str]] ValueList
     Optional[str] WildCardValue
@@ -1365,13 +1444,15 @@ struct SubsidiaryAuthorizationSort:
     Optional[SubsidiaryAuthorizationSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ValueList: list[SubsidiaryAuthorizationStatusString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[SubsidiaryAuthorizationStatusString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationStatusFilter:
     Optional[list[SubsidiaryAuthorizationStatusString]] ValueList
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubsidiaryAuthorizationSubsidiaryAccountIdFilter:
     Optional[list[str]] ValueList
 
@@ -1415,8 +1496,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ValidationExceptionFieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationExceptionFieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] Message
     Optional[list[ValidationExceptionField]] ValidationExceptionFieldList
@@ -1468,21 +1550,6 @@ def catalog_marketplace_error_from_code(str code) -> Marketplace_CatalogError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchDescribeEntities (document member `EntityRequestList: list[EntityRequest]` is not serializable by derive)
-#   ListChangeSets (document member `FilterList: list[Filter]` is not serializable by derive)
-#   ListEntities (document member `FilterList: list[Filter]` is not serializable by derive)
-#   StartChangeSet (document member `ChangeSet: list[Change]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListChangeSets (operation not generated)
-#   ListEntities (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1515,10 +1582,1023 @@ struct PutResourcePolicyDocument:
     str ResourceArn
     str Policy
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def catalog_marketplace_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def catalog_marketplace_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def catalog_marketplace_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AmiProductEntityIdFilter to a compact JSON object (declaration order).
+def ami_product_entity_id_filter_to_json(AmiProductEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize AmiProductFilters to a compact JSON object (declaration order).
+def ami_product_filters_to_json(AmiProductFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + ami_product_entity_id_filter_to_json(u0))
+    if v.LastModifiedDate.is_some():
+        auto u1 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u1.to_json())
+    if v.ProductTitle.is_some():
+        auto u2 = v.ProductTitle.unwrap()
+        parts.append("\"ProductTitle\":" + ami_product_title_filter_to_json(u2))
+    if v.Visibility.is_some():
+        auto u3 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + ami_product_visibility_filter_to_json(u3))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize AmiProductTitleFilter to a compact JSON object (declaration order).
+def ami_product_title_filter_to_json(AmiProductTitleFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize AmiProductVisibilityFilter to a compact JSON object (declaration order).
+def ami_product_visibility_filter_to_json(AmiProductVisibilityFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize Change to a compact JSON object (declaration order).
+def change_to_json(Change v) -> str:
+    list[str] parts = []
+    parts.append("\"ChangeType\":" + catalog_marketplace_json_str(v.ChangeType))
+    parts.append("\"Entity\":" + v.Entity.to_json())
+    if v.EntityTags.is_some():
+        auto u0 = v.EntityTags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EntityTags\":" + catalog_marketplace_json_arr(e1))
+    if v.Details.is_some():
+        auto u2 = v.Details.unwrap()
+        parts.append("\"Details\":" + catalog_marketplace_json_str(u2))
+    if v.DetailsDocument.is_some():
+        auto u3 = v.DetailsDocument.unwrap()
+        parts.append("\"DetailsDocument\":" + u3.to_json())
+    if v.ChangeName.is_some():
+        auto u4 = v.ChangeName.unwrap()
+        parts.append("\"ChangeName\":" + catalog_marketplace_json_str(u4))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ContainerProductEntityIdFilter to a compact JSON object (declaration order).
+def container_product_entity_id_filter_to_json(ContainerProductEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ContainerProductFilters to a compact JSON object (declaration order).
+def container_product_filters_to_json(ContainerProductFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + container_product_entity_id_filter_to_json(u0))
+    if v.LastModifiedDate.is_some():
+        auto u1 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u1.to_json())
+    if v.ProductTitle.is_some():
+        auto u2 = v.ProductTitle.unwrap()
+        parts.append("\"ProductTitle\":" + container_product_title_filter_to_json(u2))
+    if v.Visibility.is_some():
+        auto u3 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + container_product_visibility_filter_to_json(u3))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ContainerProductTitleFilter to a compact JSON object (declaration order).
+def container_product_title_filter_to_json(ContainerProductTitleFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ContainerProductVisibilityFilter to a compact JSON object (declaration order).
+def container_product_visibility_filter_to_json(ContainerProductVisibilityFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize DataProductEntityIdFilter to a compact JSON object (declaration order).
+def data_product_entity_id_filter_to_json(DataProductEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize DataProductFilters to a compact JSON object (declaration order).
+def data_product_filters_to_json(DataProductFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + data_product_entity_id_filter_to_json(u0))
+    if v.ProductTitle.is_some():
+        auto u1 = v.ProductTitle.unwrap()
+        parts.append("\"ProductTitle\":" + data_product_title_filter_to_json(u1))
+    if v.Visibility.is_some():
+        auto u2 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + data_product_visibility_filter_to_json(u2))
+    if v.LastModifiedDate.is_some():
+        auto u3 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u3.to_json())
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize DataProductTitleFilter to a compact JSON object (declaration order).
+def data_product_title_filter_to_json(DataProductTitleFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize DataProductVisibilityFilter to a compact JSON object (declaration order).
+def data_product_visibility_filter_to_json(DataProductVisibilityFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize EntityTypeFilters to a compact JSON object (declaration order).
+def entity_type_filters_to_json(EntityTypeFilters v) -> str:
+    list[str] parts = []
+    if v.DataProductFilters.is_some():
+        auto u0 = v.DataProductFilters.unwrap()
+        parts.append("\"DataProductFilters\":" + data_product_filters_to_json(u0))
+    if v.SaaSProductFilters.is_some():
+        auto u1 = v.SaaSProductFilters.unwrap()
+        parts.append("\"SaaSProductFilters\":" + saa_s_product_filters_to_json(u1))
+    if v.AmiProductFilters.is_some():
+        auto u2 = v.AmiProductFilters.unwrap()
+        parts.append("\"AmiProductFilters\":" + ami_product_filters_to_json(u2))
+    if v.OfferFilters.is_some():
+        auto u3 = v.OfferFilters.unwrap()
+        parts.append("\"OfferFilters\":" + offer_filters_to_json(u3))
+    if v.ContainerProductFilters.is_some():
+        auto u4 = v.ContainerProductFilters.unwrap()
+        parts.append("\"ContainerProductFilters\":" + container_product_filters_to_json(u4))
+    if v.ResaleAuthorizationFilters.is_some():
+        auto u5 = v.ResaleAuthorizationFilters.unwrap()
+        parts.append("\"ResaleAuthorizationFilters\":" + resale_authorization_filters_to_json(u5))
+    if v.MachineLearningProductFilters.is_some():
+        auto u6 = v.MachineLearningProductFilters.unwrap()
+        parts.append("\"MachineLearningProductFilters\":" + machine_learning_product_filters_to_json(u6))
+    if v.OfferSetFilters.is_some():
+        auto u7 = v.OfferSetFilters.unwrap()
+        parts.append("\"OfferSetFilters\":" + offer_set_filters_to_json(u7))
+    if v.ExpressPrivateOfferConfigurationFilters.is_some():
+        auto u8 = v.ExpressPrivateOfferConfigurationFilters.unwrap()
+        parts.append("\"ExpressPrivateOfferConfigurationFilters\":" + express_private_offer_configuration_filters_to_json(u8))
+    if v.SubsidiaryAuthorizationFilters.is_some():
+        auto u9 = v.SubsidiaryAuthorizationFilters.unwrap()
+        parts.append("\"SubsidiaryAuthorizationFilters\":" + subsidiary_authorization_filters_to_json(u9))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ExpressPrivateOfferConfigurationEntityIdFilter to a compact JSON object (declaration order).
+def express_private_offer_configuration_entity_id_filter_to_json(ExpressPrivateOfferConfigurationEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ExpressPrivateOfferConfigurationFilters to a compact JSON object (declaration order).
+def express_private_offer_configuration_filters_to_json(ExpressPrivateOfferConfigurationFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + express_private_offer_configuration_entity_id_filter_to_json(u0))
+    if v.ProductId.is_some():
+        auto u1 = v.ProductId.unwrap()
+        parts.append("\"ProductId\":" + express_private_offer_configuration_product_id_filter_to_json(u1))
+    if v.State.is_some():
+        auto u2 = v.State.unwrap()
+        parts.append("\"State\":" + express_private_offer_configuration_state_filter_to_json(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ExpressPrivateOfferConfigurationProductIdFilter to a compact JSON object (declaration order).
+def express_private_offer_configuration_product_id_filter_to_json(ExpressPrivateOfferConfigurationProductIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ExpressPrivateOfferConfigurationStateFilter to a compact JSON object (declaration order).
+def express_private_offer_configuration_state_filter_to_json(ExpressPrivateOfferConfigurationStateFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + catalog_marketplace_json_str(u0))
+    if v.ValueList.is_some():
+        auto u1 = v.ValueList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(catalog_marketplace_json_str(x2))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize MachineLearningProductEntityIdFilter to a compact JSON object (declaration order).
+def machine_learning_product_entity_id_filter_to_json(MachineLearningProductEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize MachineLearningProductFilters to a compact JSON object (declaration order).
+def machine_learning_product_filters_to_json(MachineLearningProductFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + machine_learning_product_entity_id_filter_to_json(u0))
+    if v.LastModifiedDate.is_some():
+        auto u1 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u1.to_json())
+    if v.ProductTitle.is_some():
+        auto u2 = v.ProductTitle.unwrap()
+        parts.append("\"ProductTitle\":" + machine_learning_product_title_filter_to_json(u2))
+    if v.Visibility.is_some():
+        auto u3 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + machine_learning_product_visibility_filter_to_json(u3))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize MachineLearningProductTitleFilter to a compact JSON object (declaration order).
+def machine_learning_product_title_filter_to_json(MachineLearningProductTitleFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize MachineLearningProductVisibilityFilter to a compact JSON object (declaration order).
+def machine_learning_product_visibility_filter_to_json(MachineLearningProductVisibilityFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferCreatedBySourceFilter to a compact JSON object (declaration order).
+def offer_created_by_source_filter_to_json(OfferCreatedBySourceFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferEntityIdFilter to a compact JSON object (declaration order).
+def offer_entity_id_filter_to_json(OfferEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferFilters to a compact JSON object (declaration order).
+def offer_filters_to_json(OfferFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + offer_entity_id_filter_to_json(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + offer_name_filter_to_json(u1))
+    if v.ProductId.is_some():
+        auto u2 = v.ProductId.unwrap()
+        parts.append("\"ProductId\":" + offer_product_id_filter_to_json(u2))
+    if v.ResaleAuthorizationId.is_some():
+        auto u3 = v.ResaleAuthorizationId.unwrap()
+        parts.append("\"ResaleAuthorizationId\":" + offer_resale_authorization_id_filter_to_json(u3))
+    if v.ReleaseDate.is_some():
+        auto u4 = v.ReleaseDate.unwrap()
+        parts.append("\"ReleaseDate\":" + u4.to_json())
+    if v.AvailabilityEndDate.is_some():
+        auto u5 = v.AvailabilityEndDate.unwrap()
+        parts.append("\"AvailabilityEndDate\":" + u5.to_json())
+    if v.BuyerAccounts.is_some():
+        auto u6 = v.BuyerAccounts.unwrap()
+        parts.append("\"BuyerAccounts\":" + u6.to_json())
+    if v.State.is_some():
+        auto u7 = v.State.unwrap()
+        parts.append("\"State\":" + offer_state_filter_to_json(u7))
+    if v.Targeting.is_some():
+        auto u8 = v.Targeting.unwrap()
+        parts.append("\"Targeting\":" + offer_targeting_filter_to_json(u8))
+    if v.LastModifiedDate.is_some():
+        auto u9 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u9.to_json())
+    if v.OfferSetId.is_some():
+        auto u10 = v.OfferSetId.unwrap()
+        parts.append("\"OfferSetId\":" + offer_set_id_filter_to_json(u10))
+    if v.TargetAgreementId.is_some():
+        auto u11 = v.TargetAgreementId.unwrap()
+        parts.append("\"TargetAgreementId\":" + offer_target_agreement_id_filter_to_json(u11))
+    if v.TargetAgreementIntent.is_some():
+        auto u12 = v.TargetAgreementIntent.unwrap()
+        parts.append("\"TargetAgreementIntent\":" + offer_target_agreement_intent_filter_to_json(u12))
+    if v.CreatedBySource.is_some():
+        auto u13 = v.CreatedBySource.unwrap()
+        parts.append("\"CreatedBySource\":" + offer_created_by_source_filter_to_json(u13))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferNameFilter to a compact JSON object (declaration order).
+def offer_name_filter_to_json(OfferNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferProductIdFilter to a compact JSON object (declaration order).
+def offer_product_id_filter_to_json(OfferProductIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferResaleAuthorizationIdFilter to a compact JSON object (declaration order).
+def offer_resale_authorization_id_filter_to_json(OfferResaleAuthorizationIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetAssociatedOfferIdsFilter to a compact JSON object (declaration order).
+def offer_set_associated_offer_ids_filter_to_json(OfferSetAssociatedOfferIdsFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetEntityIdFilter to a compact JSON object (declaration order).
+def offer_set_entity_id_filter_to_json(OfferSetEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetFilters to a compact JSON object (declaration order).
+def offer_set_filters_to_json(OfferSetFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + offer_set_entity_id_filter_to_json(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + offer_set_name_filter_to_json(u1))
+    if v.State.is_some():
+        auto u2 = v.State.unwrap()
+        parts.append("\"State\":" + offer_set_state_filter_to_json(u2))
+    if v.ReleaseDate.is_some():
+        auto u3 = v.ReleaseDate.unwrap()
+        parts.append("\"ReleaseDate\":" + u3.to_json())
+    if v.AssociatedOfferIds.is_some():
+        auto u4 = v.AssociatedOfferIds.unwrap()
+        parts.append("\"AssociatedOfferIds\":" + offer_set_associated_offer_ids_filter_to_json(u4))
+    if v.SolutionId.is_some():
+        auto u5 = v.SolutionId.unwrap()
+        parts.append("\"SolutionId\":" + offer_set_solution_id_filter_to_json(u5))
+    if v.LastModifiedDate.is_some():
+        auto u6 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u6.to_json())
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetIdFilter to a compact JSON object (declaration order).
+def offer_set_id_filter_to_json(OfferSetIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetNameFilter to a compact JSON object (declaration order).
+def offer_set_name_filter_to_json(OfferSetNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetSolutionIdFilter to a compact JSON object (declaration order).
+def offer_set_solution_id_filter_to_json(OfferSetSolutionIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferSetStateFilter to a compact JSON object (declaration order).
+def offer_set_state_filter_to_json(OfferSetStateFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferStateFilter to a compact JSON object (declaration order).
+def offer_state_filter_to_json(OfferStateFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferTargetAgreementIdFilter to a compact JSON object (declaration order).
+def offer_target_agreement_id_filter_to_json(OfferTargetAgreementIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferTargetAgreementIntentFilter to a compact JSON object (declaration order).
+def offer_target_agreement_intent_filter_to_json(OfferTargetAgreementIntentFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize OfferTargetingFilter to a compact JSON object (declaration order).
+def offer_targeting_filter_to_json(OfferTargetingFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationAvailabilityEndDateFilter to a compact JSON object (declaration order).
+def resale_authorization_availability_end_date_filter_to_json(ResaleAuthorizationAvailabilityEndDateFilter v) -> str:
+    list[str] parts = []
+    if v.DateRange.is_some():
+        auto u0 = v.DateRange.unwrap()
+        parts.append("\"DateRange\":" + u0.to_json())
+    if v.ValueList.is_some():
+        auto u1 = v.ValueList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(catalog_marketplace_json_str(x2))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationCreatedDateFilter to a compact JSON object (declaration order).
+def resale_authorization_created_date_filter_to_json(ResaleAuthorizationCreatedDateFilter v) -> str:
+    list[str] parts = []
+    if v.DateRange.is_some():
+        auto u0 = v.DateRange.unwrap()
+        parts.append("\"DateRange\":" + u0.to_json())
+    if v.ValueList.is_some():
+        auto u1 = v.ValueList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(catalog_marketplace_json_str(x2))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationEntityIdFilter to a compact JSON object (declaration order).
+def resale_authorization_entity_id_filter_to_json(ResaleAuthorizationEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationFilters to a compact JSON object (declaration order).
+def resale_authorization_filters_to_json(ResaleAuthorizationFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + resale_authorization_entity_id_filter_to_json(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + resale_authorization_name_filter_to_json(u1))
+    if v.ProductId.is_some():
+        auto u2 = v.ProductId.unwrap()
+        parts.append("\"ProductId\":" + resale_authorization_product_id_filter_to_json(u2))
+    if v.CreatedDate.is_some():
+        auto u3 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + resale_authorization_created_date_filter_to_json(u3))
+    if v.AvailabilityEndDate.is_some():
+        auto u4 = v.AvailabilityEndDate.unwrap()
+        parts.append("\"AvailabilityEndDate\":" + resale_authorization_availability_end_date_filter_to_json(u4))
+    if v.ManufacturerAccountId.is_some():
+        auto u5 = v.ManufacturerAccountId.unwrap()
+        parts.append("\"ManufacturerAccountId\":" + resale_authorization_manufacturer_account_id_filter_to_json(u5))
+    if v.ProductName.is_some():
+        auto u6 = v.ProductName.unwrap()
+        parts.append("\"ProductName\":" + resale_authorization_product_name_filter_to_json(u6))
+    if v.ManufacturerLegalName.is_some():
+        auto u7 = v.ManufacturerLegalName.unwrap()
+        parts.append("\"ManufacturerLegalName\":" + resale_authorization_manufacturer_legal_name_filter_to_json(u7))
+    if v.ResellerAccountID.is_some():
+        auto u8 = v.ResellerAccountID.unwrap()
+        parts.append("\"ResellerAccountID\":" + resale_authorization_reseller_account_id_filter_to_json(u8))
+    if v.ResellerLegalName.is_some():
+        auto u9 = v.ResellerLegalName.unwrap()
+        parts.append("\"ResellerLegalName\":" + resale_authorization_reseller_legal_name_filter_to_json(u9))
+    if v.Status.is_some():
+        auto u10 = v.Status.unwrap()
+        parts.append("\"Status\":" + resale_authorization_status_filter_to_json(u10))
+    if v.OfferExtendedStatus.is_some():
+        auto u11 = v.OfferExtendedStatus.unwrap()
+        parts.append("\"OfferExtendedStatus\":" + resale_authorization_offer_extended_status_filter_to_json(u11))
+    if v.LastModifiedDate.is_some():
+        auto u12 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u12.to_json())
+    if v.ResellerRole.is_some():
+        auto u13 = v.ResellerRole.unwrap()
+        parts.append("\"ResellerRole\":" + resale_authorization_reseller_role_filter_to_json(u13))
+    if v.SourceAuthorization.is_some():
+        auto u14 = v.SourceAuthorization.unwrap()
+        parts.append("\"SourceAuthorization\":" + resale_authorization_source_authorization_filter_to_json(u14))
+    if v.IssuerAccountId.is_some():
+        auto u15 = v.IssuerAccountId.unwrap()
+        parts.append("\"IssuerAccountId\":" + resale_authorization_issuer_account_id_filter_to_json(u15))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationIssuerAccountIdFilter to a compact JSON object (declaration order).
+def resale_authorization_issuer_account_id_filter_to_json(ResaleAuthorizationIssuerAccountIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationManufacturerAccountIdFilter to a compact JSON object (declaration order).
+def resale_authorization_manufacturer_account_id_filter_to_json(ResaleAuthorizationManufacturerAccountIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationManufacturerLegalNameFilter to a compact JSON object (declaration order).
+def resale_authorization_manufacturer_legal_name_filter_to_json(ResaleAuthorizationManufacturerLegalNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationNameFilter to a compact JSON object (declaration order).
+def resale_authorization_name_filter_to_json(ResaleAuthorizationNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationOfferExtendedStatusFilter to a compact JSON object (declaration order).
+def resale_authorization_offer_extended_status_filter_to_json(ResaleAuthorizationOfferExtendedStatusFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationProductIdFilter to a compact JSON object (declaration order).
+def resale_authorization_product_id_filter_to_json(ResaleAuthorizationProductIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationProductNameFilter to a compact JSON object (declaration order).
+def resale_authorization_product_name_filter_to_json(ResaleAuthorizationProductNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationResellerAccountIDFilter to a compact JSON object (declaration order).
+def resale_authorization_reseller_account_id_filter_to_json(ResaleAuthorizationResellerAccountIDFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationResellerLegalNameFilter to a compact JSON object (declaration order).
+def resale_authorization_reseller_legal_name_filter_to_json(ResaleAuthorizationResellerLegalNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationResellerRoleFilter to a compact JSON object (declaration order).
+def resale_authorization_reseller_role_filter_to_json(ResaleAuthorizationResellerRoleFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationSourceAuthorizationFilter to a compact JSON object (declaration order).
+def resale_authorization_source_authorization_filter_to_json(ResaleAuthorizationSourceAuthorizationFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize ResaleAuthorizationStatusFilter to a compact JSON object (declaration order).
+def resale_authorization_status_filter_to_json(ResaleAuthorizationStatusFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SaaSProductEntityIdFilter to a compact JSON object (declaration order).
+def saa_s_product_entity_id_filter_to_json(SaaSProductEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SaaSProductFilters to a compact JSON object (declaration order).
+def saa_s_product_filters_to_json(SaaSProductFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + saa_s_product_entity_id_filter_to_json(u0))
+    if v.ProductTitle.is_some():
+        auto u1 = v.ProductTitle.unwrap()
+        parts.append("\"ProductTitle\":" + saa_s_product_title_filter_to_json(u1))
+    if v.Visibility.is_some():
+        auto u2 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + saa_s_product_visibility_filter_to_json(u2))
+    if v.LastModifiedDate.is_some():
+        auto u3 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u3.to_json())
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SaaSProductTitleFilter to a compact JSON object (declaration order).
+def saa_s_product_title_filter_to_json(SaaSProductTitleFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SaaSProductVisibilityFilter to a compact JSON object (declaration order).
+def saa_s_product_visibility_filter_to_json(SaaSProductVisibilityFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationEntityIdFilter to a compact JSON object (declaration order).
+def subsidiary_authorization_entity_id_filter_to_json(SubsidiaryAuthorizationEntityIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationFilters to a compact JSON object (declaration order).
+def subsidiary_authorization_filters_to_json(SubsidiaryAuthorizationFilters v) -> str:
+    list[str] parts = []
+    if v.EntityId.is_some():
+        auto u0 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + subsidiary_authorization_entity_id_filter_to_json(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"Status\":" + subsidiary_authorization_status_filter_to_json(u1))
+    if v.ResourceId.is_some():
+        auto u2 = v.ResourceId.unwrap()
+        parts.append("\"ResourceId\":" + subsidiary_authorization_resource_id_filter_to_json(u2))
+    if v.ResourceName.is_some():
+        auto u3 = v.ResourceName.unwrap()
+        parts.append("\"ResourceName\":" + subsidiary_authorization_resource_name_filter_to_json(u3))
+    if v.Name.is_some():
+        auto u4 = v.Name.unwrap()
+        parts.append("\"Name\":" + subsidiary_authorization_name_filter_to_json(u4))
+    if v.SubsidiaryAccountId.is_some():
+        auto u5 = v.SubsidiaryAccountId.unwrap()
+        parts.append("\"SubsidiaryAccountId\":" + subsidiary_authorization_subsidiary_account_id_filter_to_json(u5))
+    if v.CreatedDate.is_some():
+        auto u6 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + u6.to_json())
+    if v.LastModifiedDate.is_some():
+        auto u7 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u7.to_json())
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationNameFilter to a compact JSON object (declaration order).
+def subsidiary_authorization_name_filter_to_json(SubsidiaryAuthorizationNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationResourceIdFilter to a compact JSON object (declaration order).
+def subsidiary_authorization_resource_id_filter_to_json(SubsidiaryAuthorizationResourceIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationResourceNameFilter to a compact JSON object (declaration order).
+def subsidiary_authorization_resource_name_filter_to_json(SubsidiaryAuthorizationResourceNameFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    if v.WildCardValue.is_some():
+        auto u2 = v.WildCardValue.unwrap()
+        parts.append("\"WildCardValue\":" + catalog_marketplace_json_str(u2))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationStatusFilter to a compact JSON object (declaration order).
+def subsidiary_authorization_status_filter_to_json(SubsidiaryAuthorizationStatusFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
+# Serialize SubsidiaryAuthorizationSubsidiaryAccountIdFilter to a compact JSON object (declaration order).
+def subsidiary_authorization_subsidiary_account_id_filter_to_json(SubsidiaryAuthorizationSubsidiaryAccountIdFilter v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(catalog_marketplace_json_str(x1))
+        parts.append("\"ValueList\":" + catalog_marketplace_json_arr(e1))
+    return catalog_marketplace_json_obj(parts)
+
 # A bound Marketplace_Catalog client: credentials + region, threaded into every operation.
 struct Marketplace_CatalogClient:
     core.Credentials creds
     str region
+
+    # BatchDescribeEntities  POST /BatchDescribeEntities
+    # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
+    def batch_describe_entities(self, BatchDescribeEntitiesRequest input) -> str:
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDescribeEntities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.EntityRequestList:
+            e0.append(x0.to_json())
+        parts.append("\"EntityRequestList\":" + catalog_marketplace_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, catalog_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
 
     # CancelChangeSet  PATCH /CancelChangeSet
     # errors: AccessDeniedException, InternalServiceException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1586,6 +2666,66 @@ struct Marketplace_CatalogClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
 
+    # ListChangeSets  POST /ListChangeSets
+    # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
+    def list_change_sets(self, ListChangeSetsRequest input) -> str:
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListChangeSets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Catalog\":" + catalog_marketplace_json_str(input.Catalog))
+        if input.FilterList.is_some():
+            auto u0 = input.FilterList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"FilterList\":" + catalog_marketplace_json_arr(e1))
+        if input.Sort.is_some():
+            auto u2 = input.Sort.unwrap()
+            parts.append("\"Sort\":" + u2.to_json())
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + catalog_marketplace_json_str(u4))
+        auto bp = restjson.rest_json_document(b, catalog_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
+
+    # ListEntities  POST /ListEntities
+    # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_entities(self, ListEntitiesRequest input) -> str:
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListEntities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Catalog\":" + catalog_marketplace_json_str(input.Catalog))
+        parts.append("\"EntityType\":" + catalog_marketplace_json_str(input.EntityType))
+        if input.FilterList.is_some():
+            auto u0 = input.FilterList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"FilterList\":" + catalog_marketplace_json_arr(e1))
+        if input.Sort.is_some():
+            auto u2 = input.Sort.unwrap()
+            parts.append("\"Sort\":" + u2.to_json())
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + catalog_marketplace_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.OwnershipType.is_some():
+            auto u5 = input.OwnershipType.unwrap()
+            parts.append("\"OwnershipType\":" + u5.to_json())
+        if input.EntityTypeFilters.is_some():
+            auto u6 = input.EntityTypeFilters.unwrap()
+            parts.append("\"EntityTypeFilters\":" + entity_type_filters_to_json(u6))
+        if input.EntityTypeSort.is_some():
+            auto u7 = input.EntityTypeSort.unwrap()
+            parts.append("\"EntityTypeSort\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, catalog_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
+
     # ListTagsForResource  POST /ListTagsForResource
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -1602,6 +2742,63 @@ struct Marketplace_CatalogClient:
         auto b = binding.HttpBinding(method="POST", path_template="/PutResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(ResourceArn=input.ResourceArn, Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
+
+    # StartChangeSet  POST /StartChangeSet
+    # errors: AccessDeniedException, InternalServiceException, ResourceInUseException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_change_set(self, StartChangeSetRequest input) -> str:
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartChangeSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Catalog\":" + catalog_marketplace_json_str(input.Catalog))
+        list[str] e0 = []
+        for x0 in input.ChangeSet:
+            e0.append(change_to_json(x0))
+        parts.append("\"ChangeSet\":" + catalog_marketplace_json_arr(e0))
+        if input.ChangeSetName.is_some():
+            auto u1 = input.ChangeSetName.unwrap()
+            parts.append("\"ChangeSetName\":" + catalog_marketplace_json_str(u1))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + catalog_marketplace_json_str(u2))
+        if input.ChangeSetTags.is_some():
+            auto u3 = input.ChangeSetTags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"ChangeSetTags\":" + catalog_marketplace_json_arr(e4))
+        if input.Intent.is_some():
+            auto u5 = input.Intent.unwrap()
+            parts.append("\"Intent\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, catalog_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
+
+    # TagResource  POST /TagResource
+    # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + catalog_marketplace_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + catalog_marketplace_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, catalog_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
+
+    # UntagResource  POST /UntagResource
+    # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + catalog_marketplace_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(catalog_marketplace_json_str(x0))
+        parts.append("\"TagKeys\":" + catalog_marketplace_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, catalog_marketplace_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
 
     # Paginator for DescribeAssessment — yields each Response page, threading the
@@ -1623,6 +2820,32 @@ struct Marketplace_CatalogClient:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
         while True:
             auto raw = self.list_assessments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListChangeSets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ChangeSetSummaryList).
+    def paginate_list_change_sets(self, ListChangeSetsRequest input):
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        while True:
+            auto raw = self.list_change_sets(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListEntities — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: EntitySummaryList).
+    def paginate_list_entities(self, ListEntitiesRequest input):
+        auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
+        while True:
+            auto raw = self.list_entities(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 74 operations — 60 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 74 operations — 71 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   218 structs (157 @derive(Json)), 30 enums, 13 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -310,8 +310,9 @@ struct AdditionalAuthenticationProvider:
     Optional[CognitoUserPoolConfig] userPoolConfig
     Optional[LambdaAuthorizerConfig] lambdaAuthorizerConfig
 
-# no @derive(Json): member(s) tags: dict[str, str], dns: dict[str, str], eventConfig: EventConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], dns: dict[str, str], eventConfig: EventConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Api:
     Optional[str] apiId
     Optional[str] name
@@ -420,26 +421,30 @@ struct AwsIamConfig:
     Optional[str] signingRegion
     Optional[str] signingServiceName
 
-# no @derive(Json): member(s) codeErrors: list[CodeError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeErrors: list[CodeError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BadRequestDetail:
     Optional[list[CodeError]] codeErrors
 
-# no @derive(Json): member(s) detail: BadRequestDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detail: BadRequestDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BadRequestException:
     Optional[str] message
     Optional[str] reason
     Optional[BadRequestDetail] detail
 
-# no @derive(Json): member(s) cachingKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cachingKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CachingConfig:
     int64 ttl
     Optional[list[str]] cachingKeys
 
-# no @derive(Json): member(s) subscribeAuthModes: list[AuthMode], publishAuthModes: list[AuthMode], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribeAuthModes: list[AuthMode], publishAuthModes: list[AuthMode], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelNamespace:
     Optional[str] apiId
     Optional[str] name
@@ -518,8 +523,9 @@ struct CreateApiRequest:
     Optional[dict[str, str]] tags
     EventConfig eventConfig
 
-# no @derive(Json): member(s) api: Api not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) api: Api not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApiResponse:
     Optional[Api] api
 
@@ -534,8 +540,9 @@ struct CreateChannelNamespaceRequest:
     Optional[dict[str, str]] tags
     Optional[HandlerConfigs] handlerConfigs
 
-# no @derive(Json): member(s) channelNamespace: ChannelNamespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelNamespace: ChannelNamespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelNamespaceResponse:
     Optional[ChannelNamespace] channelNamespace
 
@@ -568,8 +575,9 @@ struct CreateDomainNameRequest:
     Optional[str] description
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) domainNameConfig: DomainNameConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainNameConfig: DomainNameConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainNameResponse:
     Optional[DomainNameConfig] domainNameConfig
 
@@ -613,8 +621,9 @@ struct CreateGraphqlApiRequest:
     Optional[int64] resolverCountLimit
     Optional[EnhancedMetricsConfig] enhancedMetricsConfig
 
-# no @derive(Json): member(s) graphqlApi: GraphqlApi not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphqlApi: GraphqlApi not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGraphqlApiResponse:
     Optional[GraphqlApi] graphqlApi
 
@@ -636,8 +645,9 @@ struct CreateResolverRequest:
     Optional[str] code
     Optional[ResolverLevelMetricsConfig] metricsConfig
 
-# no @derive(Json): member(s) resolver: Resolver not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resolver: Resolver not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResolverResponse:
     Optional[Resolver] resolver
 
@@ -668,8 +678,9 @@ struct DataSource:
     Optional[EventBridgeDataSourceConfig] eventBridgeConfig
     Optional[DataSourceLevelMetricsConfig] metricsConfig
 
-# no @derive(Json): member(s) fields: list[DataSourceIntrospectionModelField], primaryKey: DataSourceIntrospectionModelIndex, indexes: list[DataSourceIntrospectionModelIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[DataSourceIntrospectionModelField], primaryKey: DataSourceIntrospectionModelIndex, indexes: list[DataSourceIntrospectionModelIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceIntrospectionModel:
     Optional[str] name
     Optional[list[DataSourceIntrospectionModelField]] fields
@@ -677,29 +688,33 @@ struct DataSourceIntrospectionModel:
     Optional[list[DataSourceIntrospectionModelIndex]] indexes
     Optional[str] sdl
 
-# no @derive(Json): member(s) type: DataSourceIntrospectionModelFieldType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: DataSourceIntrospectionModelFieldType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceIntrospectionModelField:
     Optional[str] name
     Optional[DataSourceIntrospectionModelFieldType] type
     Optional[int64] length
 
-# no @derive(Json): member(s) type: DataSourceIntrospectionModelFieldType, values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: DataSourceIntrospectionModelFieldType, values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceIntrospectionModelFieldType:
     Optional[str] kind
     Optional[str] name
     Optional[DataSourceIntrospectionModelFieldType] type
     Optional[list[str]] values
 
-# no @derive(Json): member(s) fields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceIntrospectionModelIndex:
     Optional[str] name
     Optional[list[str]] fields
 
-# no @derive(Json): member(s) models: list[DataSourceIntrospectionModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[DataSourceIntrospectionModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceIntrospectionResult:
     Optional[list[DataSourceIntrospectionModel]] models
     Optional[str] nextToken
@@ -847,8 +862,9 @@ struct DisassociateSourceGraphqlApiRequest:
 struct DisassociateSourceGraphqlApiResponse:
     Optional[SourceApiAssociationStatus] sourceApiAssociationStatus
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainNameConfig:
     Optional[str] domainName
     Optional[str] description
@@ -881,8 +897,9 @@ struct EnhancedMetricsConfig:
 struct ErrorDetail:
     Optional[str] message
 
-# no @derive(Json): member(s) codeErrors: list[CodeError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeErrors: list[CodeError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateCodeErrorDetail:
     Optional[str] message
     Optional[list[CodeError]] codeErrors
@@ -895,8 +912,9 @@ struct EvaluateCodeRequest:
     str context
     Optional[str] function
 
-# no @derive(Json): member(s) error: EvaluateCodeErrorDetail, logs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: EvaluateCodeErrorDetail, logs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateCodeResponse:
     Optional[str] evaluationResult
     Optional[EvaluateCodeErrorDetail] error
@@ -910,8 +928,9 @@ struct EvaluateMappingTemplateRequest:
     str template
     str context
 
-# no @derive(Json): member(s) logs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateMappingTemplateResponse:
     Optional[str] evaluationResult
     Optional[ErrorDetail] error
@@ -923,8 +942,9 @@ struct EvaluateMappingTemplateResponse:
 struct EventBridgeDataSourceConfig:
     str eventBusArn
 
-# no @derive(Json): member(s) authProviders: list[AuthProvider], connectionAuthModes: list[AuthMode], defaultPublishAuthModes: list[AuthMode], defaultSubscribeAuthModes: list[AuthMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authProviders: list[AuthProvider], connectionAuthModes: list[AuthMode], defaultPublishAuthModes: list[AuthMode], defaultSubscribeAuthModes: list[AuthMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventConfig:
     list[AuthProvider] authProviders
     list[AuthMode] connectionAuthModes
@@ -985,8 +1005,9 @@ struct GetApiCacheResponse:
 struct GetApiRequest:
     str apiId
 
-# no @derive(Json): member(s) api: Api not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) api: Api not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApiResponse:
     Optional[Api] api
 
@@ -996,8 +1017,9 @@ struct GetChannelNamespaceRequest:
     str apiId
     str name
 
-# no @derive(Json): member(s) channelNamespace: ChannelNamespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelNamespace: ChannelNamespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelNamespaceResponse:
     Optional[ChannelNamespace] channelNamespace
 
@@ -1009,8 +1031,9 @@ struct GetDataSourceIntrospectionRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) introspectionResult: DataSourceIntrospectionResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) introspectionResult: DataSourceIntrospectionResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataSourceIntrospectionResponse:
     Optional[str] introspectionId
     Optional[DataSourceIntrospectionStatus] introspectionStatus
@@ -1032,8 +1055,9 @@ struct GetDataSourceResponse:
 struct GetDomainNameRequest:
     str domainName
 
-# no @derive(Json): member(s) domainNameConfig: DomainNameConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainNameConfig: DomainNameConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainNameResponse:
     Optional[DomainNameConfig] domainNameConfig
 
@@ -1052,8 +1076,9 @@ struct GetFunctionResponse:
 struct GetGraphqlApiEnvironmentVariablesRequest:
     str apiId
 
-# no @derive(Json): member(s) environmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGraphqlApiEnvironmentVariablesResponse:
     Optional[dict[str, str]] environmentVariables
 
@@ -1062,8 +1087,9 @@ struct GetGraphqlApiEnvironmentVariablesResponse:
 struct GetGraphqlApiRequest:
     str apiId
 
-# no @derive(Json): member(s) graphqlApi: GraphqlApi not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphqlApi: GraphqlApi not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGraphqlApiResponse:
     Optional[GraphqlApi] graphqlApi
 
@@ -1086,8 +1112,9 @@ struct GetResolverRequest:
     str typeName
     str fieldName
 
-# no @derive(Json): member(s) resolver: Resolver not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resolver: Resolver not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResolverResponse:
     Optional[Resolver] resolver
 
@@ -1127,8 +1154,9 @@ struct GetTypeResponse:
 struct GraphQLSchemaException:
     Optional[str] message
 
-# no @derive(Json): member(s) uris: dict[str, str], tags: dict[str, str], additionalAuthenticationProviders: list[AdditionalAuthenticationProvider], dns: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) uris: dict[str, str], tags: dict[str, str], additionalAuthenticationProviders: list[AdditionalAuthenticationProvider], dns: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GraphqlApi:
     Optional[str] name
     Optional[str] apiId
@@ -1207,8 +1235,9 @@ struct ListApiKeysRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) apiKeys: list[ApiKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apiKeys: list[ApiKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApiKeysResponse:
     Optional[list[ApiKey]] apiKeys
     Optional[str] nextToken
@@ -1219,8 +1248,9 @@ struct ListApisRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) apis: list[Api] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apis: list[Api] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApisResponse:
     Optional[list[Api]] apis
     Optional[str] nextToken
@@ -1232,8 +1262,9 @@ struct ListChannelNamespacesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) channelNamespaces: list[ChannelNamespace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelNamespaces: list[ChannelNamespace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelNamespacesResponse:
     Optional[list[ChannelNamespace]] channelNamespaces
     Optional[str] nextToken
@@ -1245,8 +1276,9 @@ struct ListDataSourcesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dataSources: list[DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: list[DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourcesResponse:
     Optional[list[DataSource]] dataSources
     Optional[str] nextToken
@@ -1257,8 +1289,9 @@ struct ListDomainNamesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) domainNameConfigs: list[DomainNameConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainNameConfigs: list[DomainNameConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainNamesResponse:
     Optional[list[DomainNameConfig]] domainNameConfigs
     Optional[str] nextToken
@@ -1270,8 +1303,9 @@ struct ListFunctionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) functions: list[FunctionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) functions: list[FunctionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionsResponse:
     Optional[list[FunctionConfiguration]] functions
     Optional[str] nextToken
@@ -1286,8 +1320,9 @@ struct ListGraphqlApisRequest:
     # wire string of the Ownership enum (querystring binding)
     Optional[str] owner
 
-# no @derive(Json): member(s) graphqlApis: list[GraphqlApi] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphqlApis: list[GraphqlApi] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGraphqlApisResponse:
     Optional[list[GraphqlApi]] graphqlApis
     Optional[str] nextToken
@@ -1300,8 +1335,9 @@ struct ListResolversByFunctionRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) resolvers: list[Resolver] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resolvers: list[Resolver] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolversByFunctionResponse:
     Optional[list[Resolver]] resolvers
     Optional[str] nextToken
@@ -1314,8 +1350,9 @@ struct ListResolversRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) resolvers: list[Resolver] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resolvers: list[Resolver] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolversResponse:
     Optional[list[Resolver]] resolvers
     Optional[str] nextToken
@@ -1327,8 +1364,9 @@ struct ListSourceApiAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) sourceApiAssociationSummaries: list[SourceApiAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceApiAssociationSummaries: list[SourceApiAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceApiAssociationsResponse:
     Optional[list[SourceApiAssociationSummary]] sourceApiAssociationSummaries
     Optional[str] nextToken
@@ -1338,8 +1376,9 @@ struct ListSourceApiAssociationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1353,8 +1392,9 @@ struct ListTypesByAssociationRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) types: list[Type] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[Type] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTypesByAssociationResponse:
     Optional[list[Type]] types
     Optional[str] nextToken
@@ -1368,8 +1408,9 @@ struct ListTypesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) types: list[Type] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[Type] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTypesResponse:
     Optional[list[Type]] types
     Optional[str] nextToken
@@ -1396,8 +1437,9 @@ struct OpenSearchServiceDataSourceConfig:
     str endpoint
     str awsRegion
 
-# no @derive(Json): member(s) functions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) functions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineConfig:
     Optional[list[str]] functions
 
@@ -1407,8 +1449,9 @@ struct PutGraphqlApiEnvironmentVariablesRequest:
     str apiId
     dict[str, str] environmentVariables
 
-# no @derive(Json): member(s) environmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutGraphqlApiEnvironmentVariablesResponse:
     Optional[dict[str, str]] environmentVariables
 
@@ -1431,8 +1474,9 @@ struct RelationalDatabaseDataSourceConfig:
     Optional[str] relationalDatabaseSourceType
     Optional[RdsHttpEndpointConfig] rdsHttpEndpointConfig
 
-# no @derive(Json): member(s) pipelineConfig: PipelineConfig, cachingConfig: CachingConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineConfig: PipelineConfig, cachingConfig: CachingConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resolver:
     Optional[str] typeName
     Optional[str] fieldName
@@ -1585,8 +1629,9 @@ struct UpdateApiRequest:
     Optional[str] ownerContact
     EventConfig eventConfig
 
-# no @derive(Json): member(s) api: Api not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) api: Api not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApiResponse:
     Optional[Api] api
 
@@ -1600,8 +1645,9 @@ struct UpdateChannelNamespaceRequest:
     Optional[str] codeHandlers
     Optional[HandlerConfigs] handlerConfigs
 
-# no @derive(Json): member(s) channelNamespace: ChannelNamespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelNamespace: ChannelNamespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelNamespaceResponse:
     Optional[ChannelNamespace] channelNamespace
 
@@ -1632,8 +1678,9 @@ struct UpdateDomainNameRequest:
     str domainName
     Optional[str] description
 
-# no @derive(Json): member(s) domainNameConfig: DomainNameConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainNameConfig: DomainNameConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainNameResponse:
     Optional[DomainNameConfig] domainNameConfig
 
@@ -1676,8 +1723,9 @@ struct UpdateGraphqlApiRequest:
     Optional[int64] resolverCountLimit
     Optional[EnhancedMetricsConfig] enhancedMetricsConfig
 
-# no @derive(Json): member(s) graphqlApi: GraphqlApi not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphqlApi: GraphqlApi not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGraphqlApiResponse:
     Optional[GraphqlApi] graphqlApi
 
@@ -1699,8 +1747,9 @@ struct UpdateResolverRequest:
     Optional[str] code
     Optional[ResolverLevelMetricsConfig] metricsConfig
 
-# no @derive(Json): member(s) resolver: Resolver not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resolver: Resolver not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResolverResponse:
     Optional[Resolver] resolver
 
@@ -1791,20 +1840,9 @@ def appsync_error_from_code(str code) -> AppSyncError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApi (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateChannelNamespace (document member `subscribeAuthModes: list[AuthMode]` is not serializable by derive)
-#   CreateDomainName (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateGraphqlApi (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateResolver (document member `pipelineConfig: PipelineConfig` is not serializable by derive)
 #   GetDataSourceIntrospection (httpQuery `includeModelsSDL` has unsupported type bool)
 #   GetIntrospectionSchema (httpQuery `includeDirectives` has unsupported type bool)
-#   PutGraphqlApiEnvironmentVariables (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateApi (document member `eventConfig: EventConfig` is not serializable by derive)
-#   UpdateChannelNamespace (document member `subscribeAuthModes: list[AuthMode]` is not serializable by derive)
-#   UpdateGraphqlApi (document member `additionalAuthenticationProviders: list[AdditionalAuthenticationProvider]` is not serializable by derive)
-#   UpdateResolver (document member `pipelineConfig: PipelineConfig` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1964,6 +2002,83 @@ struct UpdateTypeDocument:
     Optional[str] definition
     TypeDefinitionFormat format
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def appsync_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def appsync_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def appsync_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CachingConfig to a compact JSON object (declaration order).
+def caching_config_to_json(CachingConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"ttl\":" + str(v.ttl))
+    if v.cachingKeys.is_some():
+        auto u0 = v.cachingKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(appsync_json_str(x1))
+        parts.append("\"cachingKeys\":" + appsync_json_arr(e1))
+    return appsync_json_obj(parts)
+
+# Serialize EventConfig to a compact JSON object (declaration order).
+def event_config_to_json(EventConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.authProviders:
+        e0.append(x0.to_json())
+    parts.append("\"authProviders\":" + appsync_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.connectionAuthModes:
+        e1.append(x1.to_json())
+    parts.append("\"connectionAuthModes\":" + appsync_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.defaultPublishAuthModes:
+        e2.append(x2.to_json())
+    parts.append("\"defaultPublishAuthModes\":" + appsync_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.defaultSubscribeAuthModes:
+        e3.append(x3.to_json())
+    parts.append("\"defaultSubscribeAuthModes\":" + appsync_json_arr(e3))
+    if v.logConfig.is_some():
+        auto u4 = v.logConfig.unwrap()
+        parts.append("\"logConfig\":" + u4.to_json())
+    return appsync_json_obj(parts)
+
+# Serialize PipelineConfig to a compact JSON object (declaration order).
+def pipeline_config_to_json(PipelineConfig v) -> str:
+    list[str] parts = []
+    if v.functions.is_some():
+        auto u0 = v.functions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(appsync_json_str(x1))
+        parts.append("\"functions\":" + appsync_json_arr(e1))
+    return appsync_json_obj(parts)
+
 # A bound AppSync client: credentials + region, threaded into every operation.
 struct AppSyncClient:
     core.Credentials creds
@@ -2002,6 +2117,26 @@ struct AppSyncClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
+    # CreateApi  POST /v2/apis
+    # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, ServiceQuotaExceededException, UnauthorizedException
+    def create_api(self, CreateApiRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + appsync_json_str(input.name))
+        if input.ownerContact.is_some():
+            auto u0 = input.ownerContact.unwrap()
+            parts.append("\"ownerContact\":" + appsync_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(appsync_json_str(k2) + ":" + appsync_json_str(u1[k2]))
+            parts.append("\"tags\":" + appsync_json_obj(m2))
+        parts.append("\"eventConfig\":" + event_config_to_json(input.eventConfig))
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
     # CreateApiCache  POST /v1/apis/{apiId}/ApiCaches
     # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
     def create_api_cache(self, CreateApiCacheRequest input) -> str:
@@ -2024,6 +2159,42 @@ struct AppSyncClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
+    # CreateChannelNamespace  POST /v2/apis/{apiId}/channelNamespaces
+    # errors: BadRequestException, ConcurrentModificationException, ConflictException, InternalFailureException, NotFoundException, ServiceQuotaExceededException, UnauthorizedException
+    def create_channel_namespace(self, CreateChannelNamespaceRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/channelNamespaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + appsync_json_str(input.name))
+        if input.subscribeAuthModes.is_some():
+            auto u0 = input.subscribeAuthModes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"subscribeAuthModes\":" + appsync_json_arr(e1))
+        if input.publishAuthModes.is_some():
+            auto u2 = input.publishAuthModes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"publishAuthModes\":" + appsync_json_arr(e3))
+        if input.codeHandlers.is_some():
+            auto u4 = input.codeHandlers.unwrap()
+            parts.append("\"codeHandlers\":" + appsync_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(appsync_json_str(k6) + ":" + appsync_json_str(u5[k6]))
+            parts.append("\"tags\":" + appsync_json_obj(m6))
+        if input.handlerConfigs.is_some():
+            auto u7 = input.handlerConfigs.unwrap()
+            parts.append("\"handlerConfigs\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
     # CreateDataSource  POST /v1/apis/{apiId}/datasources
     # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
     def create_data_source(self, CreateDataSourceRequest input) -> str:
@@ -2035,6 +2206,26 @@ struct AppSyncClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
+    # CreateDomainName  POST /v1/domainnames
+    # errors: AccessDeniedException, BadRequestException, InternalFailureException
+    def create_domain_name(self, CreateDomainNameRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainName\":" + appsync_json_str(input.domainName))
+        parts.append("\"certificateArn\":" + appsync_json_str(input.certificateArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + appsync_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(appsync_json_str(k2) + ":" + appsync_json_str(u1[k2]))
+            parts.append("\"tags\":" + appsync_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
     # CreateFunction  POST /v1/apis/{apiId}/functions
     # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
     def create_function(self, CreateFunctionRequest input) -> str:
@@ -2044,6 +2235,114 @@ struct AppSyncClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/functions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFunctionDocument(name=input.name, description=input.description, dataSourceName=input.dataSourceName, requestMappingTemplate=input.requestMappingTemplate, responseMappingTemplate=input.responseMappingTemplate, functionVersion=input.functionVersion, syncConfig=input.syncConfig, maxBatchSize=input.maxBatchSize, runtime=input.runtime, code=input.code)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
+    # CreateGraphqlApi  POST /v1/apis
+    # errors: ApiLimitExceededException, BadRequestException, ConcurrentModificationException, InternalFailureException, LimitExceededException, UnauthorizedException
+    def create_graphql_api(self, CreateGraphqlApiRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + appsync_json_str(input.name))
+        if input.logConfig.is_some():
+            auto u0 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u0.to_json())
+        parts.append("\"authenticationType\":" + input.authenticationType.to_json())
+        if input.userPoolConfig.is_some():
+            auto u1 = input.userPoolConfig.unwrap()
+            parts.append("\"userPoolConfig\":" + u1.to_json())
+        if input.openIDConnectConfig.is_some():
+            auto u2 = input.openIDConnectConfig.unwrap()
+            parts.append("\"openIDConnectConfig\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(appsync_json_str(k4) + ":" + appsync_json_str(u3[k4]))
+            parts.append("\"tags\":" + appsync_json_obj(m4))
+        if input.additionalAuthenticationProviders.is_some():
+            auto u5 = input.additionalAuthenticationProviders.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"additionalAuthenticationProviders\":" + appsync_json_arr(e6))
+        if input.xrayEnabled.is_some():
+            auto u7 = input.xrayEnabled.unwrap()
+            parts.append("\"xrayEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.lambdaAuthorizerConfig.is_some():
+            auto u8 = input.lambdaAuthorizerConfig.unwrap()
+            parts.append("\"lambdaAuthorizerConfig\":" + u8.to_json())
+        if input.apiType.is_some():
+            auto u9 = input.apiType.unwrap()
+            parts.append("\"apiType\":" + u9.to_json())
+        if input.mergedApiExecutionRoleArn.is_some():
+            auto u10 = input.mergedApiExecutionRoleArn.unwrap()
+            parts.append("\"mergedApiExecutionRoleArn\":" + appsync_json_str(u10))
+        if input.visibility.is_some():
+            auto u11 = input.visibility.unwrap()
+            parts.append("\"visibility\":" + u11.to_json())
+        if input.ownerContact.is_some():
+            auto u12 = input.ownerContact.unwrap()
+            parts.append("\"ownerContact\":" + appsync_json_str(u12))
+        if input.introspectionConfig.is_some():
+            auto u13 = input.introspectionConfig.unwrap()
+            parts.append("\"introspectionConfig\":" + u13.to_json())
+        if input.queryDepthLimit.is_some():
+            auto u14 = input.queryDepthLimit.unwrap()
+            parts.append("\"queryDepthLimit\":" + str(u14))
+        if input.resolverCountLimit.is_some():
+            auto u15 = input.resolverCountLimit.unwrap()
+            parts.append("\"resolverCountLimit\":" + str(u15))
+        if input.enhancedMetricsConfig.is_some():
+            auto u16 = input.enhancedMetricsConfig.unwrap()
+            parts.append("\"enhancedMetricsConfig\":" + u16.to_json())
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
+    # CreateResolver  POST /v1/apis/{apiId}/types/{typeName}/resolvers
+    # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
+    def create_resolver(self, CreateResolverRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        labels["typeName"] = input.typeName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"fieldName\":" + appsync_json_str(input.fieldName))
+        if input.dataSourceName.is_some():
+            auto u0 = input.dataSourceName.unwrap()
+            parts.append("\"dataSourceName\":" + appsync_json_str(u0))
+        if input.requestMappingTemplate.is_some():
+            auto u1 = input.requestMappingTemplate.unwrap()
+            parts.append("\"requestMappingTemplate\":" + appsync_json_str(u1))
+        if input.responseMappingTemplate.is_some():
+            auto u2 = input.responseMappingTemplate.unwrap()
+            parts.append("\"responseMappingTemplate\":" + appsync_json_str(u2))
+        if input.kind.is_some():
+            auto u3 = input.kind.unwrap()
+            parts.append("\"kind\":" + u3.to_json())
+        if input.pipelineConfig.is_some():
+            auto u4 = input.pipelineConfig.unwrap()
+            parts.append("\"pipelineConfig\":" + pipeline_config_to_json(u4))
+        if input.syncConfig.is_some():
+            auto u5 = input.syncConfig.unwrap()
+            parts.append("\"syncConfig\":" + u5.to_json())
+        if input.cachingConfig.is_some():
+            auto u6 = input.cachingConfig.unwrap()
+            parts.append("\"cachingConfig\":" + caching_config_to_json(u6))
+        if input.maxBatchSize.is_some():
+            auto u7 = input.maxBatchSize.unwrap()
+            parts.append("\"maxBatchSize\":" + str(u7))
+        if input.runtime.is_some():
+            auto u8 = input.runtime.unwrap()
+            parts.append("\"runtime\":" + u8.to_json())
+        if input.code.is_some():
+            auto u9 = input.code.unwrap()
+            parts.append("\"code\":" + appsync_json_str(u9))
+        if input.metricsConfig.is_some():
+            auto u10 = input.metricsConfig.unwrap()
+            parts.append("\"metricsConfig\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
     # CreateType  POST /v1/apis/{apiId}/types
@@ -2516,6 +2815,21 @@ struct AppSyncClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/types", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
+    # PutGraphqlApiEnvironmentVariables  PUT /v1/apis/{apiId}/environmentVariables
+    # errors: AccessDeniedException, BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
+    def put_graphql_api_environment_variables(self, PutGraphqlApiEnvironmentVariablesRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apis/{apiId}/environmentVariables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.environmentVariables.keys()):
+            m0.append(appsync_json_str(k0) + ":" + appsync_json_str(input.environmentVariables[k0]))
+        parts.append("\"environmentVariables\":" + appsync_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
     # StartDataSourceIntrospection  POST /v1/datasources/introspections
     # errors: BadRequestException, InternalFailureException, NotFoundException, UnauthorizedException
     def start_data_source_introspection(self, StartDataSourceIntrospectionRequest input) -> str:
@@ -2546,6 +2860,37 @@ struct AppSyncClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/merge", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, BadRequestException, InternalFailureException, LimitExceededException, NotFoundException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(appsync_json_str(k0) + ":" + appsync_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + appsync_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
+    # UpdateApi  POST /v2/apis/{apiId}
+    # errors: AccessDeniedException, BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_api(self, UpdateApiRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + appsync_json_str(input.name))
+        if input.ownerContact.is_some():
+            auto u0 = input.ownerContact.unwrap()
+            parts.append("\"ownerContact\":" + appsync_json_str(u0))
+        parts.append("\"eventConfig\":" + event_config_to_json(input.eventConfig))
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
     # UpdateApiCache  POST /v1/apis/{apiId}/ApiCaches/update
     # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
     def update_api_cache(self, UpdateApiCacheRequest input) -> str:
@@ -2567,6 +2912,36 @@ struct AppSyncClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/apikeys/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApiKeyDocument(description=input.description, expires=input.expires)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
+    # UpdateChannelNamespace  POST /v2/apis/{apiId}/channelNamespaces/{name}
+    # errors: AccessDeniedException, BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_channel_namespace(self, UpdateChannelNamespaceRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.subscribeAuthModes.is_some():
+            auto u0 = input.subscribeAuthModes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"subscribeAuthModes\":" + appsync_json_arr(e1))
+        if input.publishAuthModes.is_some():
+            auto u2 = input.publishAuthModes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"publishAuthModes\":" + appsync_json_arr(e3))
+        if input.codeHandlers.is_some():
+            auto u4 = input.codeHandlers.unwrap()
+            parts.append("\"codeHandlers\":" + appsync_json_str(u4))
+        if input.handlerConfigs.is_some():
+            auto u5 = input.handlerConfigs.unwrap()
+            parts.append("\"handlerConfigs\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
     # UpdateDataSource  POST /v1/apis/{apiId}/datasources/{name}
@@ -2602,6 +2977,104 @@ struct AppSyncClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFunctionDocument(name=input.name, description=input.description, dataSourceName=input.dataSourceName, requestMappingTemplate=input.requestMappingTemplate, responseMappingTemplate=input.responseMappingTemplate, functionVersion=input.functionVersion, syncConfig=input.syncConfig, maxBatchSize=input.maxBatchSize, runtime=input.runtime, code=input.code)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
+    # UpdateGraphqlApi  POST /v1/apis/{apiId}
+    # errors: AccessDeniedException, BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_graphql_api(self, UpdateGraphqlApiRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + appsync_json_str(input.name))
+        if input.logConfig.is_some():
+            auto u0 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u0.to_json())
+        parts.append("\"authenticationType\":" + input.authenticationType.to_json())
+        if input.userPoolConfig.is_some():
+            auto u1 = input.userPoolConfig.unwrap()
+            parts.append("\"userPoolConfig\":" + u1.to_json())
+        if input.openIDConnectConfig.is_some():
+            auto u2 = input.openIDConnectConfig.unwrap()
+            parts.append("\"openIDConnectConfig\":" + u2.to_json())
+        if input.additionalAuthenticationProviders.is_some():
+            auto u3 = input.additionalAuthenticationProviders.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"additionalAuthenticationProviders\":" + appsync_json_arr(e4))
+        if input.xrayEnabled.is_some():
+            auto u5 = input.xrayEnabled.unwrap()
+            parts.append("\"xrayEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.lambdaAuthorizerConfig.is_some():
+            auto u6 = input.lambdaAuthorizerConfig.unwrap()
+            parts.append("\"lambdaAuthorizerConfig\":" + u6.to_json())
+        if input.mergedApiExecutionRoleArn.is_some():
+            auto u7 = input.mergedApiExecutionRoleArn.unwrap()
+            parts.append("\"mergedApiExecutionRoleArn\":" + appsync_json_str(u7))
+        if input.ownerContact.is_some():
+            auto u8 = input.ownerContact.unwrap()
+            parts.append("\"ownerContact\":" + appsync_json_str(u8))
+        if input.introspectionConfig.is_some():
+            auto u9 = input.introspectionConfig.unwrap()
+            parts.append("\"introspectionConfig\":" + u9.to_json())
+        if input.queryDepthLimit.is_some():
+            auto u10 = input.queryDepthLimit.unwrap()
+            parts.append("\"queryDepthLimit\":" + str(u10))
+        if input.resolverCountLimit.is_some():
+            auto u11 = input.resolverCountLimit.unwrap()
+            parts.append("\"resolverCountLimit\":" + str(u11))
+        if input.enhancedMetricsConfig.is_some():
+            auto u12 = input.enhancedMetricsConfig.unwrap()
+            parts.append("\"enhancedMetricsConfig\":" + u12.to_json())
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
+
+    # UpdateResolver  POST /v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}
+    # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_resolver(self, UpdateResolverRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        labels["typeName"] = input.typeName
+        labels["fieldName"] = input.fieldName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.dataSourceName.is_some():
+            auto u0 = input.dataSourceName.unwrap()
+            parts.append("\"dataSourceName\":" + appsync_json_str(u0))
+        if input.requestMappingTemplate.is_some():
+            auto u1 = input.requestMappingTemplate.unwrap()
+            parts.append("\"requestMappingTemplate\":" + appsync_json_str(u1))
+        if input.responseMappingTemplate.is_some():
+            auto u2 = input.responseMappingTemplate.unwrap()
+            parts.append("\"responseMappingTemplate\":" + appsync_json_str(u2))
+        if input.kind.is_some():
+            auto u3 = input.kind.unwrap()
+            parts.append("\"kind\":" + u3.to_json())
+        if input.pipelineConfig.is_some():
+            auto u4 = input.pipelineConfig.unwrap()
+            parts.append("\"pipelineConfig\":" + pipeline_config_to_json(u4))
+        if input.syncConfig.is_some():
+            auto u5 = input.syncConfig.unwrap()
+            parts.append("\"syncConfig\":" + u5.to_json())
+        if input.cachingConfig.is_some():
+            auto u6 = input.cachingConfig.unwrap()
+            parts.append("\"cachingConfig\":" + caching_config_to_json(u6))
+        if input.maxBatchSize.is_some():
+            auto u7 = input.maxBatchSize.unwrap()
+            parts.append("\"maxBatchSize\":" + str(u7))
+        if input.runtime.is_some():
+            auto u8 = input.runtime.unwrap()
+            parts.append("\"runtime\":" + u8.to_json())
+        if input.code.is_some():
+            auto u9 = input.code.unwrap()
+            parts.append("\"code\":" + appsync_json_str(u9))
+        if input.metricsConfig.is_some():
+            auto u10 = input.metricsConfig.unwrap()
+            parts.append("\"metricsConfig\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
     # UpdateSourceApiAssociation  POST /v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}

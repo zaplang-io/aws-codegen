@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 4 operations — 0 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 4 operations — 2 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   20 structs (9 @derive(Json)), 3 enums, 4 error variants.
-#   0 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -86,24 +86,27 @@ struct Emissions:
     float64 Value
     str Unit
 
-# no @derive(Json): member(s) DimensionsValues: dict[Dimension, str], EmissionsValues: dict[EmissionsType, Emissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionsValues: dict[Dimension, str], EmissionsValues: dict[EmissionsType, Emissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EstimatedCarbonEmissions:
     TimePeriod TimePeriod
     dict[Dimension, str] DimensionsValues
     str ModelVersion
     dict[EmissionsType, Emissions] EmissionsValues
 
-# no @derive(Json): member(s) DimensionsValues: dict[Dimension, str], AllocationValues: dict[str, WaterAllocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionsValues: dict[Dimension, str], AllocationValues: dict[str, WaterAllocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EstimatedWaterAllocation:
     TimePeriod TimePeriod
     dict[Dimension, str] DimensionsValues
     str ModelVersion
     dict[str, WaterAllocation] AllocationValues
 
-# no @derive(Json): member(s) Dimensions: dict[Dimension, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: dict[Dimension, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterExpression:
     Optional[dict[Dimension, list[str]]] Dimensions
 
@@ -115,8 +118,9 @@ struct GetEstimatedCarbonEmissionsDimensionValuesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[DimensionEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DimensionEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEstimatedCarbonEmissionsDimensionValuesResponse:
     Optional[list[DimensionEntry]] Results
     Optional[str] NextToken
@@ -133,8 +137,9 @@ struct GetEstimatedCarbonEmissionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[EstimatedCarbonEmissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[EstimatedCarbonEmissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEstimatedCarbonEmissionsResponse:
     list[EstimatedCarbonEmissions] Results
     Optional[str] NextToken
@@ -147,8 +152,9 @@ struct GetEstimatedWaterAllocationDimensionValuesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[DimensionEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DimensionEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEstimatedWaterAllocationDimensionValuesResponse:
     list[DimensionEntry] Results
     Optional[str] NextToken
@@ -164,8 +170,9 @@ struct GetEstimatedWaterAllocationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[EstimatedWaterAllocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[EstimatedWaterAllocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEstimatedWaterAllocationResponse:
     list[EstimatedWaterAllocation] Results
     Optional[str] NextToken
@@ -227,24 +234,85 @@ def sustainability_error_from_code(str code) -> SustainabilityError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetEstimatedCarbonEmissions (document member `GroupBy: list[Dimension]` is not serializable by derive)
-#   GetEstimatedCarbonEmissionsDimensionValues (document member `Dimensions: list[Dimension]` is not serializable by derive)
-#   GetEstimatedWaterAllocation (document member `GroupBy: list[Dimension]` is not serializable by derive)
-#   GetEstimatedWaterAllocationDimensionValues (document member `Dimensions: list[Dimension]` is not serializable by derive)
+#   GetEstimatedCarbonEmissions (document member `FilterBy: FilterExpression` is not serializable)
+#   GetEstimatedWaterAllocation (document member `FilterBy: FilterExpression` is not serializable)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   GetEstimatedCarbonEmissions (operation not generated)
-#   GetEstimatedCarbonEmissionsDimensionValues (operation not generated)
 #   GetEstimatedWaterAllocation (operation not generated)
-#   GetEstimatedWaterAllocationDimensionValues (operation not generated)
 
 # A bound Sustainability client: credentials + region, threaded into every operation.
 struct SustainabilityClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # GetEstimatedCarbonEmissionsDimensionValues  POST /v1/estimated-carbon-emissions-dimension-values
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_estimated_carbon_emissions_dimension_values(self, GetEstimatedCarbonEmissionsDimensionValuesRequest input) -> str:
+        auto host = endpoints.regional_host(sustainability_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/estimated-carbon-emissions-dimension-values", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TimePeriod\":" + input.TimePeriod.to_json())
+        list[str] e0 = []
+        for x0 in input.Dimensions:
+            e0.append(x0.to_json())
+        parts.append("\"Dimensions\":" + sustainability_json_arr(e0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + sustainability_json_str(u2))
+        auto bp = restjson.rest_json_document(b, sustainability_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, sustainability_service(), self.region, host)
+
+    # GetEstimatedWaterAllocationDimensionValues  POST /v1/estimated-water-allocation-dimension-values
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_estimated_water_allocation_dimension_values(self, GetEstimatedWaterAllocationDimensionValuesRequest input) -> str:
+        auto host = endpoints.regional_host(sustainability_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/estimated-water-allocation-dimension-values", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TimePeriod\":" + input.TimePeriod.to_json())
+        list[str] e0 = []
+        for x0 in input.Dimensions:
+            e0.append(x0.to_json())
+        parts.append("\"Dimensions\":" + sustainability_json_arr(e0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + sustainability_json_str(u2))
+        auto bp = restjson.rest_json_document(b, sustainability_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, sustainability_service(), self.region, host)
+
+    # Paginator for GetEstimatedCarbonEmissionsDimensionValues — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Results).
+    def paginate_get_estimated_carbon_emissions_dimension_values(self, GetEstimatedCarbonEmissionsDimensionValuesRequest input):
+        auto host = endpoints.regional_host(sustainability_service(), self.region)
+        while True:
+            auto raw = self.get_estimated_carbon_emissions_dimension_values(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetEstimatedWaterAllocationDimensionValues — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Results).
+    def paginate_get_estimated_water_allocation_dimension_values(self, GetEstimatedWaterAllocationDimensionValuesRequest input):
+        auto host = endpoints.regional_host(sustainability_service(), self.region)
+        while True:
+            auto raw = self.get_estimated_water_allocation_dimension_values(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
 # Construct a SustainabilityClient bound to credentials + region.
 def sustainability_client(core.Credentials creds, str region) -> SustainabilityClient:
     return SustainabilityClient(creds=creds, region=region)

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 77 operations — 62 with a generated method,
-#   15 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 77 operations — 77 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   225 structs (133 @derive(Json)), 26 enums, 12 error variants.
-#   19 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -355,8 +355,9 @@ enum UploadType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) unmeteredDevices: dict[DevicePlatform, int64], unmeteredRemoteAccessDevices: dict[DevicePlatform, int64], maxSlots: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unmeteredDevices: dict[DevicePlatform, int64], unmeteredRemoteAccessDevices: dict[DevicePlatform, int64], maxSlots: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountSettings:
     Optional[str] awsAccountNumber
     Optional[dict[DevicePlatform, int64]] unmeteredDevices
@@ -399,8 +400,9 @@ struct Counters:
     Optional[int64] stopped
     Optional[int64] skipped
 
-# no @derive(Json): member(s) rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDevicePoolRequest:
     str projectArn
     str name
@@ -408,13 +410,15 @@ struct CreateDevicePoolRequest:
     list[Rule] rules
     Optional[int64] maxDevices
 
-# no @derive(Json): member(s) devicePool: DevicePool not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devicePool: DevicePool not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDevicePoolResult:
     Optional[DevicePool] devicePool
 
-# no @derive(Json): member(s) excludeAppPackagesFromCleanup: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludeAppPackagesFromCleanup: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceProfileRequest:
     str name
     Optional[str] description
@@ -422,8 +426,9 @@ struct CreateInstanceProfileRequest:
     Optional[list[str]] excludeAppPackagesFromCleanup
     Optional[bool] rebootAfterUse
 
-# no @derive(Json): member(s) instanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceProfileResult:
     Optional[InstanceProfile] instanceProfile
 
@@ -446,8 +451,9 @@ struct CreateNetworkProfileRequest:
 struct CreateNetworkProfileResult:
     Optional[NetworkProfile] networkProfile
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectRequest:
     str name
     Optional[int64] defaultJobTimeoutMinutes
@@ -455,13 +461,15 @@ struct CreateProjectRequest:
     Optional[list[EnvironmentVariable]] environmentVariables
     Optional[str] executionRoleArn
 
-# no @derive(Json): member(s) project: Project not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) project: Project not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectResult:
     Optional[Project] project
 
-# no @derive(Json): member(s) auxiliaryApps: list[str], vpceConfigurationArns: list[str], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) auxiliaryApps: list[str], vpceConfigurationArns: list[str], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRemoteAccessSessionConfiguration:
     Optional[list[str]] auxiliaryApps
     Optional[BillingMethod] billingMethod
@@ -469,8 +477,9 @@ struct CreateRemoteAccessSessionConfiguration:
     Optional[DeviceProxy] deviceProxy
     Optional[dict[str, str]] parameters
 
-# no @derive(Json): member(s) configuration: CreateRemoteAccessSessionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: CreateRemoteAccessSessionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRemoteAccessSessionRequest:
     str projectArn
     str deviceArn
@@ -481,20 +490,23 @@ struct CreateRemoteAccessSessionRequest:
     Optional[InteractionMode] interactionMode
     Optional[bool] skipAppResign
 
-# no @derive(Json): member(s) remoteAccessSession: RemoteAccessSession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteAccessSession: RemoteAccessSession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRemoteAccessSessionResult:
     Optional[RemoteAccessSession] remoteAccessSession
 
-# no @derive(Json): member(s) vpcConfig: TestGridVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: TestGridVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTestGridProjectRequest:
     str name
     Optional[str] description
     Optional[TestGridVpcConfig] vpcConfig
 
-# no @derive(Json): member(s) testGridProject: TestGridProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testGridProject: TestGridProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTestGridProjectResult:
     Optional[TestGridProject] testGridProject
 
@@ -530,8 +542,9 @@ struct CreateVPCEConfigurationRequest:
 struct CreateVPCEConfigurationResult:
     Optional[VPCEConfiguration] vpceConfiguration
 
-# no @derive(Json): member(s) iosPaths: list[str], androidPaths: list[str], deviceHostPaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iosPaths: list[str], androidPaths: list[str], deviceHostPaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomerArtifactPaths:
     Optional[list[str]] iosPaths
     Optional[list[str]] androidPaths
@@ -618,8 +631,9 @@ struct DeleteVPCEConfigurationResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) instances: list[DeviceInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instances: list[DeviceInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Device:
     Optional[str] arn
     Optional[str] name
@@ -643,15 +657,17 @@ struct Device:
     Optional[list[DeviceInstance]] instances
     Optional[DeviceAvailability] availability
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceFilter:
     DeviceFilterAttribute attribute
     RuleOperator operator
     list[str] values
 
-# no @derive(Json): member(s) labels: list[str], instanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labels: list[str], instanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceInstance:
     Optional[str] arn
     Optional[str] deviceArn
@@ -666,8 +682,9 @@ struct DeviceMinutes:
     Optional[float64] metered
     Optional[float64] unmetered
 
-# no @derive(Json): member(s) rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevicePool:
     Optional[str] arn
     Optional[str] name
@@ -676,8 +693,9 @@ struct DevicePool:
     Optional[list[Rule]] rules
     Optional[int64] maxDevices
 
-# no @derive(Json): member(s) device: Device, incompatibilityMessages: list[IncompatibilityMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) device: Device, incompatibilityMessages: list[IncompatibilityMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevicePoolCompatibilityResult:
     Optional[Device] device
     Optional[bool] compatible
@@ -688,14 +706,16 @@ struct DeviceProxy:
     str host
     int64 port
 
-# no @derive(Json): member(s) filters: list[DeviceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[DeviceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceSelectionConfiguration:
     list[DeviceFilter] filters
     int64 maxDevices
 
-# no @derive(Json): member(s) filters: list[DeviceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[DeviceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceSelectionResult:
     Optional[list[DeviceFilter]] filters
     Optional[int64] matchedDevicesCount
@@ -719,8 +739,9 @@ struct GetAccountSettingsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) accountSettings: AccountSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountSettings: AccountSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccountSettingsResult:
     Optional[AccountSettings] accountSettings
 
@@ -728,13 +749,15 @@ struct GetAccountSettingsResult:
 struct GetDeviceInstanceRequest:
     str arn
 
-# no @derive(Json): member(s) deviceInstance: DeviceInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceInstance: DeviceInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceInstanceResult:
     Optional[DeviceInstance] deviceInstance
 
-# no @derive(Json): member(s) test: ScheduleRunTest, configuration: ScheduleRunConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) test: ScheduleRunTest, configuration: ScheduleRunConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevicePoolCompatibilityRequest:
     str devicePoolArn
     Optional[str] appArn
@@ -743,8 +766,9 @@ struct GetDevicePoolCompatibilityRequest:
     Optional[ScheduleRunConfiguration] configuration
     Optional[str] projectArn
 
-# no @derive(Json): member(s) compatibleDevices: list[DevicePoolCompatibilityResult], incompatibleDevices: list[DevicePoolCompatibilityResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compatibleDevices: list[DevicePoolCompatibilityResult], incompatibleDevices: list[DevicePoolCompatibilityResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevicePoolCompatibilityResult:
     Optional[list[DevicePoolCompatibilityResult]] compatibleDevices
     Optional[list[DevicePoolCompatibilityResult]] incompatibleDevices
@@ -753,8 +777,9 @@ struct GetDevicePoolCompatibilityResult:
 struct GetDevicePoolRequest:
     str arn
 
-# no @derive(Json): member(s) devicePool: DevicePool not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devicePool: DevicePool not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevicePoolResult:
     Optional[DevicePool] devicePool
 
@@ -762,8 +787,9 @@ struct GetDevicePoolResult:
 struct GetDeviceRequest:
     str arn
 
-# no @derive(Json): member(s) device: Device not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) device: Device not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceResult:
     Optional[Device] device
 
@@ -771,8 +797,9 @@ struct GetDeviceResult:
 struct GetInstanceProfileRequest:
     str arn
 
-# no @derive(Json): member(s) instanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceProfileResult:
     Optional[InstanceProfile] instanceProfile
 
@@ -780,8 +807,9 @@ struct GetInstanceProfileResult:
 struct GetJobRequest:
     str arn
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResult:
     Optional[Job] job
 
@@ -797,8 +825,9 @@ struct GetNetworkProfileResult:
 struct GetOfferingStatusRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) current: dict[str, OfferingStatus], nextPeriod: dict[str, OfferingStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) current: dict[str, OfferingStatus], nextPeriod: dict[str, OfferingStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOfferingStatusResult:
     Optional[dict[str, OfferingStatus]] current
     Optional[dict[str, OfferingStatus]] nextPeriod
@@ -808,8 +837,9 @@ struct GetOfferingStatusResult:
 struct GetProjectRequest:
     str arn
 
-# no @derive(Json): member(s) project: Project not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) project: Project not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProjectResult:
     Optional[Project] project
 
@@ -817,8 +847,9 @@ struct GetProjectResult:
 struct GetRemoteAccessSessionRequest:
     str arn
 
-# no @derive(Json): member(s) remoteAccessSession: RemoteAccessSession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteAccessSession: RemoteAccessSession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRemoteAccessSessionResult:
     Optional[RemoteAccessSession] remoteAccessSession
 
@@ -826,8 +857,9 @@ struct GetRemoteAccessSessionResult:
 struct GetRunRequest:
     str arn
 
-# no @derive(Json): member(s) run: Run not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) run: Run not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRunResult:
     Optional[Run] run
 
@@ -843,8 +875,9 @@ struct GetSuiteResult:
 struct GetTestGridProjectRequest:
     str projectArn
 
-# no @derive(Json): member(s) testGridProject: TestGridProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testGridProject: TestGridProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTestGridProjectResult:
     Optional[TestGridProject] testGridProject
 
@@ -900,8 +933,9 @@ struct InstallToRemoteAccessSessionRequest:
 struct InstallToRemoteAccessSessionResult:
     Optional[Upload] appUpload
 
-# no @derive(Json): member(s) excludeAppPackagesFromCleanup: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludeAppPackagesFromCleanup: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceProfile:
     Optional[str] arn
     Optional[bool] packageCleanup
@@ -918,8 +952,9 @@ struct InternalServiceException:
 struct InvalidOperationException:
     Optional[str] message
 
-# no @derive(Json): member(s) device: Device not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) device: Device not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[str] arn
     Optional[str] name
@@ -972,8 +1007,9 @@ struct ListArtifactsRequest:
     ArtifactCategory type
     Optional[str] nextToken
 
-# no @derive(Json): member(s) artifacts: list[Artifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: list[Artifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListArtifactsResult:
     Optional[list[Artifact]] artifacts
     Optional[str] nextToken
@@ -983,8 +1019,9 @@ struct ListDeviceInstancesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deviceInstances: list[DeviceInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceInstances: list[DeviceInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceInstancesResult:
     Optional[list[DeviceInstance]] deviceInstances
     Optional[str] nextToken
@@ -995,21 +1032,24 @@ struct ListDevicePoolsRequest:
     Optional[DevicePoolType] type
     Optional[str] nextToken
 
-# no @derive(Json): member(s) devicePools: list[DevicePool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devicePools: list[DevicePool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicePoolsResult:
     Optional[list[DevicePool]] devicePools
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[DeviceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[DeviceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesRequest:
     Optional[str] arn
     Optional[str] nextToken
     Optional[list[DeviceFilter]] filters
 
-# no @derive(Json): member(s) devices: list[Device] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[Device] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesResult:
     Optional[list[Device]] devices
     Optional[str] nextToken
@@ -1019,8 +1059,9 @@ struct ListInstanceProfilesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) instanceProfiles: list[InstanceProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceProfiles: list[InstanceProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstanceProfilesResult:
     Optional[list[InstanceProfile]] instanceProfiles
     Optional[str] nextToken
@@ -1030,8 +1071,9 @@ struct ListJobsRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResult:
     Optional[list[Job]] jobs
     Optional[str] nextToken
@@ -1042,8 +1084,9 @@ struct ListNetworkProfilesRequest:
     Optional[NetworkProfileType] type
     Optional[str] nextToken
 
-# no @derive(Json): member(s) networkProfiles: list[NetworkProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkProfiles: list[NetworkProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkProfilesResult:
     Optional[list[NetworkProfile]] networkProfiles
     Optional[str] nextToken
@@ -1052,8 +1095,9 @@ struct ListNetworkProfilesResult:
 struct ListOfferingPromotionsRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) offeringPromotions: list[OfferingPromotion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offeringPromotions: list[OfferingPromotion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOfferingPromotionsResult:
     Optional[list[OfferingPromotion]] offeringPromotions
     Optional[str] nextToken
@@ -1062,8 +1106,9 @@ struct ListOfferingPromotionsResult:
 struct ListOfferingTransactionsRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) offeringTransactions: list[OfferingTransaction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offeringTransactions: list[OfferingTransaction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOfferingTransactionsResult:
     Optional[list[OfferingTransaction]] offeringTransactions
     Optional[str] nextToken
@@ -1072,8 +1117,9 @@ struct ListOfferingTransactionsResult:
 struct ListOfferingsRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) offerings: list[Offering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offerings: list[Offering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOfferingsResult:
     Optional[list[Offering]] offerings
     Optional[str] nextToken
@@ -1083,8 +1129,9 @@ struct ListProjectsRequest:
     Optional[str] arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) projects: list[Project] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projects: list[Project] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsResult:
     Optional[list[Project]] projects
     Optional[str] nextToken
@@ -1094,8 +1141,9 @@ struct ListRemoteAccessSessionsRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) remoteAccessSessions: list[RemoteAccessSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteAccessSessions: list[RemoteAccessSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRemoteAccessSessionsResult:
     Optional[list[RemoteAccessSession]] remoteAccessSessions
     Optional[str] nextToken
@@ -1105,8 +1153,9 @@ struct ListRunsRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) runs: list[Run] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runs: list[Run] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRunsResult:
     Optional[list[Run]] runs
     Optional[str] nextToken
@@ -1116,8 +1165,9 @@ struct ListSamplesRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) samples: list[Sample] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) samples: list[Sample] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSamplesResult:
     Optional[list[Sample]] samples
     Optional[str] nextToken
@@ -1127,8 +1177,9 @@ struct ListSuitesRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) suites: list[Suite] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suites: list[Suite] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSuitesResult:
     Optional[list[Suite]] suites
     Optional[str] nextToken
@@ -1137,8 +1188,9 @@ struct ListSuitesResult:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1147,8 +1199,9 @@ struct ListTestGridProjectsRequest:
     Optional[int64] maxResult
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testGridProjects: list[TestGridProject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testGridProjects: list[TestGridProject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestGridProjectsResult:
     Optional[list[TestGridProject]] testGridProjects
     Optional[str] nextToken
@@ -1159,8 +1212,9 @@ struct ListTestGridSessionActionsRequest:
     Optional[int64] maxResult
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actions: list[TestGridSessionAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[TestGridSessionAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestGridSessionActionsResult:
     Optional[list[TestGridSessionAction]] actions
     Optional[str] nextToken
@@ -1172,8 +1226,9 @@ struct ListTestGridSessionArtifactsRequest:
     Optional[int64] maxResult
     Optional[str] nextToken
 
-# no @derive(Json): member(s) artifacts: list[TestGridSessionArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: list[TestGridSessionArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestGridSessionArtifactsResult:
     Optional[list[TestGridSessionArtifact]] artifacts
     Optional[str] nextToken
@@ -1189,8 +1244,9 @@ struct ListTestGridSessionsRequest:
     Optional[int64] maxResult
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testGridSessions: list[TestGridSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testGridSessions: list[TestGridSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestGridSessionsResult:
     Optional[list[TestGridSession]] testGridSessions
     Optional[str] nextToken
@@ -1200,8 +1256,9 @@ struct ListTestsRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tests: list[Test] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tests: list[Test] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestsResult:
     Optional[list[Test]] tests
     Optional[str] nextToken
@@ -1211,8 +1268,9 @@ struct ListUniqueProblemsRequest:
     str arn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) uniqueProblems: dict[ExecutionResult, list[UniqueProblem]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) uniqueProblems: dict[ExecutionResult, list[UniqueProblem]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUniqueProblemsResult:
     Optional[dict[ExecutionResult, list[UniqueProblem]]] uniqueProblems
     Optional[str] nextToken
@@ -1223,8 +1281,9 @@ struct ListUploadsRequest:
     Optional[UploadType] type
     Optional[str] nextToken
 
-# no @derive(Json): member(s) uploads: list[Upload] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) uploads: list[Upload] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUploadsResult:
     Optional[list[Upload]] uploads
     Optional[str] nextToken
@@ -1234,8 +1293,9 @@ struct ListVPCEConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) vpceConfigurations: list[VPCEConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpceConfigurations: list[VPCEConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVPCEConfigurationsResult:
     Optional[list[VPCEConfiguration]] vpceConfigurations
     Optional[str] nextToken
@@ -1273,8 +1333,9 @@ struct NotEligibleException:
 struct NotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) recurringCharges: list[RecurringCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recurringCharges: list[RecurringCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Offering:
     Optional[str] id
     Optional[str] description
@@ -1287,16 +1348,18 @@ struct OfferingPromotion:
     Optional[str] id
     Optional[str] description
 
-# no @derive(Json): member(s) offering: Offering not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offering: Offering not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferingStatus:
     Optional[OfferingTransactionType] type
     Optional[Offering] offering
     Optional[int64] quantity
     Optional[DateTime] effectiveOn
 
-# no @derive(Json): member(s) offeringStatus: OfferingStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offeringStatus: OfferingStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferingTransaction:
     Optional[OfferingStatus] offeringStatus
     Optional[str] transactionId
@@ -1304,8 +1367,9 @@ struct OfferingTransaction:
     Optional[DateTime] createdOn
     Optional[MonetaryAmount] cost
 
-# no @derive(Json): member(s) device: Device not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) device: Device not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Problem:
     Optional[ProblemDetail] run
     Optional[ProblemDetail] job
@@ -1320,8 +1384,9 @@ struct ProblemDetail:
     Optional[str] arn
     Optional[str] name
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Project:
     Optional[str] arn
     Optional[str] name
@@ -1337,8 +1402,9 @@ struct PurchaseOfferingRequest:
     int64 quantity
     Optional[str] offeringPromotionId
 
-# no @derive(Json): member(s) offeringTransaction: OfferingTransaction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offeringTransaction: OfferingTransaction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseOfferingResult:
     Optional[OfferingTransaction] offeringTransaction
 
@@ -1359,8 +1425,9 @@ struct RemoteAccessEndpoints:
     Optional[str] remoteDriverEndpoint
     Optional[str] interactiveEndpoint
 
-# no @derive(Json): member(s) device: Device, vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) device: Device, vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteAccessSession:
     Optional[str] arn
     Optional[str] name
@@ -1388,8 +1455,9 @@ struct RenewOfferingRequest:
     str offeringId
     int64 quantity
 
-# no @derive(Json): member(s) offeringTransaction: OfferingTransaction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offeringTransaction: OfferingTransaction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenewOfferingResult:
     Optional[OfferingTransaction] offeringTransaction
 
@@ -1404,8 +1472,9 @@ struct Rule:
     Optional[RuleOperator] operator
     Optional[str] value
 
-# no @derive(Json): member(s) customerArtifactPaths: CustomerArtifactPaths, deviceSelectionResult: DeviceSelectionResult, vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable], insightsTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerArtifactPaths: CustomerArtifactPaths, deviceSelectionResult: DeviceSelectionResult, vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable], insightsTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Run:
     Optional[str] arn
     Optional[str] name
@@ -1456,8 +1525,9 @@ struct Sample:
     Optional[SampleType] type
     Optional[str] url
 
-# no @derive(Json): member(s) vpceConfigurationArns: list[str], customerArtifactPaths: CustomerArtifactPaths, auxiliaryApps: list[str], environmentVariables: list[EnvironmentVariable], insightsTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpceConfigurationArns: list[str], customerArtifactPaths: CustomerArtifactPaths, auxiliaryApps: list[str], environmentVariables: list[EnvironmentVariable], insightsTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleRunConfiguration:
     Optional[str] extraDataPackageArn
     Optional[str] networkProfileArn
@@ -1473,8 +1543,9 @@ struct ScheduleRunConfiguration:
     Optional[str] executionRoleArn
     Optional[list[str]] insightsTypes
 
-# no @derive(Json): member(s) deviceSelectionConfiguration: DeviceSelectionConfiguration, test: ScheduleRunTest, configuration: ScheduleRunConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceSelectionConfiguration: DeviceSelectionConfiguration, test: ScheduleRunTest, configuration: ScheduleRunConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleRunRequest:
     str projectArn
     Optional[str] appArn
@@ -1485,13 +1556,15 @@ struct ScheduleRunRequest:
     Optional[ScheduleRunConfiguration] configuration
     Optional[ExecutionConfiguration] executionConfiguration
 
-# no @derive(Json): member(s) run: Run not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) run: Run not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleRunResult:
     Optional[Run] run
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleRunTest:
     TestType type
     Optional[str] testPackageArn
@@ -1507,8 +1580,9 @@ struct ServiceAccountException:
 struct StopJobRequest:
     str arn
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopJobResult:
     Optional[Job] job
 
@@ -1516,8 +1590,9 @@ struct StopJobResult:
 struct StopRemoteAccessSessionRequest:
     str arn
 
-# no @derive(Json): member(s) remoteAccessSession: RemoteAccessSession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteAccessSession: RemoteAccessSession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopRemoteAccessSessionResult:
     Optional[RemoteAccessSession] remoteAccessSession
 
@@ -1525,8 +1600,9 @@ struct StopRemoteAccessSessionResult:
 struct StopRunRequest:
     str arn
 
-# no @derive(Json): member(s) run: Run not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) run: Run not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopRunResult:
     Optional[Run] run
 
@@ -1559,8 +1635,9 @@ struct TagPolicyException:
     Optional[str] message
     Optional[str] resourceName
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -1584,8 +1661,9 @@ struct Test:
     Optional[str] message
     Optional[DeviceMinutes] deviceMinutes
 
-# no @derive(Json): member(s) vpcConfig: TestGridVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: TestGridVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestGridProject:
     Optional[str] arn
     Optional[str] name
@@ -1616,8 +1694,9 @@ struct TestGridSessionArtifact:
     Optional[TestGridSessionArtifactType] type
     Optional[str] url
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestGridVpcConfig:
     list[str] securityGroupIds
     list[str] subnetIds
@@ -1651,14 +1730,16 @@ struct TrialMinutes:
     Optional[float64] total
     Optional[float64] remaining
 
-# no @derive(Json): member(s) problems: list[Problem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) problems: list[Problem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UniqueProblem:
     Optional[str] message
     Optional[list[Problem]] problems
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -1668,20 +1749,23 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeviceInstanceRequest:
     str arn
     Optional[str] profileArn
     Optional[list[str]] labels
 
-# no @derive(Json): member(s) deviceInstance: DeviceInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceInstance: DeviceInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeviceInstanceResult:
     Optional[DeviceInstance] deviceInstance
 
-# no @derive(Json): member(s) rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDevicePoolRequest:
     str arn
     Optional[str] name
@@ -1690,13 +1774,15 @@ struct UpdateDevicePoolRequest:
     Optional[int64] maxDevices
     Optional[bool] clearMaxDevices
 
-# no @derive(Json): member(s) devicePool: DevicePool not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devicePool: DevicePool not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDevicePoolResult:
     Optional[DevicePool] devicePool
 
-# no @derive(Json): member(s) excludeAppPackagesFromCleanup: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludeAppPackagesFromCleanup: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInstanceProfileRequest:
     str arn
     Optional[str] name
@@ -1705,8 +1791,9 @@ struct UpdateInstanceProfileRequest:
     Optional[list[str]] excludeAppPackagesFromCleanup
     Optional[bool] rebootAfterUse
 
-# no @derive(Json): member(s) instanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInstanceProfileResult:
     Optional[InstanceProfile] instanceProfile
 
@@ -1729,8 +1816,9 @@ struct UpdateNetworkProfileRequest:
 struct UpdateNetworkProfileResult:
     Optional[NetworkProfile] networkProfile
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectRequest:
     str arn
     Optional[str] name
@@ -1739,21 +1827,24 @@ struct UpdateProjectRequest:
     Optional[list[EnvironmentVariable]] environmentVariables
     Optional[str] executionRoleArn
 
-# no @derive(Json): member(s) project: Project not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) project: Project not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectResult:
     Optional[Project] project
 
-# no @derive(Json): member(s) vpcConfig: TestGridVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: TestGridVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTestGridProjectRequest:
     str projectArn
     Optional[str] name
     Optional[str] description
     Optional[TestGridVpcConfig] vpcConfig
 
-# no @derive(Json): member(s) testGridProject: TestGridProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testGridProject: TestGridProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTestGridProjectResult:
     Optional[TestGridProject] testGridProject
 
@@ -1801,8 +1892,9 @@ struct VPCEConfiguration:
     Optional[str] serviceDnsName
     Optional[str] vpceConfigurationDescription
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] securityGroupIds
     list[str] subnetIds
@@ -1857,38 +1949,535 @@ def devicefarm_error_from_code(str code) -> Device_FarmError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDevicePool (input CreateDevicePoolRequest)
-#   CreateInstanceProfile (input CreateInstanceProfileRequest)
-#   CreateProject (input CreateProjectRequest)
-#   CreateRemoteAccessSession (input CreateRemoteAccessSessionRequest)
-#   CreateTestGridProject (input CreateTestGridProjectRequest)
-#   GetDevicePoolCompatibility (input GetDevicePoolCompatibilityRequest)
-#   ListDevices (input ListDevicesRequest)
-#   ScheduleRun (input ScheduleRunRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDeviceInstance (input UpdateDeviceInstanceRequest)
-#   UpdateDevicePool (input UpdateDevicePoolRequest)
-#   UpdateInstanceProfile (input UpdateInstanceProfileRequest)
-#   UpdateProject (input UpdateProjectRequest)
-#   UpdateTestGridProject (input UpdateTestGridProjectRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def devicefarm_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListDevices (input not derivable (no generated method))
+def devicefarm_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def devicefarm_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateDevicePoolRequest to a compact JSON object (declaration order).
+def create_device_pool_request_to_json(CreateDevicePoolRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"projectArn\":" + devicefarm_json_str(v.projectArn))
+    parts.append("\"name\":" + devicefarm_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + devicefarm_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.rules:
+        e1.append(x1.to_json())
+    parts.append("\"rules\":" + devicefarm_json_arr(e1))
+    if v.maxDevices.is_some():
+        auto u2 = v.maxDevices.unwrap()
+        parts.append("\"maxDevices\":" + str(u2))
+    return devicefarm_json_obj(parts)
+
+# Serialize CreateInstanceProfileRequest to a compact JSON object (declaration order).
+def create_instance_profile_request_to_json(CreateInstanceProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + devicefarm_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + devicefarm_json_str(u0))
+    if v.packageCleanup.is_some():
+        auto u1 = v.packageCleanup.unwrap()
+        parts.append("\"packageCleanup\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.excludeAppPackagesFromCleanup.is_some():
+        auto u2 = v.excludeAppPackagesFromCleanup.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(devicefarm_json_str(x3))
+        parts.append("\"excludeAppPackagesFromCleanup\":" + devicefarm_json_arr(e3))
+    if v.rebootAfterUse.is_some():
+        auto u4 = v.rebootAfterUse.unwrap()
+        parts.append("\"rebootAfterUse\":" + json.dumps(JsonValue.Bool(u4)))
+    return devicefarm_json_obj(parts)
+
+# Serialize CreateProjectRequest to a compact JSON object (declaration order).
+def create_project_request_to_json(CreateProjectRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + devicefarm_json_str(v.name))
+    if v.defaultJobTimeoutMinutes.is_some():
+        auto u0 = v.defaultJobTimeoutMinutes.unwrap()
+        parts.append("\"defaultJobTimeoutMinutes\":" + str(u0))
+    if v.vpcConfig.is_some():
+        auto u1 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u1))
+    if v.environmentVariables.is_some():
+        auto u2 = v.environmentVariables.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"environmentVariables\":" + devicefarm_json_arr(e3))
+    if v.executionRoleArn.is_some():
+        auto u4 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + devicefarm_json_str(u4))
+    return devicefarm_json_obj(parts)
+
+# Serialize CreateRemoteAccessSessionConfiguration to a compact JSON object (declaration order).
+def create_remote_access_session_configuration_to_json(CreateRemoteAccessSessionConfiguration v) -> str:
+    list[str] parts = []
+    if v.auxiliaryApps.is_some():
+        auto u0 = v.auxiliaryApps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(devicefarm_json_str(x1))
+        parts.append("\"auxiliaryApps\":" + devicefarm_json_arr(e1))
+    if v.billingMethod.is_some():
+        auto u2 = v.billingMethod.unwrap()
+        parts.append("\"billingMethod\":" + u2.to_json())
+    if v.vpceConfigurationArns.is_some():
+        auto u3 = v.vpceConfigurationArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(devicefarm_json_str(x4))
+        parts.append("\"vpceConfigurationArns\":" + devicefarm_json_arr(e4))
+    if v.deviceProxy.is_some():
+        auto u5 = v.deviceProxy.unwrap()
+        parts.append("\"deviceProxy\":" + u5.to_json())
+    if v.parameters.is_some():
+        auto u6 = v.parameters.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(devicefarm_json_str(k7) + ":" + devicefarm_json_str(u6[k7]))
+        parts.append("\"parameters\":" + devicefarm_json_obj(m7))
+    return devicefarm_json_obj(parts)
+
+# Serialize CreateRemoteAccessSessionRequest to a compact JSON object (declaration order).
+def create_remote_access_session_request_to_json(CreateRemoteAccessSessionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"projectArn\":" + devicefarm_json_str(v.projectArn))
+    parts.append("\"deviceArn\":" + devicefarm_json_str(v.deviceArn))
+    if v.appArn.is_some():
+        auto u0 = v.appArn.unwrap()
+        parts.append("\"appArn\":" + devicefarm_json_str(u0))
+    if v.instanceArn.is_some():
+        auto u1 = v.instanceArn.unwrap()
+        parts.append("\"instanceArn\":" + devicefarm_json_str(u1))
+    if v.name.is_some():
+        auto u2 = v.name.unwrap()
+        parts.append("\"name\":" + devicefarm_json_str(u2))
+    if v.configuration.is_some():
+        auto u3 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + create_remote_access_session_configuration_to_json(u3))
+    if v.interactionMode.is_some():
+        auto u4 = v.interactionMode.unwrap()
+        parts.append("\"interactionMode\":" + u4.to_json())
+    if v.skipAppResign.is_some():
+        auto u5 = v.skipAppResign.unwrap()
+        parts.append("\"skipAppResign\":" + json.dumps(JsonValue.Bool(u5)))
+    return devicefarm_json_obj(parts)
+
+# Serialize CreateTestGridProjectRequest to a compact JSON object (declaration order).
+def create_test_grid_project_request_to_json(CreateTestGridProjectRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + devicefarm_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + devicefarm_json_str(u0))
+    if v.vpcConfig.is_some():
+        auto u1 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + test_grid_vpc_config_to_json(u1))
+    return devicefarm_json_obj(parts)
+
+# Serialize CustomerArtifactPaths to a compact JSON object (declaration order).
+def customer_artifact_paths_to_json(CustomerArtifactPaths v) -> str:
+    list[str] parts = []
+    if v.iosPaths.is_some():
+        auto u0 = v.iosPaths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(devicefarm_json_str(x1))
+        parts.append("\"iosPaths\":" + devicefarm_json_arr(e1))
+    if v.androidPaths.is_some():
+        auto u2 = v.androidPaths.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(devicefarm_json_str(x3))
+        parts.append("\"androidPaths\":" + devicefarm_json_arr(e3))
+    if v.deviceHostPaths.is_some():
+        auto u4 = v.deviceHostPaths.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(devicefarm_json_str(x5))
+        parts.append("\"deviceHostPaths\":" + devicefarm_json_arr(e5))
+    return devicefarm_json_obj(parts)
+
+# Serialize DeviceFilter to a compact JSON object (declaration order).
+def device_filter_to_json(DeviceFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"attribute\":" + v.attribute.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(devicefarm_json_str(x0))
+    parts.append("\"values\":" + devicefarm_json_arr(e0))
+    return devicefarm_json_obj(parts)
+
+# Serialize DeviceSelectionConfiguration to a compact JSON object (declaration order).
+def device_selection_configuration_to_json(DeviceSelectionConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.filters:
+        e0.append(device_filter_to_json(x0))
+    parts.append("\"filters\":" + devicefarm_json_arr(e0))
+    parts.append("\"maxDevices\":" + str(v.maxDevices))
+    return devicefarm_json_obj(parts)
+
+# Serialize GetDevicePoolCompatibilityRequest to a compact JSON object (declaration order).
+def get_device_pool_compatibility_request_to_json(GetDevicePoolCompatibilityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"devicePoolArn\":" + devicefarm_json_str(v.devicePoolArn))
+    if v.appArn.is_some():
+        auto u0 = v.appArn.unwrap()
+        parts.append("\"appArn\":" + devicefarm_json_str(u0))
+    if v.testType.is_some():
+        auto u1 = v.testType.unwrap()
+        parts.append("\"testType\":" + u1.to_json())
+    if v.test.is_some():
+        auto u2 = v.test.unwrap()
+        parts.append("\"test\":" + schedule_run_test_to_json(u2))
+    if v.configuration.is_some():
+        auto u3 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + schedule_run_configuration_to_json(u3))
+    if v.projectArn.is_some():
+        auto u4 = v.projectArn.unwrap()
+        parts.append("\"projectArn\":" + devicefarm_json_str(u4))
+    return devicefarm_json_obj(parts)
+
+# Serialize ListDevicesRequest to a compact JSON object (declaration order).
+def list_devices_request_to_json(ListDevicesRequest v) -> str:
+    list[str] parts = []
+    if v.arn.is_some():
+        auto u0 = v.arn.unwrap()
+        parts.append("\"arn\":" + devicefarm_json_str(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + devicefarm_json_str(u1))
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(device_filter_to_json(x3))
+        parts.append("\"filters\":" + devicefarm_json_arr(e3))
+    return devicefarm_json_obj(parts)
+
+# Serialize ScheduleRunConfiguration to a compact JSON object (declaration order).
+def schedule_run_configuration_to_json(ScheduleRunConfiguration v) -> str:
+    list[str] parts = []
+    if v.extraDataPackageArn.is_some():
+        auto u0 = v.extraDataPackageArn.unwrap()
+        parts.append("\"extraDataPackageArn\":" + devicefarm_json_str(u0))
+    if v.networkProfileArn.is_some():
+        auto u1 = v.networkProfileArn.unwrap()
+        parts.append("\"networkProfileArn\":" + devicefarm_json_str(u1))
+    if v.locale.is_some():
+        auto u2 = v.locale.unwrap()
+        parts.append("\"locale\":" + devicefarm_json_str(u2))
+    if v.location.is_some():
+        auto u3 = v.location.unwrap()
+        parts.append("\"location\":" + u3.to_json())
+    if v.vpceConfigurationArns.is_some():
+        auto u4 = v.vpceConfigurationArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(devicefarm_json_str(x5))
+        parts.append("\"vpceConfigurationArns\":" + devicefarm_json_arr(e5))
+    if v.deviceProxy.is_some():
+        auto u6 = v.deviceProxy.unwrap()
+        parts.append("\"deviceProxy\":" + u6.to_json())
+    if v.customerArtifactPaths.is_some():
+        auto u7 = v.customerArtifactPaths.unwrap()
+        parts.append("\"customerArtifactPaths\":" + customer_artifact_paths_to_json(u7))
+    if v.radios.is_some():
+        auto u8 = v.radios.unwrap()
+        parts.append("\"radios\":" + u8.to_json())
+    if v.auxiliaryApps.is_some():
+        auto u9 = v.auxiliaryApps.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(devicefarm_json_str(x10))
+        parts.append("\"auxiliaryApps\":" + devicefarm_json_arr(e10))
+    if v.billingMethod.is_some():
+        auto u11 = v.billingMethod.unwrap()
+        parts.append("\"billingMethod\":" + u11.to_json())
+    if v.environmentVariables.is_some():
+        auto u12 = v.environmentVariables.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"environmentVariables\":" + devicefarm_json_arr(e13))
+    if v.executionRoleArn.is_some():
+        auto u14 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + devicefarm_json_str(u14))
+    if v.insightsTypes.is_some():
+        auto u15 = v.insightsTypes.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(devicefarm_json_str(x16))
+        parts.append("\"insightsTypes\":" + devicefarm_json_arr(e16))
+    return devicefarm_json_obj(parts)
+
+# Serialize ScheduleRunRequest to a compact JSON object (declaration order).
+def schedule_run_request_to_json(ScheduleRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"projectArn\":" + devicefarm_json_str(v.projectArn))
+    if v.appArn.is_some():
+        auto u0 = v.appArn.unwrap()
+        parts.append("\"appArn\":" + devicefarm_json_str(u0))
+    if v.devicePoolArn.is_some():
+        auto u1 = v.devicePoolArn.unwrap()
+        parts.append("\"devicePoolArn\":" + devicefarm_json_str(u1))
+    if v.deviceSelectionConfiguration.is_some():
+        auto u2 = v.deviceSelectionConfiguration.unwrap()
+        parts.append("\"deviceSelectionConfiguration\":" + device_selection_configuration_to_json(u2))
+    if v.name.is_some():
+        auto u3 = v.name.unwrap()
+        parts.append("\"name\":" + devicefarm_json_str(u3))
+    parts.append("\"test\":" + schedule_run_test_to_json(v.test))
+    if v.configuration.is_some():
+        auto u4 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + schedule_run_configuration_to_json(u4))
+    if v.executionConfiguration.is_some():
+        auto u5 = v.executionConfiguration.unwrap()
+        parts.append("\"executionConfiguration\":" + u5.to_json())
+    return devicefarm_json_obj(parts)
+
+# Serialize ScheduleRunTest to a compact JSON object (declaration order).
+def schedule_run_test_to_json(ScheduleRunTest v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.testPackageArn.is_some():
+        auto u0 = v.testPackageArn.unwrap()
+        parts.append("\"testPackageArn\":" + devicefarm_json_str(u0))
+    if v.testSpecArn.is_some():
+        auto u1 = v.testSpecArn.unwrap()
+        parts.append("\"testSpecArn\":" + devicefarm_json_str(u1))
+    if v.filter.is_some():
+        auto u2 = v.filter.unwrap()
+        parts.append("\"filter\":" + devicefarm_json_str(u2))
+    if v.parameters.is_some():
+        auto u3 = v.parameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(devicefarm_json_str(k4) + ":" + devicefarm_json_str(u3[k4]))
+        parts.append("\"parameters\":" + devicefarm_json_obj(m4))
+    return devicefarm_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + devicefarm_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + devicefarm_json_arr(e0))
+    return devicefarm_json_obj(parts)
+
+# Serialize TestGridVpcConfig to a compact JSON object (declaration order).
+def test_grid_vpc_config_to_json(TestGridVpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.securityGroupIds:
+        e0.append(devicefarm_json_str(x0))
+    parts.append("\"securityGroupIds\":" + devicefarm_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.subnetIds:
+        e1.append(devicefarm_json_str(x1))
+    parts.append("\"subnetIds\":" + devicefarm_json_arr(e1))
+    parts.append("\"vpcId\":" + devicefarm_json_str(v.vpcId))
+    return devicefarm_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + devicefarm_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(devicefarm_json_str(x0))
+    parts.append("\"TagKeys\":" + devicefarm_json_arr(e0))
+    return devicefarm_json_obj(parts)
+
+# Serialize UpdateDeviceInstanceRequest to a compact JSON object (declaration order).
+def update_device_instance_request_to_json(UpdateDeviceInstanceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + devicefarm_json_str(v.arn))
+    if v.profileArn.is_some():
+        auto u0 = v.profileArn.unwrap()
+        parts.append("\"profileArn\":" + devicefarm_json_str(u0))
+    if v.labels.is_some():
+        auto u1 = v.labels.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(devicefarm_json_str(x2))
+        parts.append("\"labels\":" + devicefarm_json_arr(e2))
+    return devicefarm_json_obj(parts)
+
+# Serialize UpdateDevicePoolRequest to a compact JSON object (declaration order).
+def update_device_pool_request_to_json(UpdateDevicePoolRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + devicefarm_json_str(v.arn))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + devicefarm_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + devicefarm_json_str(u1))
+    if v.rules.is_some():
+        auto u2 = v.rules.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"rules\":" + devicefarm_json_arr(e3))
+    if v.maxDevices.is_some():
+        auto u4 = v.maxDevices.unwrap()
+        parts.append("\"maxDevices\":" + str(u4))
+    if v.clearMaxDevices.is_some():
+        auto u5 = v.clearMaxDevices.unwrap()
+        parts.append("\"clearMaxDevices\":" + json.dumps(JsonValue.Bool(u5)))
+    return devicefarm_json_obj(parts)
+
+# Serialize UpdateInstanceProfileRequest to a compact JSON object (declaration order).
+def update_instance_profile_request_to_json(UpdateInstanceProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + devicefarm_json_str(v.arn))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + devicefarm_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + devicefarm_json_str(u1))
+    if v.packageCleanup.is_some():
+        auto u2 = v.packageCleanup.unwrap()
+        parts.append("\"packageCleanup\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.excludeAppPackagesFromCleanup.is_some():
+        auto u3 = v.excludeAppPackagesFromCleanup.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(devicefarm_json_str(x4))
+        parts.append("\"excludeAppPackagesFromCleanup\":" + devicefarm_json_arr(e4))
+    if v.rebootAfterUse.is_some():
+        auto u5 = v.rebootAfterUse.unwrap()
+        parts.append("\"rebootAfterUse\":" + json.dumps(JsonValue.Bool(u5)))
+    return devicefarm_json_obj(parts)
+
+# Serialize UpdateProjectRequest to a compact JSON object (declaration order).
+def update_project_request_to_json(UpdateProjectRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + devicefarm_json_str(v.arn))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + devicefarm_json_str(u0))
+    if v.defaultJobTimeoutMinutes.is_some():
+        auto u1 = v.defaultJobTimeoutMinutes.unwrap()
+        parts.append("\"defaultJobTimeoutMinutes\":" + str(u1))
+    if v.vpcConfig.is_some():
+        auto u2 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u2))
+    if v.environmentVariables.is_some():
+        auto u3 = v.environmentVariables.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"environmentVariables\":" + devicefarm_json_arr(e4))
+    if v.executionRoleArn.is_some():
+        auto u5 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + devicefarm_json_str(u5))
+    return devicefarm_json_obj(parts)
+
+# Serialize UpdateTestGridProjectRequest to a compact JSON object (declaration order).
+def update_test_grid_project_request_to_json(UpdateTestGridProjectRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"projectArn\":" + devicefarm_json_str(v.projectArn))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + devicefarm_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + devicefarm_json_str(u1))
+    if v.vpcConfig.is_some():
+        auto u2 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + test_grid_vpc_config_to_json(u2))
+    return devicefarm_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.securityGroupIds:
+        e0.append(devicefarm_json_str(x0))
+    parts.append("\"securityGroupIds\":" + devicefarm_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.subnetIds:
+        e1.append(devicefarm_json_str(x1))
+    parts.append("\"subnetIds\":" + devicefarm_json_arr(e1))
+    parts.append("\"vpcId\":" + devicefarm_json_str(v.vpcId))
+    return devicefarm_json_obj(parts)
 
 # A bound Device_Farm client: credentials + region, threaded into every operation.
 struct Device_FarmClient:
     core.Credentials creds
     str region
 
+    # CreateDevicePool
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def create_device_pool(self, CreateDevicePoolRequest input) -> str:
+        auto body = create_device_pool_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "CreateDevicePool", body)
+
+    # CreateInstanceProfile
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def create_instance_profile(self, CreateInstanceProfileRequest input) -> str:
+        auto body = create_instance_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "CreateInstanceProfile", body)
+
     # CreateNetworkProfile
     # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
     def create_network_profile(self, CreateNetworkProfileRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "CreateNetworkProfile", body)
+
+    # CreateProject
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException, TagOperationException
+    def create_project(self, CreateProjectRequest input) -> str:
+        auto body = create_project_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "CreateProject", body)
+
+    # CreateRemoteAccessSession
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def create_remote_access_session(self, CreateRemoteAccessSessionRequest input) -> str:
+        auto body = create_remote_access_session_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "CreateRemoteAccessSession", body)
+
+    # CreateTestGridProject
+    # errors: ArgumentException, InternalServiceException, LimitExceededException
+    def create_test_grid_project(self, CreateTestGridProjectRequest input) -> str:
+        auto body = create_test_grid_project_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "CreateTestGridProject", body)
 
     # CreateTestGridUrl
     # errors: ArgumentException, InternalServiceException, NotFoundException
@@ -1985,6 +2574,12 @@ struct Device_FarmClient:
     def get_device_pool(self, GetDevicePoolRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "GetDevicePool", body)
+
+    # GetDevicePoolCompatibility
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def get_device_pool_compatibility(self, GetDevicePoolCompatibilityRequest input) -> str:
+        auto body = get_device_pool_compatibility_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "GetDevicePoolCompatibility", body)
 
     # GetInstanceProfile
     # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
@@ -2087,6 +2682,12 @@ struct Device_FarmClient:
     def list_device_pools(self, ListDevicePoolsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "ListDevicePools", body)
+
+    # ListDevices
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def list_devices(self, ListDevicesRequest input) -> str:
+        auto body = list_devices_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "ListDevices", body)
 
     # ListInstanceProfiles
     # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
@@ -2220,6 +2821,12 @@ struct Device_FarmClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "RenewOffering", body)
 
+    # ScheduleRun
+    # errors: ArgumentException, IdempotencyException, LimitExceededException, NotFoundException, ServiceAccountException
+    def schedule_run(self, ScheduleRunRequest input) -> str:
+        auto body = schedule_run_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "ScheduleRun", body)
+
     # StopJob
     # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
     def stop_job(self, StopJobRequest input) -> str:
@@ -2238,11 +2845,53 @@ struct Device_FarmClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "StopRun", body)
 
+    # TagResource
+    # errors: ArgumentException, NotFoundException, TagOperationException, TagPolicyException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ArgumentException, NotFoundException, TagOperationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDeviceInstance
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def update_device_instance(self, UpdateDeviceInstanceRequest input) -> str:
+        auto body = update_device_instance_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UpdateDeviceInstance", body)
+
+    # UpdateDevicePool
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def update_device_pool(self, UpdateDevicePoolRequest input) -> str:
+        auto body = update_device_pool_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UpdateDevicePool", body)
+
+    # UpdateInstanceProfile
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def update_instance_profile(self, UpdateInstanceProfileRequest input) -> str:
+        auto body = update_instance_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UpdateInstanceProfile", body)
+
     # UpdateNetworkProfile
     # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
     def update_network_profile(self, UpdateNetworkProfileRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UpdateNetworkProfile", body)
+
+    # UpdateProject
+    # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
+    def update_project(self, UpdateProjectRequest input) -> str:
+        auto body = update_project_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UpdateProject", body)
+
+    # UpdateTestGridProject
+    # errors: ArgumentException, InternalServiceException, LimitExceededException, NotFoundException
+    def update_test_grid_project(self, UpdateTestGridProjectRequest input) -> str:
+        auto body = update_test_grid_project_request_to_json(input)
+        return awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "UpdateTestGridProject", body)
 
     # UpdateUpload
     # errors: ArgumentException, LimitExceededException, NotFoundException, ServiceAccountException
@@ -2305,6 +2954,20 @@ struct Device_FarmClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "ListDevicePools", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDevices — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: devices).
+    def paginate_list_devices(self, ListDevicesRequest input):
+        auto host = endpoints.regional_host(devicefarm_protocol().service, self.region)
+        while True:
+            auto body = list_devices_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(devicefarm_protocol(), self.creds, self.region, "ListDevices", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

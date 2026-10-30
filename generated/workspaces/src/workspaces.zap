@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 91 operations — 45 with a generated method,
-#   46 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 91 operations — 91 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   285 structs (181 @derive(Json)), 64 enums, 23 error variants.
-#   2 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The WorkSpaces awsJson protocol: version 1.1, API id "WorkspacesService".
 def workspaces_protocol() -> awsjson.AwsJson:
@@ -712,8 +713,9 @@ struct AccessEndpoint:
     Optional[str] AccessEndpointType
     Optional[str] VpcEndpointId
 
-# no @derive(Json): member(s) AccessEndpoints: list[AccessEndpoint], InternetFallbackProtocols: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessEndpoints: list[AccessEndpoint], InternetFallbackProtocols: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessEndpointConfig:
     list[AccessEndpoint] AccessEndpoints
     Optional[list[str]] InternetFallbackProtocols
@@ -774,8 +776,9 @@ struct AssociateConnectionAliasRequest:
 struct AssociateConnectionAliasResult:
     Optional[str] ConnectionIdentifier
 
-# no @derive(Json): member(s) GroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateIpGroupsRequest:
     str DirectoryId
     list[str] GroupIds
@@ -799,8 +802,9 @@ struct AssociationStateReason:
     Optional[AssociationErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) UserRules: list[IpRuleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserRules: list[IpRuleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizeIpRulesRequest:
     str GroupId
     list[IpRuleItem] UserRules
@@ -867,8 +871,9 @@ struct ConnectClientAddIn:
     Optional[str] Name
     Optional[str] URL
 
-# no @derive(Json): member(s) Associations: list[ConnectionAliasAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[ConnectionAliasAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionAlias:
     Optional[str] ConnectionString
     Optional[str] AliasId
@@ -888,8 +893,9 @@ struct ConnectionAliasPermission:
     str SharedAccountId
     bool AllowAssociation
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyWorkspaceImageRequest:
     str Name
     Optional[str] Description
@@ -920,8 +926,9 @@ struct CreateConnectClientAddInRequest:
 struct CreateConnectClientAddInResult:
     Optional[str] AddInId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionAliasRequest:
     str ConnectionString
     Optional[list[Tag]] Tags
@@ -930,8 +937,9 @@ struct CreateConnectionAliasRequest:
 struct CreateConnectionAliasResult:
     Optional[str] AliasId
 
-# no @derive(Json): member(s) UserRules: list[IpRuleItem], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserRules: list[IpRuleItem], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIpGroupRequest:
     str GroupName
     Optional[str] GroupDesc
@@ -942,20 +950,23 @@ struct CreateIpGroupRequest:
 struct CreateIpGroupResult:
     Optional[str] GroupId
 
-# no @derive(Json): member(s) StandbyWorkspaces: list[StandbyWorkspace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandbyWorkspaces: list[StandbyWorkspace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStandbyWorkspacesRequest:
     str PrimaryRegion
     list[StandbyWorkspace] StandbyWorkspaces
 
-# no @derive(Json): member(s) FailedStandbyRequests: list[FailedCreateStandbyWorkspacesRequest], PendingStandbyRequests: list[PendingCreateStandbyWorkspacesRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedStandbyRequests: list[FailedCreateStandbyWorkspacesRequest], PendingStandbyRequests: list[PendingCreateStandbyWorkspacesRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStandbyWorkspacesResult:
     Optional[list[FailedCreateStandbyWorkspacesRequest]] FailedStandbyRequests
     Optional[list[PendingCreateStandbyWorkspacesRequest]] PendingStandbyRequests
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTagsRequest:
     str ResourceId
     list[Tag] Tags
@@ -965,8 +976,9 @@ struct CreateTagsResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUpdatedWorkspaceImageRequest:
     str Name
     str Description
@@ -977,8 +989,9 @@ struct CreateUpdatedWorkspaceImageRequest:
 struct CreateUpdatedWorkspaceImageResult:
     Optional[str] ImageId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspaceBundleRequest:
     str BundleName
     str BundleDescription
@@ -992,8 +1005,9 @@ struct CreateWorkspaceBundleRequest:
 struct CreateWorkspaceBundleResult:
     Optional[WorkspaceBundle] WorkspaceBundle
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspaceImageRequest:
     str Name
     str Description
@@ -1011,8 +1025,9 @@ struct CreateWorkspaceImageResult:
     Optional[DateTime] Created
     Optional[str] OwnerAccountId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspacesPoolRequest:
     str PoolName
     str Description
@@ -1024,18 +1039,21 @@ struct CreateWorkspacesPoolRequest:
     Optional[TimeoutSettings] TimeoutSettings
     Optional[PoolsRunningMode] RunningMode
 
-# no @derive(Json): member(s) WorkspacesPool: WorkspacesPool not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspacesPool: WorkspacesPool not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspacesPoolResult:
     Optional[WorkspacesPool] WorkspacesPool
 
-# no @derive(Json): member(s) Workspaces: list[WorkspaceRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workspaces: list[WorkspaceRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspacesRequest:
     list[WorkspaceRequest] Workspaces
 
-# no @derive(Json): member(s) FailedRequests: list[FailedCreateWorkspaceRequest], PendingRequests: list[Workspace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedRequests: list[FailedCreateWorkspaceRequest], PendingRequests: list[Workspace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspacesResult:
     Optional[list[FailedCreateWorkspaceRequest]] FailedRequests
     Optional[list[Workspace]] PendingRequests
@@ -1050,8 +1068,9 @@ struct DataReplicationSettings:
     Optional[DataReplication] DataReplication
     Optional[DateTime] RecoverySnapshotTime
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultClientBrandingAttributes:
     Optional[str] LogoUrl
     Optional[str] SupportEmail
@@ -1059,8 +1078,9 @@ struct DefaultClientBrandingAttributes:
     Optional[str] ForgotPasswordLink
     Optional[dict[str, str]] LoginMessage
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultImportClientBrandingAttributes:
     Optional[bytes] Logo
     Optional[str] SupportEmail
@@ -1086,8 +1106,9 @@ struct DeleteAccountLinkInvitationRequest:
 struct DeleteAccountLinkInvitationResult:
     Optional[AccountLink] AccountLink
 
-# no @derive(Json): member(s) Platforms: list[ClientDeviceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Platforms: list[ClientDeviceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClientBrandingRequest:
     str ResourceId
     list[ClientDeviceType] Platforms
@@ -1125,8 +1146,9 @@ struct DeleteIpGroupResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTagsRequest:
     str ResourceId
     list[str] TagKeys
@@ -1159,8 +1181,9 @@ struct DeployWorkspaceApplicationsRequest:
     str WorkspaceId
     Optional[bool] Force
 
-# no @derive(Json): member(s) Deployment: WorkSpaceApplicationDeployment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deployment: WorkSpaceApplicationDeployment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeployWorkspaceApplicationsResult:
     Optional[WorkSpaceApplicationDeployment] Deployment
 
@@ -1177,8 +1200,9 @@ struct DeregisterWorkspaceDirectoryResult:
 struct DescribeAccountModificationsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AccountModifications: list[AccountModification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountModifications: list[AccountModification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountModificationsResult:
     Optional[list[AccountModification]] AccountModifications
     Optional[str] NextToken
@@ -1195,22 +1219,25 @@ struct DescribeAccountResult:
     Optional[DedicatedTenancyAccountType] DedicatedTenancyAccountType
     Optional[str] Message
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[ApplicationAssociatedResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedResourceTypes: list[ApplicationAssociatedResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     str ApplicationId
     list[ApplicationAssociatedResourceType] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[ApplicationResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[ApplicationResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationAssociationsResult:
     Optional[list[ApplicationResourceAssociation]] Associations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationIds: list[str], ComputeTypeNames: list[Compute], OperatingSystemNames: list[OperatingSystemName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationIds: list[str], ComputeTypeNames: list[Compute], OperatingSystemNames: list[OperatingSystemName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationsRequest:
     Optional[list[str]] ApplicationIds
     Optional[list[Compute]] ComputeTypeNames
@@ -1220,20 +1247,23 @@ struct DescribeApplicationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Applications: list[WorkSpaceApplication] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[WorkSpaceApplication] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationsResult:
     Optional[list[WorkSpaceApplication]] Applications
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBundleAssociationsRequest:
     str BundleId
     list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[BundleResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[BundleResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBundleAssociationsResult:
     Optional[list[BundleResourceAssociation]] Associations
 
@@ -1241,8 +1271,9 @@ struct DescribeBundleAssociationsResult:
 struct DescribeClientBrandingRequest:
     str ResourceId
 
-# no @derive(Json): member(s) DeviceTypeWindows: DefaultClientBrandingAttributes, DeviceTypeOsx: DefaultClientBrandingAttributes, DeviceTypeAndroid: DefaultClientBrandingAttributes, DeviceTypeIos: IosClientBrandingAttributes, DeviceTypeLinux: DefaultClientBrandingAttributes, DeviceTypeWeb: DefaultClientBrandingAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypeWindows: DefaultClientBrandingAttributes, DeviceTypeOsx: DefaultClientBrandingAttributes, DeviceTypeAndroid: DefaultClientBrandingAttributes, DeviceTypeIos: IosClientBrandingAttributes, DeviceTypeLinux: DefaultClientBrandingAttributes, DeviceTypeWeb: DefaultClientBrandingAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeWindows
     Optional[DefaultClientBrandingAttributes] DeviceTypeOsx
@@ -1251,13 +1282,15 @@ struct DescribeClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeLinux
     Optional[DefaultClientBrandingAttributes] DeviceTypeWeb
 
-# no @derive(Json): member(s) ResourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClientPropertiesRequest:
     list[str] ResourceIds
 
-# no @derive(Json): member(s) ClientPropertiesList: list[ClientPropertiesResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientPropertiesList: list[ClientPropertiesResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClientPropertiesResult:
     Optional[list[ClientPropertiesResult]] ClientPropertiesList
 
@@ -1267,8 +1300,9 @@ struct DescribeConnectClientAddInsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AddIns: list[ConnectClientAddIn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddIns: list[ConnectClientAddIn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectClientAddInsResult:
     Optional[list[ConnectClientAddIn]] AddIns
     Optional[str] NextToken
@@ -1279,23 +1313,26 @@ struct DescribeConnectionAliasPermissionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ConnectionAliasPermissions: list[ConnectionAliasPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionAliasPermissions: list[ConnectionAliasPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionAliasPermissionsResult:
     Optional[str] AliasId
     Optional[list[ConnectionAliasPermission]] ConnectionAliasPermissions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AliasIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AliasIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionAliasesRequest:
     Optional[list[str]] AliasIds
     Optional[str] ResourceId
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectionAliases: list[ConnectionAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionAliases: list[ConnectionAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionAliasesResult:
     Optional[list[ConnectionAlias]] ConnectionAliases
     Optional[str] NextToken
@@ -1304,8 +1341,9 @@ struct DescribeConnectionAliasesResult:
 struct DescribeCustomWorkspaceImageImportRequest:
     str ImageId
 
-# no @derive(Json): member(s) ErrorDetails: list[CustomWorkspaceImageImportErrorDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[CustomWorkspaceImageImportErrorDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomWorkspaceImageImportResult:
     Optional[str] ImageId
     Optional[str] InfrastructureConfigurationArn
@@ -1318,26 +1356,30 @@ struct DescribeCustomWorkspaceImageImportResult:
     Optional[str] ImageBuilderInstanceId
     Optional[list[CustomWorkspaceImageImportErrorDetails]] ErrorDetails
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImageAssociationsRequest:
     str ImageId
     list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[ImageResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[ImageResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImageAssociationsResult:
     Optional[list[ImageResourceAssociation]] Associations
 
-# no @derive(Json): member(s) GroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIpGroupsRequest:
     Optional[list[str]] GroupIds
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Result: list[WorkspacesIpGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Result: list[WorkspacesIpGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIpGroupsResult:
     Optional[list[WorkspacesIpGroup]] Result
     Optional[str] NextToken
@@ -1346,43 +1388,50 @@ struct DescribeIpGroupsResult:
 struct DescribeTagsRequest:
     str ResourceId
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsResult:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceAssociationsRequest:
     str WorkspaceId
     list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[WorkspaceResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[WorkspaceResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceAssociationsResult:
     Optional[list[WorkspaceResourceAssociation]] Associations
 
-# no @derive(Json): member(s) BundleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BundleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceBundlesRequest:
     Optional[list[str]] BundleIds
     Optional[str] Owner
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Bundles: list[WorkspaceBundle] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Bundles: list[WorkspaceBundle] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceBundlesResult:
     Optional[list[WorkspaceBundle]] Bundles
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceDirectoriesFilter:
     DescribeWorkspaceDirectoriesFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) DirectoryIds: list[str], WorkspaceDirectoryNames: list[str], Filters: list[DescribeWorkspaceDirectoriesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectoryIds: list[str], WorkspaceDirectoryNames: list[str], Filters: list[DescribeWorkspaceDirectoriesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceDirectoriesRequest:
     Optional[list[str]] DirectoryIds
     Optional[list[str]] WorkspaceDirectoryNames
@@ -1390,8 +1439,9 @@ struct DescribeWorkspaceDirectoriesRequest:
     Optional[str] NextToken
     Optional[list[DescribeWorkspaceDirectoriesFilter]] Filters
 
-# no @derive(Json): member(s) Directories: list[WorkspaceDirectory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Directories: list[WorkspaceDirectory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceDirectoriesResult:
     Optional[list[WorkspaceDirectory]] Directories
     Optional[str] NextToken
@@ -1402,23 +1452,26 @@ struct DescribeWorkspaceImagePermissionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ImagePermissions: list[ImagePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImagePermissions: list[ImagePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceImagePermissionsResult:
     Optional[str] ImageId
     Optional[list[ImagePermission]] ImagePermissions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ImageIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceImagesRequest:
     Optional[list[str]] ImageIds
     Optional[ImageType] ImageType
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Images: list[WorkspaceImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Images: list[WorkspaceImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceImagesResult:
     Optional[list[WorkspaceImage]] Images
     Optional[str] NextToken
@@ -1427,20 +1480,23 @@ struct DescribeWorkspaceImagesResult:
 struct DescribeWorkspaceSnapshotsRequest:
     str WorkspaceId
 
-# no @derive(Json): member(s) RebuildSnapshots: list[Snapshot], RestoreSnapshots: list[Snapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RebuildSnapshots: list[Snapshot], RestoreSnapshots: list[Snapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceSnapshotsResult:
     Optional[list[Snapshot]] RebuildSnapshots
     Optional[list[Snapshot]] RestoreSnapshots
 
-# no @derive(Json): member(s) WorkspaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesConnectionStatusRequest:
     Optional[list[str]] WorkspaceIds
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WorkspacesConnectionStatus: list[WorkspaceConnectionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspacesConnectionStatus: list[WorkspaceConnectionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesConnectionStatusResult:
     Optional[list[WorkspaceConnectionStatus]] WorkspacesConnectionStatus
     Optional[str] NextToken
@@ -1452,35 +1508,40 @@ struct DescribeWorkspacesPoolSessionsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Sessions: list[WorkspacesPoolSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sessions: list[WorkspacesPoolSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolSessionsResult:
     Optional[list[WorkspacesPoolSession]] Sessions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolsFilter:
     str Name
     list[str] Values
     DescribeWorkspacesPoolsFilterOperator Operator
 
-# no @derive(Json): member(s) PoolIds: list[str], Filters: list[DescribeWorkspacesPoolsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PoolIds: list[str], Filters: list[DescribeWorkspacesPoolsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolsRequest:
     Optional[list[str]] PoolIds
     Optional[list[DescribeWorkspacesPoolsFilter]] Filters
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WorkspacesPools: list[WorkspacesPool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspacesPools: list[WorkspacesPool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolsResult:
     Optional[list[WorkspacesPool]] WorkspacesPools
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WorkspaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesRequest:
     Optional[list[str]] WorkspaceIds
     Optional[str] DirectoryId
@@ -1490,8 +1551,9 @@ struct DescribeWorkspacesRequest:
     Optional[str] NextToken
     Optional[str] WorkspaceName
 
-# no @derive(Json): member(s) Workspaces: list[Workspace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workspaces: list[Workspace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspacesResult:
     Optional[list[Workspace]] Workspaces
     Optional[str] NextToken
@@ -1505,8 +1567,9 @@ struct DisassociateConnectionAliasResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) GroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateIpGroupsRequest:
     str DirectoryId
     list[str] GroupIds
@@ -1530,15 +1593,17 @@ struct ErrorDetails:
     Optional[WorkspaceImageErrorDetailCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) StandbyWorkspaceRequest: StandbyWorkspace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandbyWorkspaceRequest: StandbyWorkspace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailedCreateStandbyWorkspacesRequest:
     Optional[StandbyWorkspace] StandbyWorkspaceRequest
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) WorkspaceRequest: WorkspaceRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceRequest: WorkspaceRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailedCreateWorkspaceRequest:
     Optional[WorkspaceRequest] WorkspaceRequest
     Optional[str] ErrorCode
@@ -1594,8 +1659,9 @@ struct ImageSourceIdentifier:
     Optional[str] ImageBuildVersionArn
     Optional[str] Ec2ImageId
 
-# no @derive(Json): member(s) DeviceTypeWindows: DefaultImportClientBrandingAttributes, DeviceTypeOsx: DefaultImportClientBrandingAttributes, DeviceTypeAndroid: DefaultImportClientBrandingAttributes, DeviceTypeIos: IosImportClientBrandingAttributes, DeviceTypeLinux: DefaultImportClientBrandingAttributes, DeviceTypeWeb: DefaultImportClientBrandingAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypeWindows: DefaultImportClientBrandingAttributes, DeviceTypeOsx: DefaultImportClientBrandingAttributes, DeviceTypeAndroid: DefaultImportClientBrandingAttributes, DeviceTypeIos: IosImportClientBrandingAttributes, DeviceTypeLinux: DefaultImportClientBrandingAttributes, DeviceTypeWeb: DefaultImportClientBrandingAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportClientBrandingRequest:
     str ResourceId
     Optional[DefaultImportClientBrandingAttributes] DeviceTypeWindows
@@ -1605,8 +1671,9 @@ struct ImportClientBrandingRequest:
     Optional[DefaultImportClientBrandingAttributes] DeviceTypeLinux
     Optional[DefaultImportClientBrandingAttributes] DeviceTypeWeb
 
-# no @derive(Json): member(s) DeviceTypeWindows: DefaultClientBrandingAttributes, DeviceTypeOsx: DefaultClientBrandingAttributes, DeviceTypeAndroid: DefaultClientBrandingAttributes, DeviceTypeIos: IosClientBrandingAttributes, DeviceTypeLinux: DefaultClientBrandingAttributes, DeviceTypeWeb: DefaultClientBrandingAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypeWindows: DefaultClientBrandingAttributes, DeviceTypeOsx: DefaultClientBrandingAttributes, DeviceTypeAndroid: DefaultClientBrandingAttributes, DeviceTypeIos: IosClientBrandingAttributes, DeviceTypeLinux: DefaultClientBrandingAttributes, DeviceTypeWeb: DefaultClientBrandingAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeWindows
     Optional[DefaultClientBrandingAttributes] DeviceTypeOsx
@@ -1615,8 +1682,9 @@ struct ImportClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeLinux
     Optional[DefaultClientBrandingAttributes] DeviceTypeWeb
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportCustomWorkspaceImageRequest:
     str ImageName
     str ImageDescription
@@ -1634,8 +1702,9 @@ struct ImportCustomWorkspaceImageResult:
     Optional[str] ImageId
     Optional[CustomWorkspaceImageImportState] State
 
-# no @derive(Json): member(s) Tags: list[Tag], Applications: list[Application] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Applications: list[Application] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportWorkspaceImageRequest:
     str Ec2ImageId
     WorkspaceImageIngestionProcess IngestionProcess
@@ -1669,8 +1738,9 @@ struct InvalidParameterValuesException:
 struct InvalidResourceStateException:
     Optional[str] message
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IosClientBrandingAttributes:
     Optional[str] LogoUrl
     Optional[str] Logo2xUrl
@@ -1680,8 +1750,9 @@ struct IosClientBrandingAttributes:
     Optional[str] ForgotPasswordLink
     Optional[dict[str, str]] LoginMessage
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IosImportClientBrandingAttributes:
     Optional[bytes] Logo
     Optional[bytes] Logo2x
@@ -1696,15 +1767,17 @@ struct IpRuleItem:
     Optional[str] ipRule
     Optional[str] ruleDesc
 
-# no @derive(Json): member(s) LinkStatusFilter: list[AccountLinkStatusEnum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkStatusFilter: list[AccountLinkStatusEnum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountLinksRequest:
     Optional[list[AccountLinkStatusEnum]] LinkStatusFilter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AccountLinks: list[AccountLink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountLinks: list[AccountLink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountLinksResult:
     Optional[list[AccountLink]] AccountLinks
     Optional[str] NextToken
@@ -1715,8 +1788,9 @@ struct ListAvailableManagementCidrRangesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ManagementCidrRanges: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagementCidrRanges: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailableManagementCidrRangesResult:
     Optional[list[str]] ManagementCidrRanges
     Optional[str] NextToken
@@ -1750,8 +1824,9 @@ struct ModifyAccountRequest:
 struct ModifyAccountResult:
     Optional[str] Message
 
-# no @derive(Json): member(s) PropertiesToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertiesToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyCertificateBasedAuthPropertiesRequest:
     str ResourceId
     Optional[CertificateBasedAuthProperties] CertificateBasedAuthProperties
@@ -1782,8 +1857,9 @@ struct ModifyEndpointEncryptionModeResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PropertiesToDelete: list[DeletableSamlProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertiesToDelete: list[DeletableSamlProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifySamlPropertiesRequest:
     str ResourceId
     Optional[SamlProperties] SamlProperties
@@ -1804,8 +1880,9 @@ struct ModifySelfservicePermissionsResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) StreamingProperties: StreamingProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingProperties: StreamingProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyStreamingPropertiesRequest:
     str ResourceId
     Optional[StreamingProperties] StreamingProperties
@@ -1815,8 +1892,9 @@ struct ModifyStreamingPropertiesResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) WorkspaceAccessProperties: WorkspaceAccessProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceAccessProperties: WorkspaceAccessProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyWorkspaceAccessPropertiesRequest:
     str ResourceId
     WorkspaceAccessProperties WorkspaceAccessProperties
@@ -1836,8 +1914,9 @@ struct ModifyWorkspaceCreationPropertiesResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyWorkspacePropertiesRequest:
     str WorkspaceId
     Optional[WorkspaceProperties] WorkspaceProperties
@@ -1892,13 +1971,15 @@ struct PendingCreateStandbyWorkspacesRequest:
 struct RebootRequest:
     str WorkspaceId
 
-# no @derive(Json): member(s) RebootWorkspaceRequests: list[RebootRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RebootWorkspaceRequests: list[RebootRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootWorkspacesRequest:
     list[RebootRequest] RebootWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
@@ -1906,18 +1987,21 @@ struct RebootWorkspacesResult:
 struct RebuildRequest:
     str WorkspaceId
 
-# no @derive(Json): member(s) RebuildWorkspaceRequests: list[RebuildRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RebuildWorkspaceRequests: list[RebuildRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebuildWorkspacesRequest:
     list[RebuildRequest] RebuildWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebuildWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterWorkspaceDirectoryRequest:
     Optional[str] DirectoryId
     Optional[list[str]] SubnetIds
@@ -1993,8 +2077,9 @@ struct RestoreWorkspaceResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) UserRules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserRules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RevokeIpRulesRequest:
     str GroupId
     list[str] UserRules
@@ -2026,8 +2111,9 @@ struct SelfservicePermissions:
 struct Snapshot:
     Optional[DateTime] SnapshotTime
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandbyWorkspace:
     str PrimaryWorkspaceId
     Optional[str] VolumeEncryptionKey
@@ -2054,13 +2140,15 @@ struct StartWorkspacesPoolResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) StartWorkspaceRequests: list[StartRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StartWorkspaceRequests: list[StartRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartWorkspacesRequest:
     list[StartRequest] StartWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
@@ -2077,13 +2165,15 @@ struct StopWorkspacesPoolResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) StopWorkspaceRequests: list[StopRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StopWorkspaceRequests: list[StopRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopWorkspacesRequest:
     list[StopRequest] StopWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
@@ -2092,8 +2182,9 @@ struct StorageConnector:
     str ConnectorType
     StorageConnectorStatusEnum Status
 
-# no @derive(Json): member(s) UserSettings: list[UserSetting], StorageConnectors: list[StorageConnector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserSettings: list[UserSetting], StorageConnectors: list[StorageConnector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamingProperties:
     Optional[StreamingExperiencePreferredProtocolEnum] StreamingExperiencePreferredProtocol
     Optional[list[UserSetting]] UserSettings
@@ -2127,13 +2218,15 @@ struct TerminateWorkspacesPoolSessionResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TerminateWorkspaceRequests: list[TerminateRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TerminateWorkspaceRequests: list[TerminateRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateWorkspacesRequest:
     list[TerminateRequest] TerminateWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
@@ -2178,8 +2271,9 @@ struct UpdateResult:
     Optional[bool] UpdateAvailable
     Optional[str] Description
 
-# no @derive(Json): member(s) UserRules: list[IpRuleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserRules: list[IpRuleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRulesOfIpGroupRequest:
     str GroupId
     list[IpRuleItem] UserRules
@@ -2221,8 +2315,9 @@ struct UpdateWorkspacesPoolRequest:
     Optional[TimeoutSettings] TimeoutSettings
     Optional[PoolsRunningMode] RunningMode
 
-# no @derive(Json): member(s) WorkspacesPool: WorkspacesPool not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspacesPool: WorkspacesPool not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkspacesPoolResult:
     Optional[WorkspacesPool] WorkspacesPool
 
@@ -2240,8 +2335,9 @@ struct UserStorage:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) SupportedComputeTypeNames: list[Compute], SupportedOperatingSystemNames: list[OperatingSystemName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedComputeTypeNames: list[Compute], SupportedOperatingSystemNames: list[OperatingSystemName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkSpaceApplication:
     Optional[str] ApplicationId
     Optional[DateTime] Created
@@ -2253,13 +2349,15 @@ struct WorkSpaceApplication:
     Optional[list[Compute]] SupportedComputeTypeNames
     Optional[list[OperatingSystemName]] SupportedOperatingSystemNames
 
-# no @derive(Json): member(s) Associations: list[WorkspaceResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[WorkspaceResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkSpaceApplicationDeployment:
     Optional[list[WorkspaceResourceAssociation]] Associations
 
-# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties, ModificationStates: list[ModificationState], RelatedWorkspaces: list[RelatedWorkspaceProperties], StandbyWorkspacesProperties: list[StandbyWorkspacesProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties, ModificationStates: list[ModificationState], RelatedWorkspaces: list[RelatedWorkspaceProperties], StandbyWorkspacesProperties: list[StandbyWorkspacesProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workspace:
     Optional[str] WorkspaceId
     Optional[str] DirectoryId
@@ -2282,8 +2380,9 @@ struct Workspace:
     Optional[DataReplicationSettings] DataReplicationSettings
     Optional[list[StandbyWorkspacesProperties]] StandbyWorkspacesProperties
 
-# no @derive(Json): member(s) AccessEndpointConfig: AccessEndpointConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessEndpointConfig: AccessEndpointConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceAccessProperties:
     Optional[AccessPropertyValue] DeviceTypeWindows
     Optional[AccessPropertyValue] DeviceTypeOsx
@@ -2327,8 +2426,9 @@ struct WorkspaceCreationProperties:
     Optional[bool] EnableMaintenanceMode
     Optional[str] InstanceIamRoleArn
 
-# no @derive(Json): member(s) SubnetIds: list[str], DnsIpAddresses: list[str], DnsIpv6Addresses: list[str], ipGroupIds: list[str], WorkspaceAccessProperties: WorkspaceAccessProperties, StreamingProperties: StreamingProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], DnsIpAddresses: list[str], DnsIpv6Addresses: list[str], ipGroupIds: list[str], WorkspaceAccessProperties: WorkspaceAccessProperties, StreamingProperties: StreamingProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceDirectory:
     Optional[str] DirectoryId
     Optional[str] Alias
@@ -2360,8 +2460,9 @@ struct WorkspaceDirectory:
     Optional[StreamingProperties] StreamingProperties
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceImage:
     Optional[str] ImageId
     Optional[str] Name
@@ -2376,8 +2477,9 @@ struct WorkspaceImage:
     Optional[UpdateResult] Updates
     Optional[list[ErrorDetails]] ErrorDetails
 
-# no @derive(Json): member(s) Protocols: list[Protocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protocols: list[Protocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceProperties:
     Optional[RunningMode] RunningMode
     Optional[int64] RunningModeAutoStopTimeoutInMinutes
@@ -2389,8 +2491,9 @@ struct WorkspaceProperties:
     Optional[GlobalAcceleratorForWorkSpace] GlobalAccelerator
     Optional[bool] NestedVirtualizationEnabled
 
-# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceRequest:
     str DirectoryId
     str UserName
@@ -2417,16 +2520,18 @@ struct WorkspaceResourceAssociation:
 struct WorkspacesDefaultRoleNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) userRules: list[IpRuleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userRules: list[IpRuleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspacesIpGroup:
     Optional[str] groupId
     Optional[str] groupName
     Optional[str] groupDesc
     Optional[list[IpRuleItem]] userRules
 
-# no @derive(Json): member(s) Errors: list[WorkspacesPoolError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[WorkspacesPoolError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspacesPool:
     str PoolId
     str PoolArn
@@ -2541,64 +2646,981 @@ def workspaces_error_from_code(str code) -> WorkSpacesError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateIpGroups (input AssociateIpGroupsRequest)
-#   AuthorizeIpRules (input AuthorizeIpRulesRequest)
-#   CopyWorkspaceImage (input CopyWorkspaceImageRequest)
-#   CreateConnectionAlias (input CreateConnectionAliasRequest)
-#   CreateIpGroup (input CreateIpGroupRequest)
-#   CreateStandbyWorkspaces (input CreateStandbyWorkspacesRequest)
-#   CreateTags (input CreateTagsRequest)
-#   CreateUpdatedWorkspaceImage (input CreateUpdatedWorkspaceImageRequest)
-#   CreateWorkspaceBundle (input CreateWorkspaceBundleRequest)
-#   CreateWorkspaceImage (input CreateWorkspaceImageRequest)
-#   CreateWorkspaces (input CreateWorkspacesRequest)
-#   CreateWorkspacesPool (input CreateWorkspacesPoolRequest)
-#   DeleteClientBranding (input DeleteClientBrandingRequest)
-#   DeleteTags (input DeleteTagsRequest)
-#   DescribeApplicationAssociations (input DescribeApplicationAssociationsRequest)
-#   DescribeApplications (input DescribeApplicationsRequest)
-#   DescribeBundleAssociations (input DescribeBundleAssociationsRequest)
-#   DescribeClientProperties (input DescribeClientPropertiesRequest)
-#   DescribeConnectionAliases (input DescribeConnectionAliasesRequest)
-#   DescribeImageAssociations (input DescribeImageAssociationsRequest)
-#   DescribeIpGroups (input DescribeIpGroupsRequest)
-#   DescribeWorkspaceAssociations (input DescribeWorkspaceAssociationsRequest)
-#   DescribeWorkspaceBundles (input DescribeWorkspaceBundlesRequest)
-#   DescribeWorkspaceDirectories (input DescribeWorkspaceDirectoriesRequest)
-#   DescribeWorkspaceImages (input DescribeWorkspaceImagesRequest)
-#   DescribeWorkspaces (input DescribeWorkspacesRequest)
-#   DescribeWorkspacesConnectionStatus (input DescribeWorkspacesConnectionStatusRequest)
-#   DescribeWorkspacesPools (input DescribeWorkspacesPoolsRequest)
-#   DisassociateIpGroups (input DisassociateIpGroupsRequest)
-#   ImportClientBranding (input ImportClientBrandingRequest)
-#   ImportCustomWorkspaceImage (input ImportCustomWorkspaceImageRequest)
-#   ImportWorkspaceImage (input ImportWorkspaceImageRequest)
-#   ListAccountLinks (input ListAccountLinksRequest)
-#   ModifyCertificateBasedAuthProperties (input ModifyCertificateBasedAuthPropertiesRequest)
-#   ModifySamlProperties (input ModifySamlPropertiesRequest)
-#   ModifyStreamingProperties (input ModifyStreamingPropertiesRequest)
-#   ModifyWorkspaceAccessProperties (input ModifyWorkspaceAccessPropertiesRequest)
-#   ModifyWorkspaceProperties (input ModifyWorkspacePropertiesRequest)
-#   RebootWorkspaces (input RebootWorkspacesRequest)
-#   RebuildWorkspaces (input RebuildWorkspacesRequest)
-#   RegisterWorkspaceDirectory (input RegisterWorkspaceDirectoryRequest)
-#   RevokeIpRules (input RevokeIpRulesRequest)
-#   StartWorkspaces (input StartWorkspacesRequest)
-#   StopWorkspaces (input StopWorkspacesRequest)
-#   TerminateWorkspaces (input TerminateWorkspacesRequest)
-#   UpdateRulesOfIpGroup (input UpdateRulesOfIpGroupRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def workspaces_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeIpGroups (input not derivable (no generated method))
-#   DescribeWorkspaceBundles (input not derivable (no generated method))
-#   DescribeWorkspaceDirectories (input not derivable (no generated method))
-#   DescribeWorkspaceImages (input not derivable (no generated method))
-#   DescribeWorkspaces (input not derivable (no generated method))
-#   DescribeWorkspacesConnectionStatus (input not derivable (no generated method))
-#   ListAccountLinks (input not derivable (no generated method))
+def workspaces_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def workspaces_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccessEndpointConfig to a compact JSON object (declaration order).
+def access_endpoint_config_to_json(AccessEndpointConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AccessEndpoints:
+        e0.append(x0.to_json())
+    parts.append("\"AccessEndpoints\":" + workspaces_json_arr(e0))
+    if v.InternetFallbackProtocols.is_some():
+        auto u1 = v.InternetFallbackProtocols.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(workspaces_json_str(x2))
+        parts.append("\"InternetFallbackProtocols\":" + workspaces_json_arr(e2))
+    return workspaces_json_obj(parts)
+
+# Serialize AssociateIpGroupsRequest to a compact JSON object (declaration order).
+def associate_ip_groups_request_to_json(AssociateIpGroupsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
+    list[str] e0 = []
+    for x0 in v.GroupIds:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"GroupIds\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize AuthorizeIpRulesRequest to a compact JSON object (declaration order).
+def authorize_ip_rules_request_to_json(AuthorizeIpRulesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupId\":" + workspaces_json_str(v.GroupId))
+    list[str] e0 = []
+    for x0 in v.UserRules:
+        e0.append(x0.to_json())
+    parts.append("\"UserRules\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize CopyWorkspaceImageRequest to a compact JSON object (declaration order).
+def copy_workspace_image_request_to_json(CopyWorkspaceImageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + workspaces_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + workspaces_json_str(u0))
+    parts.append("\"SourceImageId\":" + workspaces_json_str(v.SourceImageId))
+    parts.append("\"SourceRegion\":" + workspaces_json_str(v.SourceRegion))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e2))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateConnectionAliasRequest to a compact JSON object (declaration order).
+def create_connection_alias_request_to_json(CreateConnectionAliasRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectionString\":" + workspaces_json_str(v.ConnectionString))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateIpGroupRequest to a compact JSON object (declaration order).
+def create_ip_group_request_to_json(CreateIpGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupName\":" + workspaces_json_str(v.GroupName))
+    if v.GroupDesc.is_some():
+        auto u0 = v.GroupDesc.unwrap()
+        parts.append("\"GroupDesc\":" + workspaces_json_str(u0))
+    if v.UserRules.is_some():
+        auto u1 = v.UserRules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"UserRules\":" + workspaces_json_arr(e2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e4))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateStandbyWorkspacesRequest to a compact JSON object (declaration order).
+def create_standby_workspaces_request_to_json(CreateStandbyWorkspacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PrimaryRegion\":" + workspaces_json_str(v.PrimaryRegion))
+    list[str] e0 = []
+    for x0 in v.StandbyWorkspaces:
+        e0.append(standby_workspace_to_json(x0))
+    parts.append("\"StandbyWorkspaces\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateTagsRequest to a compact JSON object (declaration order).
+def create_tags_request_to_json(CreateTagsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateUpdatedWorkspaceImageRequest to a compact JSON object (declaration order).
+def create_updated_workspace_image_request_to_json(CreateUpdatedWorkspaceImageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + workspaces_json_str(v.Name))
+    parts.append("\"Description\":" + workspaces_json_str(v.Description))
+    parts.append("\"SourceImageId\":" + workspaces_json_str(v.SourceImageId))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateWorkspaceBundleRequest to a compact JSON object (declaration order).
+def create_workspace_bundle_request_to_json(CreateWorkspaceBundleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"BundleName\":" + workspaces_json_str(v.BundleName))
+    parts.append("\"BundleDescription\":" + workspaces_json_str(v.BundleDescription))
+    parts.append("\"ImageId\":" + workspaces_json_str(v.ImageId))
+    parts.append("\"ComputeType\":" + v.ComputeType.to_json())
+    parts.append("\"UserStorage\":" + v.UserStorage.to_json())
+    if v.RootStorage.is_some():
+        auto u0 = v.RootStorage.unwrap()
+        parts.append("\"RootStorage\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e2))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateWorkspaceImageRequest to a compact JSON object (declaration order).
+def create_workspace_image_request_to_json(CreateWorkspaceImageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + workspaces_json_str(v.Name))
+    parts.append("\"Description\":" + workspaces_json_str(v.Description))
+    parts.append("\"WorkspaceId\":" + workspaces_json_str(v.WorkspaceId))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+    return workspaces_json_obj(parts)
+
+# Serialize CreateWorkspacesPoolRequest to a compact JSON object (declaration order).
+def create_workspaces_pool_request_to_json(CreateWorkspacesPoolRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PoolName\":" + workspaces_json_str(v.PoolName))
+    parts.append("\"Description\":" + workspaces_json_str(v.Description))
+    parts.append("\"BundleId\":" + workspaces_json_str(v.BundleId))
+    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
+    parts.append("\"Capacity\":" + v.Capacity.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+    if v.ApplicationSettings.is_some():
+        auto u2 = v.ApplicationSettings.unwrap()
+        parts.append("\"ApplicationSettings\":" + u2.to_json())
+    if v.TimeoutSettings.is_some():
+        auto u3 = v.TimeoutSettings.unwrap()
+        parts.append("\"TimeoutSettings\":" + u3.to_json())
+    if v.RunningMode.is_some():
+        auto u4 = v.RunningMode.unwrap()
+        parts.append("\"RunningMode\":" + u4.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize CreateWorkspacesRequest to a compact JSON object (declaration order).
+def create_workspaces_request_to_json(CreateWorkspacesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Workspaces:
+        e0.append(workspace_request_to_json(x0))
+    parts.append("\"Workspaces\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DefaultImportClientBrandingAttributes to a compact JSON object (declaration order).
+def default_import_client_branding_attributes_to_json(DefaultImportClientBrandingAttributes v) -> str:
+    list[str] parts = []
+    if v.Logo.is_some():
+        auto u0 = v.Logo.unwrap()
+        parts.append("\"Logo\":" + workspaces_json_str(base64.encode(u0)))
+    if v.SupportEmail.is_some():
+        auto u1 = v.SupportEmail.unwrap()
+        parts.append("\"SupportEmail\":" + workspaces_json_str(u1))
+    if v.SupportLink.is_some():
+        auto u2 = v.SupportLink.unwrap()
+        parts.append("\"SupportLink\":" + workspaces_json_str(u2))
+    if v.ForgotPasswordLink.is_some():
+        auto u3 = v.ForgotPasswordLink.unwrap()
+        parts.append("\"ForgotPasswordLink\":" + workspaces_json_str(u3))
+    if v.LoginMessage.is_some():
+        auto u4 = v.LoginMessage.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(workspaces_json_str(k5) + ":" + workspaces_json_str(u4[k5]))
+        parts.append("\"LoginMessage\":" + workspaces_json_obj(m5))
+    return workspaces_json_obj(parts)
+
+# Serialize DeleteClientBrandingRequest to a compact JSON object (declaration order).
+def delete_client_branding_request_to_json(DeleteClientBrandingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.Platforms:
+        e0.append(x0.to_json())
+    parts.append("\"Platforms\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DeleteTagsRequest to a compact JSON object (declaration order).
+def delete_tags_request_to_json(DeleteTagsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"TagKeys\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeApplicationAssociationsRequest to a compact JSON object (declaration order).
+def describe_application_associations_request_to_json(DescribeApplicationAssociationsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u1))
+    parts.append("\"ApplicationId\":" + workspaces_json_str(v.ApplicationId))
+    list[str] e2 = []
+    for x2 in v.AssociatedResourceTypes:
+        e2.append(x2.to_json())
+    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e2))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeApplicationsRequest to a compact JSON object (declaration order).
+def describe_applications_request_to_json(DescribeApplicationsRequest v) -> str:
+    list[str] parts = []
+    if v.ApplicationIds.is_some():
+        auto u0 = v.ApplicationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"ApplicationIds\":" + workspaces_json_arr(e1))
+    if v.ComputeTypeNames.is_some():
+        auto u2 = v.ComputeTypeNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ComputeTypeNames\":" + workspaces_json_arr(e3))
+    if v.LicenseType.is_some():
+        auto u4 = v.LicenseType.unwrap()
+        parts.append("\"LicenseType\":" + u4.to_json())
+    if v.OperatingSystemNames.is_some():
+        auto u5 = v.OperatingSystemNames.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"OperatingSystemNames\":" + workspaces_json_arr(e6))
+    if v.Owner.is_some():
+        auto u7 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + workspaces_json_str(u7))
+    if v.MaxResults.is_some():
+        auto u8 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u8))
+    if v.NextToken.is_some():
+        auto u9 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u9))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeBundleAssociationsRequest to a compact JSON object (declaration order).
+def describe_bundle_associations_request_to_json(DescribeBundleAssociationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"BundleId\":" + workspaces_json_str(v.BundleId))
+    list[str] e0 = []
+    for x0 in v.AssociatedResourceTypes:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeClientPropertiesRequest to a compact JSON object (declaration order).
+def describe_client_properties_request_to_json(DescribeClientPropertiesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResourceIds:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"ResourceIds\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeConnectionAliasesRequest to a compact JSON object (declaration order).
+def describe_connection_aliases_request_to_json(DescribeConnectionAliasesRequest v) -> str:
+    list[str] parts = []
+    if v.AliasIds.is_some():
+        auto u0 = v.AliasIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"AliasIds\":" + workspaces_json_arr(e1))
+    if v.ResourceId.is_some():
+        auto u2 = v.ResourceId.unwrap()
+        parts.append("\"ResourceId\":" + workspaces_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u4))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeImageAssociationsRequest to a compact JSON object (declaration order).
+def describe_image_associations_request_to_json(DescribeImageAssociationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageId\":" + workspaces_json_str(v.ImageId))
+    list[str] e0 = []
+    for x0 in v.AssociatedResourceTypes:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeIpGroupsRequest to a compact JSON object (declaration order).
+def describe_ip_groups_request_to_json(DescribeIpGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.GroupIds.is_some():
+        auto u0 = v.GroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"GroupIds\":" + workspaces_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspaceAssociationsRequest to a compact JSON object (declaration order).
+def describe_workspace_associations_request_to_json(DescribeWorkspaceAssociationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkspaceId\":" + workspaces_json_str(v.WorkspaceId))
+    list[str] e0 = []
+    for x0 in v.AssociatedResourceTypes:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspaceBundlesRequest to a compact JSON object (declaration order).
+def describe_workspace_bundles_request_to_json(DescribeWorkspaceBundlesRequest v) -> str:
+    list[str] parts = []
+    if v.BundleIds.is_some():
+        auto u0 = v.BundleIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"BundleIds\":" + workspaces_json_arr(e1))
+    if v.Owner.is_some():
+        auto u2 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + workspaces_json_str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u3))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspaceDirectoriesFilter to a compact JSON object (declaration order).
+def describe_workspace_directories_filter_to_json(DescribeWorkspaceDirectoriesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"Values\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspaceDirectoriesRequest to a compact JSON object (declaration order).
+def describe_workspace_directories_request_to_json(DescribeWorkspaceDirectoriesRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryIds.is_some():
+        auto u0 = v.DirectoryIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"DirectoryIds\":" + workspaces_json_arr(e1))
+    if v.WorkspaceDirectoryNames.is_some():
+        auto u2 = v.WorkspaceDirectoryNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workspaces_json_str(x3))
+        parts.append("\"WorkspaceDirectoryNames\":" + workspaces_json_arr(e3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u5))
+    if v.Filters.is_some():
+        auto u6 = v.Filters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(describe_workspace_directories_filter_to_json(x7))
+        parts.append("\"Filters\":" + workspaces_json_arr(e7))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspaceImagesRequest to a compact JSON object (declaration order).
+def describe_workspace_images_request_to_json(DescribeWorkspaceImagesRequest v) -> str:
+    list[str] parts = []
+    if v.ImageIds.is_some():
+        auto u0 = v.ImageIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"ImageIds\":" + workspaces_json_arr(e1))
+    if v.ImageType.is_some():
+        auto u2 = v.ImageType.unwrap()
+        parts.append("\"ImageType\":" + u2.to_json())
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspacesConnectionStatusRequest to a compact JSON object (declaration order).
+def describe_workspaces_connection_status_request_to_json(DescribeWorkspacesConnectionStatusRequest v) -> str:
+    list[str] parts = []
+    if v.WorkspaceIds.is_some():
+        auto u0 = v.WorkspaceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"WorkspaceIds\":" + workspaces_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u2))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspacesPoolsFilter to a compact JSON object (declaration order).
+def describe_workspaces_pools_filter_to_json(DescribeWorkspacesPoolsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + workspaces_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"Values\":" + workspaces_json_arr(e0))
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspacesPoolsRequest to a compact JSON object (declaration order).
+def describe_workspaces_pools_request_to_json(DescribeWorkspacesPoolsRequest v) -> str:
+    list[str] parts = []
+    if v.PoolIds.is_some():
+        auto u0 = v.PoolIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"PoolIds\":" + workspaces_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(describe_workspaces_pools_filter_to_json(x3))
+        parts.append("\"Filters\":" + workspaces_json_arr(e3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u5))
+    return workspaces_json_obj(parts)
+
+# Serialize DescribeWorkspacesRequest to a compact JSON object (declaration order).
+def describe_workspaces_request_to_json(DescribeWorkspacesRequest v) -> str:
+    list[str] parts = []
+    if v.WorkspaceIds.is_some():
+        auto u0 = v.WorkspaceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspaces_json_str(x1))
+        parts.append("\"WorkspaceIds\":" + workspaces_json_arr(e1))
+    if v.DirectoryId.is_some():
+        auto u2 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + workspaces_json_str(u2))
+    if v.UserName.is_some():
+        auto u3 = v.UserName.unwrap()
+        parts.append("\"UserName\":" + workspaces_json_str(u3))
+    if v.BundleId.is_some():
+        auto u4 = v.BundleId.unwrap()
+        parts.append("\"BundleId\":" + workspaces_json_str(u4))
+    if v.Limit.is_some():
+        auto u5 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u6))
+    if v.WorkspaceName.is_some():
+        auto u7 = v.WorkspaceName.unwrap()
+        parts.append("\"WorkspaceName\":" + workspaces_json_str(u7))
+    return workspaces_json_obj(parts)
+
+# Serialize DisassociateIpGroupsRequest to a compact JSON object (declaration order).
+def disassociate_ip_groups_request_to_json(DisassociateIpGroupsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
+    list[str] e0 = []
+    for x0 in v.GroupIds:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"GroupIds\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize ImportClientBrandingRequest to a compact JSON object (declaration order).
+def import_client_branding_request_to_json(ImportClientBrandingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    if v.DeviceTypeWindows.is_some():
+        auto u0 = v.DeviceTypeWindows.unwrap()
+        parts.append("\"DeviceTypeWindows\":" + default_import_client_branding_attributes_to_json(u0))
+    if v.DeviceTypeOsx.is_some():
+        auto u1 = v.DeviceTypeOsx.unwrap()
+        parts.append("\"DeviceTypeOsx\":" + default_import_client_branding_attributes_to_json(u1))
+    if v.DeviceTypeAndroid.is_some():
+        auto u2 = v.DeviceTypeAndroid.unwrap()
+        parts.append("\"DeviceTypeAndroid\":" + default_import_client_branding_attributes_to_json(u2))
+    if v.DeviceTypeIos.is_some():
+        auto u3 = v.DeviceTypeIos.unwrap()
+        parts.append("\"DeviceTypeIos\":" + ios_import_client_branding_attributes_to_json(u3))
+    if v.DeviceTypeLinux.is_some():
+        auto u4 = v.DeviceTypeLinux.unwrap()
+        parts.append("\"DeviceTypeLinux\":" + default_import_client_branding_attributes_to_json(u4))
+    if v.DeviceTypeWeb.is_some():
+        auto u5 = v.DeviceTypeWeb.unwrap()
+        parts.append("\"DeviceTypeWeb\":" + default_import_client_branding_attributes_to_json(u5))
+    return workspaces_json_obj(parts)
+
+# Serialize ImportCustomWorkspaceImageRequest to a compact JSON object (declaration order).
+def import_custom_workspace_image_request_to_json(ImportCustomWorkspaceImageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageName\":" + workspaces_json_str(v.ImageName))
+    parts.append("\"ImageDescription\":" + workspaces_json_str(v.ImageDescription))
+    parts.append("\"ComputeType\":" + v.ComputeType.to_json())
+    parts.append("\"Protocol\":" + v.Protocol.to_json())
+    parts.append("\"ImageSource\":" + v.ImageSource.to_json())
+    parts.append("\"InfrastructureConfigurationArn\":" + workspaces_json_str(v.InfrastructureConfigurationArn))
+    parts.append("\"Platform\":" + workspaces_json_str(v.Platform))
+    parts.append("\"OsVersion\":" + v.OsVersion.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+    if v.ImageValidationMode.is_some():
+        auto u2 = v.ImageValidationMode.unwrap()
+        parts.append("\"ImageValidationMode\":" + u2.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize ImportWorkspaceImageRequest to a compact JSON object (declaration order).
+def import_workspace_image_request_to_json(ImportWorkspaceImageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Ec2ImageId\":" + workspaces_json_str(v.Ec2ImageId))
+    parts.append("\"IngestionProcess\":" + v.IngestionProcess.to_json())
+    parts.append("\"ImageName\":" + workspaces_json_str(v.ImageName))
+    parts.append("\"ImageDescription\":" + workspaces_json_str(v.ImageDescription))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+    if v.Applications.is_some():
+        auto u2 = v.Applications.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Applications\":" + workspaces_json_arr(e3))
+    return workspaces_json_obj(parts)
+
+# Serialize IosImportClientBrandingAttributes to a compact JSON object (declaration order).
+def ios_import_client_branding_attributes_to_json(IosImportClientBrandingAttributes v) -> str:
+    list[str] parts = []
+    if v.Logo.is_some():
+        auto u0 = v.Logo.unwrap()
+        parts.append("\"Logo\":" + workspaces_json_str(base64.encode(u0)))
+    if v.Logo2x.is_some():
+        auto u1 = v.Logo2x.unwrap()
+        parts.append("\"Logo2x\":" + workspaces_json_str(base64.encode(u1)))
+    if v.Logo3x.is_some():
+        auto u2 = v.Logo3x.unwrap()
+        parts.append("\"Logo3x\":" + workspaces_json_str(base64.encode(u2)))
+    if v.SupportEmail.is_some():
+        auto u3 = v.SupportEmail.unwrap()
+        parts.append("\"SupportEmail\":" + workspaces_json_str(u3))
+    if v.SupportLink.is_some():
+        auto u4 = v.SupportLink.unwrap()
+        parts.append("\"SupportLink\":" + workspaces_json_str(u4))
+    if v.ForgotPasswordLink.is_some():
+        auto u5 = v.ForgotPasswordLink.unwrap()
+        parts.append("\"ForgotPasswordLink\":" + workspaces_json_str(u5))
+    if v.LoginMessage.is_some():
+        auto u6 = v.LoginMessage.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(workspaces_json_str(k7) + ":" + workspaces_json_str(u6[k7]))
+        parts.append("\"LoginMessage\":" + workspaces_json_obj(m7))
+    return workspaces_json_obj(parts)
+
+# Serialize ListAccountLinksRequest to a compact JSON object (declaration order).
+def list_account_links_request_to_json(ListAccountLinksRequest v) -> str:
+    list[str] parts = []
+    if v.LinkStatusFilter.is_some():
+        auto u0 = v.LinkStatusFilter.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"LinkStatusFilter\":" + workspaces_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + workspaces_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return workspaces_json_obj(parts)
+
+# Serialize ModifyCertificateBasedAuthPropertiesRequest to a compact JSON object (declaration order).
+def modify_certificate_based_auth_properties_request_to_json(ModifyCertificateBasedAuthPropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    if v.CertificateBasedAuthProperties.is_some():
+        auto u0 = v.CertificateBasedAuthProperties.unwrap()
+        parts.append("\"CertificateBasedAuthProperties\":" + u0.to_json())
+    if v.PropertiesToDelete.is_some():
+        auto u1 = v.PropertiesToDelete.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(workspaces_json_str(x2))
+        parts.append("\"PropertiesToDelete\":" + workspaces_json_arr(e2))
+    return workspaces_json_obj(parts)
+
+# Serialize ModifySamlPropertiesRequest to a compact JSON object (declaration order).
+def modify_saml_properties_request_to_json(ModifySamlPropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    if v.SamlProperties.is_some():
+        auto u0 = v.SamlProperties.unwrap()
+        parts.append("\"SamlProperties\":" + u0.to_json())
+    if v.PropertiesToDelete.is_some():
+        auto u1 = v.PropertiesToDelete.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PropertiesToDelete\":" + workspaces_json_arr(e2))
+    return workspaces_json_obj(parts)
+
+# Serialize ModifyStreamingPropertiesRequest to a compact JSON object (declaration order).
+def modify_streaming_properties_request_to_json(ModifyStreamingPropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    if v.StreamingProperties.is_some():
+        auto u0 = v.StreamingProperties.unwrap()
+        parts.append("\"StreamingProperties\":" + streaming_properties_to_json(u0))
+    return workspaces_json_obj(parts)
+
+# Serialize ModifyWorkspaceAccessPropertiesRequest to a compact JSON object (declaration order).
+def modify_workspace_access_properties_request_to_json(ModifyWorkspaceAccessPropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+    parts.append("\"WorkspaceAccessProperties\":" + workspace_access_properties_to_json(v.WorkspaceAccessProperties))
+    return workspaces_json_obj(parts)
+
+# Serialize ModifyWorkspacePropertiesRequest to a compact JSON object (declaration order).
+def modify_workspace_properties_request_to_json(ModifyWorkspacePropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkspaceId\":" + workspaces_json_str(v.WorkspaceId))
+    if v.WorkspaceProperties.is_some():
+        auto u0 = v.WorkspaceProperties.unwrap()
+        parts.append("\"WorkspaceProperties\":" + workspace_properties_to_json(u0))
+    if v.DataReplication.is_some():
+        auto u1 = v.DataReplication.unwrap()
+        parts.append("\"DataReplication\":" + u1.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize RebootWorkspacesRequest to a compact JSON object (declaration order).
+def reboot_workspaces_request_to_json(RebootWorkspacesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.RebootWorkspaceRequests:
+        e0.append(x0.to_json())
+    parts.append("\"RebootWorkspaceRequests\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize RebuildWorkspacesRequest to a compact JSON object (declaration order).
+def rebuild_workspaces_request_to_json(RebuildWorkspacesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.RebuildWorkspaceRequests:
+        e0.append(x0.to_json())
+    parts.append("\"RebuildWorkspaceRequests\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize RegisterWorkspaceDirectoryRequest to a compact JSON object (declaration order).
+def register_workspace_directory_request_to_json(RegisterWorkspaceDirectoryRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + workspaces_json_str(u0))
+    if v.SubnetIds.is_some():
+        auto u1 = v.SubnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(workspaces_json_str(x2))
+        parts.append("\"SubnetIds\":" + workspaces_json_arr(e2))
+    if v.EnableSelfService.is_some():
+        auto u3 = v.EnableSelfService.unwrap()
+        parts.append("\"EnableSelfService\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Tenancy.is_some():
+        auto u4 = v.Tenancy.unwrap()
+        parts.append("\"Tenancy\":" + u4.to_json())
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e6))
+    if v.WorkspaceDirectoryName.is_some():
+        auto u7 = v.WorkspaceDirectoryName.unwrap()
+        parts.append("\"WorkspaceDirectoryName\":" + workspaces_json_str(u7))
+    if v.WorkspaceDirectoryDescription.is_some():
+        auto u8 = v.WorkspaceDirectoryDescription.unwrap()
+        parts.append("\"WorkspaceDirectoryDescription\":" + workspaces_json_str(u8))
+    if v.UserIdentityType.is_some():
+        auto u9 = v.UserIdentityType.unwrap()
+        parts.append("\"UserIdentityType\":" + u9.to_json())
+    if v.IdcInstanceArn.is_some():
+        auto u10 = v.IdcInstanceArn.unwrap()
+        parts.append("\"IdcInstanceArn\":" + workspaces_json_str(u10))
+    if v.MicrosoftEntraConfig.is_some():
+        auto u11 = v.MicrosoftEntraConfig.unwrap()
+        parts.append("\"MicrosoftEntraConfig\":" + u11.to_json())
+    if v.WorkspaceType.is_some():
+        auto u12 = v.WorkspaceType.unwrap()
+        parts.append("\"WorkspaceType\":" + u12.to_json())
+    if v.ActiveDirectoryConfig.is_some():
+        auto u13 = v.ActiveDirectoryConfig.unwrap()
+        parts.append("\"ActiveDirectoryConfig\":" + u13.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize RevokeIpRulesRequest to a compact JSON object (declaration order).
+def revoke_ip_rules_request_to_json(RevokeIpRulesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupId\":" + workspaces_json_str(v.GroupId))
+    list[str] e0 = []
+    for x0 in v.UserRules:
+        e0.append(workspaces_json_str(x0))
+    parts.append("\"UserRules\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize StandbyWorkspace to a compact JSON object (declaration order).
+def standby_workspace_to_json(StandbyWorkspace v) -> str:
+    list[str] parts = []
+    parts.append("\"PrimaryWorkspaceId\":" + workspaces_json_str(v.PrimaryWorkspaceId))
+    if v.VolumeEncryptionKey.is_some():
+        auto u0 = v.VolumeEncryptionKey.unwrap()
+        parts.append("\"VolumeEncryptionKey\":" + workspaces_json_str(u0))
+    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e2))
+    if v.DataReplication.is_some():
+        auto u3 = v.DataReplication.unwrap()
+        parts.append("\"DataReplication\":" + u3.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize StartWorkspacesRequest to a compact JSON object (declaration order).
+def start_workspaces_request_to_json(StartWorkspacesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.StartWorkspaceRequests:
+        e0.append(x0.to_json())
+    parts.append("\"StartWorkspaceRequests\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize StopWorkspacesRequest to a compact JSON object (declaration order).
+def stop_workspaces_request_to_json(StopWorkspacesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.StopWorkspaceRequests:
+        e0.append(x0.to_json())
+    parts.append("\"StopWorkspaceRequests\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize StreamingProperties to a compact JSON object (declaration order).
+def streaming_properties_to_json(StreamingProperties v) -> str:
+    list[str] parts = []
+    if v.StreamingExperiencePreferredProtocol.is_some():
+        auto u0 = v.StreamingExperiencePreferredProtocol.unwrap()
+        parts.append("\"StreamingExperiencePreferredProtocol\":" + u0.to_json())
+    if v.UserSettings.is_some():
+        auto u1 = v.UserSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"UserSettings\":" + workspaces_json_arr(e2))
+    if v.StorageConnectors.is_some():
+        auto u3 = v.StorageConnectors.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"StorageConnectors\":" + workspaces_json_arr(e4))
+    if v.GlobalAccelerator.is_some():
+        auto u5 = v.GlobalAccelerator.unwrap()
+        parts.append("\"GlobalAccelerator\":" + u5.to_json())
+    return workspaces_json_obj(parts)
+
+# Serialize TerminateWorkspacesRequest to a compact JSON object (declaration order).
+def terminate_workspaces_request_to_json(TerminateWorkspacesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TerminateWorkspaceRequests:
+        e0.append(x0.to_json())
+    parts.append("\"TerminateWorkspaceRequests\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize UpdateRulesOfIpGroupRequest to a compact JSON object (declaration order).
+def update_rules_of_ip_group_request_to_json(UpdateRulesOfIpGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupId\":" + workspaces_json_str(v.GroupId))
+    list[str] e0 = []
+    for x0 in v.UserRules:
+        e0.append(x0.to_json())
+    parts.append("\"UserRules\":" + workspaces_json_arr(e0))
+    return workspaces_json_obj(parts)
+
+# Serialize WorkspaceAccessProperties to a compact JSON object (declaration order).
+def workspace_access_properties_to_json(WorkspaceAccessProperties v) -> str:
+    list[str] parts = []
+    if v.DeviceTypeWindows.is_some():
+        auto u0 = v.DeviceTypeWindows.unwrap()
+        parts.append("\"DeviceTypeWindows\":" + u0.to_json())
+    if v.DeviceTypeOsx.is_some():
+        auto u1 = v.DeviceTypeOsx.unwrap()
+        parts.append("\"DeviceTypeOsx\":" + u1.to_json())
+    if v.DeviceTypeWeb.is_some():
+        auto u2 = v.DeviceTypeWeb.unwrap()
+        parts.append("\"DeviceTypeWeb\":" + u2.to_json())
+    if v.DeviceTypeIos.is_some():
+        auto u3 = v.DeviceTypeIos.unwrap()
+        parts.append("\"DeviceTypeIos\":" + u3.to_json())
+    if v.DeviceTypeAndroid.is_some():
+        auto u4 = v.DeviceTypeAndroid.unwrap()
+        parts.append("\"DeviceTypeAndroid\":" + u4.to_json())
+    if v.DeviceTypeChromeOs.is_some():
+        auto u5 = v.DeviceTypeChromeOs.unwrap()
+        parts.append("\"DeviceTypeChromeOs\":" + u5.to_json())
+    if v.DeviceTypeZeroClient.is_some():
+        auto u6 = v.DeviceTypeZeroClient.unwrap()
+        parts.append("\"DeviceTypeZeroClient\":" + u6.to_json())
+    if v.DeviceTypeLinux.is_some():
+        auto u7 = v.DeviceTypeLinux.unwrap()
+        parts.append("\"DeviceTypeLinux\":" + u7.to_json())
+    if v.DeviceTypeWorkSpacesThinClient.is_some():
+        auto u8 = v.DeviceTypeWorkSpacesThinClient.unwrap()
+        parts.append("\"DeviceTypeWorkSpacesThinClient\":" + u8.to_json())
+    if v.AccessEndpointConfig.is_some():
+        auto u9 = v.AccessEndpointConfig.unwrap()
+        parts.append("\"AccessEndpointConfig\":" + access_endpoint_config_to_json(u9))
+    return workspaces_json_obj(parts)
+
+# Serialize WorkspaceProperties to a compact JSON object (declaration order).
+def workspace_properties_to_json(WorkspaceProperties v) -> str:
+    list[str] parts = []
+    if v.RunningMode.is_some():
+        auto u0 = v.RunningMode.unwrap()
+        parts.append("\"RunningMode\":" + u0.to_json())
+    if v.RunningModeAutoStopTimeoutInMinutes.is_some():
+        auto u1 = v.RunningModeAutoStopTimeoutInMinutes.unwrap()
+        parts.append("\"RunningModeAutoStopTimeoutInMinutes\":" + str(u1))
+    if v.RootVolumeSizeGib.is_some():
+        auto u2 = v.RootVolumeSizeGib.unwrap()
+        parts.append("\"RootVolumeSizeGib\":" + str(u2))
+    if v.UserVolumeSizeGib.is_some():
+        auto u3 = v.UserVolumeSizeGib.unwrap()
+        parts.append("\"UserVolumeSizeGib\":" + str(u3))
+    if v.ComputeTypeName.is_some():
+        auto u4 = v.ComputeTypeName.unwrap()
+        parts.append("\"ComputeTypeName\":" + u4.to_json())
+    if v.Protocols.is_some():
+        auto u5 = v.Protocols.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Protocols\":" + workspaces_json_arr(e6))
+    if v.OperatingSystemName.is_some():
+        auto u7 = v.OperatingSystemName.unwrap()
+        parts.append("\"OperatingSystemName\":" + u7.to_json())
+    if v.GlobalAccelerator.is_some():
+        auto u8 = v.GlobalAccelerator.unwrap()
+        parts.append("\"GlobalAccelerator\":" + u8.to_json())
+    if v.NestedVirtualizationEnabled.is_some():
+        auto u9 = v.NestedVirtualizationEnabled.unwrap()
+        parts.append("\"NestedVirtualizationEnabled\":" + json.dumps(JsonValue.Bool(u9)))
+    return workspaces_json_obj(parts)
+
+# Serialize WorkspaceRequest to a compact JSON object (declaration order).
+def workspace_request_to_json(WorkspaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
+    parts.append("\"UserName\":" + workspaces_json_str(v.UserName))
+    parts.append("\"BundleId\":" + workspaces_json_str(v.BundleId))
+    if v.VolumeEncryptionKey.is_some():
+        auto u0 = v.VolumeEncryptionKey.unwrap()
+        parts.append("\"VolumeEncryptionKey\":" + workspaces_json_str(u0))
+    if v.UserVolumeEncryptionEnabled.is_some():
+        auto u1 = v.UserVolumeEncryptionEnabled.unwrap()
+        parts.append("\"UserVolumeEncryptionEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.RootVolumeEncryptionEnabled.is_some():
+        auto u2 = v.RootVolumeEncryptionEnabled.unwrap()
+        parts.append("\"RootVolumeEncryptionEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.WorkspaceProperties.is_some():
+        auto u3 = v.WorkspaceProperties.unwrap()
+        parts.append("\"WorkspaceProperties\":" + workspace_properties_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + workspaces_json_arr(e5))
+    if v.WorkspaceName.is_some():
+        auto u6 = v.WorkspaceName.unwrap()
+        parts.append("\"WorkspaceName\":" + workspaces_json_str(u6))
+    if v.Ipv6Address.is_some():
+        auto u7 = v.Ipv6Address.unwrap()
+        parts.append("\"Ipv6Address\":" + workspaces_json_str(u7))
+    return workspaces_json_obj(parts)
 
 # A bound WorkSpaces client: credentials + region, threaded into every operation.
 struct WorkSpacesClient:
@@ -2617,11 +3639,29 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AssociateConnectionAlias", body)
 
+    # AssociateIpGroups
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
+    def associate_ip_groups(self, AssociateIpGroupsRequest input) -> str:
+        auto body = associate_ip_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AssociateIpGroups", body)
+
     # AssociateWorkspaceApplication
     # errors: AccessDeniedException, ApplicationNotSupportedException, ComputeNotCompatibleException, IncompatibleApplicationsException, InvalidParameterValuesException, OperatingSystemNotCompatibleException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
     def associate_workspace_application(self, AssociateWorkspaceApplicationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AssociateWorkspaceApplication", body)
+
+    # AuthorizeIpRules
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceLimitExceededException, ResourceNotFoundException
+    def authorize_ip_rules(self, AuthorizeIpRulesRequest input) -> str:
+        auto body = authorize_ip_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AuthorizeIpRules", body)
+
+    # CopyWorkspaceImage
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException
+    def copy_workspace_image(self, CopyWorkspaceImageRequest input) -> str:
+        auto body = copy_workspace_image_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CopyWorkspaceImage", body)
 
     # CreateAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ValidationException
@@ -2635,11 +3675,71 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateConnectClientAddIn", body)
 
+    # CreateConnectionAlias
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException
+    def create_connection_alias(self, CreateConnectionAliasRequest input) -> str:
+        auto body = create_connection_alias_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateConnectionAlias", body)
+
+    # CreateIpGroup
+    # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAlreadyExistsException, ResourceCreationFailedException, ResourceLimitExceededException
+    def create_ip_group(self, CreateIpGroupRequest input) -> str:
+        auto body = create_ip_group_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateIpGroup", body)
+
+    # CreateStandbyWorkspaces
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
+    def create_standby_workspaces(self, CreateStandbyWorkspacesRequest input) -> str:
+        auto body = create_standby_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateStandbyWorkspaces", body)
+
+    # CreateTags
+    # errors: InvalidParameterValuesException, ResourceLimitExceededException, ResourceNotFoundException
+    def create_tags(self, CreateTagsRequest input) -> str:
+        auto body = create_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateTags", body)
+
+    # CreateUpdatedWorkspaceImage
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
+    def create_updated_workspace_image(self, CreateUpdatedWorkspaceImageRequest input) -> str:
+        auto body = create_updated_workspace_image_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateUpdatedWorkspaceImage", body)
+
+    # CreateWorkspaceBundle
+    # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException
+    def create_workspace_bundle(self, CreateWorkspaceBundleRequest input) -> str:
+        auto body = create_workspace_bundle_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspaceBundle", body)
+
+    # CreateWorkspaceImage
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
+    def create_workspace_image(self, CreateWorkspaceImageRequest input) -> str:
+        auto body = create_workspace_image_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspaceImage", body)
+
+    # CreateWorkspaces
+    # errors: InvalidParameterValuesException, ResourceLimitExceededException
+    def create_workspaces(self, CreateWorkspacesRequest input) -> str:
+        auto body = create_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspaces", body)
+
+    # CreateWorkspacesPool
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
+    def create_workspaces_pool(self, CreateWorkspacesPoolRequest input) -> str:
+        auto body = create_workspaces_pool_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspacesPool", body)
+
     # DeleteAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_account_link_invitation(self, DeleteAccountLinkInvitationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteAccountLinkInvitation", body)
+
+    # DeleteClientBranding
+    # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
+    def delete_client_branding(self, DeleteClientBrandingRequest input) -> str:
+        auto body = delete_client_branding_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteClientBranding", body)
 
     # DeleteConnectClientAddIn
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
@@ -2658,6 +3758,12 @@ struct WorkSpacesClient:
     def delete_ip_group(self, DeleteIpGroupRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteIpGroup", body)
+
+    # DeleteTags
+    # errors: InvalidParameterValuesException, ResourceNotFoundException
+    def delete_tags(self, DeleteTagsRequest input) -> str:
+        auto body = delete_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteTags", body)
 
     # DeleteWorkspaceBundle
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAssociatedException, ResourceNotFoundException
@@ -2695,11 +3801,35 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeAccountModifications", body)
 
+    # DescribeApplicationAssociations
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def describe_application_associations(self, DescribeApplicationAssociationsRequest input) -> str:
+        auto body = describe_application_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeApplicationAssociations", body)
+
+    # DescribeApplications
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def describe_applications(self, DescribeApplicationsRequest input) -> str:
+        auto body = describe_applications_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeApplications", body)
+
+    # DescribeBundleAssociations
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def describe_bundle_associations(self, DescribeBundleAssociationsRequest input) -> str:
+        auto body = describe_bundle_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeBundleAssociations", body)
+
     # DescribeClientBranding
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
     def describe_client_branding(self, DescribeClientBrandingRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeClientBranding", body)
+
+    # DescribeClientProperties
+    # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
+    def describe_client_properties(self, DescribeClientPropertiesRequest input) -> str:
+        auto body = describe_client_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeClientProperties", body)
 
     # DescribeConnectClientAddIns
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
@@ -2713,11 +3843,29 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeConnectionAliasPermissions", body)
 
+    # DescribeConnectionAliases
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException
+    def describe_connection_aliases(self, DescribeConnectionAliasesRequest input) -> str:
+        auto body = describe_connection_aliases_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeConnectionAliases", body)
+
     # DescribeCustomWorkspaceImageImport
     # errors: AccessDeniedException, ResourceNotFoundException
     def describe_custom_workspace_image_import(self, DescribeCustomWorkspaceImageImportRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeCustomWorkspaceImageImport", body)
+
+    # DescribeImageAssociations
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def describe_image_associations(self, DescribeImageAssociationsRequest input) -> str:
+        auto body = describe_image_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeImageAssociations", body)
+
+    # DescribeIpGroups
+    # errors: AccessDeniedException, InvalidParameterValuesException
+    def describe_ip_groups(self, DescribeIpGroupsRequest input) -> str:
+        auto body = describe_ip_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeIpGroups", body)
 
     # DescribeTags
     # errors: ResourceNotFoundException
@@ -2725,11 +3873,35 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeTags", body)
 
+    # DescribeWorkspaceAssociations
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def describe_workspace_associations(self, DescribeWorkspaceAssociationsRequest input) -> str:
+        auto body = describe_workspace_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceAssociations", body)
+
+    # DescribeWorkspaceBundles
+    # errors: InvalidParameterValuesException
+    def describe_workspace_bundles(self, DescribeWorkspaceBundlesRequest input) -> str:
+        auto body = describe_workspace_bundles_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceBundles", body)
+
+    # DescribeWorkspaceDirectories
+    # errors: InvalidParameterValuesException
+    def describe_workspace_directories(self, DescribeWorkspaceDirectoriesRequest input) -> str:
+        auto body = describe_workspace_directories_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceDirectories", body)
+
     # DescribeWorkspaceImagePermissions
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
     def describe_workspace_image_permissions(self, DescribeWorkspaceImagePermissionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceImagePermissions", body)
+
+    # DescribeWorkspaceImages
+    # errors: AccessDeniedException
+    def describe_workspace_images(self, DescribeWorkspaceImagesRequest input) -> str:
+        auto body = describe_workspace_images_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceImages", body)
 
     # DescribeWorkspaceSnapshots
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
@@ -2737,17 +3909,41 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceSnapshots", body)
 
+    # DescribeWorkspaces
+    # errors: InvalidParameterValuesException, ResourceUnavailableException
+    def describe_workspaces(self, DescribeWorkspacesRequest input) -> str:
+        auto body = describe_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaces", body)
+
+    # DescribeWorkspacesConnectionStatus
+    # errors: InvalidParameterValuesException
+    def describe_workspaces_connection_status(self, DescribeWorkspacesConnectionStatusRequest input) -> str:
+        auto body = describe_workspaces_connection_status_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesConnectionStatus", body)
+
     # DescribeWorkspacesPoolSessions
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
     def describe_workspaces_pool_sessions(self, DescribeWorkspacesPoolSessionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesPoolSessions", body)
 
+    # DescribeWorkspacesPools
+    # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
+    def describe_workspaces_pools(self, DescribeWorkspacesPoolsRequest input) -> str:
+        auto body = describe_workspaces_pools_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesPools", body)
+
     # DisassociateConnectionAlias
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
     def disassociate_connection_alias(self, DisassociateConnectionAliasRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DisassociateConnectionAlias", body)
+
+    # DisassociateIpGroups
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
+    def disassociate_ip_groups(self, DisassociateIpGroupsRequest input) -> str:
+        auto body = disassociate_ip_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DisassociateIpGroups", body)
 
     # DisassociateWorkspaceApplication
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceInUseException, ResourceNotFoundException
@@ -2760,6 +3956,30 @@ struct WorkSpacesClient:
     def get_account_link(self, GetAccountLinkRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "GetAccountLink", body)
+
+    # ImportClientBranding
+    # errors: AccessDeniedException, InvalidParameterValuesException, ResourceLimitExceededException, ResourceNotFoundException
+    def import_client_branding(self, ImportClientBrandingRequest input) -> str:
+        auto body = import_client_branding_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ImportClientBranding", body)
+
+    # ImportCustomWorkspaceImage
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
+    def import_custom_workspace_image(self, ImportCustomWorkspaceImageRequest input) -> str:
+        auto body = import_custom_workspace_image_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ImportCustomWorkspaceImage", body)
+
+    # ImportWorkspaceImage
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
+    def import_workspace_image(self, ImportWorkspaceImageRequest input) -> str:
+        auto body = import_workspace_image_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ImportWorkspaceImage", body)
+
+    # ListAccountLinks
+    # errors: AccessDeniedException, InternalServerException, ValidationException
+    def list_account_links(self, ListAccountLinksRequest input) -> str:
+        auto body = list_account_links_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ListAccountLinks", body)
 
     # ListAvailableManagementCidrRanges
     # errors: AccessDeniedException, InvalidParameterValuesException
@@ -2779,6 +3999,12 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyAccount", body)
 
+    # ModifyCertificateBasedAuthProperties
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def modify_certificate_based_auth_properties(self, ModifyCertificateBasedAuthPropertiesRequest input) -> str:
+        auto body = modify_certificate_based_auth_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyCertificateBasedAuthProperties", body)
+
     # ModifyClientProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
     def modify_client_properties(self, ModifyClientPropertiesRequest input) -> str:
@@ -2791,11 +4017,29 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyEndpointEncryptionMode", body)
 
+    # ModifySamlProperties
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def modify_saml_properties(self, ModifySamlPropertiesRequest input) -> str:
+        auto body = modify_saml_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifySamlProperties", body)
+
     # ModifySelfservicePermissions
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
     def modify_selfservice_permissions(self, ModifySelfservicePermissionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifySelfservicePermissions", body)
+
+    # ModifyStreamingProperties
+    # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def modify_streaming_properties(self, ModifyStreamingPropertiesRequest input) -> str:
+        auto body = modify_streaming_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyStreamingProperties", body)
+
+    # ModifyWorkspaceAccessProperties
+    # errors: AccessDeniedException, InvalidParameterCombinationException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
+    def modify_workspace_access_properties(self, ModifyWorkspaceAccessPropertiesRequest input) -> str:
+        auto body = modify_workspace_access_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceAccessProperties", body)
 
     # ModifyWorkspaceCreationProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
@@ -2803,11 +4047,35 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceCreationProperties", body)
 
+    # ModifyWorkspaceProperties
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, ResourceNotFoundException, ResourceUnavailableException, UnsupportedWorkspaceConfigurationException
+    def modify_workspace_properties(self, ModifyWorkspacePropertiesRequest input) -> str:
+        auto body = modify_workspace_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceProperties", body)
+
     # ModifyWorkspaceState
     # errors: InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
     def modify_workspace_state(self, ModifyWorkspaceStateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceState", body)
+
+    # RebootWorkspaces
+    # errors: OperationNotSupportedException
+    def reboot_workspaces(self, RebootWorkspacesRequest input) -> str:
+        auto body = reboot_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RebootWorkspaces", body)
+
+    # RebuildWorkspaces
+    # errors: OperationNotSupportedException
+    def rebuild_workspaces(self, RebuildWorkspacesRequest input) -> str:
+        auto body = rebuild_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RebuildWorkspaces", body)
+
+    # RegisterWorkspaceDirectory
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, UnsupportedNetworkConfigurationException, WorkspacesDefaultRoleNotFoundException
+    def register_workspace_directory(self, RegisterWorkspaceDirectoryRequest input) -> str:
+        auto body = register_workspace_directory_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RegisterWorkspaceDirectory", body)
 
     # RejectAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -2821,17 +4089,38 @@ struct WorkSpacesClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RestoreWorkspace", body)
 
+    # RevokeIpRules
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceNotFoundException
+    def revoke_ip_rules(self, RevokeIpRulesRequest input) -> str:
+        auto body = revoke_ip_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RevokeIpRules", body)
+
+    # StartWorkspaces
+    def start_workspaces(self, StartWorkspacesRequest input) -> str:
+        auto body = start_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StartWorkspaces", body)
+
     # StartWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
     def start_workspaces_pool(self, StartWorkspacesPoolRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StartWorkspacesPool", body)
 
+    # StopWorkspaces
+    def stop_workspaces(self, StopWorkspacesRequest input) -> str:
+        auto body = stop_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StopWorkspaces", body)
+
     # StopWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, ResourceNotFoundException
     def stop_workspaces_pool(self, StopWorkspacesPoolRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StopWorkspacesPool", body)
+
+    # TerminateWorkspaces
+    def terminate_workspaces(self, TerminateWorkspacesRequest input) -> str:
+        auto body = terminate_workspaces_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "TerminateWorkspaces", body)
 
     # TerminateWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, ResourceNotFoundException
@@ -2856,6 +4145,12 @@ struct WorkSpacesClient:
     def update_connection_alias_permission(self, UpdateConnectionAliasPermissionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateConnectionAliasPermission", body)
+
+    # UpdateRulesOfIpGroup
+    # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceLimitExceededException, ResourceNotFoundException
+    def update_rules_of_ip_group(self, UpdateRulesOfIpGroupRequest input) -> str:
+        auto body = update_rules_of_ip_group_request_to_json(input)
+        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateRulesOfIpGroup", body)
 
     # UpdateWorkspaceBundle
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException, ResourceUnavailableException
@@ -2882,6 +4177,104 @@ struct WorkSpacesClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeAccountModifications", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeIpGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Result).
+    def paginate_describe_ip_groups(self, DescribeIpGroupsRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = describe_ip_groups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeIpGroups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeWorkspaceBundles — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Bundles).
+    def paginate_describe_workspace_bundles(self, DescribeWorkspaceBundlesRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = describe_workspace_bundles_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceBundles", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeWorkspaceDirectories — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Directories).
+    def paginate_describe_workspace_directories(self, DescribeWorkspaceDirectoriesRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = describe_workspace_directories_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceDirectories", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeWorkspaceImages — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Images).
+    def paginate_describe_workspace_images(self, DescribeWorkspaceImagesRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = describe_workspace_images_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceImages", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeWorkspaces — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Workspaces).
+    def paginate_describe_workspaces(self, DescribeWorkspacesRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = describe_workspaces_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaces", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeWorkspacesConnectionStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WorkspacesConnectionStatus).
+    def paginate_describe_workspaces_connection_status(self, DescribeWorkspacesConnectionStatusRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = describe_workspaces_connection_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesConnectionStatus", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListAccountLinks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AccountLinks).
+    def paginate_list_account_links(self, ListAccountLinksRequest input):
+        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
+        while True:
+            auto body = list_account_links_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ListAccountLinks", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

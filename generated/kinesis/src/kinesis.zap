@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 45 operations — 34 with a generated method,
-#   11 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 45 operations — 45 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   132 structs (94 @derive(Json)), 16 enums, 17 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -178,16 +178,18 @@ enum StreamStatus:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToStreamInput:
     Optional[str] StreamName
     dict[str, str] Tags
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) StreamConfigurationList: list[ChannelStreamDescription], S3TablesDestinationConfiguration: S3TablesDestinationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamConfigurationList: list[ChannelStreamDescription], S3TablesDestinationConfiguration: S3TablesDestinationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelDescription:
     str ChannelName
     str ChannelARN
@@ -231,8 +233,9 @@ struct ChannelStreamIdentifier:
     str StreamARN
     DateTime StreamCreationTimestamp
 
-# no @derive(Json): member(s) Streams: list[ChannelStreamIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[ChannelStreamIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelSummary:
     str ChannelName
     str ChannelARN
@@ -243,8 +246,9 @@ struct ChannelSummary:
     ChannelDestinationType ChannelDestinationType
     list[ChannelStreamIdentifier] Streams
 
-# no @derive(Json): member(s) ParentShards: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParentShards: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChildShard:
     str ShardId
     list[str] ParentShards
@@ -277,8 +281,9 @@ struct ConsumerDescription:
     DateTime ConsumerCreationTimestamp
     str StreamARN
 
-# no @derive(Json): member(s) StreamConfigurationList: list[ChannelStreamConfiguration], S3TablesDestinationConfiguration: S3TablesDestinationConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamConfigurationList: list[ChannelStreamConfiguration], S3TablesDestinationConfiguration: S3TablesDestinationConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelInput:
     str ChannelName
     str ServiceExecutionRoleARN
@@ -289,13 +294,15 @@ struct CreateChannelInput:
     Optional[dict[str, str]] Tags
     Optional[ChannelLoggingConfiguration] LoggingConfiguration
 
-# no @derive(Json): member(s) ChannelDescription: ChannelDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelDescription: ChannelDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelOutput:
     ChannelDescription ChannelDescription
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStreamInput:
     str StreamName
     Optional[int64] ShardCount
@@ -354,8 +361,9 @@ struct DescribeAccountSettingsOutput:
 struct DescribeChannelInput:
     str ChannelARN
 
-# no @derive(Json): member(s) ChannelDescription: ChannelDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelDescription: ChannelDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelOutput:
     ChannelDescription ChannelDescription
 
@@ -392,8 +400,9 @@ struct DescribeStreamInput:
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) StreamDescription: StreamDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamDescription: StreamDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStreamOutput:
     StreamDescription StreamDescription
 
@@ -403,13 +412,15 @@ struct DescribeStreamSummaryInput:
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) StreamDescriptionSummary: StreamDescriptionSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamDescriptionSummary: StreamDescriptionSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStreamSummaryOutput:
     StreamDescriptionSummary StreamDescriptionSummary
 
-# no @derive(Json): member(s) ShardLevelMetrics: list[MetricsName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShardLevelMetrics: list[MetricsName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisableEnhancedMonitoringInput:
     Optional[str] StreamName
     list[MetricsName] ShardLevelMetrics
@@ -420,21 +431,24 @@ struct DisableEnhancedMonitoringInput:
 struct DryRunOperationException:
     Optional[str] message
 
-# no @derive(Json): member(s) ShardLevelMetrics: list[MetricsName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShardLevelMetrics: list[MetricsName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableEnhancedMonitoringInput:
     Optional[str] StreamName
     list[MetricsName] ShardLevelMetrics
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) ShardLevelMetrics: list[MetricsName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShardLevelMetrics: list[MetricsName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnhancedMetrics:
     Optional[list[MetricsName]] ShardLevelMetrics
 
-# no @derive(Json): member(s) CurrentShardLevelMetrics: list[MetricsName], DesiredShardLevelMetrics: list[MetricsName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CurrentShardLevelMetrics: list[MetricsName], DesiredShardLevelMetrics: list[MetricsName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnhancedMonitoringOutput:
     Optional[str] StreamName
     Optional[list[MetricsName]] CurrentShardLevelMetrics
@@ -457,8 +471,9 @@ struct GetRecordsInput:
     Optional[str] StreamId
     Optional[bool] DryRun
 
-# no @derive(Json): member(s) Records: list[Record], ChildShards: list[ChildShard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record], ChildShards: list[ChildShard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecordsOutput:
     list[Record] Records
     Optional[str] NextShardIterator
@@ -537,15 +552,17 @@ struct KMSThrottlingException:
 struct LimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) StreamFilter: list[StreamFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamFilter: list[StreamFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsInput:
     Optional[list[StreamFilter]] StreamFilter
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ChannelSummaries: list[ChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelSummaries: list[ChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsOutput:
     list[ChannelSummary] ChannelSummaries
     Optional[str] NextToken
@@ -561,8 +578,9 @@ struct ListShardsInput:
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) Shards: list[Shard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Shards: list[Shard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListShardsOutput:
     Optional[list[Shard]] Shards
     Optional[str] NextToken
@@ -575,8 +593,9 @@ struct ListStreamConsumersInput:
     Optional[DateTime] StreamCreationTimestamp
     Optional[str] StreamId
 
-# no @derive(Json): member(s) Consumers: list[Consumer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Consumers: list[Consumer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamConsumersOutput:
     Optional[list[Consumer]] Consumers
     Optional[str] NextToken
@@ -587,8 +606,9 @@ struct ListStreamsInput:
     Optional[str] ExclusiveStartStreamName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) StreamNames: list[str], StreamSummaries: list[StreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamNames: list[str], StreamSummaries: list[StreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsOutput:
     list[str] StreamNames
     bool HasMoreStreams
@@ -600,8 +620,9 @@ struct ListTagsForResourceInput:
     str ResourceARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
 
@@ -613,8 +634,9 @@ struct ListTagsForStreamInput:
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForStreamOutput:
     list[Tag] Tags
     bool HasMoreTags
@@ -643,8 +665,9 @@ struct PartitionField:
     str Transform
     str SourceName
 
-# no @derive(Json): member(s) PartitionFields: list[PartitionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionFields: list[PartitionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionSpec:
     list[PartitionField] PartitionFields
 
@@ -669,8 +692,9 @@ struct PutRecordOutput:
     str SequenceNumber
     Optional[EncryptionType] EncryptionType
 
-# no @derive(Json): member(s) Records: list[PutRecordsRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[PutRecordsRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRecordsInput:
     list[PutRecordsRequestEntry] Records
     Optional[str] StreamName
@@ -678,8 +702,9 @@ struct PutRecordsInput:
     Optional[str] StreamId
     Optional[bool] DryRun
 
-# no @derive(Json): member(s) Records: list[PutRecordsResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[PutRecordsResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRecordsOutput:
     Optional[int64] FailedRecordCount
     list[PutRecordsResultEntry] Records
@@ -717,8 +742,9 @@ struct RecordConfiguration:
     RecordFormatType RecordFormatType
     Optional[str] GSRSchemaARN
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterStreamConsumerInput:
     str StreamARN
     str ConsumerName
@@ -729,8 +755,9 @@ struct RegisterStreamConsumerInput:
 struct RegisterStreamConsumerOutput:
     Consumer Consumer
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromStreamInput:
     Optional[str] StreamName
     list[str] TagKeys
@@ -769,8 +796,9 @@ struct S3StorageConfiguration:
     Optional[S3StorageClass] StorageClass
     S3CompressionType CompressionType
 
-# no @derive(Json): member(s) PartitionSpec: PartitionSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionSpec: PartitionSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3TablesConfiguration:
     str TableBucketARN
     str Namespace
@@ -778,15 +806,17 @@ struct S3TablesConfiguration:
     S3TablesCompressionType CompressionType
     Optional[PartitionSpec] PartitionSpec
 
-# no @derive(Json): member(s) S3TablesConfigurationList: list[S3TablesConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3TablesConfigurationList: list[S3TablesConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3TablesDestinationConfiguration:
     Optional[int64] DataFreshnessInSeconds
     DeadLetterQueueS3Configuration DeadLetterQueueS3Configuration
     list[S3TablesConfiguration] S3TablesConfigurationList
 
-# no @derive(Json): member(s) S3TablesConfigurationList: list[S3TablesConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3TablesConfigurationList: list[S3TablesConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3TablesDestinationDescription:
     int64 DataFreshnessInSeconds
     DeadLetterQueueS3Configuration DeadLetterQueueS3Configuration
@@ -845,8 +875,9 @@ struct StopStreamEncryptionInput:
     Optional[str] StreamARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) Shards: list[Shard], EnhancedMonitoring: list[EnhancedMetrics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Shards: list[Shard], EnhancedMonitoring: list[EnhancedMetrics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamDescription:
     str StreamName
     str StreamARN
@@ -860,8 +891,9 @@ struct StreamDescription:
     Optional[EncryptionType] EncryptionType
     Optional[str] KeyId
 
-# no @derive(Json): member(s) EnhancedMonitoring: list[EnhancedMetrics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnhancedMonitoring: list[EnhancedMetrics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamDescriptionSummary:
     str StreamName
     str StreamARN
@@ -897,16 +929,18 @@ struct StreamSummary:
     Optional[StreamModeDetails] StreamModeDetails
     Optional[DateTime] StreamCreationTimestamp
 
-# no @derive(Json): member(s) Records: list[Record], ChildShards: list[ChildShard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record], ChildShards: list[ChildShard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribeToShardEvent:
     list[Record] Records
     str ContinuationSequenceNumber
     int64 MillisBehindLatest
     Optional[list[ChildShard]] ChildShards
 
-# no @derive(Json): member(s) SubscribeToShardEvent: SubscribeToShardEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubscribeToShardEvent: SubscribeToShardEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribeToShardEventStream:
     SubscribeToShardEvent SubscribeToShardEvent
     Optional[ResourceNotFoundException] ResourceNotFoundException
@@ -927,8 +961,9 @@ struct SubscribeToShardInput:
     StartingPosition StartingPosition
     Optional[bool] DryRun
 
-# no @derive(Json): member(s) EventStream: SubscribeToShardEventStream not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventStream: SubscribeToShardEventStream not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribeToShardOutput:
     SubscribeToShardEventStream EventStream
 
@@ -937,15 +972,17 @@ struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     dict[str, str] Tags
     str ResourceARN
     Optional[str] StreamId
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     list[str] TagKeys
     str ResourceARN
@@ -966,8 +1003,9 @@ struct UpdateChannelInput:
     Optional[S3TablesDestinationUpdateInput] S3TablesDestinationConfiguration
     Optional[ChannelLoggingUpdateInput] LoggingConfiguration
 
-# no @derive(Json): member(s) ChannelDescription: ChannelDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelDescription: ChannelDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelOutput:
     ChannelDescription ChannelDescription
 
@@ -1091,29 +1129,304 @@ def kinesis_error_from_code(str code) -> KinesisError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTagsToStream (input AddTagsToStreamInput)
-#   CreateChannel (input CreateChannelInput)
-#   CreateStream (input CreateStreamInput)
-#   DisableEnhancedMonitoring (input DisableEnhancedMonitoringInput)
-#   EnableEnhancedMonitoring (input EnableEnhancedMonitoringInput)
-#   ListChannels (input ListChannelsInput)
-#   PutRecords (input PutRecordsInput)
-#   RegisterStreamConsumer (input RegisterStreamConsumerInput)
-#   RemoveTagsFromStream (input RemoveTagsFromStreamInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-
 # Paginated operations (paginators-1.json) not surfaced in v0 — their input
 # is skipped above, or the continuation token is not a simple string field:
 #   DescribeStream (output_token StreamDescription.Shards[-1].ShardId is a nested path, not a flat field)
-#   ListChannels (input not derivable (no generated method))
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kinesis_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kinesis_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kinesis_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsToStreamInput to a compact JSON object (declaration order).
+def add_tags_to_stream_input_to_json(AddTagsToStreamInput v) -> str:
+    list[str] parts = []
+    if v.StreamName.is_some():
+        auto u0 = v.StreamName.unwrap()
+        parts.append("\"StreamName\":" + kinesis_json_str(u0))
+    list[str] m1 = []
+    for k1 in sorted(v.Tags.keys()):
+        m1.append(kinesis_json_str(k1) + ":" + kinesis_json_str(v.Tags[k1]))
+    parts.append("\"Tags\":" + kinesis_json_obj(m1))
+    if v.StreamARN.is_some():
+        auto u2 = v.StreamARN.unwrap()
+        parts.append("\"StreamARN\":" + kinesis_json_str(u2))
+    if v.StreamId.is_some():
+        auto u3 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u3))
+    return kinesis_json_obj(parts)
+
+# Serialize CreateChannelInput to a compact JSON object (declaration order).
+def create_channel_input_to_json(CreateChannelInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ChannelName\":" + kinesis_json_str(v.ChannelName))
+    parts.append("\"ServiceExecutionRoleARN\":" + kinesis_json_str(v.ServiceExecutionRoleARN))
+    list[str] e0 = []
+    for x0 in v.StreamConfigurationList:
+        e0.append(x0.to_json())
+    parts.append("\"StreamConfigurationList\":" + kinesis_json_arr(e0))
+    if v.S3DestinationConfiguration.is_some():
+        auto u1 = v.S3DestinationConfiguration.unwrap()
+        parts.append("\"S3DestinationConfiguration\":" + u1.to_json())
+    if v.S3TablesDestinationConfiguration.is_some():
+        auto u2 = v.S3TablesDestinationConfiguration.unwrap()
+        parts.append("\"S3TablesDestinationConfiguration\":" + s3_tables_destination_configuration_to_json(u2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(kinesis_json_str(k5) + ":" + kinesis_json_str(u4[k5]))
+        parts.append("\"Tags\":" + kinesis_json_obj(m5))
+    if v.LoggingConfiguration.is_some():
+        auto u6 = v.LoggingConfiguration.unwrap()
+        parts.append("\"LoggingConfiguration\":" + u6.to_json())
+    return kinesis_json_obj(parts)
+
+# Serialize CreateStreamInput to a compact JSON object (declaration order).
+def create_stream_input_to_json(CreateStreamInput v) -> str:
+    list[str] parts = []
+    parts.append("\"StreamName\":" + kinesis_json_str(v.StreamName))
+    if v.ShardCount.is_some():
+        auto u0 = v.ShardCount.unwrap()
+        parts.append("\"ShardCount\":" + str(u0))
+    if v.StreamModeDetails.is_some():
+        auto u1 = v.StreamModeDetails.unwrap()
+        parts.append("\"StreamModeDetails\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(kinesis_json_str(k3) + ":" + kinesis_json_str(u2[k3]))
+        parts.append("\"Tags\":" + kinesis_json_obj(m3))
+    if v.WarmThroughputMiBps.is_some():
+        auto u4 = v.WarmThroughputMiBps.unwrap()
+        parts.append("\"WarmThroughputMiBps\":" + str(u4))
+    if v.MaxRecordSizeInKiB.is_some():
+        auto u5 = v.MaxRecordSizeInKiB.unwrap()
+        parts.append("\"MaxRecordSizeInKiB\":" + str(u5))
+    if v.RecordDistributionStrategy.is_some():
+        auto u6 = v.RecordDistributionStrategy.unwrap()
+        parts.append("\"RecordDistributionStrategy\":" + u6.to_json())
+    return kinesis_json_obj(parts)
+
+# Serialize DisableEnhancedMonitoringInput to a compact JSON object (declaration order).
+def disable_enhanced_monitoring_input_to_json(DisableEnhancedMonitoringInput v) -> str:
+    list[str] parts = []
+    if v.StreamName.is_some():
+        auto u0 = v.StreamName.unwrap()
+        parts.append("\"StreamName\":" + kinesis_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.ShardLevelMetrics:
+        e1.append(x1.to_json())
+    parts.append("\"ShardLevelMetrics\":" + kinesis_json_arr(e1))
+    if v.StreamARN.is_some():
+        auto u2 = v.StreamARN.unwrap()
+        parts.append("\"StreamARN\":" + kinesis_json_str(u2))
+    if v.StreamId.is_some():
+        auto u3 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u3))
+    return kinesis_json_obj(parts)
+
+# Serialize EnableEnhancedMonitoringInput to a compact JSON object (declaration order).
+def enable_enhanced_monitoring_input_to_json(EnableEnhancedMonitoringInput v) -> str:
+    list[str] parts = []
+    if v.StreamName.is_some():
+        auto u0 = v.StreamName.unwrap()
+        parts.append("\"StreamName\":" + kinesis_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.ShardLevelMetrics:
+        e1.append(x1.to_json())
+    parts.append("\"ShardLevelMetrics\":" + kinesis_json_arr(e1))
+    if v.StreamARN.is_some():
+        auto u2 = v.StreamARN.unwrap()
+        parts.append("\"StreamARN\":" + kinesis_json_str(u2))
+    if v.StreamId.is_some():
+        auto u3 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u3))
+    return kinesis_json_obj(parts)
+
+# Serialize ListChannelsInput to a compact JSON object (declaration order).
+def list_channels_input_to_json(ListChannelsInput v) -> str:
+    list[str] parts = []
+    if v.StreamFilter.is_some():
+        auto u0 = v.StreamFilter.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StreamFilter\":" + kinesis_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + kinesis_json_str(u3))
+    return kinesis_json_obj(parts)
+
+# Serialize PartitionSpec to a compact JSON object (declaration order).
+def partition_spec_to_json(PartitionSpec v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PartitionFields:
+        e0.append(x0.to_json())
+    parts.append("\"PartitionFields\":" + kinesis_json_arr(e0))
+    return kinesis_json_obj(parts)
+
+# Serialize PutRecordsInput to a compact JSON object (declaration order).
+def put_records_input_to_json(PutRecordsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Records:
+        e0.append(x0.to_json())
+    parts.append("\"Records\":" + kinesis_json_arr(e0))
+    if v.StreamName.is_some():
+        auto u1 = v.StreamName.unwrap()
+        parts.append("\"StreamName\":" + kinesis_json_str(u1))
+    if v.StreamARN.is_some():
+        auto u2 = v.StreamARN.unwrap()
+        parts.append("\"StreamARN\":" + kinesis_json_str(u2))
+    if v.StreamId.is_some():
+        auto u3 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u3))
+    if v.DryRun.is_some():
+        auto u4 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u4)))
+    return kinesis_json_obj(parts)
+
+# Serialize RegisterStreamConsumerInput to a compact JSON object (declaration order).
+def register_stream_consumer_input_to_json(RegisterStreamConsumerInput v) -> str:
+    list[str] parts = []
+    parts.append("\"StreamARN\":" + kinesis_json_str(v.StreamARN))
+    parts.append("\"ConsumerName\":" + kinesis_json_str(v.ConsumerName))
+    if v.StreamId.is_some():
+        auto u0 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(kinesis_json_str(k2) + ":" + kinesis_json_str(u1[k2]))
+        parts.append("\"Tags\":" + kinesis_json_obj(m2))
+    return kinesis_json_obj(parts)
+
+# Serialize RemoveTagsFromStreamInput to a compact JSON object (declaration order).
+def remove_tags_from_stream_input_to_json(RemoveTagsFromStreamInput v) -> str:
+    list[str] parts = []
+    if v.StreamName.is_some():
+        auto u0 = v.StreamName.unwrap()
+        parts.append("\"StreamName\":" + kinesis_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.TagKeys:
+        e1.append(kinesis_json_str(x1))
+    parts.append("\"TagKeys\":" + kinesis_json_arr(e1))
+    if v.StreamARN.is_some():
+        auto u2 = v.StreamARN.unwrap()
+        parts.append("\"StreamARN\":" + kinesis_json_str(u2))
+    if v.StreamId.is_some():
+        auto u3 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u3))
+    return kinesis_json_obj(parts)
+
+# Serialize S3TablesConfiguration to a compact JSON object (declaration order).
+def s3_tables_configuration_to_json(S3TablesConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"TableBucketARN\":" + kinesis_json_str(v.TableBucketARN))
+    parts.append("\"Namespace\":" + kinesis_json_str(v.Namespace))
+    parts.append("\"TableName\":" + kinesis_json_str(v.TableName))
+    parts.append("\"CompressionType\":" + v.CompressionType.to_json())
+    if v.PartitionSpec.is_some():
+        auto u0 = v.PartitionSpec.unwrap()
+        parts.append("\"PartitionSpec\":" + partition_spec_to_json(u0))
+    return kinesis_json_obj(parts)
+
+# Serialize S3TablesDestinationConfiguration to a compact JSON object (declaration order).
+def s3_tables_destination_configuration_to_json(S3TablesDestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.DataFreshnessInSeconds.is_some():
+        auto u0 = v.DataFreshnessInSeconds.unwrap()
+        parts.append("\"DataFreshnessInSeconds\":" + str(u0))
+    parts.append("\"DeadLetterQueueS3Configuration\":" + v.DeadLetterQueueS3Configuration.to_json())
+    list[str] e1 = []
+    for x1 in v.S3TablesConfigurationList:
+        e1.append(s3_tables_configuration_to_json(x1))
+    parts.append("\"S3TablesConfigurationList\":" + kinesis_json_arr(e1))
+    return kinesis_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(kinesis_json_str(k0) + ":" + kinesis_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + kinesis_json_obj(m0))
+    parts.append("\"ResourceARN\":" + kinesis_json_str(v.ResourceARN))
+    if v.StreamId.is_some():
+        auto u1 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u1))
+    return kinesis_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(kinesis_json_str(x0))
+    parts.append("\"TagKeys\":" + kinesis_json_arr(e0))
+    parts.append("\"ResourceARN\":" + kinesis_json_str(v.ResourceARN))
+    if v.StreamId.is_some():
+        auto u1 = v.StreamId.unwrap()
+        parts.append("\"StreamId\":" + kinesis_json_str(u1))
+    return kinesis_json_obj(parts)
 
 # A bound Kinesis client: credentials + region, threaded into every operation.
 struct KinesisClient:
     core.Credentials creds
     str region
+
+    # AddTagsToStream
+    # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def add_tags_to_stream(self, AddTagsToStreamInput input) -> str:
+        auto body = add_tags_to_stream_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "AddTagsToStream", body)
+
+    # CreateChannel
+    # errors: AccessDeniedException, InvalidArgumentException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, KMSOptInRequired, KMSThrottlingException, LimitExceededException, ResourceInUseException, ResourceNotFoundException, ValidationException
+    def create_channel(self, CreateChannelInput input) -> str:
+        auto body = create_channel_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "CreateChannel", body)
+
+    # CreateStream
+    # errors: InvalidArgumentException, LimitExceededException, ResourceInUseException, ValidationException
+    def create_stream(self, CreateStreamInput input) -> str:
+        auto body = create_stream_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "CreateStream", body)
 
     # DecreaseStreamRetentionPeriod
     # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
@@ -1181,6 +1494,18 @@ struct KinesisClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "DescribeStreamSummary", body)
 
+    # DisableEnhancedMonitoring
+    # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def disable_enhanced_monitoring(self, DisableEnhancedMonitoringInput input) -> str:
+        auto body = disable_enhanced_monitoring_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "DisableEnhancedMonitoring", body)
+
+    # EnableEnhancedMonitoring
+    # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def enable_enhanced_monitoring(self, EnableEnhancedMonitoringInput input) -> str:
+        auto body = enable_enhanced_monitoring_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "EnableEnhancedMonitoring", body)
+
     # GetRecords
     # errors: AccessDeniedException, DryRunOperationException, ExpiredIteratorException, InternalFailureException, InvalidArgumentException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, KMSOptInRequired, KMSThrottlingException, ProvisionedThroughputExceededException, ResourceNotFoundException
     def get_records(self, GetRecordsInput input) -> str:
@@ -1204,6 +1529,12 @@ struct KinesisClient:
     def increase_stream_retention_period(self, IncreaseStreamRetentionPeriodInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "IncreaseStreamRetentionPeriod", body)
+
+    # ListChannels
+    # errors: AccessDeniedException, ExpiredNextTokenException, InvalidArgumentException, LimitExceededException, ValidationException
+    def list_channels(self, ListChannelsInput input) -> str:
+        auto body = list_channels_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "ListChannels", body)
 
     # ListShards
     # errors: AccessDeniedException, ExpiredNextTokenException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
@@ -1247,11 +1578,29 @@ struct KinesisClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "PutRecord", body)
 
+    # PutRecords
+    # errors: AccessDeniedException, DryRunOperationException, InternalFailureException, InvalidArgumentException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, KMSOptInRequired, KMSThrottlingException, ProvisionedThroughputExceededException, ResourceNotFoundException
+    def put_records(self, PutRecordsInput input) -> str:
+        auto body = put_records_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "PutRecords", body)
+
     # PutResourcePolicy
     # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
     def put_resource_policy(self, PutResourcePolicyInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+
+    # RegisterStreamConsumer
+    # errors: InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def register_stream_consumer(self, RegisterStreamConsumerInput input) -> str:
+        auto body = register_stream_consumer_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "RegisterStreamConsumer", body)
+
+    # RemoveTagsFromStream
+    # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def remove_tags_from_stream(self, RemoveTagsFromStreamInput input) -> str:
+        auto body = remove_tags_from_stream_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "RemoveTagsFromStream", body)
 
     # SplitShard
     # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException, ValidationException
@@ -1276,6 +1625,18 @@ struct KinesisClient:
     def subscribe_to_shard(self, SubscribeToShardInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "SubscribeToShard", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAccountSettings
     # errors: InvalidArgumentException, LimitExceededException, ValidationException
@@ -1318,6 +1679,20 @@ struct KinesisClient:
     def update_stream_warm_throughput(self, UpdateStreamWarmThroughputInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "UpdateStreamWarmThroughput", body)
+
+    # Paginator for ListChannels — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ChannelSummaries).
+    def paginate_list_channels(self, ListChannelsInput input):
+        auto host = endpoints.regional_host(kinesis_protocol().service, self.region)
+        while True:
+            auto body = list_channels_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, "ListChannels", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListShards — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Shards).

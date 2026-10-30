@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 3 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 5 operations — 5 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (21 @derive(Json)), 5 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -88,8 +88,9 @@ enum MessageFormatType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActiveContext:
     str name
     ActiveContextTimeToLive timeToLive
@@ -135,8 +136,9 @@ struct DeleteSessionResponse:
 struct DependencyFailedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) slots: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slots: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DialogAction:
     DialogActionType type
     Optional[str] intentName
@@ -146,8 +148,9 @@ struct DialogAction:
     Optional[str] message
     Optional[MessageFormatType] messageFormat
 
-# no @derive(Json): member(s) buttons: list[Button] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buttons: list[Button] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenericAttachment:
     Optional[str] title
     Optional[str] subTitle
@@ -163,8 +166,9 @@ struct GetSessionRequest:
     str userId
     Optional[str] checkpointLabelFilter
 
-# no @derive(Json): member(s) recentIntentSummaryView: list[IntentSummary], sessionAttributes: dict[str, str], dialogAction: DialogAction, activeContexts: list[ActiveContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recentIntentSummaryView: list[IntentSummary], sessionAttributes: dict[str, str], dialogAction: DialogAction, activeContexts: list[ActiveContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Optional[list[IntentSummary]] recentIntentSummaryView
     Optional[dict[str, str]] sessionAttributes
@@ -176,8 +180,9 @@ struct GetSessionResponse:
 struct IntentConfidence:
     Optional[float64] score
 
-# no @derive(Json): member(s) slots: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slots: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentSummary:
     Optional[str] intentName
     Optional[str] checkpointLabel
@@ -253,8 +258,9 @@ struct PostTextRequest:
     str inputText
     Optional[list[ActiveContext]] activeContexts
 
-# no @derive(Json): member(s) alternativeIntents: list[PredictedIntent], slots: dict[str, str], sessionAttributes: dict[str, str], responseCard: ResponseCard, activeContexts: list[ActiveContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alternativeIntents: list[PredictedIntent], slots: dict[str, str], sessionAttributes: dict[str, str], responseCard: ResponseCard, activeContexts: list[ActiveContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostTextResponse:
     Optional[str] intentName
     Optional[IntentConfidence] nluIntentConfidence
@@ -271,8 +277,9 @@ struct PostTextResponse:
     Optional[str] botVersion
     Optional[list[ActiveContext]] activeContexts
 
-# no @derive(Json): member(s) slots: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slots: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictedIntent:
     Optional[str] intentName
     Optional[IntentConfidence] nluIntentConfidence
@@ -309,8 +316,9 @@ struct PutSessionResponse:
 struct RequestTimeoutException:
     Optional[str] message
 
-# no @derive(Json): member(s) genericAttachments: list[GenericAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) genericAttachments: list[GenericAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseCard:
     Optional[str] version
     Optional[str] contentType
@@ -372,11 +380,100 @@ def runtime_lex_error_from_code(str code) -> Lex_Runtime_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   PostText (document member `sessionAttributes: dict[str, str]` is not serializable by derive)
-#   PutSession (document member `sessionAttributes: dict[str, str]` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def runtime_lex_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def runtime_lex_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def runtime_lex_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActiveContext to a compact JSON object (declaration order).
+def active_context_to_json(ActiveContext v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + runtime_lex_json_str(v.name))
+    parts.append("\"timeToLive\":" + v.timeToLive.to_json())
+    list[str] m0 = []
+    for k0 in sorted(v.parameters.keys()):
+        m0.append(runtime_lex_json_str(k0) + ":" + runtime_lex_json_str(v.parameters[k0]))
+    parts.append("\"parameters\":" + runtime_lex_json_obj(m0))
+    return runtime_lex_json_obj(parts)
+
+# Serialize DialogAction to a compact JSON object (declaration order).
+def dialog_action_to_json(DialogAction v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.intentName.is_some():
+        auto u0 = v.intentName.unwrap()
+        parts.append("\"intentName\":" + runtime_lex_json_str(u0))
+    if v.slots.is_some():
+        auto u1 = v.slots.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(runtime_lex_json_str(k2) + ":" + runtime_lex_json_str(u1[k2]))
+        parts.append("\"slots\":" + runtime_lex_json_obj(m2))
+    if v.slotToElicit.is_some():
+        auto u3 = v.slotToElicit.unwrap()
+        parts.append("\"slotToElicit\":" + runtime_lex_json_str(u3))
+    if v.fulfillmentState.is_some():
+        auto u4 = v.fulfillmentState.unwrap()
+        parts.append("\"fulfillmentState\":" + u4.to_json())
+    if v.message.is_some():
+        auto u5 = v.message.unwrap()
+        parts.append("\"message\":" + runtime_lex_json_str(u5))
+    if v.messageFormat.is_some():
+        auto u6 = v.messageFormat.unwrap()
+        parts.append("\"messageFormat\":" + u6.to_json())
+    return runtime_lex_json_obj(parts)
+
+# Serialize IntentSummary to a compact JSON object (declaration order).
+def intent_summary_to_json(IntentSummary v) -> str:
+    list[str] parts = []
+    if v.intentName.is_some():
+        auto u0 = v.intentName.unwrap()
+        parts.append("\"intentName\":" + runtime_lex_json_str(u0))
+    if v.checkpointLabel.is_some():
+        auto u1 = v.checkpointLabel.unwrap()
+        parts.append("\"checkpointLabel\":" + runtime_lex_json_str(u1))
+    if v.slots.is_some():
+        auto u2 = v.slots.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(runtime_lex_json_str(k3) + ":" + runtime_lex_json_str(u2[k3]))
+        parts.append("\"slots\":" + runtime_lex_json_obj(m3))
+    if v.confirmationStatus.is_some():
+        auto u4 = v.confirmationStatus.unwrap()
+        parts.append("\"confirmationStatus\":" + u4.to_json())
+    parts.append("\"dialogActionType\":" + v.dialogActionType.to_json())
+    if v.fulfillmentState.is_some():
+        auto u5 = v.fulfillmentState.unwrap()
+        parts.append("\"fulfillmentState\":" + u5.to_json())
+    if v.slotToElicit.is_some():
+        auto u6 = v.slotToElicit.unwrap()
+        parts.append("\"slotToElicit\":" + runtime_lex_json_str(u6))
+    return runtime_lex_json_obj(parts)
 
 # A bound Lex_Runtime_Service client: credentials + region, threaded into every operation.
 struct Lex_Runtime_ServiceClient:
@@ -428,6 +525,75 @@ struct Lex_Runtime_ServiceClient:
             headers["x-amz-lex-active-contexts"] = input.activeContexts.unwrap_or("")
         auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/content", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.inputStream), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, runtime_lex_service(), self.region, host)
+
+    # PostText  POST /bot/{botName}/alias/{botAlias}/user/{userId}/text
+    # errors: BadGatewayException, BadRequestException, ConflictException, DependencyFailedException, InternalFailureException, LimitExceededException, LoopDetectedException, NotFoundException
+    def post_text(self, PostTextRequest input) -> str:
+        auto host = endpoints.regional_host(runtime_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botName"] = input.botName
+        labels["botAlias"] = input.botAlias
+        labels["userId"] = input.userId
+        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/text", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sessionAttributes.is_some():
+            auto u0 = input.sessionAttributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(runtime_lex_json_str(k1) + ":" + runtime_lex_json_str(u0[k1]))
+            parts.append("\"sessionAttributes\":" + runtime_lex_json_obj(m1))
+        if input.requestAttributes.is_some():
+            auto u2 = input.requestAttributes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(runtime_lex_json_str(k3) + ":" + runtime_lex_json_str(u2[k3]))
+            parts.append("\"requestAttributes\":" + runtime_lex_json_obj(m3))
+        parts.append("\"inputText\":" + runtime_lex_json_str(input.inputText))
+        if input.activeContexts.is_some():
+            auto u4 = input.activeContexts.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(active_context_to_json(x5))
+            parts.append("\"activeContexts\":" + runtime_lex_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, runtime_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, runtime_lex_service(), self.region, host)
+
+    # PutSession  POST /bot/{botName}/alias/{botAlias}/user/{userId}/session
+    # errors: BadGatewayException, BadRequestException, ConflictException, DependencyFailedException, InternalFailureException, LimitExceededException, NotAcceptableException, NotFoundException
+    def put_session(self, PutSessionRequest input) -> str:
+        auto host = endpoints.regional_host(runtime_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botName"] = input.botName
+        labels["botAlias"] = input.botAlias
+        labels["userId"] = input.userId
+        dict[str, str] headers = {}
+        if input.accept.is_some():
+            headers["Accept"] = input.accept.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sessionAttributes.is_some():
+            auto u0 = input.sessionAttributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(runtime_lex_json_str(k1) + ":" + runtime_lex_json_str(u0[k1]))
+            parts.append("\"sessionAttributes\":" + runtime_lex_json_obj(m1))
+        if input.dialogAction.is_some():
+            auto u2 = input.dialogAction.unwrap()
+            parts.append("\"dialogAction\":" + dialog_action_to_json(u2))
+        if input.recentIntentSummaryView.is_some():
+            auto u3 = input.recentIntentSummaryView.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(intent_summary_to_json(x4))
+            parts.append("\"recentIntentSummaryView\":" + runtime_lex_json_arr(e4))
+        if input.activeContexts.is_some():
+            auto u5 = input.activeContexts.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(active_context_to_json(x6))
+            parts.append("\"activeContexts\":" + runtime_lex_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, runtime_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, runtime_lex_service(), self.region, host)
 
 # Construct a Lex_Runtime_ServiceClient bound to credentials + region.

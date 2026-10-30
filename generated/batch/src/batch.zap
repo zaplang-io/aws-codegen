@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 19 with a generated method,
-#   29 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 48 operations — 47 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   245 structs (124 @derive(Json)), 35 enums, 2 error variants.
-#   2 paginators generated (8 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -342,24 +342,27 @@ enum UserdataType:
 struct ArrayProperties:
     Optional[int64] size
 
-# no @derive(Json): member(s) statusSummary: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusSummary: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArrayPropertiesDetail:
     Optional[dict[str, int64]] statusSummary
     Optional[int64] statusSummaryLastUpdatedAt
     Optional[int64] size
     Optional[int64] index
 
-# no @derive(Json): member(s) statusSummary: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusSummary: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArrayPropertiesSummary:
     Optional[int64] size
     Optional[int64] index
     Optional[dict[str, int64]] statusSummary
     Optional[int64] statusSummaryLastUpdatedAt
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttemptContainerDetail:
     Optional[str] containerInstanceArn
     Optional[str] taskArn
@@ -368,8 +371,9 @@ struct AttemptContainerDetail:
     Optional[str] logStreamName
     Optional[list[NetworkInterface]] networkInterfaces
 
-# no @derive(Json): member(s) container: AttemptContainerDetail, taskProperties: list[AttemptEcsTaskDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) container: AttemptContainerDetail, taskProperties: list[AttemptEcsTaskDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttemptDetail:
     Optional[AttemptContainerDetail] container
     Optional[int64] startedAt
@@ -377,15 +381,17 @@ struct AttemptDetail:
     Optional[str] statusReason
     Optional[list[AttemptEcsTaskDetails]] taskProperties
 
-# no @derive(Json): member(s) containers: list[AttemptTaskContainerDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[AttemptTaskContainerDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttemptEcsTaskDetails:
     Optional[str] containerInstanceArn
     Optional[str] taskArn
     Optional[list[AttemptTaskContainerDetails]] containers
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttemptTaskContainerDetails:
     Optional[int64] exitCode
     Optional[str] name
@@ -416,8 +422,9 @@ struct CancelJobsRequest:
     list[str] jobs
     str reason
 
-# no @derive(Json): member(s) successful: list[str], errors: list[CancelJobsErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[str], errors: list[CancelJobsErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelJobsResponse:
     list[str] successful
     list[CancelJobsErrorDetail] errors
@@ -436,8 +443,9 @@ struct CapacityReservationRequest:
 struct ClientException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: dict[str, str], computeResources: ComputeResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], computeResources: ComputeResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeEnvironmentDetail:
     str computeEnvironmentName
     str computeEnvironmentArn
@@ -462,8 +470,9 @@ struct ComputeEnvironmentOrder:
     int64 order
     str computeEnvironment
 
-# no @derive(Json): member(s) instanceTypes: list[str], subnets: list[str], securityGroupIds: list[str], tags: dict[str, str], launchTemplate: LaunchTemplateSpecification, ec2Configuration: list[Ec2Configuration], managedInstancesProvider: ManagedInstancesProvider, capacityTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceTypes: list[str], subnets: list[str], securityGroupIds: list[str], tags: dict[str, str], launchTemplate: LaunchTemplateSpecification, ec2Configuration: list[Ec2Configuration], managedInstancesProvider: ManagedInstancesProvider, capacityTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeResource:
     CRType type
     Optional[CRAllocationStrategy] allocationStrategy
@@ -486,8 +495,9 @@ struct ComputeResource:
     Optional[ManagedInstancesProvider] managedInstancesProvider
     Optional[dict[str, str]] capacityTags
 
-# no @derive(Json): member(s) subnets: list[str], securityGroupIds: list[str], instanceTypes: list[str], tags: dict[str, str], launchTemplate: LaunchTemplateSpecification, ec2Configuration: list[Ec2Configuration], managedInstancesProvider: UpdateManagedInstancesProviderConfiguration, capacityTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], securityGroupIds: list[str], instanceTypes: list[str], tags: dict[str, str], launchTemplate: LaunchTemplateSpecification, ec2Configuration: list[Ec2Configuration], managedInstancesProvider: UpdateManagedInstancesProviderConfiguration, capacityTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeResourceUpdate:
     Optional[int64] minvCpus
     Optional[int64] maxvCpus
@@ -514,8 +524,9 @@ struct ComputeResourceUpdate:
 struct ComputeScalingPolicy:
     Optional[int64] minScaleDownDelayMinutes
 
-# no @derive(Json): member(s) consumableResourceList: list[ConsumableResourceRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) consumableResourceList: list[ConsumableResourceRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsumableResourceProperties:
     Optional[list[ConsumableResourceRequirement]] consumableResourceList
 
@@ -532,8 +543,9 @@ struct ConsumableResourceSummary:
     Optional[int64] inUseQuantity
     Optional[str] resourceType
 
-# no @derive(Json): member(s) command: list[str], volumes: list[Volume], environment: list[KeyValuePair], mountPoints: list[MountPoint], ulimits: list[Ulimit], networkInterfaces: list[NetworkInterface], resourceRequirements: list[ResourceRequirement], linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, secrets: list[Secret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], volumes: list[Volume], environment: list[KeyValuePair], mountPoints: list[MountPoint], ulimits: list[Ulimit], networkInterfaces: list[NetworkInterface], resourceRequirements: list[ResourceRequirement], linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, secrets: list[Secret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerDetail:
     Optional[str] image
     Optional[int64] vcpus
@@ -566,8 +578,9 @@ struct ContainerDetail:
     Optional[RepositoryCredentials] repositoryCredentials
     Optional[bool] enableExecuteCommand
 
-# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], resourceRequirements: list[ResourceRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], resourceRequirements: list[ResourceRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerOverrides:
     Optional[int64] vcpus
     Optional[int64] memory
@@ -576,8 +589,9 @@ struct ContainerOverrides:
     Optional[list[KeyValuePair]] environment
     Optional[list[ResourceRequirement]] resourceRequirements
 
-# no @derive(Json): member(s) command: list[str], volumes: list[Volume], environment: list[KeyValuePair], mountPoints: list[MountPoint], ulimits: list[Ulimit], resourceRequirements: list[ResourceRequirement], linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, secrets: list[Secret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], volumes: list[Volume], environment: list[KeyValuePair], mountPoints: list[MountPoint], ulimits: list[Ulimit], resourceRequirements: list[ResourceRequirement], linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, secrets: list[Secret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerProperties:
     Optional[str] image
     Optional[int64] vcpus
@@ -779,8 +793,9 @@ struct DescribeComputeEnvironmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) computeEnvironments: list[ComputeEnvironmentDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeEnvironments: list[ComputeEnvironmentDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComputeEnvironmentsResponse:
     Optional[list[ComputeEnvironmentDetail]] computeEnvironments
     Optional[str] nextToken
@@ -790,8 +805,9 @@ struct DescribeComputeEnvironmentsResponse:
 struct DescribeConsumableResourceRequest:
     str consumableResource
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConsumableResourceResponse:
     str consumableResourceName
     str consumableResourceArn
@@ -811,8 +827,9 @@ struct DescribeJobDefinitionsRequest:
     Optional[str] status
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobDefinitions: list[JobDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobDefinitions: list[JobDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobDefinitionsResponse:
     Optional[list[JobDefinition]] jobDefinitions
     Optional[str] nextToken
@@ -824,8 +841,9 @@ struct DescribeJobQueuesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobQueues: list[JobQueueDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobQueues: list[JobQueueDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobQueuesResponse:
     Optional[list[JobQueueDetail]] jobQueues
     Optional[str] nextToken
@@ -835,8 +853,9 @@ struct DescribeJobQueuesResponse:
 struct DescribeJobsRequest:
     list[str] jobs
 
-# no @derive(Json): member(s) jobs: list[JobDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[JobDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobsResponse:
     Optional[list[JobDetail]] jobs
 
@@ -845,8 +864,9 @@ struct DescribeJobsResponse:
 struct DescribeQuotaShareRequest:
     str quotaShareArn
 
-# no @derive(Json): member(s) capacityLimits: list[QuotaShareCapacityLimit], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityLimits: list[QuotaShareCapacityLimit], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQuotaShareResponse:
     Optional[str] quotaShareName
     Optional[str] quotaShareArn
@@ -863,8 +883,9 @@ struct DescribeQuotaShareResponse:
 struct DescribeSchedulingPoliciesRequest:
     list[str] arns
 
-# no @derive(Json): member(s) schedulingPolicies: list[SchedulingPolicyDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schedulingPolicies: list[SchedulingPolicyDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSchedulingPoliciesResponse:
     Optional[list[SchedulingPolicyDetail]] schedulingPolicies
 
@@ -875,8 +896,9 @@ struct DescribeServiceEnvironmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) serviceEnvironments: list[ServiceEnvironmentDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceEnvironments: list[ServiceEnvironmentDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceEnvironmentsResponse:
     Optional[list[ServiceEnvironmentDetail]] serviceEnvironments
     Optional[str] nextToken
@@ -886,8 +908,9 @@ struct DescribeServiceEnvironmentsResponse:
 struct DescribeServiceJobRequest:
     str jobId
 
-# no @derive(Json): member(s) attempts: list[ServiceJobAttemptDetail], capacityUsage: list[ServiceJobCapacityUsageDetail], retryStrategy: ServiceJobRetryStrategy, preemptionSummary: ServiceJobPreemptionSummary, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attempts: list[ServiceJobAttemptDetail], capacityUsage: list[ServiceJobCapacityUsageDetail], retryStrategy: ServiceJobRetryStrategy, preemptionSummary: ServiceJobPreemptionSummary, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceJobResponse:
     Optional[list[ServiceJobAttemptDetail]] attempts
     Optional[list[ServiceJobCapacityUsageDetail]] capacityUsage
@@ -914,8 +937,9 @@ struct DescribeServiceJobResponse:
     Optional[dict[str, str]] tags
     Optional[ServiceJobTimeout] timeoutConfig
 
-# no @derive(Json): member(s) permissions: list[DeviceCgroupPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[DeviceCgroupPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Device:
     str hostPath
     Optional[str] containerPath
@@ -941,18 +965,21 @@ struct Ec2Configuration:
     Optional[str] batchImageStatus
     Optional[str] imageKubernetesVersion
 
-# no @derive(Json): member(s) taskProperties: list[EcsTaskProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskProperties: list[EcsTaskProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsProperties:
     list[EcsTaskProperties] taskProperties
 
-# no @derive(Json): member(s) taskProperties: list[EcsTaskDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskProperties: list[EcsTaskDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsPropertiesDetail:
     Optional[list[EcsTaskDetails]] taskProperties
 
-# no @derive(Json): member(s) taskProperties: list[TaskPropertiesOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskProperties: list[TaskPropertiesOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsPropertiesOverride:
     Optional[list[TaskPropertiesOverride]] taskProperties
 
@@ -960,8 +987,9 @@ struct EcsPropertiesOverride:
 struct EcsSettings:
     Optional[ContainerInsights] containerInsights
 
-# no @derive(Json): member(s) containers: list[TaskContainerDetails], volumes: list[Volume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[TaskContainerDetails], volumes: list[Volume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsTaskDetails:
     Optional[list[TaskContainerDetails]] containers
     Optional[str] containerInstanceArn
@@ -978,8 +1006,9 @@ struct EcsTaskDetails:
     Optional[bool] enableExecuteCommand
     Optional[str] networkMode
 
-# no @derive(Json): member(s) containers: list[TaskContainerProperties], volumes: list[Volume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[TaskContainerProperties], volumes: list[Volume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsTaskProperties:
     list[TaskContainerProperties] containers
     Optional[EphemeralStorage] ephemeralStorage
@@ -1006,8 +1035,9 @@ struct EksAttemptContainerDetail:
     Optional[int64] exitCode
     Optional[str] reason
 
-# no @derive(Json): member(s) containers: list[EksAttemptContainerDetail], initContainers: list[EksAttemptContainerDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[EksAttemptContainerDetail], initContainers: list[EksAttemptContainerDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksAttemptDetail:
     Optional[list[EksAttemptContainerDetail]] containers
     Optional[list[EksAttemptContainerDetail]] initContainers
@@ -1029,8 +1059,9 @@ struct EksConfiguration:
 struct EksConfigurationUpdate:
     Optional[EksAccessEntry] accessEntry
 
-# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksContainer:
     Optional[str] name
     str image
@@ -1042,8 +1073,9 @@ struct EksContainer:
     Optional[list[EksContainerVolumeMount]] volumeMounts
     Optional[EksContainerSecurityContext] securityContext
 
-# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksContainerDetail:
     Optional[str] name
     Optional[str] image
@@ -1062,8 +1094,9 @@ struct EksContainerEnvironmentVariable:
     str name
     Optional[str] value
 
-# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksContainerOverride:
     Optional[str] name
     Optional[str] image
@@ -1072,8 +1105,9 @@ struct EksContainerOverride:
     Optional[list[EksContainerEnvironmentVariable]] env
     Optional[EksContainerResourceRequirements] resources
 
-# no @derive(Json): member(s) limits: dict[str, str], requests: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) limits: dict[str, str], requests: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksContainerResourceRequirements:
     Optional[dict[str, str]] limits
     Optional[dict[str, str]] requests
@@ -1103,8 +1137,9 @@ struct EksEmptyDir:
 struct EksHostPath:
     Optional[str] path
 
-# no @derive(Json): member(s) labels: dict[str, str], annotations: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labels: dict[str, str], annotations: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksMetadata:
     Optional[dict[str, str]] labels
     Optional[dict[str, str]] annotations
@@ -1115,8 +1150,9 @@ struct EksPersistentVolumeClaim:
     str claimName
     Optional[bool] readOnly
 
-# no @derive(Json): member(s) imagePullSecrets: list[ImagePullSecret], containers: list[EksContainer], initContainers: list[EksContainer], volumes: list[EksVolume], metadata: EksMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imagePullSecrets: list[ImagePullSecret], containers: list[EksContainer], initContainers: list[EksContainer], volumes: list[EksVolume], metadata: EksMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksPodProperties:
     Optional[str] serviceAccountName
     Optional[bool] hostNetwork
@@ -1128,8 +1164,9 @@ struct EksPodProperties:
     Optional[EksMetadata] metadata
     Optional[bool] shareProcessNamespace
 
-# no @derive(Json): member(s) imagePullSecrets: list[ImagePullSecret], containers: list[EksContainerDetail], initContainers: list[EksContainerDetail], volumes: list[EksVolume], metadata: EksMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imagePullSecrets: list[ImagePullSecret], containers: list[EksContainerDetail], initContainers: list[EksContainerDetail], volumes: list[EksVolume], metadata: EksMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksPodPropertiesDetail:
     Optional[str] serviceAccountName
     Optional[bool] hostNetwork
@@ -1143,25 +1180,29 @@ struct EksPodPropertiesDetail:
     Optional[EksMetadata] metadata
     Optional[bool] shareProcessNamespace
 
-# no @derive(Json): member(s) containers: list[EksContainerOverride], initContainers: list[EksContainerOverride], metadata: EksMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[EksContainerOverride], initContainers: list[EksContainerOverride], metadata: EksMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksPodPropertiesOverride:
     Optional[list[EksContainerOverride]] containers
     Optional[list[EksContainerOverride]] initContainers
     Optional[EksMetadata] metadata
 
-# no @derive(Json): member(s) podProperties: EksPodProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) podProperties: EksPodProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksProperties:
     Optional[EksPodProperties] podProperties
 
-# no @derive(Json): member(s) podProperties: EksPodPropertiesDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) podProperties: EksPodPropertiesDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksPropertiesDetail:
     Optional[EksPodPropertiesDetail] podProperties
 
-# no @derive(Json): member(s) podProperties: EksPodPropertiesOverride not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) podProperties: EksPodPropertiesOverride not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksPropertiesOverride:
     Optional[EksPodPropertiesOverride] podProperties
 
@@ -1194,21 +1235,24 @@ struct FairshareCapacityUsage:
     Optional[str] capacityUnit
     Optional[float64] quantity
 
-# no @derive(Json): member(s) capacityUsage: list[FairshareCapacityUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityUsage: list[FairshareCapacityUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FairshareCapacityUtilization:
     Optional[str] shareIdentifier
     Optional[list[FairshareCapacityUsage]] capacityUsage
 
-# no @derive(Json): member(s) shareDistribution: list[ShareAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) shareDistribution: list[ShareAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FairsharePolicy:
     Optional[int64] shareDecaySeconds
     Optional[int64] computeReservation
     Optional[list[ShareAttributes]] shareDistribution
 
-# no @derive(Json): member(s) topCapacityUtilization: list[FairshareCapacityUtilization] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topCapacityUtilization: list[FairshareCapacityUtilization] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FairshareUtilizationDetail:
     Optional[int64] activeShareCount
     Optional[list[FairshareCapacityUtilization]] topCapacityUtilization
@@ -1217,14 +1261,16 @@ struct FairshareUtilizationDetail:
 struct FargatePlatformConfiguration:
     Optional[str] platformVersion
 
-# no @derive(Json): member(s) options: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirelensConfiguration:
     FirelensConfigurationType type
     Optional[dict[str, str]] options
 
-# no @derive(Json): member(s) jobs: list[FrontOfQueueJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[FrontOfQueueJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FrontOfQueueDetail:
     Optional[list[FrontOfQueueJobSummary]] jobs
     Optional[int64] lastUpdatedAt
@@ -1239,8 +1285,9 @@ struct FrontOfQuotaShareJobSummary:
     Optional[str] jobArn
     Optional[int64] earliestTimeAtPosition
 
-# no @derive(Json): member(s) quotaShares: dict[str, list[FrontOfQuotaShareJobSummary]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quotaShares: dict[str, list[FrontOfQuotaShareJobSummary]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FrontOfQuotaSharesDetail:
     Optional[dict[str, list[FrontOfQuotaShareJobSummary]]] quotaShares
     Optional[int64] lastUpdatedAt
@@ -1250,8 +1297,9 @@ struct FrontOfQuotaSharesDetail:
 struct GetJobQueueSnapshotRequest:
     str jobQueue
 
-# no @derive(Json): member(s) frontOfQueue: FrontOfQueueDetail, frontOfQuotaShares: FrontOfQuotaSharesDetail, queueUtilization: QueueSnapshotUtilizationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) frontOfQueue: FrontOfQueueDetail, frontOfQuotaShares: FrontOfQuotaSharesDetail, queueUtilization: QueueSnapshotUtilizationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobQueueSnapshotResponse:
     Optional[FrontOfQueueDetail] frontOfQueue
     Optional[FrontOfQuotaSharesDetail] frontOfQuotaShares
@@ -1269,8 +1317,9 @@ struct ImagePullSecret:
 struct InfrastructureOptimization:
     Optional[int64] scaleInAfter
 
-# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceLaunchTemplate:
     str ec2InstanceProfileArn
     ManagedInstancesNetworkConfiguration networkConfiguration
@@ -1283,8 +1332,9 @@ struct InstanceLaunchTemplate:
     Optional[bool] instanceMetadataTagsPropagation
     Optional[ManagedInstancesLocalStorageConfiguration] localStorageConfiguration
 
-# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceLaunchTemplateUpdate:
     Optional[str] ec2InstanceProfileArn
     Optional[ManagedInstancesNetworkConfiguration] networkConfiguration
@@ -1295,8 +1345,9 @@ struct InstanceLaunchTemplateUpdate:
     Optional[bool] instanceMetadataTagsPropagation
     Optional[ManagedInstancesLocalStorageConfiguration] localStorageConfiguration
 
-# no @derive(Json): member(s) allowedInstanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedInstanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceRequirementsRequest:
     Optional[list[str]] allowedInstanceTypes
 
@@ -1305,8 +1356,9 @@ struct JobCapacityUsageSummary:
     Optional[str] capacityUnit
     Optional[float64] quantity
 
-# no @derive(Json): member(s) parameters: dict[str, str], retryStrategy: RetryStrategy, containerProperties: ContainerProperties, nodeProperties: NodeProperties, tags: dict[str, str], platformCapabilities: list[PlatformCapability], ecsProperties: EcsProperties, eksProperties: EksProperties, consumableResourceProperties: ConsumableResourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str], retryStrategy: RetryStrategy, containerProperties: ContainerProperties, nodeProperties: NodeProperties, tags: dict[str, str], platformCapabilities: list[PlatformCapability], ecsProperties: EcsProperties, eksProperties: EksProperties, consumableResourceProperties: ConsumableResourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobDefinition:
     str jobDefinitionName
     str jobDefinitionArn
@@ -1332,8 +1384,9 @@ struct JobDependency:
     Optional[str] jobId
     Optional[ArrayJobDependency] type
 
-# no @derive(Json): member(s) attempts: list[AttemptDetail], retryStrategy: RetryStrategy, dependsOn: list[JobDependency], parameters: dict[str, str], container: ContainerDetail, nodeProperties: NodeProperties, arrayProperties: ArrayPropertiesDetail, tags: dict[str, str], platformCapabilities: list[PlatformCapability], eksProperties: EksPropertiesDetail, eksAttempts: list[EksAttemptDetail], ecsProperties: EcsPropertiesDetail, consumableResourceProperties: ConsumableResourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attempts: list[AttemptDetail], retryStrategy: RetryStrategy, dependsOn: list[JobDependency], parameters: dict[str, str], container: ContainerDetail, nodeProperties: NodeProperties, arrayProperties: ArrayPropertiesDetail, tags: dict[str, str], platformCapabilities: list[PlatformCapability], eksProperties: EksPropertiesDetail, eksAttempts: list[EksAttemptDetail], ecsProperties: EcsPropertiesDetail, consumableResourceProperties: ConsumableResourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobDetail:
     Optional[str] jobArn
     str jobName
@@ -1366,8 +1419,9 @@ struct JobDetail:
     Optional[bool] isTerminated
     Optional[ConsumableResourceProperties] consumableResourceProperties
 
-# no @derive(Json): member(s) computeEnvironmentOrder: list[ComputeEnvironmentOrder], serviceEnvironmentOrder: list[ServiceEnvironmentOrder], tags: dict[str, str], jobStateTimeLimitActions: list[JobStateTimeLimitAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeEnvironmentOrder: list[ComputeEnvironmentOrder], serviceEnvironmentOrder: list[ServiceEnvironmentOrder], tags: dict[str, str], jobStateTimeLimitActions: list[JobStateTimeLimitAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobQueueDetail:
     str jobQueueName
     str jobQueueArn
@@ -1389,8 +1443,9 @@ struct JobStateTimeLimitAction:
     int64 maxTimeSeconds
     JobStateTimeLimitActionsAction action
 
-# no @derive(Json): member(s) capacityUsage: list[JobCapacityUsageSummary], arrayProperties: ArrayPropertiesSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityUsage: list[JobCapacityUsageSummary], arrayProperties: ArrayPropertiesSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobSummary:
     Optional[str] jobArn
     str jobId
@@ -1419,8 +1474,9 @@ struct KeyValuePair:
     Optional[str] name
     Optional[str] value
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyValuesPair:
     Optional[str] name
     Optional[list[str]] values
@@ -1429,8 +1485,9 @@ struct KeyValuesPair:
 struct LatestServiceJobAttempt:
     Optional[ServiceResourceId] serviceResourceId
 
-# no @derive(Json): member(s) overrides: list[LaunchTemplateSpecificationOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) overrides: list[LaunchTemplateSpecificationOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchTemplateSpecification:
     Optional[str] launchTemplateId
     Optional[str] launchTemplateName
@@ -1438,8 +1495,9 @@ struct LaunchTemplateSpecification:
     Optional[list[LaunchTemplateSpecificationOverride]] overrides
     Optional[UserdataType] userdataType
 
-# no @derive(Json): member(s) targetInstanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetInstanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchTemplateSpecificationOverride:
     Optional[str] launchTemplateId
     Optional[str] launchTemplateName
@@ -1447,8 +1505,9 @@ struct LaunchTemplateSpecificationOverride:
     Optional[list[str]] targetInstanceTypes
     Optional[UserdataType] userdataType
 
-# no @derive(Json): member(s) devices: list[Device], tmpfs: list[Tmpfs] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[Device], tmpfs: list[Tmpfs] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinuxParameters:
     Optional[list[Device]] devices
     Optional[bool] initProcessEnabled
@@ -1464,8 +1523,9 @@ struct ListConsumableResourcesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) consumableResources: list[ConsumableResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) consumableResources: list[ConsumableResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConsumableResourcesResponse:
     list[ConsumableResourceSummary] consumableResources
     Optional[str] nextToken
@@ -1478,14 +1538,16 @@ struct ListJobsByConsumableResourceRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobs: list[ListJobsByConsumableResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[ListJobsByConsumableResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsByConsumableResourceResponse:
     list[ListJobsByConsumableResourceSummary] jobs
     Optional[str] nextToken
 
-# no @derive(Json): member(s) consumableResourceProperties: ConsumableResourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) consumableResourceProperties: ConsumableResourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsByConsumableResourceSummary:
     str jobArn
     str jobQueueArn
@@ -1510,8 +1572,9 @@ struct ListJobsRequest:
     Optional[str] nextToken
     Optional[list[KeyValuesPair]] filters
 
-# no @derive(Json): member(s) jobSummaryList: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaryList: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     list[JobSummary] jobSummaryList
     Optional[str] nextToken
@@ -1523,8 +1586,9 @@ struct ListQuotaSharesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) quotaShares: list[QuotaShareDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quotaShares: list[QuotaShareDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQuotaSharesResponse:
     Optional[list[QuotaShareDetail]] quotaShares
     Optional[str] nextToken
@@ -1535,8 +1599,9 @@ struct ListSchedulingPoliciesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) schedulingPolicies: list[SchedulingPolicyListingDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schedulingPolicies: list[SchedulingPolicyListingDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchedulingPoliciesResponse:
     Optional[list[SchedulingPolicyListingDetail]] schedulingPolicies
     Optional[str] nextToken
@@ -1550,8 +1615,9 @@ struct ListServiceJobsRequest:
     Optional[str] nextToken
     Optional[list[KeyValuesPair]] filters
 
-# no @derive(Json): member(s) jobSummaryList: list[ServiceJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaryList: list[ServiceJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceJobsResponse:
     list[ServiceJobSummary] jobSummaryList
     Optional[str] nextToken
@@ -1561,13 +1627,15 @@ struct ListServiceJobsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) options: dict[str, str], secretOptions: list[Secret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: dict[str, str], secretOptions: list[Secret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogConfiguration:
     LogDriver logDriver
     Optional[dict[str, str]] options
@@ -1577,14 +1645,16 @@ struct LogConfiguration:
 struct ManagedInstancesLocalStorageConfiguration:
     Optional[bool] useLocalStorage
 
-# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedInstancesNetworkConfiguration:
     list[str] subnets
     list[str] securityGroups
 
-# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedInstancesProvider:
     Optional[str] propagateTags
     str infrastructureRoleArn
@@ -1616,14 +1686,16 @@ struct NodeDetails:
     Optional[int64] nodeIndex
     Optional[bool] isMainNode
 
-# no @derive(Json): member(s) nodePropertyOverrides: list[NodePropertyOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodePropertyOverrides: list[NodePropertyOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeOverrides:
     Optional[int64] numNodes
     Optional[list[NodePropertyOverride]] nodePropertyOverrides
 
-# no @derive(Json): member(s) nodeRangeProperties: list[NodeRangeProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeRangeProperties: list[NodeRangeProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeProperties:
     int64 numNodes
     int64 mainNode
@@ -1635,8 +1707,9 @@ struct NodePropertiesSummary:
     Optional[int64] numNodes
     Optional[int64] nodeIndex
 
-# no @derive(Json): member(s) containerOverrides: ContainerOverrides, ecsPropertiesOverride: EcsPropertiesOverride, instanceTypes: list[str], eksPropertiesOverride: EksPropertiesOverride, consumableResourcePropertiesOverride: ConsumableResourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerOverrides: ContainerOverrides, ecsPropertiesOverride: EcsPropertiesOverride, instanceTypes: list[str], eksPropertiesOverride: EksPropertiesOverride, consumableResourcePropertiesOverride: ConsumableResourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodePropertyOverride:
     str targetNodes
     Optional[ContainerOverrides] containerOverrides
@@ -1645,8 +1718,9 @@ struct NodePropertyOverride:
     Optional[EksPropertiesOverride] eksPropertiesOverride
     Optional[ConsumableResourceProperties] consumableResourcePropertiesOverride
 
-# no @derive(Json): member(s) container: ContainerProperties, instanceTypes: list[str], ecsProperties: EcsProperties, eksProperties: EksProperties, consumableResourceProperties: ConsumableResourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) container: ContainerProperties, instanceTypes: list[str], ecsProperties: EcsProperties, eksProperties: EksProperties, consumableResourceProperties: ConsumableResourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeRangeProperty:
     str targetNodes
     Optional[ContainerProperties] container
@@ -1660,8 +1734,9 @@ struct QueueSnapshotCapacityUsage:
     Optional[str] capacityUnit
     Optional[float64] quantity
 
-# no @derive(Json): member(s) totalCapacityUsage: list[QueueSnapshotCapacityUsage], fairshareUtilization: FairshareUtilizationDetail, quotaShareUtilization: QuotaShareUtilizationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) totalCapacityUsage: list[QueueSnapshotCapacityUsage], fairshareUtilization: FairshareUtilizationDetail, quotaShareUtilization: QuotaShareUtilizationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueueSnapshotUtilizationDetail:
     Optional[list[QueueSnapshotCapacityUsage]] totalCapacityUsage
     Optional[FairshareUtilizationDetail] fairshareUtilization
@@ -1678,14 +1753,16 @@ struct QuotaShareCapacityUsage:
     Optional[str] capacityUnit
     Optional[float64] quantity
 
-# no @derive(Json): member(s) capacityUsage: list[QuotaShareCapacityUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityUsage: list[QuotaShareCapacityUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuotaShareCapacityUtilization:
     Optional[str] quotaShareName
     Optional[list[QuotaShareCapacityUsage]] capacityUsage
 
-# no @derive(Json): member(s) capacityLimits: list[QuotaShareCapacityLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityLimits: list[QuotaShareCapacityLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuotaShareDetail:
     Optional[str] quotaShareName
     Optional[str] quotaShareArn
@@ -1709,8 +1786,9 @@ struct QuotaShareResourceSharingConfiguration:
     QuotaShareResourceSharingStrategy strategy
     Optional[int64] borrowLimit
 
-# no @derive(Json): member(s) topCapacityUtilization: list[QuotaShareCapacityUtilization] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topCapacityUtilization: list[QuotaShareCapacityUtilization] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuotaShareUtilizationDetail:
     Optional[list[QuotaShareCapacityUtilization]] topCapacityUtilization
 
@@ -1747,8 +1825,9 @@ struct ResourceRequirement:
     str value
     ResourceType type
 
-# no @derive(Json): member(s) evaluateOnExit: list[EvaluateOnExit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluateOnExit: list[EvaluateOnExit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetryStrategy:
     Optional[int64] attempts
     Optional[list[EvaluateOnExit]] evaluateOnExit
@@ -1765,8 +1844,9 @@ struct S3FilesVolumeConfiguration:
     Optional[int64] transitEncryptionPort
     Optional[str] accessPointArn
 
-# no @derive(Json): member(s) fairsharePolicy: FairsharePolicy, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fairsharePolicy: FairsharePolicy, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchedulingPolicyDetail:
     str name
     str arn
@@ -1787,8 +1867,9 @@ struct Secret:
 struct ServerException:
     Optional[str] message
 
-# no @derive(Json): member(s) capacityLimits: list[CapacityLimit], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityLimits: list[CapacityLimit], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceEnvironmentDetail:
     str serviceEnvironmentName
     str serviceEnvironmentArn
@@ -1836,20 +1917,23 @@ struct ServiceJobPreemptedAttempt:
 struct ServiceJobPreemptionConfiguration:
     Optional[int64] preemptionRetriesBeforeTermination
 
-# no @derive(Json): member(s) recentPreemptedAttempts: list[ServiceJobPreemptedAttempt] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recentPreemptedAttempts: list[ServiceJobPreemptedAttempt] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceJobPreemptionSummary:
     Optional[int64] preemptedAttemptCount
     Optional[list[ServiceJobPreemptedAttempt]] recentPreemptedAttempts
 
-# no @derive(Json): member(s) evaluateOnExit: list[ServiceJobEvaluateOnExit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluateOnExit: list[ServiceJobEvaluateOnExit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceJobRetryStrategy:
     int64 attempts
     Optional[list[ServiceJobEvaluateOnExit]] evaluateOnExit
 
-# no @derive(Json): member(s) capacityUsage: list[ServiceJobCapacityUsageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityUsage: list[ServiceJobCapacityUsageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceJobSummary:
     Optional[LatestServiceJobAttempt] latestAttempt
     Optional[list[ServiceJobCapacityUsageSummary]] capacityUsage
@@ -1946,8 +2030,9 @@ struct TaskContainerDependency:
     Optional[str] containerName
     Optional[str] condition
 
-# no @derive(Json): member(s) command: list[str], dependsOn: list[TaskContainerDependency], environment: list[KeyValuePair], firelensConfiguration: FirelensConfiguration, linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, mountPoints: list[MountPoint], resourceRequirements: list[ResourceRequirement], secrets: list[Secret], ulimits: list[Ulimit], networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], dependsOn: list[TaskContainerDependency], environment: list[KeyValuePair], firelensConfiguration: FirelensConfiguration, linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, mountPoints: list[MountPoint], resourceRequirements: list[ResourceRequirement], secrets: list[Secret], ulimits: list[Ulimit], networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskContainerDetails:
     Optional[list[str]] command
     Optional[list[TaskContainerDependency]] dependsOn
@@ -1973,16 +2058,18 @@ struct TaskContainerDetails:
     Optional[str] logStreamName
     Optional[list[NetworkInterface]] networkInterfaces
 
-# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], resourceRequirements: list[ResourceRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], resourceRequirements: list[ResourceRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskContainerOverrides:
     Optional[list[str]] command
     Optional[list[KeyValuePair]] environment
     Optional[str] name
     Optional[list[ResourceRequirement]] resourceRequirements
 
-# no @derive(Json): member(s) command: list[str], dependsOn: list[TaskContainerDependency], environment: list[KeyValuePair], firelensConfiguration: FirelensConfiguration, linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, mountPoints: list[MountPoint], resourceRequirements: list[ResourceRequirement], secrets: list[Secret], ulimits: list[Ulimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], dependsOn: list[TaskContainerDependency], environment: list[KeyValuePair], firelensConfiguration: FirelensConfiguration, linuxParameters: LinuxParameters, logConfiguration: LogConfiguration, mountPoints: list[MountPoint], resourceRequirements: list[ResourceRequirement], secrets: list[Secret], ulimits: list[Ulimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskContainerProperties:
     Optional[list[str]] command
     Optional[list[TaskContainerDependency]] dependsOn
@@ -2004,8 +2091,9 @@ struct TaskContainerProperties:
     Optional[int64] startTimeout
     Optional[int64] stopTimeout
 
-# no @derive(Json): member(s) containers: list[TaskContainerOverrides] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[TaskContainerOverrides] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskPropertiesOverride:
     Optional[list[TaskContainerOverrides]] containers
 
@@ -2032,8 +2120,9 @@ struct TerminateJobsRequest:
     list[str] jobs
     str reason
 
-# no @derive(Json): member(s) successful: list[str], errors: list[TerminateJobsErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[str], errors: list[TerminateJobsErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateJobsResponse:
     list[str] successful
     list[TerminateJobsErrorDetail] errors
@@ -2061,14 +2150,16 @@ struct TerminateServiceJobsRequest:
     list[str] jobs
     str reason
 
-# no @derive(Json): member(s) successful: list[str], errors: list[TerminateServiceJobsErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[str], errors: list[TerminateServiceJobsErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateServiceJobsResponse:
     list[str] successful
     list[TerminateServiceJobsErrorDetail] errors
 
-# no @derive(Json): member(s) mountOptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mountOptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tmpfs:
     str containerPath
     int64 size
@@ -2139,8 +2230,9 @@ struct UpdateJobQueueResponse:
     Optional[str] jobQueueName
     Optional[str] jobQueueArn
 
-# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplateUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplateUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateManagedInstancesProviderConfiguration:
     Optional[str] propagateTags
     Optional[str] infrastructureRoleArn
@@ -2232,46 +2324,7 @@ def batch_error_from_code(str code) -> BatchError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CancelJobs (document member `jobs: list[str]` is not serializable by derive)
-#   CreateComputeEnvironment (document member `computeResources: ComputeResource` is not serializable by derive)
-#   CreateConsumableResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateJobQueue (document member `computeEnvironmentOrder: list[ComputeEnvironmentOrder]` is not serializable by derive)
-#   CreateQuotaShare (document member `capacityLimits: list[QuotaShareCapacityLimit]` is not serializable by derive)
-#   CreateSchedulingPolicy (document member `fairsharePolicy: FairsharePolicy` is not serializable by derive)
-#   CreateServiceEnvironment (document member `capacityLimits: list[CapacityLimit]` is not serializable by derive)
-#   DescribeComputeEnvironments (document member `computeEnvironments: list[str]` is not serializable by derive)
-#   DescribeJobDefinitions (document member `jobDefinitions: list[str]` is not serializable by derive)
-#   DescribeJobQueues (document member `jobQueues: list[str]` is not serializable by derive)
-#   DescribeJobs (document member `jobs: list[str]` is not serializable by derive)
-#   DescribeSchedulingPolicies (document member `arns: list[str]` is not serializable by derive)
-#   DescribeServiceEnvironments (document member `serviceEnvironments: list[str]` is not serializable by derive)
-#   ListConsumableResources (document member `filters: list[KeyValuesPair]` is not serializable by derive)
-#   ListJobs (document member `filters: list[KeyValuesPair]` is not serializable by derive)
-#   ListJobsByConsumableResource (document member `filters: list[KeyValuesPair]` is not serializable by derive)
-#   ListServiceJobs (document member `filters: list[KeyValuesPair]` is not serializable by derive)
-#   RegisterJobDefinition (document member `parameters: dict[str, str]` is not serializable by derive)
-#   SubmitJob (document member `dependsOn: list[JobDependency]` is not serializable by derive)
-#   SubmitServiceJob (document member `retryStrategy: ServiceJobRetryStrategy` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   TerminateJobs (document member `jobs: list[str]` is not serializable by derive)
-#   TerminateServiceJobs (document member `jobs: list[str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateComputeEnvironment (document member `computeResources: ComputeResourceUpdate` is not serializable by derive)
-#   UpdateJobQueue (document member `computeEnvironmentOrder: list[ComputeEnvironmentOrder]` is not serializable by derive)
-#   UpdateQuotaShare (document member `capacityLimits: list[QuotaShareCapacityLimit]` is not serializable by derive)
-#   UpdateSchedulingPolicy (document member `fairsharePolicy: FairsharePolicy` is not serializable by derive)
-#   UpdateServiceEnvironment (document member `capacityLimits: list[CapacityLimit]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeComputeEnvironments (operation not generated)
-#   DescribeJobDefinitions (operation not generated)
-#   DescribeJobQueues (operation not generated)
-#   DescribeServiceEnvironments (operation not generated)
-#   ListConsumableResources (operation not generated)
-#   ListJobs (operation not generated)
-#   ListJobsByConsumableResource (operation not generated)
-#   ListServiceJobs (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2376,6 +2429,1090 @@ struct UpdateServiceJobDocument:
     str jobId
     int64 schedulingPriority
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def batch_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def batch_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def batch_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ComputeResource to a compact JSON object (declaration order).
+def compute_resource_to_json(ComputeResource v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.allocationStrategy.is_some():
+        auto u0 = v.allocationStrategy.unwrap()
+        parts.append("\"allocationStrategy\":" + u0.to_json())
+    if v.minvCpus.is_some():
+        auto u1 = v.minvCpus.unwrap()
+        parts.append("\"minvCpus\":" + str(u1))
+    parts.append("\"maxvCpus\":" + str(v.maxvCpus))
+    if v.desiredvCpus.is_some():
+        auto u2 = v.desiredvCpus.unwrap()
+        parts.append("\"desiredvCpus\":" + str(u2))
+    if v.instanceTypes.is_some():
+        auto u3 = v.instanceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(batch_json_str(x4))
+        parts.append("\"instanceTypes\":" + batch_json_arr(e4))
+    if v.imageId.is_some():
+        auto u5 = v.imageId.unwrap()
+        parts.append("\"imageId\":" + batch_json_str(u5))
+    if v.subnets.is_some():
+        auto u6 = v.subnets.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(batch_json_str(x7))
+        parts.append("\"subnets\":" + batch_json_arr(e7))
+    if v.securityGroupIds.is_some():
+        auto u8 = v.securityGroupIds.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(batch_json_str(x9))
+        parts.append("\"securityGroupIds\":" + batch_json_arr(e9))
+    if v.ec2KeyPair.is_some():
+        auto u10 = v.ec2KeyPair.unwrap()
+        parts.append("\"ec2KeyPair\":" + batch_json_str(u10))
+    if v.instanceRole.is_some():
+        auto u11 = v.instanceRole.unwrap()
+        parts.append("\"instanceRole\":" + batch_json_str(u11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(batch_json_str(k13) + ":" + batch_json_str(u12[k13]))
+        parts.append("\"tags\":" + batch_json_obj(m13))
+    if v.placementGroup.is_some():
+        auto u14 = v.placementGroup.unwrap()
+        parts.append("\"placementGroup\":" + batch_json_str(u14))
+    if v.bidPercentage.is_some():
+        auto u15 = v.bidPercentage.unwrap()
+        parts.append("\"bidPercentage\":" + str(u15))
+    if v.spotIamFleetRole.is_some():
+        auto u16 = v.spotIamFleetRole.unwrap()
+        parts.append("\"spotIamFleetRole\":" + batch_json_str(u16))
+    if v.launchTemplate.is_some():
+        auto u17 = v.launchTemplate.unwrap()
+        parts.append("\"launchTemplate\":" + launch_template_specification_to_json(u17))
+    if v.ec2Configuration.is_some():
+        auto u18 = v.ec2Configuration.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"ec2Configuration\":" + batch_json_arr(e19))
+    if v.scalingPolicy.is_some():
+        auto u20 = v.scalingPolicy.unwrap()
+        parts.append("\"scalingPolicy\":" + u20.to_json())
+    if v.managedInstancesProvider.is_some():
+        auto u21 = v.managedInstancesProvider.unwrap()
+        parts.append("\"managedInstancesProvider\":" + managed_instances_provider_to_json(u21))
+    if v.capacityTags.is_some():
+        auto u22 = v.capacityTags.unwrap()
+        list[str] m23 = []
+        for k23 in sorted(u22.keys()):
+            m23.append(batch_json_str(k23) + ":" + batch_json_str(u22[k23]))
+        parts.append("\"capacityTags\":" + batch_json_obj(m23))
+    return batch_json_obj(parts)
+
+# Serialize ComputeResourceUpdate to a compact JSON object (declaration order).
+def compute_resource_update_to_json(ComputeResourceUpdate v) -> str:
+    list[str] parts = []
+    if v.minvCpus.is_some():
+        auto u0 = v.minvCpus.unwrap()
+        parts.append("\"minvCpus\":" + str(u0))
+    if v.maxvCpus.is_some():
+        auto u1 = v.maxvCpus.unwrap()
+        parts.append("\"maxvCpus\":" + str(u1))
+    if v.desiredvCpus.is_some():
+        auto u2 = v.desiredvCpus.unwrap()
+        parts.append("\"desiredvCpus\":" + str(u2))
+    if v.subnets.is_some():
+        auto u3 = v.subnets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(batch_json_str(x4))
+        parts.append("\"subnets\":" + batch_json_arr(e4))
+    if v.securityGroupIds.is_some():
+        auto u5 = v.securityGroupIds.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(batch_json_str(x6))
+        parts.append("\"securityGroupIds\":" + batch_json_arr(e6))
+    if v.allocationStrategy.is_some():
+        auto u7 = v.allocationStrategy.unwrap()
+        parts.append("\"allocationStrategy\":" + u7.to_json())
+    if v.instanceTypes.is_some():
+        auto u8 = v.instanceTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(batch_json_str(x9))
+        parts.append("\"instanceTypes\":" + batch_json_arr(e9))
+    if v.ec2KeyPair.is_some():
+        auto u10 = v.ec2KeyPair.unwrap()
+        parts.append("\"ec2KeyPair\":" + batch_json_str(u10))
+    if v.instanceRole.is_some():
+        auto u11 = v.instanceRole.unwrap()
+        parts.append("\"instanceRole\":" + batch_json_str(u11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(batch_json_str(k13) + ":" + batch_json_str(u12[k13]))
+        parts.append("\"tags\":" + batch_json_obj(m13))
+    if v.placementGroup.is_some():
+        auto u14 = v.placementGroup.unwrap()
+        parts.append("\"placementGroup\":" + batch_json_str(u14))
+    if v.bidPercentage.is_some():
+        auto u15 = v.bidPercentage.unwrap()
+        parts.append("\"bidPercentage\":" + str(u15))
+    if v.launchTemplate.is_some():
+        auto u16 = v.launchTemplate.unwrap()
+        parts.append("\"launchTemplate\":" + launch_template_specification_to_json(u16))
+    if v.ec2Configuration.is_some():
+        auto u17 = v.ec2Configuration.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"ec2Configuration\":" + batch_json_arr(e18))
+    if v.updateToLatestImageVersion.is_some():
+        auto u19 = v.updateToLatestImageVersion.unwrap()
+        parts.append("\"updateToLatestImageVersion\":" + json.dumps(JsonValue.Bool(u19)))
+    if v.type.is_some():
+        auto u20 = v.type.unwrap()
+        parts.append("\"type\":" + u20.to_json())
+    if v.imageId.is_some():
+        auto u21 = v.imageId.unwrap()
+        parts.append("\"imageId\":" + batch_json_str(u21))
+    if v.scalingPolicy.is_some():
+        auto u22 = v.scalingPolicy.unwrap()
+        parts.append("\"scalingPolicy\":" + u22.to_json())
+    if v.managedInstancesProvider.is_some():
+        auto u23 = v.managedInstancesProvider.unwrap()
+        parts.append("\"managedInstancesProvider\":" + update_managed_instances_provider_configuration_to_json(u23))
+    if v.capacityTags.is_some():
+        auto u24 = v.capacityTags.unwrap()
+        list[str] m25 = []
+        for k25 in sorted(u24.keys()):
+            m25.append(batch_json_str(k25) + ":" + batch_json_str(u24[k25]))
+        parts.append("\"capacityTags\":" + batch_json_obj(m25))
+    return batch_json_obj(parts)
+
+# Serialize ConsumableResourceProperties to a compact JSON object (declaration order).
+def consumable_resource_properties_to_json(ConsumableResourceProperties v) -> str:
+    list[str] parts = []
+    if v.consumableResourceList.is_some():
+        auto u0 = v.consumableResourceList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"consumableResourceList\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize ContainerOverrides to a compact JSON object (declaration order).
+def container_overrides_to_json(ContainerOverrides v) -> str:
+    list[str] parts = []
+    if v.vcpus.is_some():
+        auto u0 = v.vcpus.unwrap()
+        parts.append("\"vcpus\":" + str(u0))
+    if v.memory.is_some():
+        auto u1 = v.memory.unwrap()
+        parts.append("\"memory\":" + str(u1))
+    if v.command.is_some():
+        auto u2 = v.command.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(batch_json_str(x3))
+        parts.append("\"command\":" + batch_json_arr(e3))
+    if v.instanceType.is_some():
+        auto u4 = v.instanceType.unwrap()
+        parts.append("\"instanceType\":" + batch_json_str(u4))
+    if v.environment.is_some():
+        auto u5 = v.environment.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"environment\":" + batch_json_arr(e6))
+    if v.resourceRequirements.is_some():
+        auto u7 = v.resourceRequirements.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"resourceRequirements\":" + batch_json_arr(e8))
+    return batch_json_obj(parts)
+
+# Serialize ContainerProperties to a compact JSON object (declaration order).
+def container_properties_to_json(ContainerProperties v) -> str:
+    list[str] parts = []
+    if v.image.is_some():
+        auto u0 = v.image.unwrap()
+        parts.append("\"image\":" + batch_json_str(u0))
+    if v.vcpus.is_some():
+        auto u1 = v.vcpus.unwrap()
+        parts.append("\"vcpus\":" + str(u1))
+    if v.memory.is_some():
+        auto u2 = v.memory.unwrap()
+        parts.append("\"memory\":" + str(u2))
+    if v.command.is_some():
+        auto u3 = v.command.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(batch_json_str(x4))
+        parts.append("\"command\":" + batch_json_arr(e4))
+    if v.jobRoleArn.is_some():
+        auto u5 = v.jobRoleArn.unwrap()
+        parts.append("\"jobRoleArn\":" + batch_json_str(u5))
+    if v.executionRoleArn.is_some():
+        auto u6 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + batch_json_str(u6))
+    if v.volumes.is_some():
+        auto u7 = v.volumes.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"volumes\":" + batch_json_arr(e8))
+    if v.environment.is_some():
+        auto u9 = v.environment.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"environment\":" + batch_json_arr(e10))
+    if v.mountPoints.is_some():
+        auto u11 = v.mountPoints.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"mountPoints\":" + batch_json_arr(e12))
+    if v.readonlyRootFilesystem.is_some():
+        auto u13 = v.readonlyRootFilesystem.unwrap()
+        parts.append("\"readonlyRootFilesystem\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.privileged.is_some():
+        auto u14 = v.privileged.unwrap()
+        parts.append("\"privileged\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.ulimits.is_some():
+        auto u15 = v.ulimits.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"ulimits\":" + batch_json_arr(e16))
+    if v.user.is_some():
+        auto u17 = v.user.unwrap()
+        parts.append("\"user\":" + batch_json_str(u17))
+    if v.instanceType.is_some():
+        auto u18 = v.instanceType.unwrap()
+        parts.append("\"instanceType\":" + batch_json_str(u18))
+    if v.resourceRequirements.is_some():
+        auto u19 = v.resourceRequirements.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"resourceRequirements\":" + batch_json_arr(e20))
+    if v.linuxParameters.is_some():
+        auto u21 = v.linuxParameters.unwrap()
+        parts.append("\"linuxParameters\":" + linux_parameters_to_json(u21))
+    if v.logConfiguration.is_some():
+        auto u22 = v.logConfiguration.unwrap()
+        parts.append("\"logConfiguration\":" + log_configuration_to_json(u22))
+    if v.secrets.is_some():
+        auto u23 = v.secrets.unwrap()
+        list[str] e24 = []
+        for x24 in u23:
+            e24.append(x24.to_json())
+        parts.append("\"secrets\":" + batch_json_arr(e24))
+    if v.networkConfiguration.is_some():
+        auto u25 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + u25.to_json())
+    if v.fargatePlatformConfiguration.is_some():
+        auto u26 = v.fargatePlatformConfiguration.unwrap()
+        parts.append("\"fargatePlatformConfiguration\":" + u26.to_json())
+    if v.enableExecuteCommand.is_some():
+        auto u27 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u27)))
+    if v.ephemeralStorage.is_some():
+        auto u28 = v.ephemeralStorage.unwrap()
+        parts.append("\"ephemeralStorage\":" + u28.to_json())
+    if v.runtimePlatform.is_some():
+        auto u29 = v.runtimePlatform.unwrap()
+        parts.append("\"runtimePlatform\":" + u29.to_json())
+    if v.repositoryCredentials.is_some():
+        auto u30 = v.repositoryCredentials.unwrap()
+        parts.append("\"repositoryCredentials\":" + u30.to_json())
+    return batch_json_obj(parts)
+
+# Serialize Device to a compact JSON object (declaration order).
+def device_to_json(Device v) -> str:
+    list[str] parts = []
+    parts.append("\"hostPath\":" + batch_json_str(v.hostPath))
+    if v.containerPath.is_some():
+        auto u0 = v.containerPath.unwrap()
+        parts.append("\"containerPath\":" + batch_json_str(u0))
+    if v.permissions.is_some():
+        auto u1 = v.permissions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"permissions\":" + batch_json_arr(e2))
+    return batch_json_obj(parts)
+
+# Serialize EcsProperties to a compact JSON object (declaration order).
+def ecs_properties_to_json(EcsProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.taskProperties:
+        e0.append(ecs_task_properties_to_json(x0))
+    parts.append("\"taskProperties\":" + batch_json_arr(e0))
+    return batch_json_obj(parts)
+
+# Serialize EcsPropertiesOverride to a compact JSON object (declaration order).
+def ecs_properties_override_to_json(EcsPropertiesOverride v) -> str:
+    list[str] parts = []
+    if v.taskProperties.is_some():
+        auto u0 = v.taskProperties.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(task_properties_override_to_json(x1))
+        parts.append("\"taskProperties\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize EcsTaskProperties to a compact JSON object (declaration order).
+def ecs_task_properties_to_json(EcsTaskProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.containers:
+        e0.append(task_container_properties_to_json(x0))
+    parts.append("\"containers\":" + batch_json_arr(e0))
+    if v.ephemeralStorage.is_some():
+        auto u1 = v.ephemeralStorage.unwrap()
+        parts.append("\"ephemeralStorage\":" + u1.to_json())
+    if v.executionRoleArn.is_some():
+        auto u2 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + batch_json_str(u2))
+    if v.platformVersion.is_some():
+        auto u3 = v.platformVersion.unwrap()
+        parts.append("\"platformVersion\":" + batch_json_str(u3))
+    if v.ipcMode.is_some():
+        auto u4 = v.ipcMode.unwrap()
+        parts.append("\"ipcMode\":" + batch_json_str(u4))
+    if v.taskRoleArn.is_some():
+        auto u5 = v.taskRoleArn.unwrap()
+        parts.append("\"taskRoleArn\":" + batch_json_str(u5))
+    if v.pidMode.is_some():
+        auto u6 = v.pidMode.unwrap()
+        parts.append("\"pidMode\":" + batch_json_str(u6))
+    if v.networkConfiguration.is_some():
+        auto u7 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + u7.to_json())
+    if v.runtimePlatform.is_some():
+        auto u8 = v.runtimePlatform.unwrap()
+        parts.append("\"runtimePlatform\":" + u8.to_json())
+    if v.volumes.is_some():
+        auto u9 = v.volumes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"volumes\":" + batch_json_arr(e10))
+    if v.enableExecuteCommand.is_some():
+        auto u11 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.networkMode.is_some():
+        auto u12 = v.networkMode.unwrap()
+        parts.append("\"networkMode\":" + batch_json_str(u12))
+    return batch_json_obj(parts)
+
+# Serialize EksContainer to a compact JSON object (declaration order).
+def eks_container_to_json(EksContainer v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + batch_json_str(u0))
+    parts.append("\"image\":" + batch_json_str(v.image))
+    if v.imagePullPolicy.is_some():
+        auto u1 = v.imagePullPolicy.unwrap()
+        parts.append("\"imagePullPolicy\":" + batch_json_str(u1))
+    if v.command.is_some():
+        auto u2 = v.command.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(batch_json_str(x3))
+        parts.append("\"command\":" + batch_json_arr(e3))
+    if v.args.is_some():
+        auto u4 = v.args.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(batch_json_str(x5))
+        parts.append("\"args\":" + batch_json_arr(e5))
+    if v.env.is_some():
+        auto u6 = v.env.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"env\":" + batch_json_arr(e7))
+    if v.resources.is_some():
+        auto u8 = v.resources.unwrap()
+        parts.append("\"resources\":" + eks_container_resource_requirements_to_json(u8))
+    if v.volumeMounts.is_some():
+        auto u9 = v.volumeMounts.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"volumeMounts\":" + batch_json_arr(e10))
+    if v.securityContext.is_some():
+        auto u11 = v.securityContext.unwrap()
+        parts.append("\"securityContext\":" + u11.to_json())
+    return batch_json_obj(parts)
+
+# Serialize EksContainerOverride to a compact JSON object (declaration order).
+def eks_container_override_to_json(EksContainerOverride v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + batch_json_str(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + batch_json_str(u1))
+    if v.command.is_some():
+        auto u2 = v.command.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(batch_json_str(x3))
+        parts.append("\"command\":" + batch_json_arr(e3))
+    if v.args.is_some():
+        auto u4 = v.args.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(batch_json_str(x5))
+        parts.append("\"args\":" + batch_json_arr(e5))
+    if v.env.is_some():
+        auto u6 = v.env.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"env\":" + batch_json_arr(e7))
+    if v.resources.is_some():
+        auto u8 = v.resources.unwrap()
+        parts.append("\"resources\":" + eks_container_resource_requirements_to_json(u8))
+    return batch_json_obj(parts)
+
+# Serialize EksContainerResourceRequirements to a compact JSON object (declaration order).
+def eks_container_resource_requirements_to_json(EksContainerResourceRequirements v) -> str:
+    list[str] parts = []
+    if v.limits.is_some():
+        auto u0 = v.limits.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(batch_json_str(k1) + ":" + batch_json_str(u0[k1]))
+        parts.append("\"limits\":" + batch_json_obj(m1))
+    if v.requests.is_some():
+        auto u2 = v.requests.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
+        parts.append("\"requests\":" + batch_json_obj(m3))
+    return batch_json_obj(parts)
+
+# Serialize EksMetadata to a compact JSON object (declaration order).
+def eks_metadata_to_json(EksMetadata v) -> str:
+    list[str] parts = []
+    if v.labels.is_some():
+        auto u0 = v.labels.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(batch_json_str(k1) + ":" + batch_json_str(u0[k1]))
+        parts.append("\"labels\":" + batch_json_obj(m1))
+    if v.annotations.is_some():
+        auto u2 = v.annotations.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
+        parts.append("\"annotations\":" + batch_json_obj(m3))
+    if v.namespace.is_some():
+        auto u4 = v.namespace.unwrap()
+        parts.append("\"namespace\":" + batch_json_str(u4))
+    return batch_json_obj(parts)
+
+# Serialize EksPodProperties to a compact JSON object (declaration order).
+def eks_pod_properties_to_json(EksPodProperties v) -> str:
+    list[str] parts = []
+    if v.serviceAccountName.is_some():
+        auto u0 = v.serviceAccountName.unwrap()
+        parts.append("\"serviceAccountName\":" + batch_json_str(u0))
+    if v.hostNetwork.is_some():
+        auto u1 = v.hostNetwork.unwrap()
+        parts.append("\"hostNetwork\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.dnsPolicy.is_some():
+        auto u2 = v.dnsPolicy.unwrap()
+        parts.append("\"dnsPolicy\":" + batch_json_str(u2))
+    if v.imagePullSecrets.is_some():
+        auto u3 = v.imagePullSecrets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"imagePullSecrets\":" + batch_json_arr(e4))
+    if v.containers.is_some():
+        auto u5 = v.containers.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(eks_container_to_json(x6))
+        parts.append("\"containers\":" + batch_json_arr(e6))
+    if v.initContainers.is_some():
+        auto u7 = v.initContainers.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(eks_container_to_json(x8))
+        parts.append("\"initContainers\":" + batch_json_arr(e8))
+    if v.volumes.is_some():
+        auto u9 = v.volumes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"volumes\":" + batch_json_arr(e10))
+    if v.metadata.is_some():
+        auto u11 = v.metadata.unwrap()
+        parts.append("\"metadata\":" + eks_metadata_to_json(u11))
+    if v.shareProcessNamespace.is_some():
+        auto u12 = v.shareProcessNamespace.unwrap()
+        parts.append("\"shareProcessNamespace\":" + json.dumps(JsonValue.Bool(u12)))
+    return batch_json_obj(parts)
+
+# Serialize EksPodPropertiesOverride to a compact JSON object (declaration order).
+def eks_pod_properties_override_to_json(EksPodPropertiesOverride v) -> str:
+    list[str] parts = []
+    if v.containers.is_some():
+        auto u0 = v.containers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(eks_container_override_to_json(x1))
+        parts.append("\"containers\":" + batch_json_arr(e1))
+    if v.initContainers.is_some():
+        auto u2 = v.initContainers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(eks_container_override_to_json(x3))
+        parts.append("\"initContainers\":" + batch_json_arr(e3))
+    if v.metadata.is_some():
+        auto u4 = v.metadata.unwrap()
+        parts.append("\"metadata\":" + eks_metadata_to_json(u4))
+    return batch_json_obj(parts)
+
+# Serialize EksProperties to a compact JSON object (declaration order).
+def eks_properties_to_json(EksProperties v) -> str:
+    list[str] parts = []
+    if v.podProperties.is_some():
+        auto u0 = v.podProperties.unwrap()
+        parts.append("\"podProperties\":" + eks_pod_properties_to_json(u0))
+    return batch_json_obj(parts)
+
+# Serialize EksPropertiesOverride to a compact JSON object (declaration order).
+def eks_properties_override_to_json(EksPropertiesOverride v) -> str:
+    list[str] parts = []
+    if v.podProperties.is_some():
+        auto u0 = v.podProperties.unwrap()
+        parts.append("\"podProperties\":" + eks_pod_properties_override_to_json(u0))
+    return batch_json_obj(parts)
+
+# Serialize FairsharePolicy to a compact JSON object (declaration order).
+def fairshare_policy_to_json(FairsharePolicy v) -> str:
+    list[str] parts = []
+    if v.shareDecaySeconds.is_some():
+        auto u0 = v.shareDecaySeconds.unwrap()
+        parts.append("\"shareDecaySeconds\":" + str(u0))
+    if v.computeReservation.is_some():
+        auto u1 = v.computeReservation.unwrap()
+        parts.append("\"computeReservation\":" + str(u1))
+    if v.shareDistribution.is_some():
+        auto u2 = v.shareDistribution.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"shareDistribution\":" + batch_json_arr(e3))
+    return batch_json_obj(parts)
+
+# Serialize FirelensConfiguration to a compact JSON object (declaration order).
+def firelens_configuration_to_json(FirelensConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(batch_json_str(k1) + ":" + batch_json_str(u0[k1]))
+        parts.append("\"options\":" + batch_json_obj(m1))
+    return batch_json_obj(parts)
+
+# Serialize InstanceLaunchTemplate to a compact JSON object (declaration order).
+def instance_launch_template_to_json(InstanceLaunchTemplate v) -> str:
+    list[str] parts = []
+    parts.append("\"ec2InstanceProfileArn\":" + batch_json_str(v.ec2InstanceProfileArn))
+    parts.append("\"networkConfiguration\":" + managed_instances_network_configuration_to_json(v.networkConfiguration))
+    if v.instanceRequirements.is_some():
+        auto u0 = v.instanceRequirements.unwrap()
+        parts.append("\"instanceRequirements\":" + instance_requirements_request_to_json(u0))
+    if v.capacityOptionType.is_some():
+        auto u1 = v.capacityOptionType.unwrap()
+        parts.append("\"capacityOptionType\":" + batch_json_str(u1))
+    if v.storageConfiguration.is_some():
+        auto u2 = v.storageConfiguration.unwrap()
+        parts.append("\"storageConfiguration\":" + u2.to_json())
+    if v.monitoring.is_some():
+        auto u3 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + batch_json_str(u3))
+    if v.fipsEnabled.is_some():
+        auto u4 = v.fipsEnabled.unwrap()
+        parts.append("\"fipsEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.capacityReservations.is_some():
+        auto u5 = v.capacityReservations.unwrap()
+        parts.append("\"capacityReservations\":" + u5.to_json())
+    if v.instanceMetadataTagsPropagation.is_some():
+        auto u6 = v.instanceMetadataTagsPropagation.unwrap()
+        parts.append("\"instanceMetadataTagsPropagation\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.localStorageConfiguration.is_some():
+        auto u7 = v.localStorageConfiguration.unwrap()
+        parts.append("\"localStorageConfiguration\":" + u7.to_json())
+    return batch_json_obj(parts)
+
+# Serialize InstanceLaunchTemplateUpdate to a compact JSON object (declaration order).
+def instance_launch_template_update_to_json(InstanceLaunchTemplateUpdate v) -> str:
+    list[str] parts = []
+    if v.ec2InstanceProfileArn.is_some():
+        auto u0 = v.ec2InstanceProfileArn.unwrap()
+        parts.append("\"ec2InstanceProfileArn\":" + batch_json_str(u0))
+    if v.networkConfiguration.is_some():
+        auto u1 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + managed_instances_network_configuration_to_json(u1))
+    if v.instanceRequirements.is_some():
+        auto u2 = v.instanceRequirements.unwrap()
+        parts.append("\"instanceRequirements\":" + instance_requirements_request_to_json(u2))
+    if v.storageConfiguration.is_some():
+        auto u3 = v.storageConfiguration.unwrap()
+        parts.append("\"storageConfiguration\":" + u3.to_json())
+    if v.monitoring.is_some():
+        auto u4 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + batch_json_str(u4))
+    if v.capacityReservations.is_some():
+        auto u5 = v.capacityReservations.unwrap()
+        parts.append("\"capacityReservations\":" + u5.to_json())
+    if v.instanceMetadataTagsPropagation.is_some():
+        auto u6 = v.instanceMetadataTagsPropagation.unwrap()
+        parts.append("\"instanceMetadataTagsPropagation\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.localStorageConfiguration.is_some():
+        auto u7 = v.localStorageConfiguration.unwrap()
+        parts.append("\"localStorageConfiguration\":" + u7.to_json())
+    return batch_json_obj(parts)
+
+# Serialize InstanceRequirementsRequest to a compact JSON object (declaration order).
+def instance_requirements_request_to_json(InstanceRequirementsRequest v) -> str:
+    list[str] parts = []
+    if v.allowedInstanceTypes.is_some():
+        auto u0 = v.allowedInstanceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(batch_json_str(x1))
+        parts.append("\"allowedInstanceTypes\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize KeyValuesPair to a compact JSON object (declaration order).
+def key_values_pair_to_json(KeyValuesPair v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + batch_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(batch_json_str(x2))
+        parts.append("\"values\":" + batch_json_arr(e2))
+    return batch_json_obj(parts)
+
+# Serialize LaunchTemplateSpecification to a compact JSON object (declaration order).
+def launch_template_specification_to_json(LaunchTemplateSpecification v) -> str:
+    list[str] parts = []
+    if v.launchTemplateId.is_some():
+        auto u0 = v.launchTemplateId.unwrap()
+        parts.append("\"launchTemplateId\":" + batch_json_str(u0))
+    if v.launchTemplateName.is_some():
+        auto u1 = v.launchTemplateName.unwrap()
+        parts.append("\"launchTemplateName\":" + batch_json_str(u1))
+    if v.version.is_some():
+        auto u2 = v.version.unwrap()
+        parts.append("\"version\":" + batch_json_str(u2))
+    if v.overrides.is_some():
+        auto u3 = v.overrides.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(launch_template_specification_override_to_json(x4))
+        parts.append("\"overrides\":" + batch_json_arr(e4))
+    if v.userdataType.is_some():
+        auto u5 = v.userdataType.unwrap()
+        parts.append("\"userdataType\":" + u5.to_json())
+    return batch_json_obj(parts)
+
+# Serialize LaunchTemplateSpecificationOverride to a compact JSON object (declaration order).
+def launch_template_specification_override_to_json(LaunchTemplateSpecificationOverride v) -> str:
+    list[str] parts = []
+    if v.launchTemplateId.is_some():
+        auto u0 = v.launchTemplateId.unwrap()
+        parts.append("\"launchTemplateId\":" + batch_json_str(u0))
+    if v.launchTemplateName.is_some():
+        auto u1 = v.launchTemplateName.unwrap()
+        parts.append("\"launchTemplateName\":" + batch_json_str(u1))
+    if v.version.is_some():
+        auto u2 = v.version.unwrap()
+        parts.append("\"version\":" + batch_json_str(u2))
+    if v.targetInstanceTypes.is_some():
+        auto u3 = v.targetInstanceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(batch_json_str(x4))
+        parts.append("\"targetInstanceTypes\":" + batch_json_arr(e4))
+    if v.userdataType.is_some():
+        auto u5 = v.userdataType.unwrap()
+        parts.append("\"userdataType\":" + u5.to_json())
+    return batch_json_obj(parts)
+
+# Serialize LinuxParameters to a compact JSON object (declaration order).
+def linux_parameters_to_json(LinuxParameters v) -> str:
+    list[str] parts = []
+    if v.devices.is_some():
+        auto u0 = v.devices.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(device_to_json(x1))
+        parts.append("\"devices\":" + batch_json_arr(e1))
+    if v.initProcessEnabled.is_some():
+        auto u2 = v.initProcessEnabled.unwrap()
+        parts.append("\"initProcessEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.sharedMemorySize.is_some():
+        auto u3 = v.sharedMemorySize.unwrap()
+        parts.append("\"sharedMemorySize\":" + str(u3))
+    if v.tmpfs.is_some():
+        auto u4 = v.tmpfs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(tmpfs_to_json(x5))
+        parts.append("\"tmpfs\":" + batch_json_arr(e5))
+    if v.maxSwap.is_some():
+        auto u6 = v.maxSwap.unwrap()
+        parts.append("\"maxSwap\":" + str(u6))
+    if v.swappiness.is_some():
+        auto u7 = v.swappiness.unwrap()
+        parts.append("\"swappiness\":" + str(u7))
+    return batch_json_obj(parts)
+
+# Serialize LogConfiguration to a compact JSON object (declaration order).
+def log_configuration_to_json(LogConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"logDriver\":" + v.logDriver.to_json())
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(batch_json_str(k1) + ":" + batch_json_str(u0[k1]))
+        parts.append("\"options\":" + batch_json_obj(m1))
+    if v.secretOptions.is_some():
+        auto u2 = v.secretOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"secretOptions\":" + batch_json_arr(e3))
+    return batch_json_obj(parts)
+
+# Serialize ManagedInstancesNetworkConfiguration to a compact JSON object (declaration order).
+def managed_instances_network_configuration_to_json(ManagedInstancesNetworkConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnets:
+        e0.append(batch_json_str(x0))
+    parts.append("\"subnets\":" + batch_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.securityGroups:
+        e1.append(batch_json_str(x1))
+    parts.append("\"securityGroups\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize ManagedInstancesProvider to a compact JSON object (declaration order).
+def managed_instances_provider_to_json(ManagedInstancesProvider v) -> str:
+    list[str] parts = []
+    if v.propagateTags.is_some():
+        auto u0 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + batch_json_str(u0))
+    parts.append("\"infrastructureRoleArn\":" + batch_json_str(v.infrastructureRoleArn))
+    parts.append("\"instanceLaunchTemplate\":" + instance_launch_template_to_json(v.instanceLaunchTemplate))
+    if v.infrastructureOptimization.is_some():
+        auto u1 = v.infrastructureOptimization.unwrap()
+        parts.append("\"infrastructureOptimization\":" + u1.to_json())
+    return batch_json_obj(parts)
+
+# Serialize NodeOverrides to a compact JSON object (declaration order).
+def node_overrides_to_json(NodeOverrides v) -> str:
+    list[str] parts = []
+    if v.numNodes.is_some():
+        auto u0 = v.numNodes.unwrap()
+        parts.append("\"numNodes\":" + str(u0))
+    if v.nodePropertyOverrides.is_some():
+        auto u1 = v.nodePropertyOverrides.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(node_property_override_to_json(x2))
+        parts.append("\"nodePropertyOverrides\":" + batch_json_arr(e2))
+    return batch_json_obj(parts)
+
+# Serialize NodeProperties to a compact JSON object (declaration order).
+def node_properties_to_json(NodeProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"numNodes\":" + str(v.numNodes))
+    parts.append("\"mainNode\":" + str(v.mainNode))
+    list[str] e0 = []
+    for x0 in v.nodeRangeProperties:
+        e0.append(node_range_property_to_json(x0))
+    parts.append("\"nodeRangeProperties\":" + batch_json_arr(e0))
+    return batch_json_obj(parts)
+
+# Serialize NodePropertyOverride to a compact JSON object (declaration order).
+def node_property_override_to_json(NodePropertyOverride v) -> str:
+    list[str] parts = []
+    parts.append("\"targetNodes\":" + batch_json_str(v.targetNodes))
+    if v.containerOverrides.is_some():
+        auto u0 = v.containerOverrides.unwrap()
+        parts.append("\"containerOverrides\":" + container_overrides_to_json(u0))
+    if v.ecsPropertiesOverride.is_some():
+        auto u1 = v.ecsPropertiesOverride.unwrap()
+        parts.append("\"ecsPropertiesOverride\":" + ecs_properties_override_to_json(u1))
+    if v.instanceTypes.is_some():
+        auto u2 = v.instanceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(batch_json_str(x3))
+        parts.append("\"instanceTypes\":" + batch_json_arr(e3))
+    if v.eksPropertiesOverride.is_some():
+        auto u4 = v.eksPropertiesOverride.unwrap()
+        parts.append("\"eksPropertiesOverride\":" + eks_properties_override_to_json(u4))
+    if v.consumableResourcePropertiesOverride.is_some():
+        auto u5 = v.consumableResourcePropertiesOverride.unwrap()
+        parts.append("\"consumableResourcePropertiesOverride\":" + consumable_resource_properties_to_json(u5))
+    return batch_json_obj(parts)
+
+# Serialize NodeRangeProperty to a compact JSON object (declaration order).
+def node_range_property_to_json(NodeRangeProperty v) -> str:
+    list[str] parts = []
+    parts.append("\"targetNodes\":" + batch_json_str(v.targetNodes))
+    if v.container.is_some():
+        auto u0 = v.container.unwrap()
+        parts.append("\"container\":" + container_properties_to_json(u0))
+    if v.instanceTypes.is_some():
+        auto u1 = v.instanceTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(batch_json_str(x2))
+        parts.append("\"instanceTypes\":" + batch_json_arr(e2))
+    if v.ecsProperties.is_some():
+        auto u3 = v.ecsProperties.unwrap()
+        parts.append("\"ecsProperties\":" + ecs_properties_to_json(u3))
+    if v.eksProperties.is_some():
+        auto u4 = v.eksProperties.unwrap()
+        parts.append("\"eksProperties\":" + eks_properties_to_json(u4))
+    if v.consumableResourceProperties.is_some():
+        auto u5 = v.consumableResourceProperties.unwrap()
+        parts.append("\"consumableResourceProperties\":" + consumable_resource_properties_to_json(u5))
+    return batch_json_obj(parts)
+
+# Serialize RetryStrategy to a compact JSON object (declaration order).
+def retry_strategy_to_json(RetryStrategy v) -> str:
+    list[str] parts = []
+    if v.attempts.is_some():
+        auto u0 = v.attempts.unwrap()
+        parts.append("\"attempts\":" + str(u0))
+    if v.evaluateOnExit.is_some():
+        auto u1 = v.evaluateOnExit.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"evaluateOnExit\":" + batch_json_arr(e2))
+    return batch_json_obj(parts)
+
+# Serialize ServiceJobRetryStrategy to a compact JSON object (declaration order).
+def service_job_retry_strategy_to_json(ServiceJobRetryStrategy v) -> str:
+    list[str] parts = []
+    parts.append("\"attempts\":" + str(v.attempts))
+    if v.evaluateOnExit.is_some():
+        auto u0 = v.evaluateOnExit.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"evaluateOnExit\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize TaskContainerOverrides to a compact JSON object (declaration order).
+def task_container_overrides_to_json(TaskContainerOverrides v) -> str:
+    list[str] parts = []
+    if v.command.is_some():
+        auto u0 = v.command.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(batch_json_str(x1))
+        parts.append("\"command\":" + batch_json_arr(e1))
+    if v.environment.is_some():
+        auto u2 = v.environment.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"environment\":" + batch_json_arr(e3))
+    if v.name.is_some():
+        auto u4 = v.name.unwrap()
+        parts.append("\"name\":" + batch_json_str(u4))
+    if v.resourceRequirements.is_some():
+        auto u5 = v.resourceRequirements.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"resourceRequirements\":" + batch_json_arr(e6))
+    return batch_json_obj(parts)
+
+# Serialize TaskContainerProperties to a compact JSON object (declaration order).
+def task_container_properties_to_json(TaskContainerProperties v) -> str:
+    list[str] parts = []
+    if v.command.is_some():
+        auto u0 = v.command.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(batch_json_str(x1))
+        parts.append("\"command\":" + batch_json_arr(e1))
+    if v.dependsOn.is_some():
+        auto u2 = v.dependsOn.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"dependsOn\":" + batch_json_arr(e3))
+    if v.environment.is_some():
+        auto u4 = v.environment.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"environment\":" + batch_json_arr(e5))
+    if v.essential.is_some():
+        auto u6 = v.essential.unwrap()
+        parts.append("\"essential\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.firelensConfiguration.is_some():
+        auto u7 = v.firelensConfiguration.unwrap()
+        parts.append("\"firelensConfiguration\":" + firelens_configuration_to_json(u7))
+    parts.append("\"image\":" + batch_json_str(v.image))
+    if v.linuxParameters.is_some():
+        auto u8 = v.linuxParameters.unwrap()
+        parts.append("\"linuxParameters\":" + linux_parameters_to_json(u8))
+    if v.logConfiguration.is_some():
+        auto u9 = v.logConfiguration.unwrap()
+        parts.append("\"logConfiguration\":" + log_configuration_to_json(u9))
+    if v.mountPoints.is_some():
+        auto u10 = v.mountPoints.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"mountPoints\":" + batch_json_arr(e11))
+    if v.name.is_some():
+        auto u12 = v.name.unwrap()
+        parts.append("\"name\":" + batch_json_str(u12))
+    if v.privileged.is_some():
+        auto u13 = v.privileged.unwrap()
+        parts.append("\"privileged\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.readonlyRootFilesystem.is_some():
+        auto u14 = v.readonlyRootFilesystem.unwrap()
+        parts.append("\"readonlyRootFilesystem\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.repositoryCredentials.is_some():
+        auto u15 = v.repositoryCredentials.unwrap()
+        parts.append("\"repositoryCredentials\":" + u15.to_json())
+    if v.resourceRequirements.is_some():
+        auto u16 = v.resourceRequirements.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"resourceRequirements\":" + batch_json_arr(e17))
+    if v.secrets.is_some():
+        auto u18 = v.secrets.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"secrets\":" + batch_json_arr(e19))
+    if v.ulimits.is_some():
+        auto u20 = v.ulimits.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"ulimits\":" + batch_json_arr(e21))
+    if v.user.is_some():
+        auto u22 = v.user.unwrap()
+        parts.append("\"user\":" + batch_json_str(u22))
+    if v.startTimeout.is_some():
+        auto u23 = v.startTimeout.unwrap()
+        parts.append("\"startTimeout\":" + str(u23))
+    if v.stopTimeout.is_some():
+        auto u24 = v.stopTimeout.unwrap()
+        parts.append("\"stopTimeout\":" + str(u24))
+    return batch_json_obj(parts)
+
+# Serialize TaskPropertiesOverride to a compact JSON object (declaration order).
+def task_properties_override_to_json(TaskPropertiesOverride v) -> str:
+    list[str] parts = []
+    if v.containers.is_some():
+        auto u0 = v.containers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(task_container_overrides_to_json(x1))
+        parts.append("\"containers\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize Tmpfs to a compact JSON object (declaration order).
+def tmpfs_to_json(Tmpfs v) -> str:
+    list[str] parts = []
+    parts.append("\"containerPath\":" + batch_json_str(v.containerPath))
+    parts.append("\"size\":" + str(v.size))
+    if v.mountOptions.is_some():
+        auto u0 = v.mountOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(batch_json_str(x1))
+        parts.append("\"mountOptions\":" + batch_json_arr(e1))
+    return batch_json_obj(parts)
+
+# Serialize UpdateManagedInstancesProviderConfiguration to a compact JSON object (declaration order).
+def update_managed_instances_provider_configuration_to_json(UpdateManagedInstancesProviderConfiguration v) -> str:
+    list[str] parts = []
+    if v.propagateTags.is_some():
+        auto u0 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + batch_json_str(u0))
+    if v.infrastructureRoleArn.is_some():
+        auto u1 = v.infrastructureRoleArn.unwrap()
+        parts.append("\"infrastructureRoleArn\":" + batch_json_str(u1))
+    if v.instanceLaunchTemplate.is_some():
+        auto u2 = v.instanceLaunchTemplate.unwrap()
+        parts.append("\"instanceLaunchTemplate\":" + instance_launch_template_update_to_json(u2))
+    if v.infrastructureOptimization.is_some():
+        auto u3 = v.infrastructureOptimization.unwrap()
+        parts.append("\"infrastructureOptimization\":" + u3.to_json())
+    return batch_json_obj(parts)
+
 # A bound Batch client: credentials + region, threaded into every operation.
 struct BatchClient:
     core.Credentials creds
@@ -2388,6 +3525,196 @@ struct BatchClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/canceljob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelJobDocument(jobId=input.jobId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CancelJobs  POST /v1/canceljobs
+    # errors: ClientException, ServerException
+    def cancel_jobs(self, CancelJobsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/canceljobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.jobs:
+            e0.append(batch_json_str(x0))
+        parts.append("\"jobs\":" + batch_json_arr(e0))
+        parts.append("\"reason\":" + batch_json_str(input.reason))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CreateComputeEnvironment  POST /v1/createcomputeenvironment
+    # errors: ClientException, ServerException
+    def create_compute_environment(self, CreateComputeEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createcomputeenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"computeEnvironmentName\":" + batch_json_str(input.computeEnvironmentName))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.state.is_some():
+            auto u0 = input.state.unwrap()
+            parts.append("\"state\":" + u0.to_json())
+        if input.unmanagedvCpus.is_some():
+            auto u1 = input.unmanagedvCpus.unwrap()
+            parts.append("\"unmanagedvCpus\":" + str(u1))
+        if input.computeResources.is_some():
+            auto u2 = input.computeResources.unwrap()
+            parts.append("\"computeResources\":" + compute_resource_to_json(u2))
+        if input.serviceRole.is_some():
+            auto u3 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + batch_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(batch_json_str(k5) + ":" + batch_json_str(u4[k5]))
+            parts.append("\"tags\":" + batch_json_obj(m5))
+        if input.eksConfiguration.is_some():
+            auto u6 = input.eksConfiguration.unwrap()
+            parts.append("\"eksConfiguration\":" + u6.to_json())
+        if input.context.is_some():
+            auto u7 = input.context.unwrap()
+            parts.append("\"context\":" + batch_json_str(u7))
+        if input.ecsSettings.is_some():
+            auto u8 = input.ecsSettings.unwrap()
+            parts.append("\"ecsSettings\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CreateConsumableResource  POST /v1/createconsumableresource
+    # errors: ClientException, ServerException
+    def create_consumable_resource(self, CreateConsumableResourceRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"consumableResourceName\":" + batch_json_str(input.consumableResourceName))
+        if input.totalQuantity.is_some():
+            auto u0 = input.totalQuantity.unwrap()
+            parts.append("\"totalQuantity\":" + str(u0))
+        if input.resourceType.is_some():
+            auto u1 = input.resourceType.unwrap()
+            parts.append("\"resourceType\":" + batch_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
+            parts.append("\"tags\":" + batch_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CreateJobQueue  POST /v1/createjobqueue
+    # errors: ClientException, ServerException
+    def create_job_queue(self, CreateJobQueueRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createjobqueue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobQueueName\":" + batch_json_str(input.jobQueueName))
+        if input.state.is_some():
+            auto u0 = input.state.unwrap()
+            parts.append("\"state\":" + u0.to_json())
+        if input.schedulingPolicyArn.is_some():
+            auto u1 = input.schedulingPolicyArn.unwrap()
+            parts.append("\"schedulingPolicyArn\":" + batch_json_str(u1))
+        parts.append("\"priority\":" + str(input.priority))
+        if input.computeEnvironmentOrder.is_some():
+            auto u2 = input.computeEnvironmentOrder.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"computeEnvironmentOrder\":" + batch_json_arr(e3))
+        if input.serviceEnvironmentOrder.is_some():
+            auto u4 = input.serviceEnvironmentOrder.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"serviceEnvironmentOrder\":" + batch_json_arr(e5))
+        if input.jobQueueType.is_some():
+            auto u6 = input.jobQueueType.unwrap()
+            parts.append("\"jobQueueType\":" + u6.to_json())
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(batch_json_str(k8) + ":" + batch_json_str(u7[k8]))
+            parts.append("\"tags\":" + batch_json_obj(m8))
+        if input.jobStateTimeLimitActions.is_some():
+            auto u9 = input.jobStateTimeLimitActions.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"jobStateTimeLimitActions\":" + batch_json_arr(e10))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CreateQuotaShare  POST /v1/createquotashare
+    # errors: ClientException, ServerException
+    def create_quota_share(self, CreateQuotaShareRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createquotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"quotaShareName\":" + batch_json_str(input.quotaShareName))
+        parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
+        list[str] e0 = []
+        for x0 in input.capacityLimits:
+            e0.append(x0.to_json())
+        parts.append("\"capacityLimits\":" + batch_json_arr(e0))
+        parts.append("\"resourceSharingConfiguration\":" + input.resourceSharingConfiguration.to_json())
+        parts.append("\"preemptionConfiguration\":" + input.preemptionConfiguration.to_json())
+        if input.state.is_some():
+            auto u1 = input.state.unwrap()
+            parts.append("\"state\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
+            parts.append("\"tags\":" + batch_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CreateSchedulingPolicy  POST /v1/createschedulingpolicy
+    # errors: ClientException, ServerException
+    def create_scheduling_policy(self, CreateSchedulingPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createschedulingpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + batch_json_str(input.name))
+        if input.quotaSharePolicy.is_some():
+            auto u0 = input.quotaSharePolicy.unwrap()
+            parts.append("\"quotaSharePolicy\":" + u0.to_json())
+        if input.fairsharePolicy.is_some():
+            auto u1 = input.fairsharePolicy.unwrap()
+            parts.append("\"fairsharePolicy\":" + fairshare_policy_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
+            parts.append("\"tags\":" + batch_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # CreateServiceEnvironment  POST /v1/createserviceenvironment
+    # errors: ClientException, ServerException
+    def create_service_environment(self, CreateServiceEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createserviceenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"serviceEnvironmentName\":" + batch_json_str(input.serviceEnvironmentName))
+        parts.append("\"serviceEnvironmentType\":" + batch_json_str(input.serviceEnvironmentType))
+        if input.state.is_some():
+            auto u0 = input.state.unwrap()
+            parts.append("\"state\":" + u0.to_json())
+        list[str] e1 = []
+        for x1 in input.capacityLimits:
+            e1.append(x1.to_json())
+        parts.append("\"capacityLimits\":" + batch_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
+            parts.append("\"tags\":" + batch_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
     # DeleteComputeEnvironment  POST /v1/deletecomputeenvironment
@@ -2453,6 +3780,27 @@ struct BatchClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
+    # DescribeComputeEnvironments  POST /v1/describecomputeenvironments
+    # errors: ClientException, ServerException
+    def describe_compute_environments(self, DescribeComputeEnvironmentsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describecomputeenvironments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.computeEnvironments.is_some():
+            auto u0 = input.computeEnvironments.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(batch_json_str(x1))
+            parts.append("\"computeEnvironments\":" + batch_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
     # DescribeConsumableResource  POST /v1/describeconsumableresource
     # errors: ClientException, ServerException
     def describe_consumable_resource(self, DescribeConsumableResourceRequest input) -> str:
@@ -2462,6 +3810,67 @@ struct BatchClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
+    # DescribeJobDefinitions  POST /v1/describejobdefinitions
+    # errors: ClientException, ServerException
+    def describe_job_definitions(self, DescribeJobDefinitionsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobdefinitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.jobDefinitions.is_some():
+            auto u0 = input.jobDefinitions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(batch_json_str(x1))
+            parts.append("\"jobDefinitions\":" + batch_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.jobDefinitionName.is_some():
+            auto u3 = input.jobDefinitionName.unwrap()
+            parts.append("\"jobDefinitionName\":" + batch_json_str(u3))
+        if input.status.is_some():
+            auto u4 = input.status.unwrap()
+            parts.append("\"status\":" + batch_json_str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u5))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # DescribeJobQueues  POST /v1/describejobqueues
+    # errors: ClientException, ServerException
+    def describe_job_queues(self, DescribeJobQueuesRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobqueues", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.jobQueues.is_some():
+            auto u0 = input.jobQueues.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(batch_json_str(x1))
+            parts.append("\"jobQueues\":" + batch_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # DescribeJobs  POST /v1/describejobs
+    # errors: ClientException, ServerException
+    def describe_jobs(self, DescribeJobsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.jobs:
+            e0.append(batch_json_str(x0))
+        parts.append("\"jobs\":" + batch_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
     # DescribeQuotaShare  POST /v1/describequotashare
     # errors: ClientException, ServerException
     def describe_quota_share(self, DescribeQuotaShareRequest input) -> str:
@@ -2469,6 +3878,40 @@ struct BatchClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/describequotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeQuotaShareDocument(quotaShareArn=input.quotaShareArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # DescribeSchedulingPolicies  POST /v1/describeschedulingpolicies
+    # errors: ClientException, ServerException
+    def describe_scheduling_policies(self, DescribeSchedulingPoliciesRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeschedulingpolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.arns:
+            e0.append(batch_json_str(x0))
+        parts.append("\"arns\":" + batch_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # DescribeServiceEnvironments  POST /v1/describeserviceenvironments
+    # errors: ClientException, ServerException
+    def describe_service_environments(self, DescribeServiceEnvironmentsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeserviceenvironments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.serviceEnvironments.is_some():
+            auto u0 = input.serviceEnvironments.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(batch_json_str(x1))
+            parts.append("\"serviceEnvironments\":" + batch_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
     # DescribeServiceJob  POST /v1/describeservicejob
@@ -2489,6 +3932,82 @@ struct BatchClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
+    # ListConsumableResources  POST /v1/listconsumableresources
+    # errors: ClientException, ServerException
+    def list_consumable_resources(self, ListConsumableResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listconsumableresources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(key_values_pair_to_json(x1))
+            parts.append("\"filters\":" + batch_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # ListJobs  POST /v1/listjobs
+    # errors: ClientException, ServerException
+    def list_jobs(self, ListJobsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listjobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.jobQueue.is_some():
+            auto u0 = input.jobQueue.unwrap()
+            parts.append("\"jobQueue\":" + batch_json_str(u0))
+        if input.arrayJobId.is_some():
+            auto u1 = input.arrayJobId.unwrap()
+            parts.append("\"arrayJobId\":" + batch_json_str(u1))
+        if input.multiNodeJobId.is_some():
+            auto u2 = input.multiNodeJobId.unwrap()
+            parts.append("\"multiNodeJobId\":" + batch_json_str(u2))
+        if input.jobStatus.is_some():
+            auto u3 = input.jobStatus.unwrap()
+            parts.append("\"jobStatus\":" + u3.to_json())
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u5))
+        if input.filters.is_some():
+            auto u6 = input.filters.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(key_values_pair_to_json(x7))
+            parts.append("\"filters\":" + batch_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # ListJobsByConsumableResource  POST /v1/listjobsbyconsumableresource
+    # errors: ClientException, ServerException
+    def list_jobs_by_consumable_resource(self, ListJobsByConsumableResourceRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listjobsbyconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"consumableResource\":" + batch_json_str(input.consumableResource))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(key_values_pair_to_json(x1))
+            parts.append("\"filters\":" + batch_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u3))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
     # ListQuotaShares  POST /v1/listquotashares
     # errors: ClientException, ServerException
     def list_quota_shares(self, ListQuotaSharesRequest input) -> str:
@@ -2507,6 +4026,33 @@ struct BatchClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
+    # ListServiceJobs  POST /v1/listservicejobs
+    # errors: ClientException, ServerException
+    def list_service_jobs(self, ListServiceJobsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listservicejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.jobQueue.is_some():
+            auto u0 = input.jobQueue.unwrap()
+            parts.append("\"jobQueue\":" + batch_json_str(u0))
+        if input.jobStatus.is_some():
+            auto u1 = input.jobStatus.unwrap()
+            parts.append("\"jobStatus\":" + u1.to_json())
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + batch_json_str(u3))
+        if input.filters.is_some():
+            auto u4 = input.filters.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(key_values_pair_to_json(x5))
+            parts.append("\"filters\":" + batch_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
     # ListTagsForResource  GET /v1/tags/{resourceArn}
     # errors: ClientException, ServerException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -2516,6 +4062,180 @@ struct BatchClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, batch_service(), self.region, host)
 
+    # RegisterJobDefinition  POST /v1/registerjobdefinition
+    # errors: ClientException, ServerException
+    def register_job_definition(self, RegisterJobDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registerjobdefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobDefinitionName\":" + batch_json_str(input.jobDefinitionName))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(batch_json_str(k1) + ":" + batch_json_str(u0[k1]))
+            parts.append("\"parameters\":" + batch_json_obj(m1))
+        if input.schedulingPriority.is_some():
+            auto u2 = input.schedulingPriority.unwrap()
+            parts.append("\"schedulingPriority\":" + str(u2))
+        if input.containerProperties.is_some():
+            auto u3 = input.containerProperties.unwrap()
+            parts.append("\"containerProperties\":" + container_properties_to_json(u3))
+        if input.nodeProperties.is_some():
+            auto u4 = input.nodeProperties.unwrap()
+            parts.append("\"nodeProperties\":" + node_properties_to_json(u4))
+        if input.retryStrategy.is_some():
+            auto u5 = input.retryStrategy.unwrap()
+            parts.append("\"retryStrategy\":" + retry_strategy_to_json(u5))
+        if input.propagateTags.is_some():
+            auto u6 = input.propagateTags.unwrap()
+            parts.append("\"propagateTags\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.timeout.is_some():
+            auto u7 = input.timeout.unwrap()
+            parts.append("\"timeout\":" + u7.to_json())
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(batch_json_str(k9) + ":" + batch_json_str(u8[k9]))
+            parts.append("\"tags\":" + batch_json_obj(m9))
+        if input.platformCapabilities.is_some():
+            auto u10 = input.platformCapabilities.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"platformCapabilities\":" + batch_json_arr(e11))
+        if input.eksProperties.is_some():
+            auto u12 = input.eksProperties.unwrap()
+            parts.append("\"eksProperties\":" + eks_properties_to_json(u12))
+        if input.ecsProperties.is_some():
+            auto u13 = input.ecsProperties.unwrap()
+            parts.append("\"ecsProperties\":" + ecs_properties_to_json(u13))
+        if input.consumableResourceProperties.is_some():
+            auto u14 = input.consumableResourceProperties.unwrap()
+            parts.append("\"consumableResourceProperties\":" + consumable_resource_properties_to_json(u14))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # SubmitJob  POST /v1/submitjob
+    # errors: ClientException, ServerException
+    def submit_job(self, SubmitJobRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/submitjob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + batch_json_str(input.jobName))
+        parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
+        if input.shareIdentifier.is_some():
+            auto u0 = input.shareIdentifier.unwrap()
+            parts.append("\"shareIdentifier\":" + batch_json_str(u0))
+        if input.schedulingPriorityOverride.is_some():
+            auto u1 = input.schedulingPriorityOverride.unwrap()
+            parts.append("\"schedulingPriorityOverride\":" + str(u1))
+        if input.arrayProperties.is_some():
+            auto u2 = input.arrayProperties.unwrap()
+            parts.append("\"arrayProperties\":" + u2.to_json())
+        if input.dependsOn.is_some():
+            auto u3 = input.dependsOn.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"dependsOn\":" + batch_json_arr(e4))
+        parts.append("\"jobDefinition\":" + batch_json_str(input.jobDefinition))
+        if input.parameters.is_some():
+            auto u5 = input.parameters.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(batch_json_str(k6) + ":" + batch_json_str(u5[k6]))
+            parts.append("\"parameters\":" + batch_json_obj(m6))
+        if input.containerOverrides.is_some():
+            auto u7 = input.containerOverrides.unwrap()
+            parts.append("\"containerOverrides\":" + container_overrides_to_json(u7))
+        if input.nodeOverrides.is_some():
+            auto u8 = input.nodeOverrides.unwrap()
+            parts.append("\"nodeOverrides\":" + node_overrides_to_json(u8))
+        if input.retryStrategy.is_some():
+            auto u9 = input.retryStrategy.unwrap()
+            parts.append("\"retryStrategy\":" + retry_strategy_to_json(u9))
+        if input.propagateTags.is_some():
+            auto u10 = input.propagateTags.unwrap()
+            parts.append("\"propagateTags\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.timeout.is_some():
+            auto u11 = input.timeout.unwrap()
+            parts.append("\"timeout\":" + u11.to_json())
+        if input.tags.is_some():
+            auto u12 = input.tags.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(batch_json_str(k13) + ":" + batch_json_str(u12[k13]))
+            parts.append("\"tags\":" + batch_json_obj(m13))
+        if input.eksPropertiesOverride.is_some():
+            auto u14 = input.eksPropertiesOverride.unwrap()
+            parts.append("\"eksPropertiesOverride\":" + eks_properties_override_to_json(u14))
+        if input.ecsPropertiesOverride.is_some():
+            auto u15 = input.ecsPropertiesOverride.unwrap()
+            parts.append("\"ecsPropertiesOverride\":" + ecs_properties_override_to_json(u15))
+        if input.consumableResourcePropertiesOverride.is_some():
+            auto u16 = input.consumableResourcePropertiesOverride.unwrap()
+            parts.append("\"consumableResourcePropertiesOverride\":" + consumable_resource_properties_to_json(u16))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # SubmitServiceJob  POST /v1/submitservicejob
+    # errors: ClientException, ServerException
+    def submit_service_job(self, SubmitServiceJobRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/submitservicejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + batch_json_str(input.jobName))
+        parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
+        if input.retryStrategy.is_some():
+            auto u0 = input.retryStrategy.unwrap()
+            parts.append("\"retryStrategy\":" + service_job_retry_strategy_to_json(u0))
+        if input.schedulingPriority.is_some():
+            auto u1 = input.schedulingPriority.unwrap()
+            parts.append("\"schedulingPriority\":" + str(u1))
+        parts.append("\"serviceRequestPayload\":" + batch_json_str(input.serviceRequestPayload))
+        parts.append("\"serviceJobType\":" + batch_json_str(input.serviceJobType))
+        if input.shareIdentifier.is_some():
+            auto u2 = input.shareIdentifier.unwrap()
+            parts.append("\"shareIdentifier\":" + batch_json_str(u2))
+        if input.quotaShareName.is_some():
+            auto u3 = input.quotaShareName.unwrap()
+            parts.append("\"quotaShareName\":" + batch_json_str(u3))
+        if input.preemptionConfiguration.is_some():
+            auto u4 = input.preemptionConfiguration.unwrap()
+            parts.append("\"preemptionConfiguration\":" + u4.to_json())
+        if input.timeoutConfig.is_some():
+            auto u5 = input.timeoutConfig.unwrap()
+            parts.append("\"timeoutConfig\":" + u5.to_json())
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(batch_json_str(k7) + ":" + batch_json_str(u6[k7]))
+            parts.append("\"tags\":" + batch_json_obj(m7))
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + batch_json_str(u8))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: ClientException, ServerException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(batch_json_str(k0) + ":" + batch_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + batch_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
     # TerminateJob  POST /v1/terminatejob
     # errors: ClientException, ServerException
     def terminate_job(self, TerminateJobRequest input) -> str:
@@ -2523,6 +4243,20 @@ struct BatchClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/terminatejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TerminateJobDocument(jobId=input.jobId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # TerminateJobs  POST /v1/terminatejobs
+    # errors: ClientException, ServerException
+    def terminate_jobs(self, TerminateJobsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminatejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.jobs:
+            e0.append(batch_json_str(x0))
+        parts.append("\"jobs\":" + batch_json_arr(e0))
+        parts.append("\"reason\":" + batch_json_str(input.reason))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
     # TerminateServiceJob  POST /v1/terminateservicejob
@@ -2534,6 +4268,54 @@ struct BatchClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
+    # TerminateServiceJobs  POST /v1/terminateservicejobs
+    # errors: ClientException, ServerException
+    def terminate_service_jobs(self, TerminateServiceJobsRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminateservicejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.jobs:
+            e0.append(batch_json_str(x0))
+        parts.append("\"jobs\":" + batch_json_arr(e0))
+        parts.append("\"reason\":" + batch_json_str(input.reason))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # UpdateComputeEnvironment  POST /v1/updatecomputeenvironment
+    # errors: ClientException, ServerException
+    def update_compute_environment(self, UpdateComputeEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatecomputeenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"computeEnvironment\":" + batch_json_str(input.computeEnvironment))
+        if input.state.is_some():
+            auto u0 = input.state.unwrap()
+            parts.append("\"state\":" + u0.to_json())
+        if input.unmanagedvCpus.is_some():
+            auto u1 = input.unmanagedvCpus.unwrap()
+            parts.append("\"unmanagedvCpus\":" + str(u1))
+        if input.computeResources.is_some():
+            auto u2 = input.computeResources.unwrap()
+            parts.append("\"computeResources\":" + compute_resource_update_to_json(u2))
+        if input.serviceRole.is_some():
+            auto u3 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + batch_json_str(u3))
+        if input.updatePolicy.is_some():
+            auto u4 = input.updatePolicy.unwrap()
+            parts.append("\"updatePolicy\":" + u4.to_json())
+        if input.context.is_some():
+            auto u5 = input.context.unwrap()
+            parts.append("\"context\":" + batch_json_str(u5))
+        if input.ecsSettings.is_some():
+            auto u6 = input.ecsSettings.unwrap()
+            parts.append("\"ecsSettings\":" + u6.to_json())
+        if input.eksConfiguration.is_some():
+            auto u7 = input.eksConfiguration.unwrap()
+            parts.append("\"eksConfiguration\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
     # UpdateConsumableResource  POST /v1/updateconsumableresource
     # errors: ClientException, ServerException
     def update_consumable_resource(self, UpdateConsumableResourceRequest input) -> str:
@@ -2541,6 +4323,103 @@ struct BatchClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/updateconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConsumableResourceDocument(consumableResource=input.consumableResource, operation=input.operation, quantity=input.quantity, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # UpdateJobQueue  POST /v1/updatejobqueue
+    # errors: ClientException, ServerException
+    def update_job_queue(self, UpdateJobQueueRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatejobqueue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
+        if input.state.is_some():
+            auto u0 = input.state.unwrap()
+            parts.append("\"state\":" + u0.to_json())
+        if input.schedulingPolicyArn.is_some():
+            auto u1 = input.schedulingPolicyArn.unwrap()
+            parts.append("\"schedulingPolicyArn\":" + batch_json_str(u1))
+        if input.priority.is_some():
+            auto u2 = input.priority.unwrap()
+            parts.append("\"priority\":" + str(u2))
+        if input.computeEnvironmentOrder.is_some():
+            auto u3 = input.computeEnvironmentOrder.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"computeEnvironmentOrder\":" + batch_json_arr(e4))
+        if input.serviceEnvironmentOrder.is_some():
+            auto u5 = input.serviceEnvironmentOrder.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"serviceEnvironmentOrder\":" + batch_json_arr(e6))
+        if input.jobStateTimeLimitActions.is_some():
+            auto u7 = input.jobStateTimeLimitActions.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"jobStateTimeLimitActions\":" + batch_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # UpdateQuotaShare  POST /v1/updatequotashare
+    # errors: ClientException, ServerException
+    def update_quota_share(self, UpdateQuotaShareRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatequotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"quotaShareArn\":" + batch_json_str(input.quotaShareArn))
+        if input.capacityLimits.is_some():
+            auto u0 = input.capacityLimits.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"capacityLimits\":" + batch_json_arr(e1))
+        if input.resourceSharingConfiguration.is_some():
+            auto u2 = input.resourceSharingConfiguration.unwrap()
+            parts.append("\"resourceSharingConfiguration\":" + u2.to_json())
+        if input.preemptionConfiguration.is_some():
+            auto u3 = input.preemptionConfiguration.unwrap()
+            parts.append("\"preemptionConfiguration\":" + u3.to_json())
+        if input.state.is_some():
+            auto u4 = input.state.unwrap()
+            parts.append("\"state\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # UpdateSchedulingPolicy  POST /v1/updateschedulingpolicy
+    # errors: ClientException, ServerException
+    def update_scheduling_policy(self, UpdateSchedulingPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateschedulingpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + batch_json_str(input.arn))
+        if input.quotaSharePolicy.is_some():
+            auto u0 = input.quotaSharePolicy.unwrap()
+            parts.append("\"quotaSharePolicy\":" + u0.to_json())
+        if input.fairsharePolicy.is_some():
+            auto u1 = input.fairsharePolicy.unwrap()
+            parts.append("\"fairsharePolicy\":" + fairshare_policy_to_json(u1))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # UpdateServiceEnvironment  POST /v1/updateserviceenvironment
+    # errors: ClientException, ServerException
+    def update_service_environment(self, UpdateServiceEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateserviceenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"serviceEnvironment\":" + batch_json_str(input.serviceEnvironment))
+        if input.state.is_some():
+            auto u0 = input.state.unwrap()
+            parts.append("\"state\":" + u0.to_json())
+        if input.capacityLimits.is_some():
+            auto u1 = input.capacityLimits.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"capacityLimits\":" + batch_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
     # UpdateServiceJob  POST /v1/updateservicejob
@@ -2551,6 +4430,97 @@ struct BatchClient:
         auto doc = UpdateServiceJobDocument(jobId=input.jobId, schedulingPriority=input.schedulingPriority)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
+
+    # Paginator for DescribeComputeEnvironments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: computeEnvironments).
+    def paginate_describe_compute_environments(self, DescribeComputeEnvironmentsRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.describe_compute_environments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeJobDefinitions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobDefinitions).
+    def paginate_describe_job_definitions(self, DescribeJobDefinitionsRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.describe_job_definitions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeJobQueues — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobQueues).
+    def paginate_describe_job_queues(self, DescribeJobQueuesRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.describe_job_queues(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeServiceEnvironments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: serviceEnvironments).
+    def paginate_describe_service_environments(self, DescribeServiceEnvironmentsRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.describe_service_environments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListConsumableResources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: consumableResources).
+    def paginate_list_consumable_resources(self, ListConsumableResourcesRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.list_consumable_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobSummaryList).
+    def paginate_list_jobs(self, ListJobsRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.list_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListJobsByConsumableResource — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobs).
+    def paginate_list_jobs_by_consumable_resource(self, ListJobsByConsumableResourceRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.list_jobs_by_consumable_resource(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListQuotaShares — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: quotaShares).
@@ -2571,6 +4541,19 @@ struct BatchClient:
         auto host = endpoints.regional_host(batch_service(), self.region)
         while True:
             auto raw = self.list_scheduling_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobSummaryList).
+    def paginate_list_service_jobs(self, ListServiceJobsRequest input):
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        while True:
+            auto raw = self.list_service_jobs(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

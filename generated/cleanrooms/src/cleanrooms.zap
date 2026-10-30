@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 103 operations — 75 with a generated method,
-#   28 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 103 operations — 102 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   448 structs (216 @derive(Json)), 58 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -645,8 +645,9 @@ enum WorkerComputeType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) details: list[AccessBudgetDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[AccessBudgetDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessBudget:
     str resourceArn
     list[AccessBudgetDetails] details
@@ -661,20 +662,23 @@ struct AccessBudgetDetails:
     AccessBudgetType budgetType
     Optional[AutoRefreshMode] autoRefresh
 
-# no @derive(Json): member(s) budgetParameters: list[BudgetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) budgetParameters: list[BudgetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessBudgetsPrivacyTemplateParametersInput:
     list[BudgetParameter] budgetParameters
     str resourceArn
 
-# no @derive(Json): member(s) budgetParameters: list[BudgetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) budgetParameters: list[BudgetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessBudgetsPrivacyTemplateParametersOutput:
     list[BudgetParameter] budgetParameters
     str resourceArn
 
-# no @derive(Json): member(s) budgetParameters: list[BudgetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) budgetParameters: list[BudgetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessBudgetsPrivacyTemplateUpdateParameters:
     list[BudgetParameter] budgetParameters
 
@@ -683,8 +687,9 @@ struct AccessDeniedException:
     Optional[str] message
     Optional[str] reason
 
-# no @derive(Json): member(s) columnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregateColumn:
     list[str] columnNames
     AggregateFunctionName function
@@ -695,8 +700,9 @@ struct AggregationConstraint:
     int64 minimum
     str type
 
-# no @derive(Json): member(s) identityColumns: list[str], outputColumnThresholds: list[OutputColumnThreshold] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityColumns: list[str], outputColumnThresholds: list[OutputColumnThreshold] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationThreshold:
     list[str] identityColumns
     int64 minimumIdentityCount
@@ -748,8 +754,9 @@ struct AnalysisParameter:
     ParameterType type
     Optional[str] defaultValue
 
-# no @derive(Json): member(s) policy: AnalysisRulePolicy, collaborationPolicy: ConfiguredTableAssociationAnalysisRulePolicy, consolidatedPolicy: ConsolidatedPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: AnalysisRulePolicy, collaborationPolicy: ConfiguredTableAssociationAnalysisRulePolicy, consolidatedPolicy: ConsolidatedPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRule:
     str collaborationId
     AnalysisRuleType type
@@ -760,8 +767,9 @@ struct AnalysisRule:
     Optional[ConfiguredTableAssociationAnalysisRulePolicy] collaborationPolicy
     Optional[ConsolidatedPolicy] consolidatedPolicy
 
-# no @derive(Json): member(s) aggregateColumns: list[AggregateColumn], joinColumns: list[str], allowedJoinOperators: list[JoinOperator], dimensionColumns: list[str], scalarFunctions: list[ScalarFunctions], outputConstraints: list[AggregationConstraint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregateColumns: list[AggregateColumn], joinColumns: list[str], allowedJoinOperators: list[JoinOperator], dimensionColumns: list[str], scalarFunctions: list[ScalarFunctions], outputConstraints: list[AggregationConstraint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRuleAggregation:
     list[AggregateColumn] aggregateColumns
     list[str] joinColumns
@@ -772,8 +780,9 @@ struct AnalysisRuleAggregation:
     list[AggregationConstraint] outputConstraints
     Optional[AdditionalAnalyses] additionalAnalyses
 
-# no @derive(Json): member(s) allowedAnalyses: list[str], allowedAnalysisProviders: list[str], disallowedOutputColumns: list[str], differentialPrivacy: DifferentialPrivacyConfiguration, aggregationThresholds: list[AggregationThreshold], comparisonControls: ComparisonControls, allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAnalyses: list[str], allowedAnalysisProviders: list[str], disallowedOutputColumns: list[str], differentialPrivacy: DifferentialPrivacyConfiguration, aggregationThresholds: list[AggregationThreshold], comparisonControls: ComparisonControls, allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRuleCustom:
     list[str] allowedAnalyses
     Optional[list[str]] allowedAnalysisProviders
@@ -785,28 +794,32 @@ struct AnalysisRuleCustom:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) joinColumns: list[str], queryConstraints: list[QueryConstraint], dimensionColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) joinColumns: list[str], queryConstraints: list[QueryConstraint], dimensionColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRuleIdMappingTable:
     list[str] joinColumns
     list[QueryConstraint] queryConstraints
     Optional[list[str]] dimensionColumns
 
-# no @derive(Json): member(s) joinColumns: list[str], allowedJoinOperators: list[JoinOperator], listColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) joinColumns: list[str], allowedJoinOperators: list[JoinOperator], listColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRuleList:
     list[str] joinColumns
     Optional[list[JoinOperator]] allowedJoinOperators
     list[str] listColumns
     Optional[AdditionalAnalyses] additionalAnalyses
 
-# no @derive(Json): member(s) v1: AnalysisRulePolicyV1 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: AnalysisRulePolicyV1 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRulePolicy:
     Optional[AnalysisRulePolicyV1] v1
 
-# no @derive(Json): member(s) list: AnalysisRuleList, aggregation: AnalysisRuleAggregation, custom: AnalysisRuleCustom, idMappingTable: AnalysisRuleIdMappingTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) list: AnalysisRuleList, aggregation: AnalysisRuleAggregation, custom: AnalysisRuleCustom, idMappingTable: AnalysisRuleIdMappingTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRulePolicyV1:
     # wire name "list" differs from field; derive rename is a #346 follow-up
     Optional[AnalysisRuleList] list_
@@ -814,24 +827,28 @@ struct AnalysisRulePolicyV1:
     Optional[AnalysisRuleCustom] custom
     Optional[AnalysisRuleIdMappingTable] idMappingTable
 
-# no @derive(Json): member(s) referencedTables: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) referencedTables: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisSchema:
     Optional[list[str]] referencedTables
 
-# no @derive(Json): member(s) artifacts: AnalysisTemplateArtifacts not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: AnalysisTemplateArtifacts not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisSource:
     Optional[str] text
     Optional[AnalysisTemplateArtifacts] artifacts
 
-# no @derive(Json): member(s) artifacts: AnalysisTemplateArtifactMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: AnalysisTemplateArtifactMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisSourceMetadata:
     Optional[AnalysisTemplateArtifactMetadata] artifacts
 
-# no @derive(Json): member(s) schema: AnalysisSchema, source: AnalysisSource, sourceMetadata: AnalysisSourceMetadata, analysisParameters: list[AnalysisParameter], validations: list[AnalysisTemplateValidationStatusDetail], syntheticDataParameters: SyntheticDataParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schema: AnalysisSchema, source: AnalysisSource, sourceMetadata: AnalysisSourceMetadata, analysisParameters: list[AnalysisParameter], validations: list[AnalysisTemplateValidationStatusDetail], syntheticDataParameters: SyntheticDataParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisTemplate:
     str id
     str arn
@@ -856,14 +873,16 @@ struct AnalysisTemplate:
 struct AnalysisTemplateArtifact:
     S3Location location
 
-# no @derive(Json): member(s) additionalArtifactHashes: list[Hash] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalArtifactHashes: list[Hash] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisTemplateArtifactMetadata:
     Hash entryPointHash
     Optional[list[Hash]] additionalArtifactHashes
 
-# no @derive(Json): member(s) additionalArtifacts: list[AnalysisTemplateArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalArtifacts: list[AnalysisTemplateArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisTemplateArtifacts:
     AnalysisTemplateArtifact entryPoint
     Optional[list[AnalysisTemplateArtifact]] additionalArtifacts
@@ -883,8 +902,9 @@ struct AnalysisTemplateSummary:
     Optional[str] description
     Optional[bool] isSyntheticData
 
-# no @derive(Json): member(s) reasons: list[AnalysisTemplateValidationStatusReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[AnalysisTemplateValidationStatusReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisTemplateValidationStatusDetail:
     str type
     AnalysisTemplateValidationStatus status
@@ -919,8 +939,9 @@ struct BatchGetCollaborationAnalysisTemplateInput:
     str collaborationIdentifier
     list[str] analysisTemplateArns
 
-# no @derive(Json): member(s) collaborationAnalysisTemplates: list[CollaborationAnalysisTemplate], errors: list[BatchGetCollaborationAnalysisTemplateError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationAnalysisTemplates: list[CollaborationAnalysisTemplate], errors: list[BatchGetCollaborationAnalysisTemplateError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCollaborationAnalysisTemplateOutput:
     list[CollaborationAnalysisTemplate] collaborationAnalysisTemplates
     list[BatchGetCollaborationAnalysisTemplateError] errors
@@ -938,8 +959,9 @@ struct BatchGetSchemaAnalysisRuleInput:
     str collaborationIdentifier
     list[SchemaAnalysisRuleRequest] schemaAnalysisRuleRequests
 
-# no @derive(Json): member(s) analysisRules: list[AnalysisRule], errors: list[BatchGetSchemaAnalysisRuleError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRules: list[AnalysisRule], errors: list[BatchGetSchemaAnalysisRuleError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSchemaAnalysisRuleOutput:
     list[AnalysisRule] analysisRules
     list[BatchGetSchemaAnalysisRuleError] errors
@@ -956,8 +978,9 @@ struct BatchGetSchemaInput:
     str collaborationIdentifier
     list[str] names
 
-# no @derive(Json): member(s) schemas: list[Schema], errors: list[BatchGetSchemaError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemas: list[Schema], errors: list[BatchGetSchemaError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSchemaOutput:
     list[Schema] schemas
     list[BatchGetSchemaError] errors
@@ -976,21 +999,24 @@ struct BudgetParameter:
     int64 budget
     Optional[AutoRefreshMode] autoRefresh
 
-# no @derive(Json): member(s) specification: ChangeSpecification, types: list[ChangeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) specification: ChangeSpecification, types: list[ChangeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Change:
     ChangeSpecificationType specificationType
     ChangeSpecification specification
     list[ChangeType] types
 
-# no @derive(Json): member(s) specification: ChangeSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) specification: ChangeSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeInput:
     ChangeSpecificationType specificationType
     ChangeSpecification specification
 
-# no @derive(Json): member(s) member: MemberChangeSpecification, collaboration: CollaborationChangeSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) member: MemberChangeSpecification, collaboration: CollaborationChangeSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeSpecification:
     Optional[MemberChangeSpecification] member
     Optional[CollaborationChangeSpecification] collaboration
@@ -1003,8 +1029,9 @@ struct ChildResource:
     str ownerAccountId
     Optional[ResourceStatus] resourceStatus
 
-# no @derive(Json): member(s) autoApprovedChangeTypes: list[AutoApprovedChangeType], allowedResultRegions: list[SupportedS3Region] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoApprovedChangeTypes: list[AutoApprovedChangeType], allowedResultRegions: list[SupportedS3Region] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Collaboration:
     str id
     str arn
@@ -1025,8 +1052,9 @@ struct Collaboration:
     Optional[list[SupportedS3Region]] allowedResultRegions
     Optional[bool] isMetricsEnabled
 
-# no @derive(Json): member(s) schema: AnalysisSchema, source: AnalysisSource, sourceMetadata: AnalysisSourceMetadata, analysisParameters: list[AnalysisParameter], validations: list[AnalysisTemplateValidationStatusDetail], syntheticDataParameters: SyntheticDataParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schema: AnalysisSchema, source: AnalysisSource, sourceMetadata: AnalysisSourceMetadata, analysisParameters: list[AnalysisParameter], validations: list[AnalysisTemplateValidationStatusDetail], syntheticDataParameters: SyntheticDataParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationAnalysisTemplate:
     str id
     str arn
@@ -1059,8 +1087,9 @@ struct CollaborationAnalysisTemplateSummary:
     Optional[str] description
     Optional[bool] isSyntheticData
 
-# no @derive(Json): member(s) changes: list[Change], approvals: dict[str, ApprovalStatusDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) changes: list[Change], approvals: dict[str, ApprovalStatusDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationChangeRequest:
     str id
     str collaborationId
@@ -1071,8 +1100,9 @@ struct CollaborationChangeRequest:
     list[Change] changes
     Optional[dict[str, ApprovalStatusDetails]] approvals
 
-# no @derive(Json): member(s) changes: list[Change], approvals: dict[str, ApprovalStatusDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) changes: list[Change], approvals: dict[str, ApprovalStatusDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationChangeRequestSummary:
     str id
     str collaborationId
@@ -1083,8 +1113,9 @@ struct CollaborationChangeRequestSummary:
     list[Change] changes
     Optional[dict[str, ApprovalStatusDetails]] approvals
 
-# no @derive(Json): member(s) autoApprovedChangeTypes: list[AutoApprovedChangeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoApprovedChangeTypes: list[AutoApprovedChangeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationChangeSpecification:
     Optional[list[AutoApprovedChangeType]] autoApprovedChangeTypes
 
@@ -1113,8 +1144,9 @@ struct CollaborationConfiguredAudienceModelAssociationSummary:
     str creatorAccountId
     Optional[str] description
 
-# no @derive(Json): member(s) inputReferenceProperties: IdNamespaceAssociationInputReferenceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputReferenceProperties: IdNamespaceAssociationInputReferenceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationIdNamespaceAssociation:
     str id
     str arn
@@ -1143,8 +1175,9 @@ struct CollaborationIdNamespaceAssociationSummary:
     Optional[str] description
     IdNamespaceAssociationInputReferencePropertiesSummary inputReferenceProperties
 
-# no @derive(Json): member(s) budget: PrivacyBudget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) budget: PrivacyBudget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationPrivacyBudgetSummary:
     str id
     str privacyBudgetTemplateId
@@ -1157,8 +1190,9 @@ struct CollaborationPrivacyBudgetSummary:
     DateTime updateTime
     PrivacyBudget budget
 
-# no @derive(Json): member(s) parameters: PrivacyBudgetTemplateParametersOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: PrivacyBudgetTemplateParametersOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationPrivacyBudgetTemplate:
     str id
     str arn
@@ -1201,8 +1235,9 @@ struct Column:
     str name
     str type
 
-# no @derive(Json): member(s) columnMapping: list[SyntheticDataColumnProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnMapping: list[SyntheticDataColumnProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnClassificationDetails:
     list[SyntheticDataColumnProperties] columnMapping
 
@@ -1215,19 +1250,22 @@ struct ColumnLineageEntry:
     BaseTableDependencyType sourceType
     str sourceAccountId
 
-# no @derive(Json): member(s) allowedLiteralComparisonColumns: list[str], allowedColumnComparisonColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedLiteralComparisonColumns: list[str], allowedColumnComparisonColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComparisonControls:
     list[str] allowedLiteralComparisonColumns
     list[str] allowedColumnComparisonColumns
 
-# no @derive(Json): member(s) worker: WorkerComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) worker: WorkerComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeConfiguration:
     Optional[WorkerComputeConfiguration] worker
 
-# no @derive(Json): member(s) directAnalysisConfigurationDetails: DirectAnalysisConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directAnalysisConfigurationDetails: DirectAnalysisConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationDetails:
     Optional[DirectAnalysisConfigurationDetails] directAnalysisConfigurationDetails
 
@@ -1260,8 +1298,9 @@ struct ConfiguredAudienceModelAssociationSummary:
     str configuredAudienceModelArn
     Optional[str] description
 
-# no @derive(Json): member(s) tableReference: TableReference, analysisRuleTypes: list[ConfiguredTableAnalysisRuleType], allowedColumns: list[str], selectedAnalysisMethods: list[SelectedAnalysisMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tableReference: TableReference, analysisRuleTypes: list[ConfiguredTableAnalysisRuleType], allowedColumns: list[str], selectedAnalysisMethods: list[SelectedAnalysisMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTable:
     str id
     str arn
@@ -1276,8 +1315,9 @@ struct ConfiguredTable:
     list[str] allowedColumns
     Optional[list[SelectedAnalysisMethod]] selectedAnalysisMethods
 
-# no @derive(Json): member(s) policy: ConfiguredTableAnalysisRulePolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: ConfiguredTableAnalysisRulePolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAnalysisRule:
     str configuredTableId
     str configuredTableArn
@@ -1286,21 +1326,24 @@ struct ConfiguredTableAnalysisRule:
     DateTime createTime
     DateTime updateTime
 
-# no @derive(Json): member(s) v1: ConfiguredTableAnalysisRulePolicyV1 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: ConfiguredTableAnalysisRulePolicyV1 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAnalysisRulePolicy:
     Optional[ConfiguredTableAnalysisRulePolicyV1] v1
 
-# no @derive(Json): member(s) list: AnalysisRuleList, aggregation: AnalysisRuleAggregation, custom: AnalysisRuleCustom not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) list: AnalysisRuleList, aggregation: AnalysisRuleAggregation, custom: AnalysisRuleCustom not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAnalysisRulePolicyV1:
     # wire name "list" differs from field; derive rename is a #346 follow-up
     Optional[AnalysisRuleList] list_
     Optional[AnalysisRuleAggregation] aggregation
     Optional[AnalysisRuleCustom] custom
 
-# no @derive(Json): member(s) analysisRuleTypes: list[ConfiguredTableAssociationAnalysisRuleType], childResources: list[ChildResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRuleTypes: list[ConfiguredTableAssociationAnalysisRuleType], childResources: list[ChildResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociation:
     str arn
     str id
@@ -1316,8 +1359,9 @@ struct ConfiguredTableAssociation:
     DateTime updateTime
     Optional[list[ChildResource]] childResources
 
-# no @derive(Json): member(s) policy: ConfiguredTableAssociationAnalysisRulePolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: ConfiguredTableAssociationAnalysisRulePolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationAnalysisRule:
     str membershipIdentifier
     str configuredTableAssociationId
@@ -1327,31 +1371,36 @@ struct ConfiguredTableAssociationAnalysisRule:
     DateTime createTime
     DateTime updateTime
 
-# no @derive(Json): member(s) allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationAnalysisRuleAggregation:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationAnalysisRuleCustom:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationAnalysisRuleList:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) v1: ConfiguredTableAssociationAnalysisRulePolicyV1 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: ConfiguredTableAssociationAnalysisRulePolicyV1 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationAnalysisRulePolicy:
     Optional[ConfiguredTableAssociationAnalysisRulePolicyV1] v1
 
-# no @derive(Json): member(s) list: ConfiguredTableAssociationAnalysisRuleList, aggregation: ConfiguredTableAssociationAnalysisRuleAggregation, custom: ConfiguredTableAssociationAnalysisRuleCustom not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) list: ConfiguredTableAssociationAnalysisRuleList, aggregation: ConfiguredTableAssociationAnalysisRuleAggregation, custom: ConfiguredTableAssociationAnalysisRuleCustom not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationAnalysisRulePolicyV1:
     # wire name "list" differs from field; derive rename is a #346 follow-up
     Optional[ConfiguredTableAssociationAnalysisRuleList] list_
@@ -1362,8 +1411,9 @@ struct ConfiguredTableAssociationAnalysisRulePolicyV1:
 struct ConfiguredTableAssociationSchemaTypeProperties:
     str configuredTableAssociationId
 
-# no @derive(Json): member(s) analysisRuleTypes: list[ConfiguredTableAssociationAnalysisRuleType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRuleTypes: list[ConfiguredTableAssociationAnalysisRuleType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableAssociationSummary:
     str configuredTableId
     str membershipId
@@ -1375,8 +1425,9 @@ struct ConfiguredTableAssociationSummary:
     str arn
     Optional[list[ConfiguredTableAssociationAnalysisRuleType]] analysisRuleTypes
 
-# no @derive(Json): member(s) analysisRuleTypes: list[ConfiguredTableAnalysisRuleType], selectedAnalysisMethods: list[SelectedAnalysisMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRuleTypes: list[ConfiguredTableAnalysisRuleType], selectedAnalysisMethods: list[SelectedAnalysisMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfiguredTableSummary:
     str id
     str arn
@@ -1395,13 +1446,15 @@ struct ConflictException:
     Optional[ResourceType] resourceType
     Optional[ConflictExceptionReason] reason
 
-# no @derive(Json): member(s) v1: ConsolidatedPolicyV1 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: ConsolidatedPolicyV1 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsolidatedPolicy:
     Optional[ConsolidatedPolicyV1] v1
 
-# no @derive(Json): member(s) aggregateColumns: list[AggregateColumn], joinColumns: list[str], allowedJoinOperators: list[JoinOperator], dimensionColumns: list[str], scalarFunctions: list[ScalarFunctions], outputConstraints: list[AggregationConstraint], allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregateColumns: list[AggregateColumn], joinColumns: list[str], allowedJoinOperators: list[JoinOperator], dimensionColumns: list[str], scalarFunctions: list[ScalarFunctions], outputConstraints: list[AggregationConstraint], allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsolidatedPolicyAggregation:
     list[AggregateColumn] aggregateColumns
     list[str] joinColumns
@@ -1414,8 +1467,9 @@ struct ConsolidatedPolicyAggregation:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) allowedAnalyses: list[str], allowedAnalysisProviders: list[str], disallowedOutputColumns: list[str], differentialPrivacy: DifferentialPrivacyConfiguration, aggregationThresholds: list[AggregationThreshold], comparisonControls: ComparisonControls, allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAnalyses: list[str], allowedAnalysisProviders: list[str], disallowedOutputColumns: list[str], differentialPrivacy: DifferentialPrivacyConfiguration, aggregationThresholds: list[AggregationThreshold], comparisonControls: ComparisonControls, allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsolidatedPolicyCustom:
     list[str] allowedAnalyses
     Optional[list[str]] allowedAnalysisProviders
@@ -1427,8 +1481,9 @@ struct ConsolidatedPolicyCustom:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) joinColumns: list[str], allowedJoinOperators: list[JoinOperator], listColumns: list[str], allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) joinColumns: list[str], allowedJoinOperators: list[JoinOperator], listColumns: list[str], allowedResultReceivers: list[str], allowedAdditionalAnalyses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsolidatedPolicyList:
     list[str] joinColumns
     Optional[list[JoinOperator]] allowedJoinOperators
@@ -1437,8 +1492,9 @@ struct ConsolidatedPolicyList:
     Optional[list[str]] allowedResultReceivers
     Optional[list[str]] allowedAdditionalAnalyses
 
-# no @derive(Json): member(s) list: ConsolidatedPolicyList, aggregation: ConsolidatedPolicyAggregation, custom: ConsolidatedPolicyCustom not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) list: ConsolidatedPolicyList, aggregation: ConsolidatedPolicyAggregation, custom: ConsolidatedPolicyCustom not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsolidatedPolicyV1:
     # wire name "list" differs from field; derive rename is a #346 follow-up
     Optional[ConsolidatedPolicyList] list_
@@ -1459,8 +1515,9 @@ struct CreateAnalysisTemplateInput:
     Optional[ErrorMessageConfiguration] errorMessageConfiguration
     Optional[SyntheticDataParameters] syntheticDataParameters
 
-# no @derive(Json): member(s) analysisTemplate: AnalysisTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisTemplate: AnalysisTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAnalysisTemplateOutput:
     AnalysisTemplate analysisTemplate
 
@@ -1470,8 +1527,9 @@ struct CreateCollaborationChangeRequestInput:
     str collaborationIdentifier
     list[ChangeInput] changes
 
-# no @derive(Json): member(s) collaborationChangeRequest: CollaborationChangeRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationChangeRequest: CollaborationChangeRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollaborationChangeRequestOutput:
     CollaborationChangeRequest collaborationChangeRequest
 
@@ -1494,8 +1552,9 @@ struct CreateCollaborationInput:
     Optional[list[SupportedS3Region]] allowedResultRegions
     Optional[bool] isMetricsEnabled
 
-# no @derive(Json): member(s) collaboration: Collaboration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaboration: Collaboration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollaborationOutput:
     Collaboration collaboration
 
@@ -1520,8 +1579,9 @@ struct CreateConfiguredTableAnalysisRuleInput:
     ConfiguredTableAnalysisRuleType analysisRuleType
     ConfiguredTableAnalysisRulePolicy analysisRulePolicy
 
-# no @derive(Json): member(s) analysisRule: ConfiguredTableAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: ConfiguredTableAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfiguredTableAnalysisRuleOutput:
     ConfiguredTableAnalysisRule analysisRule
 
@@ -1533,8 +1593,9 @@ struct CreateConfiguredTableAssociationAnalysisRuleInput:
     ConfiguredTableAssociationAnalysisRuleType analysisRuleType
     ConfiguredTableAssociationAnalysisRulePolicy analysisRulePolicy
 
-# no @derive(Json): member(s) analysisRule: ConfiguredTableAssociationAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: ConfiguredTableAssociationAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfiguredTableAssociationAnalysisRuleOutput:
     ConfiguredTableAssociationAnalysisRule analysisRule
 
@@ -1548,8 +1609,9 @@ struct CreateConfiguredTableAssociationInput:
     str roleArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) configuredTableAssociation: ConfiguredTableAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTableAssociation: ConfiguredTableAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfiguredTableAssociationOutput:
     ConfiguredTableAssociation configuredTableAssociation
 
@@ -1564,8 +1626,9 @@ struct CreateConfiguredTableInput:
     Optional[list[SelectedAnalysisMethod]] selectedAnalysisMethods
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) configuredTable: ConfiguredTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTable: ConfiguredTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfiguredTableOutput:
     ConfiguredTable configuredTable
 
@@ -1579,8 +1642,9 @@ struct CreateIdMappingTableInput:
     Optional[dict[str, str]] tags
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) idMappingTable: IdMappingTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTable: IdMappingTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdMappingTableOutput:
     IdMappingTable idMappingTable
 
@@ -1594,8 +1658,9 @@ struct CreateIdNamespaceAssociationInput:
     Optional[str] description
     Optional[IdMappingConfig] idMappingConfig
 
-# no @derive(Json): member(s) idNamespaceAssociation: IdNamespaceAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idNamespaceAssociation: IdNamespaceAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdNamespaceAssociationOutput:
     IdNamespaceAssociation idNamespaceAssociation
 
@@ -1607,8 +1672,9 @@ struct CreateIntermediateTableAnalysisRuleInput:
     str analysisRuleType
     IntermediateTableAnalysisRulePolicy analysisRulePolicy
 
-# no @derive(Json): member(s) analysisRule: IntermediateTableAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: IntermediateTableAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntermediateTableAnalysisRuleOutput:
     IntermediateTableAnalysisRule analysisRule
 
@@ -1623,8 +1689,9 @@ struct CreateIntermediateTableInput:
     Optional[int64] retentionInDays
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) intermediateTable: IntermediateTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intermediateTable: IntermediateTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntermediateTableOutput:
     IntermediateTable intermediateTable
 
@@ -1640,8 +1707,9 @@ struct CreateMembershipInput:
     Optional[MembershipPaymentConfiguration] paymentConfiguration
     Optional[bool] isMetricsEnabled
 
-# no @derive(Json): member(s) membership: Membership not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) membership: Membership not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMembershipOutput:
     Membership membership
 
@@ -1654,8 +1722,9 @@ struct CreatePrivacyBudgetTemplateInput:
     PrivacyBudgetTemplateParametersInput parameters
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) privacyBudgetTemplate: PrivacyBudgetTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyBudgetTemplate: PrivacyBudgetTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivacyBudgetTemplateOutput:
     PrivacyBudgetTemplate privacyBudgetTemplate
 
@@ -1841,13 +1910,15 @@ struct DeletePrivacyBudgetTemplateOutput:
 struct DifferentialPrivacyColumn:
     str name
 
-# no @derive(Json): member(s) columns: list[DifferentialPrivacyColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[DifferentialPrivacyColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DifferentialPrivacyConfiguration:
     list[DifferentialPrivacyColumn] columns
 
-# no @derive(Json): member(s) sensitivityParameters: list[DifferentialPrivacySensitivityParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensitivityParameters: list[DifferentialPrivacySensitivityParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DifferentialPrivacyParameters:
     list[DifferentialPrivacySensitivityParameters] sensitivityParameters
 
@@ -1861,8 +1932,9 @@ struct DifferentialPrivacyPreviewParametersInput:
     int64 epsilon
     int64 usersNoisePerQuery
 
-# no @derive(Json): member(s) aggregations: list[DifferentialPrivacyPrivacyBudgetAggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregations: list[DifferentialPrivacyPrivacyBudgetAggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DifferentialPrivacyPrivacyBudget:
     list[DifferentialPrivacyPrivacyBudgetAggregation] aggregations
     int64 epsilon
@@ -1873,8 +1945,9 @@ struct DifferentialPrivacyPrivacyBudgetAggregation:
     int64 maxCount
     int64 remainingCount
 
-# no @derive(Json): member(s) aggregations: list[DifferentialPrivacyPreviewAggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregations: list[DifferentialPrivacyPreviewAggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DifferentialPrivacyPrivacyImpact:
     list[DifferentialPrivacyPreviewAggregation] aggregations
 
@@ -1901,8 +1974,9 @@ struct DifferentialPrivacyTemplateUpdateParameters:
     Optional[int64] epsilon
     Optional[int64] usersNoisePerQuery
 
-# no @derive(Json): member(s) receiverAccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) receiverAccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectAnalysisConfigurationDetails:
     Optional[list[str]] receiverAccountIds
 
@@ -1943,8 +2017,9 @@ struct GetAnalysisTemplateInput:
     str membershipIdentifier
     str analysisTemplateIdentifier
 
-# no @derive(Json): member(s) analysisTemplate: AnalysisTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisTemplate: AnalysisTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnalysisTemplateOutput:
     AnalysisTemplate analysisTemplate
 
@@ -1954,8 +2029,9 @@ struct GetCollaborationAnalysisTemplateInput:
     str collaborationIdentifier
     str analysisTemplateArn
 
-# no @derive(Json): member(s) collaborationAnalysisTemplate: CollaborationAnalysisTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationAnalysisTemplate: CollaborationAnalysisTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationAnalysisTemplateOutput:
     CollaborationAnalysisTemplate collaborationAnalysisTemplate
 
@@ -1965,8 +2041,9 @@ struct GetCollaborationChangeRequestInput:
     str collaborationIdentifier
     str changeRequestIdentifier
 
-# no @derive(Json): member(s) collaborationChangeRequest: CollaborationChangeRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationChangeRequest: CollaborationChangeRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationChangeRequestOutput:
     CollaborationChangeRequest collaborationChangeRequest
 
@@ -1986,8 +2063,9 @@ struct GetCollaborationIdNamespaceAssociationInput:
     str collaborationIdentifier
     str idNamespaceAssociationIdentifier
 
-# no @derive(Json): member(s) collaborationIdNamespaceAssociation: CollaborationIdNamespaceAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationIdNamespaceAssociation: CollaborationIdNamespaceAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationIdNamespaceAssociationOutput:
     CollaborationIdNamespaceAssociation collaborationIdNamespaceAssociation
 
@@ -1996,8 +2074,9 @@ struct GetCollaborationIdNamespaceAssociationOutput:
 struct GetCollaborationInput:
     str collaborationIdentifier
 
-# no @derive(Json): member(s) collaboration: Collaboration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaboration: Collaboration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationOutput:
     Collaboration collaboration
 
@@ -2007,8 +2086,9 @@ struct GetCollaborationPrivacyBudgetTemplateInput:
     str collaborationIdentifier
     str privacyBudgetTemplateIdentifier
 
-# no @derive(Json): member(s) collaborationPrivacyBudgetTemplate: CollaborationPrivacyBudgetTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationPrivacyBudgetTemplate: CollaborationPrivacyBudgetTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationPrivacyBudgetTemplateOutput:
     CollaborationPrivacyBudgetTemplate collaborationPrivacyBudgetTemplate
 
@@ -2029,8 +2109,9 @@ struct GetConfiguredTableAnalysisRuleInput:
     # wire string of the ConfiguredTableAnalysisRuleType enum (uri binding)
     str analysisRuleType
 
-# no @derive(Json): member(s) analysisRule: ConfiguredTableAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: ConfiguredTableAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredTableAnalysisRuleOutput:
     ConfiguredTableAnalysisRule analysisRule
 
@@ -2042,8 +2123,9 @@ struct GetConfiguredTableAssociationAnalysisRuleInput:
     # wire string of the ConfiguredTableAssociationAnalysisRuleType enum (uri binding)
     str analysisRuleType
 
-# no @derive(Json): member(s) analysisRule: ConfiguredTableAssociationAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: ConfiguredTableAssociationAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredTableAssociationAnalysisRuleOutput:
     ConfiguredTableAssociationAnalysisRule analysisRule
 
@@ -2053,8 +2135,9 @@ struct GetConfiguredTableAssociationInput:
     str configuredTableAssociationIdentifier
     str membershipIdentifier
 
-# no @derive(Json): member(s) configuredTableAssociation: ConfiguredTableAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTableAssociation: ConfiguredTableAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredTableAssociationOutput:
     ConfiguredTableAssociation configuredTableAssociation
 
@@ -2063,8 +2146,9 @@ struct GetConfiguredTableAssociationOutput:
 struct GetConfiguredTableInput:
     str configuredTableIdentifier
 
-# no @derive(Json): member(s) configuredTable: ConfiguredTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTable: ConfiguredTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredTableOutput:
     ConfiguredTable configuredTable
 
@@ -2074,8 +2158,9 @@ struct GetIdMappingTableInput:
     str idMappingTableIdentifier
     str membershipIdentifier
 
-# no @derive(Json): member(s) idMappingTable: IdMappingTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTable: IdMappingTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdMappingTableOutput:
     IdMappingTable idMappingTable
 
@@ -2085,8 +2170,9 @@ struct GetIdNamespaceAssociationInput:
     str idNamespaceAssociationIdentifier
     str membershipIdentifier
 
-# no @derive(Json): member(s) idNamespaceAssociation: IdNamespaceAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idNamespaceAssociation: IdNamespaceAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdNamespaceAssociationOutput:
     IdNamespaceAssociation idNamespaceAssociation
 
@@ -2097,8 +2183,9 @@ struct GetIntermediateTableAnalysisRuleInput:
     str intermediateTableIdentifier
     str analysisRuleType
 
-# no @derive(Json): member(s) analysisRule: IntermediateTableAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: IntermediateTableAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntermediateTableAnalysisRuleOutput:
     IntermediateTableAnalysisRule analysisRule
 
@@ -2108,8 +2195,9 @@ struct GetIntermediateTableInput:
     str intermediateTableIdentifier
     str membershipIdentifier
 
-# no @derive(Json): member(s) intermediateTable: IntermediateTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intermediateTable: IntermediateTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntermediateTableOutput:
     IntermediateTable intermediateTable
 
@@ -2118,8 +2206,9 @@ struct GetIntermediateTableOutput:
 struct GetMembershipInput:
     str membershipIdentifier
 
-# no @derive(Json): member(s) membership: Membership not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) membership: Membership not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMembershipOutput:
     Membership membership
 
@@ -2129,8 +2218,9 @@ struct GetPrivacyBudgetTemplateInput:
     str membershipIdentifier
     str privacyBudgetTemplateIdentifier
 
-# no @derive(Json): member(s) privacyBudgetTemplate: PrivacyBudgetTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyBudgetTemplate: PrivacyBudgetTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPrivacyBudgetTemplateOutput:
     PrivacyBudgetTemplate privacyBudgetTemplate
 
@@ -2140,8 +2230,9 @@ struct GetProtectedJobInput:
     str membershipIdentifier
     str protectedJobIdentifier
 
-# no @derive(Json): member(s) protectedJob: ProtectedJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedJob: ProtectedJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProtectedJobOutput:
     ProtectedJob protectedJob
 
@@ -2151,8 +2242,9 @@ struct GetProtectedQueryInput:
     str membershipIdentifier
     str protectedQueryIdentifier
 
-# no @derive(Json): member(s) protectedQuery: ProtectedQuery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedQuery: ProtectedQuery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProtectedQueryOutput:
     ProtectedQuery protectedQuery
 
@@ -2164,8 +2256,9 @@ struct GetSchemaAnalysisRuleInput:
     # wire string of the AnalysisRuleType enum (uri binding)
     str type
 
-# no @derive(Json): member(s) analysisRule: AnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: AnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSchemaAnalysisRuleOutput:
     AnalysisRule analysisRule
 
@@ -2175,8 +2268,9 @@ struct GetSchemaInput:
     str collaborationIdentifier
     str name
 
-# no @derive(Json): member(s) schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSchemaOutput:
     Schema schema
 
@@ -2194,8 +2288,9 @@ struct Hash:
 struct IdMappingConfig:
     bool allowUseAsDimensionColumn
 
-# no @derive(Json): member(s) inputReferenceProperties: IdMappingTableInputReferenceProperties, childResources: list[ChildResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputReferenceProperties: IdMappingTableInputReferenceProperties, childResources: list[ChildResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdMappingTable:
     str id
     str arn
@@ -2217,8 +2312,9 @@ struct IdMappingTableInputReferenceConfig:
     str inputReferenceArn
     bool manageResourcePolicies
 
-# no @derive(Json): member(s) idMappingTableInputSource: list[IdMappingTableInputSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTableInputSource: list[IdMappingTableInputSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdMappingTableInputReferenceProperties:
     list[IdMappingTableInputSource] idMappingTableInputSource
 
@@ -2227,8 +2323,9 @@ struct IdMappingTableInputSource:
     str idNamespaceAssociationId
     IdNamespaceType type
 
-# no @derive(Json): member(s) idMappingTableInputSource: list[IdMappingTableInputSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTableInputSource: list[IdMappingTableInputSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdMappingTableSchemaTypeProperties:
     list[IdMappingTableInputSource] idMappingTableInputSource
     Optional[str] idMappingTableId
@@ -2247,8 +2344,9 @@ struct IdMappingTableSummary:
     IdMappingTableInputReferenceConfig inputReferenceConfig
     str name
 
-# no @derive(Json): member(s) inputReferenceProperties: IdNamespaceAssociationInputReferenceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputReferenceProperties: IdNamespaceAssociationInputReferenceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdNamespaceAssociation:
     str id
     str arn
@@ -2269,8 +2367,9 @@ struct IdNamespaceAssociationInputReferenceConfig:
     str inputReferenceArn
     bool manageResourcePolicies
 
-# no @derive(Json): member(s) idMappingWorkflowsSupported: list[Document] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingWorkflowsSupported: list[Document] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdNamespaceAssociationInputReferenceProperties:
     IdNamespaceType idNamespaceType
     list[Document] idMappingWorkflowsSupported
@@ -2294,8 +2393,9 @@ struct IdNamespaceAssociationSummary:
     Optional[str] description
     IdNamespaceAssociationInputReferencePropertiesSummary inputReferenceProperties
 
-# no @derive(Json): member(s) sources: list[InheritedAdditionalAnalysesSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[InheritedAdditionalAnalysesSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InheritedAdditionalAnalyses:
     AdditionalAnalyses value
     list[InheritedAdditionalAnalysesSource] sources
@@ -2308,14 +2408,16 @@ struct InheritedAdditionalAnalysesSource:
     AdditionalAnalyses value
     str sourceAccountId
 
-# no @derive(Json): member(s) value: list[str], sources: list[InheritedAllowedAdditionalAnalysesSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str], sources: list[InheritedAllowedAdditionalAnalysesSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InheritedAllowedAdditionalAnalyses:
     list[str] value
     list[InheritedAllowedAdditionalAnalysesSource] sources
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InheritedAllowedAdditionalAnalysesSource:
     str name
     str id
@@ -2323,14 +2425,16 @@ struct InheritedAllowedAdditionalAnalysesSource:
     list[str] value
     str sourceAccountId
 
-# no @derive(Json): member(s) value: list[str], sources: list[InheritedAllowedResultReceiversSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str], sources: list[InheritedAllowedResultReceiversSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InheritedAllowedResultReceivers:
     list[str] value
     list[InheritedAllowedResultReceiversSource] sources
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InheritedAllowedResultReceiversSource:
     str name
     str id
@@ -2338,14 +2442,16 @@ struct InheritedAllowedResultReceiversSource:
     list[str] value
     str sourceAccountId
 
-# no @derive(Json): member(s) value: list[str], columnLineage: list[ColumnLineageEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str], columnLineage: list[ColumnLineageEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InheritedDisallowedOutputColumns:
     list[str] value
     list[ColumnLineageEntry] columnLineage
 
-# no @derive(Json): member(s) childResources: list[ChildResource], tableDependencies: list[IntermediateTableDependency], intermediateTableVersion: IntermediateTableActiveVersion, analysisRuleTypes: list[str], schema: IntermediateTableSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) childResources: list[ChildResource], tableDependencies: list[IntermediateTableDependency], intermediateTableVersion: IntermediateTableActiveVersion, analysisRuleTypes: list[str], schema: IntermediateTableSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTable:
     str id
     str arn
@@ -2368,8 +2474,9 @@ struct IntermediateTable:
     Optional[list[str]] analysisRuleTypes
     Optional[IntermediateTableSchema] schema
 
-# no @derive(Json): member(s) parameters: dict[str, str], inheritedConstraints: IntermediateTableInheritedConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str], inheritedConstraints: IntermediateTableInheritedConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableActiveVersion:
     str versionId
     str analysisId
@@ -2379,8 +2486,9 @@ struct IntermediateTableActiveVersion:
     IntermediateTableInheritedConstraints inheritedConstraints
     Optional[DateTime] expirationTime
 
-# no @derive(Json): member(s) analysisRulePolicy: IntermediateTableAnalysisRulePolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRulePolicy: IntermediateTableAnalysisRulePolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableAnalysisRule:
     str intermediateTableIdentifier
     str intermediateTableArn
@@ -2389,8 +2497,9 @@ struct IntermediateTableAnalysisRule:
     DateTime createTime
     DateTime updateTime
 
-# no @derive(Json): member(s) allowedAnalyses: list[str], allowedAdditionalAnalyses: list[str], allowedAnalysisProviders: list[str], allowedResultReceivers: list[str], differentialPrivacy: DifferentialPrivacyConfiguration, disallowedOutputColumns: list[str], aggregationThresholds: list[AggregationThreshold], comparisonControls: ComparisonControls not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAnalyses: list[str], allowedAdditionalAnalyses: list[str], allowedAnalysisProviders: list[str], allowedResultReceivers: list[str], differentialPrivacy: DifferentialPrivacyConfiguration, disallowedOutputColumns: list[str], aggregationThresholds: list[AggregationThreshold], comparisonControls: ComparisonControls not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableAnalysisRuleCustom:
     Optional[list[str]] allowedAnalyses
     Optional[AdditionalAnalyses] additionalAnalyses
@@ -2402,13 +2511,15 @@ struct IntermediateTableAnalysisRuleCustom:
     Optional[list[AggregationThreshold]] aggregationThresholds
     Optional[ComparisonControls] comparisonControls
 
-# no @derive(Json): member(s) v1: IntermediateTableAnalysisRulePolicyV1 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: IntermediateTableAnalysisRulePolicyV1 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableAnalysisRulePolicy:
     Optional[IntermediateTableAnalysisRulePolicyV1] v1
 
-# no @derive(Json): member(s) custom: IntermediateTableAnalysisRuleCustom not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) custom: IntermediateTableAnalysisRuleCustom not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableAnalysisRulePolicyV1:
     Optional[IntermediateTableAnalysisRuleCustom] custom
 
@@ -2417,8 +2528,9 @@ struct IntermediateTableColumn:
     str name
     str type
 
-# no @derive(Json): member(s) queryComputeConfiguration: WorkerComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queryComputeConfiguration: WorkerComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableComputeConfiguration:
     Optional[WorkerComputeConfiguration] queryComputeConfiguration
 
@@ -2430,8 +2542,9 @@ struct IntermediateTableDependency:
     BaseTableParentType parentType
     str creatorAccountId
 
-# no @derive(Json): member(s) additionalAnalyses: InheritedAdditionalAnalyses, allowedAdditionalAnalyses: InheritedAllowedAdditionalAnalyses, allowedResultReceivers: InheritedAllowedResultReceivers, disallowedOutputColumns: InheritedDisallowedOutputColumns not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalAnalyses: InheritedAdditionalAnalyses, allowedAdditionalAnalyses: InheritedAllowedAdditionalAnalyses, allowedResultReceivers: InheritedAllowedResultReceivers, disallowedOutputColumns: InheritedDisallowedOutputColumns not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableInheritedConstraints:
     Optional[InheritedAdditionalAnalyses] additionalAnalyses
     Optional[InheritedAllowedAdditionalAnalyses] allowedAdditionalAnalyses
@@ -2444,8 +2557,9 @@ struct IntermediateTableOutputConfiguration:
     str arn
     str name
 
-# no @derive(Json): member(s) columns: list[Column] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[Column] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableSchema:
     list[Column] columns
 
@@ -2453,8 +2567,9 @@ struct IntermediateTableSchema:
 struct IntermediateTableSchemaTypeProperties:
     str intermediateTableId
 
-# no @derive(Json): member(s) analysisRuleTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRuleTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntermediateTableSummary:
     str id
     str arn
@@ -2499,8 +2614,9 @@ struct ListAnalysisLogExportsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) analysisLogExports: list[AnalysisLogExportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisLogExports: list[AnalysisLogExportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalysisLogExportsOutput:
     Optional[str] nextToken
     list[AnalysisLogExportSummary] analysisLogExports
@@ -2512,8 +2628,9 @@ struct ListAnalysisTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) analysisTemplateSummaries: list[AnalysisTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisTemplateSummaries: list[AnalysisTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalysisTemplatesOutput:
     Optional[str] nextToken
     list[AnalysisTemplateSummary] analysisTemplateSummaries
@@ -2525,8 +2642,9 @@ struct ListCollaborationAnalysisTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collaborationAnalysisTemplateSummaries: list[CollaborationAnalysisTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationAnalysisTemplateSummaries: list[CollaborationAnalysisTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationAnalysisTemplatesOutput:
     Optional[str] nextToken
     list[CollaborationAnalysisTemplateSummary] collaborationAnalysisTemplateSummaries
@@ -2540,8 +2658,9 @@ struct ListCollaborationChangeRequestsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collaborationChangeRequestSummaries: list[CollaborationChangeRequestSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationChangeRequestSummaries: list[CollaborationChangeRequestSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationChangeRequestsOutput:
     list[CollaborationChangeRequestSummary] collaborationChangeRequestSummaries
     Optional[str] nextToken
@@ -2553,8 +2672,9 @@ struct ListCollaborationConfiguredAudienceModelAssociationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collaborationConfiguredAudienceModelAssociationSummaries: list[CollaborationConfiguredAudienceModelAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationConfiguredAudienceModelAssociationSummaries: list[CollaborationConfiguredAudienceModelAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationConfiguredAudienceModelAssociationsOutput:
     list[CollaborationConfiguredAudienceModelAssociationSummary] collaborationConfiguredAudienceModelAssociationSummaries
     Optional[str] nextToken
@@ -2566,8 +2686,9 @@ struct ListCollaborationIdNamespaceAssociationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collaborationIdNamespaceAssociationSummaries: list[CollaborationIdNamespaceAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationIdNamespaceAssociationSummaries: list[CollaborationIdNamespaceAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationIdNamespaceAssociationsOutput:
     Optional[str] nextToken
     list[CollaborationIdNamespaceAssociationSummary] collaborationIdNamespaceAssociationSummaries
@@ -2579,8 +2700,9 @@ struct ListCollaborationPrivacyBudgetTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collaborationPrivacyBudgetTemplateSummaries: list[CollaborationPrivacyBudgetTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationPrivacyBudgetTemplateSummaries: list[CollaborationPrivacyBudgetTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationPrivacyBudgetTemplatesOutput:
     Optional[str] nextToken
     list[CollaborationPrivacyBudgetTemplateSummary] collaborationPrivacyBudgetTemplateSummaries
@@ -2595,8 +2717,9 @@ struct ListCollaborationPrivacyBudgetsInput:
     Optional[str] nextToken
     Optional[str] accessBudgetResourceArn
 
-# no @derive(Json): member(s) collaborationPrivacyBudgetSummaries: list[CollaborationPrivacyBudgetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationPrivacyBudgetSummaries: list[CollaborationPrivacyBudgetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationPrivacyBudgetsOutput:
     list[CollaborationPrivacyBudgetSummary] collaborationPrivacyBudgetSummaries
     Optional[str] nextToken
@@ -2609,8 +2732,9 @@ struct ListCollaborationsInput:
     # wire string of the FilterableMemberStatus enum (querystring binding)
     Optional[str] memberStatus
 
-# no @derive(Json): member(s) collaborationList: list[CollaborationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationList: list[CollaborationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationsOutput:
     Optional[str] nextToken
     list[CollaborationSummary] collaborationList
@@ -2622,8 +2746,9 @@ struct ListConfiguredAudienceModelAssociationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) configuredAudienceModelAssociationSummaries: list[ConfiguredAudienceModelAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredAudienceModelAssociationSummaries: list[ConfiguredAudienceModelAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfiguredAudienceModelAssociationsOutput:
     list[ConfiguredAudienceModelAssociationSummary] configuredAudienceModelAssociationSummaries
     Optional[str] nextToken
@@ -2635,8 +2760,9 @@ struct ListConfiguredTableAssociationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) configuredTableAssociationSummaries: list[ConfiguredTableAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTableAssociationSummaries: list[ConfiguredTableAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfiguredTableAssociationsOutput:
     list[ConfiguredTableAssociationSummary] configuredTableAssociationSummaries
     Optional[str] nextToken
@@ -2647,8 +2773,9 @@ struct ListConfiguredTablesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) configuredTableSummaries: list[ConfiguredTableSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTableSummaries: list[ConfiguredTableSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfiguredTablesOutput:
     list[ConfiguredTableSummary] configuredTableSummaries
     Optional[str] nextToken
@@ -2660,8 +2787,9 @@ struct ListIdMappingTablesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) idMappingTableSummaries: list[IdMappingTableSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTableSummaries: list[IdMappingTableSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdMappingTablesOutput:
     list[IdMappingTableSummary] idMappingTableSummaries
     Optional[str] nextToken
@@ -2673,8 +2801,9 @@ struct ListIdNamespaceAssociationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) idNamespaceAssociationSummaries: list[IdNamespaceAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idNamespaceAssociationSummaries: list[IdNamespaceAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdNamespaceAssociationsOutput:
     Optional[str] nextToken
     list[IdNamespaceAssociationSummary] idNamespaceAssociationSummaries
@@ -2687,8 +2816,9 @@ struct ListIntermediateTableVersionsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) intermediateTableVersionSummaries: list[IntermediateTableVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intermediateTableVersionSummaries: list[IntermediateTableVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntermediateTableVersionsOutput:
     list[IntermediateTableVersionSummary] intermediateTableVersionSummaries
     Optional[str] nextToken
@@ -2700,8 +2830,9 @@ struct ListIntermediateTablesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) intermediateTableSummaries: list[IntermediateTableSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intermediateTableSummaries: list[IntermediateTableSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntermediateTablesOutput:
     list[IntermediateTableSummary] intermediateTableSummaries
     Optional[str] nextToken
@@ -2713,8 +2844,9 @@ struct ListMembersInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) memberSummaries: list[MemberSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberSummaries: list[MemberSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersOutput:
     Optional[str] nextToken
     list[MemberSummary] memberSummaries
@@ -2727,8 +2859,9 @@ struct ListMembershipsInput:
     # wire string of the MembershipStatus enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) membershipSummaries: list[MembershipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) membershipSummaries: list[MembershipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembershipsOutput:
     Optional[str] nextToken
     list[MembershipSummary] membershipSummaries
@@ -2740,8 +2873,9 @@ struct ListPrivacyBudgetTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) privacyBudgetTemplateSummaries: list[PrivacyBudgetTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyBudgetTemplateSummaries: list[PrivacyBudgetTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrivacyBudgetTemplatesOutput:
     Optional[str] nextToken
     list[PrivacyBudgetTemplateSummary] privacyBudgetTemplateSummaries
@@ -2756,8 +2890,9 @@ struct ListPrivacyBudgetsInput:
     Optional[int64] maxResults
     Optional[str] accessBudgetResourceArn
 
-# no @derive(Json): member(s) privacyBudgetSummaries: list[PrivacyBudgetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyBudgetSummaries: list[PrivacyBudgetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrivacyBudgetsOutput:
     list[PrivacyBudgetSummary] privacyBudgetSummaries
     Optional[str] nextToken
@@ -2771,8 +2906,9 @@ struct ListProtectedJobsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) protectedJobs: list[ProtectedJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedJobs: list[ProtectedJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectedJobsOutput:
     Optional[str] nextToken
     list[ProtectedJobSummary] protectedJobs
@@ -2786,8 +2922,9 @@ struct ListProtectedQueriesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) protectedQueries: list[ProtectedQuerySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedQueries: list[ProtectedQuerySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectedQueriesOutput:
     Optional[str] nextToken
     list[ProtectedQuerySummary] protectedQueries
@@ -2801,8 +2938,9 @@ struct ListSchemasInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) schemaSummaries: list[SchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemaSummaries: list[SchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemasOutput:
     list[SchemaSummary] schemaSummaries
     Optional[str] nextToken
@@ -2812,13 +2950,15 @@ struct ListSchemasOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     dict[str, str] tags
 
-# no @derive(Json): member(s) customMLMemberAbilities: list[CustomMLMemberAbility] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customMLMemberAbilities: list[CustomMLMemberAbility] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MLMemberAbilities:
     list[CustomMLMemberAbility] customMLMemberAbilities
 
@@ -2828,15 +2968,17 @@ struct MLPaymentConfig:
     Optional[ModelInferencePaymentConfig] modelInference
     Optional[SyntheticDataGenerationPaymentConfig] syntheticDataGeneration
 
-# no @derive(Json): member(s) columnClassification: ColumnClassificationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnClassification: ColumnClassificationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MLSyntheticDataParameters:
     float64 epsilon
     float64 maxMembershipInferenceAttackScore
     ColumnClassificationDetails columnClassification
 
-# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberChangeSpecification:
     str accountId
     list[MemberAbility] memberAbilities
@@ -2844,8 +2986,9 @@ struct MemberChangeSpecification:
     Optional[PaymentConfiguration] paymentConfiguration
     Optional[str] displayName
 
-# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberSpecification:
     str accountId
     list[MemberAbility] memberAbilities
@@ -2853,8 +2996,9 @@ struct MemberSpecification:
     str displayName
     Optional[PaymentConfiguration] paymentConfiguration
 
-# no @derive(Json): member(s) abilities: list[MemberAbility], mlAbilities: MLMemberAbilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) abilities: list[MemberAbility], mlAbilities: MLMemberAbilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberSummary:
     str accountId
     MemberStatus status
@@ -2867,8 +3011,9 @@ struct MemberSummary:
     Optional[str] membershipArn
     PaymentConfiguration paymentConfiguration
 
-# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Membership:
     str id
     str arn
@@ -2935,8 +3080,9 @@ struct MembershipProtectedQueryResultConfiguration:
 struct MembershipQueryComputePaymentConfig:
     bool isResponsible
 
-# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberAbilities: list[MemberAbility], mlMemberAbilities: MLMemberAbilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MembershipSummary:
     str id
     str arn
@@ -3016,8 +3162,9 @@ struct PreviewPrivacyImpactInput:
     str membershipIdentifier
     PreviewPrivacyImpactParametersInput parameters
 
-# no @derive(Json): member(s) privacyImpact: PrivacyImpact not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyImpact: PrivacyImpact not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PreviewPrivacyImpactOutput:
     PrivacyImpact privacyImpact
 
@@ -3025,14 +3172,16 @@ struct PreviewPrivacyImpactOutput:
 struct PreviewPrivacyImpactParametersInput:
     Optional[DifferentialPrivacyPreviewParametersInput] differentialPrivacy
 
-# no @derive(Json): member(s) differentialPrivacy: DifferentialPrivacyPrivacyBudget, accessBudget: AccessBudget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) differentialPrivacy: DifferentialPrivacyPrivacyBudget, accessBudget: AccessBudget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudget:
     Optional[DifferentialPrivacyPrivacyBudget] differentialPrivacy
     Optional[AccessBudget] accessBudget
 
-# no @derive(Json): member(s) budget: PrivacyBudget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) budget: PrivacyBudget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudgetSummary:
     str id
     str privacyBudgetTemplateId
@@ -3046,8 +3195,9 @@ struct PrivacyBudgetSummary:
     DateTime updateTime
     PrivacyBudget budget
 
-# no @derive(Json): member(s) parameters: PrivacyBudgetTemplateParametersOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: PrivacyBudgetTemplateParametersOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudgetTemplate:
     str id
     str arn
@@ -3061,14 +3211,16 @@ struct PrivacyBudgetTemplate:
     PrivacyBudgetTemplateAutoRefresh autoRefresh
     PrivacyBudgetTemplateParametersOutput parameters
 
-# no @derive(Json): member(s) accessBudget: AccessBudgetsPrivacyTemplateParametersInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessBudget: AccessBudgetsPrivacyTemplateParametersInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudgetTemplateParametersInput:
     Optional[DifferentialPrivacyTemplateParametersInput] differentialPrivacy
     Optional[AccessBudgetsPrivacyTemplateParametersInput] accessBudget
 
-# no @derive(Json): member(s) accessBudget: AccessBudgetsPrivacyTemplateParametersOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessBudget: AccessBudgetsPrivacyTemplateParametersOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudgetTemplateParametersOutput:
     Optional[DifferentialPrivacyTemplateParametersOutput] differentialPrivacy
     Optional[AccessBudgetsPrivacyTemplateParametersOutput] accessBudget
@@ -3085,19 +3237,22 @@ struct PrivacyBudgetTemplateSummary:
     DateTime createTime
     DateTime updateTime
 
-# no @derive(Json): member(s) accessBudget: AccessBudgetsPrivacyTemplateUpdateParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessBudget: AccessBudgetsPrivacyTemplateUpdateParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudgetTemplateUpdateParameters:
     Optional[DifferentialPrivacyTemplateUpdateParameters] differentialPrivacy
     Optional[AccessBudgetsPrivacyTemplateUpdateParameters] accessBudget
 
-# no @derive(Json): member(s) differentialPrivacy: DifferentialPrivacyPrivacyImpact not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) differentialPrivacy: DifferentialPrivacyPrivacyImpact not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyImpact:
     Optional[DifferentialPrivacyPrivacyImpact] differentialPrivacy
 
-# no @derive(Json): member(s) jobParameters: ProtectedJobParameters, result: ProtectedJobResult, computeConfiguration: ProtectedJobComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobParameters: ProtectedJobParameters, result: ProtectedJobResult, computeConfiguration: ProtectedJobComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJob:
     str id
     str membershipId
@@ -3112,18 +3267,21 @@ struct ProtectedJob:
     Optional[ProtectedJobComputeConfiguration] computeConfiguration
     Optional[str] jobComputePayerAccountId
 
-# no @derive(Json): member(s) worker: ProtectedJobWorkerComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) worker: ProtectedJobWorkerComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobComputeConfiguration:
     Optional[ProtectedJobWorkerComputeConfiguration] worker
 
-# no @derive(Json): member(s) directAnalysisConfigurationDetails: ProtectedJobDirectAnalysisConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directAnalysisConfigurationDetails: ProtectedJobDirectAnalysisConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobConfigurationDetails:
     Optional[ProtectedJobDirectAnalysisConfigurationDetails] directAnalysisConfigurationDetails
 
-# no @derive(Json): member(s) receiverAccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) receiverAccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobDirectAnalysisConfigurationDetails:
     Optional[list[str]] receiverAccountIds
 
@@ -3140,8 +3298,9 @@ struct ProtectedJobMemberOutputConfigurationInput:
 struct ProtectedJobMemberOutputConfigurationOutput:
     str accountId
 
-# no @derive(Json): member(s) memberList: list[ProtectedJobSingleMemberOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberList: list[ProtectedJobSingleMemberOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobOutput:
     Optional[ProtectedJobS3Output] s3
     Optional[list[ProtectedJobSingleMemberOutput]] memberList
@@ -3155,20 +3314,23 @@ struct ProtectedJobOutputConfigurationOutput:
     Optional[ProtectedJobS3OutputConfigurationOutput] s3
     Optional[ProtectedJobMemberOutputConfigurationOutput] member
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobParameters:
     str analysisTemplateArn
     Optional[dict[str, str]] parameters
 
-# no @derive(Json): member(s) configurationDetails: ProtectedJobConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationDetails: ProtectedJobConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobReceiverConfiguration:
     str analysisType
     Optional[ProtectedJobConfigurationDetails] configurationDetails
 
-# no @derive(Json): member(s) output: ProtectedJobOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) output: ProtectedJobOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobResult:
     ProtectedJobOutput output
 
@@ -3203,8 +3365,9 @@ struct ProtectedJobStatistics:
     Optional[int64] totalDurationInMillis
     Optional[BilledJobResourceUtilization] billedResourceUtilization
 
-# no @derive(Json): member(s) receiverConfigurations: list[ProtectedJobReceiverConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) receiverConfigurations: list[ProtectedJobReceiverConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobSummary:
     str id
     str membershipId
@@ -3214,15 +3377,17 @@ struct ProtectedJobSummary:
     list[ProtectedJobReceiverConfiguration] receiverConfigurations
     Optional[str] jobComputePayerAccountId
 
-# no @derive(Json): member(s) properties: WorkerComputeConfigurationProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: WorkerComputeConfigurationProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedJobWorkerComputeConfiguration:
     ProtectedJobWorkerComputeType type
     int64 number
     Optional[WorkerComputeConfigurationProperties] properties
 
-# no @derive(Json): member(s) sqlParameters: ProtectedQuerySQLParameters, resultConfiguration: ProtectedQueryResultConfiguration, result: ProtectedQueryResult, differentialPrivacy: DifferentialPrivacyParameters, computeConfiguration: ComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sqlParameters: ProtectedQuerySQLParameters, resultConfiguration: ProtectedQueryResultConfiguration, result: ProtectedQueryResult, differentialPrivacy: DifferentialPrivacyParameters, computeConfiguration: ComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQuery:
     str id
     str membershipId
@@ -3238,14 +3403,16 @@ struct ProtectedQuery:
     Optional[ComputeConfiguration] computeConfiguration
     Optional[str] queryComputePayerAccountId
 
-# no @derive(Json): member(s) memberList: list[ProtectedQuerySingleMemberOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberList: list[ProtectedQuerySingleMemberOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryDistributeOutput:
     Optional[ProtectedQueryS3Output] s3
     Optional[list[ProtectedQuerySingleMemberOutput]] memberList
 
-# no @derive(Json): member(s) locations: list[ProtectedQueryDistributeOutputConfigurationLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) locations: list[ProtectedQueryDistributeOutputConfigurationLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryDistributeOutputConfiguration:
     list[ProtectedQueryDistributeOutputConfigurationLocation] locations
 
@@ -3263,28 +3430,32 @@ struct ProtectedQueryError:
 struct ProtectedQueryMemberOutputConfiguration:
     str accountId
 
-# no @derive(Json): member(s) memberList: list[ProtectedQuerySingleMemberOutput], distribute: ProtectedQueryDistributeOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberList: list[ProtectedQuerySingleMemberOutput], distribute: ProtectedQueryDistributeOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryOutput:
     Optional[ProtectedQueryS3Output] s3
     Optional[list[ProtectedQuerySingleMemberOutput]] memberList
     Optional[ProtectedQueryDistributeOutput] distribute
 
-# no @derive(Json): member(s) distribute: ProtectedQueryDistributeOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distribute: ProtectedQueryDistributeOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryOutputConfiguration:
     Optional[ProtectedQueryS3OutputConfiguration] s3
     Optional[ProtectedQueryMemberOutputConfiguration] member
     Optional[ProtectedQueryDistributeOutputConfiguration] distribute
     Optional[IntermediateTableOutputConfiguration] intermediateTable
 
-# no @derive(Json): member(s) output: ProtectedQueryOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) output: ProtectedQueryOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryResult:
     ProtectedQueryOutput output
 
-# no @derive(Json): member(s) outputConfiguration: ProtectedQueryOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: ProtectedQueryOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryResultConfiguration:
     ProtectedQueryOutputConfiguration outputConfiguration
 
@@ -3299,8 +3470,9 @@ struct ProtectedQueryS3OutputConfiguration:
     Optional[str] keyPrefix
     Optional[bool] singleFileOutput
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQuerySQLParameters:
     Optional[str] queryString
     Optional[str] analysisTemplateArn
@@ -3315,8 +3487,9 @@ struct ProtectedQueryStatistics:
     Optional[int64] totalDurationInMillis
     Optional[BilledResourceUtilization] billedResourceUtilization
 
-# no @derive(Json): member(s) receiverConfigurations: list[ReceiverConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) receiverConfigurations: list[ReceiverConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQuerySummary:
     str id
     str membershipId
@@ -3331,18 +3504,21 @@ struct ProtectedQuerySummary:
 struct QueryComputePaymentConfig:
     bool isResponsible
 
-# no @derive(Json): member(s) requireOverlap: QueryConstraintRequireOverlap not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requireOverlap: QueryConstraintRequireOverlap not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryConstraint:
     Optional[QueryConstraintRequireOverlap] requireOverlap
 
-# no @derive(Json): member(s) columns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryConstraintRequireOverlap:
     Optional[list[str]] columns
 
-# no @derive(Json): member(s) configurationDetails: ConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationDetails: ConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReceiverConfiguration:
     AnalysisType analysisType
     Optional[ConfigurationDetails] configurationDetails
@@ -3358,8 +3534,9 @@ struct S3Location:
     str bucket
     str key
 
-# no @derive(Json): member(s) columns: list[Column], partitionKeys: list[Column], analysisRuleTypes: list[AnalysisRuleType], selectedAnalysisMethods: list[SelectedAnalysisMethod], schemaStatusDetails: list[SchemaStatusDetail], schemaTypeProperties: SchemaTypeProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[Column], partitionKeys: list[Column], analysisRuleTypes: list[AnalysisRuleType], selectedAnalysisMethods: list[SelectedAnalysisMethod], schemaStatusDetails: list[SchemaStatusDetail], schemaTypeProperties: SchemaTypeProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schema:
     list[Column] columns
     list[Column] partitionKeys
@@ -3383,8 +3560,9 @@ struct SchemaAnalysisRuleRequest:
     str name
     AnalysisRuleType type
 
-# no @derive(Json): member(s) reasons: list[SchemaStatusReason], configurations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[SchemaStatusReason], configurations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaStatusDetail:
     SchemaStatus status
     Optional[list[SchemaStatusReason]] reasons
@@ -3397,8 +3575,9 @@ struct SchemaStatusReason:
     SchemaStatusReasonCode code
     str message
 
-# no @derive(Json): member(s) analysisRuleTypes: list[AnalysisRuleType], selectedAnalysisMethods: list[SelectedAnalysisMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRuleTypes: list[AnalysisRuleType], selectedAnalysisMethods: list[SelectedAnalysisMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaSummary:
     str name
     SchemaType type
@@ -3412,8 +3591,9 @@ struct SchemaSummary:
     Optional[str] resourceArn
     Optional[list[SelectedAnalysisMethod]] selectedAnalysisMethods
 
-# no @derive(Json): member(s) idMappingTable: IdMappingTableSchemaTypeProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTable: IdMappingTableSchemaTypeProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaTypeProperties:
     Optional[IdMappingTableSchemaTypeProperties] idMappingTable
     Optional[IntermediateTableSchemaTypeProperties] intermediateTable
@@ -3425,8 +3605,9 @@ struct ServiceQuotaExceededException:
     str quotaName
     float64 quotaValue
 
-# no @derive(Json): member(s) tableSchema: SnowflakeTableSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tableSchema: SnowflakeTableSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeTableReference:
     str secretArn
     str accountIdentifier
@@ -3435,8 +3616,9 @@ struct SnowflakeTableReference:
     str schemaName
     SnowflakeTableSchema tableSchema
 
-# no @derive(Json): member(s) v1: list[SnowflakeTableSchemaV1] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: list[SnowflakeTableSchemaV1] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeTableSchema:
     Optional[list[SnowflakeTableSchemaV1]] v1
 
@@ -3467,8 +3649,9 @@ struct StartProtectedJobInput:
     Optional[ProtectedJobComputeConfiguration] computeConfiguration
     Optional[str] jobComputePayerAccountId
 
-# no @derive(Json): member(s) protectedJob: ProtectedJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedJob: ProtectedJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProtectedJobOutput:
     ProtectedJob protectedJob
 
@@ -3482,8 +3665,9 @@ struct StartProtectedQueryInput:
     Optional[ComputeConfiguration] computeConfiguration
     Optional[str] queryComputePayerAccountId
 
-# no @derive(Json): member(s) protectedQuery: ProtectedQuery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedQuery: ProtectedQuery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProtectedQueryOutput:
     ProtectedQuery protectedQuery
 
@@ -3497,13 +3681,15 @@ struct SyntheticDataColumnProperties:
 struct SyntheticDataGenerationPaymentConfig:
     bool isResponsible
 
-# no @derive(Json): member(s) mlSyntheticDataParameters: MLSyntheticDataParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mlSyntheticDataParameters: MLSyntheticDataParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyntheticDataParameters:
     Optional[MLSyntheticDataParameters] mlSyntheticDataParameters
 
-# no @derive(Json): member(s) snowflake: SnowflakeTableReference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snowflake: SnowflakeTableReference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableReference:
     Optional[GlueTableReference] glue
     Optional[SnowflakeTableReference] snowflake
@@ -3543,8 +3729,9 @@ struct UpdateAnalysisTemplateInput:
     str analysisTemplateIdentifier
     Optional[str] description
 
-# no @derive(Json): member(s) analysisTemplate: AnalysisTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisTemplate: AnalysisTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAnalysisTemplateOutput:
     AnalysisTemplate analysisTemplate
 
@@ -3555,8 +3742,9 @@ struct UpdateCollaborationChangeRequestInput:
     str changeRequestIdentifier
     ChangeRequestAction action
 
-# no @derive(Json): member(s) collaborationChangeRequest: CollaborationChangeRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationChangeRequest: CollaborationChangeRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCollaborationChangeRequestOutput:
     CollaborationChangeRequest collaborationChangeRequest
 
@@ -3568,8 +3756,9 @@ struct UpdateCollaborationInput:
     Optional[str] description
     Optional[AnalyticsEngine] analyticsEngine
 
-# no @derive(Json): member(s) collaboration: Collaboration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaboration: Collaboration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCollaborationOutput:
     Collaboration collaboration
 
@@ -3593,8 +3782,9 @@ struct UpdateConfiguredTableAnalysisRuleInput:
     str analysisRuleType
     ConfiguredTableAnalysisRulePolicy analysisRulePolicy
 
-# no @derive(Json): member(s) analysisRule: ConfiguredTableAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: ConfiguredTableAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfiguredTableAnalysisRuleOutput:
     ConfiguredTableAnalysisRule analysisRule
 
@@ -3607,8 +3797,9 @@ struct UpdateConfiguredTableAssociationAnalysisRuleInput:
     str analysisRuleType
     ConfiguredTableAssociationAnalysisRulePolicy analysisRulePolicy
 
-# no @derive(Json): member(s) analysisRule: ConfiguredTableAssociationAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: ConfiguredTableAssociationAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfiguredTableAssociationAnalysisRuleOutput:
     ConfiguredTableAssociationAnalysisRule analysisRule
 
@@ -3620,8 +3811,9 @@ struct UpdateConfiguredTableAssociationInput:
     Optional[str] description
     Optional[str] roleArn
 
-# no @derive(Json): member(s) configuredTableAssociation: ConfiguredTableAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTableAssociation: ConfiguredTableAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfiguredTableAssociationOutput:
     ConfiguredTableAssociation configuredTableAssociation
 
@@ -3636,8 +3828,9 @@ struct UpdateConfiguredTableInput:
     Optional[AnalysisMethod] analysisMethod
     Optional[list[SelectedAnalysisMethod]] selectedAnalysisMethods
 
-# no @derive(Json): member(s) configuredTable: ConfiguredTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredTable: ConfiguredTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfiguredTableOutput:
     ConfiguredTable configuredTable
 
@@ -3649,8 +3842,9 @@ struct UpdateIdMappingTableInput:
     Optional[str] description
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) idMappingTable: IdMappingTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingTable: IdMappingTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdMappingTableOutput:
     IdMappingTable idMappingTable
 
@@ -3663,8 +3857,9 @@ struct UpdateIdNamespaceAssociationInput:
     Optional[str] description
     Optional[IdMappingConfig] idMappingConfig
 
-# no @derive(Json): member(s) idNamespaceAssociation: IdNamespaceAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idNamespaceAssociation: IdNamespaceAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdNamespaceAssociationOutput:
     IdNamespaceAssociation idNamespaceAssociation
 
@@ -3676,8 +3871,9 @@ struct UpdateIntermediateTableAnalysisRuleInput:
     str analysisRuleType
     IntermediateTableAnalysisRulePolicy analysisRulePolicy
 
-# no @derive(Json): member(s) analysisRule: IntermediateTableAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: IntermediateTableAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntermediateTableAnalysisRuleOutput:
     IntermediateTableAnalysisRule analysisRule
 
@@ -3690,8 +3886,9 @@ struct UpdateIntermediateTableInput:
     Optional[str] kmsKeyArn
     Optional[list[IntermediateTableColumn]] columns
 
-# no @derive(Json): member(s) intermediateTable: IntermediateTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intermediateTable: IntermediateTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntermediateTableOutput:
     IntermediateTable intermediateTable
 
@@ -3705,8 +3902,9 @@ struct UpdateMembershipInput:
     Optional[MembershipProtectedJobResultConfiguration] defaultJobResultConfiguration
     Optional[UpdateMembershipPaymentConfiguration] membershipPaymentConfiguration
 
-# no @derive(Json): member(s) membership: Membership not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) membership: Membership not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMembershipOutput:
     Membership membership
 
@@ -3724,8 +3922,9 @@ struct UpdatePrivacyBudgetTemplateInput:
     PrivacyBudgetType privacyBudgetType
     Optional[PrivacyBudgetTemplateUpdateParameters] parameters
 
-# no @derive(Json): member(s) privacyBudgetTemplate: PrivacyBudgetTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyBudgetTemplate: PrivacyBudgetTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePrivacyBudgetTemplateOutput:
     PrivacyBudgetTemplate privacyBudgetTemplate
 
@@ -3736,8 +3935,9 @@ struct UpdateProtectedJobInput:
     str protectedJobIdentifier
     str targetStatus
 
-# no @derive(Json): member(s) protectedJob: ProtectedJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedJob: ProtectedJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProtectedJobOutput:
     ProtectedJob protectedJob
 
@@ -3748,13 +3948,15 @@ struct UpdateProtectedQueryInput:
     str protectedQueryIdentifier
     str targetStatus
 
-# no @derive(Json): member(s) protectedQuery: ProtectedQuery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedQuery: ProtectedQuery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProtectedQueryOutput:
     ProtectedQuery protectedQuery
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[ValidationExceptionReason] reason
@@ -3765,15 +3967,17 @@ struct ValidationExceptionField:
     str name
     str message
 
-# no @derive(Json): member(s) properties: WorkerComputeConfigurationProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: WorkerComputeConfigurationProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkerComputeConfiguration:
     Optional[WorkerComputeType] type
     Optional[int64] number
     Optional[WorkerComputeConfigurationProperties] properties
 
-# no @derive(Json): member(s) spark: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spark: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkerComputeConfigurationProperties:
     Optional[dict[str, str]] spark
 
@@ -3815,34 +4019,7 @@ def cleanrooms_error_from_code(str code) -> CleanRoomsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetCollaborationAnalysisTemplate (document member `analysisTemplateArns: list[str]` is not serializable by derive)
-#   BatchGetSchema (document member `names: list[str]` is not serializable by derive)
-#   BatchGetSchemaAnalysisRule (document member `schemaAnalysisRuleRequests: list[SchemaAnalysisRuleRequest]` is not serializable by derive)
-#   CreateAnalysisTemplate (document member `source: AnalysisSource` is not serializable by derive)
-#   CreateCollaboration (document member `members: list[MemberSpecification]` is not serializable by derive)
-#   CreateCollaborationChangeRequest (document member `changes: list[ChangeInput]` is not serializable by derive)
-#   CreateConfiguredAudienceModelAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateConfiguredTable (document member `tableReference: TableReference` is not serializable by derive)
-#   CreateConfiguredTableAnalysisRule (document member `analysisRulePolicy: ConfiguredTableAnalysisRulePolicy` is not serializable by derive)
-#   CreateConfiguredTableAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateConfiguredTableAssociationAnalysisRule (document member `analysisRulePolicy: ConfiguredTableAssociationAnalysisRulePolicy` is not serializable by derive)
-#   CreateIdMappingTable (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateIdNamespaceAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateIntermediateTable (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateIntermediateTableAnalysisRule (document member `analysisRulePolicy: IntermediateTableAnalysisRulePolicy` is not serializable by derive)
-#   CreateMembership (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePrivacyBudgetTemplate (document member `parameters: PrivacyBudgetTemplateParametersInput` is not serializable by derive)
-#   PopulateIntermediateTable (document member `parameters: dict[str, str]` is not serializable by derive)
-#   StartProtectedJob (document member `jobParameters: ProtectedJobParameters` is not serializable by derive)
-#   StartProtectedQuery (document member `sqlParameters: ProtectedQuerySQLParameters` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateConfiguredTable (document member `tableReference: TableReference` is not serializable by derive)
-#   UpdateConfiguredTableAnalysisRule (document member `analysisRulePolicy: ConfiguredTableAnalysisRulePolicy` is not serializable by derive)
-#   UpdateConfiguredTableAssociationAnalysisRule (document member `analysisRulePolicy: ConfiguredTableAssociationAnalysisRulePolicy` is not serializable by derive)
-#   UpdateIntermediateTable (document member `columns: list[IntermediateTableColumn]` is not serializable by derive)
-#   UpdateIntermediateTableAnalysisRule (document member `analysisRulePolicy: IntermediateTableAnalysisRulePolicy` is not serializable by derive)
-#   UpdatePrivacyBudgetTemplate (document member `parameters: PrivacyBudgetTemplateUpdateParameters` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3931,10 +4108,1099 @@ struct UpdateProtectedQueryDocument:
     # document members of UpdateProtectedQuery
     str targetStatus
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cleanrooms_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cleanrooms_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cleanrooms_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccessBudgetsPrivacyTemplateParametersInput to a compact JSON object (declaration order).
+def access_budgets_privacy_template_parameters_input_to_json(AccessBudgetsPrivacyTemplateParametersInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.budgetParameters:
+        e0.append(x0.to_json())
+    parts.append("\"budgetParameters\":" + cleanrooms_json_arr(e0))
+    parts.append("\"resourceArn\":" + cleanrooms_json_str(v.resourceArn))
+    return cleanrooms_json_obj(parts)
+
+# Serialize AccessBudgetsPrivacyTemplateUpdateParameters to a compact JSON object (declaration order).
+def access_budgets_privacy_template_update_parameters_to_json(AccessBudgetsPrivacyTemplateUpdateParameters v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.budgetParameters:
+        e0.append(x0.to_json())
+    parts.append("\"budgetParameters\":" + cleanrooms_json_arr(e0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize AggregateColumn to a compact JSON object (declaration order).
+def aggregate_column_to_json(AggregateColumn v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.columnNames:
+        e0.append(cleanrooms_json_str(x0))
+    parts.append("\"columnNames\":" + cleanrooms_json_arr(e0))
+    parts.append("\"function\":" + v.function.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize AggregationThreshold to a compact JSON object (declaration order).
+def aggregation_threshold_to_json(AggregationThreshold v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.identityColumns:
+        e0.append(cleanrooms_json_str(x0))
+    parts.append("\"identityColumns\":" + cleanrooms_json_arr(e0))
+    parts.append("\"minimumIdentityCount\":" + str(v.minimumIdentityCount))
+    parts.append("\"type\":" + cleanrooms_json_str(v.type))
+    if v.outputColumnThresholds.is_some():
+        auto u1 = v.outputColumnThresholds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"outputColumnThresholds\":" + cleanrooms_json_arr(e2))
+    parts.append("\"allowedAggregateExpressionType\":" + v.allowedAggregateExpressionType.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize AnalysisRuleAggregation to a compact JSON object (declaration order).
+def analysis_rule_aggregation_to_json(AnalysisRuleAggregation v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.aggregateColumns:
+        e0.append(aggregate_column_to_json(x0))
+    parts.append("\"aggregateColumns\":" + cleanrooms_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.joinColumns:
+        e1.append(cleanrooms_json_str(x1))
+    parts.append("\"joinColumns\":" + cleanrooms_json_arr(e1))
+    if v.joinRequired.is_some():
+        auto u2 = v.joinRequired.unwrap()
+        parts.append("\"joinRequired\":" + cleanrooms_json_str(u2))
+    if v.allowedJoinOperators.is_some():
+        auto u3 = v.allowedJoinOperators.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"allowedJoinOperators\":" + cleanrooms_json_arr(e4))
+    list[str] e5 = []
+    for x5 in v.dimensionColumns:
+        e5.append(cleanrooms_json_str(x5))
+    parts.append("\"dimensionColumns\":" + cleanrooms_json_arr(e5))
+    list[str] e6 = []
+    for x6 in v.scalarFunctions:
+        e6.append(x6.to_json())
+    parts.append("\"scalarFunctions\":" + cleanrooms_json_arr(e6))
+    list[str] e7 = []
+    for x7 in v.outputConstraints:
+        e7.append(x7.to_json())
+    parts.append("\"outputConstraints\":" + cleanrooms_json_arr(e7))
+    if v.additionalAnalyses.is_some():
+        auto u8 = v.additionalAnalyses.unwrap()
+        parts.append("\"additionalAnalyses\":" + u8.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize AnalysisRuleCustom to a compact JSON object (declaration order).
+def analysis_rule_custom_to_json(AnalysisRuleCustom v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.allowedAnalyses:
+        e0.append(cleanrooms_json_str(x0))
+    parts.append("\"allowedAnalyses\":" + cleanrooms_json_arr(e0))
+    if v.allowedAnalysisProviders.is_some():
+        auto u1 = v.allowedAnalysisProviders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(cleanrooms_json_str(x2))
+        parts.append("\"allowedAnalysisProviders\":" + cleanrooms_json_arr(e2))
+    if v.additionalAnalyses.is_some():
+        auto u3 = v.additionalAnalyses.unwrap()
+        parts.append("\"additionalAnalyses\":" + u3.to_json())
+    if v.disallowedOutputColumns.is_some():
+        auto u4 = v.disallowedOutputColumns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cleanrooms_json_str(x5))
+        parts.append("\"disallowedOutputColumns\":" + cleanrooms_json_arr(e5))
+    if v.differentialPrivacy.is_some():
+        auto u6 = v.differentialPrivacy.unwrap()
+        parts.append("\"differentialPrivacy\":" + differential_privacy_configuration_to_json(u6))
+    if v.aggregationThresholds.is_some():
+        auto u7 = v.aggregationThresholds.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(aggregation_threshold_to_json(x8))
+        parts.append("\"aggregationThresholds\":" + cleanrooms_json_arr(e8))
+    if v.comparisonControls.is_some():
+        auto u9 = v.comparisonControls.unwrap()
+        parts.append("\"comparisonControls\":" + comparison_controls_to_json(u9))
+    if v.allowedResultReceivers.is_some():
+        auto u10 = v.allowedResultReceivers.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(cleanrooms_json_str(x11))
+        parts.append("\"allowedResultReceivers\":" + cleanrooms_json_arr(e11))
+    if v.allowedAdditionalAnalyses.is_some():
+        auto u12 = v.allowedAdditionalAnalyses.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(cleanrooms_json_str(x13))
+        parts.append("\"allowedAdditionalAnalyses\":" + cleanrooms_json_arr(e13))
+    return cleanrooms_json_obj(parts)
+
+# Serialize AnalysisRuleList to a compact JSON object (declaration order).
+def analysis_rule_list_to_json(AnalysisRuleList v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.joinColumns:
+        e0.append(cleanrooms_json_str(x0))
+    parts.append("\"joinColumns\":" + cleanrooms_json_arr(e0))
+    if v.allowedJoinOperators.is_some():
+        auto u1 = v.allowedJoinOperators.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"allowedJoinOperators\":" + cleanrooms_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.listColumns:
+        e3.append(cleanrooms_json_str(x3))
+    parts.append("\"listColumns\":" + cleanrooms_json_arr(e3))
+    if v.additionalAnalyses.is_some():
+        auto u4 = v.additionalAnalyses.unwrap()
+        parts.append("\"additionalAnalyses\":" + u4.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize AnalysisSchema to a compact JSON object (declaration order).
+def analysis_schema_to_json(AnalysisSchema v) -> str:
+    list[str] parts = []
+    if v.referencedTables.is_some():
+        auto u0 = v.referencedTables.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cleanrooms_json_str(x1))
+        parts.append("\"referencedTables\":" + cleanrooms_json_arr(e1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize AnalysisSource to a compact JSON object (declaration order).
+def analysis_source_to_json(AnalysisSource v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + cleanrooms_json_str(u0))
+    if v.artifacts.is_some():
+        auto u1 = v.artifacts.unwrap()
+        parts.append("\"artifacts\":" + analysis_template_artifacts_to_json(u1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize AnalysisTemplateArtifacts to a compact JSON object (declaration order).
+def analysis_template_artifacts_to_json(AnalysisTemplateArtifacts v) -> str:
+    list[str] parts = []
+    parts.append("\"entryPoint\":" + v.entryPoint.to_json())
+    if v.additionalArtifacts.is_some():
+        auto u0 = v.additionalArtifacts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"additionalArtifacts\":" + cleanrooms_json_arr(e1))
+    parts.append("\"roleArn\":" + cleanrooms_json_str(v.roleArn))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ChangeInput to a compact JSON object (declaration order).
+def change_input_to_json(ChangeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"specificationType\":" + v.specificationType.to_json())
+    parts.append("\"specification\":" + change_specification_to_json(v.specification))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ChangeSpecification to a compact JSON object (declaration order).
+def change_specification_to_json(ChangeSpecification v) -> str:
+    list[str] parts = []
+    if v.member.is_some():
+        auto u0 = v.member.unwrap()
+        parts.append("\"member\":" + member_change_specification_to_json(u0))
+    if v.collaboration.is_some():
+        auto u1 = v.collaboration.unwrap()
+        parts.append("\"collaboration\":" + collaboration_change_specification_to_json(u1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize CollaborationChangeSpecification to a compact JSON object (declaration order).
+def collaboration_change_specification_to_json(CollaborationChangeSpecification v) -> str:
+    list[str] parts = []
+    if v.autoApprovedChangeTypes.is_some():
+        auto u0 = v.autoApprovedChangeTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"autoApprovedChangeTypes\":" + cleanrooms_json_arr(e1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ColumnClassificationDetails to a compact JSON object (declaration order).
+def column_classification_details_to_json(ColumnClassificationDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.columnMapping:
+        e0.append(x0.to_json())
+    parts.append("\"columnMapping\":" + cleanrooms_json_arr(e0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ComparisonControls to a compact JSON object (declaration order).
+def comparison_controls_to_json(ComparisonControls v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.allowedLiteralComparisonColumns:
+        e0.append(cleanrooms_json_str(x0))
+    parts.append("\"allowedLiteralComparisonColumns\":" + cleanrooms_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.allowedColumnComparisonColumns:
+        e1.append(cleanrooms_json_str(x1))
+    parts.append("\"allowedColumnComparisonColumns\":" + cleanrooms_json_arr(e1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ComputeConfiguration to a compact JSON object (declaration order).
+def compute_configuration_to_json(ComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.worker.is_some():
+        auto u0 = v.worker.unwrap()
+        parts.append("\"worker\":" + worker_compute_configuration_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAnalysisRulePolicy to a compact JSON object (declaration order).
+def configured_table_analysis_rule_policy_to_json(ConfiguredTableAnalysisRulePolicy v) -> str:
+    list[str] parts = []
+    if v.v1.is_some():
+        auto u0 = v.v1.unwrap()
+        parts.append("\"v1\":" + configured_table_analysis_rule_policy_v1_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAnalysisRulePolicyV1 to a compact JSON object (declaration order).
+def configured_table_analysis_rule_policy_v1_to_json(ConfiguredTableAnalysisRulePolicyV1 v) -> str:
+    list[str] parts = []
+    if v.list_.is_some():
+        auto u0 = v.list_.unwrap()
+        parts.append("\"list\":" + analysis_rule_list_to_json(u0))
+    if v.aggregation.is_some():
+        auto u1 = v.aggregation.unwrap()
+        parts.append("\"aggregation\":" + analysis_rule_aggregation_to_json(u1))
+    if v.custom.is_some():
+        auto u2 = v.custom.unwrap()
+        parts.append("\"custom\":" + analysis_rule_custom_to_json(u2))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAssociationAnalysisRuleAggregation to a compact JSON object (declaration order).
+def configured_table_association_analysis_rule_aggregation_to_json(ConfiguredTableAssociationAnalysisRuleAggregation v) -> str:
+    list[str] parts = []
+    if v.allowedResultReceivers.is_some():
+        auto u0 = v.allowedResultReceivers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cleanrooms_json_str(x1))
+        parts.append("\"allowedResultReceivers\":" + cleanrooms_json_arr(e1))
+    if v.allowedAdditionalAnalyses.is_some():
+        auto u2 = v.allowedAdditionalAnalyses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cleanrooms_json_str(x3))
+        parts.append("\"allowedAdditionalAnalyses\":" + cleanrooms_json_arr(e3))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAssociationAnalysisRuleCustom to a compact JSON object (declaration order).
+def configured_table_association_analysis_rule_custom_to_json(ConfiguredTableAssociationAnalysisRuleCustom v) -> str:
+    list[str] parts = []
+    if v.allowedResultReceivers.is_some():
+        auto u0 = v.allowedResultReceivers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cleanrooms_json_str(x1))
+        parts.append("\"allowedResultReceivers\":" + cleanrooms_json_arr(e1))
+    if v.allowedAdditionalAnalyses.is_some():
+        auto u2 = v.allowedAdditionalAnalyses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cleanrooms_json_str(x3))
+        parts.append("\"allowedAdditionalAnalyses\":" + cleanrooms_json_arr(e3))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAssociationAnalysisRuleList to a compact JSON object (declaration order).
+def configured_table_association_analysis_rule_list_to_json(ConfiguredTableAssociationAnalysisRuleList v) -> str:
+    list[str] parts = []
+    if v.allowedResultReceivers.is_some():
+        auto u0 = v.allowedResultReceivers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cleanrooms_json_str(x1))
+        parts.append("\"allowedResultReceivers\":" + cleanrooms_json_arr(e1))
+    if v.allowedAdditionalAnalyses.is_some():
+        auto u2 = v.allowedAdditionalAnalyses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cleanrooms_json_str(x3))
+        parts.append("\"allowedAdditionalAnalyses\":" + cleanrooms_json_arr(e3))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAssociationAnalysisRulePolicy to a compact JSON object (declaration order).
+def configured_table_association_analysis_rule_policy_to_json(ConfiguredTableAssociationAnalysisRulePolicy v) -> str:
+    list[str] parts = []
+    if v.v1.is_some():
+        auto u0 = v.v1.unwrap()
+        parts.append("\"v1\":" + configured_table_association_analysis_rule_policy_v1_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ConfiguredTableAssociationAnalysisRulePolicyV1 to a compact JSON object (declaration order).
+def configured_table_association_analysis_rule_policy_v1_to_json(ConfiguredTableAssociationAnalysisRulePolicyV1 v) -> str:
+    list[str] parts = []
+    if v.list_.is_some():
+        auto u0 = v.list_.unwrap()
+        parts.append("\"list\":" + configured_table_association_analysis_rule_list_to_json(u0))
+    if v.aggregation.is_some():
+        auto u1 = v.aggregation.unwrap()
+        parts.append("\"aggregation\":" + configured_table_association_analysis_rule_aggregation_to_json(u1))
+    if v.custom.is_some():
+        auto u2 = v.custom.unwrap()
+        parts.append("\"custom\":" + configured_table_association_analysis_rule_custom_to_json(u2))
+    return cleanrooms_json_obj(parts)
+
+# Serialize DifferentialPrivacyConfiguration to a compact JSON object (declaration order).
+def differential_privacy_configuration_to_json(DifferentialPrivacyConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.columns:
+        e0.append(x0.to_json())
+    parts.append("\"columns\":" + cleanrooms_json_arr(e0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize IntermediateTableAnalysisRuleCustom to a compact JSON object (declaration order).
+def intermediate_table_analysis_rule_custom_to_json(IntermediateTableAnalysisRuleCustom v) -> str:
+    list[str] parts = []
+    if v.allowedAnalyses.is_some():
+        auto u0 = v.allowedAnalyses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cleanrooms_json_str(x1))
+        parts.append("\"allowedAnalyses\":" + cleanrooms_json_arr(e1))
+    if v.additionalAnalyses.is_some():
+        auto u2 = v.additionalAnalyses.unwrap()
+        parts.append("\"additionalAnalyses\":" + u2.to_json())
+    if v.allowedAdditionalAnalyses.is_some():
+        auto u3 = v.allowedAdditionalAnalyses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(cleanrooms_json_str(x4))
+        parts.append("\"allowedAdditionalAnalyses\":" + cleanrooms_json_arr(e4))
+    if v.allowedAnalysisProviders.is_some():
+        auto u5 = v.allowedAnalysisProviders.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(cleanrooms_json_str(x6))
+        parts.append("\"allowedAnalysisProviders\":" + cleanrooms_json_arr(e6))
+    if v.allowedResultReceivers.is_some():
+        auto u7 = v.allowedResultReceivers.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(cleanrooms_json_str(x8))
+        parts.append("\"allowedResultReceivers\":" + cleanrooms_json_arr(e8))
+    if v.differentialPrivacy.is_some():
+        auto u9 = v.differentialPrivacy.unwrap()
+        parts.append("\"differentialPrivacy\":" + differential_privacy_configuration_to_json(u9))
+    if v.disallowedOutputColumns.is_some():
+        auto u10 = v.disallowedOutputColumns.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(cleanrooms_json_str(x11))
+        parts.append("\"disallowedOutputColumns\":" + cleanrooms_json_arr(e11))
+    if v.aggregationThresholds.is_some():
+        auto u12 = v.aggregationThresholds.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(aggregation_threshold_to_json(x13))
+        parts.append("\"aggregationThresholds\":" + cleanrooms_json_arr(e13))
+    if v.comparisonControls.is_some():
+        auto u14 = v.comparisonControls.unwrap()
+        parts.append("\"comparisonControls\":" + comparison_controls_to_json(u14))
+    return cleanrooms_json_obj(parts)
+
+# Serialize IntermediateTableAnalysisRulePolicy to a compact JSON object (declaration order).
+def intermediate_table_analysis_rule_policy_to_json(IntermediateTableAnalysisRulePolicy v) -> str:
+    list[str] parts = []
+    if v.v1.is_some():
+        auto u0 = v.v1.unwrap()
+        parts.append("\"v1\":" + intermediate_table_analysis_rule_policy_v1_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize IntermediateTableAnalysisRulePolicyV1 to a compact JSON object (declaration order).
+def intermediate_table_analysis_rule_policy_v1_to_json(IntermediateTableAnalysisRulePolicyV1 v) -> str:
+    list[str] parts = []
+    if v.custom.is_some():
+        auto u0 = v.custom.unwrap()
+        parts.append("\"custom\":" + intermediate_table_analysis_rule_custom_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize IntermediateTableComputeConfiguration to a compact JSON object (declaration order).
+def intermediate_table_compute_configuration_to_json(IntermediateTableComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.queryComputeConfiguration.is_some():
+        auto u0 = v.queryComputeConfiguration.unwrap()
+        parts.append("\"queryComputeConfiguration\":" + worker_compute_configuration_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize MLMemberAbilities to a compact JSON object (declaration order).
+def ml_member_abilities_to_json(MLMemberAbilities v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.customMLMemberAbilities:
+        e0.append(x0.to_json())
+    parts.append("\"customMLMemberAbilities\":" + cleanrooms_json_arr(e0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize MLSyntheticDataParameters to a compact JSON object (declaration order).
+def ml_synthetic_data_parameters_to_json(MLSyntheticDataParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"epsilon\":" + str(v.epsilon))
+    parts.append("\"maxMembershipInferenceAttackScore\":" + str(v.maxMembershipInferenceAttackScore))
+    parts.append("\"columnClassification\":" + column_classification_details_to_json(v.columnClassification))
+    return cleanrooms_json_obj(parts)
+
+# Serialize MemberChangeSpecification to a compact JSON object (declaration order).
+def member_change_specification_to_json(MemberChangeSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"accountId\":" + cleanrooms_json_str(v.accountId))
+    list[str] e0 = []
+    for x0 in v.memberAbilities:
+        e0.append(x0.to_json())
+    parts.append("\"memberAbilities\":" + cleanrooms_json_arr(e0))
+    if v.mlMemberAbilities.is_some():
+        auto u1 = v.mlMemberAbilities.unwrap()
+        parts.append("\"mlMemberAbilities\":" + ml_member_abilities_to_json(u1))
+    if v.paymentConfiguration.is_some():
+        auto u2 = v.paymentConfiguration.unwrap()
+        parts.append("\"paymentConfiguration\":" + u2.to_json())
+    if v.displayName.is_some():
+        auto u3 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + cleanrooms_json_str(u3))
+    return cleanrooms_json_obj(parts)
+
+# Serialize MemberSpecification to a compact JSON object (declaration order).
+def member_specification_to_json(MemberSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"accountId\":" + cleanrooms_json_str(v.accountId))
+    list[str] e0 = []
+    for x0 in v.memberAbilities:
+        e0.append(x0.to_json())
+    parts.append("\"memberAbilities\":" + cleanrooms_json_arr(e0))
+    if v.mlMemberAbilities.is_some():
+        auto u1 = v.mlMemberAbilities.unwrap()
+        parts.append("\"mlMemberAbilities\":" + ml_member_abilities_to_json(u1))
+    parts.append("\"displayName\":" + cleanrooms_json_str(v.displayName))
+    if v.paymentConfiguration.is_some():
+        auto u2 = v.paymentConfiguration.unwrap()
+        parts.append("\"paymentConfiguration\":" + u2.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize PrivacyBudgetTemplateParametersInput to a compact JSON object (declaration order).
+def privacy_budget_template_parameters_input_to_json(PrivacyBudgetTemplateParametersInput v) -> str:
+    list[str] parts = []
+    if v.differentialPrivacy.is_some():
+        auto u0 = v.differentialPrivacy.unwrap()
+        parts.append("\"differentialPrivacy\":" + u0.to_json())
+    if v.accessBudget.is_some():
+        auto u1 = v.accessBudget.unwrap()
+        parts.append("\"accessBudget\":" + access_budgets_privacy_template_parameters_input_to_json(u1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize PrivacyBudgetTemplateUpdateParameters to a compact JSON object (declaration order).
+def privacy_budget_template_update_parameters_to_json(PrivacyBudgetTemplateUpdateParameters v) -> str:
+    list[str] parts = []
+    if v.differentialPrivacy.is_some():
+        auto u0 = v.differentialPrivacy.unwrap()
+        parts.append("\"differentialPrivacy\":" + u0.to_json())
+    if v.accessBudget.is_some():
+        auto u1 = v.accessBudget.unwrap()
+        parts.append("\"accessBudget\":" + access_budgets_privacy_template_update_parameters_to_json(u1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedJobComputeConfiguration to a compact JSON object (declaration order).
+def protected_job_compute_configuration_to_json(ProtectedJobComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.worker.is_some():
+        auto u0 = v.worker.unwrap()
+        parts.append("\"worker\":" + protected_job_worker_compute_configuration_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedJobParameters to a compact JSON object (declaration order).
+def protected_job_parameters_to_json(ProtectedJobParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"analysisTemplateArn\":" + cleanrooms_json_str(v.analysisTemplateArn))
+    if v.parameters.is_some():
+        auto u0 = v.parameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cleanrooms_json_str(k1) + ":" + cleanrooms_json_str(u0[k1]))
+        parts.append("\"parameters\":" + cleanrooms_json_obj(m1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedJobWorkerComputeConfiguration to a compact JSON object (declaration order).
+def protected_job_worker_compute_configuration_to_json(ProtectedJobWorkerComputeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"number\":" + str(v.number))
+    if v.properties.is_some():
+        auto u0 = v.properties.unwrap()
+        parts.append("\"properties\":" + worker_compute_configuration_properties_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedQueryDistributeOutputConfiguration to a compact JSON object (declaration order).
+def protected_query_distribute_output_configuration_to_json(ProtectedQueryDistributeOutputConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.locations:
+        e0.append(x0.to_json())
+    parts.append("\"locations\":" + cleanrooms_json_arr(e0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedQueryOutputConfiguration to a compact JSON object (declaration order).
+def protected_query_output_configuration_to_json(ProtectedQueryOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.s3.is_some():
+        auto u0 = v.s3.unwrap()
+        parts.append("\"s3\":" + u0.to_json())
+    if v.member.is_some():
+        auto u1 = v.member.unwrap()
+        parts.append("\"member\":" + u1.to_json())
+    if v.distribute.is_some():
+        auto u2 = v.distribute.unwrap()
+        parts.append("\"distribute\":" + protected_query_distribute_output_configuration_to_json(u2))
+    if v.intermediateTable.is_some():
+        auto u3 = v.intermediateTable.unwrap()
+        parts.append("\"intermediateTable\":" + u3.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedQueryResultConfiguration to a compact JSON object (declaration order).
+def protected_query_result_configuration_to_json(ProtectedQueryResultConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"outputConfiguration\":" + protected_query_output_configuration_to_json(v.outputConfiguration))
+    return cleanrooms_json_obj(parts)
+
+# Serialize ProtectedQuerySQLParameters to a compact JSON object (declaration order).
+def protected_query_sql_parameters_to_json(ProtectedQuerySQLParameters v) -> str:
+    list[str] parts = []
+    if v.queryString.is_some():
+        auto u0 = v.queryString.unwrap()
+        parts.append("\"queryString\":" + cleanrooms_json_str(u0))
+    if v.analysisTemplateArn.is_some():
+        auto u1 = v.analysisTemplateArn.unwrap()
+        parts.append("\"analysisTemplateArn\":" + cleanrooms_json_str(u1))
+    if v.parameters.is_some():
+        auto u2 = v.parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cleanrooms_json_str(k3) + ":" + cleanrooms_json_str(u2[k3]))
+        parts.append("\"parameters\":" + cleanrooms_json_obj(m3))
+    return cleanrooms_json_obj(parts)
+
+# Serialize SnowflakeTableReference to a compact JSON object (declaration order).
+def snowflake_table_reference_to_json(SnowflakeTableReference v) -> str:
+    list[str] parts = []
+    parts.append("\"secretArn\":" + cleanrooms_json_str(v.secretArn))
+    parts.append("\"accountIdentifier\":" + cleanrooms_json_str(v.accountIdentifier))
+    parts.append("\"databaseName\":" + cleanrooms_json_str(v.databaseName))
+    parts.append("\"tableName\":" + cleanrooms_json_str(v.tableName))
+    parts.append("\"schemaName\":" + cleanrooms_json_str(v.schemaName))
+    parts.append("\"tableSchema\":" + snowflake_table_schema_to_json(v.tableSchema))
+    return cleanrooms_json_obj(parts)
+
+# Serialize SnowflakeTableSchema to a compact JSON object (declaration order).
+def snowflake_table_schema_to_json(SnowflakeTableSchema v) -> str:
+    list[str] parts = []
+    if v.v1.is_some():
+        auto u0 = v.v1.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"v1\":" + cleanrooms_json_arr(e1))
+    return cleanrooms_json_obj(parts)
+
+# Serialize SyntheticDataParameters to a compact JSON object (declaration order).
+def synthetic_data_parameters_to_json(SyntheticDataParameters v) -> str:
+    list[str] parts = []
+    if v.mlSyntheticDataParameters.is_some():
+        auto u0 = v.mlSyntheticDataParameters.unwrap()
+        parts.append("\"mlSyntheticDataParameters\":" + ml_synthetic_data_parameters_to_json(u0))
+    return cleanrooms_json_obj(parts)
+
+# Serialize TableReference to a compact JSON object (declaration order).
+def table_reference_to_json(TableReference v) -> str:
+    list[str] parts = []
+    if v.glue.is_some():
+        auto u0 = v.glue.unwrap()
+        parts.append("\"glue\":" + u0.to_json())
+    if v.snowflake.is_some():
+        auto u1 = v.snowflake.unwrap()
+        parts.append("\"snowflake\":" + snowflake_table_reference_to_json(u1))
+    if v.athena.is_some():
+        auto u2 = v.athena.unwrap()
+        parts.append("\"athena\":" + u2.to_json())
+    if v.databricks.is_some():
+        auto u3 = v.databricks.unwrap()
+        parts.append("\"databricks\":" + u3.to_json())
+    return cleanrooms_json_obj(parts)
+
+# Serialize WorkerComputeConfiguration to a compact JSON object (declaration order).
+def worker_compute_configuration_to_json(WorkerComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.number.is_some():
+        auto u1 = v.number.unwrap()
+        parts.append("\"number\":" + str(u1))
+    if v.properties.is_some():
+        auto u2 = v.properties.unwrap()
+        parts.append("\"properties\":" + worker_compute_configuration_properties_to_json(u2))
+    return cleanrooms_json_obj(parts)
+
+# Serialize WorkerComputeConfigurationProperties to a compact JSON object (declaration order).
+def worker_compute_configuration_properties_to_json(WorkerComputeConfigurationProperties v) -> str:
+    list[str] parts = []
+    if v.spark.is_some():
+        auto u0 = v.spark.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cleanrooms_json_str(k1) + ":" + cleanrooms_json_str(u0[k1]))
+        parts.append("\"spark\":" + cleanrooms_json_obj(m1))
+    return cleanrooms_json_obj(parts)
+
 # A bound CleanRooms client: credentials + region, threaded into every operation.
 struct CleanRoomsClient:
     core.Credentials creds
     str region
+
+    # BatchGetCollaborationAnalysisTemplate  POST /collaborations/{collaborationIdentifier}/batch-analysistemplates
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_collaboration_analysis_template(self, BatchGetCollaborationAnalysisTemplateInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["collaborationIdentifier"] = input.collaborationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-analysistemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.analysisTemplateArns:
+            e0.append(cleanrooms_json_str(x0))
+        parts.append("\"analysisTemplateArns\":" + cleanrooms_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # BatchGetSchema  POST /collaborations/{collaborationIdentifier}/batch-schema
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_schema(self, BatchGetSchemaInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["collaborationIdentifier"] = input.collaborationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-schema", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.names:
+            e0.append(cleanrooms_json_str(x0))
+        parts.append("\"names\":" + cleanrooms_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # BatchGetSchemaAnalysisRule  POST /collaborations/{collaborationIdentifier}/batch-schema-analysis-rule
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_schema_analysis_rule(self, BatchGetSchemaAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["collaborationIdentifier"] = input.collaborationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-schema-analysis-rule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.schemaAnalysisRuleRequests:
+            e0.append(x0.to_json())
+        parts.append("\"schemaAnalysisRuleRequests\":" + cleanrooms_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateAnalysisTemplate  POST /memberships/{membershipIdentifier}/analysistemplates
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_analysis_template(self, CreateAnalysisTemplateInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u0))
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        parts.append("\"format\":" + input.format.to_json())
+        parts.append("\"source\":" + analysis_source_to_json(input.source))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(cleanrooms_json_str(k2) + ":" + cleanrooms_json_str(u1[k2]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m2))
+        if input.analysisParameters.is_some():
+            auto u3 = input.analysisParameters.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"analysisParameters\":" + cleanrooms_json_arr(e4))
+        if input.schema.is_some():
+            auto u5 = input.schema.unwrap()
+            parts.append("\"schema\":" + analysis_schema_to_json(u5))
+        if input.errorMessageConfiguration.is_some():
+            auto u6 = input.errorMessageConfiguration.unwrap()
+            parts.append("\"errorMessageConfiguration\":" + u6.to_json())
+        if input.syntheticDataParameters.is_some():
+            auto u7 = input.syntheticDataParameters.unwrap()
+            parts.append("\"syntheticDataParameters\":" + synthetic_data_parameters_to_json(u7))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateCollaboration  POST /collaborations
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_collaboration(self, CreateCollaborationInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.members:
+            e0.append(member_specification_to_json(x0))
+        parts.append("\"members\":" + cleanrooms_json_arr(e0))
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.creatorMemberAbilities:
+            e2.append(x2.to_json())
+        parts.append("\"creatorMemberAbilities\":" + cleanrooms_json_arr(e2))
+        if input.creatorMLMemberAbilities.is_some():
+            auto u3 = input.creatorMLMemberAbilities.unwrap()
+            parts.append("\"creatorMLMemberAbilities\":" + ml_member_abilities_to_json(u3))
+        parts.append("\"creatorDisplayName\":" + cleanrooms_json_str(input.creatorDisplayName))
+        if input.dataEncryptionMetadata.is_some():
+            auto u4 = input.dataEncryptionMetadata.unwrap()
+            parts.append("\"dataEncryptionMetadata\":" + u4.to_json())
+        parts.append("\"queryLogStatus\":" + input.queryLogStatus.to_json())
+        if input.jobLogStatus.is_some():
+            auto u5 = input.jobLogStatus.unwrap()
+            parts.append("\"jobLogStatus\":" + u5.to_json())
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(cleanrooms_json_str(k7) + ":" + cleanrooms_json_str(u6[k7]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m7))
+        if input.creatorPaymentConfiguration.is_some():
+            auto u8 = input.creatorPaymentConfiguration.unwrap()
+            parts.append("\"creatorPaymentConfiguration\":" + u8.to_json())
+        if input.analyticsEngine.is_some():
+            auto u9 = input.analyticsEngine.unwrap()
+            parts.append("\"analyticsEngine\":" + u9.to_json())
+        if input.autoApprovedChangeRequestTypes.is_some():
+            auto u10 = input.autoApprovedChangeRequestTypes.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"autoApprovedChangeRequestTypes\":" + cleanrooms_json_arr(e11))
+        if input.allowedResultRegions.is_some():
+            auto u12 = input.allowedResultRegions.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"allowedResultRegions\":" + cleanrooms_json_arr(e13))
+        if input.isMetricsEnabled.is_some():
+            auto u14 = input.isMetricsEnabled.unwrap()
+            parts.append("\"isMetricsEnabled\":" + json.dumps(JsonValue.Bool(u14)))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateCollaborationChangeRequest  POST /collaborations/{collaborationIdentifier}/changeRequests
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_collaboration_change_request(self, CreateCollaborationChangeRequestInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["collaborationIdentifier"] = input.collaborationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/changeRequests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.changes:
+            e0.append(change_input_to_json(x0))
+        parts.append("\"changes\":" + cleanrooms_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateConfiguredAudienceModelAssociation  POST /memberships/{membershipIdentifier}/configuredaudiencemodelassociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_audience_model_association(self, CreateConfiguredAudienceModelAssociationInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"configuredAudienceModelArn\":" + cleanrooms_json_str(input.configuredAudienceModelArn))
+        parts.append("\"configuredAudienceModelAssociationName\":" + cleanrooms_json_str(input.configuredAudienceModelAssociationName))
+        parts.append("\"manageResourcePolicies\":" + json.dumps(JsonValue.Bool(input.manageResourcePolicies)))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(cleanrooms_json_str(k1) + ":" + cleanrooms_json_str(u0[k1]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u2))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateConfiguredTable  POST /configuredTables
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_table(self, CreateConfiguredTableInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configuredTables", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u0))
+        parts.append("\"tableReference\":" + table_reference_to_json(input.tableReference))
+        list[str] e1 = []
+        for x1 in input.allowedColumns:
+            e1.append(cleanrooms_json_str(x1))
+        parts.append("\"allowedColumns\":" + cleanrooms_json_arr(e1))
+        parts.append("\"analysisMethod\":" + input.analysisMethod.to_json())
+        if input.selectedAnalysisMethods.is_some():
+            auto u2 = input.selectedAnalysisMethods.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"selectedAnalysisMethods\":" + cleanrooms_json_arr(e3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(cleanrooms_json_str(k5) + ":" + cleanrooms_json_str(u4[k5]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateConfiguredTableAnalysisRule  POST /configuredTables/{configuredTableIdentifier}/analysisRule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_table_analysis_rule(self, CreateConfiguredTableAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["configuredTableIdentifier"] = input.configuredTableIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analysisRuleType\":" + input.analysisRuleType.to_json())
+        parts.append("\"analysisRulePolicy\":" + configured_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateConfiguredTableAssociation  POST /memberships/{membershipIdentifier}/configuredTableAssociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_table_association(self, CreateConfiguredTableAssociationInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u0))
+        parts.append("\"configuredTableIdentifier\":" + cleanrooms_json_str(input.configuredTableIdentifier))
+        parts.append("\"roleArn\":" + cleanrooms_json_str(input.roleArn))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(cleanrooms_json_str(k2) + ":" + cleanrooms_json_str(u1[k2]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateConfiguredTableAssociationAnalysisRule  POST /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_configured_table_association_analysis_rule(self, CreateConfiguredTableAssociationAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analysisRuleType\":" + input.analysisRuleType.to_json())
+        parts.append("\"analysisRulePolicy\":" + configured_table_association_analysis_rule_policy_to_json(input.analysisRulePolicy))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateIdMappingTable  POST /memberships/{membershipIdentifier}/idmappingtables
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_id_mapping_table(self, CreateIdMappingTableInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idmappingtables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u0))
+        parts.append("\"inputReferenceConfig\":" + input.inputReferenceConfig.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(cleanrooms_json_str(k2) + ":" + cleanrooms_json_str(u1[k2]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m2))
+        if input.kmsKeyArn.is_some():
+            auto u3 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_json_str(u3))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateIdNamespaceAssociation  POST /memberships/{membershipIdentifier}/idnamespaceassociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_id_namespace_association(self, CreateIdNamespaceAssociationInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"inputReferenceConfig\":" + input.inputReferenceConfig.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(cleanrooms_json_str(k1) + ":" + cleanrooms_json_str(u0[k1]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m1))
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u2))
+        if input.idMappingConfig.is_some():
+            auto u3 = input.idMappingConfig.unwrap()
+            parts.append("\"idMappingConfig\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateIntermediateTable  POST /memberships/{membershipIdentifier}/intermediateTables
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_intermediate_table(self, CreateIntermediateTableInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u0))
+        parts.append("\"populationAnalysisConfiguration\":" + input.populationAnalysisConfiguration.to_json())
+        if input.kmsKeyArn.is_some():
+            auto u1 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_json_str(u1))
+        if input.retentionInDays.is_some():
+            auto u2 = input.retentionInDays.unwrap()
+            parts.append("\"retentionInDays\":" + str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(cleanrooms_json_str(k4) + ":" + cleanrooms_json_str(u3[k4]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateIntermediateTableAnalysisRule  POST /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_intermediate_table_analysis_rule(self, CreateIntermediateTableAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analysisRuleType\":" + cleanrooms_json_str(input.analysisRuleType))
+        parts.append("\"analysisRulePolicy\":" + intermediate_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreateMembership  POST /memberships
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_membership(self, CreateMembershipInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"collaborationIdentifier\":" + cleanrooms_json_str(input.collaborationIdentifier))
+        parts.append("\"queryLogStatus\":" + input.queryLogStatus.to_json())
+        if input.jobLogStatus.is_some():
+            auto u0 = input.jobLogStatus.unwrap()
+            parts.append("\"jobLogStatus\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(cleanrooms_json_str(k2) + ":" + cleanrooms_json_str(u1[k2]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m2))
+        if input.defaultResultConfiguration.is_some():
+            auto u3 = input.defaultResultConfiguration.unwrap()
+            parts.append("\"defaultResultConfiguration\":" + u3.to_json())
+        if input.defaultJobResultConfiguration.is_some():
+            auto u4 = input.defaultJobResultConfiguration.unwrap()
+            parts.append("\"defaultJobResultConfiguration\":" + u4.to_json())
+        if input.paymentConfiguration.is_some():
+            auto u5 = input.paymentConfiguration.unwrap()
+            parts.append("\"paymentConfiguration\":" + u5.to_json())
+        if input.isMetricsEnabled.is_some():
+            auto u6 = input.isMetricsEnabled.unwrap()
+            parts.append("\"isMetricsEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # CreatePrivacyBudgetTemplate  POST /memberships/{membershipIdentifier}/privacybudgettemplates
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_privacy_budget_template(self, CreatePrivacyBudgetTemplateInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.autoRefresh.is_some():
+            auto u0 = input.autoRefresh.unwrap()
+            parts.append("\"autoRefresh\":" + u0.to_json())
+        parts.append("\"privacyBudgetType\":" + input.privacyBudgetType.to_json())
+        parts.append("\"parameters\":" + privacy_budget_template_parameters_input_to_json(input.parameters))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(cleanrooms_json_str(k2) + ":" + cleanrooms_json_str(u1[k2]))
+            parts.append("\"tags\":" + cleanrooms_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
     # DeleteAnalysisTemplate  DELETE /memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -4676,6 +5942,30 @@ struct CleanRoomsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
+    # PopulateIntermediateTable  POST /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/populate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def populate_intermediate_table(self, PopulateIntermediateTableInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/populate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(cleanrooms_json_str(k1) + ":" + cleanrooms_json_str(u0[k1]))
+            parts.append("\"parameters\":" + cleanrooms_json_obj(m1))
+        if input.computeConfiguration.is_some():
+            auto u2 = input.computeConfiguration.unwrap()
+            parts.append("\"computeConfiguration\":" + intermediate_table_compute_configuration_to_json(u2))
+        if input.analysisPayerAccountId.is_some():
+            auto u3 = input.analysisPayerAccountId.unwrap()
+            parts.append("\"analysisPayerAccountId\":" + cleanrooms_json_str(u3))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
     # PreviewPrivacyImpact  POST /memberships/{membershipIdentifier}/previewprivacyimpact
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def preview_privacy_impact(self, PreviewPrivacyImpactInput input) -> str:
@@ -4696,6 +5986,65 @@ struct CleanRoomsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/analysislogexports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartAnalysisLogExportDocument(analysisId=input.analysisId, analysisType=input.analysisType, resultConfiguration=input.resultConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # StartProtectedJob  POST /memberships/{membershipIdentifier}/protectedJobs
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_protected_job(self, StartProtectedJobInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/protectedJobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + cleanrooms_json_str(input.type))
+        parts.append("\"jobParameters\":" + protected_job_parameters_to_json(input.jobParameters))
+        if input.resultConfiguration.is_some():
+            auto u0 = input.resultConfiguration.unwrap()
+            parts.append("\"resultConfiguration\":" + u0.to_json())
+        if input.computeConfiguration.is_some():
+            auto u1 = input.computeConfiguration.unwrap()
+            parts.append("\"computeConfiguration\":" + protected_job_compute_configuration_to_json(u1))
+        if input.jobComputePayerAccountId.is_some():
+            auto u2 = input.jobComputePayerAccountId.unwrap()
+            parts.append("\"jobComputePayerAccountId\":" + cleanrooms_json_str(u2))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # StartProtectedQuery  POST /memberships/{membershipIdentifier}/protectedQueries
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_protected_query(self, StartProtectedQueryInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/protectedQueries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + cleanrooms_json_str(input.type))
+        parts.append("\"sqlParameters\":" + protected_query_sql_parameters_to_json(input.sqlParameters))
+        if input.resultConfiguration.is_some():
+            auto u0 = input.resultConfiguration.unwrap()
+            parts.append("\"resultConfiguration\":" + protected_query_result_configuration_to_json(u0))
+        if input.computeConfiguration.is_some():
+            auto u1 = input.computeConfiguration.unwrap()
+            parts.append("\"computeConfiguration\":" + compute_configuration_to_json(u1))
+        if input.queryComputePayerAccountId.is_some():
+            auto u2 = input.queryComputePayerAccountId.unwrap()
+            parts.append("\"queryComputePayerAccountId\":" + cleanrooms_json_str(u2))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(cleanrooms_json_str(k0) + ":" + cleanrooms_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + cleanrooms_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
     # UpdateAnalysisTemplate  PATCH /memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}
@@ -4745,6 +6094,54 @@ struct CleanRoomsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
+    # UpdateConfiguredTable  PATCH /configuredTables/{configuredTableIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_configured_table(self, UpdateConfiguredTableInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["configuredTableIdentifier"] = input.configuredTableIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + cleanrooms_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u1))
+        if input.tableReference.is_some():
+            auto u2 = input.tableReference.unwrap()
+            parts.append("\"tableReference\":" + table_reference_to_json(u2))
+        if input.allowedColumns.is_some():
+            auto u3 = input.allowedColumns.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(cleanrooms_json_str(x4))
+            parts.append("\"allowedColumns\":" + cleanrooms_json_arr(e4))
+        if input.analysisMethod.is_some():
+            auto u5 = input.analysisMethod.unwrap()
+            parts.append("\"analysisMethod\":" + u5.to_json())
+        if input.selectedAnalysisMethods.is_some():
+            auto u6 = input.selectedAnalysisMethods.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"selectedAnalysisMethods\":" + cleanrooms_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # UpdateConfiguredTableAnalysisRule  PATCH /configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_configured_table_analysis_rule(self, UpdateConfiguredTableAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["configuredTableIdentifier"] = input.configuredTableIdentifier
+        labels["analysisRuleType"] = input.analysisRuleType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analysisRulePolicy\":" + configured_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
     # UpdateConfiguredTableAssociation  PATCH /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_configured_table_association(self, UpdateConfiguredTableAssociationInput input) -> str:
@@ -4755,6 +6152,20 @@ struct CleanRoomsClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfiguredTableAssociationDocument(description=input.description, roleArn=input.roleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # UpdateConfiguredTableAssociationAnalysisRule  PATCH /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_configured_table_association_analysis_rule(self, UpdateConfiguredTableAssociationAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        labels["analysisRuleType"] = input.analysisRuleType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analysisRulePolicy\":" + configured_table_association_analysis_rule_policy_to_json(input.analysisRulePolicy))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
     # UpdateIdMappingTable  PATCH /memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}
@@ -4781,6 +6192,44 @@ struct CleanRoomsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
+    # UpdateIntermediateTable  PATCH /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_intermediate_table(self, UpdateIntermediateTableInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_json_str(u0))
+        if input.kmsKeyArn.is_some():
+            auto u1 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_json_str(u1))
+        if input.columns.is_some():
+            auto u2 = input.columns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"columns\":" + cleanrooms_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # UpdateIntermediateTableAnalysisRule  PATCH /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_intermediate_table_analysis_rule(self, UpdateIntermediateTableAnalysisRuleInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
+        labels["analysisRuleType"] = input.analysisRuleType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analysisRulePolicy\":" + intermediate_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
     # UpdateMembership  PATCH /memberships/{membershipIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_membership(self, UpdateMembershipInput input) -> str:
@@ -4790,6 +6239,22 @@ struct CleanRoomsClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMembershipDocument(queryLogStatus=input.queryLogStatus, jobLogStatus=input.jobLogStatus, defaultResultConfiguration=input.defaultResultConfiguration, defaultJobResultConfiguration=input.defaultJobResultConfiguration, membershipPaymentConfiguration=input.membershipPaymentConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
+
+    # UpdatePrivacyBudgetTemplate  PATCH /memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_privacy_budget_template(self, UpdatePrivacyBudgetTemplateInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        labels["privacyBudgetTemplateIdentifier"] = input.privacyBudgetTemplateIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"privacyBudgetType\":" + input.privacyBudgetType.to_json())
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            parts.append("\"parameters\":" + privacy_budget_template_update_parameters_to_json(u0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
     # UpdateProtectedJob  PATCH /memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}

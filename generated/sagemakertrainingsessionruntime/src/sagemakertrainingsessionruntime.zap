@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 4 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   50 structs (27 @derive(Json)), 3 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -78,14 +78,16 @@ struct AdamParamsConfig:
     Optional[float64] gradClipNorm
     Optional[float64] loraPlusLrRatio
 
-# no @derive(Json): member(s) prompt: ModelInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) prompt: ModelInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeLogprobsConfig:
     ModelInput prompt
     Optional[str] modelPackageArn
 
-# no @derive(Json): member(s) logprobs: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logprobs: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeLogprobsResult:
     list[float64] logprobs
 
@@ -93,8 +95,9 @@ struct ComputeLogprobsResult:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) modelInput: ModelInput, lossFnInputs: dict[str, TensorData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelInput: ModelInput, lossFnInputs: dict[str, TensorData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Datum:
     ModelInput modelInput
     Optional[dict[str, TensorData]] lossFnInputs
@@ -104,8 +107,9 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tokens: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokens: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncodedTextChunk:
     list[int64] tokens
     str type
@@ -132,30 +136,34 @@ struct ExecuteTrainingOperationInput:
 struct ExecuteTrainingOperationOutput:
     str operationId
 
-# no @derive(Json): member(s) datumList: list[Datum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datumList: list[Datum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForwardBackwardConfig:
     LossFnName lossFnName
     list[Datum] datumList
     Optional[Document] lossFnConfig
 
-# no @derive(Json): member(s) lossFnOutputs: list[dict[str, TensorData]], metrics: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lossFnOutputs: list[dict[str, TensorData]], metrics: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForwardBackwardResult:
     Optional[str] lossFnOutputType
     Optional[list[dict[str, TensorData]]] lossFnOutputs
     Optional[dict[str, float64]] metrics
     Optional[TrainingTokenUsage] tokenUsage
 
-# no @derive(Json): member(s) datumList: list[Datum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datumList: list[Datum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForwardConfig:
     LossFnName lossFnName
     list[Datum] datumList
     Optional[Document] lossFnConfig
 
-# no @derive(Json): member(s) lossFnOutputs: list[dict[str, TensorData]], metrics: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lossFnOutputs: list[dict[str, TensorData]], metrics: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForwardResult:
     Optional[str] lossFnOutputType
     Optional[list[dict[str, TensorData]]] lossFnOutputs
@@ -168,8 +176,9 @@ struct GetSamplingOperationResultInput:
     str trainingSessionName
     str operationId
 
-# no @derive(Json): member(s) operationResult: SampleOperationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operationResult: SampleOperationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSamplingOperationResultOutput:
     RequestStatus status
     Optional[SampleOperationResult] operationResult
@@ -181,8 +190,9 @@ struct GetTrainingOperationResultInput:
     str trainingSessionName
     str operationId
 
-# no @derive(Json): member(s) operationResult: OperationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operationResult: OperationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrainingOperationResultOutput:
     RequestStatus status
     Optional[OperationResult] operationResult
@@ -212,13 +222,15 @@ struct LoadWeightsForSamplingResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) chunks: list[EncodedTextChunk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) chunks: list[EncodedTextChunk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelInput:
     list[EncodedTextChunk] chunks
 
-# no @derive(Json): member(s) forward: ForwardConfig, forwardBackward: ForwardBackwardConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forward: ForwardConfig, forwardBackward: ForwardBackwardConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OperationConfig:
     Optional[ForwardConfig] forward
     Optional[ForwardBackwardConfig] forwardBackward
@@ -227,8 +239,9 @@ struct OperationConfig:
     Optional[SaveStateConfig] saveState
     Optional[LoadStateConfig] loadState
 
-# no @derive(Json): member(s) forward: ForwardResult, forwardBackward: ForwardBackwardResult, optimizerStep: OptimizerStepResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forward: ForwardResult, forwardBackward: ForwardBackwardResult, optimizerStep: OptimizerStepResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OperationResult:
     Optional[ForwardResult] forward
     Optional[ForwardBackwardResult] forwardBackward
@@ -241,8 +254,9 @@ struct OperationResult:
 struct OptimizerStepConfig:
     AdamParamsConfig adamParamsConfig
 
-# no @derive(Json): member(s) metrics: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metrics: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OptimizerStepResult:
     Optional[dict[str, float64]] metrics
 
@@ -250,8 +264,9 @@ struct OptimizerStepResult:
 struct ResourceNotFoundException:
     str message
 
-# no @derive(Json): member(s) prompt: ModelInput, samplingParams: SamplingParams not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) prompt: ModelInput, samplingParams: SamplingParams not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampleConfig:
     ModelInput prompt
     int64 numSamples
@@ -260,22 +275,25 @@ struct SampleConfig:
     Optional[int64] topkPromptLogprobs
     Optional[str] modelPackageArn
 
-# no @derive(Json): member(s) sample: SampleConfig, computeLogprobs: ComputeLogprobsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sample: SampleConfig, computeLogprobs: ComputeLogprobsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampleOperationConfig:
     Optional[SampleConfig] sample
     Optional[ComputeLogprobsConfig] computeLogprobs
     Optional[LoadWeightsForSamplingConfig] loadWeightsForSampling
 
-# no @derive(Json): member(s) sample: SampleResponse, computeLogprobs: ComputeLogprobsResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sample: SampleResponse, computeLogprobs: ComputeLogprobsResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampleOperationResult:
     Optional[SampleResponse] sample
     Optional[ComputeLogprobsResult] computeLogprobs
     Optional[LoadWeightsForSamplingResult] loadWeightsForSampling
 
-# no @derive(Json): member(s) sequences: list[SampledSequence], promptLogprobs: list[float64], topkPromptLogprobs: list[list[TokenLogprob]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sequences: list[SampledSequence], promptLogprobs: list[float64], topkPromptLogprobs: list[list[TokenLogprob]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampleResponse:
     list[SampledSequence] sequences
     Optional[list[float64]] promptLogprobs
@@ -314,16 +332,18 @@ struct SampleTrainingSessionWithResponseStreamOutput:
     Optional[str] contentType
     bytes body
 
-# no @derive(Json): member(s) tokens: list[int64], logprobs: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokens: list[int64], logprobs: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampledSequence:
     StopReason stopReason
     list[int64] tokens
     Optional[list[float64]] logprobs
     Optional[SampleTokenUsage] tokenUsage
 
-# no @derive(Json): member(s) stop: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stop: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SamplingParams:
     int64 maxTokens
     Optional[float64] temperature
@@ -349,8 +369,9 @@ struct SaveWeightsConfig:
 struct SaveWeightsResult:
     Optional[str] modelPackageArn
 
-# no @derive(Json): member(s) shape: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) shape: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TensorData:
     Document data
     str dtype
@@ -402,16 +423,225 @@ def training_session_runtime_sagemaker_error_from_code(str code) -> SageMakerTra
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ExecuteSamplingOperation (document member `operationConfig: SampleOperationConfig` is not serializable by derive)
-#   ExecuteTrainingOperation (document member `operationConfig: OperationConfig` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def training_session_runtime_sagemaker_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def training_session_runtime_sagemaker_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def training_session_runtime_sagemaker_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ComputeLogprobsConfig to a compact JSON object (declaration order).
+def compute_logprobs_config_to_json(ComputeLogprobsConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"prompt\":" + model_input_to_json(v.prompt))
+    if v.modelPackageArn.is_some():
+        auto u0 = v.modelPackageArn.unwrap()
+        parts.append("\"modelPackageArn\":" + training_session_runtime_sagemaker_json_str(u0))
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize Datum to a compact JSON object (declaration order).
+def datum_to_json(Datum v) -> str:
+    list[str] parts = []
+    parts.append("\"modelInput\":" + model_input_to_json(v.modelInput))
+    if v.lossFnInputs.is_some():
+        auto u0 = v.lossFnInputs.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(training_session_runtime_sagemaker_json_str(k1) + ":" + tensor_data_to_json(u0[k1]))
+        parts.append("\"lossFnInputs\":" + training_session_runtime_sagemaker_json_obj(m1))
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize EncodedTextChunk to a compact JSON object (declaration order).
+def encoded_text_chunk_to_json(EncodedTextChunk v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.tokens:
+        e0.append(str(x0))
+    parts.append("\"tokens\":" + training_session_runtime_sagemaker_json_arr(e0))
+    parts.append("\"type\":" + training_session_runtime_sagemaker_json_str(v.type))
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize ForwardBackwardConfig to a compact JSON object (declaration order).
+def forward_backward_config_to_json(ForwardBackwardConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"lossFnName\":" + v.lossFnName.to_json())
+    list[str] e0 = []
+    for x0 in v.datumList:
+        e0.append(datum_to_json(x0))
+    parts.append("\"datumList\":" + training_session_runtime_sagemaker_json_arr(e0))
+    if v.lossFnConfig.is_some():
+        auto u1 = v.lossFnConfig.unwrap()
+        parts.append("\"lossFnConfig\":" + u1.to_json())
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize ForwardConfig to a compact JSON object (declaration order).
+def forward_config_to_json(ForwardConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"lossFnName\":" + v.lossFnName.to_json())
+    list[str] e0 = []
+    for x0 in v.datumList:
+        e0.append(datum_to_json(x0))
+    parts.append("\"datumList\":" + training_session_runtime_sagemaker_json_arr(e0))
+    if v.lossFnConfig.is_some():
+        auto u1 = v.lossFnConfig.unwrap()
+        parts.append("\"lossFnConfig\":" + u1.to_json())
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize ModelInput to a compact JSON object (declaration order).
+def model_input_to_json(ModelInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.chunks:
+        e0.append(encoded_text_chunk_to_json(x0))
+    parts.append("\"chunks\":" + training_session_runtime_sagemaker_json_arr(e0))
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize OperationConfig to a compact JSON object (declaration order).
+def operation_config_to_json(OperationConfig v) -> str:
+    list[str] parts = []
+    if v.forward.is_some():
+        auto u0 = v.forward.unwrap()
+        parts.append("\"forward\":" + forward_config_to_json(u0))
+    if v.forwardBackward.is_some():
+        auto u1 = v.forwardBackward.unwrap()
+        parts.append("\"forwardBackward\":" + forward_backward_config_to_json(u1))
+    if v.optimizerStep.is_some():
+        auto u2 = v.optimizerStep.unwrap()
+        parts.append("\"optimizerStep\":" + u2.to_json())
+    if v.saveWeights.is_some():
+        auto u3 = v.saveWeights.unwrap()
+        parts.append("\"saveWeights\":" + u3.to_json())
+    if v.saveState.is_some():
+        auto u4 = v.saveState.unwrap()
+        parts.append("\"saveState\":" + u4.to_json())
+    if v.loadState.is_some():
+        auto u5 = v.loadState.unwrap()
+        parts.append("\"loadState\":" + u5.to_json())
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize SampleConfig to a compact JSON object (declaration order).
+def sample_config_to_json(SampleConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"prompt\":" + model_input_to_json(v.prompt))
+    parts.append("\"numSamples\":" + str(v.numSamples))
+    parts.append("\"samplingParams\":" + sampling_params_to_json(v.samplingParams))
+    if v.includePromptLogprobs.is_some():
+        auto u0 = v.includePromptLogprobs.unwrap()
+        parts.append("\"includePromptLogprobs\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.topkPromptLogprobs.is_some():
+        auto u1 = v.topkPromptLogprobs.unwrap()
+        parts.append("\"topkPromptLogprobs\":" + str(u1))
+    if v.modelPackageArn.is_some():
+        auto u2 = v.modelPackageArn.unwrap()
+        parts.append("\"modelPackageArn\":" + training_session_runtime_sagemaker_json_str(u2))
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize SampleOperationConfig to a compact JSON object (declaration order).
+def sample_operation_config_to_json(SampleOperationConfig v) -> str:
+    list[str] parts = []
+    if v.sample.is_some():
+        auto u0 = v.sample.unwrap()
+        parts.append("\"sample\":" + sample_config_to_json(u0))
+    if v.computeLogprobs.is_some():
+        auto u1 = v.computeLogprobs.unwrap()
+        parts.append("\"computeLogprobs\":" + compute_logprobs_config_to_json(u1))
+    if v.loadWeightsForSampling.is_some():
+        auto u2 = v.loadWeightsForSampling.unwrap()
+        parts.append("\"loadWeightsForSampling\":" + u2.to_json())
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize SamplingParams to a compact JSON object (declaration order).
+def sampling_params_to_json(SamplingParams v) -> str:
+    list[str] parts = []
+    parts.append("\"maxTokens\":" + str(v.maxTokens))
+    if v.temperature.is_some():
+        auto u0 = v.temperature.unwrap()
+        parts.append("\"temperature\":" + str(u0))
+    if v.topK.is_some():
+        auto u1 = v.topK.unwrap()
+        parts.append("\"topK\":" + str(u1))
+    if v.topP.is_some():
+        auto u2 = v.topP.unwrap()
+        parts.append("\"topP\":" + str(u2))
+    if v.seed.is_some():
+        auto u3 = v.seed.unwrap()
+        parts.append("\"seed\":" + str(u3))
+    if v.stop.is_some():
+        auto u4 = v.stop.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(training_session_runtime_sagemaker_json_str(x5))
+        parts.append("\"stop\":" + training_session_runtime_sagemaker_json_arr(e5))
+    return training_session_runtime_sagemaker_json_obj(parts)
+
+# Serialize TensorData to a compact JSON object (declaration order).
+def tensor_data_to_json(TensorData v) -> str:
+    list[str] parts = []
+    parts.append("\"data\":" + v.data.to_json())
+    parts.append("\"dtype\":" + training_session_runtime_sagemaker_json_str(v.dtype))
+    if v.shape.is_some():
+        auto u0 = v.shape.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"shape\":" + training_session_runtime_sagemaker_json_arr(e1))
+    return training_session_runtime_sagemaker_json_obj(parts)
 
 # A bound SageMakerTrainingSessionRuntime client: credentials + region, threaded into every operation.
 struct SageMakerTrainingSessionRuntimeClient:
     core.Credentials creds
     str region
+
+    # ExecuteSamplingOperation  POST /v1/training-sessions/{trainingSessionName}/sampling-operations
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def execute_sampling_operation(self, ExecuteSamplingOperationInput input) -> str:
+        auto host = endpoints.regional_host(training_session_runtime_sagemaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["trainingSessionName"] = input.trainingSessionName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/training-sessions/{trainingSessionName}/sampling-operations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"operationConfig\":" + sample_operation_config_to_json(input.operationConfig))
+        auto bp = restjson.rest_json_document(b, training_session_runtime_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, training_session_runtime_sagemaker_service(), self.region, host)
+
+    # ExecuteTrainingOperation  POST /v1/training-sessions/{trainingSessionName}/operations
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def execute_training_operation(self, ExecuteTrainingOperationInput input) -> str:
+        auto host = endpoints.regional_host(training_session_runtime_sagemaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["trainingSessionName"] = input.trainingSessionName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/training-sessions/{trainingSessionName}/operations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sequenceNumber\":" + str(input.sequenceNumber))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + training_session_runtime_sagemaker_json_str(u0))
+        parts.append("\"operationConfig\":" + operation_config_to_json(input.operationConfig))
+        auto bp = restjson.rest_json_document(b, training_session_runtime_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, training_session_runtime_sagemaker_service(), self.region, host)
 
     # GetSamplingOperationResult  GET /v1/training-sessions/{trainingSessionName}/sampling-operations/{operationId}
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

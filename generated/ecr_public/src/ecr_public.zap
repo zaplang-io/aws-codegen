@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 14 with a generated method,
-#   9 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 23 operations — 23 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   86 structs (63 @derive(Json)), 4 enums, 24 error variants.
-#   2 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The ECR_PUBLIC awsJson protocol: version 1.1, API id "SpencerFrontendService".
 def api_ecr_public_protocol() -> awsjson.AwsJson:
@@ -76,34 +77,39 @@ struct AuthorizationData:
     Optional[str] authorizationToken
     Optional[DateTime] expiresAt
 
-# no @derive(Json): member(s) layerDigests: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) layerDigests: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCheckLayerAvailabilityRequest:
     Optional[str] registryId
     str repositoryName
     list[str] layerDigests
 
-# no @derive(Json): member(s) layers: list[Layer], failures: list[LayerFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) layers: list[Layer], failures: list[LayerFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCheckLayerAvailabilityResponse:
     Optional[list[Layer]] layers
     Optional[list[LayerFailure]] failures
 
-# no @derive(Json): member(s) imageIds: list[ImageIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageIds: list[ImageIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteImageRequest:
     Optional[str] registryId
     str repositoryName
     list[ImageIdentifier] imageIds
 
-# no @derive(Json): member(s) imageIds: list[ImageIdentifier], failures: list[ImageFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageIds: list[ImageIdentifier], failures: list[ImageFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteImageResponse:
     Optional[list[ImageIdentifier]] imageIds
     Optional[list[ImageFailure]] failures
 
-# no @derive(Json): member(s) layerDigests: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) layerDigests: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompleteLayerUploadRequest:
     Optional[str] registryId
     str repositoryName
@@ -117,15 +123,17 @@ struct CompleteLayerUploadResponse:
     Optional[str] uploadId
     Optional[str] layerDigest
 
-# no @derive(Json): member(s) catalogData: RepositoryCatalogDataInput, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) catalogData: RepositoryCatalogDataInput, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRepositoryRequest:
     str repositoryName
     Optional[RepositoryCatalogDataInput] catalogData
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) catalogData: RepositoryCatalogData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) catalogData: RepositoryCatalogData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRepositoryResponse:
     Optional[Repository] repository
     Optional[RepositoryCatalogData] catalogData
@@ -158,14 +166,16 @@ struct DescribeImageTagsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) imageTagDetails: list[ImageTagDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTagDetails: list[ImageTagDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImageTagsResponse:
     Optional[list[ImageTagDetail]] imageTagDetails
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imageIds: list[ImageIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageIds: list[ImageIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImagesRequest:
     Optional[str] registryId
     str repositoryName
@@ -173,8 +183,9 @@ struct DescribeImagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) imageDetails: list[ImageDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageDetails: list[ImageDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImagesResponse:
     Optional[list[ImageDetail]] imageDetails
     Optional[str] nextToken
@@ -184,22 +195,25 @@ struct DescribeRegistriesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) registries: list[Registry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registries: list[Registry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistriesResponse:
     list[Registry] registries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) repositoryNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositoryNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRepositoriesRequest:
     Optional[str] registryId
     Optional[list[str]] repositoryNames
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) repositories: list[Repository] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[Repository] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRepositoriesResponse:
     Optional[list[Repository]] repositories
     Optional[str] nextToken
@@ -231,8 +245,9 @@ struct GetRepositoryCatalogDataRequest:
     Optional[str] registryId
     str repositoryName
 
-# no @derive(Json): member(s) catalogData: RepositoryCatalogData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) catalogData: RepositoryCatalogData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRepositoryCatalogDataResponse:
     Optional[RepositoryCatalogData] catalogData
 
@@ -259,8 +274,9 @@ struct Image:
 struct ImageAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) imageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageDetail:
     Optional[str] registryId
     Optional[str] repositoryName
@@ -363,8 +379,9 @@ struct LimitExceededException:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -389,15 +406,17 @@ struct PutRegistryCatalogDataRequest:
 struct PutRegistryCatalogDataResponse:
     RegistryCatalogData registryCatalogData
 
-# no @derive(Json): member(s) catalogData: RepositoryCatalogDataInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) catalogData: RepositoryCatalogDataInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRepositoryCatalogDataRequest:
     Optional[str] registryId
     str repositoryName
     RepositoryCatalogDataInput catalogData
 
-# no @derive(Json): member(s) catalogData: RepositoryCatalogData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) catalogData: RepositoryCatalogData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRepositoryCatalogDataResponse:
     Optional[RepositoryCatalogData] catalogData
 
@@ -413,8 +432,9 @@ struct ReferencedImageDetail:
 struct ReferencedImagesNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) aliases: list[RegistryAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aliases: list[RegistryAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Registry:
     str registryId
     str registryArn
@@ -449,8 +469,9 @@ struct Repository:
 struct RepositoryAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) architectures: list[str], operatingSystems: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) architectures: list[str], operatingSystems: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositoryCatalogData:
     Optional[str] description
     Optional[list[str]] architectures
@@ -460,8 +481,9 @@ struct RepositoryCatalogData:
     Optional[str] usageText
     Optional[bool] marketplaceCertified
 
-# no @derive(Json): member(s) architectures: list[str], operatingSystems: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) architectures: list[str], operatingSystems: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositoryCatalogDataInput:
     Optional[str] description
     Optional[list[str]] architectures
@@ -508,8 +530,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -527,8 +550,9 @@ struct TooManyTagsException:
 struct UnsupportedCommandException:
     Optional[str] message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -643,27 +667,219 @@ def api_ecr_public_error_from_code(str code) -> ECR_PUBLICError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchCheckLayerAvailability (input BatchCheckLayerAvailabilityRequest)
-#   BatchDeleteImage (input BatchDeleteImageRequest)
-#   CompleteLayerUpload (input CompleteLayerUploadRequest)
-#   CreateRepository (input CreateRepositoryRequest)
-#   DescribeImages (input DescribeImagesRequest)
-#   DescribeRepositories (input DescribeRepositoriesRequest)
-#   PutRepositoryCatalogData (input PutRepositoryCatalogDataRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_ecr_public_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeImages (input not derivable (no generated method))
-#   DescribeRepositories (input not derivable (no generated method))
+def api_ecr_public_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_ecr_public_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchCheckLayerAvailabilityRequest to a compact JSON object (declaration order).
+def batch_check_layer_availability_request_to_json(BatchCheckLayerAvailabilityRequest v) -> str:
+    list[str] parts = []
+    if v.registryId.is_some():
+        auto u0 = v.registryId.unwrap()
+        parts.append("\"registryId\":" + api_ecr_public_json_str(u0))
+    parts.append("\"repositoryName\":" + api_ecr_public_json_str(v.repositoryName))
+    list[str] e1 = []
+    for x1 in v.layerDigests:
+        e1.append(api_ecr_public_json_str(x1))
+    parts.append("\"layerDigests\":" + api_ecr_public_json_arr(e1))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize BatchDeleteImageRequest to a compact JSON object (declaration order).
+def batch_delete_image_request_to_json(BatchDeleteImageRequest v) -> str:
+    list[str] parts = []
+    if v.registryId.is_some():
+        auto u0 = v.registryId.unwrap()
+        parts.append("\"registryId\":" + api_ecr_public_json_str(u0))
+    parts.append("\"repositoryName\":" + api_ecr_public_json_str(v.repositoryName))
+    list[str] e1 = []
+    for x1 in v.imageIds:
+        e1.append(x1.to_json())
+    parts.append("\"imageIds\":" + api_ecr_public_json_arr(e1))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize CompleteLayerUploadRequest to a compact JSON object (declaration order).
+def complete_layer_upload_request_to_json(CompleteLayerUploadRequest v) -> str:
+    list[str] parts = []
+    if v.registryId.is_some():
+        auto u0 = v.registryId.unwrap()
+        parts.append("\"registryId\":" + api_ecr_public_json_str(u0))
+    parts.append("\"repositoryName\":" + api_ecr_public_json_str(v.repositoryName))
+    parts.append("\"uploadId\":" + api_ecr_public_json_str(v.uploadId))
+    list[str] e1 = []
+    for x1 in v.layerDigests:
+        e1.append(api_ecr_public_json_str(x1))
+    parts.append("\"layerDigests\":" + api_ecr_public_json_arr(e1))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize CreateRepositoryRequest to a compact JSON object (declaration order).
+def create_repository_request_to_json(CreateRepositoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + api_ecr_public_json_str(v.repositoryName))
+    if v.catalogData.is_some():
+        auto u0 = v.catalogData.unwrap()
+        parts.append("\"catalogData\":" + repository_catalog_data_input_to_json(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + api_ecr_public_json_arr(e2))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize DescribeImagesRequest to a compact JSON object (declaration order).
+def describe_images_request_to_json(DescribeImagesRequest v) -> str:
+    list[str] parts = []
+    if v.registryId.is_some():
+        auto u0 = v.registryId.unwrap()
+        parts.append("\"registryId\":" + api_ecr_public_json_str(u0))
+    parts.append("\"repositoryName\":" + api_ecr_public_json_str(v.repositoryName))
+    if v.imageIds.is_some():
+        auto u1 = v.imageIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"imageIds\":" + api_ecr_public_json_arr(e2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + api_ecr_public_json_str(u3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize DescribeRepositoriesRequest to a compact JSON object (declaration order).
+def describe_repositories_request_to_json(DescribeRepositoriesRequest v) -> str:
+    list[str] parts = []
+    if v.registryId.is_some():
+        auto u0 = v.registryId.unwrap()
+        parts.append("\"registryId\":" + api_ecr_public_json_str(u0))
+    if v.repositoryNames.is_some():
+        auto u1 = v.repositoryNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_ecr_public_json_str(x2))
+        parts.append("\"repositoryNames\":" + api_ecr_public_json_arr(e2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + api_ecr_public_json_str(u3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize PutRepositoryCatalogDataRequest to a compact JSON object (declaration order).
+def put_repository_catalog_data_request_to_json(PutRepositoryCatalogDataRequest v) -> str:
+    list[str] parts = []
+    if v.registryId.is_some():
+        auto u0 = v.registryId.unwrap()
+        parts.append("\"registryId\":" + api_ecr_public_json_str(u0))
+    parts.append("\"repositoryName\":" + api_ecr_public_json_str(v.repositoryName))
+    parts.append("\"catalogData\":" + repository_catalog_data_input_to_json(v.catalogData))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize RepositoryCatalogDataInput to a compact JSON object (declaration order).
+def repository_catalog_data_input_to_json(RepositoryCatalogDataInput v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + api_ecr_public_json_str(u0))
+    if v.architectures.is_some():
+        auto u1 = v.architectures.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_ecr_public_json_str(x2))
+        parts.append("\"architectures\":" + api_ecr_public_json_arr(e2))
+    if v.operatingSystems.is_some():
+        auto u3 = v.operatingSystems.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_ecr_public_json_str(x4))
+        parts.append("\"operatingSystems\":" + api_ecr_public_json_arr(e4))
+    if v.logoImageBlob.is_some():
+        auto u5 = v.logoImageBlob.unwrap()
+        parts.append("\"logoImageBlob\":" + api_ecr_public_json_str(base64.encode(u5)))
+    if v.aboutText.is_some():
+        auto u6 = v.aboutText.unwrap()
+        parts.append("\"aboutText\":" + api_ecr_public_json_str(u6))
+    if v.usageText.is_some():
+        auto u7 = v.usageText.unwrap()
+        parts.append("\"usageText\":" + api_ecr_public_json_str(u7))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + api_ecr_public_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + api_ecr_public_json_arr(e0))
+    return api_ecr_public_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + api_ecr_public_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(api_ecr_public_json_str(x0))
+    parts.append("\"tagKeys\":" + api_ecr_public_json_arr(e0))
+    return api_ecr_public_json_obj(parts)
 
 # A bound ECR_PUBLIC client: credentials + region, threaded into every operation.
 struct ECR_PUBLICClient:
     core.Credentials creds
     str region
+
+    # BatchCheckLayerAvailability
+    # errors: InvalidParameterException, RegistryNotFoundException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
+    def batch_check_layer_availability(self, BatchCheckLayerAvailabilityRequest input) -> str:
+        auto body = batch_check_layer_availability_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "BatchCheckLayerAvailability", body)
+
+    # BatchDeleteImage
+    # errors: InvalidParameterException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
+    def batch_delete_image(self, BatchDeleteImageRequest input) -> str:
+        auto body = batch_delete_image_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "BatchDeleteImage", body)
+
+    # CompleteLayerUpload
+    # errors: EmptyUploadException, InvalidLayerException, InvalidParameterException, LayerAlreadyExistsException, LayerPartTooSmallException, RegistryNotFoundException, RepositoryNotFoundException, ServerException, UnsupportedCommandException, UploadNotFoundException
+    def complete_layer_upload(self, CompleteLayerUploadRequest input) -> str:
+        auto body = complete_layer_upload_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "CompleteLayerUpload", body)
+
+    # CreateRepository
+    # errors: InvalidParameterException, InvalidTagParameterException, LimitExceededException, RepositoryAlreadyExistsException, ServerException, TooManyTagsException, UnsupportedCommandException
+    def create_repository(self, CreateRepositoryRequest input) -> str:
+        auto body = create_repository_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "CreateRepository", body)
 
     # DeleteRepository
     # errors: InvalidParameterException, RepositoryNotEmptyException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
@@ -683,11 +899,23 @@ struct ECR_PUBLICClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeImageTags", body)
 
+    # DescribeImages
+    # errors: ImageNotFoundException, InvalidParameterException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
+    def describe_images(self, DescribeImagesRequest input) -> str:
+        auto body = describe_images_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeImages", body)
+
     # DescribeRegistries
     # errors: InvalidParameterException, ServerException, UnsupportedCommandException
     def describe_registries(self, DescribeRegistriesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeRegistries", body)
+
+    # DescribeRepositories
+    # errors: InvalidParameterException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
+    def describe_repositories(self, DescribeRepositoriesRequest input) -> str:
+        auto body = describe_repositories_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeRepositories", body)
 
     # GetAuthorizationToken
     # errors: InvalidParameterException, ServerException, UnsupportedCommandException
@@ -737,11 +965,29 @@ struct ECR_PUBLICClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "PutRegistryCatalogData", body)
 
+    # PutRepositoryCatalogData
+    # errors: InvalidParameterException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
+    def put_repository_catalog_data(self, PutRepositoryCatalogDataRequest input) -> str:
+        auto body = put_repository_catalog_data_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "PutRepositoryCatalogData", body)
+
     # SetRepositoryPolicy
     # errors: InvalidParameterException, RepositoryNotFoundException, ServerException, UnsupportedCommandException
     def set_repository_policy(self, SetRepositoryPolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "SetRepositoryPolicy", body)
+
+    # TagResource
+    # errors: InvalidParameterException, InvalidTagParameterException, RepositoryNotFoundException, ServerException, TooManyTagsException, UnsupportedCommandException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidParameterException, InvalidTagParameterException, RepositoryNotFoundException, ServerException, TooManyTagsException, UnsupportedCommandException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UploadLayerPart
     # errors: InvalidLayerPartException, InvalidParameterException, LimitExceededException, RegistryNotFoundException, RepositoryNotFoundException, ServerException, UnsupportedCommandException, UploadNotFoundException
@@ -763,6 +1009,20 @@ struct ECR_PUBLICClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeImages — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: imageDetails).
+    def paginate_describe_images(self, DescribeImagesRequest input):
+        auto host = endpoints.regional_host(api_ecr_public_protocol().service, self.region)
+        while True:
+            auto body = describe_images_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeImages", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for DescribeRegistries — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: registries).
     def paginate_describe_registries(self, DescribeRegistriesRequest input):
@@ -770,6 +1030,20 @@ struct ECR_PUBLICClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeRegistries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRepositories — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: repositories).
+    def paginate_describe_repositories(self, DescribeRepositoriesRequest input):
+        auto host = endpoints.regional_host(api_ecr_public_protocol().service, self.region)
+        while True:
+            auto body = describe_repositories_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(api_ecr_public_protocol(), self.creds, self.region, "DescribeRepositories", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

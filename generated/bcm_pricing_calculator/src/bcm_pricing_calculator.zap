@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 36 operations — 14 with a generated method,
-#   22 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 36 operations — 36 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   131 structs (65 @derive(Json)), 23 enums, 8 error variants.
-#   3 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -275,21 +275,24 @@ struct BatchCreateBillScenarioCommitmentModificationItem:
     Optional[str] usageAccountId
     Optional[BillScenarioCommitmentModificationAction] commitmentAction
 
-# no @derive(Json): member(s) commitmentModifications: list[BatchCreateBillScenarioCommitmentModificationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commitmentModifications: list[BatchCreateBillScenarioCommitmentModificationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateBillScenarioCommitmentModificationRequest:
     str billScenarioId
     list[BatchCreateBillScenarioCommitmentModificationEntry] commitmentModifications
     Optional[str] clientToken
 
-# no @derive(Json): member(s) items: list[BatchCreateBillScenarioCommitmentModificationItem], errors: list[BatchCreateBillScenarioCommitmentModificationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BatchCreateBillScenarioCommitmentModificationItem], errors: list[BatchCreateBillScenarioCommitmentModificationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateBillScenarioCommitmentModificationResponse:
     Optional[list[BatchCreateBillScenarioCommitmentModificationItem]] items
     Optional[list[BatchCreateBillScenarioCommitmentModificationError]] errors
 
-# no @derive(Json): member(s) amounts: list[UsageAmount], historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amounts: list[UsageAmount], historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateBillScenarioUsageModificationEntry:
     str serviceCode
     str usageType
@@ -307,8 +310,9 @@ struct BatchCreateBillScenarioUsageModificationError:
     Optional[str] errorMessage
     Optional[BatchCreateBillScenarioUsageModificationErrorCode] errorCode
 
-# no @derive(Json): member(s) quantities: list[UsageQuantity], historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quantities: list[UsageQuantity], historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateBillScenarioUsageModificationItem:
     str serviceCode
     str usageType
@@ -322,21 +326,24 @@ struct BatchCreateBillScenarioUsageModificationItem:
     Optional[HistoricalUsageEntity] historicalUsage
     Optional[str] key
 
-# no @derive(Json): member(s) usageModifications: list[BatchCreateBillScenarioUsageModificationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageModifications: list[BatchCreateBillScenarioUsageModificationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateBillScenarioUsageModificationRequest:
     str billScenarioId
     list[BatchCreateBillScenarioUsageModificationEntry] usageModifications
     Optional[str] clientToken
 
-# no @derive(Json): member(s) items: list[BatchCreateBillScenarioUsageModificationItem], errors: list[BatchCreateBillScenarioUsageModificationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BatchCreateBillScenarioUsageModificationItem], errors: list[BatchCreateBillScenarioUsageModificationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateBillScenarioUsageModificationResponse:
     Optional[list[BatchCreateBillScenarioUsageModificationItem]] items
     Optional[list[BatchCreateBillScenarioUsageModificationError]] errors
 
-# no @derive(Json): member(s) historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateWorkloadEstimateUsageEntry:
     str serviceCode
     str usageType
@@ -353,8 +360,9 @@ struct BatchCreateWorkloadEstimateUsageError:
     Optional[BatchCreateWorkloadEstimateUsageCode] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateWorkloadEstimateUsageItem:
     str serviceCode
     str usageType
@@ -370,15 +378,17 @@ struct BatchCreateWorkloadEstimateUsageItem:
     Optional[HistoricalUsageEntity] historicalUsage
     Optional[str] key
 
-# no @derive(Json): member(s) usage: list[BatchCreateWorkloadEstimateUsageEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usage: list[BatchCreateWorkloadEstimateUsageEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateWorkloadEstimateUsageRequest:
     str workloadEstimateId
     list[BatchCreateWorkloadEstimateUsageEntry] usage
     Optional[str] clientToken
 
-# no @derive(Json): member(s) items: list[BatchCreateWorkloadEstimateUsageItem], errors: list[BatchCreateWorkloadEstimateUsageError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BatchCreateWorkloadEstimateUsageItem], errors: list[BatchCreateWorkloadEstimateUsageError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateWorkloadEstimateUsageResponse:
     Optional[list[BatchCreateWorkloadEstimateUsageItem]] items
     Optional[list[BatchCreateWorkloadEstimateUsageError]] errors
@@ -389,14 +399,16 @@ struct BatchDeleteBillScenarioCommitmentModificationError:
     Optional[BatchDeleteBillScenarioCommitmentModificationErrorCode] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteBillScenarioCommitmentModificationRequest:
     str billScenarioId
     list[str] ids
 
-# no @derive(Json): member(s) errors: list[BatchDeleteBillScenarioCommitmentModificationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteBillScenarioCommitmentModificationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteBillScenarioCommitmentModificationResponse:
     Optional[list[BatchDeleteBillScenarioCommitmentModificationError]] errors
 
@@ -406,14 +418,16 @@ struct BatchDeleteBillScenarioUsageModificationError:
     Optional[str] errorMessage
     Optional[BatchDeleteBillScenarioUsageModificationErrorCode] errorCode
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteBillScenarioUsageModificationRequest:
     str billScenarioId
     list[str] ids
 
-# no @derive(Json): member(s) errors: list[BatchDeleteBillScenarioUsageModificationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteBillScenarioUsageModificationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteBillScenarioUsageModificationResponse:
     Optional[list[BatchDeleteBillScenarioUsageModificationError]] errors
 
@@ -423,14 +437,16 @@ struct BatchDeleteWorkloadEstimateUsageError:
     Optional[str] errorMessage
     Optional[WorkloadEstimateUpdateUsageErrorCode] errorCode
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteWorkloadEstimateUsageRequest:
     str workloadEstimateId
     list[str] ids
 
-# no @derive(Json): member(s) errors: list[BatchDeleteWorkloadEstimateUsageError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteWorkloadEstimateUsageError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteWorkloadEstimateUsageResponse:
     Optional[list[BatchDeleteWorkloadEstimateUsageError]] errors
 
@@ -445,20 +461,23 @@ struct BatchUpdateBillScenarioCommitmentModificationError:
     Optional[BatchUpdateBillScenarioCommitmentModificationErrorCode] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) commitmentModifications: list[BatchUpdateBillScenarioCommitmentModificationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commitmentModifications: list[BatchUpdateBillScenarioCommitmentModificationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateBillScenarioCommitmentModificationRequest:
     str billScenarioId
     list[BatchUpdateBillScenarioCommitmentModificationEntry] commitmentModifications
 
-# no @derive(Json): member(s) items: list[BillScenarioCommitmentModificationItem], errors: list[BatchUpdateBillScenarioCommitmentModificationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillScenarioCommitmentModificationItem], errors: list[BatchUpdateBillScenarioCommitmentModificationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateBillScenarioCommitmentModificationResponse:
     Optional[list[BillScenarioCommitmentModificationItem]] items
     Optional[list[BatchUpdateBillScenarioCommitmentModificationError]] errors
 
-# no @derive(Json): member(s) amounts: list[UsageAmount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amounts: list[UsageAmount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateBillScenarioUsageModificationEntry:
     str id
     Optional[str] group
@@ -470,14 +489,16 @@ struct BatchUpdateBillScenarioUsageModificationError:
     Optional[str] errorMessage
     Optional[BatchUpdateBillScenarioUsageModificationErrorCode] errorCode
 
-# no @derive(Json): member(s) usageModifications: list[BatchUpdateBillScenarioUsageModificationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageModifications: list[BatchUpdateBillScenarioUsageModificationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateBillScenarioUsageModificationRequest:
     str billScenarioId
     list[BatchUpdateBillScenarioUsageModificationEntry] usageModifications
 
-# no @derive(Json): member(s) items: list[BillScenarioUsageModificationItem], errors: list[BatchUpdateBillScenarioUsageModificationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillScenarioUsageModificationItem], errors: list[BatchUpdateBillScenarioUsageModificationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateBillScenarioUsageModificationResponse:
     Optional[list[BillScenarioUsageModificationItem]] items
     Optional[list[BatchUpdateBillScenarioUsageModificationError]] errors
@@ -494,14 +515,16 @@ struct BatchUpdateWorkloadEstimateUsageError:
     Optional[str] errorMessage
     Optional[WorkloadEstimateUpdateUsageErrorCode] errorCode
 
-# no @derive(Json): member(s) usage: list[BatchUpdateWorkloadEstimateUsageEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usage: list[BatchUpdateWorkloadEstimateUsageEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateWorkloadEstimateUsageRequest:
     str workloadEstimateId
     list[BatchUpdateWorkloadEstimateUsageEntry] usage
 
-# no @derive(Json): member(s) items: list[WorkloadEstimateUsageItem], errors: list[BatchUpdateWorkloadEstimateUsageError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkloadEstimateUsageItem], errors: list[BatchUpdateWorkloadEstimateUsageError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateWorkloadEstimateUsageResponse:
     Optional[list[WorkloadEstimateUsageItem]] items
     Optional[list[BatchUpdateWorkloadEstimateUsageError]] errors
@@ -518,8 +541,9 @@ struct BillEstimateCommitmentSummary:
     Optional[CostAmount] upfrontPayment
     Optional[CostAmount] monthlyPayment
 
-# no @derive(Json): member(s) serviceCostDifferences: dict[str, CostDifference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceCostDifferences: dict[str, CostDifference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillEstimateCostSummary:
     Optional[CostDifference] totalCostDifference
     Optional[dict[str, CostDifference]] serviceCostDifferences
@@ -531,8 +555,9 @@ struct BillEstimateInputCommitmentModificationSummary:
     Optional[str] usageAccountId
     Optional[BillScenarioCommitmentModificationAction] commitmentAction
 
-# no @derive(Json): member(s) quantities: list[UsageQuantity], historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quantities: list[UsageQuantity], historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillEstimateInputUsageModificationSummary:
     str serviceCode
     str usageType
@@ -545,8 +570,9 @@ struct BillEstimateInputUsageModificationSummary:
     Optional[list[UsageQuantity]] quantities
     Optional[HistoricalUsageEntity] historicalUsage
 
-# no @derive(Json): member(s) savingsPlanArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) savingsPlanArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillEstimateLineItemSummary:
     str serviceCode
     str usageType
@@ -604,8 +630,9 @@ struct BillScenarioSummary:
     Optional[GroupSharingPreferenceEnum] groupSharingPreference
     Optional[str] costCategoryGroupSharingPreferenceArn
 
-# no @derive(Json): member(s) quantities: list[UsageQuantity], historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quantities: list[UsageQuantity], historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillScenarioUsageModificationItem:
     str serviceCode
     str usageType
@@ -634,16 +661,18 @@ struct CostDifference:
     Optional[CostAmount] historicalCost
     Optional[CostAmount] estimatedCost
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBillEstimateRequest:
     str billScenarioId
     str name
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) costSummary: BillEstimateCostSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costSummary: BillEstimateCostSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBillEstimateResponse:
     str id
     Optional[str] name
@@ -657,8 +686,9 @@ struct CreateBillEstimateResponse:
     Optional[str] costCategoryGroupSharingPreferenceArn
     Optional[DateTime] costCategoryGroupSharingPreferenceEffectiveDate
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBillScenarioRequest:
     str name
     Optional[str] clientToken
@@ -678,8 +708,9 @@ struct CreateBillScenarioResponse:
     Optional[GroupSharingPreferenceEnum] groupSharingPreference
     Optional[str] costCategoryGroupSharingPreferenceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkloadEstimateRequest:
     str name
     Optional[str] clientToken
@@ -730,8 +761,9 @@ struct DeleteWorkloadEstimateResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) and: list[Expression], or: list[Expression], not: Expression, costCategories: ExpressionFilter, dimensions: ExpressionFilter, tags: ExpressionFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) and: list[Expression], or: list[Expression], not: Expression, costCategories: ExpressionFilter, dimensions: ExpressionFilter, tags: ExpressionFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     # wire name "and" differs from field; derive rename is a #346 follow-up
     Optional[list[Expression]] and_
@@ -743,8 +775,9 @@ struct Expression:
     Optional[ExpressionFilter] dimensions
     Optional[ExpressionFilter] tags
 
-# no @derive(Json): member(s) matchOptions: list[str], values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchOptions: list[str], values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressionFilter:
     Optional[str] key
     Optional[list[str]] matchOptions
@@ -759,8 +792,9 @@ struct FilterTimestamp:
 struct GetBillEstimateRequest:
     str identifier
 
-# no @derive(Json): member(s) costSummary: BillEstimateCostSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costSummary: BillEstimateCostSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBillEstimateResponse:
     str id
     Optional[str] name
@@ -795,8 +829,9 @@ struct GetPreferencesRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) managementAccountRateTypeSelections: list[RateType], memberAccountRateTypeSelections: list[RateType], standaloneAccountRateTypeSelections: list[RateType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managementAccountRateTypeSelections: list[RateType], memberAccountRateTypeSelections: list[RateType], standaloneAccountRateTypeSelections: list[RateType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPreferencesResponse:
     Optional[list[RateType]] managementAccountRateTypeSelections
     Optional[list[RateType]] memberAccountRateTypeSelections
@@ -819,8 +854,9 @@ struct GetWorkloadEstimateResponse:
     Optional[str] costCurrency
     Optional[str] failureMessage
 
-# no @derive(Json): member(s) filterExpression: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterExpression: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistoricalUsageEntity:
     str serviceCode
     str usageType
@@ -841,8 +877,9 @@ struct ListBillEstimateCommitmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillEstimateCommitmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillEstimateCommitmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateCommitmentsResponse:
     Optional[list[BillEstimateCommitmentSummary]] items
     Optional[str] nextToken
@@ -853,56 +890,64 @@ struct ListBillEstimateInputCommitmentModificationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillEstimateInputCommitmentModificationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillEstimateInputCommitmentModificationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateInputCommitmentModificationsResponse:
     Optional[list[BillEstimateInputCommitmentModificationSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[ListUsageFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListUsageFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateInputUsageModificationsRequest:
     str billEstimateId
     Optional[list[ListUsageFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillEstimateInputUsageModificationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillEstimateInputUsageModificationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateInputUsageModificationsResponse:
     Optional[list[BillEstimateInputUsageModificationSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateLineItemsFilter:
     ListBillEstimateLineItemsFilterName name
     list[str] values
     Optional[MatchOption] matchOption
 
-# no @derive(Json): member(s) filters: list[ListBillEstimateLineItemsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListBillEstimateLineItemsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateLineItemsRequest:
     str billEstimateId
     Optional[list[ListBillEstimateLineItemsFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillEstimateLineItemSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillEstimateLineItemSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimateLineItemsResponse:
     Optional[list[BillEstimateLineItemSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimatesFilter:
     ListBillEstimatesFilterName name
     list[str] values
     Optional[MatchOption] matchOption
 
-# no @derive(Json): member(s) filters: list[ListBillEstimatesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListBillEstimatesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimatesRequest:
     Optional[list[ListBillEstimatesFilter]] filters
     Optional[FilterTimestamp] createdAtFilter
@@ -910,8 +955,9 @@ struct ListBillEstimatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillEstimateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillEstimateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillEstimatesResponse:
     Optional[list[BillEstimateSummary]] items
     Optional[str] nextToken
@@ -922,35 +968,40 @@ struct ListBillScenarioCommitmentModificationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillScenarioCommitmentModificationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillScenarioCommitmentModificationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillScenarioCommitmentModificationsResponse:
     Optional[list[BillScenarioCommitmentModificationItem]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[ListUsageFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListUsageFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillScenarioUsageModificationsRequest:
     str billScenarioId
     Optional[list[ListUsageFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillScenarioUsageModificationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillScenarioUsageModificationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillScenarioUsageModificationsResponse:
     Optional[list[BillScenarioUsageModificationItem]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillScenariosFilter:
     ListBillScenariosFilterName name
     list[str] values
     Optional[MatchOption] matchOption
 
-# no @derive(Json): member(s) filters: list[ListBillScenariosFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListBillScenariosFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillScenariosRequest:
     Optional[list[ListBillScenariosFilter]] filters
     Optional[FilterTimestamp] createdAtFilter
@@ -958,8 +1009,9 @@ struct ListBillScenariosRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[BillScenarioSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillScenarioSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillScenariosResponse:
     Optional[list[BillScenarioSummary]] items
     Optional[str] nextToken
@@ -968,41 +1020,47 @@ struct ListBillScenariosResponse:
 struct ListTagsForResourceRequest:
     str arn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsageFilter:
     ListUsageFilterName name
     list[str] values
     Optional[MatchOption] matchOption
 
-# no @derive(Json): member(s) filters: list[ListUsageFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListUsageFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadEstimateUsageRequest:
     str workloadEstimateId
     Optional[list[ListUsageFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[WorkloadEstimateUsageItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkloadEstimateUsageItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadEstimateUsageResponse:
     Optional[list[WorkloadEstimateUsageItem]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadEstimatesFilter:
     ListWorkloadEstimatesFilterName name
     list[str] values
     Optional[MatchOption] matchOption
 
-# no @derive(Json): member(s) filters: list[ListWorkloadEstimatesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListWorkloadEstimatesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadEstimatesRequest:
     Optional[FilterTimestamp] createdAtFilter
     Optional[FilterTimestamp] expiresAtFilter
@@ -1010,8 +1068,9 @@ struct ListWorkloadEstimatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[WorkloadEstimateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkloadEstimateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadEstimatesResponse:
     Optional[list[WorkloadEstimateSummary]] items
     Optional[str] nextToken
@@ -1038,8 +1097,9 @@ struct ServiceQuotaExceededException:
     Optional[str] serviceCode
     Optional[str] quotaCode
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str arn
     dict[str, str] tags
@@ -1056,8 +1116,9 @@ struct ThrottlingException:
     Optional[str] quotaCode
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str arn
     list[str] tagKeys
@@ -1073,8 +1134,9 @@ struct UpdateBillEstimateRequest:
     Optional[str] name
     Optional[DateTime] expiresAt
 
-# no @derive(Json): member(s) costSummary: BillEstimateCostSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costSummary: BillEstimateCostSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBillEstimateResponse:
     str id
     Optional[str] name
@@ -1108,15 +1170,17 @@ struct UpdateBillScenarioResponse:
     Optional[GroupSharingPreferenceEnum] groupSharingPreference
     Optional[str] costCategoryGroupSharingPreferenceArn
 
-# no @derive(Json): member(s) managementAccountRateTypeSelections: list[RateType], memberAccountRateTypeSelections: list[RateType], standaloneAccountRateTypeSelections: list[RateType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managementAccountRateTypeSelections: list[RateType], memberAccountRateTypeSelections: list[RateType], standaloneAccountRateTypeSelections: list[RateType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePreferencesRequest:
     Optional[list[RateType]] managementAccountRateTypeSelections
     Optional[list[RateType]] memberAccountRateTypeSelections
     Optional[list[RateType]] standaloneAccountRateTypeSelections
 
-# no @derive(Json): member(s) managementAccountRateTypeSelections: list[RateType], memberAccountRateTypeSelections: list[RateType], standaloneAccountRateTypeSelections: list[RateType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managementAccountRateTypeSelections: list[RateType], memberAccountRateTypeSelections: list[RateType], standaloneAccountRateTypeSelections: list[RateType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePreferencesResponse:
     Optional[list[RateType]] managementAccountRateTypeSelections
     Optional[list[RateType]] memberAccountRateTypeSelections
@@ -1157,8 +1221,9 @@ struct UsageQuantityResult:
     Optional[float64] amount
     Optional[str] unit
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -1182,8 +1247,9 @@ struct WorkloadEstimateSummary:
     Optional[str] costCurrency
     Optional[str] failureMessage
 
-# no @derive(Json): member(s) historicalUsage: HistoricalUsageEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) historicalUsage: HistoricalUsageEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadEstimateUsageItem:
     str serviceCode
     str usageType
@@ -1240,45 +1306,635 @@ def bcm_pricing_calculator_error_from_code(str code) -> BCM_Pricing_CalculatorEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchCreateBillScenarioCommitmentModification (input BatchCreateBillScenarioCommitmentModificationRequest)
-#   BatchCreateBillScenarioUsageModification (input BatchCreateBillScenarioUsageModificationRequest)
-#   BatchCreateWorkloadEstimateUsage (input BatchCreateWorkloadEstimateUsageRequest)
-#   BatchDeleteBillScenarioCommitmentModification (input BatchDeleteBillScenarioCommitmentModificationRequest)
-#   BatchDeleteBillScenarioUsageModification (input BatchDeleteBillScenarioUsageModificationRequest)
-#   BatchDeleteWorkloadEstimateUsage (input BatchDeleteWorkloadEstimateUsageRequest)
-#   BatchUpdateBillScenarioCommitmentModification (input BatchUpdateBillScenarioCommitmentModificationRequest)
-#   BatchUpdateBillScenarioUsageModification (input BatchUpdateBillScenarioUsageModificationRequest)
-#   BatchUpdateWorkloadEstimateUsage (input BatchUpdateWorkloadEstimateUsageRequest)
-#   CreateBillEstimate (input CreateBillEstimateRequest)
-#   CreateBillScenario (input CreateBillScenarioRequest)
-#   CreateWorkloadEstimate (input CreateWorkloadEstimateRequest)
-#   ListBillEstimateInputUsageModifications (input ListBillEstimateInputUsageModificationsRequest)
-#   ListBillEstimateLineItems (input ListBillEstimateLineItemsRequest)
-#   ListBillEstimates (input ListBillEstimatesRequest)
-#   ListBillScenarioUsageModifications (input ListBillScenarioUsageModificationsRequest)
-#   ListBillScenarios (input ListBillScenariosRequest)
-#   ListWorkloadEstimateUsage (input ListWorkloadEstimateUsageRequest)
-#   ListWorkloadEstimates (input ListWorkloadEstimatesRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdatePreferences (input UpdatePreferencesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bcm_pricing_calculator_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListBillEstimateInputUsageModifications (input not derivable (no generated method))
-#   ListBillEstimateLineItems (input not derivable (no generated method))
-#   ListBillEstimates (input not derivable (no generated method))
-#   ListBillScenarioUsageModifications (input not derivable (no generated method))
-#   ListBillScenarios (input not derivable (no generated method))
-#   ListWorkloadEstimateUsage (input not derivable (no generated method))
-#   ListWorkloadEstimates (input not derivable (no generated method))
+def bcm_pricing_calculator_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bcm_pricing_calculator_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchCreateBillScenarioCommitmentModificationRequest to a compact JSON object (declaration order).
+def batch_create_bill_scenario_commitment_modification_request_to_json(BatchCreateBillScenarioCommitmentModificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    list[str] e0 = []
+    for x0 in v.commitmentModifications:
+        e0.append(x0.to_json())
+    parts.append("\"commitmentModifications\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_pricing_calculator_json_str(u1))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchCreateBillScenarioUsageModificationEntry to a compact JSON object (declaration order).
+def batch_create_bill_scenario_usage_modification_entry_to_json(BatchCreateBillScenarioUsageModificationEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceCode\":" + bcm_pricing_calculator_json_str(v.serviceCode))
+    parts.append("\"usageType\":" + bcm_pricing_calculator_json_str(v.usageType))
+    parts.append("\"operation\":" + bcm_pricing_calculator_json_str(v.operation))
+    if v.availabilityZone.is_some():
+        auto u0 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + bcm_pricing_calculator_json_str(u0))
+    parts.append("\"key\":" + bcm_pricing_calculator_json_str(v.key))
+    if v.group.is_some():
+        auto u1 = v.group.unwrap()
+        parts.append("\"group\":" + bcm_pricing_calculator_json_str(u1))
+    parts.append("\"usageAccountId\":" + bcm_pricing_calculator_json_str(v.usageAccountId))
+    if v.amounts.is_some():
+        auto u2 = v.amounts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"amounts\":" + bcm_pricing_calculator_json_arr(e3))
+    if v.historicalUsage.is_some():
+        auto u4 = v.historicalUsage.unwrap()
+        parts.append("\"historicalUsage\":" + historical_usage_entity_to_json(u4))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchCreateBillScenarioUsageModificationRequest to a compact JSON object (declaration order).
+def batch_create_bill_scenario_usage_modification_request_to_json(BatchCreateBillScenarioUsageModificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    list[str] e0 = []
+    for x0 in v.usageModifications:
+        e0.append(batch_create_bill_scenario_usage_modification_entry_to_json(x0))
+    parts.append("\"usageModifications\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_pricing_calculator_json_str(u1))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchCreateWorkloadEstimateUsageEntry to a compact JSON object (declaration order).
+def batch_create_workload_estimate_usage_entry_to_json(BatchCreateWorkloadEstimateUsageEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceCode\":" + bcm_pricing_calculator_json_str(v.serviceCode))
+    parts.append("\"usageType\":" + bcm_pricing_calculator_json_str(v.usageType))
+    parts.append("\"operation\":" + bcm_pricing_calculator_json_str(v.operation))
+    parts.append("\"key\":" + bcm_pricing_calculator_json_str(v.key))
+    if v.group.is_some():
+        auto u0 = v.group.unwrap()
+        parts.append("\"group\":" + bcm_pricing_calculator_json_str(u0))
+    parts.append("\"usageAccountId\":" + bcm_pricing_calculator_json_str(v.usageAccountId))
+    parts.append("\"amount\":" + str(v.amount))
+    if v.historicalUsage.is_some():
+        auto u1 = v.historicalUsage.unwrap()
+        parts.append("\"historicalUsage\":" + historical_usage_entity_to_json(u1))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchCreateWorkloadEstimateUsageRequest to a compact JSON object (declaration order).
+def batch_create_workload_estimate_usage_request_to_json(BatchCreateWorkloadEstimateUsageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"workloadEstimateId\":" + bcm_pricing_calculator_json_str(v.workloadEstimateId))
+    list[str] e0 = []
+    for x0 in v.usage:
+        e0.append(batch_create_workload_estimate_usage_entry_to_json(x0))
+    parts.append("\"usage\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_pricing_calculator_json_str(u1))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchDeleteBillScenarioCommitmentModificationRequest to a compact JSON object (declaration order).
+def batch_delete_bill_scenario_commitment_modification_request_to_json(BatchDeleteBillScenarioCommitmentModificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"ids\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchDeleteBillScenarioUsageModificationRequest to a compact JSON object (declaration order).
+def batch_delete_bill_scenario_usage_modification_request_to_json(BatchDeleteBillScenarioUsageModificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"ids\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchDeleteWorkloadEstimateUsageRequest to a compact JSON object (declaration order).
+def batch_delete_workload_estimate_usage_request_to_json(BatchDeleteWorkloadEstimateUsageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"workloadEstimateId\":" + bcm_pricing_calculator_json_str(v.workloadEstimateId))
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"ids\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchUpdateBillScenarioCommitmentModificationRequest to a compact JSON object (declaration order).
+def batch_update_bill_scenario_commitment_modification_request_to_json(BatchUpdateBillScenarioCommitmentModificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    list[str] e0 = []
+    for x0 in v.commitmentModifications:
+        e0.append(x0.to_json())
+    parts.append("\"commitmentModifications\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchUpdateBillScenarioUsageModificationEntry to a compact JSON object (declaration order).
+def batch_update_bill_scenario_usage_modification_entry_to_json(BatchUpdateBillScenarioUsageModificationEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + bcm_pricing_calculator_json_str(v.id))
+    if v.group.is_some():
+        auto u0 = v.group.unwrap()
+        parts.append("\"group\":" + bcm_pricing_calculator_json_str(u0))
+    if v.amounts.is_some():
+        auto u1 = v.amounts.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"amounts\":" + bcm_pricing_calculator_json_arr(e2))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchUpdateBillScenarioUsageModificationRequest to a compact JSON object (declaration order).
+def batch_update_bill_scenario_usage_modification_request_to_json(BatchUpdateBillScenarioUsageModificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    list[str] e0 = []
+    for x0 in v.usageModifications:
+        e0.append(batch_update_bill_scenario_usage_modification_entry_to_json(x0))
+    parts.append("\"usageModifications\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize BatchUpdateWorkloadEstimateUsageRequest to a compact JSON object (declaration order).
+def batch_update_workload_estimate_usage_request_to_json(BatchUpdateWorkloadEstimateUsageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"workloadEstimateId\":" + bcm_pricing_calculator_json_str(v.workloadEstimateId))
+    list[str] e0 = []
+    for x0 in v.usage:
+        e0.append(x0.to_json())
+    parts.append("\"usage\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize CreateBillEstimateRequest to a compact JSON object (declaration order).
+def create_bill_estimate_request_to_json(CreateBillEstimateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    parts.append("\"name\":" + bcm_pricing_calculator_json_str(v.name))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_pricing_calculator_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(bcm_pricing_calculator_json_str(k2) + ":" + bcm_pricing_calculator_json_str(u1[k2]))
+        parts.append("\"tags\":" + bcm_pricing_calculator_json_obj(m2))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize CreateBillScenarioRequest to a compact JSON object (declaration order).
+def create_bill_scenario_request_to_json(CreateBillScenarioRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bcm_pricing_calculator_json_str(v.name))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_pricing_calculator_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(bcm_pricing_calculator_json_str(k2) + ":" + bcm_pricing_calculator_json_str(u1[k2]))
+        parts.append("\"tags\":" + bcm_pricing_calculator_json_obj(m2))
+    if v.groupSharingPreference.is_some():
+        auto u3 = v.groupSharingPreference.unwrap()
+        parts.append("\"groupSharingPreference\":" + u3.to_json())
+    if v.costCategoryGroupSharingPreferenceArn.is_some():
+        auto u4 = v.costCategoryGroupSharingPreferenceArn.unwrap()
+        parts.append("\"costCategoryGroupSharingPreferenceArn\":" + bcm_pricing_calculator_json_str(u4))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize CreateWorkloadEstimateRequest to a compact JSON object (declaration order).
+def create_workload_estimate_request_to_json(CreateWorkloadEstimateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bcm_pricing_calculator_json_str(v.name))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_pricing_calculator_json_str(u0))
+    if v.rateType.is_some():
+        auto u1 = v.rateType.unwrap()
+        parts.append("\"rateType\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bcm_pricing_calculator_json_str(k3) + ":" + bcm_pricing_calculator_json_str(u2[k3]))
+        parts.append("\"tags\":" + bcm_pricing_calculator_json_obj(m3))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.and_.is_some():
+        auto u0 = v.and_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(expression_to_json(x1))
+        parts.append("\"and\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.or_.is_some():
+        auto u2 = v.or_.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(expression_to_json(x3))
+        parts.append("\"or\":" + bcm_pricing_calculator_json_arr(e3))
+    if v.not_.is_some():
+        auto u4 = v.not_.unwrap()
+        parts.append("\"not\":" + expression_to_json(u4))
+    if v.costCategories.is_some():
+        auto u5 = v.costCategories.unwrap()
+        parts.append("\"costCategories\":" + expression_filter_to_json(u5))
+    if v.dimensions.is_some():
+        auto u6 = v.dimensions.unwrap()
+        parts.append("\"dimensions\":" + expression_filter_to_json(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        parts.append("\"tags\":" + expression_filter_to_json(u7))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ExpressionFilter to a compact JSON object (declaration order).
+def expression_filter_to_json(ExpressionFilter v) -> str:
+    list[str] parts = []
+    if v.key.is_some():
+        auto u0 = v.key.unwrap()
+        parts.append("\"key\":" + bcm_pricing_calculator_json_str(u0))
+    if v.matchOptions.is_some():
+        auto u1 = v.matchOptions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bcm_pricing_calculator_json_str(x2))
+        parts.append("\"matchOptions\":" + bcm_pricing_calculator_json_arr(e2))
+    if v.values.is_some():
+        auto u3 = v.values.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bcm_pricing_calculator_json_str(x4))
+        parts.append("\"values\":" + bcm_pricing_calculator_json_arr(e4))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize HistoricalUsageEntity to a compact JSON object (declaration order).
+def historical_usage_entity_to_json(HistoricalUsageEntity v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceCode\":" + bcm_pricing_calculator_json_str(v.serviceCode))
+    parts.append("\"usageType\":" + bcm_pricing_calculator_json_str(v.usageType))
+    parts.append("\"operation\":" + bcm_pricing_calculator_json_str(v.operation))
+    if v.location.is_some():
+        auto u0 = v.location.unwrap()
+        parts.append("\"location\":" + bcm_pricing_calculator_json_str(u0))
+    parts.append("\"usageAccountId\":" + bcm_pricing_calculator_json_str(v.usageAccountId))
+    parts.append("\"billInterval\":" + v.billInterval.to_json())
+    parts.append("\"filterExpression\":" + expression_to_json(v.filterExpression))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillEstimateInputUsageModificationsRequest to a compact JSON object (declaration order).
+def list_bill_estimate_input_usage_modifications_request_to_json(ListBillEstimateInputUsageModificationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billEstimateId\":" + bcm_pricing_calculator_json_str(v.billEstimateId))
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_usage_filter_to_json(x1))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillEstimateLineItemsFilter to a compact JSON object (declaration order).
+def list_bill_estimate_line_items_filter_to_json(ListBillEstimateLineItemsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"values\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.matchOption.is_some():
+        auto u1 = v.matchOption.unwrap()
+        parts.append("\"matchOption\":" + u1.to_json())
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillEstimateLineItemsRequest to a compact JSON object (declaration order).
+def list_bill_estimate_line_items_request_to_json(ListBillEstimateLineItemsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billEstimateId\":" + bcm_pricing_calculator_json_str(v.billEstimateId))
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_bill_estimate_line_items_filter_to_json(x1))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillEstimatesFilter to a compact JSON object (declaration order).
+def list_bill_estimates_filter_to_json(ListBillEstimatesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"values\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.matchOption.is_some():
+        auto u1 = v.matchOption.unwrap()
+        parts.append("\"matchOption\":" + u1.to_json())
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillEstimatesRequest to a compact JSON object (declaration order).
+def list_bill_estimates_request_to_json(ListBillEstimatesRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_bill_estimates_filter_to_json(x1))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.createdAtFilter.is_some():
+        auto u2 = v.createdAtFilter.unwrap()
+        parts.append("\"createdAtFilter\":" + u2.to_json())
+    if v.expiresAtFilter.is_some():
+        auto u3 = v.expiresAtFilter.unwrap()
+        parts.append("\"expiresAtFilter\":" + u3.to_json())
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillScenarioUsageModificationsRequest to a compact JSON object (declaration order).
+def list_bill_scenario_usage_modifications_request_to_json(ListBillScenarioUsageModificationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"billScenarioId\":" + bcm_pricing_calculator_json_str(v.billScenarioId))
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_usage_filter_to_json(x1))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillScenariosFilter to a compact JSON object (declaration order).
+def list_bill_scenarios_filter_to_json(ListBillScenariosFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"values\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.matchOption.is_some():
+        auto u1 = v.matchOption.unwrap()
+        parts.append("\"matchOption\":" + u1.to_json())
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListBillScenariosRequest to a compact JSON object (declaration order).
+def list_bill_scenarios_request_to_json(ListBillScenariosRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_bill_scenarios_filter_to_json(x1))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.createdAtFilter.is_some():
+        auto u2 = v.createdAtFilter.unwrap()
+        parts.append("\"createdAtFilter\":" + u2.to_json())
+    if v.expiresAtFilter.is_some():
+        auto u3 = v.expiresAtFilter.unwrap()
+        parts.append("\"expiresAtFilter\":" + u3.to_json())
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListUsageFilter to a compact JSON object (declaration order).
+def list_usage_filter_to_json(ListUsageFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"values\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.matchOption.is_some():
+        auto u1 = v.matchOption.unwrap()
+        parts.append("\"matchOption\":" + u1.to_json())
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListWorkloadEstimateUsageRequest to a compact JSON object (declaration order).
+def list_workload_estimate_usage_request_to_json(ListWorkloadEstimateUsageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"workloadEstimateId\":" + bcm_pricing_calculator_json_str(v.workloadEstimateId))
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_usage_filter_to_json(x1))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListWorkloadEstimatesFilter to a compact JSON object (declaration order).
+def list_workload_estimates_filter_to_json(ListWorkloadEstimatesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"values\":" + bcm_pricing_calculator_json_arr(e0))
+    if v.matchOption.is_some():
+        auto u1 = v.matchOption.unwrap()
+        parts.append("\"matchOption\":" + u1.to_json())
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize ListWorkloadEstimatesRequest to a compact JSON object (declaration order).
+def list_workload_estimates_request_to_json(ListWorkloadEstimatesRequest v) -> str:
+    list[str] parts = []
+    if v.createdAtFilter.is_some():
+        auto u0 = v.createdAtFilter.unwrap()
+        parts.append("\"createdAtFilter\":" + u0.to_json())
+    if v.expiresAtFilter.is_some():
+        auto u1 = v.expiresAtFilter.unwrap()
+        parts.append("\"expiresAtFilter\":" + u1.to_json())
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(list_workload_estimates_filter_to_json(x3))
+        parts.append("\"filters\":" + bcm_pricing_calculator_json_arr(e3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_pricing_calculator_json_str(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + bcm_pricing_calculator_json_str(v.arn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(bcm_pricing_calculator_json_str(k0) + ":" + bcm_pricing_calculator_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + bcm_pricing_calculator_json_obj(m0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + bcm_pricing_calculator_json_str(v.arn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(bcm_pricing_calculator_json_str(x0))
+    parts.append("\"tagKeys\":" + bcm_pricing_calculator_json_arr(e0))
+    return bcm_pricing_calculator_json_obj(parts)
+
+# Serialize UpdatePreferencesRequest to a compact JSON object (declaration order).
+def update_preferences_request_to_json(UpdatePreferencesRequest v) -> str:
+    list[str] parts = []
+    if v.managementAccountRateTypeSelections.is_some():
+        auto u0 = v.managementAccountRateTypeSelections.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"managementAccountRateTypeSelections\":" + bcm_pricing_calculator_json_arr(e1))
+    if v.memberAccountRateTypeSelections.is_some():
+        auto u2 = v.memberAccountRateTypeSelections.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"memberAccountRateTypeSelections\":" + bcm_pricing_calculator_json_arr(e3))
+    if v.standaloneAccountRateTypeSelections.is_some():
+        auto u4 = v.standaloneAccountRateTypeSelections.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"standaloneAccountRateTypeSelections\":" + bcm_pricing_calculator_json_arr(e5))
+    return bcm_pricing_calculator_json_obj(parts)
 
 # A bound BCM_Pricing_Calculator client: credentials + region, threaded into every operation.
 struct BCM_Pricing_CalculatorClient:
     core.Credentials creds
     str region
+
+    # BatchCreateBillScenarioCommitmentModification
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_create_bill_scenario_commitment_modification(self, BatchCreateBillScenarioCommitmentModificationRequest input) -> str:
+        auto body = batch_create_bill_scenario_commitment_modification_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchCreateBillScenarioCommitmentModification", body)
+
+    # BatchCreateBillScenarioUsageModification
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_bill_scenario_usage_modification(self, BatchCreateBillScenarioUsageModificationRequest input) -> str:
+        auto body = batch_create_bill_scenario_usage_modification_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchCreateBillScenarioUsageModification", body)
+
+    # BatchCreateWorkloadEstimateUsage
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_workload_estimate_usage(self, BatchCreateWorkloadEstimateUsageRequest input) -> str:
+        auto body = batch_create_workload_estimate_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchCreateWorkloadEstimateUsage", body)
+
+    # BatchDeleteBillScenarioCommitmentModification
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_bill_scenario_commitment_modification(self, BatchDeleteBillScenarioCommitmentModificationRequest input) -> str:
+        auto body = batch_delete_bill_scenario_commitment_modification_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchDeleteBillScenarioCommitmentModification", body)
+
+    # BatchDeleteBillScenarioUsageModification
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_delete_bill_scenario_usage_modification(self, BatchDeleteBillScenarioUsageModificationRequest input) -> str:
+        auto body = batch_delete_bill_scenario_usage_modification_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchDeleteBillScenarioUsageModification", body)
+
+    # BatchDeleteWorkloadEstimateUsage
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_delete_workload_estimate_usage(self, BatchDeleteWorkloadEstimateUsageRequest input) -> str:
+        auto body = batch_delete_workload_estimate_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchDeleteWorkloadEstimateUsage", body)
+
+    # BatchUpdateBillScenarioCommitmentModification
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_bill_scenario_commitment_modification(self, BatchUpdateBillScenarioCommitmentModificationRequest input) -> str:
+        auto body = batch_update_bill_scenario_commitment_modification_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchUpdateBillScenarioCommitmentModification", body)
+
+    # BatchUpdateBillScenarioUsageModification
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_update_bill_scenario_usage_modification(self, BatchUpdateBillScenarioUsageModificationRequest input) -> str:
+        auto body = batch_update_bill_scenario_usage_modification_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchUpdateBillScenarioUsageModification", body)
+
+    # BatchUpdateWorkloadEstimateUsage
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_update_workload_estimate_usage(self, BatchUpdateWorkloadEstimateUsageRequest input) -> str:
+        auto body = batch_update_workload_estimate_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "BatchUpdateWorkloadEstimateUsage", body)
+
+    # CreateBillEstimate
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_bill_estimate(self, CreateBillEstimateRequest input) -> str:
+        auto body = create_bill_estimate_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "CreateBillEstimate", body)
+
+    # CreateBillScenario
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_bill_scenario(self, CreateBillScenarioRequest input) -> str:
+        auto body = create_bill_scenario_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "CreateBillScenario", body)
+
+    # CreateWorkloadEstimate
+    # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workload_estimate(self, CreateWorkloadEstimateRequest input) -> str:
+        auto body = create_workload_estimate_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "CreateWorkloadEstimate", body)
 
     # DeleteBillEstimate
     # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ThrottlingException, ValidationException
@@ -1334,17 +1990,71 @@ struct BCM_Pricing_CalculatorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimateInputCommitmentModifications", body)
 
+    # ListBillEstimateInputUsageModifications
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_bill_estimate_input_usage_modifications(self, ListBillEstimateInputUsageModificationsRequest input) -> str:
+        auto body = list_bill_estimate_input_usage_modifications_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimateInputUsageModifications", body)
+
+    # ListBillEstimateLineItems
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_bill_estimate_line_items(self, ListBillEstimateLineItemsRequest input) -> str:
+        auto body = list_bill_estimate_line_items_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimateLineItems", body)
+
+    # ListBillEstimates
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def list_bill_estimates(self, ListBillEstimatesRequest input) -> str:
+        auto body = list_bill_estimates_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimates", body)
+
     # ListBillScenarioCommitmentModifications
     # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_bill_scenario_commitment_modifications(self, ListBillScenarioCommitmentModificationsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillScenarioCommitmentModifications", body)
 
+    # ListBillScenarioUsageModifications
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_bill_scenario_usage_modifications(self, ListBillScenarioUsageModificationsRequest input) -> str:
+        auto body = list_bill_scenario_usage_modifications_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillScenarioUsageModifications", body)
+
+    # ListBillScenarios
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def list_bill_scenarios(self, ListBillScenariosRequest input) -> str:
+        auto body = list_bill_scenarios_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillScenarios", body)
+
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # ListWorkloadEstimateUsage
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_workload_estimate_usage(self, ListWorkloadEstimateUsageRequest input) -> str:
+        auto body = list_workload_estimate_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListWorkloadEstimateUsage", body)
+
+    # ListWorkloadEstimates
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def list_workload_estimates(self, ListWorkloadEstimatesRequest input) -> str:
+        auto body = list_workload_estimates_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListWorkloadEstimates", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateBillEstimate
     # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1357,6 +2067,12 @@ struct BCM_Pricing_CalculatorClient:
     def update_bill_scenario(self, UpdateBillScenarioRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "UpdateBillScenario", body)
+
+    # UpdatePreferences
+    # errors: AccessDeniedException, DataUnavailableException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_preferences(self, UpdatePreferencesRequest input) -> str:
+        auto body = update_preferences_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "UpdatePreferences", body)
 
     # UpdateWorkloadEstimate
     # errors: AccessDeniedException, ConflictException, DataUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1392,6 +2108,48 @@ struct BCM_Pricing_CalculatorClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListBillEstimateInputUsageModifications — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_bill_estimate_input_usage_modifications(self, ListBillEstimateInputUsageModificationsRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_bill_estimate_input_usage_modifications_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimateInputUsageModifications", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillEstimateLineItems — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_bill_estimate_line_items(self, ListBillEstimateLineItemsRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_bill_estimate_line_items_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimateLineItems", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillEstimates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_bill_estimates(self, ListBillEstimatesRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_bill_estimates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillEstimates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListBillScenarioCommitmentModifications — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: items).
     def paginate_list_bill_scenario_commitment_modifications(self, ListBillScenarioCommitmentModificationsRequest input):
@@ -1399,6 +2157,62 @@ struct BCM_Pricing_CalculatorClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillScenarioCommitmentModifications", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillScenarioUsageModifications — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_bill_scenario_usage_modifications(self, ListBillScenarioUsageModificationsRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_bill_scenario_usage_modifications_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillScenarioUsageModifications", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillScenarios — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_bill_scenarios(self, ListBillScenariosRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_bill_scenarios_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListBillScenarios", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWorkloadEstimateUsage — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_workload_estimate_usage(self, ListWorkloadEstimateUsageRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_workload_estimate_usage_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListWorkloadEstimateUsage", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWorkloadEstimates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_workload_estimates(self, ListWorkloadEstimatesRequest input):
+        auto host = endpoints.regional_host(bcm_pricing_calculator_protocol().service, self.region)
+        while True:
+            auto body = list_workload_estimates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_pricing_calculator_protocol(), self.creds, self.region, "ListWorkloadEstimates", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

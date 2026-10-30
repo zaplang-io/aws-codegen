@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 73 operations — 48 with a generated method,
-#   25 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 73 operations — 73 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   163 structs (77 @derive(Json)), 22 enums, 5 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -248,16 +248,18 @@ enum VirtualInterfaceState:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) overrideAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) overrideAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptDirectConnectGatewayAssociationProposalRequest:
     str directConnectGatewayId
     str proposalId
     str associatedGatewayOwnerAccount
     Optional[list[RouteFilterPrefix]] overrideAllowedPrefixesToDirectConnectGateway
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptDirectConnectGatewayAssociationProposalResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
@@ -269,8 +271,9 @@ struct AllocateConnectionOnInterconnectRequest:
     str interconnectId
     int64 vlan
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllocateHostedConnectionRequest:
     str connectionId
     str ownerAccount
@@ -279,34 +282,39 @@ struct AllocateHostedConnectionRequest:
     int64 vlan
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) newPrivateVirtualInterfaceAllocation: NewPrivateVirtualInterfaceAllocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) newPrivateVirtualInterfaceAllocation: NewPrivateVirtualInterfaceAllocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllocatePrivateVirtualInterfaceRequest:
     str connectionId
     str ownerAccount
     NewPrivateVirtualInterfaceAllocation newPrivateVirtualInterfaceAllocation
 
-# no @derive(Json): member(s) newPublicVirtualInterfaceAllocation: NewPublicVirtualInterfaceAllocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) newPublicVirtualInterfaceAllocation: NewPublicVirtualInterfaceAllocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllocatePublicVirtualInterfaceRequest:
     str connectionId
     str ownerAccount
     NewPublicVirtualInterfaceAllocation newPublicVirtualInterfaceAllocation
 
-# no @derive(Json): member(s) newTransitVirtualInterfaceAllocation: NewTransitVirtualInterfaceAllocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) newTransitVirtualInterfaceAllocation: NewTransitVirtualInterfaceAllocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllocateTransitVirtualInterfaceRequest:
     str connectionId
     str ownerAccount
     NewTransitVirtualInterfaceAllocation newTransitVirtualInterfaceAllocation
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllocateTransitVirtualInterfaceResult:
     Optional[VirtualInterface] virtualInterface
 
-# no @derive(Json): member(s) path: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) path: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AsPathSegment:
     Optional[AsPathType] pathType
     Optional[list[int64]] path
@@ -316,15 +324,17 @@ struct AssociateConnectionWithLagRequest:
     str connectionId
     str lagId
 
-# no @derive(Json): member(s) connectionIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateConnectionsToResiliencyGroupRequest:
     list[str] connectionIdentifiers
     str resiliencyGroupId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resiliencyGroupAssociations: list[ResiliencyGroupAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyGroupAssociations: list[ResiliencyGroupAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateConnectionsToResiliencyGroupResult:
     Optional[list[ResiliencyGroupAssociation]] resiliencyGroupAssociations
 
@@ -340,8 +350,9 @@ struct AssociateMacSecKeyRequest:
     Optional[str] ckn
     Optional[str] cak
 
-# no @derive(Json): member(s) macSecKeys: list[MacSecKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) macSecKeys: list[MacSecKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateMacSecKeyResponse:
     Optional[str] connectionId
     Optional[list[MacSecKey]] macSecKeys
@@ -364,8 +375,9 @@ struct AssociatedGateway:
     Optional[str] ownerAccount
     Optional[str] region
 
-# no @derive(Json): member(s) availablePortSpeeds: list[str], includedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) availablePortSpeeds: list[str], includedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AvailableBillingMode:
     Optional[BillingMode] billingMode
     Optional[list[str]] availablePortSpeeds
@@ -428,8 +440,9 @@ struct ConfirmTransitVirtualInterfaceRequest:
 struct ConfirmTransitVirtualInterfaceResponse:
     Optional[VirtualInterfaceState] virtualInterfaceState
 
-# no @derive(Json): member(s) tags: list[Tag], macSecKeys: list[MacSecKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], macSecKeys: list[MacSecKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connection:
     Optional[str] ownerAccount
     Optional[str] connectionId
@@ -461,8 +474,9 @@ struct Connection:
     Optional[int64] prefixPoolUnallocatedCountIpv6
     Optional[BillingMode] billingMode
 
-# no @derive(Json): member(s) connections: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connections: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connections:
     Optional[list[Connection]] connections
     Optional[str] nextToken
@@ -472,13 +486,15 @@ struct CreateBGPPeerRequest:
     Optional[str] virtualInterfaceId
     Optional[NewBGPPeer] newBGPPeer
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBGPPeerResponse:
     Optional[VirtualInterface] virtualInterface
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionRequest:
     str location
     str bandwidth
@@ -489,8 +505,9 @@ struct CreateConnectionRequest:
     Optional[bool] requestMACSec
     Optional[RequestBillingMode] billingMode
 
-# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], removeAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], removeAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationProposalRequest:
     str directConnectGatewayId
     str directConnectGatewayOwnerAccount
@@ -498,38 +515,44 @@ struct CreateDirectConnectGatewayAssociationProposalRequest:
     Optional[list[RouteFilterPrefix]] addAllowedPrefixesToDirectConnectGateway
     Optional[list[RouteFilterPrefix]] removeAllowedPrefixesToDirectConnectGateway
 
-# no @derive(Json): member(s) directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationProposalResult:
     Optional[DirectConnectGatewayAssociationProposal] directConnectGatewayAssociationProposal
 
-# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationRequest:
     str directConnectGatewayId
     Optional[str] gatewayId
     Optional[list[RouteFilterPrefix]] addAllowedPrefixesToDirectConnectGateway
     Optional[str] virtualGatewayId
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayRequest:
     str directConnectGatewayName
     Optional[list[Tag]] tags
     Optional[int64] amazonSideAsn
 
-# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayResult:
     Optional[DirectConnectGateway] directConnectGateway
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInterconnectRequest:
     str interconnectName
     str bandwidth
@@ -539,8 +562,9 @@ struct CreateInterconnectRequest:
     Optional[str] providerName
     Optional[bool] requestMACSec
 
-# no @derive(Json): member(s) tags: list[Tag], childConnectionTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], childConnectionTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLagRequest:
     int64 numberOfConnections
     str location
@@ -553,39 +577,45 @@ struct CreateLagRequest:
     Optional[bool] requestMACSec
     Optional[RequestBillingMode] billingMode
 
-# no @derive(Json): member(s) newPrivateVirtualInterface: NewPrivateVirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) newPrivateVirtualInterface: NewPrivateVirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivateVirtualInterfaceRequest:
     str connectionId
     NewPrivateVirtualInterface newPrivateVirtualInterface
 
-# no @derive(Json): member(s) newPublicVirtualInterface: NewPublicVirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) newPublicVirtualInterface: NewPublicVirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePublicVirtualInterfaceRequest:
     str connectionId
     NewPublicVirtualInterface newPublicVirtualInterface
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResiliencyGroupRequest:
     str resiliencyGroupName
     ResiliencyModel intendedResiliencyModel
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
-# no @derive(Json): member(s) newTransitVirtualInterface: NewTransitVirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) newTransitVirtualInterface: NewTransitVirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransitVirtualInterfaceRequest:
     str connectionId
     NewTransitVirtualInterface newTransitVirtualInterface
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransitVirtualInterfaceResult:
     Optional[VirtualInterface] virtualInterface
 
@@ -602,8 +632,9 @@ struct DeleteBGPPeerRequest:
     Optional[str] customerAddress
     Optional[str] bgpPeerId
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBGPPeerResponse:
     Optional[VirtualInterface] virtualInterface
 
@@ -615,8 +646,9 @@ struct DeleteConnectionRequest:
 struct DeleteDirectConnectGatewayAssociationProposalRequest:
     str proposalId
 
-# no @derive(Json): member(s) directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDirectConnectGatewayAssociationProposalResult:
     Optional[DirectConnectGatewayAssociationProposal] directConnectGatewayAssociationProposal
 
@@ -626,8 +658,9 @@ struct DeleteDirectConnectGatewayAssociationRequest:
     Optional[str] directConnectGatewayId
     Optional[str] virtualGatewayId
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDirectConnectGatewayAssociationResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
@@ -635,8 +668,9 @@ struct DeleteDirectConnectGatewayAssociationResult:
 struct DeleteDirectConnectGatewayRequest:
     str directConnectGatewayId
 
-# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDirectConnectGatewayResult:
     Optional[DirectConnectGateway] directConnectGateway
 
@@ -656,8 +690,9 @@ struct DeleteLagRequest:
 struct DeleteResiliencyGroupRequest:
     str resiliencyGroupId
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
@@ -689,8 +724,9 @@ struct DescribeConnectionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) agreements: list[CustomerAgreement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agreements: list[CustomerAgreement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomerMetadataResponse:
     Optional[list[CustomerAgreement]] agreements
     Optional[NniPartnerType] nniPartnerType
@@ -703,8 +739,9 @@ struct DescribeDirectConnectGatewayAssociationProposalsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) directConnectGatewayAssociationProposals: list[DirectConnectGatewayAssociationProposal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociationProposals: list[DirectConnectGatewayAssociationProposal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewayAssociationProposalsResult:
     Optional[list[DirectConnectGatewayAssociationProposal]] directConnectGatewayAssociationProposals
     Optional[str] nextToken
@@ -718,8 +755,9 @@ struct DescribeDirectConnectGatewayAssociationsRequest:
     Optional[str] nextToken
     Optional[str] virtualGatewayId
 
-# no @derive(Json): member(s) directConnectGatewayAssociations: list[DirectConnectGatewayAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociations: list[DirectConnectGatewayAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewayAssociationsResult:
     Optional[list[DirectConnectGatewayAssociation]] directConnectGatewayAssociations
     Optional[str] nextToken
@@ -731,8 +769,9 @@ struct DescribeDirectConnectGatewayAttachmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) directConnectGatewayAttachments: list[DirectConnectGatewayAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAttachments: list[DirectConnectGatewayAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewayAttachmentsResult:
     Optional[list[DirectConnectGatewayAttachment]] directConnectGatewayAttachments
     Optional[str] nextToken
@@ -743,8 +782,9 @@ struct DescribeDirectConnectGatewaysRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) directConnectGateways: list[DirectConnectGateway] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGateways: list[DirectConnectGateway] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewaysResult:
     Optional[list[DirectConnectGateway]] directConnectGateways
     Optional[str] nextToken
@@ -795,13 +835,15 @@ struct DescribeRouterConfigurationResponse:
     Optional[str] virtualInterfaceId
     Optional[str] virtualInterfaceName
 
-# no @derive(Json): member(s) resourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsRequest:
     list[str] resourceArns
 
-# no @derive(Json): member(s) resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsResponse:
     Optional[list[ResourceTag]] resourceTags
 
@@ -816,8 +858,9 @@ struct DescribeVirtualInterfacesRequest:
 struct DirectConnectClientException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectConnectGateway:
     Optional[str] directConnectGatewayId
     Optional[str] directConnectGatewayName
@@ -828,8 +871,9 @@ struct DirectConnectGateway:
     Optional[int64] totalPrefixPoolAllocations
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) allowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectConnectGatewayAssociation:
     Optional[str] directConnectGatewayId
     Optional[str] directConnectGatewayOwnerAccount
@@ -843,8 +887,9 @@ struct DirectConnectGatewayAssociation:
     Optional[str] virtualGatewayRegion
     Optional[str] virtualGatewayOwnerAccount
 
-# no @derive(Json): member(s) existingAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], requestedAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) existingAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], requestedAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectConnectGatewayAssociationProposal:
     Optional[str] proposalId
     Optional[str] directConnectGatewayId
@@ -873,15 +918,17 @@ struct DisassociateConnectionFromLagRequest:
     str connectionId
     str lagId
 
-# no @derive(Json): member(s) connectionIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateConnectionsFromResiliencyGroupRequest:
     list[str] connectionIdentifiers
     str resiliencyGroupId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resiliencyGroupAssociations: list[ResiliencyGroupAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyGroupAssociations: list[ResiliencyGroupAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateConnectionsFromResiliencyGroupResult:
     Optional[list[ResiliencyGroupAssociation]] resiliencyGroupAssociations
 
@@ -890,8 +937,9 @@ struct DisassociateMacSecKeyRequest:
     str connectionId
     str secretARN
 
-# no @derive(Json): member(s) macSecKeys: list[MacSecKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) macSecKeys: list[MacSecKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateMacSecKeyResponse:
     Optional[str] connectionId
     Optional[list[MacSecKey]] macSecKeys
@@ -905,13 +953,15 @@ struct DuplicateTagKeysException:
 struct GetResiliencyGroupRequest:
     str resiliencyGroupId
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
-# no @derive(Json): member(s) tags: list[Tag], macSecKeys: list[MacSecKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], macSecKeys: list[MacSecKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Interconnect:
     Optional[str] interconnectId
     Optional[str] interconnectName
@@ -933,14 +983,16 @@ struct Interconnect:
     Optional[str] encryptionMode
     Optional[list[MacSecKey]] macSecKeys
 
-# no @derive(Json): member(s) interconnects: list[Interconnect] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) interconnects: list[Interconnect] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Interconnects:
     Optional[list[Interconnect]] interconnects
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connections: list[Connection], tags: list[Tag], macSecKeys: list[MacSecKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connections: list[Connection], tags: list[Tag], macSecKeys: list[MacSecKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Lag:
     Optional[str] connectionsBandwidth
     Optional[int64] numberOfConnections
@@ -970,8 +1022,9 @@ struct Lag:
     Optional[RateLimiterStatus] rateLimiterStatus
     Optional[BillingMode] billingMode
 
-# no @derive(Json): member(s) lags: list[Lag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lags: list[Lag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Lags:
     Optional[list[Lag]] lags
     Optional[str] nextToken
@@ -987,8 +1040,9 @@ struct ListResiliencyGroupAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResiliencyGroupAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ResiliencyGroupAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResiliencyGroupAssociationsResult:
     Optional[list[ResiliencyGroupAssociation]] items
     Optional[str] nextToken
@@ -998,29 +1052,33 @@ struct ListResiliencyGroupsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResiliencyGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ResiliencyGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResiliencyGroupsResult:
     Optional[list[ResiliencyGroupSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: RouteFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: RouteFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualInterfaceRoutesRequest:
     Optional[str] virtualInterfaceId
     Optional[RouteFilters] filters
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualInterfaceRoutesResponse:
     Optional[str] virtualInterfaceId
     Optional[list[Route]] routes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) bgpPeers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bgpPeers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualInterfaceTestHistoryRequest:
     Optional[str] testId
     Optional[str] virtualInterfaceId
@@ -1029,8 +1087,9 @@ struct ListVirtualInterfaceTestHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) virtualInterfaceTestHistory: list[VirtualInterfaceTestHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterfaceTestHistory: list[VirtualInterfaceTestHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualInterfaceTestHistoryResponse:
     Optional[list[VirtualInterfaceTestHistory]] virtualInterfaceTestHistory
     Optional[str] nextToken
@@ -1040,8 +1099,9 @@ struct Loa:
     Optional[bytes] loaContent
     Optional[str] loaContentType
 
-# no @derive(Json): member(s) availablePortSpeeds: list[str], availableProviders: list[str], availableMacSecPortSpeeds: list[str], availableBillingModes: list[AvailableBillingMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) availablePortSpeeds: list[str], availableProviders: list[str], availableMacSecPortSpeeds: list[str], availableBillingModes: list[AvailableBillingMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Location:
     Optional[str] locationCode
     Optional[str] locationName
@@ -1051,8 +1111,9 @@ struct Location:
     Optional[list[str]] availableMacSecPortSpeeds
     Optional[list[AvailableBillingMode]] availableBillingModes
 
-# no @derive(Json): member(s) locations: list[Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) locations: list[Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Locations:
     Optional[list[Location]] locations
 
@@ -1072,8 +1133,9 @@ struct NewBGPPeer:
     Optional[str] amazonAddress
     Optional[str] customerAddress
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewPrivateVirtualInterface:
     str virtualInterfaceName
     int64 vlan
@@ -1092,8 +1154,9 @@ struct NewPrivateVirtualInterface:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewPrivateVirtualInterfaceAllocation:
     str virtualInterfaceName
     int64 vlan
@@ -1107,8 +1170,9 @@ struct NewPrivateVirtualInterfaceAllocation:
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewPublicVirtualInterface:
     str virtualInterfaceName
     int64 vlan
@@ -1122,8 +1186,9 @@ struct NewPublicVirtualInterface:
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewPublicVirtualInterfaceAllocation:
     str virtualInterfaceName
     int64 vlan
@@ -1137,8 +1202,9 @@ struct NewPublicVirtualInterfaceAllocation:
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewTransitVirtualInterface:
     Optional[str] virtualInterfaceName
     Optional[int64] vlan
@@ -1156,8 +1222,9 @@ struct NewTransitVirtualInterface:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewTransitVirtualInterfaceAllocation:
     Optional[str] virtualInterfaceName
     Optional[int64] vlan
@@ -1178,8 +1245,9 @@ struct RateLimiterStatus:
     Optional[int64] remaining
     Optional[str] totalBandwidth
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResiliencyGroup:
     Optional[str] resiliencyGroupId
     Optional[str] resiliencyGroupArn
@@ -1204,14 +1272,16 @@ struct ResiliencyGroupSummary:
     Optional[str] ownerAccount
     Optional[ResiliencyGroupState] state
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceTag:
     Optional[str] resourceArn
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) asPath: list[AsPathSegment], communities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) asPath: list[AsPathSegment], communities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Route:
     Optional[str] cidr
     Optional[RouteDirection] routeDirection
@@ -1225,8 +1295,9 @@ struct Route:
 struct RouteFilterPrefix:
     Optional[str] cidr
 
-# no @derive(Json): member(s) cidrs: list[str], asPath: list[int64], communities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str], asPath: list[int64], communities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteFilters:
     Optional[RouteDirection] routeDirection
     Optional[AddressFamily] addressFamily
@@ -1243,15 +1314,17 @@ struct RouterType:
     Optional[str] xsltTemplateNameForMacSec
     Optional[str] routerTypeIdentifier
 
-# no @derive(Json): member(s) bgpPeers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bgpPeers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBgpFailoverTestRequest:
     str virtualInterfaceId
     Optional[list[str]] bgpPeers
     Optional[int64] testDurationInMinutes
 
-# no @derive(Json): member(s) virtualInterfaceTest: VirtualInterfaceTestHistory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterfaceTest: VirtualInterfaceTestHistory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBgpFailoverTestResponse:
     Optional[VirtualInterfaceTestHistory] virtualInterfaceTest
 
@@ -1259,8 +1332,9 @@ struct StartBgpFailoverTestResponse:
 struct StopBgpFailoverTestRequest:
     str virtualInterfaceId
 
-# no @derive(Json): member(s) virtualInterfaceTest: VirtualInterfaceTestHistory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterfaceTest: VirtualInterfaceTestHistory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopBgpFailoverTestResponse:
     Optional[VirtualInterfaceTestHistory] virtualInterfaceTest
 
@@ -1269,8 +1343,9 @@ struct Tag:
     str key
     Optional[str] value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -1285,8 +1360,9 @@ struct TooManyTagsException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -1302,27 +1378,31 @@ struct UpdateConnectionRequest:
     Optional[str] connectionName
     Optional[str] encryptionMode
 
-# no @derive(Json): member(s) connectionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionsBillingModeRequest:
     list[str] connectionIds
     RequestBillingMode billingMode
 
-# no @derive(Json): member(s) connections: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connections: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionsBillingModeResponse:
     Optional[BillingMode] billingMode
     Optional[list[Connection]] connections
 
-# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], removeAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], removeAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayAssociationRequest:
     Optional[str] associationId
     Optional[list[RouteFilterPrefix]] addAllowedPrefixesToDirectConnectGateway
     Optional[list[RouteFilterPrefix]] removeAllowedPrefixesToDirectConnectGateway
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayAssociationResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
@@ -1331,8 +1411,9 @@ struct UpdateDirectConnectGatewayRequest:
     str directConnectGatewayId
     str newDirectConnectGatewayName
 
-# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayResponse:
     Optional[DirectConnectGateway] directConnectGateway
 
@@ -1349,8 +1430,9 @@ struct UpdateResiliencyGroupRequest:
     str resiliencyGroupName
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
@@ -1369,13 +1451,15 @@ struct VirtualGateway:
     Optional[str] virtualGatewayId
     Optional[str] virtualGatewayState
 
-# no @derive(Json): member(s) virtualGateways: list[VirtualGateway] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualGateways: list[VirtualGateway] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGateways:
     Optional[list[VirtualGateway]] virtualGateways
 
-# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], bgpPeers: list[BGPPeer], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], bgpPeers: list[BGPPeer], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualInterface:
     Optional[str] ownerAccount
     Optional[str] virtualInterfaceId
@@ -1408,8 +1492,9 @@ struct VirtualInterface:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) bgpPeers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bgpPeers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualInterfaceTestHistory:
     Optional[str] testId
     Optional[str] virtualInterfaceId
@@ -1420,8 +1505,9 @@ struct VirtualInterfaceTestHistory:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) virtualInterfaces: list[VirtualInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualInterfaces: list[VirtualInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualInterfaces:
     Optional[list[VirtualInterface]] virtualInterfaces
     Optional[str] nextToken
@@ -1454,38 +1540,707 @@ def directconnect_error_from_code(str code) -> Direct_ConnectError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AcceptDirectConnectGatewayAssociationProposal (input AcceptDirectConnectGatewayAssociationProposalRequest)
-#   AllocateHostedConnection (input AllocateHostedConnectionRequest)
-#   AllocatePrivateVirtualInterface (input AllocatePrivateVirtualInterfaceRequest)
-#   AllocatePublicVirtualInterface (input AllocatePublicVirtualInterfaceRequest)
-#   AllocateTransitVirtualInterface (input AllocateTransitVirtualInterfaceRequest)
-#   AssociateConnectionsToResiliencyGroup (input AssociateConnectionsToResiliencyGroupRequest)
-#   CreateConnection (input CreateConnectionRequest)
-#   CreateDirectConnectGateway (input CreateDirectConnectGatewayRequest)
-#   CreateDirectConnectGatewayAssociation (input CreateDirectConnectGatewayAssociationRequest)
-#   CreateDirectConnectGatewayAssociationProposal (input CreateDirectConnectGatewayAssociationProposalRequest)
-#   CreateInterconnect (input CreateInterconnectRequest)
-#   CreateLag (input CreateLagRequest)
-#   CreatePrivateVirtualInterface (input CreatePrivateVirtualInterfaceRequest)
-#   CreatePublicVirtualInterface (input CreatePublicVirtualInterfaceRequest)
-#   CreateResiliencyGroup (input CreateResiliencyGroupRequest)
-#   CreateTransitVirtualInterface (input CreateTransitVirtualInterfaceRequest)
-#   DescribeTags (input DescribeTagsRequest)
-#   DisassociateConnectionsFromResiliencyGroup (input DisassociateConnectionsFromResiliencyGroupRequest)
-#   ListVirtualInterfaceRoutes (input ListVirtualInterfaceRoutesRequest)
-#   ListVirtualInterfaceTestHistory (input ListVirtualInterfaceTestHistoryRequest)
-#   StartBgpFailoverTest (input StartBgpFailoverTestRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateConnectionsBillingMode (input UpdateConnectionsBillingModeRequest)
-#   UpdateDirectConnectGatewayAssociation (input UpdateDirectConnectGatewayAssociationRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def directconnect_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def directconnect_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def directconnect_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AcceptDirectConnectGatewayAssociationProposalRequest to a compact JSON object (declaration order).
+def accept_direct_connect_gateway_association_proposal_request_to_json(AcceptDirectConnectGatewayAssociationProposalRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"directConnectGatewayId\":" + directconnect_json_str(v.directConnectGatewayId))
+    parts.append("\"proposalId\":" + directconnect_json_str(v.proposalId))
+    parts.append("\"associatedGatewayOwnerAccount\":" + directconnect_json_str(v.associatedGatewayOwnerAccount))
+    if v.overrideAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u0 = v.overrideAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"overrideAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e1))
+    return directconnect_json_obj(parts)
+
+# Serialize AllocateHostedConnectionRequest to a compact JSON object (declaration order).
+def allocate_hosted_connection_request_to_json(AllocateHostedConnectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
+    parts.append("\"bandwidth\":" + directconnect_json_str(v.bandwidth))
+    parts.append("\"connectionName\":" + directconnect_json_str(v.connectionName))
+    parts.append("\"vlan\":" + str(v.vlan))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e1))
+    return directconnect_json_obj(parts)
+
+# Serialize AllocatePrivateVirtualInterfaceRequest to a compact JSON object (declaration order).
+def allocate_private_virtual_interface_request_to_json(AllocatePrivateVirtualInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
+    parts.append("\"newPrivateVirtualInterfaceAllocation\":" + new_private_virtual_interface_allocation_to_json(v.newPrivateVirtualInterfaceAllocation))
+    return directconnect_json_obj(parts)
+
+# Serialize AllocatePublicVirtualInterfaceRequest to a compact JSON object (declaration order).
+def allocate_public_virtual_interface_request_to_json(AllocatePublicVirtualInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
+    parts.append("\"newPublicVirtualInterfaceAllocation\":" + new_public_virtual_interface_allocation_to_json(v.newPublicVirtualInterfaceAllocation))
+    return directconnect_json_obj(parts)
+
+# Serialize AllocateTransitVirtualInterfaceRequest to a compact JSON object (declaration order).
+def allocate_transit_virtual_interface_request_to_json(AllocateTransitVirtualInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
+    parts.append("\"newTransitVirtualInterfaceAllocation\":" + new_transit_virtual_interface_allocation_to_json(v.newTransitVirtualInterfaceAllocation))
+    return directconnect_json_obj(parts)
+
+# Serialize AssociateConnectionsToResiliencyGroupRequest to a compact JSON object (declaration order).
+def associate_connections_to_resiliency_group_request_to_json(AssociateConnectionsToResiliencyGroupRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.connectionIdentifiers:
+        e0.append(directconnect_json_str(x0))
+    parts.append("\"connectionIdentifiers\":" + directconnect_json_arr(e0))
+    parts.append("\"resiliencyGroupId\":" + directconnect_json_str(v.resiliencyGroupId))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + directconnect_json_str(u1))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateConnectionRequest to a compact JSON object (declaration order).
+def create_connection_request_to_json(CreateConnectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"location\":" + directconnect_json_str(v.location))
+    parts.append("\"bandwidth\":" + directconnect_json_str(v.bandwidth))
+    parts.append("\"connectionName\":" + directconnect_json_str(v.connectionName))
+    if v.lagId.is_some():
+        auto u0 = v.lagId.unwrap()
+        parts.append("\"lagId\":" + directconnect_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e2))
+    if v.providerName.is_some():
+        auto u3 = v.providerName.unwrap()
+        parts.append("\"providerName\":" + directconnect_json_str(u3))
+    if v.requestMACSec.is_some():
+        auto u4 = v.requestMACSec.unwrap()
+        parts.append("\"requestMACSec\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.billingMode.is_some():
+        auto u5 = v.billingMode.unwrap()
+        parts.append("\"billingMode\":" + u5.to_json())
+    return directconnect_json_obj(parts)
+
+# Serialize CreateDirectConnectGatewayAssociationProposalRequest to a compact JSON object (declaration order).
+def create_direct_connect_gateway_association_proposal_request_to_json(CreateDirectConnectGatewayAssociationProposalRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"directConnectGatewayId\":" + directconnect_json_str(v.directConnectGatewayId))
+    parts.append("\"directConnectGatewayOwnerAccount\":" + directconnect_json_str(v.directConnectGatewayOwnerAccount))
+    parts.append("\"gatewayId\":" + directconnect_json_str(v.gatewayId))
+    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u0 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"addAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e1))
+    if v.removeAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u2 = v.removeAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"removeAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e3))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateDirectConnectGatewayAssociationRequest to a compact JSON object (declaration order).
+def create_direct_connect_gateway_association_request_to_json(CreateDirectConnectGatewayAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"directConnectGatewayId\":" + directconnect_json_str(v.directConnectGatewayId))
+    if v.gatewayId.is_some():
+        auto u0 = v.gatewayId.unwrap()
+        parts.append("\"gatewayId\":" + directconnect_json_str(u0))
+    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u1 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"addAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e2))
+    if v.virtualGatewayId.is_some():
+        auto u3 = v.virtualGatewayId.unwrap()
+        parts.append("\"virtualGatewayId\":" + directconnect_json_str(u3))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateDirectConnectGatewayRequest to a compact JSON object (declaration order).
+def create_direct_connect_gateway_request_to_json(CreateDirectConnectGatewayRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"directConnectGatewayName\":" + directconnect_json_str(v.directConnectGatewayName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e1))
+    if v.amazonSideAsn.is_some():
+        auto u2 = v.amazonSideAsn.unwrap()
+        parts.append("\"amazonSideAsn\":" + str(u2))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateInterconnectRequest to a compact JSON object (declaration order).
+def create_interconnect_request_to_json(CreateInterconnectRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"interconnectName\":" + directconnect_json_str(v.interconnectName))
+    parts.append("\"bandwidth\":" + directconnect_json_str(v.bandwidth))
+    parts.append("\"location\":" + directconnect_json_str(v.location))
+    if v.lagId.is_some():
+        auto u0 = v.lagId.unwrap()
+        parts.append("\"lagId\":" + directconnect_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e2))
+    if v.providerName.is_some():
+        auto u3 = v.providerName.unwrap()
+        parts.append("\"providerName\":" + directconnect_json_str(u3))
+    if v.requestMACSec.is_some():
+        auto u4 = v.requestMACSec.unwrap()
+        parts.append("\"requestMACSec\":" + json.dumps(JsonValue.Bool(u4)))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateLagRequest to a compact JSON object (declaration order).
+def create_lag_request_to_json(CreateLagRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"numberOfConnections\":" + str(v.numberOfConnections))
+    parts.append("\"location\":" + directconnect_json_str(v.location))
+    parts.append("\"connectionsBandwidth\":" + directconnect_json_str(v.connectionsBandwidth))
+    parts.append("\"lagName\":" + directconnect_json_str(v.lagName))
+    if v.connectionId.is_some():
+        auto u0 = v.connectionId.unwrap()
+        parts.append("\"connectionId\":" + directconnect_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e2))
+    if v.childConnectionTags.is_some():
+        auto u3 = v.childConnectionTags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"childConnectionTags\":" + directconnect_json_arr(e4))
+    if v.providerName.is_some():
+        auto u5 = v.providerName.unwrap()
+        parts.append("\"providerName\":" + directconnect_json_str(u5))
+    if v.requestMACSec.is_some():
+        auto u6 = v.requestMACSec.unwrap()
+        parts.append("\"requestMACSec\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.billingMode.is_some():
+        auto u7 = v.billingMode.unwrap()
+        parts.append("\"billingMode\":" + u7.to_json())
+    return directconnect_json_obj(parts)
+
+# Serialize CreatePrivateVirtualInterfaceRequest to a compact JSON object (declaration order).
+def create_private_virtual_interface_request_to_json(CreatePrivateVirtualInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"newPrivateVirtualInterface\":" + new_private_virtual_interface_to_json(v.newPrivateVirtualInterface))
+    return directconnect_json_obj(parts)
+
+# Serialize CreatePublicVirtualInterfaceRequest to a compact JSON object (declaration order).
+def create_public_virtual_interface_request_to_json(CreatePublicVirtualInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"newPublicVirtualInterface\":" + new_public_virtual_interface_to_json(v.newPublicVirtualInterface))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateResiliencyGroupRequest to a compact JSON object (declaration order).
+def create_resiliency_group_request_to_json(CreateResiliencyGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resiliencyGroupName\":" + directconnect_json_str(v.resiliencyGroupName))
+    parts.append("\"intendedResiliencyModel\":" + v.intendedResiliencyModel.to_json())
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + directconnect_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e2))
+    return directconnect_json_obj(parts)
+
+# Serialize CreateTransitVirtualInterfaceRequest to a compact JSON object (declaration order).
+def create_transit_virtual_interface_request_to_json(CreateTransitVirtualInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
+    parts.append("\"newTransitVirtualInterface\":" + new_transit_virtual_interface_to_json(v.newTransitVirtualInterface))
+    return directconnect_json_obj(parts)
+
+# Serialize DescribeTagsRequest to a compact JSON object (declaration order).
+def describe_tags_request_to_json(DescribeTagsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.resourceArns:
+        e0.append(directconnect_json_str(x0))
+    parts.append("\"resourceArns\":" + directconnect_json_arr(e0))
+    return directconnect_json_obj(parts)
+
+# Serialize DisassociateConnectionsFromResiliencyGroupRequest to a compact JSON object (declaration order).
+def disassociate_connections_from_resiliency_group_request_to_json(DisassociateConnectionsFromResiliencyGroupRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.connectionIdentifiers:
+        e0.append(directconnect_json_str(x0))
+    parts.append("\"connectionIdentifiers\":" + directconnect_json_arr(e0))
+    parts.append("\"resiliencyGroupId\":" + directconnect_json_str(v.resiliencyGroupId))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + directconnect_json_str(u1))
+    return directconnect_json_obj(parts)
+
+# Serialize ListVirtualInterfaceRoutesRequest to a compact JSON object (declaration order).
+def list_virtual_interface_routes_request_to_json(ListVirtualInterfaceRoutesRequest v) -> str:
+    list[str] parts = []
+    if v.virtualInterfaceId.is_some():
+        auto u0 = v.virtualInterfaceId.unwrap()
+        parts.append("\"virtualInterfaceId\":" + directconnect_json_str(u0))
+    if v.filters.is_some():
+        auto u1 = v.filters.unwrap()
+        parts.append("\"filters\":" + route_filters_to_json(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + directconnect_json_str(u3))
+    return directconnect_json_obj(parts)
+
+# Serialize ListVirtualInterfaceTestHistoryRequest to a compact JSON object (declaration order).
+def list_virtual_interface_test_history_request_to_json(ListVirtualInterfaceTestHistoryRequest v) -> str:
+    list[str] parts = []
+    if v.testId.is_some():
+        auto u0 = v.testId.unwrap()
+        parts.append("\"testId\":" + directconnect_json_str(u0))
+    if v.virtualInterfaceId.is_some():
+        auto u1 = v.virtualInterfaceId.unwrap()
+        parts.append("\"virtualInterfaceId\":" + directconnect_json_str(u1))
+    if v.bgpPeers.is_some():
+        auto u2 = v.bgpPeers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(directconnect_json_str(x3))
+        parts.append("\"bgpPeers\":" + directconnect_json_arr(e3))
+    if v.status.is_some():
+        auto u4 = v.status.unwrap()
+        parts.append("\"status\":" + directconnect_json_str(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    if v.nextToken.is_some():
+        auto u6 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + directconnect_json_str(u6))
+    return directconnect_json_obj(parts)
+
+# Serialize NewPrivateVirtualInterface to a compact JSON object (declaration order).
+def new_private_virtual_interface_to_json(NewPrivateVirtualInterface v) -> str:
+    list[str] parts = []
+    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
+    parts.append("\"vlan\":" + str(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        parts.append("\"asn\":" + str(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        parts.append("\"asnLong\":" + str(u1))
+    if v.mtu.is_some():
+        auto u2 = v.mtu.unwrap()
+        parts.append("\"mtu\":" + str(u2))
+    if v.authKey.is_some():
+        auto u3 = v.authKey.unwrap()
+        parts.append("\"authKey\":" + directconnect_json_str(u3))
+    if v.amazonAddress.is_some():
+        auto u4 = v.amazonAddress.unwrap()
+        parts.append("\"amazonAddress\":" + directconnect_json_str(u4))
+    if v.customerAddress.is_some():
+        auto u5 = v.customerAddress.unwrap()
+        parts.append("\"customerAddress\":" + directconnect_json_str(u5))
+    if v.addressFamily.is_some():
+        auto u6 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u6.to_json())
+    if v.virtualGatewayId.is_some():
+        auto u7 = v.virtualGatewayId.unwrap()
+        parts.append("\"virtualGatewayId\":" + directconnect_json_str(u7))
+    if v.directConnectGatewayId.is_some():
+        auto u8 = v.directConnectGatewayId.unwrap()
+        parts.append("\"directConnectGatewayId\":" + directconnect_json_str(u8))
+    if v.tags.is_some():
+        auto u9 = v.tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e10))
+    if v.enableSiteLink.is_some():
+        auto u11 = v.enableSiteLink.unwrap()
+        parts.append("\"enableSiteLink\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.prefixPoolAllocatedCountIpv4.is_some():
+        auto u12 = v.prefixPoolAllocatedCountIpv4.unwrap()
+        parts.append("\"prefixPoolAllocatedCountIpv4\":" + str(u12))
+    if v.prefixPoolAllocatedCountIpv6.is_some():
+        auto u13 = v.prefixPoolAllocatedCountIpv6.unwrap()
+        parts.append("\"prefixPoolAllocatedCountIpv6\":" + str(u13))
+    if v.rateLimit.is_some():
+        auto u14 = v.rateLimit.unwrap()
+        parts.append("\"rateLimit\":" + directconnect_json_str(u14))
+    return directconnect_json_obj(parts)
+
+# Serialize NewPrivateVirtualInterfaceAllocation to a compact JSON object (declaration order).
+def new_private_virtual_interface_allocation_to_json(NewPrivateVirtualInterfaceAllocation v) -> str:
+    list[str] parts = []
+    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
+    parts.append("\"vlan\":" + str(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        parts.append("\"asn\":" + str(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        parts.append("\"asnLong\":" + str(u1))
+    if v.mtu.is_some():
+        auto u2 = v.mtu.unwrap()
+        parts.append("\"mtu\":" + str(u2))
+    if v.authKey.is_some():
+        auto u3 = v.authKey.unwrap()
+        parts.append("\"authKey\":" + directconnect_json_str(u3))
+    if v.amazonAddress.is_some():
+        auto u4 = v.amazonAddress.unwrap()
+        parts.append("\"amazonAddress\":" + directconnect_json_str(u4))
+    if v.addressFamily.is_some():
+        auto u5 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u5.to_json())
+    if v.customerAddress.is_some():
+        auto u6 = v.customerAddress.unwrap()
+        parts.append("\"customerAddress\":" + directconnect_json_str(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e8))
+    if v.rateLimit.is_some():
+        auto u9 = v.rateLimit.unwrap()
+        parts.append("\"rateLimit\":" + directconnect_json_str(u9))
+    return directconnect_json_obj(parts)
+
+# Serialize NewPublicVirtualInterface to a compact JSON object (declaration order).
+def new_public_virtual_interface_to_json(NewPublicVirtualInterface v) -> str:
+    list[str] parts = []
+    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
+    parts.append("\"vlan\":" + str(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        parts.append("\"asn\":" + str(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        parts.append("\"asnLong\":" + str(u1))
+    if v.authKey.is_some():
+        auto u2 = v.authKey.unwrap()
+        parts.append("\"authKey\":" + directconnect_json_str(u2))
+    if v.amazonAddress.is_some():
+        auto u3 = v.amazonAddress.unwrap()
+        parts.append("\"amazonAddress\":" + directconnect_json_str(u3))
+    if v.customerAddress.is_some():
+        auto u4 = v.customerAddress.unwrap()
+        parts.append("\"customerAddress\":" + directconnect_json_str(u4))
+    if v.addressFamily.is_some():
+        auto u5 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u5.to_json())
+    if v.routeFilterPrefixes.is_some():
+        auto u6 = v.routeFilterPrefixes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"routeFilterPrefixes\":" + directconnect_json_arr(e7))
+    if v.tags.is_some():
+        auto u8 = v.tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e9))
+    if v.rateLimit.is_some():
+        auto u10 = v.rateLimit.unwrap()
+        parts.append("\"rateLimit\":" + directconnect_json_str(u10))
+    return directconnect_json_obj(parts)
+
+# Serialize NewPublicVirtualInterfaceAllocation to a compact JSON object (declaration order).
+def new_public_virtual_interface_allocation_to_json(NewPublicVirtualInterfaceAllocation v) -> str:
+    list[str] parts = []
+    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
+    parts.append("\"vlan\":" + str(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        parts.append("\"asn\":" + str(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        parts.append("\"asnLong\":" + str(u1))
+    if v.authKey.is_some():
+        auto u2 = v.authKey.unwrap()
+        parts.append("\"authKey\":" + directconnect_json_str(u2))
+    if v.amazonAddress.is_some():
+        auto u3 = v.amazonAddress.unwrap()
+        parts.append("\"amazonAddress\":" + directconnect_json_str(u3))
+    if v.customerAddress.is_some():
+        auto u4 = v.customerAddress.unwrap()
+        parts.append("\"customerAddress\":" + directconnect_json_str(u4))
+    if v.addressFamily.is_some():
+        auto u5 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u5.to_json())
+    if v.routeFilterPrefixes.is_some():
+        auto u6 = v.routeFilterPrefixes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"routeFilterPrefixes\":" + directconnect_json_arr(e7))
+    if v.tags.is_some():
+        auto u8 = v.tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e9))
+    if v.rateLimit.is_some():
+        auto u10 = v.rateLimit.unwrap()
+        parts.append("\"rateLimit\":" + directconnect_json_str(u10))
+    return directconnect_json_obj(parts)
+
+# Serialize NewTransitVirtualInterface to a compact JSON object (declaration order).
+def new_transit_virtual_interface_to_json(NewTransitVirtualInterface v) -> str:
+    list[str] parts = []
+    if v.virtualInterfaceName.is_some():
+        auto u0 = v.virtualInterfaceName.unwrap()
+        parts.append("\"virtualInterfaceName\":" + directconnect_json_str(u0))
+    if v.vlan.is_some():
+        auto u1 = v.vlan.unwrap()
+        parts.append("\"vlan\":" + str(u1))
+    if v.asn.is_some():
+        auto u2 = v.asn.unwrap()
+        parts.append("\"asn\":" + str(u2))
+    if v.asnLong.is_some():
+        auto u3 = v.asnLong.unwrap()
+        parts.append("\"asnLong\":" + str(u3))
+    if v.mtu.is_some():
+        auto u4 = v.mtu.unwrap()
+        parts.append("\"mtu\":" + str(u4))
+    if v.authKey.is_some():
+        auto u5 = v.authKey.unwrap()
+        parts.append("\"authKey\":" + directconnect_json_str(u5))
+    if v.amazonAddress.is_some():
+        auto u6 = v.amazonAddress.unwrap()
+        parts.append("\"amazonAddress\":" + directconnect_json_str(u6))
+    if v.customerAddress.is_some():
+        auto u7 = v.customerAddress.unwrap()
+        parts.append("\"customerAddress\":" + directconnect_json_str(u7))
+    if v.addressFamily.is_some():
+        auto u8 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u8.to_json())
+    if v.directConnectGatewayId.is_some():
+        auto u9 = v.directConnectGatewayId.unwrap()
+        parts.append("\"directConnectGatewayId\":" + directconnect_json_str(u9))
+    if v.tags.is_some():
+        auto u10 = v.tags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e11))
+    if v.enableSiteLink.is_some():
+        auto u12 = v.enableSiteLink.unwrap()
+        parts.append("\"enableSiteLink\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.prefixPoolAllocatedCountIpv4.is_some():
+        auto u13 = v.prefixPoolAllocatedCountIpv4.unwrap()
+        parts.append("\"prefixPoolAllocatedCountIpv4\":" + str(u13))
+    if v.prefixPoolAllocatedCountIpv6.is_some():
+        auto u14 = v.prefixPoolAllocatedCountIpv6.unwrap()
+        parts.append("\"prefixPoolAllocatedCountIpv6\":" + str(u14))
+    if v.rateLimit.is_some():
+        auto u15 = v.rateLimit.unwrap()
+        parts.append("\"rateLimit\":" + directconnect_json_str(u15))
+    return directconnect_json_obj(parts)
+
+# Serialize NewTransitVirtualInterfaceAllocation to a compact JSON object (declaration order).
+def new_transit_virtual_interface_allocation_to_json(NewTransitVirtualInterfaceAllocation v) -> str:
+    list[str] parts = []
+    if v.virtualInterfaceName.is_some():
+        auto u0 = v.virtualInterfaceName.unwrap()
+        parts.append("\"virtualInterfaceName\":" + directconnect_json_str(u0))
+    if v.vlan.is_some():
+        auto u1 = v.vlan.unwrap()
+        parts.append("\"vlan\":" + str(u1))
+    if v.asn.is_some():
+        auto u2 = v.asn.unwrap()
+        parts.append("\"asn\":" + str(u2))
+    if v.asnLong.is_some():
+        auto u3 = v.asnLong.unwrap()
+        parts.append("\"asnLong\":" + str(u3))
+    if v.mtu.is_some():
+        auto u4 = v.mtu.unwrap()
+        parts.append("\"mtu\":" + str(u4))
+    if v.authKey.is_some():
+        auto u5 = v.authKey.unwrap()
+        parts.append("\"authKey\":" + directconnect_json_str(u5))
+    if v.amazonAddress.is_some():
+        auto u6 = v.amazonAddress.unwrap()
+        parts.append("\"amazonAddress\":" + directconnect_json_str(u6))
+    if v.customerAddress.is_some():
+        auto u7 = v.customerAddress.unwrap()
+        parts.append("\"customerAddress\":" + directconnect_json_str(u7))
+    if v.addressFamily.is_some():
+        auto u8 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u8.to_json())
+    if v.tags.is_some():
+        auto u9 = v.tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"tags\":" + directconnect_json_arr(e10))
+    if v.rateLimit.is_some():
+        auto u11 = v.rateLimit.unwrap()
+        parts.append("\"rateLimit\":" + directconnect_json_str(u11))
+    return directconnect_json_obj(parts)
+
+# Serialize RouteFilters to a compact JSON object (declaration order).
+def route_filters_to_json(RouteFilters v) -> str:
+    list[str] parts = []
+    if v.routeDirection.is_some():
+        auto u0 = v.routeDirection.unwrap()
+        parts.append("\"routeDirection\":" + u0.to_json())
+    if v.addressFamily.is_some():
+        auto u1 = v.addressFamily.unwrap()
+        parts.append("\"addressFamily\":" + u1.to_json())
+    if v.cidrs.is_some():
+        auto u2 = v.cidrs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(directconnect_json_str(x3))
+        parts.append("\"cidrs\":" + directconnect_json_arr(e3))
+    if v.asPath.is_some():
+        auto u4 = v.asPath.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(x5))
+        parts.append("\"asPath\":" + directconnect_json_arr(e5))
+    if v.communities.is_some():
+        auto u6 = v.communities.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(directconnect_json_str(x7))
+        parts.append("\"communities\":" + directconnect_json_arr(e7))
+    return directconnect_json_obj(parts)
+
+# Serialize StartBgpFailoverTestRequest to a compact JSON object (declaration order).
+def start_bgp_failover_test_request_to_json(StartBgpFailoverTestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"virtualInterfaceId\":" + directconnect_json_str(v.virtualInterfaceId))
+    if v.bgpPeers.is_some():
+        auto u0 = v.bgpPeers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(directconnect_json_str(x1))
+        parts.append("\"bgpPeers\":" + directconnect_json_arr(e1))
+    if v.testDurationInMinutes.is_some():
+        auto u2 = v.testDurationInMinutes.unwrap()
+        parts.append("\"testDurationInMinutes\":" + str(u2))
+    return directconnect_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + directconnect_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + directconnect_json_arr(e0))
+    return directconnect_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + directconnect_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(directconnect_json_str(x0))
+    parts.append("\"tagKeys\":" + directconnect_json_arr(e0))
+    return directconnect_json_obj(parts)
+
+# Serialize UpdateConnectionsBillingModeRequest to a compact JSON object (declaration order).
+def update_connections_billing_mode_request_to_json(UpdateConnectionsBillingModeRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.connectionIds:
+        e0.append(directconnect_json_str(x0))
+    parts.append("\"connectionIds\":" + directconnect_json_arr(e0))
+    parts.append("\"billingMode\":" + v.billingMode.to_json())
+    return directconnect_json_obj(parts)
+
+# Serialize UpdateDirectConnectGatewayAssociationRequest to a compact JSON object (declaration order).
+def update_direct_connect_gateway_association_request_to_json(UpdateDirectConnectGatewayAssociationRequest v) -> str:
+    list[str] parts = []
+    if v.associationId.is_some():
+        auto u0 = v.associationId.unwrap()
+        parts.append("\"associationId\":" + directconnect_json_str(u0))
+    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u1 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"addAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e2))
+    if v.removeAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u3 = v.removeAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"removeAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e4))
+    return directconnect_json_obj(parts)
 
 # A bound Direct_Connect client: credentials + region, threaded into every operation.
 struct Direct_ConnectClient:
     core.Credentials creds
     str region
+
+    # AcceptDirectConnectGatewayAssociationProposal
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def accept_direct_connect_gateway_association_proposal(self, AcceptDirectConnectGatewayAssociationProposalRequest input) -> str:
+        auto body = accept_direct_connect_gateway_association_proposal_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AcceptDirectConnectGatewayAssociationProposal", body)
 
     # AllocateConnectionOnInterconnect
     # errors: DirectConnectClientException, DirectConnectServerException
@@ -1493,11 +2248,41 @@ struct Direct_ConnectClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocateConnectionOnInterconnect", body)
 
+    # AllocateHostedConnection
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
+    def allocate_hosted_connection(self, AllocateHostedConnectionRequest input) -> str:
+        auto body = allocate_hosted_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocateHostedConnection", body)
+
+    # AllocatePrivateVirtualInterface
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def allocate_private_virtual_interface(self, AllocatePrivateVirtualInterfaceRequest input) -> str:
+        auto body = allocate_private_virtual_interface_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocatePrivateVirtualInterface", body)
+
+    # AllocatePublicVirtualInterface
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def allocate_public_virtual_interface(self, AllocatePublicVirtualInterfaceRequest input) -> str:
+        auto body = allocate_public_virtual_interface_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocatePublicVirtualInterface", body)
+
+    # AllocateTransitVirtualInterface
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def allocate_transit_virtual_interface(self, AllocateTransitVirtualInterfaceRequest input) -> str:
+        auto body = allocate_transit_virtual_interface_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocateTransitVirtualInterface", body)
+
     # AssociateConnectionWithLag
     # errors: DirectConnectClientException, DirectConnectServerException, LimitExceededException
     def associate_connection_with_lag(self, AssociateConnectionWithLagRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateConnectionWithLag", body)
+
+    # AssociateConnectionsToResiliencyGroup
+    # errors: DirectConnectClientException, DirectConnectServerException, LimitExceededException
+    def associate_connections_to_resiliency_group(self, AssociateConnectionsToResiliencyGroupRequest input) -> str:
+        auto body = associate_connections_to_resiliency_group_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateConnectionsToResiliencyGroup", body)
 
     # AssociateHostedConnection
     # errors: DirectConnectClientException, DirectConnectServerException
@@ -1552,6 +2337,66 @@ struct Direct_ConnectClient:
     def create_bgp_peer(self, CreateBGPPeerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateBGPPeer", body)
+
+    # CreateConnection
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
+    def create_connection(self, CreateConnectionRequest input) -> str:
+        auto body = create_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateConnection", body)
+
+    # CreateDirectConnectGateway
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def create_direct_connect_gateway(self, CreateDirectConnectGatewayRequest input) -> str:
+        auto body = create_direct_connect_gateway_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateDirectConnectGateway", body)
+
+    # CreateDirectConnectGatewayAssociation
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def create_direct_connect_gateway_association(self, CreateDirectConnectGatewayAssociationRequest input) -> str:
+        auto body = create_direct_connect_gateway_association_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateDirectConnectGatewayAssociation", body)
+
+    # CreateDirectConnectGatewayAssociationProposal
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def create_direct_connect_gateway_association_proposal(self, CreateDirectConnectGatewayAssociationProposalRequest input) -> str:
+        auto body = create_direct_connect_gateway_association_proposal_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateDirectConnectGatewayAssociationProposal", body)
+
+    # CreateInterconnect
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
+    def create_interconnect(self, CreateInterconnectRequest input) -> str:
+        auto body = create_interconnect_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateInterconnect", body)
+
+    # CreateLag
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
+    def create_lag(self, CreateLagRequest input) -> str:
+        auto body = create_lag_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateLag", body)
+
+    # CreatePrivateVirtualInterface
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def create_private_virtual_interface(self, CreatePrivateVirtualInterfaceRequest input) -> str:
+        auto body = create_private_virtual_interface_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreatePrivateVirtualInterface", body)
+
+    # CreatePublicVirtualInterface
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def create_public_virtual_interface(self, CreatePublicVirtualInterfaceRequest input) -> str:
+        auto body = create_public_virtual_interface_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreatePublicVirtualInterface", body)
+
+    # CreateResiliencyGroup
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def create_resiliency_group(self, CreateResiliencyGroupRequest input) -> str:
+        auto body = create_resiliency_group_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateResiliencyGroup", body)
+
+    # CreateTransitVirtualInterface
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
+    def create_transit_virtual_interface(self, CreateTransitVirtualInterfaceRequest input) -> str:
+        auto body = create_transit_virtual_interface_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateTransitVirtualInterface", body)
 
     # DeleteBGPPeer
     # errors: DirectConnectClientException, DirectConnectServerException
@@ -1697,6 +2542,12 @@ struct Direct_ConnectClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeRouterConfiguration", body)
 
+    # DescribeTags
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def describe_tags(self, DescribeTagsRequest input) -> str:
+        auto body = describe_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeTags", body)
+
     # DescribeVirtualGateways
     # errors: DirectConnectClientException, DirectConnectServerException
     def describe_virtual_gateways(self) -> str:
@@ -1714,6 +2565,12 @@ struct Direct_ConnectClient:
     def disassociate_connection_from_lag(self, DisassociateConnectionFromLagRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DisassociateConnectionFromLag", body)
+
+    # DisassociateConnectionsFromResiliencyGroup
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def disassociate_connections_from_resiliency_group(self, DisassociateConnectionsFromResiliencyGroupRequest input) -> str:
+        auto body = disassociate_connections_from_resiliency_group_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DisassociateConnectionsFromResiliencyGroup", body)
 
     # DisassociateMacSecKey
     # errors: DirectConnectClientException, DirectConnectServerException
@@ -1739,11 +2596,41 @@ struct Direct_ConnectClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListResiliencyGroups", body)
 
+    # ListVirtualInterfaceRoutes
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def list_virtual_interface_routes(self, ListVirtualInterfaceRoutesRequest input) -> str:
+        auto body = list_virtual_interface_routes_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListVirtualInterfaceRoutes", body)
+
+    # ListVirtualInterfaceTestHistory
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def list_virtual_interface_test_history(self, ListVirtualInterfaceTestHistoryRequest input) -> str:
+        auto body = list_virtual_interface_test_history_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListVirtualInterfaceTestHistory", body)
+
+    # StartBgpFailoverTest
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def start_bgp_failover_test(self, StartBgpFailoverTestRequest input) -> str:
+        auto body = start_bgp_failover_test_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "StartBgpFailoverTest", body)
+
     # StopBgpFailoverTest
     # errors: DirectConnectClientException, DirectConnectServerException
     def stop_bgp_failover_test(self, StopBgpFailoverTestRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "StopBgpFailoverTest", body)
+
+    # TagResource
+    # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateConnection
     # errors: DirectConnectClientException, DirectConnectServerException
@@ -1751,11 +2638,23 @@ struct Direct_ConnectClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateConnection", body)
 
+    # UpdateConnectionsBillingMode
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def update_connections_billing_mode(self, UpdateConnectionsBillingModeRequest input) -> str:
+        auto body = update_connections_billing_mode_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateConnectionsBillingMode", body)
+
     # UpdateDirectConnectGateway
     # errors: DirectConnectClientException, DirectConnectServerException
     def update_direct_connect_gateway(self, UpdateDirectConnectGatewayRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateDirectConnectGateway", body)
+
+    # UpdateDirectConnectGatewayAssociation
+    # errors: DirectConnectClientException, DirectConnectServerException
+    def update_direct_connect_gateway_association(self, UpdateDirectConnectGatewayAssociationRequest input) -> str:
+        auto body = update_direct_connect_gateway_association_request_to_json(input)
+        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateDirectConnectGatewayAssociation", body)
 
     # UpdateLag
     # errors: DirectConnectClientException, DirectConnectServerException

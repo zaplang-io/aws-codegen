@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 12 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 19 operations — 18 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   53 structs (25 @derive(Json)), 5 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -112,13 +112,15 @@ struct ApplyPendingMaintenanceActionInput:
     OptInType optInType
     str resourceArn
 
-# no @derive(Json): member(s) resourcePendingMaintenanceAction: ResourcePendingMaintenanceAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcePendingMaintenanceAction: ResourcePendingMaintenanceAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplyPendingMaintenanceActionOutput:
     ResourcePendingMaintenanceAction resourcePendingMaintenanceAction
 
-# no @derive(Json): member(s) shards: list[Shard], subnetIds: list[str], vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) shards: list[Shard], subnetIds: list[str], vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     str adminUserName
     Auth authType
@@ -144,8 +146,9 @@ struct ClusterInList:
     str clusterName
     Status status
 
-# no @derive(Json): member(s) subnetIds: list[str], vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSnapshot:
     str adminUserName
     str clusterArn
@@ -182,8 +185,9 @@ struct CopyClusterSnapshotInput:
     Optional[dict[str, str]] tags
     str targetSnapshotName
 
-# no @derive(Json): member(s) snapshot: ClusterSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: ClusterSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyClusterSnapshotOutput:
     ClusterSnapshot snapshot
 
@@ -206,8 +210,9 @@ struct CreateClusterInput:
     Optional[dict[str, str]] tags
     Optional[list[str]] vpcSecurityGroupIds
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterOutput:
     Cluster cluster
 
@@ -218,8 +223,9 @@ struct CreateClusterSnapshotInput:
     str snapshotName
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) snapshot: ClusterSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: ClusterSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterSnapshotOutput:
     ClusterSnapshot snapshot
 
@@ -228,8 +234,9 @@ struct CreateClusterSnapshotOutput:
 struct DeleteClusterInput:
     str clusterArn
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterOutput:
     Cluster cluster
 
@@ -238,8 +245,9 @@ struct DeleteClusterOutput:
 struct DeleteClusterSnapshotInput:
     str snapshotArn
 
-# no @derive(Json): member(s) snapshot: ClusterSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: ClusterSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterSnapshotOutput:
     ClusterSnapshot snapshot
 
@@ -248,8 +256,9 @@ struct DeleteClusterSnapshotOutput:
 struct GetClusterInput:
     str clusterArn
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClusterOutput:
     Cluster cluster
 
@@ -258,8 +267,9 @@ struct GetClusterOutput:
 struct GetClusterSnapshotInput:
     str snapshotArn
 
-# no @derive(Json): member(s) snapshot: ClusterSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: ClusterSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClusterSnapshotOutput:
     ClusterSnapshot snapshot
 
@@ -268,8 +278,9 @@ struct GetClusterSnapshotOutput:
 struct GetPendingMaintenanceActionInput:
     str resourceArn
 
-# no @derive(Json): member(s) resourcePendingMaintenanceAction: ResourcePendingMaintenanceAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcePendingMaintenanceAction: ResourcePendingMaintenanceAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPendingMaintenanceActionOutput:
     ResourcePendingMaintenanceAction resourcePendingMaintenanceAction
 
@@ -285,8 +296,9 @@ struct ListClusterSnapshotsInput:
     Optional[str] nextToken
     Optional[str] snapshotType
 
-# no @derive(Json): member(s) snapshots: list[ClusterSnapshotInList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[ClusterSnapshotInList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterSnapshotsOutput:
     Optional[str] nextToken
     Optional[list[ClusterSnapshotInList]] snapshots
@@ -297,8 +309,9 @@ struct ListClustersInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) clusters: list[ClusterInList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[ClusterInList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersOutput:
     Optional[list[ClusterInList]] clusters
     Optional[str] nextToken
@@ -309,8 +322,9 @@ struct ListPendingMaintenanceActionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourcePendingMaintenanceActions: list[ResourcePendingMaintenanceAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcePendingMaintenanceActions: list[ResourcePendingMaintenanceAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPendingMaintenanceActionsOutput:
     Optional[str] nextToken
     list[ResourcePendingMaintenanceAction] resourcePendingMaintenanceActions
@@ -320,8 +334,9 @@ struct ListPendingMaintenanceActionsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -340,8 +355,9 @@ struct ResourceNotFoundException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) pendingMaintenanceActionDetails: list[PendingMaintenanceActionDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pendingMaintenanceActionDetails: list[PendingMaintenanceActionDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcePendingMaintenanceAction:
     Optional[list[PendingMaintenanceActionDetails]] pendingMaintenanceActionDetails
     Optional[str] resourceArn
@@ -358,8 +374,9 @@ struct RestoreClusterFromSnapshotInput:
     Optional[dict[str, str]] tags
     Optional[list[str]] vpcSecurityGroupIds
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreClusterFromSnapshotOutput:
     Cluster cluster
 
@@ -378,8 +395,9 @@ struct Shard:
 struct StartClusterInput:
     str clusterArn
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartClusterOutput:
     Cluster cluster
 
@@ -388,8 +406,9 @@ struct StartClusterOutput:
 struct StopClusterInput:
     str clusterArn
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopClusterOutput:
     Cluster cluster
 
@@ -436,13 +455,15 @@ struct UpdateClusterInput:
     Optional[list[str]] subnetIds
     Optional[list[str]] vpcSecurityGroupIds
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterOutput:
     Cluster cluster
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[list[ValidationExceptionField]] fieldList
     str message
@@ -491,13 +512,7 @@ def docdb_elastic_error_from_code(str code) -> DocDB_ElasticError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CopyClusterSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateCluster (document member `subnetIds: list[str]` is not serializable by derive)
-#   CreateClusterSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   RestoreClusterFromSnapshot (document member `subnetIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateCluster (document member `subnetIds: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -522,6 +537,98 @@ struct DocDB_ElasticClient:
         auto b = binding.HttpBinding(method="POST", path_template="/pending-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ApplyPendingMaintenanceActionDocument(applyAction=input.applyAction, applyOn=input.applyOn, optInType=input.optInType, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
+
+    # CopyClusterSnapshot  POST /cluster-snapshot/{snapshotArn}/copy
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def copy_cluster_snapshot(self, CopyClusterSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        dict[str, str] labels = {}
+        labels["snapshotArn"] = input.snapshotArn
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot/{snapshotArn}/copy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.copyTags.is_some():
+            auto u0 = input.copyTags.unwrap()
+            parts.append("\"copyTags\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.kmsKeyId.is_some():
+            auto u1 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + docdb_elastic_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(docdb_elastic_json_str(k3) + ":" + docdb_elastic_json_str(u2[k3]))
+            parts.append("\"tags\":" + docdb_elastic_json_obj(m3))
+        parts.append("\"targetSnapshotName\":" + docdb_elastic_json_str(input.targetSnapshotName))
+        auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
+
+    # CreateCluster  POST /cluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cluster(self, CreateClusterInput input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"adminUserName\":" + docdb_elastic_json_str(input.adminUserName))
+        parts.append("\"adminUserPassword\":" + docdb_elastic_json_str(input.adminUserPassword))
+        parts.append("\"authType\":" + input.authType.to_json())
+        if input.backupRetentionPeriod.is_some():
+            auto u0 = input.backupRetentionPeriod.unwrap()
+            parts.append("\"backupRetentionPeriod\":" + str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + docdb_elastic_json_str(u1))
+        parts.append("\"clusterName\":" + docdb_elastic_json_str(input.clusterName))
+        if input.kmsKeyId.is_some():
+            auto u2 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + docdb_elastic_json_str(u2))
+        if input.preferredBackupWindow.is_some():
+            auto u3 = input.preferredBackupWindow.unwrap()
+            parts.append("\"preferredBackupWindow\":" + docdb_elastic_json_str(u3))
+        if input.preferredMaintenanceWindow.is_some():
+            auto u4 = input.preferredMaintenanceWindow.unwrap()
+            parts.append("\"preferredMaintenanceWindow\":" + docdb_elastic_json_str(u4))
+        parts.append("\"shardCapacity\":" + str(input.shardCapacity))
+        parts.append("\"shardCount\":" + str(input.shardCount))
+        if input.shardInstanceCount.is_some():
+            auto u5 = input.shardInstanceCount.unwrap()
+            parts.append("\"shardInstanceCount\":" + str(u5))
+        if input.subnetIds.is_some():
+            auto u6 = input.subnetIds.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(docdb_elastic_json_str(x7))
+            parts.append("\"subnetIds\":" + docdb_elastic_json_arr(e7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(docdb_elastic_json_str(k9) + ":" + docdb_elastic_json_str(u8[k9]))
+            parts.append("\"tags\":" + docdb_elastic_json_obj(m9))
+        if input.vpcSecurityGroupIds.is_some():
+            auto u10 = input.vpcSecurityGroupIds.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(docdb_elastic_json_str(x11))
+            parts.append("\"vpcSecurityGroupIds\":" + docdb_elastic_json_arr(e11))
+        auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
+
+    # CreateClusterSnapshot  POST /cluster-snapshot
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cluster_snapshot(self, CreateClusterSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clusterArn\":" + docdb_elastic_json_str(input.clusterArn))
+        parts.append("\"snapshotName\":" + docdb_elastic_json_str(input.snapshotName))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(docdb_elastic_json_str(k1) + ":" + docdb_elastic_json_str(u0[k1]))
+            parts.append("\"tags\":" + docdb_elastic_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
 
     # DeleteCluster  DELETE /cluster/{clusterArn}
@@ -618,6 +725,45 @@ struct DocDB_ElasticClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
+    # RestoreClusterFromSnapshot  POST /cluster-snapshot/{snapshotArn}/restore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def restore_cluster_from_snapshot(self, RestoreClusterFromSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        dict[str, str] labels = {}
+        labels["snapshotArn"] = input.snapshotArn
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot/{snapshotArn}/restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clusterName\":" + docdb_elastic_json_str(input.clusterName))
+        if input.kmsKeyId.is_some():
+            auto u0 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + docdb_elastic_json_str(u0))
+        if input.shardCapacity.is_some():
+            auto u1 = input.shardCapacity.unwrap()
+            parts.append("\"shardCapacity\":" + str(u1))
+        if input.shardInstanceCount.is_some():
+            auto u2 = input.shardInstanceCount.unwrap()
+            parts.append("\"shardInstanceCount\":" + str(u2))
+        if input.subnetIds.is_some():
+            auto u3 = input.subnetIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(docdb_elastic_json_str(x4))
+            parts.append("\"subnetIds\":" + docdb_elastic_json_arr(e4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(docdb_elastic_json_str(k6) + ":" + docdb_elastic_json_str(u5[k6]))
+            parts.append("\"tags\":" + docdb_elastic_json_obj(m6))
+        if input.vpcSecurityGroupIds.is_some():
+            auto u7 = input.vpcSecurityGroupIds.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(docdb_elastic_json_str(x8))
+            parts.append("\"vpcSecurityGroupIds\":" + docdb_elastic_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
+
     # StartCluster  POST /cluster/{clusterArn}/start
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_cluster(self, StartClusterInput input) -> str:
@@ -635,6 +781,71 @@ struct DocDB_ElasticClient:
         labels["clusterArn"] = input.clusterArn
         auto b = binding.HttpBinding(method="POST", path_template="/cluster/{clusterArn}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(docdb_elastic_json_str(k0) + ":" + docdb_elastic_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + docdb_elastic_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
+
+    # UpdateCluster  PUT /cluster/{clusterArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cluster(self, UpdateClusterInput input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.clusterArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.adminUserPassword.is_some():
+            auto u0 = input.adminUserPassword.unwrap()
+            parts.append("\"adminUserPassword\":" + docdb_elastic_json_str(u0))
+        if input.authType.is_some():
+            auto u1 = input.authType.unwrap()
+            parts.append("\"authType\":" + u1.to_json())
+        if input.backupRetentionPeriod.is_some():
+            auto u2 = input.backupRetentionPeriod.unwrap()
+            parts.append("\"backupRetentionPeriod\":" + str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + docdb_elastic_json_str(u3))
+        if input.preferredBackupWindow.is_some():
+            auto u4 = input.preferredBackupWindow.unwrap()
+            parts.append("\"preferredBackupWindow\":" + docdb_elastic_json_str(u4))
+        if input.preferredMaintenanceWindow.is_some():
+            auto u5 = input.preferredMaintenanceWindow.unwrap()
+            parts.append("\"preferredMaintenanceWindow\":" + docdb_elastic_json_str(u5))
+        if input.shardCapacity.is_some():
+            auto u6 = input.shardCapacity.unwrap()
+            parts.append("\"shardCapacity\":" + str(u6))
+        if input.shardCount.is_some():
+            auto u7 = input.shardCount.unwrap()
+            parts.append("\"shardCount\":" + str(u7))
+        if input.shardInstanceCount.is_some():
+            auto u8 = input.shardInstanceCount.unwrap()
+            parts.append("\"shardInstanceCount\":" + str(u8))
+        if input.subnetIds.is_some():
+            auto u9 = input.subnetIds.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(docdb_elastic_json_str(x10))
+            parts.append("\"subnetIds\":" + docdb_elastic_json_arr(e10))
+        if input.vpcSecurityGroupIds.is_some():
+            auto u11 = input.vpcSecurityGroupIds.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(docdb_elastic_json_str(x12))
+            parts.append("\"vpcSecurityGroupIds\":" + docdb_elastic_json_arr(e12))
+        auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
 
     # Paginator for ListClusterSnapshots — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: snapshots).

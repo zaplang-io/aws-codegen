@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 56 operations — 35 with a generated method,
-#   21 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 56 operations — 56 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   151 structs (78 @derive(Json)), 11 enums, 20 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -125,8 +125,9 @@ enum Protocol:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) IpSets: list[IpSet], Events: list[AcceleratorEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpSets: list[IpSet], Events: list[AcceleratorEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Accelerator:
     Optional[str] AcceleratorArn
     Optional[str] Name
@@ -163,26 +164,30 @@ struct AcceleratorNotFoundException:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) EndpointConfigurations: list[CustomRoutingEndpointConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointConfigurations: list[CustomRoutingEndpointConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddCustomRoutingEndpointsRequest:
     list[CustomRoutingEndpointConfiguration] EndpointConfigurations
     str EndpointGroupArn
 
-# no @derive(Json): member(s) EndpointDescriptions: list[CustomRoutingEndpointDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointDescriptions: list[CustomRoutingEndpointDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddCustomRoutingEndpointsResponse:
     Optional[list[CustomRoutingEndpointDescription]] EndpointDescriptions
     Optional[str] EndpointGroupArn
 
-# no @derive(Json): member(s) EndpointConfigurations: list[EndpointConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointConfigurations: list[EndpointConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddEndpointsRequest:
     list[EndpointConfiguration] EndpointConfigurations
     str EndpointGroupArn
 
-# no @derive(Json): member(s) EndpointDescriptions: list[EndpointDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointDescriptions: list[EndpointDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddEndpointsResponse:
     Optional[list[EndpointDescription]] EndpointDescriptions
     Optional[str] EndpointGroupArn
@@ -191,13 +196,15 @@ struct AddEndpointsResponse:
 struct AdvertiseByoipCidrRequest:
     str Cidr
 
-# no @derive(Json): member(s) ByoipCidr: ByoipCidr not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByoipCidr: ByoipCidr not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvertiseByoipCidrResponse:
     Optional[ByoipCidr] ByoipCidr
 
-# no @derive(Json): member(s) DestinationAddresses: list[str], DestinationPorts: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationAddresses: list[str], DestinationPorts: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllowCustomRoutingTrafficRequest:
     str EndpointGroupArn
     str EndpointId
@@ -213,8 +220,9 @@ struct AssociatedEndpointGroupFoundException:
 struct AssociatedListenerFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Principals: list[str], Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[str], Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Attachment:
     Optional[str] AttachmentArn
     Optional[str] Name
@@ -227,8 +235,9 @@ struct Attachment:
 struct AttachmentNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Events: list[ByoipCidrEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[ByoipCidrEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ByoipCidr:
     Optional[str] Cidr
     Optional[ByoipCidrState] State
@@ -252,8 +261,9 @@ struct CidrAuthorizationContext:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) IpAddresses: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAcceleratorRequest:
     str Name
     Optional[IpAddressType] IpAddressType
@@ -262,13 +272,15 @@ struct CreateAcceleratorRequest:
     str IdempotencyToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Accelerator: Accelerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerator: Accelerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAcceleratorResponse:
     Optional[Accelerator] Accelerator
 
-# no @derive(Json): member(s) Principals: list[str], Resources: list[Resource], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[str], Resources: list[Resource], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCrossAccountAttachmentRequest:
     str Name
     Optional[list[str]] Principals
@@ -276,13 +288,15 @@ struct CreateCrossAccountAttachmentRequest:
     str IdempotencyToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) CrossAccountAttachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossAccountAttachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCrossAccountAttachmentResponse:
     Optional[Attachment] CrossAccountAttachment
 
-# no @derive(Json): member(s) IpAddresses: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomRoutingAcceleratorRequest:
     str Name
     Optional[IpAddressType] IpAddressType
@@ -291,38 +305,44 @@ struct CreateCustomRoutingAcceleratorRequest:
     str IdempotencyToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Accelerator: CustomRoutingAccelerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerator: CustomRoutingAccelerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomRoutingAcceleratorResponse:
     Optional[CustomRoutingAccelerator] Accelerator
 
-# no @derive(Json): member(s) DestinationConfigurations: list[CustomRoutingDestinationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationConfigurations: list[CustomRoutingDestinationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomRoutingEndpointGroupRequest:
     str ListenerArn
     str EndpointGroupRegion
     list[CustomRoutingDestinationConfiguration] DestinationConfigurations
     str IdempotencyToken
 
-# no @derive(Json): member(s) EndpointGroup: CustomRoutingEndpointGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroup: CustomRoutingEndpointGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomRoutingEndpointGroupResponse:
     Optional[CustomRoutingEndpointGroup] EndpointGroup
 
-# no @derive(Json): member(s) PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomRoutingListenerRequest:
     str AcceleratorArn
     list[PortRange] PortRanges
     str IdempotencyToken
 
-# no @derive(Json): member(s) Listener: CustomRoutingListener not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listener: CustomRoutingListener not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomRoutingListenerResponse:
     Optional[CustomRoutingListener] Listener
 
-# no @derive(Json): member(s) EndpointConfigurations: list[EndpointConfiguration], PortOverrides: list[PortOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointConfigurations: list[EndpointConfiguration], PortOverrides: list[PortOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointGroupRequest:
     str ListenerArn
     str EndpointGroupRegion
@@ -336,13 +356,15 @@ struct CreateEndpointGroupRequest:
     str IdempotencyToken
     Optional[list[PortOverride]] PortOverrides
 
-# no @derive(Json): member(s) EndpointGroup: EndpointGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroup: EndpointGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointGroupResponse:
     Optional[EndpointGroup] EndpointGroup
 
-# no @derive(Json): member(s) PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateListenerRequest:
     str AcceleratorArn
     list[PortRange] PortRanges
@@ -350,8 +372,9 @@ struct CreateListenerRequest:
     Optional[ClientAffinity] ClientAffinity
     str IdempotencyToken
 
-# no @derive(Json): member(s) Listener: Listener not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listener: Listener not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateListenerResponse:
     Optional[Listener] Listener
 
@@ -361,8 +384,9 @@ struct CrossAccountResource:
     Optional[str] Cidr
     Optional[str] AttachmentArn
 
-# no @derive(Json): member(s) IpSets: list[IpSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpSets: list[IpSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomRoutingAccelerator:
     Optional[str] AcceleratorArn
     Optional[str] Name
@@ -380,15 +404,17 @@ struct CustomRoutingAcceleratorAttributes:
     Optional[str] FlowLogsS3Bucket
     Optional[str] FlowLogsS3Prefix
 
-# no @derive(Json): member(s) Protocols: list[CustomRoutingProtocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protocols: list[CustomRoutingProtocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomRoutingDestinationConfiguration:
     int64 FromPort
     int64 ToPort
     list[CustomRoutingProtocol] Protocols
 
-# no @derive(Json): member(s) Protocols: list[Protocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protocols: list[Protocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomRoutingDestinationDescription:
     Optional[int64] FromPort
     Optional[int64] ToPort
@@ -403,16 +429,18 @@ struct CustomRoutingEndpointConfiguration:
 struct CustomRoutingEndpointDescription:
     Optional[str] EndpointId
 
-# no @derive(Json): member(s) DestinationDescriptions: list[CustomRoutingDestinationDescription], EndpointDescriptions: list[CustomRoutingEndpointDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationDescriptions: list[CustomRoutingDestinationDescription], EndpointDescriptions: list[CustomRoutingEndpointDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomRoutingEndpointGroup:
     Optional[str] EndpointGroupArn
     Optional[str] EndpointGroupRegion
     Optional[list[CustomRoutingDestinationDescription]] DestinationDescriptions
     Optional[list[CustomRoutingEndpointDescription]] EndpointDescriptions
 
-# no @derive(Json): member(s) PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomRoutingListener:
     Optional[str] ListenerArn
     Optional[list[PortRange]] PortRanges
@@ -445,8 +473,9 @@ struct DeleteEndpointGroupRequest:
 struct DeleteListenerRequest:
     str ListenerArn
 
-# no @derive(Json): member(s) DestinationAddresses: list[str], DestinationPorts: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationAddresses: list[str], DestinationPorts: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DenyCustomRoutingTrafficRequest:
     str EndpointGroupArn
     str EndpointId
@@ -458,8 +487,9 @@ struct DenyCustomRoutingTrafficRequest:
 struct DeprovisionByoipCidrRequest:
     str Cidr
 
-# no @derive(Json): member(s) ByoipCidr: ByoipCidr not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByoipCidr: ByoipCidr not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeprovisionByoipCidrResponse:
     Optional[ByoipCidr] ByoipCidr
 
@@ -475,8 +505,9 @@ struct DescribeAcceleratorAttributesResponse:
 struct DescribeAcceleratorRequest:
     str AcceleratorArn
 
-# no @derive(Json): member(s) Accelerator: Accelerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerator: Accelerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAcceleratorResponse:
     Optional[Accelerator] Accelerator
 
@@ -484,8 +515,9 @@ struct DescribeAcceleratorResponse:
 struct DescribeCrossAccountAttachmentRequest:
     str AttachmentArn
 
-# no @derive(Json): member(s) CrossAccountAttachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossAccountAttachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCrossAccountAttachmentResponse:
     Optional[Attachment] CrossAccountAttachment
 
@@ -501,8 +533,9 @@ struct DescribeCustomRoutingAcceleratorAttributesResponse:
 struct DescribeCustomRoutingAcceleratorRequest:
     str AcceleratorArn
 
-# no @derive(Json): member(s) Accelerator: CustomRoutingAccelerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerator: CustomRoutingAccelerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomRoutingAcceleratorResponse:
     Optional[CustomRoutingAccelerator] Accelerator
 
@@ -510,8 +543,9 @@ struct DescribeCustomRoutingAcceleratorResponse:
 struct DescribeCustomRoutingEndpointGroupRequest:
     str EndpointGroupArn
 
-# no @derive(Json): member(s) EndpointGroup: CustomRoutingEndpointGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroup: CustomRoutingEndpointGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomRoutingEndpointGroupResponse:
     Optional[CustomRoutingEndpointGroup] EndpointGroup
 
@@ -519,8 +553,9 @@ struct DescribeCustomRoutingEndpointGroupResponse:
 struct DescribeCustomRoutingListenerRequest:
     str ListenerArn
 
-# no @derive(Json): member(s) Listener: CustomRoutingListener not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listener: CustomRoutingListener not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomRoutingListenerResponse:
     Optional[CustomRoutingListener] Listener
 
@@ -528,8 +563,9 @@ struct DescribeCustomRoutingListenerResponse:
 struct DescribeEndpointGroupRequest:
     str EndpointGroupArn
 
-# no @derive(Json): member(s) EndpointGroup: EndpointGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroup: EndpointGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointGroupResponse:
     Optional[EndpointGroup] EndpointGroup
 
@@ -537,13 +573,15 @@ struct DescribeEndpointGroupResponse:
 struct DescribeListenerRequest:
     str ListenerArn
 
-# no @derive(Json): member(s) Listener: Listener not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listener: Listener not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeListenerResponse:
     Optional[Listener] Listener
 
-# no @derive(Json): member(s) AcceleratorSocketAddresses: list[SocketAddress] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcceleratorSocketAddresses: list[SocketAddress] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationPortMapping:
     Optional[str] AcceleratorArn
     Optional[list[SocketAddress]] AcceleratorSocketAddresses
@@ -573,8 +611,9 @@ struct EndpointDescription:
     Optional[str] HealthReason
     Optional[bool] ClientIPPreservationEnabled
 
-# no @derive(Json): member(s) EndpointDescriptions: list[EndpointDescription], PortOverrides: list[PortOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointDescriptions: list[EndpointDescription], PortOverrides: list[PortOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointGroup:
     Optional[str] EndpointGroupArn
     Optional[str] EndpointGroupRegion
@@ -629,8 +668,9 @@ struct IpAddressDetail:
     Optional[str] IpAddress
     Optional[str] NetworkZone
 
-# no @derive(Json): member(s) IpAddresses: list[str], IpAddressDetails: list[IpAddressDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str], IpAddressDetails: list[IpAddressDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IpSet:
     Optional[str] IpFamily
     Optional[list[str]] IpAddresses
@@ -646,8 +686,9 @@ struct ListAcceleratorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Accelerators: list[Accelerator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerators: list[Accelerator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAcceleratorsResponse:
     Optional[list[Accelerator]] Accelerators
     Optional[str] NextToken
@@ -657,8 +698,9 @@ struct ListByoipCidrsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ByoipCidrs: list[ByoipCidr] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByoipCidrs: list[ByoipCidr] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListByoipCidrsResponse:
     Optional[list[ByoipCidr]] ByoipCidrs
     Optional[str] NextToken
@@ -668,8 +710,9 @@ struct ListCrossAccountAttachmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrossAccountAttachments: list[Attachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossAccountAttachments: list[Attachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrossAccountAttachmentsResponse:
     Optional[list[Attachment]] CrossAccountAttachments
     Optional[str] NextToken
@@ -679,8 +722,9 @@ struct ListCrossAccountResourceAccountsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ResourceOwnerAwsAccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceOwnerAwsAccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrossAccountResourceAccountsResponse:
     Optional[list[str]] ResourceOwnerAwsAccountIds
 
@@ -691,8 +735,9 @@ struct ListCrossAccountResourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrossAccountResources: list[CrossAccountResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossAccountResources: list[CrossAccountResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrossAccountResourcesResponse:
     Optional[list[CrossAccountResource]] CrossAccountResources
     Optional[str] NextToken
@@ -702,8 +747,9 @@ struct ListCustomRoutingAcceleratorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Accelerators: list[CustomRoutingAccelerator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerators: list[CustomRoutingAccelerator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomRoutingAcceleratorsResponse:
     Optional[list[CustomRoutingAccelerator]] Accelerators
     Optional[str] NextToken
@@ -714,8 +760,9 @@ struct ListCustomRoutingEndpointGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EndpointGroups: list[CustomRoutingEndpointGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroups: list[CustomRoutingEndpointGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomRoutingEndpointGroupsResponse:
     Optional[list[CustomRoutingEndpointGroup]] EndpointGroups
     Optional[str] NextToken
@@ -726,8 +773,9 @@ struct ListCustomRoutingListenersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Listeners: list[CustomRoutingListener] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listeners: list[CustomRoutingListener] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomRoutingListenersResponse:
     Optional[list[CustomRoutingListener]] Listeners
     Optional[str] NextToken
@@ -739,8 +787,9 @@ struct ListCustomRoutingPortMappingsByDestinationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DestinationPortMappings: list[DestinationPortMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationPortMappings: list[DestinationPortMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomRoutingPortMappingsByDestinationResponse:
     Optional[list[DestinationPortMapping]] DestinationPortMappings
     Optional[str] NextToken
@@ -752,8 +801,9 @@ struct ListCustomRoutingPortMappingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PortMappings: list[PortMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortMappings: list[PortMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomRoutingPortMappingsResponse:
     Optional[list[PortMapping]] PortMappings
     Optional[str] NextToken
@@ -764,8 +814,9 @@ struct ListEndpointGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EndpointGroups: list[EndpointGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroups: list[EndpointGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointGroupsResponse:
     Optional[list[EndpointGroup]] EndpointGroups
     Optional[str] NextToken
@@ -776,8 +827,9 @@ struct ListListenersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Listeners: list[Listener] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listeners: list[Listener] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListListenersResponse:
     Optional[list[Listener]] Listeners
     Optional[str] NextToken
@@ -786,13 +838,15 @@ struct ListListenersResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Listener:
     Optional[str] ListenerArn
     Optional[list[PortRange]] PortRanges
@@ -803,8 +857,9 @@ struct Listener:
 struct ListenerNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Protocols: list[CustomRoutingProtocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protocols: list[CustomRoutingProtocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortMapping:
     Optional[int64] AcceleratorPort
     Optional[str] EndpointGroupArn
@@ -828,19 +883,22 @@ struct ProvisionByoipCidrRequest:
     str Cidr
     CidrAuthorizationContext CidrAuthorizationContext
 
-# no @derive(Json): member(s) ByoipCidr: ByoipCidr not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByoipCidr: ByoipCidr not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionByoipCidrResponse:
     Optional[ByoipCidr] ByoipCidr
 
-# no @derive(Json): member(s) EndpointIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveCustomRoutingEndpointsRequest:
     list[str] EndpointIds
     str EndpointGroupArn
 
-# no @derive(Json): member(s) EndpointIdentifiers: list[EndpointIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointIdentifiers: list[EndpointIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveEndpointsRequest:
     list[EndpointIdentifier] EndpointIdentifiers
     str EndpointGroupArn
@@ -861,8 +919,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -876,8 +935,9 @@ struct TagResourceResponse:
 struct TransactionInProgressException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -898,8 +958,9 @@ struct UpdateAcceleratorAttributesRequest:
 struct UpdateAcceleratorAttributesResponse:
     Optional[AcceleratorAttributes] AcceleratorAttributes
 
-# no @derive(Json): member(s) IpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAcceleratorRequest:
     str AcceleratorArn
     Optional[str] Name
@@ -907,13 +968,15 @@ struct UpdateAcceleratorRequest:
     Optional[list[str]] IpAddresses
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Accelerator: Accelerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerator: Accelerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAcceleratorResponse:
     Optional[Accelerator] Accelerator
 
-# no @derive(Json): member(s) AddPrincipals: list[str], RemovePrincipals: list[str], AddResources: list[Resource], RemoveResources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddPrincipals: list[str], RemovePrincipals: list[str], AddResources: list[Resource], RemoveResources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCrossAccountAttachmentRequest:
     str AttachmentArn
     Optional[str] Name
@@ -922,8 +985,9 @@ struct UpdateCrossAccountAttachmentRequest:
     Optional[list[Resource]] AddResources
     Optional[list[Resource]] RemoveResources
 
-# no @derive(Json): member(s) CrossAccountAttachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossAccountAttachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCrossAccountAttachmentResponse:
     Optional[Attachment] CrossAccountAttachment
 
@@ -938,8 +1002,9 @@ struct UpdateCustomRoutingAcceleratorAttributesRequest:
 struct UpdateCustomRoutingAcceleratorAttributesResponse:
     Optional[CustomRoutingAcceleratorAttributes] AcceleratorAttributes
 
-# no @derive(Json): member(s) IpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCustomRoutingAcceleratorRequest:
     str AcceleratorArn
     Optional[str] Name
@@ -947,24 +1012,28 @@ struct UpdateCustomRoutingAcceleratorRequest:
     Optional[list[str]] IpAddresses
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Accelerator: CustomRoutingAccelerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accelerator: CustomRoutingAccelerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCustomRoutingAcceleratorResponse:
     Optional[CustomRoutingAccelerator] Accelerator
 
-# no @derive(Json): member(s) PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCustomRoutingListenerRequest:
     str ListenerArn
     list[PortRange] PortRanges
 
-# no @derive(Json): member(s) Listener: CustomRoutingListener not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listener: CustomRoutingListener not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCustomRoutingListenerResponse:
     Optional[CustomRoutingListener] Listener
 
-# no @derive(Json): member(s) EndpointConfigurations: list[EndpointConfiguration], PortOverrides: list[PortOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointConfigurations: list[EndpointConfiguration], PortOverrides: list[PortOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointGroupRequest:
     str EndpointGroupArn
     Optional[list[EndpointConfiguration]] EndpointConfigurations
@@ -976,21 +1045,24 @@ struct UpdateEndpointGroupRequest:
     Optional[int64] ThresholdCount
     Optional[list[PortOverride]] PortOverrides
 
-# no @derive(Json): member(s) EndpointGroup: EndpointGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointGroup: EndpointGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointGroupResponse:
     Optional[EndpointGroup] EndpointGroup
 
-# no @derive(Json): member(s) PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateListenerRequest:
     str ListenerArn
     Optional[list[PortRange]] PortRanges
     Optional[Protocol] Protocol
     Optional[ClientAffinity] ClientAffinity
 
-# no @derive(Json): member(s) Listener: Listener not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Listener: Listener not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateListenerResponse:
     Optional[Listener] Listener
 
@@ -998,8 +1070,9 @@ struct UpdateListenerResponse:
 struct WithdrawByoipCidrRequest:
     str Cidr
 
-# no @derive(Json): member(s) ByoipCidr: ByoipCidr not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByoipCidr: ByoipCidr not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WithdrawByoipCidrResponse:
     Optional[ByoipCidr] ByoipCidr
 
@@ -1076,40 +1149,511 @@ def globalaccelerator_error_from_code(str code) -> Global_AcceleratorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddCustomRoutingEndpoints (input AddCustomRoutingEndpointsRequest)
-#   AddEndpoints (input AddEndpointsRequest)
-#   AllowCustomRoutingTraffic (input AllowCustomRoutingTrafficRequest)
-#   CreateAccelerator (input CreateAcceleratorRequest)
-#   CreateCrossAccountAttachment (input CreateCrossAccountAttachmentRequest)
-#   CreateCustomRoutingAccelerator (input CreateCustomRoutingAcceleratorRequest)
-#   CreateCustomRoutingEndpointGroup (input CreateCustomRoutingEndpointGroupRequest)
-#   CreateCustomRoutingListener (input CreateCustomRoutingListenerRequest)
-#   CreateEndpointGroup (input CreateEndpointGroupRequest)
-#   CreateListener (input CreateListenerRequest)
-#   DenyCustomRoutingTraffic (input DenyCustomRoutingTrafficRequest)
-#   RemoveCustomRoutingEndpoints (input RemoveCustomRoutingEndpointsRequest)
-#   RemoveEndpoints (input RemoveEndpointsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAccelerator (input UpdateAcceleratorRequest)
-#   UpdateCrossAccountAttachment (input UpdateCrossAccountAttachmentRequest)
-#   UpdateCustomRoutingAccelerator (input UpdateCustomRoutingAcceleratorRequest)
-#   UpdateCustomRoutingListener (input UpdateCustomRoutingListenerRequest)
-#   UpdateEndpointGroup (input UpdateEndpointGroupRequest)
-#   UpdateListener (input UpdateListenerRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def globalaccelerator_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def globalaccelerator_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def globalaccelerator_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddCustomRoutingEndpointsRequest to a compact JSON object (declaration order).
+def add_custom_routing_endpoints_request_to_json(AddCustomRoutingEndpointsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EndpointConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"EndpointConfigurations\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize AddEndpointsRequest to a compact JSON object (declaration order).
+def add_endpoints_request_to_json(AddEndpointsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EndpointConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"EndpointConfigurations\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize AllowCustomRoutingTrafficRequest to a compact JSON object (declaration order).
+def allow_custom_routing_traffic_request_to_json(AllowCustomRoutingTrafficRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    parts.append("\"EndpointId\":" + globalaccelerator_json_str(v.EndpointId))
+    if v.DestinationAddresses.is_some():
+        auto u0 = v.DestinationAddresses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(globalaccelerator_json_str(x1))
+        parts.append("\"DestinationAddresses\":" + globalaccelerator_json_arr(e1))
+    if v.DestinationPorts.is_some():
+        auto u2 = v.DestinationPorts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"DestinationPorts\":" + globalaccelerator_json_arr(e3))
+    if v.AllowAllTrafficToEndpoint.is_some():
+        auto u4 = v.AllowAllTrafficToEndpoint.unwrap()
+        parts.append("\"AllowAllTrafficToEndpoint\":" + json.dumps(JsonValue.Bool(u4)))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateAcceleratorRequest to a compact JSON object (declaration order).
+def create_accelerator_request_to_json(CreateAcceleratorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + globalaccelerator_json_str(v.Name))
+    if v.IpAddressType.is_some():
+        auto u0 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u0.to_json())
+    if v.IpAddresses.is_some():
+        auto u1 = v.IpAddresses.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(globalaccelerator_json_str(x2))
+        parts.append("\"IpAddresses\":" + globalaccelerator_json_arr(e2))
+    if v.Enabled.is_some():
+        auto u3 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u3)))
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + globalaccelerator_json_arr(e5))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateCrossAccountAttachmentRequest to a compact JSON object (declaration order).
+def create_cross_account_attachment_request_to_json(CreateCrossAccountAttachmentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + globalaccelerator_json_str(v.Name))
+    if v.Principals.is_some():
+        auto u0 = v.Principals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(globalaccelerator_json_str(x1))
+        parts.append("\"Principals\":" + globalaccelerator_json_arr(e1))
+    if v.Resources.is_some():
+        auto u2 = v.Resources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Resources\":" + globalaccelerator_json_arr(e3))
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + globalaccelerator_json_arr(e5))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateCustomRoutingAcceleratorRequest to a compact JSON object (declaration order).
+def create_custom_routing_accelerator_request_to_json(CreateCustomRoutingAcceleratorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + globalaccelerator_json_str(v.Name))
+    if v.IpAddressType.is_some():
+        auto u0 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u0.to_json())
+    if v.IpAddresses.is_some():
+        auto u1 = v.IpAddresses.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(globalaccelerator_json_str(x2))
+        parts.append("\"IpAddresses\":" + globalaccelerator_json_arr(e2))
+    if v.Enabled.is_some():
+        auto u3 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u3)))
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + globalaccelerator_json_arr(e5))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateCustomRoutingEndpointGroupRequest to a compact JSON object (declaration order).
+def create_custom_routing_endpoint_group_request_to_json(CreateCustomRoutingEndpointGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ListenerArn\":" + globalaccelerator_json_str(v.ListenerArn))
+    parts.append("\"EndpointGroupRegion\":" + globalaccelerator_json_str(v.EndpointGroupRegion))
+    list[str] e0 = []
+    for x0 in v.DestinationConfigurations:
+        e0.append(custom_routing_destination_configuration_to_json(x0))
+    parts.append("\"DestinationConfigurations\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateCustomRoutingListenerRequest to a compact JSON object (declaration order).
+def create_custom_routing_listener_request_to_json(CreateCustomRoutingListenerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AcceleratorArn\":" + globalaccelerator_json_str(v.AcceleratorArn))
+    list[str] e0 = []
+    for x0 in v.PortRanges:
+        e0.append(x0.to_json())
+    parts.append("\"PortRanges\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateEndpointGroupRequest to a compact JSON object (declaration order).
+def create_endpoint_group_request_to_json(CreateEndpointGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ListenerArn\":" + globalaccelerator_json_str(v.ListenerArn))
+    parts.append("\"EndpointGroupRegion\":" + globalaccelerator_json_str(v.EndpointGroupRegion))
+    if v.EndpointConfigurations.is_some():
+        auto u0 = v.EndpointConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EndpointConfigurations\":" + globalaccelerator_json_arr(e1))
+    if v.TrafficDialPercentage.is_some():
+        auto u2 = v.TrafficDialPercentage.unwrap()
+        parts.append("\"TrafficDialPercentage\":" + str(u2))
+    if v.HealthCheckPort.is_some():
+        auto u3 = v.HealthCheckPort.unwrap()
+        parts.append("\"HealthCheckPort\":" + str(u3))
+    if v.HealthCheckProtocol.is_some():
+        auto u4 = v.HealthCheckProtocol.unwrap()
+        parts.append("\"HealthCheckProtocol\":" + u4.to_json())
+    if v.HealthCheckPath.is_some():
+        auto u5 = v.HealthCheckPath.unwrap()
+        parts.append("\"HealthCheckPath\":" + globalaccelerator_json_str(u5))
+    if v.HealthCheckIntervalSeconds.is_some():
+        auto u6 = v.HealthCheckIntervalSeconds.unwrap()
+        parts.append("\"HealthCheckIntervalSeconds\":" + str(u6))
+    if v.ThresholdCount.is_some():
+        auto u7 = v.ThresholdCount.unwrap()
+        parts.append("\"ThresholdCount\":" + str(u7))
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    if v.PortOverrides.is_some():
+        auto u8 = v.PortOverrides.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"PortOverrides\":" + globalaccelerator_json_arr(e9))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CreateListenerRequest to a compact JSON object (declaration order).
+def create_listener_request_to_json(CreateListenerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AcceleratorArn\":" + globalaccelerator_json_str(v.AcceleratorArn))
+    list[str] e0 = []
+    for x0 in v.PortRanges:
+        e0.append(x0.to_json())
+    parts.append("\"PortRanges\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"Protocol\":" + v.Protocol.to_json())
+    if v.ClientAffinity.is_some():
+        auto u1 = v.ClientAffinity.unwrap()
+        parts.append("\"ClientAffinity\":" + u1.to_json())
+    parts.append("\"IdempotencyToken\":" + globalaccelerator_json_str(v.IdempotencyToken))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize CustomRoutingDestinationConfiguration to a compact JSON object (declaration order).
+def custom_routing_destination_configuration_to_json(CustomRoutingDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"FromPort\":" + str(v.FromPort))
+    parts.append("\"ToPort\":" + str(v.ToPort))
+    list[str] e0 = []
+    for x0 in v.Protocols:
+        e0.append(x0.to_json())
+    parts.append("\"Protocols\":" + globalaccelerator_json_arr(e0))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize DenyCustomRoutingTrafficRequest to a compact JSON object (declaration order).
+def deny_custom_routing_traffic_request_to_json(DenyCustomRoutingTrafficRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    parts.append("\"EndpointId\":" + globalaccelerator_json_str(v.EndpointId))
+    if v.DestinationAddresses.is_some():
+        auto u0 = v.DestinationAddresses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(globalaccelerator_json_str(x1))
+        parts.append("\"DestinationAddresses\":" + globalaccelerator_json_arr(e1))
+    if v.DestinationPorts.is_some():
+        auto u2 = v.DestinationPorts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"DestinationPorts\":" + globalaccelerator_json_arr(e3))
+    if v.DenyAllTrafficToEndpoint.is_some():
+        auto u4 = v.DenyAllTrafficToEndpoint.unwrap()
+        parts.append("\"DenyAllTrafficToEndpoint\":" + json.dumps(JsonValue.Bool(u4)))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize RemoveCustomRoutingEndpointsRequest to a compact JSON object (declaration order).
+def remove_custom_routing_endpoints_request_to_json(RemoveCustomRoutingEndpointsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EndpointIds:
+        e0.append(globalaccelerator_json_str(x0))
+    parts.append("\"EndpointIds\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize RemoveEndpointsRequest to a compact JSON object (declaration order).
+def remove_endpoints_request_to_json(RemoveEndpointsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EndpointIdentifiers:
+        e0.append(x0.to_json())
+    parts.append("\"EndpointIdentifiers\":" + globalaccelerator_json_arr(e0))
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + globalaccelerator_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + globalaccelerator_json_arr(e0))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + globalaccelerator_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(globalaccelerator_json_str(x0))
+    parts.append("\"TagKeys\":" + globalaccelerator_json_arr(e0))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UpdateAcceleratorRequest to a compact JSON object (declaration order).
+def update_accelerator_request_to_json(UpdateAcceleratorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AcceleratorArn\":" + globalaccelerator_json_str(v.AcceleratorArn))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + globalaccelerator_json_str(u0))
+    if v.IpAddressType.is_some():
+        auto u1 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u1.to_json())
+    if v.IpAddresses.is_some():
+        auto u2 = v.IpAddresses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(globalaccelerator_json_str(x3))
+        parts.append("\"IpAddresses\":" + globalaccelerator_json_arr(e3))
+    if v.Enabled.is_some():
+        auto u4 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u4)))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UpdateCrossAccountAttachmentRequest to a compact JSON object (declaration order).
+def update_cross_account_attachment_request_to_json(UpdateCrossAccountAttachmentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AttachmentArn\":" + globalaccelerator_json_str(v.AttachmentArn))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + globalaccelerator_json_str(u0))
+    if v.AddPrincipals.is_some():
+        auto u1 = v.AddPrincipals.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(globalaccelerator_json_str(x2))
+        parts.append("\"AddPrincipals\":" + globalaccelerator_json_arr(e2))
+    if v.RemovePrincipals.is_some():
+        auto u3 = v.RemovePrincipals.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(globalaccelerator_json_str(x4))
+        parts.append("\"RemovePrincipals\":" + globalaccelerator_json_arr(e4))
+    if v.AddResources.is_some():
+        auto u5 = v.AddResources.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"AddResources\":" + globalaccelerator_json_arr(e6))
+    if v.RemoveResources.is_some():
+        auto u7 = v.RemoveResources.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"RemoveResources\":" + globalaccelerator_json_arr(e8))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UpdateCustomRoutingAcceleratorRequest to a compact JSON object (declaration order).
+def update_custom_routing_accelerator_request_to_json(UpdateCustomRoutingAcceleratorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AcceleratorArn\":" + globalaccelerator_json_str(v.AcceleratorArn))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + globalaccelerator_json_str(u0))
+    if v.IpAddressType.is_some():
+        auto u1 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u1.to_json())
+    if v.IpAddresses.is_some():
+        auto u2 = v.IpAddresses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(globalaccelerator_json_str(x3))
+        parts.append("\"IpAddresses\":" + globalaccelerator_json_arr(e3))
+    if v.Enabled.is_some():
+        auto u4 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u4)))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UpdateCustomRoutingListenerRequest to a compact JSON object (declaration order).
+def update_custom_routing_listener_request_to_json(UpdateCustomRoutingListenerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ListenerArn\":" + globalaccelerator_json_str(v.ListenerArn))
+    list[str] e0 = []
+    for x0 in v.PortRanges:
+        e0.append(x0.to_json())
+    parts.append("\"PortRanges\":" + globalaccelerator_json_arr(e0))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UpdateEndpointGroupRequest to a compact JSON object (declaration order).
+def update_endpoint_group_request_to_json(UpdateEndpointGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointGroupArn\":" + globalaccelerator_json_str(v.EndpointGroupArn))
+    if v.EndpointConfigurations.is_some():
+        auto u0 = v.EndpointConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EndpointConfigurations\":" + globalaccelerator_json_arr(e1))
+    if v.TrafficDialPercentage.is_some():
+        auto u2 = v.TrafficDialPercentage.unwrap()
+        parts.append("\"TrafficDialPercentage\":" + str(u2))
+    if v.HealthCheckPort.is_some():
+        auto u3 = v.HealthCheckPort.unwrap()
+        parts.append("\"HealthCheckPort\":" + str(u3))
+    if v.HealthCheckProtocol.is_some():
+        auto u4 = v.HealthCheckProtocol.unwrap()
+        parts.append("\"HealthCheckProtocol\":" + u4.to_json())
+    if v.HealthCheckPath.is_some():
+        auto u5 = v.HealthCheckPath.unwrap()
+        parts.append("\"HealthCheckPath\":" + globalaccelerator_json_str(u5))
+    if v.HealthCheckIntervalSeconds.is_some():
+        auto u6 = v.HealthCheckIntervalSeconds.unwrap()
+        parts.append("\"HealthCheckIntervalSeconds\":" + str(u6))
+    if v.ThresholdCount.is_some():
+        auto u7 = v.ThresholdCount.unwrap()
+        parts.append("\"ThresholdCount\":" + str(u7))
+    if v.PortOverrides.is_some():
+        auto u8 = v.PortOverrides.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"PortOverrides\":" + globalaccelerator_json_arr(e9))
+    return globalaccelerator_json_obj(parts)
+
+# Serialize UpdateListenerRequest to a compact JSON object (declaration order).
+def update_listener_request_to_json(UpdateListenerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ListenerArn\":" + globalaccelerator_json_str(v.ListenerArn))
+    if v.PortRanges.is_some():
+        auto u0 = v.PortRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PortRanges\":" + globalaccelerator_json_arr(e1))
+    if v.Protocol.is_some():
+        auto u2 = v.Protocol.unwrap()
+        parts.append("\"Protocol\":" + u2.to_json())
+    if v.ClientAffinity.is_some():
+        auto u3 = v.ClientAffinity.unwrap()
+        parts.append("\"ClientAffinity\":" + u3.to_json())
+    return globalaccelerator_json_obj(parts)
 
 # A bound Global_Accelerator client: credentials + region, threaded into every operation.
 struct Global_AcceleratorClient:
     core.Credentials creds
     str region
 
+    # AddCustomRoutingEndpoints
+    # errors: AccessDeniedException, ConflictException, EndpointAlreadyExistsException, EndpointGroupNotFoundException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException
+    def add_custom_routing_endpoints(self, AddCustomRoutingEndpointsRequest input) -> str:
+        auto body = add_custom_routing_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "AddCustomRoutingEndpoints", body)
+
+    # AddEndpoints
+    # errors: AccessDeniedException, EndpointGroupNotFoundException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException, TransactionInProgressException
+    def add_endpoints(self, AddEndpointsRequest input) -> str:
+        auto body = add_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "AddEndpoints", body)
+
     # AdvertiseByoipCidr
     # errors: AccessDeniedException, ByoipCidrNotFoundException, IncorrectCidrStateException, InternalServiceErrorException, InvalidArgumentException
     def advertise_byoip_cidr(self, AdvertiseByoipCidrRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "AdvertiseByoipCidr", body)
+
+    # AllowCustomRoutingTraffic
+    # errors: EndpointGroupNotFoundException, InternalServiceErrorException, InvalidArgumentException
+    def allow_custom_routing_traffic(self, AllowCustomRoutingTrafficRequest input) -> str:
+        auto body = allow_custom_routing_traffic_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "AllowCustomRoutingTraffic", body)
+
+    # CreateAccelerator
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException, TransactionInProgressException
+    def create_accelerator(self, CreateAcceleratorRequest input) -> str:
+        auto body = create_accelerator_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateAccelerator", body)
+
+    # CreateCrossAccountAttachment
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException, TransactionInProgressException
+    def create_cross_account_attachment(self, CreateCrossAccountAttachmentRequest input) -> str:
+        auto body = create_cross_account_attachment_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateCrossAccountAttachment", body)
+
+    # CreateCustomRoutingAccelerator
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException, TransactionInProgressException
+    def create_custom_routing_accelerator(self, CreateCustomRoutingAcceleratorRequest input) -> str:
+        auto body = create_custom_routing_accelerator_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateCustomRoutingAccelerator", body)
+
+    # CreateCustomRoutingEndpointGroup
+    # errors: AcceleratorNotFoundException, AccessDeniedException, EndpointGroupAlreadyExistsException, InternalServiceErrorException, InvalidArgumentException, InvalidPortRangeException, LimitExceededException, ListenerNotFoundException
+    def create_custom_routing_endpoint_group(self, CreateCustomRoutingEndpointGroupRequest input) -> str:
+        auto body = create_custom_routing_endpoint_group_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateCustomRoutingEndpointGroup", body)
+
+    # CreateCustomRoutingListener
+    # errors: AcceleratorNotFoundException, InternalServiceErrorException, InvalidArgumentException, InvalidPortRangeException, LimitExceededException
+    def create_custom_routing_listener(self, CreateCustomRoutingListenerRequest input) -> str:
+        auto body = create_custom_routing_listener_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateCustomRoutingListener", body)
+
+    # CreateEndpointGroup
+    # errors: AcceleratorNotFoundException, AccessDeniedException, EndpointGroupAlreadyExistsException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException, ListenerNotFoundException
+    def create_endpoint_group(self, CreateEndpointGroupRequest input) -> str:
+        auto body = create_endpoint_group_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateEndpointGroup", body)
+
+    # CreateListener
+    # errors: AcceleratorNotFoundException, InternalServiceErrorException, InvalidArgumentException, InvalidPortRangeException, LimitExceededException
+    def create_listener(self, CreateListenerRequest input) -> str:
+        auto body = create_listener_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "CreateListener", body)
 
     # DeleteAccelerator
     # errors: AcceleratorNotDisabledException, AcceleratorNotFoundException, AssociatedListenerFoundException, InternalServiceErrorException, InvalidArgumentException, TransactionInProgressException
@@ -1152,6 +1696,12 @@ struct Global_AcceleratorClient:
     def delete_listener(self, DeleteListenerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "DeleteListener", body)
+
+    # DenyCustomRoutingTraffic
+    # errors: EndpointGroupNotFoundException, InternalServiceErrorException, InvalidArgumentException
+    def deny_custom_routing_traffic(self, DenyCustomRoutingTrafficRequest input) -> str:
+        auto body = deny_custom_routing_traffic_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "DenyCustomRoutingTraffic", body)
 
     # DeprovisionByoipCidr
     # errors: AccessDeniedException, ByoipCidrNotFoundException, IncorrectCidrStateException, InternalServiceErrorException, InvalidArgumentException
@@ -1297,17 +1847,77 @@ struct Global_AcceleratorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "ProvisionByoipCidr", body)
 
+    # RemoveCustomRoutingEndpoints
+    # errors: AccessDeniedException, ConflictException, EndpointGroupNotFoundException, EndpointNotFoundException, InternalServiceErrorException, InvalidArgumentException
+    def remove_custom_routing_endpoints(self, RemoveCustomRoutingEndpointsRequest input) -> str:
+        auto body = remove_custom_routing_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "RemoveCustomRoutingEndpoints", body)
+
+    # RemoveEndpoints
+    # errors: AccessDeniedException, EndpointGroupNotFoundException, InternalServiceErrorException, InvalidArgumentException, TransactionInProgressException
+    def remove_endpoints(self, RemoveEndpointsRequest input) -> str:
+        auto body = remove_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "RemoveEndpoints", body)
+
+    # TagResource
+    # errors: AcceleratorNotFoundException, InternalServiceErrorException, InvalidArgumentException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AcceleratorNotFoundException, InternalServiceErrorException, InvalidArgumentException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateAccelerator
+    # errors: AcceleratorNotFoundException, AccessDeniedException, ConflictException, InternalServiceErrorException, InvalidArgumentException, TransactionInProgressException
+    def update_accelerator(self, UpdateAcceleratorRequest input) -> str:
+        auto body = update_accelerator_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateAccelerator", body)
+
     # UpdateAcceleratorAttributes
     # errors: AcceleratorNotFoundException, AccessDeniedException, InternalServiceErrorException, InvalidArgumentException, TransactionInProgressException
     def update_accelerator_attributes(self, UpdateAcceleratorAttributesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateAcceleratorAttributes", body)
 
+    # UpdateCrossAccountAttachment
+    # errors: AccessDeniedException, AttachmentNotFoundException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException, TransactionInProgressException
+    def update_cross_account_attachment(self, UpdateCrossAccountAttachmentRequest input) -> str:
+        auto body = update_cross_account_attachment_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateCrossAccountAttachment", body)
+
+    # UpdateCustomRoutingAccelerator
+    # errors: AcceleratorNotFoundException, ConflictException, InternalServiceErrorException, InvalidArgumentException, TransactionInProgressException
+    def update_custom_routing_accelerator(self, UpdateCustomRoutingAcceleratorRequest input) -> str:
+        auto body = update_custom_routing_accelerator_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateCustomRoutingAccelerator", body)
+
     # UpdateCustomRoutingAcceleratorAttributes
     # errors: AcceleratorNotFoundException, AccessDeniedException, InternalServiceErrorException, InvalidArgumentException, TransactionInProgressException
     def update_custom_routing_accelerator_attributes(self, UpdateCustomRoutingAcceleratorAttributesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateCustomRoutingAcceleratorAttributes", body)
+
+    # UpdateCustomRoutingListener
+    # errors: InternalServiceErrorException, InvalidArgumentException, InvalidPortRangeException, LimitExceededException, ListenerNotFoundException
+    def update_custom_routing_listener(self, UpdateCustomRoutingListenerRequest input) -> str:
+        auto body = update_custom_routing_listener_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateCustomRoutingListener", body)
+
+    # UpdateEndpointGroup
+    # errors: AccessDeniedException, EndpointGroupNotFoundException, InternalServiceErrorException, InvalidArgumentException, LimitExceededException
+    def update_endpoint_group(self, UpdateEndpointGroupRequest input) -> str:
+        auto body = update_endpoint_group_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateEndpointGroup", body)
+
+    # UpdateListener
+    # errors: InternalServiceErrorException, InvalidArgumentException, InvalidPortRangeException, LimitExceededException, ListenerNotFoundException
+    def update_listener(self, UpdateListenerRequest input) -> str:
+        auto body = update_listener_request_to_json(input)
+        return awsjson.awsjson_request_now(globalaccelerator_protocol(), self.creds, self.region, "UpdateListener", body)
 
     # WithdrawByoipCidr
     # errors: AccessDeniedException, ByoipCidrNotFoundException, IncorrectCidrStateException, InternalServiceErrorException, InvalidArgumentException

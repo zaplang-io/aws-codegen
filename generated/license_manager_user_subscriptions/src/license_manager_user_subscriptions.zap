@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 2 with a generated method,
-#   15 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 16 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   60 structs (20 @derive(Json)), 3 enums, 7 error variants.
-#   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -72,16 +72,18 @@ enum LicenseServerHealthStatus:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) ActiveDirectorySettings: ActiveDirectorySettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveDirectorySettings: ActiveDirectorySettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActiveDirectoryIdentityProvider:
     Optional[str] DirectoryId
     Optional[ActiveDirectorySettings] ActiveDirectorySettings
     Optional[ActiveDirectoryType] ActiveDirectoryType
     Optional[bool] IsSharedActiveDirectory
 
-# no @derive(Json): member(s) DomainIpv4List: list[str], DomainIpv6List: list[str], DomainNetworkSettings: DomainNetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainIpv4List: list[str], DomainIpv6List: list[str], DomainNetworkSettings: DomainNetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActiveDirectorySettings:
     Optional[str] DomainName
     Optional[list[str]] DomainIpv4List
@@ -98,8 +100,9 @@ struct AssociateUserRequest:
     Optional[str] Domain
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) InstanceUserSummary: InstanceUserSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceUserSummary: InstanceUserSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateUserResponse:
     InstanceUserSummary InstanceUserSummary
 
@@ -129,8 +132,9 @@ struct DeleteLicenseServerEndpointRequest:
     str LicenseServerEndpointArn
     str ServerType
 
-# no @derive(Json): member(s) LicenseServerEndpoint: LicenseServerEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseServerEndpoint: LicenseServerEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteLicenseServerEndpointResponse:
     Optional[LicenseServerEndpoint] LicenseServerEndpoint
 
@@ -141,8 +145,9 @@ struct DeregisterIdentityProviderRequest:
     Optional[str] Product
     Optional[str] IdentityProviderArn
 
-# no @derive(Json): member(s) IdentityProviderSummary: IdentityProviderSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProviderSummary: IdentityProviderSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeregisterIdentityProviderResponse:
     IdentityProviderSummary IdentityProviderSummary
 
@@ -155,13 +160,15 @@ struct DisassociateUserRequest:
     Optional[str] InstanceUserArn
     Optional[str] Domain
 
-# no @derive(Json): member(s) InstanceUserSummary: InstanceUserSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceUserSummary: InstanceUserSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateUserResponse:
     InstanceUserSummary InstanceUserSummary
 
-# no @derive(Json): member(s) Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainNetworkSettings:
     list[str] Subnets
 
@@ -171,13 +178,15 @@ struct Filter:
     Optional[str] Operation
     Optional[str] Value
 
-# no @derive(Json): member(s) ActiveDirectoryIdentityProvider: ActiveDirectoryIdentityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveDirectoryIdentityProvider: ActiveDirectoryIdentityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityProvider:
     Optional[ActiveDirectoryIdentityProvider] ActiveDirectoryIdentityProvider
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProvider, Settings: Settings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProvider, Settings: Settings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityProviderSummary:
     IdentityProvider IdentityProvider
     Settings Settings
@@ -187,8 +196,9 @@ struct IdentityProviderSummary:
     Optional[str] FailureMessage
     Optional[str] OwnerAccountId
 
-# no @derive(Json): member(s) Products: list[str], IdentityProvider: IdentityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Products: list[str], IdentityProvider: IdentityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceSummary:
     str InstanceId
     str Status
@@ -198,8 +208,9 @@ struct InstanceSummary:
     Optional[str] OwnerAccountId
     Optional[IdentityProvider] IdentityProvider
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceUserSummary:
     str Username
     str InstanceId
@@ -222,8 +233,9 @@ struct LicenseServer:
     Optional[str] Ipv4Address
     Optional[str] Ipv6Address
 
-# no @derive(Json): member(s) LicenseServers: list[LicenseServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseServers: list[LicenseServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseServerEndpoint:
     Optional[str] IdentityProviderArn
     Optional[str] ServerType
@@ -247,8 +259,9 @@ struct ListIdentityProvidersRequest:
     Optional[list[Filter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IdentityProviderSummaries: list[IdentityProviderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProviderSummaries: list[IdentityProviderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityProvidersResponse:
     list[IdentityProviderSummary] IdentityProviderSummaries
     Optional[str] NextToken
@@ -260,8 +273,9 @@ struct ListInstancesRequest:
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) InstanceSummaries: list[InstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceSummaries: list[InstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesResponse:
     Optional[list[InstanceSummary]] InstanceSummaries
     Optional[str] NextToken
@@ -273,8 +287,9 @@ struct ListLicenseServerEndpointsRequest:
     Optional[list[Filter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseServerEndpoints: list[LicenseServerEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseServerEndpoints: list[LicenseServerEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseServerEndpointsResponse:
     Optional[list[LicenseServerEndpoint]] LicenseServerEndpoints
     Optional[str] NextToken
@@ -288,8 +303,9 @@ struct ListProductSubscriptionsRequest:
     Optional[list[Filter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ProductUserSummaries: list[ProductUserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductUserSummaries: list[ProductUserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProductSubscriptionsResponse:
     Optional[list[ProductUserSummary]] ProductUserSummaries
     Optional[str] NextToken
@@ -299,8 +315,9 @@ struct ListProductSubscriptionsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -313,14 +330,16 @@ struct ListUserAssociationsRequest:
     Optional[list[Filter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceUserSummaries: list[InstanceUserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceUserSummaries: list[InstanceUserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserAssociationsResponse:
     Optional[list[InstanceUserSummary]] InstanceUserSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductUserSummary:
     str Username
     str Product
@@ -345,8 +364,9 @@ struct RegisterIdentityProviderRequest:
     Optional[Settings] Settings
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) IdentityProviderSummary: IdentityProviderSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProviderSummary: IdentityProviderSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterIdentityProviderResponse:
     IdentityProviderSummary IdentityProviderSummary
 
@@ -370,8 +390,9 @@ struct ServerSettings:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Settings:
     list[str] Subnets
     str SecurityGroupId
@@ -385,8 +406,9 @@ struct StartProductSubscriptionRequest:
     Optional[str] Domain
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ProductUserSummary: ProductUserSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductUserSummary: ProductUserSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProductSubscriptionResponse:
     ProductUserSummary ProductUserSummary
 
@@ -399,8 +421,9 @@ struct StopProductSubscriptionRequest:
     Optional[str] ProductUserArn
     Optional[str] Domain
 
-# no @derive(Json): member(s) ProductUserSummary: ProductUserSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductUserSummary: ProductUserSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopProductSubscriptionResponse:
     ProductUserSummary ProductUserSummary
 
@@ -438,13 +461,15 @@ struct UpdateIdentityProviderSettingsRequest:
     Optional[str] IdentityProviderArn
     UpdateSettings UpdateSettings
 
-# no @derive(Json): member(s) IdentityProviderSummary: IdentityProviderSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProviderSummary: IdentityProviderSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdentityProviderSettingsResponse:
     IdentityProviderSummary IdentityProviderSummary
 
-# no @derive(Json): member(s) AddSubnets: list[str], RemoveSubnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddSubnets: list[str], RemoveSubnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSettings:
     list[str] AddSubnets
     list[str] RemoveSubnets
@@ -492,29 +517,7 @@ def license_manager_user_subscriptions_error_from_code(str code) -> License_Mana
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateUser (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   CreateLicenseServerEndpoint (document member `Tags: dict[str, str]` is not serializable by derive)
-#   DeregisterIdentityProvider (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   DisassociateUser (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   ListIdentityProviders (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListInstances (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListLicenseServerEndpoints (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListProductSubscriptions (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   ListUserAssociations (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   RegisterIdentityProvider (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   StartProductSubscription (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   StopProductSubscription (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateIdentityProviderSettings (document member `IdentityProvider: IdentityProvider` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListIdentityProviders (operation not generated)
-#   ListInstances (operation not generated)
-#   ListLicenseServerEndpoints (operation not generated)
-#   ListProductSubscriptions (operation not generated)
-#   ListUserAssociations (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -525,10 +528,164 @@ struct DeleteLicenseServerEndpointDocument:
     str LicenseServerEndpointArn
     str ServerType
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def license_manager_user_subscriptions_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def license_manager_user_subscriptions_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def license_manager_user_subscriptions_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActiveDirectoryIdentityProvider to a compact JSON object (declaration order).
+def active_directory_identity_provider_to_json(ActiveDirectoryIdentityProvider v) -> str:
+    list[str] parts = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + license_manager_user_subscriptions_json_str(u0))
+    if v.ActiveDirectorySettings.is_some():
+        auto u1 = v.ActiveDirectorySettings.unwrap()
+        parts.append("\"ActiveDirectorySettings\":" + active_directory_settings_to_json(u1))
+    if v.ActiveDirectoryType.is_some():
+        auto u2 = v.ActiveDirectoryType.unwrap()
+        parts.append("\"ActiveDirectoryType\":" + u2.to_json())
+    if v.IsSharedActiveDirectory.is_some():
+        auto u3 = v.IsSharedActiveDirectory.unwrap()
+        parts.append("\"IsSharedActiveDirectory\":" + json.dumps(JsonValue.Bool(u3)))
+    return license_manager_user_subscriptions_json_obj(parts)
+
+# Serialize ActiveDirectorySettings to a compact JSON object (declaration order).
+def active_directory_settings_to_json(ActiveDirectorySettings v) -> str:
+    list[str] parts = []
+    if v.DomainName.is_some():
+        auto u0 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + license_manager_user_subscriptions_json_str(u0))
+    if v.DomainIpv4List.is_some():
+        auto u1 = v.DomainIpv4List.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(license_manager_user_subscriptions_json_str(x2))
+        parts.append("\"DomainIpv4List\":" + license_manager_user_subscriptions_json_arr(e2))
+    if v.DomainIpv6List.is_some():
+        auto u3 = v.DomainIpv6List.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(license_manager_user_subscriptions_json_str(x4))
+        parts.append("\"DomainIpv6List\":" + license_manager_user_subscriptions_json_arr(e4))
+    if v.DomainCredentialsProvider.is_some():
+        auto u5 = v.DomainCredentialsProvider.unwrap()
+        parts.append("\"DomainCredentialsProvider\":" + u5.to_json())
+    if v.DomainNetworkSettings.is_some():
+        auto u6 = v.DomainNetworkSettings.unwrap()
+        parts.append("\"DomainNetworkSettings\":" + domain_network_settings_to_json(u6))
+    return license_manager_user_subscriptions_json_obj(parts)
+
+# Serialize DomainNetworkSettings to a compact JSON object (declaration order).
+def domain_network_settings_to_json(DomainNetworkSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Subnets:
+        e0.append(license_manager_user_subscriptions_json_str(x0))
+    parts.append("\"Subnets\":" + license_manager_user_subscriptions_json_arr(e0))
+    return license_manager_user_subscriptions_json_obj(parts)
+
+# Serialize IdentityProvider to a compact JSON object (declaration order).
+def identity_provider_to_json(IdentityProvider v) -> str:
+    list[str] parts = []
+    if v.ActiveDirectoryIdentityProvider.is_some():
+        auto u0 = v.ActiveDirectoryIdentityProvider.unwrap()
+        parts.append("\"ActiveDirectoryIdentityProvider\":" + active_directory_identity_provider_to_json(u0))
+    return license_manager_user_subscriptions_json_obj(parts)
+
+# Serialize Settings to a compact JSON object (declaration order).
+def settings_to_json(Settings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Subnets:
+        e0.append(license_manager_user_subscriptions_json_str(x0))
+    parts.append("\"Subnets\":" + license_manager_user_subscriptions_json_arr(e0))
+    parts.append("\"SecurityGroupId\":" + license_manager_user_subscriptions_json_str(v.SecurityGroupId))
+    return license_manager_user_subscriptions_json_obj(parts)
+
+# Serialize UpdateSettings to a compact JSON object (declaration order).
+def update_settings_to_json(UpdateSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AddSubnets:
+        e0.append(license_manager_user_subscriptions_json_str(x0))
+    parts.append("\"AddSubnets\":" + license_manager_user_subscriptions_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.RemoveSubnets:
+        e1.append(license_manager_user_subscriptions_json_str(x1))
+    parts.append("\"RemoveSubnets\":" + license_manager_user_subscriptions_json_arr(e1))
+    if v.SecurityGroupId.is_some():
+        auto u2 = v.SecurityGroupId.unwrap()
+        parts.append("\"SecurityGroupId\":" + license_manager_user_subscriptions_json_str(u2))
+    return license_manager_user_subscriptions_json_obj(parts)
+
 # A bound License_Manager_User_Subscriptions client: credentials + region, threaded into every operation.
 struct License_Manager_User_SubscriptionsClient:
     core.Credentials creds
     str region
+
+    # AssociateUser  POST /user/AssociateUser
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def associate_user(self, AssociateUserRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/user/AssociateUser", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Username\":" + license_manager_user_subscriptions_json_str(input.Username))
+        parts.append("\"InstanceId\":" + license_manager_user_subscriptions_json_str(input.InstanceId))
+        parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
+        if input.Domain.is_some():
+            auto u0 = input.Domain.unwrap()
+            parts.append("\"Domain\":" + license_manager_user_subscriptions_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(license_manager_user_subscriptions_json_str(k2) + ":" + license_manager_user_subscriptions_json_str(u1[k2]))
+            parts.append("\"Tags\":" + license_manager_user_subscriptions_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # CreateLicenseServerEndpoint  POST /license-server/CreateLicenseServerEndpoint
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_license_server_endpoint(self, CreateLicenseServerEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/license-server/CreateLicenseServerEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"IdentityProviderArn\":" + license_manager_user_subscriptions_json_str(input.IdentityProviderArn))
+        parts.append("\"LicenseServerSettings\":" + input.LicenseServerSettings.to_json())
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(license_manager_user_subscriptions_json_str(k1) + ":" + license_manager_user_subscriptions_json_str(u0[k1]))
+            parts.append("\"Tags\":" + license_manager_user_subscriptions_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
 
     # DeleteLicenseServerEndpoint  POST /license-server/DeleteLicenseServerEndpoint
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -539,6 +696,136 @@ struct License_Manager_User_SubscriptionsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
 
+    # DeregisterIdentityProvider  POST /identity-provider/DeregisterIdentityProvider
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def deregister_identity_provider(self, DeregisterIdentityProviderRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/DeregisterIdentityProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.IdentityProvider.is_some():
+            auto u0 = input.IdentityProvider.unwrap()
+            parts.append("\"IdentityProvider\":" + identity_provider_to_json(u0))
+        if input.Product.is_some():
+            auto u1 = input.Product.unwrap()
+            parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(u1))
+        if input.IdentityProviderArn.is_some():
+            auto u2 = input.IdentityProviderArn.unwrap()
+            parts.append("\"IdentityProviderArn\":" + license_manager_user_subscriptions_json_str(u2))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # DisassociateUser  POST /user/DisassociateUser
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def disassociate_user(self, DisassociateUserRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/user/DisassociateUser", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Username.is_some():
+            auto u0 = input.Username.unwrap()
+            parts.append("\"Username\":" + license_manager_user_subscriptions_json_str(u0))
+        if input.InstanceId.is_some():
+            auto u1 = input.InstanceId.unwrap()
+            parts.append("\"InstanceId\":" + license_manager_user_subscriptions_json_str(u1))
+        if input.IdentityProvider.is_some():
+            auto u2 = input.IdentityProvider.unwrap()
+            parts.append("\"IdentityProvider\":" + identity_provider_to_json(u2))
+        if input.InstanceUserArn.is_some():
+            auto u3 = input.InstanceUserArn.unwrap()
+            parts.append("\"InstanceUserArn\":" + license_manager_user_subscriptions_json_str(u3))
+        if input.Domain.is_some():
+            auto u4 = input.Domain.unwrap()
+            parts.append("\"Domain\":" + license_manager_user_subscriptions_json_str(u4))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # ListIdentityProviders  POST /identity-provider/ListIdentityProviders
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_identity_providers(self, ListIdentityProvidersRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/ListIdentityProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Filters\":" + license_manager_user_subscriptions_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_user_subscriptions_json_str(u3))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # ListInstances  POST /instance/ListInstances
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_instances(self, ListInstancesRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/ListInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_user_subscriptions_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + license_manager_user_subscriptions_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # ListLicenseServerEndpoints  POST /license-server/ListLicenseServerEndpoints
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_license_server_endpoints(self, ListLicenseServerEndpointsRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/license-server/ListLicenseServerEndpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Filters\":" + license_manager_user_subscriptions_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_user_subscriptions_json_str(u3))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # ListProductSubscriptions  POST /user/ListProductSubscriptions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_product_subscriptions(self, ListProductSubscriptionsRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/user/ListProductSubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Product.is_some():
+            auto u0 = input.Product.unwrap()
+            parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(u0))
+        parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + license_manager_user_subscriptions_json_arr(e3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_user_subscriptions_json_str(u4))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{ResourceArn}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -547,6 +834,193 @@ struct License_Manager_User_SubscriptionsClient:
         labels["ResourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, license_manager_user_subscriptions_service(), self.region, host)
+
+    # ListUserAssociations  POST /user/ListUserAssociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_user_associations(self, ListUserAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/user/ListUserAssociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + license_manager_user_subscriptions_json_str(input.InstanceId))
+        parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Filters\":" + license_manager_user_subscriptions_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_user_subscriptions_json_str(u3))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # RegisterIdentityProvider  POST /identity-provider/RegisterIdentityProvider
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def register_identity_provider(self, RegisterIdentityProviderRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/RegisterIdentityProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
+        parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(input.Product))
+        if input.Settings.is_some():
+            auto u0 = input.Settings.unwrap()
+            parts.append("\"Settings\":" + settings_to_json(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(license_manager_user_subscriptions_json_str(k2) + ":" + license_manager_user_subscriptions_json_str(u1[k2]))
+            parts.append("\"Tags\":" + license_manager_user_subscriptions_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # StartProductSubscription  POST /user/StartProductSubscription
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_product_subscription(self, StartProductSubscriptionRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/user/StartProductSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Username\":" + license_manager_user_subscriptions_json_str(input.Username))
+        parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
+        parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(input.Product))
+        if input.Domain.is_some():
+            auto u0 = input.Domain.unwrap()
+            parts.append("\"Domain\":" + license_manager_user_subscriptions_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(license_manager_user_subscriptions_json_str(k2) + ":" + license_manager_user_subscriptions_json_str(u1[k2]))
+            parts.append("\"Tags\":" + license_manager_user_subscriptions_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # StopProductSubscription  POST /user/StopProductSubscription
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def stop_product_subscription(self, StopProductSubscriptionRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/user/StopProductSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Username.is_some():
+            auto u0 = input.Username.unwrap()
+            parts.append("\"Username\":" + license_manager_user_subscriptions_json_str(u0))
+        if input.IdentityProvider.is_some():
+            auto u1 = input.IdentityProvider.unwrap()
+            parts.append("\"IdentityProvider\":" + identity_provider_to_json(u1))
+        if input.Product.is_some():
+            auto u2 = input.Product.unwrap()
+            parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(u2))
+        if input.ProductUserArn.is_some():
+            auto u3 = input.ProductUserArn.unwrap()
+            parts.append("\"ProductUserArn\":" + license_manager_user_subscriptions_json_str(u3))
+        if input.Domain.is_some():
+            auto u4 = input.Domain.unwrap()
+            parts.append("\"Domain\":" + license_manager_user_subscriptions_json_str(u4))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # TagResource  PUT /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(license_manager_user_subscriptions_json_str(k0) + ":" + license_manager_user_subscriptions_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + license_manager_user_subscriptions_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # UpdateIdentityProviderSettings  POST /identity-provider/UpdateIdentityProviderSettings
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_identity_provider_settings(self, UpdateIdentityProviderSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/UpdateIdentityProviderSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.IdentityProvider.is_some():
+            auto u0 = input.IdentityProvider.unwrap()
+            parts.append("\"IdentityProvider\":" + identity_provider_to_json(u0))
+        if input.Product.is_some():
+            auto u1 = input.Product.unwrap()
+            parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(u1))
+        if input.IdentityProviderArn.is_some():
+            auto u2 = input.IdentityProviderArn.unwrap()
+            parts.append("\"IdentityProviderArn\":" + license_manager_user_subscriptions_json_str(u2))
+        parts.append("\"UpdateSettings\":" + update_settings_to_json(input.UpdateSettings))
+        auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
+
+    # Paginator for ListIdentityProviders — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: IdentityProviderSummaries).
+    def paginate_list_identity_providers(self, ListIdentityProvidersRequest input):
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_identity_providers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListInstances — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: InstanceSummaries).
+    def paginate_list_instances(self, ListInstancesRequest input):
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_instances(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListLicenseServerEndpoints — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: LicenseServerEndpoints).
+    def paginate_list_license_server_endpoints(self, ListLicenseServerEndpointsRequest input):
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_license_server_endpoints(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListProductSubscriptions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ProductUserSummaries).
+    def paginate_list_product_subscriptions(self, ListProductSubscriptionsRequest input):
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_product_subscriptions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListUserAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: InstanceUserSummaries).
+    def paginate_list_user_associations(self, ListUserAssociationsRequest input):
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_user_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a License_Manager_User_SubscriptionsClient bound to credentials + region.
 def license_manager_user_subscriptions_client(core.Credentials creds, str region) -> License_Manager_User_SubscriptionsClient:

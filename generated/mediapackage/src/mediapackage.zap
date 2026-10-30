@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 14 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 19 operations — 18 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   75 structs (35 @derive(Json)), 15 enums, 6 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -182,8 +182,9 @@ struct Authorization:
     str CdnIdentifierSecret
     str SecretsRoleArn
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Channel:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -194,15 +195,17 @@ struct Channel:
     Optional[IngressAccessLogs] IngressAccessLogs
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelCreateParameters:
     Optional[str] Description
     str Id
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Channels: list[Channel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[Channel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelList:
     Optional[list[Channel]] Channels
     Optional[str] NextToken
@@ -211,16 +214,18 @@ struct ChannelList:
 struct ChannelUpdateParameters:
     Optional[str] Description
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafEncryption:
     Optional[str] ConstantInitializationVector
     Optional[CmafEncryptionMethod] EncryptionMethod
     Optional[int64] KeyRotationIntervalSeconds
     SpekeKeyProvider SpekeKeyProvider
 
-# no @derive(Json): member(s) Encryption: CmafEncryption, HlsManifests: list[HlsManifest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Encryption: CmafEncryption, HlsManifests: list[HlsManifest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafPackage:
     Optional[CmafEncryption] Encryption
     Optional[list[HlsManifest]] HlsManifests
@@ -228,8 +233,9 @@ struct CmafPackage:
     Optional[str] SegmentPrefix
     Optional[StreamSelection] StreamSelection
 
-# no @derive(Json): member(s) Encryption: CmafEncryption, HlsManifests: list[HlsManifestCreateOrUpdateParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Encryption: CmafEncryption, HlsManifests: list[HlsManifestCreateOrUpdateParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafPackageCreateOrUpdateParameters:
     Optional[CmafEncryption] Encryption
     Optional[list[HlsManifestCreateOrUpdateParameters]] HlsManifests
@@ -249,8 +255,9 @@ struct ConfigureLogsRequest:
     str Id
     Optional[IngressAccessLogs] IngressAccessLogs
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigureLogsResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -268,8 +275,9 @@ struct CreateChannelRequest:
     str Id
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -319,8 +327,9 @@ struct CreateOriginEndpointRequest:
     Optional[int64] TimeDelaySeconds
     Optional[list[str]] Whitelist
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOriginEndpointResponse:
     Optional[str] Arn
     Optional[Authorization] Authorization
@@ -340,14 +349,16 @@ struct CreateOriginEndpointResponse:
     Optional[str] Url
     Optional[list[str]] Whitelist
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashEncryption:
     Optional[int64] KeyRotationIntervalSeconds
     SpekeKeyProvider SpekeKeyProvider
 
-# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement], Encryption: DashEncryption, PeriodTriggers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement], Encryption: DashEncryption, PeriodTriggers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashPackage:
     Optional[list[__AdTriggersElement]] AdTriggers
     Optional[AdsOnDeliveryRestrictions] AdsOnDeliveryRestrictions
@@ -391,8 +402,9 @@ struct DeleteOriginEndpointResponse:
 struct DescribeChannelRequest:
     str Id
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -425,8 +437,9 @@ struct DescribeHarvestJobResponse:
 struct DescribeOriginEndpointRequest:
     str Id
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOriginEndpointResponse:
     Optional[str] Arn
     Optional[Authorization] Authorization
@@ -479,14 +492,16 @@ struct HarvestJobCreateParameters:
     S3Destination S3Destination
     str StartTime
 
-# no @derive(Json): member(s) HarvestJobs: list[HarvestJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HarvestJobs: list[HarvestJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarvestJobList:
     Optional[list[HarvestJob]] HarvestJobs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsEncryption:
     Optional[str] ConstantInitializationVector
     Optional[EncryptionMethod] EncryptionMethod
@@ -494,13 +509,15 @@ struct HlsEncryption:
     Optional[bool] RepeatExtXKey
     SpekeKeyProvider SpekeKeyProvider
 
-# no @derive(Json): member(s) IngestEndpoints: list[IngestEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IngestEndpoints: list[IngestEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsIngest:
     Optional[list[IngestEndpoint]] IngestEndpoints
 
-# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsManifest:
     Optional[AdMarkers] AdMarkers
     str Id
@@ -513,8 +530,9 @@ struct HlsManifest:
     Optional[list[__AdTriggersElement]] AdTriggers
     Optional[AdsOnDeliveryRestrictions] AdsOnDeliveryRestrictions
 
-# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsManifestCreateOrUpdateParameters:
     Optional[AdMarkers] AdMarkers
     Optional[list[__AdTriggersElement]] AdTriggers
@@ -526,8 +544,9 @@ struct HlsManifestCreateOrUpdateParameters:
     Optional[int64] PlaylistWindowSeconds
     Optional[int64] ProgramDateTimeIntervalSeconds
 
-# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement], Encryption: HlsEncryption not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdTriggers: list[__AdTriggersElement], Encryption: HlsEncryption not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsPackage:
     Optional[AdMarkers] AdMarkers
     Optional[list[__AdTriggersElement]] AdTriggers
@@ -563,8 +582,9 @@ struct ListChannelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[Channel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[Channel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[list[Channel]] Channels
     Optional[str] NextToken
@@ -577,8 +597,9 @@ struct ListHarvestJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) HarvestJobs: list[HarvestJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HarvestJobs: list[HarvestJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHarvestJobsResponse:
     Optional[list[HarvestJob]] HarvestJobs
     Optional[str] NextToken
@@ -590,8 +611,9 @@ struct ListOriginEndpointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OriginEndpoints: list[OriginEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginEndpoints: list[OriginEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOriginEndpointsResponse:
     Optional[str] NextToken
     Optional[list[OriginEndpoint]] OriginEndpoints
@@ -601,18 +623,21 @@ struct ListOriginEndpointsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MssEncryption:
     SpekeKeyProvider SpekeKeyProvider
 
-# no @derive(Json): member(s) Encryption: MssEncryption not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Encryption: MssEncryption not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MssPackage:
     Optional[MssEncryption] Encryption
     Optional[int64] ManifestWindowSeconds
@@ -623,8 +648,9 @@ struct MssPackage:
 struct NotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OriginEndpoint:
     Optional[str] Arn
     Optional[Authorization] Authorization
@@ -644,8 +670,9 @@ struct OriginEndpoint:
     Optional[str] Url
     Optional[list[str]] Whitelist
 
-# no @derive(Json): member(s) CmafPackage: CmafPackageCreateOrUpdateParameters, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackageCreateOrUpdateParameters, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OriginEndpointCreateParameters:
     Optional[Authorization] Authorization
     str ChannelId
@@ -662,14 +689,16 @@ struct OriginEndpointCreateParameters:
     Optional[int64] TimeDelaySeconds
     Optional[list[str]] Whitelist
 
-# no @derive(Json): member(s) OriginEndpoints: list[OriginEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginEndpoints: list[OriginEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OriginEndpointList:
     Optional[str] NextToken
     Optional[list[OriginEndpoint]] OriginEndpoints
 
-# no @derive(Json): member(s) CmafPackage: CmafPackageCreateOrUpdateParameters, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Whitelist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackageCreateOrUpdateParameters, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Whitelist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OriginEndpointUpdateParameters:
     Optional[Authorization] Authorization
     Optional[CmafPackageCreateOrUpdateParameters] CmafPackage
@@ -688,8 +717,9 @@ struct OriginEndpointUpdateParameters:
 struct RotateChannelCredentialsRequest:
     str Id
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RotateChannelCredentialsResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -706,8 +736,9 @@ struct RotateIngestEndpointCredentialsRequest:
     str Id
     str IngestEndpointId
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RotateIngestEndpointCredentialsResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -728,8 +759,9 @@ struct S3Destination:
 struct ServiceUnavailableException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SystemIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SystemIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpekeKeyProvider:
     Optional[str] CertificateArn
     Optional[EncryptionContractConfiguration] EncryptionContractConfiguration
@@ -750,8 +782,9 @@ struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagsModel:
     dict[str, str] Tags
 
@@ -775,8 +808,9 @@ struct UpdateChannelRequest:
     Optional[str] Description
     str Id
 
-# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsIngest: HlsIngest, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -803,8 +837,9 @@ struct UpdateOriginEndpointRequest:
     Optional[int64] TimeDelaySeconds
     Optional[list[str]] Whitelist
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str], Whitelist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOriginEndpointResponse:
     Optional[str] Arn
     Optional[Authorization] Authorization
@@ -859,11 +894,7 @@ def mediapackage_error_from_code(str code) -> MediaPackageError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateChannel (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateOriginEndpoint (document member `CmafPackage: CmafPackageCreateOrUpdateParameters` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateOriginEndpoint (document member `CmafPackage: CmafPackageCreateOrUpdateParameters` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -888,6 +919,278 @@ struct UpdateChannelDocument:
     # document members of UpdateChannel
     Optional[str] Description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mediapackage_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mediapackage_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mediapackage_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CmafEncryption to a compact JSON object (declaration order).
+def cmaf_encryption_to_json(CmafEncryption v) -> str:
+    list[str] parts = []
+    if v.ConstantInitializationVector.is_some():
+        auto u0 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"constantInitializationVector\":" + mediapackage_json_str(u0))
+    if v.EncryptionMethod.is_some():
+        auto u1 = v.EncryptionMethod.unwrap()
+        parts.append("\"encryptionMethod\":" + u1.to_json())
+    if v.KeyRotationIntervalSeconds.is_some():
+        auto u2 = v.KeyRotationIntervalSeconds.unwrap()
+        parts.append("\"keyRotationIntervalSeconds\":" + str(u2))
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_json_obj(parts)
+
+# Serialize CmafPackageCreateOrUpdateParameters to a compact JSON object (declaration order).
+def cmaf_package_create_or_update_parameters_to_json(CmafPackageCreateOrUpdateParameters v) -> str:
+    list[str] parts = []
+    if v.Encryption.is_some():
+        auto u0 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + cmaf_encryption_to_json(u0))
+    if v.HlsManifests.is_some():
+        auto u1 = v.HlsManifests.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(hls_manifest_create_or_update_parameters_to_json(x2))
+        parts.append("\"hlsManifests\":" + mediapackage_json_arr(e2))
+    if v.SegmentDurationSeconds.is_some():
+        auto u3 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u3))
+    if v.SegmentPrefix.is_some():
+        auto u4 = v.SegmentPrefix.unwrap()
+        parts.append("\"segmentPrefix\":" + mediapackage_json_str(u4))
+    if v.StreamSelection.is_some():
+        auto u5 = v.StreamSelection.unwrap()
+        parts.append("\"streamSelection\":" + u5.to_json())
+    return mediapackage_json_obj(parts)
+
+# Serialize DashEncryption to a compact JSON object (declaration order).
+def dash_encryption_to_json(DashEncryption v) -> str:
+    list[str] parts = []
+    if v.KeyRotationIntervalSeconds.is_some():
+        auto u0 = v.KeyRotationIntervalSeconds.unwrap()
+        parts.append("\"keyRotationIntervalSeconds\":" + str(u0))
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_json_obj(parts)
+
+# Serialize DashPackage to a compact JSON object (declaration order).
+def dash_package_to_json(DashPackage v) -> str:
+    list[str] parts = []
+    if v.AdTriggers.is_some():
+        auto u0 = v.AdTriggers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"adTriggers\":" + mediapackage_json_arr(e1))
+    if v.AdsOnDeliveryRestrictions.is_some():
+        auto u2 = v.AdsOnDeliveryRestrictions.unwrap()
+        parts.append("\"adsOnDeliveryRestrictions\":" + u2.to_json())
+    if v.Encryption.is_some():
+        auto u3 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + dash_encryption_to_json(u3))
+    if v.IncludeIframeOnlyStream.is_some():
+        auto u4 = v.IncludeIframeOnlyStream.unwrap()
+        parts.append("\"includeIframeOnlyStream\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ManifestLayout.is_some():
+        auto u5 = v.ManifestLayout.unwrap()
+        parts.append("\"manifestLayout\":" + u5.to_json())
+    if v.ManifestWindowSeconds.is_some():
+        auto u6 = v.ManifestWindowSeconds.unwrap()
+        parts.append("\"manifestWindowSeconds\":" + str(u6))
+    if v.MinBufferTimeSeconds.is_some():
+        auto u7 = v.MinBufferTimeSeconds.unwrap()
+        parts.append("\"minBufferTimeSeconds\":" + str(u7))
+    if v.MinUpdatePeriodSeconds.is_some():
+        auto u8 = v.MinUpdatePeriodSeconds.unwrap()
+        parts.append("\"minUpdatePeriodSeconds\":" + str(u8))
+    if v.PeriodTriggers.is_some():
+        auto u9 = v.PeriodTriggers.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(mediapackage_json_str(x10))
+        parts.append("\"periodTriggers\":" + mediapackage_json_arr(e10))
+    if v.Profile.is_some():
+        auto u11 = v.Profile.unwrap()
+        parts.append("\"profile\":" + u11.to_json())
+    if v.SegmentDurationSeconds.is_some():
+        auto u12 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u12))
+    if v.SegmentTemplateFormat.is_some():
+        auto u13 = v.SegmentTemplateFormat.unwrap()
+        parts.append("\"segmentTemplateFormat\":" + u13.to_json())
+    if v.StreamSelection.is_some():
+        auto u14 = v.StreamSelection.unwrap()
+        parts.append("\"streamSelection\":" + u14.to_json())
+    if v.SuggestedPresentationDelaySeconds.is_some():
+        auto u15 = v.SuggestedPresentationDelaySeconds.unwrap()
+        parts.append("\"suggestedPresentationDelaySeconds\":" + str(u15))
+    if v.UtcTiming.is_some():
+        auto u16 = v.UtcTiming.unwrap()
+        parts.append("\"utcTiming\":" + u16.to_json())
+    if v.UtcTimingUri.is_some():
+        auto u17 = v.UtcTimingUri.unwrap()
+        parts.append("\"utcTimingUri\":" + mediapackage_json_str(u17))
+    return mediapackage_json_obj(parts)
+
+# Serialize HlsEncryption to a compact JSON object (declaration order).
+def hls_encryption_to_json(HlsEncryption v) -> str:
+    list[str] parts = []
+    if v.ConstantInitializationVector.is_some():
+        auto u0 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"constantInitializationVector\":" + mediapackage_json_str(u0))
+    if v.EncryptionMethod.is_some():
+        auto u1 = v.EncryptionMethod.unwrap()
+        parts.append("\"encryptionMethod\":" + u1.to_json())
+    if v.KeyRotationIntervalSeconds.is_some():
+        auto u2 = v.KeyRotationIntervalSeconds.unwrap()
+        parts.append("\"keyRotationIntervalSeconds\":" + str(u2))
+    if v.RepeatExtXKey.is_some():
+        auto u3 = v.RepeatExtXKey.unwrap()
+        parts.append("\"repeatExtXKey\":" + json.dumps(JsonValue.Bool(u3)))
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_json_obj(parts)
+
+# Serialize HlsManifestCreateOrUpdateParameters to a compact JSON object (declaration order).
+def hls_manifest_create_or_update_parameters_to_json(HlsManifestCreateOrUpdateParameters v) -> str:
+    list[str] parts = []
+    if v.AdMarkers.is_some():
+        auto u0 = v.AdMarkers.unwrap()
+        parts.append("\"adMarkers\":" + u0.to_json())
+    if v.AdTriggers.is_some():
+        auto u1 = v.AdTriggers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"adTriggers\":" + mediapackage_json_arr(e2))
+    if v.AdsOnDeliveryRestrictions.is_some():
+        auto u3 = v.AdsOnDeliveryRestrictions.unwrap()
+        parts.append("\"adsOnDeliveryRestrictions\":" + u3.to_json())
+    parts.append("\"id\":" + mediapackage_json_str(v.Id))
+    if v.IncludeIframeOnlyStream.is_some():
+        auto u4 = v.IncludeIframeOnlyStream.unwrap()
+        parts.append("\"includeIframeOnlyStream\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ManifestName.is_some():
+        auto u5 = v.ManifestName.unwrap()
+        parts.append("\"manifestName\":" + mediapackage_json_str(u5))
+    if v.PlaylistType.is_some():
+        auto u6 = v.PlaylistType.unwrap()
+        parts.append("\"playlistType\":" + u6.to_json())
+    if v.PlaylistWindowSeconds.is_some():
+        auto u7 = v.PlaylistWindowSeconds.unwrap()
+        parts.append("\"playlistWindowSeconds\":" + str(u7))
+    if v.ProgramDateTimeIntervalSeconds.is_some():
+        auto u8 = v.ProgramDateTimeIntervalSeconds.unwrap()
+        parts.append("\"programDateTimeIntervalSeconds\":" + str(u8))
+    return mediapackage_json_obj(parts)
+
+# Serialize HlsPackage to a compact JSON object (declaration order).
+def hls_package_to_json(HlsPackage v) -> str:
+    list[str] parts = []
+    if v.AdMarkers.is_some():
+        auto u0 = v.AdMarkers.unwrap()
+        parts.append("\"adMarkers\":" + u0.to_json())
+    if v.AdTriggers.is_some():
+        auto u1 = v.AdTriggers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"adTriggers\":" + mediapackage_json_arr(e2))
+    if v.AdsOnDeliveryRestrictions.is_some():
+        auto u3 = v.AdsOnDeliveryRestrictions.unwrap()
+        parts.append("\"adsOnDeliveryRestrictions\":" + u3.to_json())
+    if v.Encryption.is_some():
+        auto u4 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + hls_encryption_to_json(u4))
+    if v.IncludeDvbSubtitles.is_some():
+        auto u5 = v.IncludeDvbSubtitles.unwrap()
+        parts.append("\"includeDvbSubtitles\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.IncludeIframeOnlyStream.is_some():
+        auto u6 = v.IncludeIframeOnlyStream.unwrap()
+        parts.append("\"includeIframeOnlyStream\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.PlaylistType.is_some():
+        auto u7 = v.PlaylistType.unwrap()
+        parts.append("\"playlistType\":" + u7.to_json())
+    if v.PlaylistWindowSeconds.is_some():
+        auto u8 = v.PlaylistWindowSeconds.unwrap()
+        parts.append("\"playlistWindowSeconds\":" + str(u8))
+    if v.ProgramDateTimeIntervalSeconds.is_some():
+        auto u9 = v.ProgramDateTimeIntervalSeconds.unwrap()
+        parts.append("\"programDateTimeIntervalSeconds\":" + str(u9))
+    if v.SegmentDurationSeconds.is_some():
+        auto u10 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u10))
+    if v.StreamSelection.is_some():
+        auto u11 = v.StreamSelection.unwrap()
+        parts.append("\"streamSelection\":" + u11.to_json())
+    if v.UseAudioRenditionGroup.is_some():
+        auto u12 = v.UseAudioRenditionGroup.unwrap()
+        parts.append("\"useAudioRenditionGroup\":" + json.dumps(JsonValue.Bool(u12)))
+    return mediapackage_json_obj(parts)
+
+# Serialize MssEncryption to a compact JSON object (declaration order).
+def mss_encryption_to_json(MssEncryption v) -> str:
+    list[str] parts = []
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_json_obj(parts)
+
+# Serialize MssPackage to a compact JSON object (declaration order).
+def mss_package_to_json(MssPackage v) -> str:
+    list[str] parts = []
+    if v.Encryption.is_some():
+        auto u0 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + mss_encryption_to_json(u0))
+    if v.ManifestWindowSeconds.is_some():
+        auto u1 = v.ManifestWindowSeconds.unwrap()
+        parts.append("\"manifestWindowSeconds\":" + str(u1))
+    if v.SegmentDurationSeconds.is_some():
+        auto u2 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u2))
+    if v.StreamSelection.is_some():
+        auto u3 = v.StreamSelection.unwrap()
+        parts.append("\"streamSelection\":" + u3.to_json())
+    return mediapackage_json_obj(parts)
+
+# Serialize SpekeKeyProvider to a compact JSON object (declaration order).
+def speke_key_provider_to_json(SpekeKeyProvider v) -> str:
+    list[str] parts = []
+    if v.CertificateArn.is_some():
+        auto u0 = v.CertificateArn.unwrap()
+        parts.append("\"certificateArn\":" + mediapackage_json_str(u0))
+    if v.EncryptionContractConfiguration.is_some():
+        auto u1 = v.EncryptionContractConfiguration.unwrap()
+        parts.append("\"encryptionContractConfiguration\":" + u1.to_json())
+    parts.append("\"resourceId\":" + mediapackage_json_str(v.ResourceId))
+    parts.append("\"roleArn\":" + mediapackage_json_str(v.RoleArn))
+    list[str] e2 = []
+    for x2 in v.SystemIds:
+        e2.append(mediapackage_json_str(x2))
+    parts.append("\"systemIds\":" + mediapackage_json_arr(e2))
+    parts.append("\"url\":" + mediapackage_json_str(v.Url))
+    return mediapackage_json_obj(parts)
+
 # A bound MediaPackage client: credentials + region, threaded into every operation.
 struct MediaPackageClient:
     core.Credentials creds
@@ -904,6 +1207,25 @@ struct MediaPackageClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
 
+    # CreateChannel  POST /channels
+    # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + mediapackage_json_str(u0))
+        parts.append("\"id\":" + mediapackage_json_str(input.Id))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mediapackage_json_str(k2) + ":" + mediapackage_json_str(u1[k2]))
+            parts.append("\"tags\":" + mediapackage_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, mediapackage_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
+
     # CreateHarvestJob  POST /harvest_jobs
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
     def create_harvest_job(self, CreateHarvestJobRequest input) -> str:
@@ -911,6 +1233,59 @@ struct MediaPackageClient:
         auto b = binding.HttpBinding(method="POST", path_template="/harvest_jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateHarvestJobDocument(EndTime=input.EndTime, Id=input.Id, OriginEndpointId=input.OriginEndpointId, S3Destination=input.S3Destination, StartTime=input.StartTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
+
+    # CreateOriginEndpoint  POST /origin_endpoints
+    # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
+    def create_origin_endpoint(self, CreateOriginEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/origin_endpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Authorization.is_some():
+            auto u0 = input.Authorization.unwrap()
+            parts.append("\"authorization\":" + u0.to_json())
+        parts.append("\"channelId\":" + mediapackage_json_str(input.ChannelId))
+        if input.CmafPackage.is_some():
+            auto u1 = input.CmafPackage.unwrap()
+            parts.append("\"cmafPackage\":" + cmaf_package_create_or_update_parameters_to_json(u1))
+        if input.DashPackage.is_some():
+            auto u2 = input.DashPackage.unwrap()
+            parts.append("\"dashPackage\":" + dash_package_to_json(u2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"description\":" + mediapackage_json_str(u3))
+        if input.HlsPackage.is_some():
+            auto u4 = input.HlsPackage.unwrap()
+            parts.append("\"hlsPackage\":" + hls_package_to_json(u4))
+        parts.append("\"id\":" + mediapackage_json_str(input.Id))
+        if input.ManifestName.is_some():
+            auto u5 = input.ManifestName.unwrap()
+            parts.append("\"manifestName\":" + mediapackage_json_str(u5))
+        if input.MssPackage.is_some():
+            auto u6 = input.MssPackage.unwrap()
+            parts.append("\"mssPackage\":" + mss_package_to_json(u6))
+        if input.Origination.is_some():
+            auto u7 = input.Origination.unwrap()
+            parts.append("\"origination\":" + u7.to_json())
+        if input.StartoverWindowSeconds.is_some():
+            auto u8 = input.StartoverWindowSeconds.unwrap()
+            parts.append("\"startoverWindowSeconds\":" + str(u8))
+        if input.Tags.is_some():
+            auto u9 = input.Tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(mediapackage_json_str(k10) + ":" + mediapackage_json_str(u9[k10]))
+            parts.append("\"tags\":" + mediapackage_json_obj(m10))
+        if input.TimeDelaySeconds.is_some():
+            auto u11 = input.TimeDelaySeconds.unwrap()
+            parts.append("\"timeDelaySeconds\":" + str(u11))
+        if input.Whitelist.is_some():
+            auto u12 = input.Whitelist.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(mediapackage_json_str(x13))
+            parts.append("\"whitelist\":" + mediapackage_json_arr(e13))
+        auto bp = restjson.rest_json_document(b, mediapackage_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
 
     # DeleteChannel  DELETE /channels/{id}
@@ -1027,6 +1402,20 @@ struct MediaPackageClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/channels/{id}/ingest_endpoints/{ingest_endpoint_id}/credentials", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_service(), self.region, host)
 
+    # TagResource  POST /tags/{resource-arn}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mediapackage_json_str(k0) + ":" + mediapackage_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + mediapackage_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mediapackage_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
+
     # UpdateChannel  PUT /channels/{id}
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
     def update_channel(self, UpdateChannelRequest input) -> str:
@@ -1036,6 +1425,53 @@ struct MediaPackageClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/channels/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
+
+    # UpdateOriginEndpoint  PUT /origin_endpoints/{id}
+    # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
+    def update_origin_endpoint(self, UpdateOriginEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.Id
+        auto b = binding.HttpBinding(method="PUT", path_template="/origin_endpoints/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Authorization.is_some():
+            auto u0 = input.Authorization.unwrap()
+            parts.append("\"authorization\":" + u0.to_json())
+        if input.CmafPackage.is_some():
+            auto u1 = input.CmafPackage.unwrap()
+            parts.append("\"cmafPackage\":" + cmaf_package_create_or_update_parameters_to_json(u1))
+        if input.DashPackage.is_some():
+            auto u2 = input.DashPackage.unwrap()
+            parts.append("\"dashPackage\":" + dash_package_to_json(u2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"description\":" + mediapackage_json_str(u3))
+        if input.HlsPackage.is_some():
+            auto u4 = input.HlsPackage.unwrap()
+            parts.append("\"hlsPackage\":" + hls_package_to_json(u4))
+        if input.ManifestName.is_some():
+            auto u5 = input.ManifestName.unwrap()
+            parts.append("\"manifestName\":" + mediapackage_json_str(u5))
+        if input.MssPackage.is_some():
+            auto u6 = input.MssPackage.unwrap()
+            parts.append("\"mssPackage\":" + mss_package_to_json(u6))
+        if input.Origination.is_some():
+            auto u7 = input.Origination.unwrap()
+            parts.append("\"origination\":" + u7.to_json())
+        if input.StartoverWindowSeconds.is_some():
+            auto u8 = input.StartoverWindowSeconds.unwrap()
+            parts.append("\"startoverWindowSeconds\":" + str(u8))
+        if input.TimeDelaySeconds.is_some():
+            auto u9 = input.TimeDelaySeconds.unwrap()
+            parts.append("\"timeDelaySeconds\":" + str(u9))
+        if input.Whitelist.is_some():
+            auto u10 = input.Whitelist.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(mediapackage_json_str(x11))
+            parts.append("\"whitelist\":" + mediapackage_json_arr(e11))
+        auto bp = restjson.rest_json_document(b, mediapackage_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediapackage_service(), self.region, host)
 
     # Paginator for ListChannels — yields each Response page, threading the

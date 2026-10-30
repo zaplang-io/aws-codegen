@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 26 operations — 21 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 26 operations — 25 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   128 structs (79 @derive(Json)), 8 enums, 4 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -115,8 +115,9 @@ enum SafetyLeverStatusInput:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) parameters: dict[str, ActionParameter], targets: dict[str, ActionTarget], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, ActionParameter], targets: dict[str, ActionTarget], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[str] id
     Optional[str] arn
@@ -130,8 +131,9 @@ struct ActionParameter:
     Optional[str] description
     Optional[bool] required
 
-# no @derive(Json): member(s) targets: dict[str, ActionTarget], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: dict[str, ActionTarget], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionSummary:
     Optional[str] id
     Optional[str] arn
@@ -147,8 +149,9 @@ struct ActionTarget:
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExperimentTemplateActionInput:
     str actionId
     Optional[str] description
@@ -167,8 +170,9 @@ struct CreateExperimentTemplateLogConfigurationInput:
     Optional[ExperimentTemplateS3LogConfigurationInput] s3Configuration
     int64 logSchemaVersion
 
-# no @derive(Json): member(s) dataSources: ExperimentTemplateReportConfigurationDataSourcesInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: ExperimentTemplateReportConfigurationDataSourcesInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExperimentTemplateReportConfigurationInput:
     Optional[ExperimentTemplateReportConfigurationOutputsInput] outputs
     Optional[ExperimentTemplateReportConfigurationDataSourcesInput] dataSources
@@ -189,8 +193,9 @@ struct CreateExperimentTemplateRequest:
     Optional[CreateExperimentTemplateExperimentOptionsInput] experimentOptions
     Optional[CreateExperimentTemplateReportConfigurationInput] experimentReportConfiguration
 
-# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExperimentTemplateResponse:
     Optional[ExperimentTemplate] experimentTemplate
 
@@ -199,8 +204,9 @@ struct CreateExperimentTemplateStopConditionInput:
     str source
     Optional[str] value
 
-# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTemplateTargetInputFilter], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTemplateTargetInputFilter], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExperimentTemplateTargetInput:
     str resourceType
     Optional[list[str]] resourceArns
@@ -227,8 +233,9 @@ struct CreateTargetAccountConfigurationResponse:
 struct DeleteExperimentTemplateRequest:
     str id
 
-# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteExperimentTemplateResponse:
     Optional[ExperimentTemplate] experimentTemplate
 
@@ -242,8 +249,9 @@ struct DeleteTargetAccountConfigurationRequest:
 struct DeleteTargetAccountConfigurationResponse:
     Optional[TargetAccountConfiguration] targetAccountConfiguration
 
-# no @derive(Json): member(s) targets: dict[str, ExperimentTarget], actions: dict[str, ExperimentAction], stopConditions: list[ExperimentStopCondition], tags: dict[str, str], experimentReportConfiguration: ExperimentReportConfiguration, experimentReport: ExperimentReport not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: dict[str, ExperimentTarget], actions: dict[str, ExperimentAction], stopConditions: list[ExperimentStopCondition], tags: dict[str, str], experimentReportConfiguration: ExperimentReportConfiguration, experimentReport: ExperimentReport not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Experiment:
     Optional[str] id
     Optional[str] arn
@@ -263,8 +271,9 @@ struct Experiment:
     Optional[ExperimentReportConfiguration] experimentReportConfiguration
     Optional[ExperimentReport] experimentReport
 
-# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentAction:
     Optional[str] actionId
     Optional[str] description
@@ -302,14 +311,16 @@ struct ExperimentOptions:
     Optional[EmptyTargetResolutionMode] emptyTargetResolutionMode
     Optional[ActionsMode] actionsMode
 
-# no @derive(Json): member(s) s3Reports: list[ExperimentReportS3Report] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3Reports: list[ExperimentReportS3Report] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentReport:
     Optional[ExperimentReportState] state
     Optional[list[ExperimentReportS3Report]] s3Reports
 
-# no @derive(Json): member(s) dataSources: ExperimentReportConfigurationDataSources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: ExperimentReportConfigurationDataSources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentReportConfiguration:
     Optional[ExperimentReportConfigurationOutputs] outputs
     Optional[ExperimentReportConfigurationDataSources] dataSources
@@ -320,8 +331,9 @@ struct ExperimentReportConfiguration:
 struct ExperimentReportConfigurationCloudWatchDashboard:
     Optional[str] dashboardIdentifier
 
-# no @derive(Json): member(s) cloudWatchDashboards: list[ExperimentReportConfigurationCloudWatchDashboard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudWatchDashboards: list[ExperimentReportConfigurationCloudWatchDashboard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentReportConfigurationDataSources:
     Optional[list[ExperimentReportConfigurationCloudWatchDashboard]] cloudWatchDashboards
 
@@ -365,8 +377,9 @@ struct ExperimentStopCondition:
     Optional[str] source
     Optional[str] value
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentSummary:
     Optional[str] id
     Optional[str] arn
@@ -376,8 +389,9 @@ struct ExperimentSummary:
     Optional[dict[str, str]] tags
     Optional[ExperimentOptions] experimentOptions
 
-# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTargetFilter], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTargetFilter], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTarget:
     Optional[str] resourceType
     Optional[list[str]] resourceArns
@@ -398,14 +412,16 @@ struct ExperimentTargetAccountConfigurationSummary:
     Optional[str] accountId
     Optional[str] description
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTargetFilter:
     Optional[str] path
     Optional[list[str]] values
 
-# no @derive(Json): member(s) targets: dict[str, ExperimentTemplateTarget], actions: dict[str, ExperimentTemplateAction], stopConditions: list[ExperimentTemplateStopCondition], tags: dict[str, str], experimentReportConfiguration: ExperimentTemplateReportConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: dict[str, ExperimentTemplateTarget], actions: dict[str, ExperimentTemplateAction], stopConditions: list[ExperimentTemplateStopCondition], tags: dict[str, str], experimentReportConfiguration: ExperimentTemplateReportConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplate:
     Optional[str] id
     Optional[str] arn
@@ -422,8 +438,9 @@ struct ExperimentTemplate:
     Optional[int64] targetAccountConfigurationsCount
     Optional[ExperimentTemplateReportConfiguration] experimentReportConfiguration
 
-# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateAction:
     Optional[str] actionId
     Optional[str] description
@@ -450,8 +467,9 @@ struct ExperimentTemplateLogConfiguration:
     Optional[ExperimentTemplateS3LogConfiguration] s3Configuration
     Optional[int64] logSchemaVersion
 
-# no @derive(Json): member(s) dataSources: ExperimentTemplateReportConfigurationDataSources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: ExperimentTemplateReportConfigurationDataSources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateReportConfiguration:
     Optional[ExperimentTemplateReportConfigurationOutputs] outputs
     Optional[ExperimentTemplateReportConfigurationDataSources] dataSources
@@ -462,13 +480,15 @@ struct ExperimentTemplateReportConfiguration:
 struct ExperimentTemplateReportConfigurationCloudWatchDashboard:
     Optional[str] dashboardIdentifier
 
-# no @derive(Json): member(s) cloudWatchDashboards: list[ExperimentTemplateReportConfigurationCloudWatchDashboard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudWatchDashboards: list[ExperimentTemplateReportConfigurationCloudWatchDashboard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateReportConfigurationDataSources:
     Optional[list[ExperimentTemplateReportConfigurationCloudWatchDashboard]] cloudWatchDashboards
 
-# no @derive(Json): member(s) cloudWatchDashboards: list[ReportConfigurationCloudWatchDashboardInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudWatchDashboards: list[ReportConfigurationCloudWatchDashboardInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateReportConfigurationDataSourcesInput:
     Optional[list[ReportConfigurationCloudWatchDashboardInput]] cloudWatchDashboards
 
@@ -495,8 +515,9 @@ struct ExperimentTemplateStopCondition:
     Optional[str] source
     Optional[str] value
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateSummary:
     Optional[str] id
     Optional[str] arn
@@ -505,8 +526,9 @@ struct ExperimentTemplateSummary:
     Optional[DateTime] lastUpdateTime
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTemplateTargetFilter], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTemplateTargetFilter], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateTarget:
     Optional[str] resourceType
     Optional[list[str]] resourceArns
@@ -515,14 +537,16 @@ struct ExperimentTemplateTarget:
     Optional[str] selectionMode
     Optional[dict[str, str]] parameters
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateTargetFilter:
     Optional[str] path
     Optional[list[str]] values
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentTemplateTargetInputFilter:
     str path
     list[str] values
@@ -532,8 +556,9 @@ struct ExperimentTemplateTargetInputFilter:
 struct GetActionRequest:
     str id
 
-# no @derive(Json): member(s) action: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetActionResponse:
     Optional[Action] action
 
@@ -542,8 +567,9 @@ struct GetActionResponse:
 struct GetExperimentRequest:
     str id
 
-# no @derive(Json): member(s) experiment: Experiment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experiment: Experiment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExperimentResponse:
     Optional[Experiment] experiment
 
@@ -562,8 +588,9 @@ struct GetExperimentTargetAccountConfigurationResponse:
 struct GetExperimentTemplateRequest:
     str id
 
-# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExperimentTemplateResponse:
     Optional[ExperimentTemplate] experimentTemplate
 
@@ -591,8 +618,9 @@ struct GetTargetAccountConfigurationResponse:
 struct GetTargetResourceTypeRequest:
     str resourceType
 
-# no @derive(Json): member(s) targetResourceType: TargetResourceType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetResourceType: TargetResourceType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTargetResourceTypeResponse:
     Optional[TargetResourceType] targetResourceType
 
@@ -602,8 +630,9 @@ struct ListActionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actions: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionsResponse:
     Optional[list[ActionSummary]] actions
     Optional[str] nextToken
@@ -616,8 +645,9 @@ struct ListExperimentResolvedTargetsRequest:
     Optional[str] nextToken
     Optional[str] targetName
 
-# no @derive(Json): member(s) resolvedTargets: list[ResolvedTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resolvedTargets: list[ResolvedTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperimentResolvedTargetsResponse:
     Optional[list[ResolvedTarget]] resolvedTargets
     Optional[str] nextToken
@@ -628,8 +658,9 @@ struct ListExperimentTargetAccountConfigurationsRequest:
     str experimentId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targetAccountConfigurations: list[ExperimentTargetAccountConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetAccountConfigurations: list[ExperimentTargetAccountConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperimentTargetAccountConfigurationsResponse:
     Optional[list[ExperimentTargetAccountConfigurationSummary]] targetAccountConfigurations
     Optional[str] nextToken
@@ -640,8 +671,9 @@ struct ListExperimentTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) experimentTemplates: list[ExperimentTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experimentTemplates: list[ExperimentTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperimentTemplatesResponse:
     Optional[list[ExperimentTemplateSummary]] experimentTemplates
     Optional[str] nextToken
@@ -653,8 +685,9 @@ struct ListExperimentsRequest:
     Optional[str] nextToken
     Optional[str] experimentTemplateId
 
-# no @derive(Json): member(s) experiments: list[ExperimentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experiments: list[ExperimentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperimentsResponse:
     Optional[list[ExperimentSummary]] experiments
     Optional[str] nextToken
@@ -664,8 +697,9 @@ struct ListExperimentsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -676,8 +710,9 @@ struct ListTargetAccountConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targetAccountConfigurations: list[TargetAccountConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetAccountConfigurations: list[TargetAccountConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetAccountConfigurationsResponse:
     Optional[list[TargetAccountConfigurationSummary]] targetAccountConfigurations
     Optional[str] nextToken
@@ -688,8 +723,9 @@ struct ListTargetResourceTypesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targetResourceTypes: list[TargetResourceTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetResourceTypes: list[TargetResourceTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetResourceTypesResponse:
     Optional[list[TargetResourceTypeSummary]] targetResourceTypes
     Optional[str] nextToken
@@ -708,8 +744,9 @@ struct ReportConfigurationS3OutputInput:
     Optional[str] bucketName
     Optional[str] prefix
 
-# no @derive(Json): member(s) targetInformation: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetInformation: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolvedTarget:
     Optional[str] resourceType
     Optional[str] targetName
@@ -746,8 +783,9 @@ struct StartExperimentRequest:
     Optional[StartExperimentExperimentOptionsInput] experimentOptions
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) experiment: Experiment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experiment: Experiment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartExperimentResponse:
     Optional[Experiment] experiment
 
@@ -756,8 +794,9 @@ struct StartExperimentResponse:
 struct StopExperimentRequest:
     str id
 
-# no @derive(Json): member(s) experiment: Experiment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experiment: Experiment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopExperimentResponse:
     Optional[Experiment] experiment
 
@@ -784,8 +823,9 @@ struct TargetAccountConfigurationSummary:
     Optional[str] accountId
     Optional[str] description
 
-# no @derive(Json): member(s) parameters: dict[str, TargetResourceTypeParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, TargetResourceTypeParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetResourceType:
     Optional[str] resourceType
     Optional[str] description
@@ -812,8 +852,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str], targets: dict[str, str], startAfter: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExperimentTemplateActionInputItem:
     Optional[str] actionId
     Optional[str] description
@@ -831,8 +872,9 @@ struct UpdateExperimentTemplateLogConfigurationInput:
     Optional[ExperimentTemplateS3LogConfigurationInput] s3Configuration
     Optional[int64] logSchemaVersion
 
-# no @derive(Json): member(s) dataSources: ExperimentTemplateReportConfigurationDataSourcesInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: ExperimentTemplateReportConfigurationDataSourcesInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExperimentTemplateReportConfigurationInput:
     Optional[ExperimentTemplateReportConfigurationOutputsInput] outputs
     Optional[ExperimentTemplateReportConfigurationDataSourcesInput] dataSources
@@ -852,8 +894,9 @@ struct UpdateExperimentTemplateRequest:
     Optional[UpdateExperimentTemplateExperimentOptionsInput] experimentOptions
     Optional[UpdateExperimentTemplateReportConfigurationInput] experimentReportConfiguration
 
-# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) experimentTemplate: ExperimentTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExperimentTemplateResponse:
     Optional[ExperimentTemplate] experimentTemplate
 
@@ -862,8 +905,9 @@ struct UpdateExperimentTemplateStopConditionInput:
     str source
     Optional[str] value
 
-# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTemplateTargetInputFilter], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str], resourceTags: dict[str, str], filters: list[ExperimentTemplateTargetInputFilter], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExperimentTemplateTargetInput:
     str resourceType
     Optional[list[str]] resourceArns
@@ -932,11 +976,7 @@ def fis_error_from_code(str code) -> fisError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateExperimentTemplate (document member `stopConditions: list[CreateExperimentTemplateStopConditionInput]` is not serializable by derive)
-#   StartExperiment (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateExperimentTemplate (document member `stopConditions: list[UpdateExperimentTemplateStopConditionInput]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -959,10 +999,254 @@ struct UpdateTargetAccountConfigurationDocument:
     Optional[str] roleArn
     Optional[str] description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def fis_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def fis_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def fis_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateExperimentTemplateActionInput to a compact JSON object (declaration order).
+def create_experiment_template_action_input_to_json(CreateExperimentTemplateActionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"actionId\":" + fis_json_str(v.actionId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + fis_json_str(u0))
+    if v.parameters.is_some():
+        auto u1 = v.parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(fis_json_str(k2) + ":" + fis_json_str(u1[k2]))
+        parts.append("\"parameters\":" + fis_json_obj(m2))
+    if v.targets.is_some():
+        auto u3 = v.targets.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(fis_json_str(k4) + ":" + fis_json_str(u3[k4]))
+        parts.append("\"targets\":" + fis_json_obj(m4))
+    if v.startAfter.is_some():
+        auto u5 = v.startAfter.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(fis_json_str(x6))
+        parts.append("\"startAfter\":" + fis_json_arr(e6))
+    return fis_json_obj(parts)
+
+# Serialize CreateExperimentTemplateReportConfigurationInput to a compact JSON object (declaration order).
+def create_experiment_template_report_configuration_input_to_json(CreateExperimentTemplateReportConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.outputs.is_some():
+        auto u0 = v.outputs.unwrap()
+        parts.append("\"outputs\":" + u0.to_json())
+    if v.dataSources.is_some():
+        auto u1 = v.dataSources.unwrap()
+        parts.append("\"dataSources\":" + experiment_template_report_configuration_data_sources_input_to_json(u1))
+    if v.preExperimentDuration.is_some():
+        auto u2 = v.preExperimentDuration.unwrap()
+        parts.append("\"preExperimentDuration\":" + fis_json_str(u2))
+    if v.postExperimentDuration.is_some():
+        auto u3 = v.postExperimentDuration.unwrap()
+        parts.append("\"postExperimentDuration\":" + fis_json_str(u3))
+    return fis_json_obj(parts)
+
+# Serialize CreateExperimentTemplateTargetInput to a compact JSON object (declaration order).
+def create_experiment_template_target_input_to_json(CreateExperimentTemplateTargetInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceType\":" + fis_json_str(v.resourceType))
+    if v.resourceArns.is_some():
+        auto u0 = v.resourceArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fis_json_str(x1))
+        parts.append("\"resourceArns\":" + fis_json_arr(e1))
+    if v.resourceTags.is_some():
+        auto u2 = v.resourceTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(fis_json_str(k3) + ":" + fis_json_str(u2[k3]))
+        parts.append("\"resourceTags\":" + fis_json_obj(m3))
+    if v.filters.is_some():
+        auto u4 = v.filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(experiment_template_target_input_filter_to_json(x5))
+        parts.append("\"filters\":" + fis_json_arr(e5))
+    parts.append("\"selectionMode\":" + fis_json_str(v.selectionMode))
+    if v.parameters.is_some():
+        auto u6 = v.parameters.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(fis_json_str(k7) + ":" + fis_json_str(u6[k7]))
+        parts.append("\"parameters\":" + fis_json_obj(m7))
+    return fis_json_obj(parts)
+
+# Serialize ExperimentTemplateReportConfigurationDataSourcesInput to a compact JSON object (declaration order).
+def experiment_template_report_configuration_data_sources_input_to_json(ExperimentTemplateReportConfigurationDataSourcesInput v) -> str:
+    list[str] parts = []
+    if v.cloudWatchDashboards.is_some():
+        auto u0 = v.cloudWatchDashboards.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"cloudWatchDashboards\":" + fis_json_arr(e1))
+    return fis_json_obj(parts)
+
+# Serialize ExperimentTemplateTargetInputFilter to a compact JSON object (declaration order).
+def experiment_template_target_input_filter_to_json(ExperimentTemplateTargetInputFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"path\":" + fis_json_str(v.path))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(fis_json_str(x0))
+    parts.append("\"values\":" + fis_json_arr(e0))
+    return fis_json_obj(parts)
+
+# Serialize UpdateExperimentTemplateActionInputItem to a compact JSON object (declaration order).
+def update_experiment_template_action_input_item_to_json(UpdateExperimentTemplateActionInputItem v) -> str:
+    list[str] parts = []
+    if v.actionId.is_some():
+        auto u0 = v.actionId.unwrap()
+        parts.append("\"actionId\":" + fis_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + fis_json_str(u1))
+    if v.parameters.is_some():
+        auto u2 = v.parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(fis_json_str(k3) + ":" + fis_json_str(u2[k3]))
+        parts.append("\"parameters\":" + fis_json_obj(m3))
+    if v.targets.is_some():
+        auto u4 = v.targets.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(fis_json_str(k5) + ":" + fis_json_str(u4[k5]))
+        parts.append("\"targets\":" + fis_json_obj(m5))
+    if v.startAfter.is_some():
+        auto u6 = v.startAfter.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(fis_json_str(x7))
+        parts.append("\"startAfter\":" + fis_json_arr(e7))
+    return fis_json_obj(parts)
+
+# Serialize UpdateExperimentTemplateReportConfigurationInput to a compact JSON object (declaration order).
+def update_experiment_template_report_configuration_input_to_json(UpdateExperimentTemplateReportConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.outputs.is_some():
+        auto u0 = v.outputs.unwrap()
+        parts.append("\"outputs\":" + u0.to_json())
+    if v.dataSources.is_some():
+        auto u1 = v.dataSources.unwrap()
+        parts.append("\"dataSources\":" + experiment_template_report_configuration_data_sources_input_to_json(u1))
+    if v.preExperimentDuration.is_some():
+        auto u2 = v.preExperimentDuration.unwrap()
+        parts.append("\"preExperimentDuration\":" + fis_json_str(u2))
+    if v.postExperimentDuration.is_some():
+        auto u3 = v.postExperimentDuration.unwrap()
+        parts.append("\"postExperimentDuration\":" + fis_json_str(u3))
+    return fis_json_obj(parts)
+
+# Serialize UpdateExperimentTemplateTargetInput to a compact JSON object (declaration order).
+def update_experiment_template_target_input_to_json(UpdateExperimentTemplateTargetInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceType\":" + fis_json_str(v.resourceType))
+    if v.resourceArns.is_some():
+        auto u0 = v.resourceArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fis_json_str(x1))
+        parts.append("\"resourceArns\":" + fis_json_arr(e1))
+    if v.resourceTags.is_some():
+        auto u2 = v.resourceTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(fis_json_str(k3) + ":" + fis_json_str(u2[k3]))
+        parts.append("\"resourceTags\":" + fis_json_obj(m3))
+    if v.filters.is_some():
+        auto u4 = v.filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(experiment_template_target_input_filter_to_json(x5))
+        parts.append("\"filters\":" + fis_json_arr(e5))
+    parts.append("\"selectionMode\":" + fis_json_str(v.selectionMode))
+    if v.parameters.is_some():
+        auto u6 = v.parameters.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(fis_json_str(k7) + ":" + fis_json_str(u6[k7]))
+        parts.append("\"parameters\":" + fis_json_obj(m7))
+    return fis_json_obj(parts)
+
 # A bound fis client: credentials + region, threaded into every operation.
 struct fisClient:
     core.Credentials creds
     str region
+
+    # CreateExperimentTemplate  POST /experimentTemplates
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_experiment_template(self, CreateExperimentTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(fis_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/experimentTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + fis_json_str(input.clientToken))
+        parts.append("\"description\":" + fis_json_str(input.description))
+        list[str] e0 = []
+        for x0 in input.stopConditions:
+            e0.append(x0.to_json())
+        parts.append("\"stopConditions\":" + fis_json_arr(e0))
+        if input.targets.is_some():
+            auto u1 = input.targets.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(fis_json_str(k2) + ":" + create_experiment_template_target_input_to_json(u1[k2]))
+            parts.append("\"targets\":" + fis_json_obj(m2))
+        list[str] m3 = []
+        for k3 in sorted(input.actions.keys()):
+            m3.append(fis_json_str(k3) + ":" + create_experiment_template_action_input_to_json(input.actions[k3]))
+        parts.append("\"actions\":" + fis_json_obj(m3))
+        parts.append("\"roleArn\":" + fis_json_str(input.roleArn))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(fis_json_str(k5) + ":" + fis_json_str(u4[k5]))
+            parts.append("\"tags\":" + fis_json_obj(m5))
+        if input.logConfiguration.is_some():
+            auto u6 = input.logConfiguration.unwrap()
+            parts.append("\"logConfiguration\":" + u6.to_json())
+        if input.experimentOptions.is_some():
+            auto u7 = input.experimentOptions.unwrap()
+            parts.append("\"experimentOptions\":" + u7.to_json())
+        if input.experimentReportConfiguration.is_some():
+            auto u8 = input.experimentReportConfiguration.unwrap()
+            parts.append("\"experimentReportConfiguration\":" + create_experiment_template_report_configuration_input_to_json(u8))
+        auto bp = restjson.rest_json_document(b, fis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
 
     # CreateTargetAccountConfiguration  POST /experimentTemplates/{id}/targetAccountConfigurations/{accountId}
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
@@ -1160,6 +1444,26 @@ struct fisClient:
         auto b = binding.HttpBinding(method="GET", path_template="/targetResourceTypes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
+    # StartExperiment  POST /experiments
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def start_experiment(self, StartExperimentRequest input) -> str:
+        auto host = endpoints.regional_host(fis_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/experiments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + fis_json_str(input.clientToken))
+        parts.append("\"experimentTemplateId\":" + fis_json_str(input.experimentTemplateId))
+        if input.experimentOptions.is_some():
+            auto u0 = input.experimentOptions.unwrap()
+            parts.append("\"experimentOptions\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(fis_json_str(k2) + ":" + fis_json_str(u1[k2]))
+            parts.append("\"tags\":" + fis_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, fis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
+
     # StopExperiment  DELETE /experiments/{id}
     # errors: ResourceNotFoundException, ValidationException
     def stop_experiment(self, StopExperimentRequest input) -> str:
@@ -1168,6 +1472,64 @@ struct fisClient:
         labels["id"] = input.id
         auto b = binding.HttpBinding(method="DELETE", path_template="/experiments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(fis_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(fis_json_str(k0) + ":" + fis_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + fis_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, fis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
+
+    # UpdateExperimentTemplate  PATCH /experimentTemplates/{id}
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_experiment_template(self, UpdateExperimentTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(fis_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + fis_json_str(u0))
+        if input.stopConditions.is_some():
+            auto u1 = input.stopConditions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"stopConditions\":" + fis_json_arr(e2))
+        if input.targets.is_some():
+            auto u3 = input.targets.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(fis_json_str(k4) + ":" + update_experiment_template_target_input_to_json(u3[k4]))
+            parts.append("\"targets\":" + fis_json_obj(m4))
+        if input.actions.is_some():
+            auto u5 = input.actions.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(fis_json_str(k6) + ":" + update_experiment_template_action_input_item_to_json(u5[k6]))
+            parts.append("\"actions\":" + fis_json_obj(m6))
+        if input.roleArn.is_some():
+            auto u7 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + fis_json_str(u7))
+        if input.logConfiguration.is_some():
+            auto u8 = input.logConfiguration.unwrap()
+            parts.append("\"logConfiguration\":" + u8.to_json())
+        if input.experimentOptions.is_some():
+            auto u9 = input.experimentOptions.unwrap()
+            parts.append("\"experimentOptions\":" + u9.to_json())
+        if input.experimentReportConfiguration.is_some():
+            auto u10 = input.experimentReportConfiguration.unwrap()
+            parts.append("\"experimentReportConfiguration\":" + update_experiment_template_report_configuration_input_to_json(u10))
+        auto bp = restjson.rest_json_document(b, fis_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
 
     # UpdateSafetyLeverState  PATCH /safetyLevers/{id}/state
     # errors: ConflictException, ResourceNotFoundException, ValidationException

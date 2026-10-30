@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 35 operations — 22 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 35 operations — 34 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   106 structs (61 @derive(Json)), 14 enums, 9 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The QApps rest-json protocol: SigV4 service "qapps" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -167,15 +168,17 @@ enum SubmissionMutationKind:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) cards: list[Card] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cards: list[Card] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppDefinition:
     str appDefinitionVersion
     list[Card] cards
     Optional[bool] canEdit
 
-# no @derive(Json): member(s) cards: list[CardInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cards: list[CardInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppDefinitionInput:
     list[CardInput] cards
     Optional[str] initialPrompt
@@ -192,8 +195,9 @@ struct AssociateQAppWithUserInput:
     str instanceId
     str appId
 
-# no @derive(Json): member(s) andAllFilters: list[AttributeFilter], orAllFilters: list[AttributeFilter], notFilter: AttributeFilter, equalsTo: DocumentAttribute, containsAll: DocumentAttribute, containsAny: DocumentAttribute, greaterThan: DocumentAttribute, greaterThanOrEquals: DocumentAttribute, lessThan: DocumentAttribute, lessThanOrEquals: DocumentAttribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) andAllFilters: list[AttributeFilter], orAllFilters: list[AttributeFilter], notFilter: AttributeFilter, equalsTo: DocumentAttribute, containsAll: DocumentAttribute, containsAny: DocumentAttribute, greaterThan: DocumentAttribute, greaterThanOrEquals: DocumentAttribute, lessThan: DocumentAttribute, lessThanOrEquals: DocumentAttribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeFilter:
     Optional[list[AttributeFilter]] andAllFilters
     Optional[list[AttributeFilter]] orAllFilters
@@ -230,8 +234,9 @@ struct BatchUpdateCategoryInput:
     str instanceId
     list[CategoryInput] categories
 
-# no @derive(Json): member(s) textInput: TextInputCard, qQuery: QQueryCard, qPlugin: QPluginCard, fileUpload: FileUploadCard, formInput: FormInputCard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textInput: TextInputCard, qQuery: QQueryCard, qPlugin: QPluginCard, fileUpload: FileUploadCard, formInput: FormInputCard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Card:
     Optional[TextInputCard] textInput
     Optional[QQueryCard] qQuery
@@ -239,8 +244,9 @@ struct Card:
     Optional[FileUploadCard] fileUpload
     Optional[FormInputCard] formInput
 
-# no @derive(Json): member(s) qQuery: QQueryCardInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) qQuery: QQueryCardInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CardInput:
     Optional[TextInputCardInput] textInput
     Optional[QQueryCardInput] qQuery
@@ -248,8 +254,9 @@ struct CardInput:
     Optional[FileUploadCardInput] fileUpload
     Optional[FormInputCardInput] formInput
 
-# no @derive(Json): member(s) submissions: list[Submission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) submissions: list[Submission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CardStatus:
     ExecutionStatus currentState
     str currentValue
@@ -324,8 +331,9 @@ struct CreatePresignedUrlInput:
     DocumentScope scope_
     Optional[str] sessionId
 
-# no @derive(Json): member(s) presignedUrlFields: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) presignedUrlFields: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePresignedUrlOutput:
     str fileId
     str presignedUrl
@@ -341,8 +349,9 @@ struct CreateQAppInput:
     AppDefinitionInput appDefinition
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) requiredCapabilities: list[AppRequiredCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredCapabilities: list[AppRequiredCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQAppOutput:
     str appId
     str appArn
@@ -375,8 +384,9 @@ struct DescribeQAppPermissionsInput:
     str instanceId
     str appId
 
-# no @derive(Json): member(s) permissions: list[PermissionOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[PermissionOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQAppPermissionsOutput:
     Optional[str] resourceArn
     Optional[str] appId
@@ -399,14 +409,16 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) value: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttribute:
     str name
     DocumentAttributeValue value
 
-# no @derive(Json): member(s) stringListValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringListValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeValue:
     Optional[str] stringValue
     Optional[list[str]] stringListValue
@@ -426,8 +438,9 @@ struct ExportQAppSessionDataOutput:
     DateTime expiresAt
     str sessionArn
 
-# no @derive(Json): member(s) dependencies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileUploadCard:
     str id
     str title
@@ -446,8 +459,9 @@ struct FileUploadCardInput:
     Optional[str] fileId
     Optional[bool] allowOverride
 
-# no @derive(Json): member(s) dependencies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FormInputCard:
     str id
     str title
@@ -480,8 +494,9 @@ struct GetLibraryItemInput:
     str libraryItemId
     Optional[str] appId
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLibraryItemOutput:
     str libraryItemId
     str appId
@@ -504,8 +519,9 @@ struct GetQAppInput:
     str appId
     Optional[int64] appVersion
 
-# no @derive(Json): member(s) requiredCapabilities: list[AppRequiredCapability], appDefinition: AppDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredCapabilities: list[AppRequiredCapability], appDefinition: AppDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQAppOutput:
     str appId
     str appArn
@@ -541,8 +557,9 @@ struct GetQAppSessionMetadataOutput:
     SessionSharingConfiguration sharingConfiguration
     Optional[bool] sessionOwner
 
-# no @derive(Json): member(s) cardStatus: dict[str, CardStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cardStatus: dict[str, CardStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQAppSessionOutput:
     str sessionId
     str sessionArn
@@ -574,8 +591,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LibraryItemMember:
     str libraryItemId
     str appId
@@ -596,8 +614,9 @@ struct LibraryItemMember:
 struct ListCategoriesInput:
     str instanceId
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCategoriesOutput:
     Optional[list[Category]] categories
 
@@ -609,8 +628,9 @@ struct ListLibraryItemsInput:
     Optional[str] nextToken
     Optional[str] categoryId
 
-# no @derive(Json): member(s) libraryItems: list[LibraryItemMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) libraryItems: list[LibraryItemMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLibraryItemsOutput:
     Optional[list[LibraryItemMember]] libraryItems
     Optional[str] nextToken
@@ -621,8 +641,9 @@ struct ListQAppSessionDataInput:
     str instanceId
     str sessionId
 
-# no @derive(Json): member(s) sessionData: list[QAppSessionData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionData: list[QAppSessionData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQAppSessionDataOutput:
     str sessionId
     str sessionArn
@@ -636,8 +657,9 @@ struct ListQAppsInput:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) apps: list[UserAppItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apps: list[UserAppItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQAppsOutput:
     list[UserAppItem] apps
     Optional[str] nextToken
@@ -647,8 +669,9 @@ struct ListQAppsOutput:
 struct ListTagsForResourceRequest:
     str resourceARN
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -662,8 +685,9 @@ struct PermissionOutput:
     PermissionOutputActionEnum action
     PrincipalOutput principal
 
-# no @derive(Json): member(s) appDefinition: AppDefinitionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appDefinition: AppDefinitionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictAppDefinition:
     str title
     Optional[str] description
@@ -675,14 +699,16 @@ struct PredictQAppInput:
     str instanceId
     Optional[PredictQAppInputOptions] options
 
-# no @derive(Json): member(s) conversation: list[ConversationMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conversation: list[ConversationMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictQAppInputOptions:
     Optional[list[ConversationMessage]] conversation
     Optional[str] problemStatement
 
-# no @derive(Json): member(s) app: PredictAppDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: PredictAppDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictQAppOutput:
     PredictAppDefinition app
     str problemStatement
@@ -702,8 +728,9 @@ struct QAppSessionData:
     @json(timestamp="iso8601")
     Optional[DateTime] timestamp
 
-# no @derive(Json): member(s) dependencies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QPluginCard:
     str id
     str title
@@ -723,8 +750,9 @@ struct QPluginCardInput:
     str pluginId
     Optional[str] actionIdentifier
 
-# no @derive(Json): member(s) dependencies: list[str], attributeFilter: AttributeFilter, memoryReferences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: list[str], attributeFilter: AttributeFilter, memoryReferences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QQueryCard:
     str id
     str title
@@ -735,8 +763,9 @@ struct QQueryCard:
     Optional[AttributeFilter] attributeFilter
     Optional[list[str]] memoryReferences
 
-# no @derive(Json): member(s) attributeFilter: AttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeFilter: AttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QQueryCardInput:
     str title
     str id
@@ -809,8 +838,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) dependencies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextInputCard:
     str id
     str title
@@ -864,8 +894,9 @@ struct UpdateLibraryItemMetadataInput:
     str libraryItemId
     Optional[bool] isVerified
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLibraryItemOutput:
     str libraryItemId
     str appId
@@ -890,8 +921,9 @@ struct UpdateQAppInput:
     Optional[str] description
     Optional[AppDefinitionInput] appDefinition
 
-# no @derive(Json): member(s) requiredCapabilities: list[AppRequiredCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredCapabilities: list[AppRequiredCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQAppOutput:
     str appId
     str appArn
@@ -914,8 +946,9 @@ struct UpdateQAppPermissionsInput:
     Optional[list[PermissionInput]] grantPermissions
     Optional[list[PermissionInput]] revokePermissions
 
-# no @derive(Json): member(s) permissions: list[PermissionOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[PermissionOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQAppPermissionsOutput:
     Optional[str] resourceArn
     Optional[str] appId
@@ -1012,19 +1045,7 @@ def data_qapps_error_from_code(str code) -> QAppsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateCategory (document member `categories: list[BatchCreateCategoryInputCategory]` is not serializable by derive)
-#   BatchDeleteCategory (document member `categories: list[str]` is not serializable by derive)
-#   BatchUpdateCategory (document member `categories: list[CategoryInput]` is not serializable by derive)
-#   CreateLibraryItem (document member `categories: list[str]` is not serializable by derive)
-#   CreateQApp (document member `appDefinition: AppDefinitionInput` is not serializable by derive)
-#   PredictQApp (document member `options: PredictQAppInputOptions` is not serializable by derive)
-#   StartQAppSession (document member `initialValues: list[CardValue]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateLibraryItem (document member `categories: list[str]` is not serializable by derive)
-#   UpdateQApp (document member `appDefinition: AppDefinitionInput` is not serializable by derive)
-#   UpdateQAppPermissions (document member `grantPermissions: list[PermissionInput]` is not serializable by derive)
-#   UpdateQAppSession (document member `values: list[CardValue]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1102,6 +1123,165 @@ struct UpdateQAppSessionMetadataDocument:
     Optional[str] sessionName
     SessionSharingConfiguration sharingConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def data_qapps_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def data_qapps_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def data_qapps_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AppDefinitionInput to a compact JSON object (declaration order).
+def app_definition_input_to_json(AppDefinitionInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.cards:
+        e0.append(card_input_to_json(x0))
+    parts.append("\"cards\":" + data_qapps_json_arr(e0))
+    if v.initialPrompt.is_some():
+        auto u1 = v.initialPrompt.unwrap()
+        parts.append("\"initialPrompt\":" + data_qapps_json_str(u1))
+    return data_qapps_json_obj(parts)
+
+# Serialize AttributeFilter to a compact JSON object (declaration order).
+def attribute_filter_to_json(AttributeFilter v) -> str:
+    list[str] parts = []
+    if v.andAllFilters.is_some():
+        auto u0 = v.andAllFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_filter_to_json(x1))
+        parts.append("\"andAllFilters\":" + data_qapps_json_arr(e1))
+    if v.orAllFilters.is_some():
+        auto u2 = v.orAllFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(attribute_filter_to_json(x3))
+        parts.append("\"orAllFilters\":" + data_qapps_json_arr(e3))
+    if v.notFilter.is_some():
+        auto u4 = v.notFilter.unwrap()
+        parts.append("\"notFilter\":" + attribute_filter_to_json(u4))
+    if v.equalsTo.is_some():
+        auto u5 = v.equalsTo.unwrap()
+        parts.append("\"equalsTo\":" + document_attribute_to_json(u5))
+    if v.containsAll.is_some():
+        auto u6 = v.containsAll.unwrap()
+        parts.append("\"containsAll\":" + document_attribute_to_json(u6))
+    if v.containsAny.is_some():
+        auto u7 = v.containsAny.unwrap()
+        parts.append("\"containsAny\":" + document_attribute_to_json(u7))
+    if v.greaterThan.is_some():
+        auto u8 = v.greaterThan.unwrap()
+        parts.append("\"greaterThan\":" + document_attribute_to_json(u8))
+    if v.greaterThanOrEquals.is_some():
+        auto u9 = v.greaterThanOrEquals.unwrap()
+        parts.append("\"greaterThanOrEquals\":" + document_attribute_to_json(u9))
+    if v.lessThan.is_some():
+        auto u10 = v.lessThan.unwrap()
+        parts.append("\"lessThan\":" + document_attribute_to_json(u10))
+    if v.lessThanOrEquals.is_some():
+        auto u11 = v.lessThanOrEquals.unwrap()
+        parts.append("\"lessThanOrEquals\":" + document_attribute_to_json(u11))
+    return data_qapps_json_obj(parts)
+
+# Serialize CardInput to a compact JSON object (declaration order).
+def card_input_to_json(CardInput v) -> str:
+    list[str] parts = []
+    if v.textInput.is_some():
+        auto u0 = v.textInput.unwrap()
+        parts.append("\"textInput\":" + u0.to_json())
+    if v.qQuery.is_some():
+        auto u1 = v.qQuery.unwrap()
+        parts.append("\"qQuery\":" + q_query_card_input_to_json(u1))
+    if v.qPlugin.is_some():
+        auto u2 = v.qPlugin.unwrap()
+        parts.append("\"qPlugin\":" + u2.to_json())
+    if v.fileUpload.is_some():
+        auto u3 = v.fileUpload.unwrap()
+        parts.append("\"fileUpload\":" + u3.to_json())
+    if v.formInput.is_some():
+        auto u4 = v.formInput.unwrap()
+        parts.append("\"formInput\":" + u4.to_json())
+    return data_qapps_json_obj(parts)
+
+# Serialize DocumentAttribute to a compact JSON object (declaration order).
+def document_attribute_to_json(DocumentAttribute v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + data_qapps_json_str(v.name))
+    parts.append("\"value\":" + document_attribute_value_to_json(v.value))
+    return data_qapps_json_obj(parts)
+
+# Serialize DocumentAttributeValue to a compact JSON object (declaration order).
+def document_attribute_value_to_json(DocumentAttributeValue v) -> str:
+    list[str] parts = []
+    if v.stringValue.is_some():
+        auto u0 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + data_qapps_json_str(u0))
+    if v.stringListValue.is_some():
+        auto u1 = v.stringListValue.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(data_qapps_json_str(x2))
+        parts.append("\"stringListValue\":" + data_qapps_json_arr(e2))
+    if v.longValue.is_some():
+        auto u3 = v.longValue.unwrap()
+        parts.append("\"longValue\":" + str(u3))
+    if v.dateValue.is_some():
+        auto u4 = v.dateValue.unwrap()
+        parts.append("\"dateValue\":" + str(datetime.to_timestamp(u4)))
+    return data_qapps_json_obj(parts)
+
+# Serialize PredictQAppInputOptions to a compact JSON object (declaration order).
+def predict_q_app_input_options_to_json(PredictQAppInputOptions v) -> str:
+    list[str] parts = []
+    if v.conversation.is_some():
+        auto u0 = v.conversation.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"conversation\":" + data_qapps_json_arr(e1))
+    if v.problemStatement.is_some():
+        auto u2 = v.problemStatement.unwrap()
+        parts.append("\"problemStatement\":" + data_qapps_json_str(u2))
+    return data_qapps_json_obj(parts)
+
+# Serialize QQueryCardInput to a compact JSON object (declaration order).
+def q_query_card_input_to_json(QQueryCardInput v) -> str:
+    list[str] parts = []
+    parts.append("\"title\":" + data_qapps_json_str(v.title))
+    parts.append("\"id\":" + data_qapps_json_str(v.id))
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"prompt\":" + data_qapps_json_str(v.prompt))
+    if v.outputSource.is_some():
+        auto u0 = v.outputSource.unwrap()
+        parts.append("\"outputSource\":" + u0.to_json())
+    if v.attributeFilter.is_some():
+        auto u1 = v.attributeFilter.unwrap()
+        parts.append("\"attributeFilter\":" + attribute_filter_to_json(u1))
+    return data_qapps_json_obj(parts)
+
 # A bound QApps client: credentials + region, threaded into every operation.
 struct QAppsClient:
     core.Credentials creds
@@ -1129,6 +1309,68 @@ struct QAppsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
 
+    # BatchCreateCategory  POST /catalog.createCategories
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_create_category(self, BatchCreateCategoryInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.createCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.categories:
+            e0.append(x0.to_json())
+        parts.append("\"categories\":" + data_qapps_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # BatchDeleteCategory  POST /catalog.deleteCategories
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_delete_category(self, BatchDeleteCategoryInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.deleteCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.categories:
+            e0.append(data_qapps_json_str(x0))
+        parts.append("\"categories\":" + data_qapps_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # BatchUpdateCategory  POST /catalog.updateCategories
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_update_category(self, BatchUpdateCategoryInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.categories:
+            e0.append(x0.to_json())
+        parts.append("\"categories\":" + data_qapps_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # CreateLibraryItem  POST /catalog.createItem
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_library_item(self, CreateLibraryItemInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.createItem", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appId\":" + data_qapps_json_str(input.appId))
+        parts.append("\"appVersion\":" + str(input.appVersion))
+        list[str] e0 = []
+        for x0 in input.categories:
+            e0.append(data_qapps_json_str(x0))
+        parts.append("\"categories\":" + data_qapps_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
     # CreatePresignedUrl  POST /apps.createPresignedUrl
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
     def create_presigned_url(self, CreatePresignedUrlInput input) -> str:
@@ -1138,6 +1380,28 @@ struct QAppsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/apps.createPresignedUrl", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePresignedUrlDocument(cardId=input.cardId, appId=input.appId, fileContentsSha256=input.fileContentsSha256, fileName=input.fileName, scope_=input.scope_, sessionId=input.sessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # CreateQApp  POST /apps.create
+    # errors: AccessDeniedException, ConflictException, ContentTooLargeException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_q_app(self, CreateQAppInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"title\":" + data_qapps_json_str(input.title))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + data_qapps_json_str(u0))
+        parts.append("\"appDefinition\":" + app_definition_input_to_json(input.appDefinition))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(data_qapps_json_str(k2) + ":" + data_qapps_json_str(u1[k2]))
+            parts.append("\"tags\":" + data_qapps_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
 
     # DeleteLibraryItem  POST /catalog.deleteItem
@@ -1324,6 +1588,48 @@ struct QAppsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
+    # PredictQApp  POST /apps.predictQApp
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def predict_q_app(self, PredictQAppInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.predictQApp", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.options.is_some():
+            auto u0 = input.options.unwrap()
+            parts.append("\"options\":" + predict_q_app_input_options_to_json(u0))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # StartQAppSession  POST /runtime.startQAppSession
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_q_app_session(self, StartQAppSessionInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.startQAppSession", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appId\":" + data_qapps_json_str(input.appId))
+        parts.append("\"appVersion\":" + str(input.appVersion))
+        if input.initialValues.is_some():
+            auto u0 = input.initialValues.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"initialValues\":" + data_qapps_json_arr(e1))
+        if input.sessionId.is_some():
+            auto u2 = input.sessionId.unwrap()
+            parts.append("\"sessionId\":" + data_qapps_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(data_qapps_json_str(k4) + ":" + data_qapps_json_str(u3[k4]))
+            parts.append("\"tags\":" + data_qapps_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
     # StopQAppSession  POST /runtime.deleteMiniAppRun
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def stop_q_app_session(self, StopQAppSessionInput input) -> str:
@@ -1335,6 +1641,42 @@ struct QAppsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceARN}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceARN"] = input.resourceARN
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(data_qapps_json_str(k0) + ":" + data_qapps_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + data_qapps_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # UpdateLibraryItem  POST /catalog.updateItem
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_library_item(self, UpdateLibraryItemInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateItem", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"libraryItemId\":" + data_qapps_json_str(input.libraryItemId))
+        if input.status.is_some():
+            auto u0 = input.status.unwrap()
+            parts.append("\"status\":" + u0.to_json())
+        if input.categories.is_some():
+            auto u1 = input.categories.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(data_qapps_json_str(x2))
+            parts.append("\"categories\":" + data_qapps_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
     # UpdateLibraryItemMetadata  POST /catalog.updateItemMetadata
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_library_item_metadata(self, UpdateLibraryItemMetadataInput input) -> str:
@@ -1344,6 +1686,69 @@ struct QAppsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateItemMetadata", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLibraryItemMetadataDocument(libraryItemId=input.libraryItemId, isVerified=input.isVerified)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # UpdateQApp  POST /apps.update
+    # errors: AccessDeniedException, ContentTooLargeException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_q_app(self, UpdateQAppInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appId\":" + data_qapps_json_str(input.appId))
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + data_qapps_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + data_qapps_json_str(u1))
+        if input.appDefinition.is_some():
+            auto u2 = input.appDefinition.unwrap()
+            parts.append("\"appDefinition\":" + app_definition_input_to_json(u2))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # UpdateQAppPermissions  POST /apps.updateQAppPermissions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_q_app_permissions(self, UpdateQAppPermissionsInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.updateQAppPermissions", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appId\":" + data_qapps_json_str(input.appId))
+        if input.grantPermissions.is_some():
+            auto u0 = input.grantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"grantPermissions\":" + data_qapps_json_arr(e1))
+        if input.revokePermissions.is_some():
+            auto u2 = input.revokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"revokePermissions\":" + data_qapps_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
+
+    # UpdateQAppSession  POST /runtime.updateQAppSession
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_q_app_session(self, UpdateQAppSessionInput input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] headers = {}
+        headers["instance-id"] = input.instanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.updateQAppSession", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sessionId\":" + data_qapps_json_str(input.sessionId))
+        if input.values.is_some():
+            auto u0 = input.values.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"values\":" + data_qapps_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
 
     # UpdateQAppSessionMetadata  POST /runtime.updateQAppSessionMetadata

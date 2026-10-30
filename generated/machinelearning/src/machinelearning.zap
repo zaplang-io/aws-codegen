@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 28 operations — 23 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 28 operations — 28 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   81 structs (63 @derive(Json)), 10 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -139,8 +139,9 @@ enum TaggableResourceType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsInput:
     list[Tag] Tags
     str ResourceId
@@ -182,8 +183,9 @@ struct CreateBatchPredictionInput:
 struct CreateBatchPredictionOutput:
     Optional[str] BatchPredictionId
 
-# no @derive(Json): member(s) RDSData: RDSDataSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RDSData: RDSDataSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataSourceFromRDSInput:
     str DataSourceId
     Optional[str] DataSourceName
@@ -229,8 +231,9 @@ struct CreateEvaluationInput:
 struct CreateEvaluationOutput:
     Optional[str] EvaluationId
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMLModelInput:
     str MLModelId
     Optional[str] MLModelName
@@ -315,8 +318,9 @@ struct DeleteRealtimeEndpointOutput:
     Optional[str] MLModelId
     Optional[RealtimeEndpointInfo] RealtimeEndpointInfo
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTagsInput:
     list[str] TagKeys
     str ResourceId
@@ -341,8 +345,9 @@ struct DescribeBatchPredictionsInput:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Results: list[BatchPrediction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[BatchPrediction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBatchPredictionsOutput:
     Optional[list[BatchPrediction]] Results
     Optional[str] NextToken
@@ -361,8 +366,9 @@ struct DescribeDataSourcesInput:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Results: list[DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataSourcesOutput:
     Optional[list[DataSource]] Results
     Optional[str] NextToken
@@ -381,8 +387,9 @@ struct DescribeEvaluationsInput:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Results: list[Evaluation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[Evaluation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEvaluationsOutput:
     Optional[list[Evaluation]] Results
     Optional[str] NextToken
@@ -401,8 +408,9 @@ struct DescribeMLModelsInput:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Results: list[MLModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[MLModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMLModelsOutput:
     Optional[list[MLModel]] Results
     Optional[str] NextToken
@@ -412,15 +420,17 @@ struct DescribeTagsInput:
     str ResourceId
     TaggableResourceType ResourceType
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsOutput:
     Optional[str] ResourceId
     Optional[TaggableResourceType] ResourceType
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) PerformanceMetrics: PerformanceMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerformanceMetrics: PerformanceMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Evaluation:
     Optional[str] EvaluationId
     Optional[str] MLModelId
@@ -493,8 +503,9 @@ struct GetDataSourceOutput:
 struct GetEvaluationInput:
     str EvaluationId
 
-# no @derive(Json): member(s) PerformanceMetrics: PerformanceMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerformanceMetrics: PerformanceMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvaluationOutput:
     Optional[str] EvaluationId
     Optional[str] MLModelId
@@ -517,8 +528,9 @@ struct GetMLModelInput:
     str MLModelId
     Optional[bool] Verbose
 
-# no @derive(Json): member(s) TrainingParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLModelOutput:
     Optional[str] MLModelId
     Optional[str] TrainingDataSourceId
@@ -566,8 +578,9 @@ struct LimitExceededException:
     Optional[str] message
     Optional[int64] code
 
-# no @derive(Json): member(s) TrainingParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MLModel:
     Optional[str] MLModelId
     Optional[str] TrainingDataSourceId
@@ -589,25 +602,29 @@ struct MLModel:
     Optional[DateTime] FinishedAt
     Optional[DateTime] StartedAt
 
-# no @derive(Json): member(s) Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceMetrics:
     Optional[dict[str, str]] Properties
 
-# no @derive(Json): member(s) Record: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Record: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictInput:
     str MLModelId
     dict[str, str] Record
     str PredictEndpoint
 
-# no @derive(Json): member(s) Prediction: Prediction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Prediction: Prediction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictOutput:
     Optional[Prediction] Prediction
 
-# no @derive(Json): member(s) predictedScores: dict[str, float64], details: dict[DetailsAttributes, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) predictedScores: dict[str, float64], details: dict[DetailsAttributes, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Prediction:
     Optional[str] predictedLabel
     Optional[float64] predictedValue
@@ -618,8 +635,9 @@ struct Prediction:
 struct PredictorNotMountedException:
     Optional[str] message
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RDSDataSpec:
     RDSDatabase DatabaseInformation
     str SelectSqlQuery
@@ -780,24 +798,153 @@ def machinelearning_error_from_code(str code) -> Machine_LearningError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTags (input AddTagsInput)
-#   CreateDataSourceFromRDS (input CreateDataSourceFromRDSInput)
-#   CreateMLModel (input CreateMLModelInput)
-#   DeleteTags (input DeleteTagsInput)
-#   Predict (input PredictInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def machinelearning_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def machinelearning_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def machinelearning_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsInput to a compact JSON object (declaration order).
+def add_tags_input_to_json(AddTagsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + machinelearning_json_arr(e0))
+    parts.append("\"ResourceId\":" + machinelearning_json_str(v.ResourceId))
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    return machinelearning_json_obj(parts)
+
+# Serialize CreateDataSourceFromRDSInput to a compact JSON object (declaration order).
+def create_data_source_from_rds_input_to_json(CreateDataSourceFromRDSInput v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceId\":" + machinelearning_json_str(v.DataSourceId))
+    if v.DataSourceName.is_some():
+        auto u0 = v.DataSourceName.unwrap()
+        parts.append("\"DataSourceName\":" + machinelearning_json_str(u0))
+    parts.append("\"RDSData\":" + rds_data_spec_to_json(v.RDSData))
+    parts.append("\"RoleARN\":" + machinelearning_json_str(v.RoleARN))
+    if v.ComputeStatistics.is_some():
+        auto u1 = v.ComputeStatistics.unwrap()
+        parts.append("\"ComputeStatistics\":" + json.dumps(JsonValue.Bool(u1)))
+    return machinelearning_json_obj(parts)
+
+# Serialize CreateMLModelInput to a compact JSON object (declaration order).
+def create_ml_model_input_to_json(CreateMLModelInput v) -> str:
+    list[str] parts = []
+    parts.append("\"MLModelId\":" + machinelearning_json_str(v.MLModelId))
+    if v.MLModelName.is_some():
+        auto u0 = v.MLModelName.unwrap()
+        parts.append("\"MLModelName\":" + machinelearning_json_str(u0))
+    parts.append("\"MLModelType\":" + v.MLModelType.to_json())
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(machinelearning_json_str(k2) + ":" + machinelearning_json_str(u1[k2]))
+        parts.append("\"Parameters\":" + machinelearning_json_obj(m2))
+    parts.append("\"TrainingDataSourceId\":" + machinelearning_json_str(v.TrainingDataSourceId))
+    if v.Recipe.is_some():
+        auto u3 = v.Recipe.unwrap()
+        parts.append("\"Recipe\":" + machinelearning_json_str(u3))
+    if v.RecipeUri.is_some():
+        auto u4 = v.RecipeUri.unwrap()
+        parts.append("\"RecipeUri\":" + machinelearning_json_str(u4))
+    return machinelearning_json_obj(parts)
+
+# Serialize DeleteTagsInput to a compact JSON object (declaration order).
+def delete_tags_input_to_json(DeleteTagsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(machinelearning_json_str(x0))
+    parts.append("\"TagKeys\":" + machinelearning_json_arr(e0))
+    parts.append("\"ResourceId\":" + machinelearning_json_str(v.ResourceId))
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    return machinelearning_json_obj(parts)
+
+# Serialize PredictInput to a compact JSON object (declaration order).
+def predict_input_to_json(PredictInput v) -> str:
+    list[str] parts = []
+    parts.append("\"MLModelId\":" + machinelearning_json_str(v.MLModelId))
+    list[str] m0 = []
+    for k0 in sorted(v.Record.keys()):
+        m0.append(machinelearning_json_str(k0) + ":" + machinelearning_json_str(v.Record[k0]))
+    parts.append("\"Record\":" + machinelearning_json_obj(m0))
+    parts.append("\"PredictEndpoint\":" + machinelearning_json_str(v.PredictEndpoint))
+    return machinelearning_json_obj(parts)
+
+# Serialize RDSDataSpec to a compact JSON object (declaration order).
+def rds_data_spec_to_json(RDSDataSpec v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseInformation\":" + v.DatabaseInformation.to_json())
+    parts.append("\"SelectSqlQuery\":" + machinelearning_json_str(v.SelectSqlQuery))
+    parts.append("\"DatabaseCredentials\":" + v.DatabaseCredentials.to_json())
+    parts.append("\"S3StagingLocation\":" + machinelearning_json_str(v.S3StagingLocation))
+    if v.DataRearrangement.is_some():
+        auto u0 = v.DataRearrangement.unwrap()
+        parts.append("\"DataRearrangement\":" + machinelearning_json_str(u0))
+    if v.DataSchema.is_some():
+        auto u1 = v.DataSchema.unwrap()
+        parts.append("\"DataSchema\":" + machinelearning_json_str(u1))
+    if v.DataSchemaUri.is_some():
+        auto u2 = v.DataSchemaUri.unwrap()
+        parts.append("\"DataSchemaUri\":" + machinelearning_json_str(u2))
+    parts.append("\"ResourceRole\":" + machinelearning_json_str(v.ResourceRole))
+    parts.append("\"ServiceRole\":" + machinelearning_json_str(v.ServiceRole))
+    parts.append("\"SubnetId\":" + machinelearning_json_str(v.SubnetId))
+    list[str] e3 = []
+    for x3 in v.SecurityGroupIds:
+        e3.append(machinelearning_json_str(x3))
+    parts.append("\"SecurityGroupIds\":" + machinelearning_json_arr(e3))
+    return machinelearning_json_obj(parts)
 
 # A bound Machine_Learning client: credentials + region, threaded into every operation.
 struct Machine_LearningClient:
     core.Credentials creds
     str region
 
+    # AddTags
+    # errors: InternalServerException, InvalidInputException, InvalidTagException, ResourceNotFoundException, TagLimitExceededException
+    def add_tags(self, AddTagsInput input) -> str:
+        auto body = add_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "AddTags", body)
+
     # CreateBatchPrediction
     # errors: IdempotentParameterMismatchException, InternalServerException, InvalidInputException
     def create_batch_prediction(self, CreateBatchPredictionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "CreateBatchPrediction", body)
+
+    # CreateDataSourceFromRDS
+    # errors: IdempotentParameterMismatchException, InternalServerException, InvalidInputException
+    def create_data_source_from_rds(self, CreateDataSourceFromRDSInput input) -> str:
+        auto body = create_data_source_from_rds_input_to_json(input)
+        return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "CreateDataSourceFromRDS", body)
 
     # CreateDataSourceFromRedshift
     # errors: IdempotentParameterMismatchException, InternalServerException, InvalidInputException
@@ -816,6 +963,12 @@ struct Machine_LearningClient:
     def create_evaluation(self, CreateEvaluationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "CreateEvaluation", body)
+
+    # CreateMLModel
+    # errors: IdempotentParameterMismatchException, InternalServerException, InvalidInputException
+    def create_ml_model(self, CreateMLModelInput input) -> str:
+        auto body = create_ml_model_input_to_json(input)
+        return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "CreateMLModel", body)
 
     # CreateRealtimeEndpoint
     # errors: InternalServerException, InvalidInputException, ResourceNotFoundException
@@ -852,6 +1005,12 @@ struct Machine_LearningClient:
     def delete_realtime_endpoint(self, DeleteRealtimeEndpointInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "DeleteRealtimeEndpoint", body)
+
+    # DeleteTags
+    # errors: InternalServerException, InvalidInputException, InvalidTagException, ResourceNotFoundException
+    def delete_tags(self, DeleteTagsInput input) -> str:
+        auto body = delete_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "DeleteTags", body)
 
     # DescribeBatchPredictions
     # errors: InternalServerException, InvalidInputException
@@ -906,6 +1065,12 @@ struct Machine_LearningClient:
     def get_ml_model(self, GetMLModelInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "GetMLModel", body)
+
+    # Predict
+    # errors: InternalServerException, InvalidInputException, LimitExceededException, PredictorNotMountedException, ResourceNotFoundException
+    def predict(self, PredictInput input) -> str:
+        auto body = predict_input_to_json(input)
+        return awsjson.awsjson_request_now(machinelearning_protocol(), self.creds, self.region, "Predict", body)
 
     # UpdateBatchPrediction
     # errors: InternalServerException, InvalidInputException, ResourceNotFoundException

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 81 operations — 63 with a generated method,
-#   18 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 81 operations — 81 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   262 structs (177 @derive(Json)), 56 enums, 7 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The odb awsJson protocol: version 1.0, API id "Odb".
 def odb_protocol() -> awsjson.AwsJson:
@@ -594,8 +595,9 @@ struct AssociateVirtualMachinesToExadbVmClusterOutput:
     Optional[str] statusReason
     str exadbVmClusterId
 
-# no @derive(Json): member(s) availableUpgradeVersions: list[str], connectionStringDetails: AutonomousDatabaseConnectionStrings, customerContacts: list[CustomerContact], dbToolsDetails: list[DatabaseTool], scheduledOperations: list[ScheduledOperationDetails], provisionableCpus: list[int64], allowlistedIps: list[str], standbyAllowlistedIps: list[str], peerDbIds: list[str], cloneTableSpaceList: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) availableUpgradeVersions: list[str], connectionStringDetails: AutonomousDatabaseConnectionStrings, customerContacts: list[CustomerContact], dbToolsDetails: list[DatabaseTool], scheduledOperations: list[ScheduledOperationDetails], provisionableCpus: list[int64], allowlistedIps: list[str], standbyAllowlistedIps: list[str], peerDbIds: list[str], cloneTableSpaceList: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutonomousDatabase:
     Optional[str] autonomousDatabaseId
     Optional[str] autonomousDatabaseArn
@@ -753,8 +755,9 @@ struct AutonomousDatabaseBackupSummary:
 struct AutonomousDatabaseCharacterSetSummary:
     Optional[str] characterSet
 
-# no @derive(Json): member(s) allConnectionStrings: dict[str, str], profiles: list[DatabaseConnectionStringProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allConnectionStrings: dict[str, str], profiles: list[DatabaseConnectionStringProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutonomousDatabaseConnectionStrings:
     Optional[dict[str, str]] allConnectionStrings
     Optional[str] dedicated
@@ -782,8 +785,9 @@ struct AutonomousDatabasePeerSummary:
     Optional[str] ocid
     Optional[str] region
 
-# no @derive(Json): member(s) availableUpgradeVersions: list[str], connectionStringDetails: AutonomousDatabaseConnectionStrings, customerContacts: list[CustomerContact], dbToolsDetails: list[DatabaseTool], scheduledOperations: list[ScheduledOperationDetails], provisionableCpus: list[int64], allowlistedIps: list[str], standbyAllowlistedIps: list[str], peerDbIds: list[str], cloneTableSpaceList: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) availableUpgradeVersions: list[str], connectionStringDetails: AutonomousDatabaseConnectionStrings, customerContacts: list[CustomerContact], dbToolsDetails: list[DatabaseTool], scheduledOperations: list[ScheduledOperationDetails], provisionableCpus: list[int64], allowlistedIps: list[str], standbyAllowlistedIps: list[str], peerDbIds: list[str], cloneTableSpaceList: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutonomousDatabaseSummary:
     Optional[str] autonomousDatabaseId
     Optional[str] autonomousDatabaseArn
@@ -942,8 +946,9 @@ struct CloneToRefreshableConfiguration:
     Optional[OpenMode] openMode
     Optional[CloneType] cloneType
 
-# no @derive(Json): member(s) dbServers: list[str], maintenanceWindow: MaintenanceWindow, iamRoles: list[IamRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbServers: list[str], maintenanceWindow: MaintenanceWindow, iamRoles: list[IamRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudAutonomousVmCluster:
     str cloudAutonomousVmClusterId
     Optional[str] cloudAutonomousVmClusterArn
@@ -1003,8 +1008,9 @@ struct CloudAutonomousVmClusterResourceDetails:
     Optional[str] cloudAutonomousVmClusterId
     Optional[float64] unallocatedAdbStorageInTBs
 
-# no @derive(Json): member(s) dbServers: list[str], maintenanceWindow: MaintenanceWindow, iamRoles: list[IamRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbServers: list[str], maintenanceWindow: MaintenanceWindow, iamRoles: list[IamRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudAutonomousVmClusterSummary:
     str cloudAutonomousVmClusterId
     Optional[str] cloudAutonomousVmClusterArn
@@ -1059,8 +1065,9 @@ struct CloudAutonomousVmClusterSummary:
     Optional[int64] totalContainerDatabases
     Optional[list[IamRole]] iamRoles
 
-# no @derive(Json): member(s) customerContactsToSendToOCI: list[CustomerContact], maintenanceWindow: MaintenanceWindow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerContactsToSendToOCI: list[CustomerContact], maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudExadataInfrastructure:
     str cloudExadataInfrastructureId
     Optional[str] displayName
@@ -1102,8 +1109,9 @@ struct CloudExadataInfrastructure:
     Optional[ComputeModel] computeModel
     Optional[ExascaleConfiguration] exascaleConfiguration
 
-# no @derive(Json): member(s) customerContactsToSendToOCI: list[CustomerContact], maintenanceWindow: MaintenanceWindow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerContactsToSendToOCI: list[CustomerContact], maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudExadataInfrastructureSummary:
     str cloudExadataInfrastructureId
     Optional[str] displayName
@@ -1145,8 +1153,9 @@ struct CloudExadataInfrastructureSummary:
     Optional[ComputeModel] computeModel
     Optional[ExascaleConfiguration] exascaleConfiguration
 
-# no @derive(Json): member(s) cloudAutonomousVmClusters: list[CloudAutonomousVmClusterResourceDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudAutonomousVmClusters: list[CloudAutonomousVmClusterResourceDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudExadataInfrastructureUnallocatedResources:
     Optional[list[CloudAutonomousVmClusterResourceDetails]] cloudAutonomousVmClusters
     Optional[str] cloudExadataInfrastructureDisplayName
@@ -1156,8 +1165,9 @@ struct CloudExadataInfrastructureUnallocatedResources:
     Optional[int64] memoryInGBs
     Optional[int64] ocpus
 
-# no @derive(Json): member(s) fileSystemConfigurationDetails: list[FileSystemConfigurationDetails], dbServers: list[str], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str], iamRoles: list[IamRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileSystemConfigurationDetails: list[FileSystemConfigurationDetails], dbServers: list[str], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str], iamRoles: list[IamRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudVmCluster:
     str cloudVmClusterId
     Optional[str] displayName
@@ -1209,8 +1219,9 @@ struct CloudVmCluster:
     Optional[ComputeModel] computeModel
     Optional[list[IamRole]] iamRoles
 
-# no @derive(Json): member(s) fileSystemConfigurationDetails: list[FileSystemConfigurationDetails], dbServers: list[str], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str], iamRoles: list[IamRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileSystemConfigurationDetails: list[FileSystemConfigurationDetails], dbServers: list[str], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str], iamRoles: list[IamRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudVmClusterSummary:
     str cloudVmClusterId
     Optional[str] displayName
@@ -1268,8 +1279,9 @@ struct ConflictException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAutonomousDatabaseBackupInput:
     str autonomousDatabaseId
     Optional[str] displayName
@@ -1284,8 +1296,9 @@ struct CreateAutonomousDatabaseBackupOutput:
     Optional[str] statusReason
     str autonomousDatabaseBackupId
 
-# no @derive(Json): member(s) customerContactsToSendToOCI: list[CustomerContact], scheduledOperations: list[ScheduledOperationDetails], standbyAllowlistedIps: list[str], allowlistedIps: list[str], dbToolsDetails: list[DatabaseTool], sourceConfiguration: SourceConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerContactsToSendToOCI: list[CustomerContact], scheduledOperations: list[ScheduledOperationDetails], standbyAllowlistedIps: list[str], allowlistedIps: list[str], dbToolsDetails: list[DatabaseTool], sourceConfiguration: SourceConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAutonomousDatabaseInput:
     Optional[str] odbNetworkId
     Optional[str] displayName
@@ -1349,8 +1362,9 @@ struct CreateAutonomousDatabaseWalletInput:
 struct CreateAutonomousDatabaseWalletOutput:
     bytes autonomousDatabaseWalletFile
 
-# no @derive(Json): member(s) dbServers: list[str], maintenanceWindow: MaintenanceWindow, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbServers: list[str], maintenanceWindow: MaintenanceWindow, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudAutonomousVmClusterInput:
     str cloudExadataInfrastructureId
     str odbNetworkId
@@ -1377,8 +1391,9 @@ struct CreateCloudAutonomousVmClusterOutput:
     Optional[str] statusReason
     str cloudAutonomousVmClusterId
 
-# no @derive(Json): member(s) tags: dict[str, str], customerContactsToSendToOCI: list[CustomerContact], maintenanceWindow: MaintenanceWindow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], customerContactsToSendToOCI: list[CustomerContact], maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudExadataInfrastructureInput:
     str displayName
     str shape
@@ -1400,8 +1415,9 @@ struct CreateCloudExadataInfrastructureOutput:
     Optional[str] statusReason
     str cloudExadataInfrastructureId
 
-# no @derive(Json): member(s) fileSystemConfigurationDetails: list[FileSystemConfigurationDetails], sshPublicKeys: list[str], dbServers: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileSystemConfigurationDetails: list[FileSystemConfigurationDetails], sshPublicKeys: list[str], dbServers: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudVmClusterInput:
     str cloudExadataInfrastructureId
     Optional[str] exascaleDbStorageVaultId
@@ -1436,8 +1452,9 @@ struct CreateCloudVmClusterOutput:
     Optional[str] statusReason
     str cloudVmClusterId
 
-# no @derive(Json): member(s) sshPublicKeys: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sshPublicKeys: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExadbVmClusterInput:
     str displayName
     int64 enabledEcpuCount
@@ -1468,8 +1485,9 @@ struct CreateExadbVmClusterOutput:
     Optional[str] statusReason
     str exadbVmClusterId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExascaleDbStorageVaultInput:
     str displayName
     int64 highCapacityDatabaseStorageTotalSizeInGBs
@@ -1491,8 +1509,9 @@ struct CreateExascaleDbStorageVaultOutput:
     Optional[str] statusReason
     str exascaleDbStorageVaultId
 
-# no @derive(Json): member(s) crossRegionS3RestoreSourcesToEnable: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) crossRegionS3RestoreSourcesToEnable: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOdbNetworkInput:
     str displayName
     Optional[str] availabilityZone
@@ -1519,8 +1538,9 @@ struct CreateOdbNetworkOutput:
     Optional[str] statusReason
     str odbNetworkId
 
-# no @derive(Json): member(s) peerNetworkCidrsToBeAdded: list[str], peerNetworkRouteTableIds: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peerNetworkCidrsToBeAdded: list[str], peerNetworkRouteTableIds: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOdbPeeringConnectionInput:
     str odbNetworkId
     str peerNetworkId
@@ -1547,8 +1567,9 @@ struct CrossRegionDisasterRecoveryConfiguration:
     DisasterRecoveryType remoteDisasterRecoveryType
     Optional[bool] isReplicateAutomaticBackups
 
-# no @derive(Json): member(s) ipv4Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CrossRegionS3RestoreSourcesAccess:
     Optional[str] region
     Optional[list[str]] ipv4Addresses
@@ -1688,8 +1709,9 @@ struct DbNodeSummary:
     Optional[str] vnic2Id
     Optional[str] vnicId
 
-# no @derive(Json): member(s) vmClusterIds: list[str], autonomousVmClusterIds: list[str], autonomousVirtualMachineIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vmClusterIds: list[str], autonomousVmClusterIds: list[str], autonomousVirtualMachineIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DbServer:
     Optional[str] dbServerId
     Optional[ResourceStatus] status
@@ -1719,8 +1741,9 @@ struct DbServerPatchingDetails:
     Optional[str] timePatchingEnded
     Optional[str] timePatchingStarted
 
-# no @derive(Json): member(s) vmClusterIds: list[str], autonomousVmClusterIds: list[str], autonomousVirtualMachineIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vmClusterIds: list[str], autonomousVmClusterIds: list[str], autonomousVirtualMachineIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DbServerSummary:
     Optional[str] dbServerId
     Optional[ResourceStatus] status
@@ -1743,8 +1766,9 @@ struct DbServerSummary:
     Optional[list[str]] autonomousVmClusterIds
     Optional[list[str]] autonomousVirtualMachineIds
 
-# no @derive(Json): member(s) shapeAttributes: list[ShapeAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) shapeAttributes: list[ShapeAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DbSystemShapeSummary:
     Optional[int64] availableCoreCount
     Optional[int64] availableCoreCountPerNode
@@ -1865,8 +1889,9 @@ struct DisassociateIamRoleFromResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) dbNodeIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbNodeIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateVirtualMachinesFromExadbVmClusterInput:
     str exadbVmClusterId
     list[str] dbNodeIds
@@ -1901,16 +1926,18 @@ struct EncryptionSummary:
     Optional[EncryptionKeyProvider] encryptionKeyProvider
     Optional[EncryptionKeyConfiguration] encryptionKeyConfiguration
 
-# no @derive(Json): member(s) dbPlans: list[DbIormConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbPlans: list[DbIormConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExadataIormConfig:
     Optional[list[DbIormConfig]] dbPlans
     Optional[str] lifecycleDetails
     Optional[IormLifecycleState] lifecycleState
     Optional[Objective] objective
 
-# no @derive(Json): member(s) iamRoles: list[IamRole], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iamRoles: list[IamRole], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExadbVmCluster:
     str exadbVmClusterId
     Optional[str] clusterName
@@ -1961,8 +1988,9 @@ struct ExadbVmCluster:
 struct ExadbVmClusterStorageDetails:
     Optional[int64] totalSizeInGBs
 
-# no @derive(Json): member(s) iamRoles: list[IamRole], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iamRoles: list[IamRole], iormConfigCache: ExadataIormConfig, scanIpIds: list[str], sshPublicKeys: list[str], vipIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExadbVmClusterSummary:
     str exadbVmClusterId
     Optional[str] clusterName
@@ -2021,8 +2049,9 @@ struct ExascaleDbStorageDetails:
     Optional[int64] availableSizeInGBs
     Optional[int64] totalSizeInGBs
 
-# no @derive(Json): member(s) attachedShapeAttributes: list[ShapeAttribute], vmClusterArns: list[str], vmClusterIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachedShapeAttributes: list[ShapeAttribute], vmClusterArns: list[str], vmClusterIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExascaleDbStorageVault:
     str exascaleDbStorageVaultId
     Optional[int64] additionalFlashCacheInPercent
@@ -2050,8 +2079,9 @@ struct ExascaleDbStorageVault:
     Optional[str] timeZone
     Optional[ExascaleDbStorageVaultType] vaultType
 
-# no @derive(Json): member(s) attachedShapeAttributes: list[ShapeAttribute], vmClusterArns: list[str], vmClusterIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachedShapeAttributes: list[ShapeAttribute], vmClusterArns: list[str], vmClusterIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExascaleDbStorageVaultSummary:
     str exascaleDbStorageVaultId
     Optional[int64] additionalFlashCacheInPercent
@@ -2122,8 +2152,9 @@ struct GetAutonomousDatabaseBackupOutput:
 struct GetAutonomousDatabaseInput:
     str autonomousDatabaseId
 
-# no @derive(Json): member(s) autonomousDatabase: AutonomousDatabase not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabase: AutonomousDatabase not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutonomousDatabaseOutput:
     AutonomousDatabase autonomousDatabase
 
@@ -2139,8 +2170,9 @@ struct GetAutonomousDatabaseWalletDetailsOutput:
 struct GetCloudAutonomousVmClusterInput:
     str cloudAutonomousVmClusterId
 
-# no @derive(Json): member(s) cloudAutonomousVmCluster: CloudAutonomousVmCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudAutonomousVmCluster: CloudAutonomousVmCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudAutonomousVmClusterOutput:
     Optional[CloudAutonomousVmCluster] cloudAutonomousVmCluster
 
@@ -2148,19 +2180,22 @@ struct GetCloudAutonomousVmClusterOutput:
 struct GetCloudExadataInfrastructureInput:
     str cloudExadataInfrastructureId
 
-# no @derive(Json): member(s) cloudExadataInfrastructure: CloudExadataInfrastructure not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudExadataInfrastructure: CloudExadataInfrastructure not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudExadataInfrastructureOutput:
     Optional[CloudExadataInfrastructure] cloudExadataInfrastructure
 
-# no @derive(Json): member(s) dbServers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbServers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudExadataInfrastructureUnallocatedResourcesInput:
     str cloudExadataInfrastructureId
     Optional[list[str]] dbServers
 
-# no @derive(Json): member(s) cloudExadataInfrastructureUnallocatedResources: CloudExadataInfrastructureUnallocatedResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudExadataInfrastructureUnallocatedResources: CloudExadataInfrastructureUnallocatedResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudExadataInfrastructureUnallocatedResourcesOutput:
     Optional[CloudExadataInfrastructureUnallocatedResources] cloudExadataInfrastructureUnallocatedResources
 
@@ -2168,8 +2203,9 @@ struct GetCloudExadataInfrastructureUnallocatedResourcesOutput:
 struct GetCloudVmClusterInput:
     str cloudVmClusterId
 
-# no @derive(Json): member(s) cloudVmCluster: CloudVmCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudVmCluster: CloudVmCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudVmClusterOutput:
     Optional[CloudVmCluster] cloudVmCluster
 
@@ -2188,8 +2224,9 @@ struct GetDbServerInput:
     str cloudExadataInfrastructureId
     str dbServerId
 
-# no @derive(Json): member(s) dbServer: DbServer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbServer: DbServer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDbServerOutput:
     Optional[DbServer] dbServer
 
@@ -2197,8 +2234,9 @@ struct GetDbServerOutput:
 struct GetExadbVmClusterInput:
     str exadbVmClusterId
 
-# no @derive(Json): member(s) exadbVmCluster: ExadbVmCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exadbVmCluster: ExadbVmCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExadbVmClusterOutput:
     ExadbVmCluster exadbVmCluster
 
@@ -2206,8 +2244,9 @@ struct GetExadbVmClusterOutput:
 struct GetExascaleDbStorageVaultInput:
     str exascaleDbStorageVaultId
 
-# no @derive(Json): member(s) exascaleDbStorageVault: ExascaleDbStorageVault not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exascaleDbStorageVault: ExascaleDbStorageVault not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExascaleDbStorageVaultOutput:
     ExascaleDbStorageVault exascaleDbStorageVault
 
@@ -2216,8 +2255,9 @@ struct GetOciOnboardingStatusInput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) autonomousDatabaseOciIntegrationIamRoles: list[OciIamRole], subscriptionErrors: list[SubscriptionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabaseOciIntegrationIamRoles: list[OciIamRole], subscriptionErrors: list[SubscriptionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOciOnboardingStatusOutput:
     Optional[OciOnboardingStatus] status
     Optional[str] existingTenancyActivationLink
@@ -2232,8 +2272,9 @@ struct GetOciOnboardingStatusOutput:
 struct GetOdbNetworkInput:
     str odbNetworkId
 
-# no @derive(Json): member(s) odbNetwork: OdbNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) odbNetwork: OdbNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOdbNetworkOutput:
     Optional[OdbNetwork] odbNetwork
 
@@ -2241,8 +2282,9 @@ struct GetOdbNetworkOutput:
 struct GetOdbPeeringConnectionInput:
     str odbPeeringConnectionId
 
-# no @derive(Json): member(s) odbPeeringConnection: OdbPeeringConnection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) odbPeeringConnection: OdbPeeringConnection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOdbPeeringConnectionOutput:
     Optional[OdbPeeringConnection] odbPeeringConnection
 
@@ -2277,8 +2319,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) ipv4Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KmsAccess:
     Optional[ManagedResourceStatus] status
     Optional[list[str]] ipv4Addresses
@@ -2293,8 +2336,9 @@ struct ListAutonomousDatabaseBackupsInput:
     Optional[AutonomousDatabaseBackupStatus] status
     Optional[AutonomousDatabaseBackupType] type
 
-# no @derive(Json): member(s) autonomousDatabaseBackups: list[AutonomousDatabaseBackupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabaseBackups: list[AutonomousDatabaseBackupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousDatabaseBackupsOutput:
     Optional[str] nextToken
     list[AutonomousDatabaseBackupSummary] autonomousDatabaseBackups
@@ -2305,8 +2349,9 @@ struct ListAutonomousDatabaseCharacterSetsInput:
     Optional[str] nextToken
     Optional[characterSetType] characterSetType
 
-# no @derive(Json): member(s) autonomousDatabaseCharacterSets: list[AutonomousDatabaseCharacterSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabaseCharacterSets: list[AutonomousDatabaseCharacterSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousDatabaseCharacterSetsOutput:
     Optional[str] nextToken
     list[AutonomousDatabaseCharacterSetSummary] autonomousDatabaseCharacterSets
@@ -2317,8 +2362,9 @@ struct ListAutonomousDatabaseClonesInput:
     Optional[str] nextToken
     str autonomousDatabaseId
 
-# no @derive(Json): member(s) autonomousDatabaseClones: list[AutonomousDatabaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabaseClones: list[AutonomousDatabaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousDatabaseClonesOutput:
     Optional[str] nextToken
     list[AutonomousDatabaseSummary] autonomousDatabaseClones
@@ -2329,8 +2375,9 @@ struct ListAutonomousDatabasePeersInput:
     Optional[str] nextToken
     str autonomousDatabaseId
 
-# no @derive(Json): member(s) autonomousDatabasePeers: list[AutonomousDatabasePeerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabasePeers: list[AutonomousDatabasePeerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousDatabasePeersOutput:
     Optional[str] nextToken
     list[AutonomousDatabasePeerSummary] autonomousDatabasePeers
@@ -2341,8 +2388,9 @@ struct ListAutonomousDatabaseVersionsInput:
     Optional[str] nextToken
     Optional[DbWorkload] dbWorkload
 
-# no @derive(Json): member(s) autonomousDatabaseVersions: list[AutonomousDatabaseVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabaseVersions: list[AutonomousDatabaseVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousDatabaseVersionsOutput:
     Optional[str] nextToken
     list[AutonomousDatabaseVersionSummary] autonomousDatabaseVersions
@@ -2352,8 +2400,9 @@ struct ListAutonomousDatabasesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) autonomousDatabases: list[AutonomousDatabaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousDatabases: list[AutonomousDatabaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousDatabasesOutput:
     Optional[str] nextToken
     list[AutonomousDatabaseSummary] autonomousDatabases
@@ -2364,8 +2413,9 @@ struct ListAutonomousVirtualMachinesInput:
     Optional[str] nextToken
     str cloudAutonomousVmClusterId
 
-# no @derive(Json): member(s) autonomousVirtualMachines: list[AutonomousVirtualMachineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autonomousVirtualMachines: list[AutonomousVirtualMachineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutonomousVirtualMachinesOutput:
     Optional[str] nextToken
     list[AutonomousVirtualMachineSummary] autonomousVirtualMachines
@@ -2376,8 +2426,9 @@ struct ListCloudAutonomousVmClustersInput:
     Optional[str] nextToken
     Optional[str] cloudExadataInfrastructureId
 
-# no @derive(Json): member(s) cloudAutonomousVmClusters: list[CloudAutonomousVmClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudAutonomousVmClusters: list[CloudAutonomousVmClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudAutonomousVmClustersOutput:
     Optional[str] nextToken
     list[CloudAutonomousVmClusterSummary] cloudAutonomousVmClusters
@@ -2387,8 +2438,9 @@ struct ListCloudExadataInfrastructuresInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) cloudExadataInfrastructures: list[CloudExadataInfrastructureSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudExadataInfrastructures: list[CloudExadataInfrastructureSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudExadataInfrastructuresOutput:
     Optional[str] nextToken
     list[CloudExadataInfrastructureSummary] cloudExadataInfrastructures
@@ -2399,8 +2451,9 @@ struct ListCloudVmClustersInput:
     Optional[str] nextToken
     Optional[str] cloudExadataInfrastructureId
 
-# no @derive(Json): member(s) cloudVmClusters: list[CloudVmClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudVmClusters: list[CloudVmClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudVmClustersOutput:
     Optional[str] nextToken
     list[CloudVmClusterSummary] cloudVmClusters
@@ -2412,8 +2465,9 @@ struct ListDbNodesInput:
     Optional[str] cloudVmClusterId
     Optional[str] exadbVmClusterId
 
-# no @derive(Json): member(s) dbNodes: list[DbNodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbNodes: list[DbNodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbNodesOutput:
     Optional[str] nextToken
     list[DbNodeSummary] dbNodes
@@ -2424,8 +2478,9 @@ struct ListDbServersInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dbServers: list[DbServerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbServers: list[DbServerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbServersOutput:
     Optional[str] nextToken
     list[DbServerSummary] dbServers
@@ -2438,8 +2493,9 @@ struct ListDbSystemShapesInput:
     Optional[str] availabilityZoneId
     Optional[str] shapeFamily
 
-# no @derive(Json): member(s) dbSystemShapes: list[DbSystemShapeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbSystemShapes: list[DbSystemShapeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbSystemShapesOutput:
     Optional[str] nextToken
     list[DbSystemShapeSummary] dbSystemShapes
@@ -2450,8 +2506,9 @@ struct ListExadbVmClustersInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) exadbVmClusters: list[ExadbVmClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exadbVmClusters: list[ExadbVmClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExadbVmClustersOutput:
     Optional[str] nextToken
     list[ExadbVmClusterSummary] exadbVmClusters
@@ -2463,8 +2520,9 @@ struct ListExascaleDbStorageVaultsInput:
     Optional[str] cloudExadataInfrastructureId
     Optional[ExascaleDbStorageVaultType] vaultType
 
-# no @derive(Json): member(s) exascaleDbStorageVaults: list[ExascaleDbStorageVaultSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exascaleDbStorageVaults: list[ExascaleDbStorageVaultSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExascaleDbStorageVaultsOutput:
     Optional[str] nextToken
     list[ExascaleDbStorageVaultSummary] exascaleDbStorageVaults
@@ -2475,8 +2533,9 @@ struct ListFlexComponentsInput:
     Optional[str] nextToken
     Optional[str] shape
 
-# no @derive(Json): member(s) flexComponents: list[FlexComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flexComponents: list[FlexComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlexComponentsOutput:
     Optional[str] nextToken
     list[FlexComponentSummary] flexComponents
@@ -2490,8 +2549,9 @@ struct ListGiMinorVersionsInput:
     Optional[str] availabilityZone
     Optional[str] availabilityZoneId
 
-# no @derive(Json): member(s) giMinorVersions: list[GiMinorVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) giMinorVersions: list[GiMinorVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGiMinorVersionsOutput:
     Optional[str] nextToken
     list[GiMinorVersionSummary] giMinorVersions
@@ -2502,8 +2562,9 @@ struct ListGiVersionsInput:
     Optional[str] nextToken
     Optional[str] shape
 
-# no @derive(Json): member(s) giVersions: list[GiVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) giVersions: list[GiVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGiVersionsOutput:
     Optional[str] nextToken
     list[GiVersionSummary] giVersions
@@ -2513,8 +2574,9 @@ struct ListOdbNetworksInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) odbNetworks: list[OdbNetworkSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) odbNetworks: list[OdbNetworkSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOdbNetworksOutput:
     Optional[str] nextToken
     list[OdbNetworkSummary] odbNetworks
@@ -2525,8 +2587,9 @@ struct ListOdbPeeringConnectionsInput:
     Optional[str] nextToken
     Optional[str] odbNetworkId
 
-# no @derive(Json): member(s) odbPeeringConnections: list[OdbPeeringConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) odbPeeringConnections: list[OdbPeeringConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOdbPeeringConnectionsOutput:
     Optional[str] nextToken
     list[OdbPeeringConnectionSummary] odbPeeringConnections
@@ -2538,8 +2601,9 @@ struct ListSystemVersionsInput:
     str giVersion
     str shape
 
-# no @derive(Json): member(s) systemVersions: list[SystemVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) systemVersions: list[SystemVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSystemVersionsOutput:
     Optional[str] nextToken
     list[SystemVersionSummary] systemVersions
@@ -2548,8 +2612,9 @@ struct ListSystemVersionsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -2561,8 +2626,9 @@ struct LongTermBackupSchedule:
     @json(timestamp="iso8601")
     Optional[DateTime] timeOfBackup
 
-# no @derive(Json): member(s) daysOfWeek: list[DayOfWeek], hoursOfDay: list[int64], months: list[Month], weeksOfMonth: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daysOfWeek: list[DayOfWeek], hoursOfDay: list[int64], months: list[Month], weeksOfMonth: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindow:
     Optional[int64] customActionTimeoutInMins
     Optional[list[DayOfWeek]] daysOfWeek
@@ -2575,14 +2641,16 @@ struct MaintenanceWindow:
     Optional[bool] skipRu
     Optional[list[int64]] weeksOfMonth
 
-# no @derive(Json): member(s) ipv4Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedS3BackupAccess:
     Optional[ManagedResourceStatus] status
     Optional[list[str]] ipv4Addresses
 
-# no @derive(Json): member(s) managedServicesIpv4Cidrs: list[str], managedS3BackupAccess: ManagedS3BackupAccess, s3Access: S3Access, stsAccess: StsAccess, kmsAccess: KmsAccess, crossRegionS3RestoreSourcesAccess: list[CrossRegionS3RestoreSourcesAccess] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedServicesIpv4Cidrs: list[str], managedS3BackupAccess: ManagedS3BackupAccess, s3Access: S3Access, stsAccess: StsAccess, kmsAccess: KmsAccess, crossRegionS3RestoreSourcesAccess: list[CrossRegionS3RestoreSourcesAccess] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedServices:
     Optional[str] serviceNetworkArn
     Optional[str] resourceGatewayArn
@@ -2625,8 +2693,9 @@ struct OciIdentityDomain:
     Optional[str] statusReason
     Optional[str] accountSetupCloudFormationUrl
 
-# no @derive(Json): member(s) peeredCidrs: list[str], ociDnsForwardingConfigs: list[OciDnsForwardingConfig], managedServices: ManagedServices, ec2PlacementGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peeredCidrs: list[str], ociDnsForwardingConfigs: list[OciDnsForwardingConfig], managedServices: ManagedServices, ec2PlacementGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OdbNetwork:
     str odbNetworkId
     Optional[str] displayName
@@ -2651,8 +2720,9 @@ struct OdbNetwork:
     Optional[ManagedServices] managedServices
     Optional[list[str]] ec2PlacementGroupIds
 
-# no @derive(Json): member(s) peeredCidrs: list[str], ociDnsForwardingConfigs: list[OciDnsForwardingConfig], managedServices: ManagedServices, ec2PlacementGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peeredCidrs: list[str], ociDnsForwardingConfigs: list[OciDnsForwardingConfig], managedServices: ManagedServices, ec2PlacementGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OdbNetworkSummary:
     str odbNetworkId
     Optional[str] displayName
@@ -2677,8 +2747,9 @@ struct OdbNetworkSummary:
     Optional[ManagedServices] managedServices
     Optional[list[str]] ec2PlacementGroupIds
 
-# no @derive(Json): member(s) peerNetworkCidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peerNetworkCidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OdbPeeringConnection:
     str odbPeeringConnectionId
     Optional[str] displayName
@@ -2692,8 +2763,9 @@ struct OdbPeeringConnection:
     Optional[DateTime] createdAt
     Optional[float64] percentProgress
 
-# no @derive(Json): member(s) peerNetworkCidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peerNetworkCidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OdbPeeringConnectionSummary:
     str odbPeeringConnectionId
     Optional[str] displayName
@@ -2715,8 +2787,9 @@ struct OkvEncryptionKeyConfiguration:
     str okvKmsKey
     str okvUri
 
-# no @derive(Json): member(s) cloneTableSpaceList: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloneTableSpaceList: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PointInTimeRestoreConfiguration:
     str sourceAutonomousDatabaseId
     CloneType cloneType
@@ -2776,15 +2849,17 @@ struct RestoreAutonomousDatabaseOutput:
     Optional[AutonomousDatabaseResourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) cloneTableSpaceList: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloneTableSpaceList: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreFromBackupConfiguration:
     str autonomousDatabaseBackupId
     CloneType cloneType
     Optional[list[int64]] cloneTableSpaceList
 
-# no @derive(Json): member(s) ipv4Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Access:
     Optional[ManagedResourceStatus] status
     Optional[list[str]] ipv4Addresses
@@ -2820,8 +2895,9 @@ struct ShrinkAutonomousDatabaseOutput:
     Optional[AutonomousDatabaseResourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) restoreFromBackup: RestoreFromBackupConfiguration, pointInTimeRestore: PointInTimeRestoreConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) restoreFromBackup: RestoreFromBackupConfiguration, pointInTimeRestore: PointInTimeRestoreConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfiguration:
     Optional[DatabaseCloneConfiguration] databaseClone
     Optional[RestoreFromBackupConfiguration] restoreFromBackup
@@ -2876,8 +2952,9 @@ struct StopDbNodeOutput:
     Optional[DbNodeResourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) ipv4Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StsAccess:
     Optional[ManagedResourceStatus] status
     Optional[list[str]] ipv4Addresses
@@ -2900,15 +2977,17 @@ struct SwitchoverAutonomousDatabaseOutput:
     Optional[AutonomousDatabaseResourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) systemVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) systemVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemVersionSummary:
     Optional[str] giVersion
     Optional[str] shape
     Optional[list[str]] systemVersions
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
@@ -2927,8 +3006,9 @@ struct ThrottlingException:
 struct TransportableTablespace:
     Optional[str] ttsBundleUrl
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -2950,8 +3030,9 @@ struct UpdateAutonomousDatabaseBackupOutput:
     Optional[str] statusReason
     str autonomousDatabaseBackupId
 
-# no @derive(Json): member(s) dbToolsDetails: list[DatabaseTool], customerContactsToSendToOCI: list[CustomerContact], scheduledOperations: list[ScheduledOperationDetails], standbyAllowlistedIps: list[str], allowlistedIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbToolsDetails: list[DatabaseTool], customerContactsToSendToOCI: list[CustomerContact], scheduledOperations: list[ScheduledOperationDetails], standbyAllowlistedIps: list[str], allowlistedIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAutonomousDatabaseInput:
     str autonomousDatabaseId
     Optional[str] adminPassword
@@ -3006,8 +3087,9 @@ struct UpdateAutonomousDatabaseOutput:
     Optional[AutonomousDatabaseResourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudExadataInfrastructureInput:
     str cloudExadataInfrastructureId
     Optional[MaintenanceWindow] maintenanceWindow
@@ -3019,8 +3101,9 @@ struct UpdateCloudExadataInfrastructureOutput:
     Optional[str] statusReason
     str cloudExadataInfrastructureId
 
-# no @derive(Json): member(s) sshPublicKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sshPublicKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExadbVmClusterInput:
     str exadbVmClusterId
     Optional[DataCollectionOptions] dataCollectionOptions
@@ -3071,8 +3154,9 @@ struct UpdateExascaleDbStorageVaultOutput:
     Optional[str] statusReason
     str exascaleDbStorageVaultId
 
-# no @derive(Json): member(s) peeredCidrsToBeAdded: list[str], peeredCidrsToBeRemoved: list[str], crossRegionS3RestoreSourcesToEnable: list[str], crossRegionS3RestoreSourcesToDisable: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peeredCidrsToBeAdded: list[str], peeredCidrsToBeRemoved: list[str], crossRegionS3RestoreSourcesToEnable: list[str], crossRegionS3RestoreSourcesToDisable: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOdbNetworkInput:
     str odbNetworkId
     Optional[str] displayName
@@ -3095,8 +3179,9 @@ struct UpdateOdbNetworkOutput:
     Optional[str] statusReason
     str odbNetworkId
 
-# no @derive(Json): member(s) peerNetworkCidrsToBeAdded: list[str], peerNetworkCidrsToBeRemoved: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) peerNetworkCidrsToBeAdded: list[str], peerNetworkCidrsToBeRemoved: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOdbPeeringConnectionInput:
     str odbPeeringConnectionId
     Optional[str] displayName
@@ -3110,8 +3195,9 @@ struct UpdateOdbPeeringConnectionOutput:
     Optional[str] statusReason
     str odbPeeringConnectionId
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -3174,26 +3260,972 @@ def odb_error_from_code(str code) -> odbError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAutonomousDatabase (input CreateAutonomousDatabaseInput)
-#   CreateAutonomousDatabaseBackup (input CreateAutonomousDatabaseBackupInput)
-#   CreateCloudAutonomousVmCluster (input CreateCloudAutonomousVmClusterInput)
-#   CreateCloudExadataInfrastructure (input CreateCloudExadataInfrastructureInput)
-#   CreateCloudVmCluster (input CreateCloudVmClusterInput)
-#   CreateExadbVmCluster (input CreateExadbVmClusterInput)
-#   CreateExascaleDbStorageVault (input CreateExascaleDbStorageVaultInput)
-#   CreateOdbNetwork (input CreateOdbNetworkInput)
-#   CreateOdbPeeringConnection (input CreateOdbPeeringConnectionInput)
-#   DisassociateVirtualMachinesFromExadbVmCluster (input DisassociateVirtualMachinesFromExadbVmClusterInput)
-#   GetCloudExadataInfrastructureUnallocatedResources (input GetCloudExadataInfrastructureUnallocatedResourcesInput)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAutonomousDatabase (input UpdateAutonomousDatabaseInput)
-#   UpdateCloudExadataInfrastructure (input UpdateCloudExadataInfrastructureInput)
-#   UpdateExadbVmCluster (input UpdateExadbVmClusterInput)
-#   UpdateOdbNetwork (input UpdateOdbNetworkInput)
-#   UpdateOdbPeeringConnection (input UpdateOdbPeeringConnectionInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def odb_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def odb_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def odb_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def odb_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateAutonomousDatabaseBackupInput to a compact JSON object (declaration order).
+def create_autonomous_database_backup_input_to_json(CreateAutonomousDatabaseBackupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"autonomousDatabaseId\":" + odb_json_str(v.autonomousDatabaseId))
+    if v.displayName.is_some():
+        auto u0 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u0))
+    if v.retentionPeriodInDays.is_some():
+        auto u1 = v.retentionPeriodInDays.unwrap()
+        parts.append("\"retentionPeriodInDays\":" + str(u1))
+    if v.clientToken.is_some():
+        auto u2 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(odb_json_str(k4) + ":" + odb_json_str(u3[k4]))
+        parts.append("\"tags\":" + odb_json_obj(m4))
+    return odb_json_obj(parts)
+
+# Serialize CreateAutonomousDatabaseInput to a compact JSON object (declaration order).
+def create_autonomous_database_input_to_json(CreateAutonomousDatabaseInput v) -> str:
+    list[str] parts = []
+    if v.odbNetworkId.is_some():
+        auto u0 = v.odbNetworkId.unwrap()
+        parts.append("\"odbNetworkId\":" + odb_json_str(u0))
+    if v.displayName.is_some():
+        auto u1 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u1))
+    if v.dbName.is_some():
+        auto u2 = v.dbName.unwrap()
+        parts.append("\"dbName\":" + odb_json_str(u2))
+    if v.adminPassword.is_some():
+        auto u3 = v.adminPassword.unwrap()
+        parts.append("\"adminPassword\":" + odb_json_str(u3))
+    if v.computeCount.is_some():
+        auto u4 = v.computeCount.unwrap()
+        parts.append("\"computeCount\":" + str(u4))
+    if v.dataStorageSizeInTBs.is_some():
+        auto u5 = v.dataStorageSizeInTBs.unwrap()
+        parts.append("\"dataStorageSizeInTBs\":" + str(u5))
+    if v.dataStorageSizeInGBs.is_some():
+        auto u6 = v.dataStorageSizeInGBs.unwrap()
+        parts.append("\"dataStorageSizeInGBs\":" + str(u6))
+    if v.dbWorkload.is_some():
+        auto u7 = v.dbWorkload.unwrap()
+        parts.append("\"dbWorkload\":" + u7.to_json())
+    if v.isAutoScalingEnabled.is_some():
+        auto u8 = v.isAutoScalingEnabled.unwrap()
+        parts.append("\"isAutoScalingEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.isAutoScalingForStorageEnabled.is_some():
+        auto u9 = v.isAutoScalingForStorageEnabled.unwrap()
+        parts.append("\"isAutoScalingForStorageEnabled\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.licenseModel.is_some():
+        auto u10 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u10.to_json())
+    if v.characterSet.is_some():
+        auto u11 = v.characterSet.unwrap()
+        parts.append("\"characterSet\":" + odb_json_str(u11))
+    if v.ncharacterSet.is_some():
+        auto u12 = v.ncharacterSet.unwrap()
+        parts.append("\"ncharacterSet\":" + odb_json_str(u12))
+    if v.dbVersion.is_some():
+        auto u13 = v.dbVersion.unwrap()
+        parts.append("\"dbVersion\":" + odb_json_str(u13))
+    if v.databaseEdition.is_some():
+        auto u14 = v.databaseEdition.unwrap()
+        parts.append("\"databaseEdition\":" + u14.to_json())
+    if v.standbyAllowlistedIpsSource.is_some():
+        auto u15 = v.standbyAllowlistedIpsSource.unwrap()
+        parts.append("\"standbyAllowlistedIpsSource\":" + u15.to_json())
+    if v.autonomousMaintenanceScheduleType.is_some():
+        auto u16 = v.autonomousMaintenanceScheduleType.unwrap()
+        parts.append("\"autonomousMaintenanceScheduleType\":" + u16.to_json())
+    if v.backupRetentionPeriodInDays.is_some():
+        auto u17 = v.backupRetentionPeriodInDays.unwrap()
+        parts.append("\"backupRetentionPeriodInDays\":" + str(u17))
+    if v.byolComputeCountLimit.is_some():
+        auto u18 = v.byolComputeCountLimit.unwrap()
+        parts.append("\"byolComputeCountLimit\":" + str(u18))
+    if v.cpuCoreCount.is_some():
+        auto u19 = v.cpuCoreCount.unwrap()
+        parts.append("\"cpuCoreCount\":" + str(u19))
+    if v.customerContactsToSendToOCI.is_some():
+        auto u20 = v.customerContactsToSendToOCI.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"customerContactsToSendToOCI\":" + odb_json_arr(e21))
+    if v.privateEndpointIp.is_some():
+        auto u22 = v.privateEndpointIp.unwrap()
+        parts.append("\"privateEndpointIp\":" + odb_json_str(u22))
+    if v.privateEndpointLabel.is_some():
+        auto u23 = v.privateEndpointLabel.unwrap()
+        parts.append("\"privateEndpointLabel\":" + odb_json_str(u23))
+    if v.resourcePoolLeaderId.is_some():
+        auto u24 = v.resourcePoolLeaderId.unwrap()
+        parts.append("\"resourcePoolLeaderId\":" + odb_json_str(u24))
+    if v.resourcePoolSummary.is_some():
+        auto u25 = v.resourcePoolSummary.unwrap()
+        parts.append("\"resourcePoolSummary\":" + u25.to_json())
+    if v.scheduledOperations.is_some():
+        auto u26 = v.scheduledOperations.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"scheduledOperations\":" + odb_json_arr(e27))
+    if v.standbyAllowlistedIps.is_some():
+        auto u28 = v.standbyAllowlistedIps.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(odb_json_str(x29))
+        parts.append("\"standbyAllowlistedIps\":" + odb_json_arr(e29))
+    if v.allowlistedIps.is_some():
+        auto u30 = v.allowlistedIps.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(odb_json_str(x31))
+        parts.append("\"allowlistedIps\":" + odb_json_arr(e31))
+    if v.transportableTablespace.is_some():
+        auto u32 = v.transportableTablespace.unwrap()
+        parts.append("\"transportableTablespace\":" + u32.to_json())
+    if v.isBackupRetentionLocked.is_some():
+        auto u33 = v.isBackupRetentionLocked.unwrap()
+        parts.append("\"isBackupRetentionLocked\":" + json.dumps(JsonValue.Bool(u33)))
+    if v.isLocalDataGuardEnabled.is_some():
+        auto u34 = v.isLocalDataGuardEnabled.unwrap()
+        parts.append("\"isLocalDataGuardEnabled\":" + json.dumps(JsonValue.Bool(u34)))
+    if v.isMtlsConnectionRequired.is_some():
+        auto u35 = v.isMtlsConnectionRequired.unwrap()
+        parts.append("\"isMtlsConnectionRequired\":" + json.dumps(JsonValue.Bool(u35)))
+    if v.dbToolsDetails.is_some():
+        auto u36 = v.dbToolsDetails.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"dbToolsDetails\":" + odb_json_arr(e37))
+    if v.source.is_some():
+        auto u38 = v.source.unwrap()
+        parts.append("\"source\":" + u38.to_json())
+    if v.sourceConfiguration.is_some():
+        auto u39 = v.sourceConfiguration.unwrap()
+        parts.append("\"sourceConfiguration\":" + source_configuration_to_json(u39))
+    if v.encryptionKeyProvider.is_some():
+        auto u40 = v.encryptionKeyProvider.unwrap()
+        parts.append("\"encryptionKeyProvider\":" + u40.to_json())
+    if v.encryptionKeyConfiguration.is_some():
+        auto u41 = v.encryptionKeyConfiguration.unwrap()
+        parts.append("\"encryptionKeyConfiguration\":" + u41.to_json())
+    if v.adminPasswordSource.is_some():
+        auto u42 = v.adminPasswordSource.unwrap()
+        parts.append("\"adminPasswordSource\":" + u42.to_json())
+    if v.adminPasswordSourceConfiguration.is_some():
+        auto u43 = v.adminPasswordSourceConfiguration.unwrap()
+        parts.append("\"adminPasswordSourceConfiguration\":" + u43.to_json())
+    if v.clientToken.is_some():
+        auto u44 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u44))
+    if v.tags.is_some():
+        auto u45 = v.tags.unwrap()
+        list[str] m46 = []
+        for k46 in sorted(u45.keys()):
+            m46.append(odb_json_str(k46) + ":" + odb_json_str(u45[k46]))
+        parts.append("\"tags\":" + odb_json_obj(m46))
+    return odb_json_obj(parts)
+
+# Serialize CreateCloudAutonomousVmClusterInput to a compact JSON object (declaration order).
+def create_cloud_autonomous_vm_cluster_input_to_json(CreateCloudAutonomousVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudExadataInfrastructureId\":" + odb_json_str(v.cloudExadataInfrastructureId))
+    parts.append("\"odbNetworkId\":" + odb_json_str(v.odbNetworkId))
+    parts.append("\"displayName\":" + odb_json_str(v.displayName))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u0))
+    parts.append("\"autonomousDataStorageSizeInTBs\":" + str(v.autonomousDataStorageSizeInTBs))
+    parts.append("\"cpuCoreCountPerNode\":" + str(v.cpuCoreCountPerNode))
+    if v.dbServers.is_some():
+        auto u1 = v.dbServers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(odb_json_str(x2))
+        parts.append("\"dbServers\":" + odb_json_arr(e2))
+    if v.description.is_some():
+        auto u3 = v.description.unwrap()
+        parts.append("\"description\":" + odb_json_str(u3))
+    if v.isMtlsEnabledVmCluster.is_some():
+        auto u4 = v.isMtlsEnabledVmCluster.unwrap()
+        parts.append("\"isMtlsEnabledVmCluster\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.licenseModel.is_some():
+        auto u5 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u5.to_json())
+    if v.maintenanceWindow.is_some():
+        auto u6 = v.maintenanceWindow.unwrap()
+        parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u6))
+    parts.append("\"memoryPerOracleComputeUnitInGBs\":" + str(v.memoryPerOracleComputeUnitInGBs))
+    if v.scanListenerPortNonTls.is_some():
+        auto u7 = v.scanListenerPortNonTls.unwrap()
+        parts.append("\"scanListenerPortNonTls\":" + str(u7))
+    if v.scanListenerPortTls.is_some():
+        auto u8 = v.scanListenerPortTls.unwrap()
+        parts.append("\"scanListenerPortTls\":" + str(u8))
+    if v.tags.is_some():
+        auto u9 = v.tags.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(odb_json_str(k10) + ":" + odb_json_str(u9[k10]))
+        parts.append("\"tags\":" + odb_json_obj(m10))
+    if v.timeZone.is_some():
+        auto u11 = v.timeZone.unwrap()
+        parts.append("\"timeZone\":" + odb_json_str(u11))
+    parts.append("\"totalContainerDatabases\":" + str(v.totalContainerDatabases))
+    return odb_json_obj(parts)
+
+# Serialize CreateCloudExadataInfrastructureInput to a compact JSON object (declaration order).
+def create_cloud_exadata_infrastructure_input_to_json(CreateCloudExadataInfrastructureInput v) -> str:
+    list[str] parts = []
+    parts.append("\"displayName\":" + odb_json_str(v.displayName))
+    parts.append("\"shape\":" + odb_json_str(v.shape))
+    if v.availabilityZone.is_some():
+        auto u0 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + odb_json_str(u0))
+    if v.availabilityZoneId.is_some():
+        auto u1 = v.availabilityZoneId.unwrap()
+        parts.append("\"availabilityZoneId\":" + odb_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(odb_json_str(k3) + ":" + odb_json_str(u2[k3]))
+        parts.append("\"tags\":" + odb_json_obj(m3))
+    parts.append("\"computeCount\":" + str(v.computeCount))
+    if v.customerContactsToSendToOCI.is_some():
+        auto u4 = v.customerContactsToSendToOCI.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"customerContactsToSendToOCI\":" + odb_json_arr(e5))
+    if v.maintenanceWindow.is_some():
+        auto u6 = v.maintenanceWindow.unwrap()
+        parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u6))
+    parts.append("\"storageCount\":" + str(v.storageCount))
+    if v.clientToken.is_some():
+        auto u7 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u7))
+    if v.databaseServerType.is_some():
+        auto u8 = v.databaseServerType.unwrap()
+        parts.append("\"databaseServerType\":" + odb_json_str(u8))
+    if v.storageServerType.is_some():
+        auto u9 = v.storageServerType.unwrap()
+        parts.append("\"storageServerType\":" + odb_json_str(u9))
+    return odb_json_obj(parts)
+
+# Serialize CreateCloudVmClusterInput to a compact JSON object (declaration order).
+def create_cloud_vm_cluster_input_to_json(CreateCloudVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudExadataInfrastructureId\":" + odb_json_str(v.cloudExadataInfrastructureId))
+    if v.exascaleDbStorageVaultId.is_some():
+        auto u0 = v.exascaleDbStorageVaultId.unwrap()
+        parts.append("\"exascaleDbStorageVaultId\":" + odb_json_str(u0))
+    if v.vmFileSystemStorageType.is_some():
+        auto u1 = v.vmFileSystemStorageType.unwrap()
+        parts.append("\"vmFileSystemStorageType\":" + u1.to_json())
+    if v.vmBackupStorageType.is_some():
+        auto u2 = v.vmBackupStorageType.unwrap()
+        parts.append("\"vmBackupStorageType\":" + u2.to_json())
+    if v.fileSystemConfigurationDetails.is_some():
+        auto u3 = v.fileSystemConfigurationDetails.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"fileSystemConfigurationDetails\":" + odb_json_arr(e4))
+    parts.append("\"cpuCoreCount\":" + str(v.cpuCoreCount))
+    parts.append("\"displayName\":" + odb_json_str(v.displayName))
+    parts.append("\"giVersion\":" + odb_json_str(v.giVersion))
+    parts.append("\"hostname\":" + odb_json_str(v.hostname))
+    list[str] e5 = []
+    for x5 in v.sshPublicKeys:
+        e5.append(odb_json_str(x5))
+    parts.append("\"sshPublicKeys\":" + odb_json_arr(e5))
+    parts.append("\"odbNetworkId\":" + odb_json_str(v.odbNetworkId))
+    if v.clusterName.is_some():
+        auto u6 = v.clusterName.unwrap()
+        parts.append("\"clusterName\":" + odb_json_str(u6))
+    if v.dataCollectionOptions.is_some():
+        auto u7 = v.dataCollectionOptions.unwrap()
+        parts.append("\"dataCollectionOptions\":" + u7.to_json())
+    if v.dataStorageSizeInTBs.is_some():
+        auto u8 = v.dataStorageSizeInTBs.unwrap()
+        parts.append("\"dataStorageSizeInTBs\":" + str(u8))
+    if v.dbNodeStorageSizeInGBs.is_some():
+        auto u9 = v.dbNodeStorageSizeInGBs.unwrap()
+        parts.append("\"dbNodeStorageSizeInGBs\":" + str(u9))
+    if v.dbServers.is_some():
+        auto u10 = v.dbServers.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(odb_json_str(x11))
+        parts.append("\"dbServers\":" + odb_json_arr(e11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(odb_json_str(k13) + ":" + odb_json_str(u12[k13]))
+        parts.append("\"tags\":" + odb_json_obj(m13))
+    if v.isLocalBackupEnabled.is_some():
+        auto u14 = v.isLocalBackupEnabled.unwrap()
+        parts.append("\"isLocalBackupEnabled\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.isSparseDiskgroupEnabled.is_some():
+        auto u15 = v.isSparseDiskgroupEnabled.unwrap()
+        parts.append("\"isSparseDiskgroupEnabled\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.licenseModel.is_some():
+        auto u16 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u16.to_json())
+    if v.memorySizeInGBs.is_some():
+        auto u17 = v.memorySizeInGBs.unwrap()
+        parts.append("\"memorySizeInGBs\":" + str(u17))
+    if v.systemVersion.is_some():
+        auto u18 = v.systemVersion.unwrap()
+        parts.append("\"systemVersion\":" + odb_json_str(u18))
+    if v.timeZone.is_some():
+        auto u19 = v.timeZone.unwrap()
+        parts.append("\"timeZone\":" + odb_json_str(u19))
+    if v.clientToken.is_some():
+        auto u20 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u20))
+    if v.scanListenerPortTcp.is_some():
+        auto u21 = v.scanListenerPortTcp.unwrap()
+        parts.append("\"scanListenerPortTcp\":" + str(u21))
+    return odb_json_obj(parts)
+
+# Serialize CreateExadbVmClusterInput to a compact JSON object (declaration order).
+def create_exadb_vm_cluster_input_to_json(CreateExadbVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"displayName\":" + odb_json_str(v.displayName))
+    parts.append("\"enabledEcpuCount\":" + str(v.enabledEcpuCount))
+    parts.append("\"exascaleDbStorageVaultId\":" + odb_json_str(v.exascaleDbStorageVaultId))
+    parts.append("\"gridImageId\":" + odb_json_str(v.gridImageId))
+    parts.append("\"hostname\":" + odb_json_str(v.hostname))
+    parts.append("\"nodeCount\":" + str(v.nodeCount))
+    parts.append("\"odbNetworkId\":" + odb_json_str(v.odbNetworkId))
+    parts.append("\"shape\":" + odb_json_str(v.shape))
+    list[str] e0 = []
+    for x0 in v.sshPublicKeys:
+        e0.append(odb_json_str(x0))
+    parts.append("\"sshPublicKeys\":" + odb_json_arr(e0))
+    parts.append("\"totalEcpuCount\":" + str(v.totalEcpuCount))
+    parts.append("\"vmFileSystemStorageTotalSizeInGBs\":" + str(v.vmFileSystemStorageTotalSizeInGBs))
+    if v.clusterName.is_some():
+        auto u1 = v.clusterName.unwrap()
+        parts.append("\"clusterName\":" + odb_json_str(u1))
+    if v.dataCollectionOptions.is_some():
+        auto u2 = v.dataCollectionOptions.unwrap()
+        parts.append("\"dataCollectionOptions\":" + u2.to_json())
+    if v.licenseModel.is_some():
+        auto u3 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u3.to_json())
+    if v.scanListenerPortTcp.is_some():
+        auto u4 = v.scanListenerPortTcp.unwrap()
+        parts.append("\"scanListenerPortTcp\":" + str(u4))
+    if v.scanListenerPortTcpSsl.is_some():
+        auto u5 = v.scanListenerPortTcpSsl.unwrap()
+        parts.append("\"scanListenerPortTcpSsl\":" + str(u5))
+    if v.shapeAttribute.is_some():
+        auto u6 = v.shapeAttribute.unwrap()
+        parts.append("\"shapeAttribute\":" + u6.to_json())
+    if v.systemVersion.is_some():
+        auto u7 = v.systemVersion.unwrap()
+        parts.append("\"systemVersion\":" + odb_json_str(u7))
+    if v.tags.is_some():
+        auto u8 = v.tags.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(odb_json_str(k9) + ":" + odb_json_str(u8[k9]))
+        parts.append("\"tags\":" + odb_json_obj(m9))
+    if v.timeZone.is_some():
+        auto u10 = v.timeZone.unwrap()
+        parts.append("\"timeZone\":" + odb_json_str(u10))
+    if v.clientToken.is_some():
+        auto u11 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u11))
+    return odb_json_obj(parts)
+
+# Serialize CreateExascaleDbStorageVaultInput to a compact JSON object (declaration order).
+def create_exascale_db_storage_vault_input_to_json(CreateExascaleDbStorageVaultInput v) -> str:
+    list[str] parts = []
+    parts.append("\"displayName\":" + odb_json_str(v.displayName))
+    parts.append("\"highCapacityDatabaseStorageTotalSizeInGBs\":" + str(v.highCapacityDatabaseStorageTotalSizeInGBs))
+    if v.additionalFlashCacheInPercent.is_some():
+        auto u0 = v.additionalFlashCacheInPercent.unwrap()
+        parts.append("\"additionalFlashCacheInPercent\":" + str(u0))
+    if v.autoscaleLimitInGBs.is_some():
+        auto u1 = v.autoscaleLimitInGBs.unwrap()
+        parts.append("\"autoscaleLimitInGBs\":" + str(u1))
+    if v.cloudExadataInfrastructureId.is_some():
+        auto u2 = v.cloudExadataInfrastructureId.unwrap()
+        parts.append("\"cloudExadataInfrastructureId\":" + odb_json_str(u2))
+    if v.availabilityZoneId.is_some():
+        auto u3 = v.availabilityZoneId.unwrap()
+        parts.append("\"availabilityZoneId\":" + odb_json_str(u3))
+    if v.availabilityZone.is_some():
+        auto u4 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + odb_json_str(u4))
+    if v.description.is_some():
+        auto u5 = v.description.unwrap()
+        parts.append("\"description\":" + odb_json_str(u5))
+    if v.isAutoscaleEnabled.is_some():
+        auto u6 = v.isAutoscaleEnabled.unwrap()
+        parts.append("\"isAutoscaleEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(odb_json_str(k8) + ":" + odb_json_str(u7[k8]))
+        parts.append("\"tags\":" + odb_json_obj(m8))
+    if v.timeZone.is_some():
+        auto u9 = v.timeZone.unwrap()
+        parts.append("\"timeZone\":" + odb_json_str(u9))
+    if v.clientToken.is_some():
+        auto u10 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u10))
+    return odb_json_obj(parts)
+
+# Serialize CreateOdbNetworkInput to a compact JSON object (declaration order).
+def create_odb_network_input_to_json(CreateOdbNetworkInput v) -> str:
+    list[str] parts = []
+    parts.append("\"displayName\":" + odb_json_str(v.displayName))
+    if v.availabilityZone.is_some():
+        auto u0 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + odb_json_str(u0))
+    if v.availabilityZoneId.is_some():
+        auto u1 = v.availabilityZoneId.unwrap()
+        parts.append("\"availabilityZoneId\":" + odb_json_str(u1))
+    parts.append("\"clientSubnetCidr\":" + odb_json_str(v.clientSubnetCidr))
+    if v.backupSubnetCidr.is_some():
+        auto u2 = v.backupSubnetCidr.unwrap()
+        parts.append("\"backupSubnetCidr\":" + odb_json_str(u2))
+    if v.customDomainName.is_some():
+        auto u3 = v.customDomainName.unwrap()
+        parts.append("\"customDomainName\":" + odb_json_str(u3))
+    if v.defaultDnsPrefix.is_some():
+        auto u4 = v.defaultDnsPrefix.unwrap()
+        parts.append("\"defaultDnsPrefix\":" + odb_json_str(u4))
+    if v.clientToken.is_some():
+        auto u5 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u5))
+    if v.s3Access.is_some():
+        auto u6 = v.s3Access.unwrap()
+        parts.append("\"s3Access\":" + u6.to_json())
+    if v.zeroEtlAccess.is_some():
+        auto u7 = v.zeroEtlAccess.unwrap()
+        parts.append("\"zeroEtlAccess\":" + u7.to_json())
+    if v.stsAccess.is_some():
+        auto u8 = v.stsAccess.unwrap()
+        parts.append("\"stsAccess\":" + u8.to_json())
+    if v.kmsAccess.is_some():
+        auto u9 = v.kmsAccess.unwrap()
+        parts.append("\"kmsAccess\":" + u9.to_json())
+    if v.s3PolicyDocument.is_some():
+        auto u10 = v.s3PolicyDocument.unwrap()
+        parts.append("\"s3PolicyDocument\":" + odb_json_str(u10))
+    if v.stsPolicyDocument.is_some():
+        auto u11 = v.stsPolicyDocument.unwrap()
+        parts.append("\"stsPolicyDocument\":" + odb_json_str(u11))
+    if v.kmsPolicyDocument.is_some():
+        auto u12 = v.kmsPolicyDocument.unwrap()
+        parts.append("\"kmsPolicyDocument\":" + odb_json_str(u12))
+    if v.crossRegionS3RestoreSourcesToEnable.is_some():
+        auto u13 = v.crossRegionS3RestoreSourcesToEnable.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(odb_json_str(x14))
+        parts.append("\"crossRegionS3RestoreSourcesToEnable\":" + odb_json_arr(e14))
+    if v.tags.is_some():
+        auto u15 = v.tags.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(odb_json_str(k16) + ":" + odb_json_str(u15[k16]))
+        parts.append("\"tags\":" + odb_json_obj(m16))
+    return odb_json_obj(parts)
+
+# Serialize CreateOdbPeeringConnectionInput to a compact JSON object (declaration order).
+def create_odb_peering_connection_input_to_json(CreateOdbPeeringConnectionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"odbNetworkId\":" + odb_json_str(v.odbNetworkId))
+    parts.append("\"peerNetworkId\":" + odb_json_str(v.peerNetworkId))
+    if v.displayName.is_some():
+        auto u0 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u0))
+    if v.peerNetworkCidrsToBeAdded.is_some():
+        auto u1 = v.peerNetworkCidrsToBeAdded.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(odb_json_str(x2))
+        parts.append("\"peerNetworkCidrsToBeAdded\":" + odb_json_arr(e2))
+    if v.peerNetworkRouteTableIds.is_some():
+        auto u3 = v.peerNetworkRouteTableIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(odb_json_str(x4))
+        parts.append("\"peerNetworkRouteTableIds\":" + odb_json_arr(e4))
+    if v.clientToken.is_some():
+        auto u5 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + odb_json_str(u5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(odb_json_str(k7) + ":" + odb_json_str(u6[k7]))
+        parts.append("\"tags\":" + odb_json_obj(m7))
+    return odb_json_obj(parts)
+
+# Serialize DisassociateVirtualMachinesFromExadbVmClusterInput to a compact JSON object (declaration order).
+def disassociate_virtual_machines_from_exadb_vm_cluster_input_to_json(DisassociateVirtualMachinesFromExadbVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"exadbVmClusterId\":" + odb_json_str(v.exadbVmClusterId))
+    list[str] e0 = []
+    for x0 in v.dbNodeIds:
+        e0.append(odb_json_str(x0))
+    parts.append("\"dbNodeIds\":" + odb_json_arr(e0))
+    return odb_json_obj(parts)
+
+# Serialize GetCloudExadataInfrastructureUnallocatedResourcesInput to a compact JSON object (declaration order).
+def get_cloud_exadata_infrastructure_unallocated_resources_input_to_json(GetCloudExadataInfrastructureUnallocatedResourcesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudExadataInfrastructureId\":" + odb_json_str(v.cloudExadataInfrastructureId))
+    if v.dbServers.is_some():
+        auto u0 = v.dbServers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(odb_json_str(x1))
+        parts.append("\"dbServers\":" + odb_json_arr(e1))
+    return odb_json_obj(parts)
+
+# Serialize MaintenanceWindow to a compact JSON object (declaration order).
+def maintenance_window_to_json(MaintenanceWindow v) -> str:
+    list[str] parts = []
+    if v.customActionTimeoutInMins.is_some():
+        auto u0 = v.customActionTimeoutInMins.unwrap()
+        parts.append("\"customActionTimeoutInMins\":" + str(u0))
+    if v.daysOfWeek.is_some():
+        auto u1 = v.daysOfWeek.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"daysOfWeek\":" + odb_json_arr(e2))
+    if v.hoursOfDay.is_some():
+        auto u3 = v.hoursOfDay.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(str(x4))
+        parts.append("\"hoursOfDay\":" + odb_json_arr(e4))
+    if v.isCustomActionTimeoutEnabled.is_some():
+        auto u5 = v.isCustomActionTimeoutEnabled.unwrap()
+        parts.append("\"isCustomActionTimeoutEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.leadTimeInWeeks.is_some():
+        auto u6 = v.leadTimeInWeeks.unwrap()
+        parts.append("\"leadTimeInWeeks\":" + str(u6))
+    if v.months.is_some():
+        auto u7 = v.months.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"months\":" + odb_json_arr(e8))
+    if v.patchingMode.is_some():
+        auto u9 = v.patchingMode.unwrap()
+        parts.append("\"patchingMode\":" + u9.to_json())
+    if v.preference.is_some():
+        auto u10 = v.preference.unwrap()
+        parts.append("\"preference\":" + u10.to_json())
+    if v.skipRu.is_some():
+        auto u11 = v.skipRu.unwrap()
+        parts.append("\"skipRu\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.weeksOfMonth.is_some():
+        auto u12 = v.weeksOfMonth.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(str(x13))
+        parts.append("\"weeksOfMonth\":" + odb_json_arr(e13))
+    return odb_json_obj(parts)
+
+# Serialize PointInTimeRestoreConfiguration to a compact JSON object (declaration order).
+def point_in_time_restore_configuration_to_json(PointInTimeRestoreConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceAutonomousDatabaseId\":" + odb_json_str(v.sourceAutonomousDatabaseId))
+    parts.append("\"cloneType\":" + v.cloneType.to_json())
+    if v.timestamp.is_some():
+        auto u0 = v.timestamp.unwrap()
+        parts.append("\"timestamp\":" + odb_json_ts_iso(u0))
+    if v.useLatestAvailableBackupTimestamp.is_some():
+        auto u1 = v.useLatestAvailableBackupTimestamp.unwrap()
+        parts.append("\"useLatestAvailableBackupTimestamp\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.cloneTableSpaceList.is_some():
+        auto u2 = v.cloneTableSpaceList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"cloneTableSpaceList\":" + odb_json_arr(e3))
+    return odb_json_obj(parts)
+
+# Serialize RestoreFromBackupConfiguration to a compact JSON object (declaration order).
+def restore_from_backup_configuration_to_json(RestoreFromBackupConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"autonomousDatabaseBackupId\":" + odb_json_str(v.autonomousDatabaseBackupId))
+    parts.append("\"cloneType\":" + v.cloneType.to_json())
+    if v.cloneTableSpaceList.is_some():
+        auto u0 = v.cloneTableSpaceList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"cloneTableSpaceList\":" + odb_json_arr(e1))
+    return odb_json_obj(parts)
+
+# Serialize SourceConfiguration to a compact JSON object (declaration order).
+def source_configuration_to_json(SourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.databaseClone.is_some():
+        auto u0 = v.databaseClone.unwrap()
+        parts.append("\"databaseClone\":" + u0.to_json())
+    if v.restoreFromBackup.is_some():
+        auto u1 = v.restoreFromBackup.unwrap()
+        parts.append("\"restoreFromBackup\":" + restore_from_backup_configuration_to_json(u1))
+    if v.pointInTimeRestore.is_some():
+        auto u2 = v.pointInTimeRestore.unwrap()
+        parts.append("\"pointInTimeRestore\":" + point_in_time_restore_configuration_to_json(u2))
+    if v.crossRegionDataGuard.is_some():
+        auto u3 = v.crossRegionDataGuard.unwrap()
+        parts.append("\"crossRegionDataGuard\":" + u3.to_json())
+    if v.crossRegionDisasterRecovery.is_some():
+        auto u4 = v.crossRegionDisasterRecovery.unwrap()
+        parts.append("\"crossRegionDisasterRecovery\":" + u4.to_json())
+    if v.cloneToRefreshable.is_some():
+        auto u5 = v.cloneToRefreshable.unwrap()
+        parts.append("\"cloneToRefreshable\":" + u5.to_json())
+    return odb_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + odb_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(odb_json_str(k0) + ":" + odb_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + odb_json_obj(m0))
+    return odb_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + odb_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(odb_json_str(x0))
+    parts.append("\"tagKeys\":" + odb_json_arr(e0))
+    return odb_json_obj(parts)
+
+# Serialize UpdateAutonomousDatabaseInput to a compact JSON object (declaration order).
+def update_autonomous_database_input_to_json(UpdateAutonomousDatabaseInput v) -> str:
+    list[str] parts = []
+    parts.append("\"autonomousDatabaseId\":" + odb_json_str(v.autonomousDatabaseId))
+    if v.adminPassword.is_some():
+        auto u0 = v.adminPassword.unwrap()
+        parts.append("\"adminPassword\":" + odb_json_str(u0))
+    if v.computeCount.is_some():
+        auto u1 = v.computeCount.unwrap()
+        parts.append("\"computeCount\":" + str(u1))
+    if v.cpuCoreCount.is_some():
+        auto u2 = v.cpuCoreCount.unwrap()
+        parts.append("\"cpuCoreCount\":" + str(u2))
+    if v.dataStorageSizeInTBs.is_some():
+        auto u3 = v.dataStorageSizeInTBs.unwrap()
+        parts.append("\"dataStorageSizeInTBs\":" + str(u3))
+    if v.dataStorageSizeInGBs.is_some():
+        auto u4 = v.dataStorageSizeInGBs.unwrap()
+        parts.append("\"dataStorageSizeInGBs\":" + str(u4))
+    if v.displayName.is_some():
+        auto u5 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u5))
+    if v.dbName.is_some():
+        auto u6 = v.dbName.unwrap()
+        parts.append("\"dbName\":" + odb_json_str(u6))
+    if v.dbVersion.is_some():
+        auto u7 = v.dbVersion.unwrap()
+        parts.append("\"dbVersion\":" + odb_json_str(u7))
+    if v.dbWorkload.is_some():
+        auto u8 = v.dbWorkload.unwrap()
+        parts.append("\"dbWorkload\":" + u8.to_json())
+    if v.dbToolsDetails.is_some():
+        auto u9 = v.dbToolsDetails.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"dbToolsDetails\":" + odb_json_arr(e10))
+    if v.databaseEdition.is_some():
+        auto u11 = v.databaseEdition.unwrap()
+        parts.append("\"databaseEdition\":" + u11.to_json())
+    if v.licenseModel.is_some():
+        auto u12 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u12.to_json())
+    if v.isAutoScalingEnabled.is_some():
+        auto u13 = v.isAutoScalingEnabled.unwrap()
+        parts.append("\"isAutoScalingEnabled\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.isAutoScalingForStorageEnabled.is_some():
+        auto u14 = v.isAutoScalingForStorageEnabled.unwrap()
+        parts.append("\"isAutoScalingForStorageEnabled\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.isBackupRetentionLocked.is_some():
+        auto u15 = v.isBackupRetentionLocked.unwrap()
+        parts.append("\"isBackupRetentionLocked\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.isLocalDataGuardEnabled.is_some():
+        auto u16 = v.isLocalDataGuardEnabled.unwrap()
+        parts.append("\"isLocalDataGuardEnabled\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.isMtlsConnectionRequired.is_some():
+        auto u17 = v.isMtlsConnectionRequired.unwrap()
+        parts.append("\"isMtlsConnectionRequired\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.isRefreshableClone.is_some():
+        auto u18 = v.isRefreshableClone.unwrap()
+        parts.append("\"isRefreshableClone\":" + json.dumps(JsonValue.Bool(u18)))
+    if v.isDisconnectPeer.is_some():
+        auto u19 = v.isDisconnectPeer.unwrap()
+        parts.append("\"isDisconnectPeer\":" + json.dumps(JsonValue.Bool(u19)))
+    if v.backupRetentionPeriodInDays.is_some():
+        auto u20 = v.backupRetentionPeriodInDays.unwrap()
+        parts.append("\"backupRetentionPeriodInDays\":" + str(u20))
+    if v.byolComputeCountLimit.is_some():
+        auto u21 = v.byolComputeCountLimit.unwrap()
+        parts.append("\"byolComputeCountLimit\":" + str(u21))
+    if v.localAdgAutoFailoverMaxDataLossLimit.is_some():
+        auto u22 = v.localAdgAutoFailoverMaxDataLossLimit.unwrap()
+        parts.append("\"localAdgAutoFailoverMaxDataLossLimit\":" + str(u22))
+    if v.autonomousMaintenanceScheduleType.is_some():
+        auto u23 = v.autonomousMaintenanceScheduleType.unwrap()
+        parts.append("\"autonomousMaintenanceScheduleType\":" + u23.to_json())
+    if v.customerContactsToSendToOCI.is_some():
+        auto u24 = v.customerContactsToSendToOCI.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"customerContactsToSendToOCI\":" + odb_json_arr(e25))
+    if v.scheduledOperations.is_some():
+        auto u26 = v.scheduledOperations.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"scheduledOperations\":" + odb_json_arr(e27))
+    if v.longTermBackupSchedule.is_some():
+        auto u28 = v.longTermBackupSchedule.unwrap()
+        parts.append("\"longTermBackupSchedule\":" + u28.to_json())
+    if v.openMode.is_some():
+        auto u29 = v.openMode.unwrap()
+        parts.append("\"openMode\":" + u29.to_json())
+    if v.permissionLevel.is_some():
+        auto u30 = v.permissionLevel.unwrap()
+        parts.append("\"permissionLevel\":" + u30.to_json())
+    if v.refreshableMode.is_some():
+        auto u31 = v.refreshableMode.unwrap()
+        parts.append("\"refreshableMode\":" + u31.to_json())
+    if v.privateEndpointIp.is_some():
+        auto u32 = v.privateEndpointIp.unwrap()
+        parts.append("\"privateEndpointIp\":" + odb_json_str(u32))
+    if v.privateEndpointLabel.is_some():
+        auto u33 = v.privateEndpointLabel.unwrap()
+        parts.append("\"privateEndpointLabel\":" + odb_json_str(u33))
+    if v.peerDbId.is_some():
+        auto u34 = v.peerDbId.unwrap()
+        parts.append("\"peerDbId\":" + odb_json_str(u34))
+    if v.resourcePoolLeaderId.is_some():
+        auto u35 = v.resourcePoolLeaderId.unwrap()
+        parts.append("\"resourcePoolLeaderId\":" + odb_json_str(u35))
+    if v.resourcePoolSummary.is_some():
+        auto u36 = v.resourcePoolSummary.unwrap()
+        parts.append("\"resourcePoolSummary\":" + u36.to_json())
+    if v.standbyAllowlistedIpsSource.is_some():
+        auto u37 = v.standbyAllowlistedIpsSource.unwrap()
+        parts.append("\"standbyAllowlistedIpsSource\":" + u37.to_json())
+    if v.standbyAllowlistedIps.is_some():
+        auto u38 = v.standbyAllowlistedIps.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(odb_json_str(x39))
+        parts.append("\"standbyAllowlistedIps\":" + odb_json_arr(e39))
+    if v.allowlistedIps.is_some():
+        auto u40 = v.allowlistedIps.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(odb_json_str(x41))
+        parts.append("\"allowlistedIps\":" + odb_json_arr(e41))
+    if v.autoRefreshFrequencyInSeconds.is_some():
+        auto u42 = v.autoRefreshFrequencyInSeconds.unwrap()
+        parts.append("\"autoRefreshFrequencyInSeconds\":" + str(u42))
+    if v.autoRefreshPointLagInSeconds.is_some():
+        auto u43 = v.autoRefreshPointLagInSeconds.unwrap()
+        parts.append("\"autoRefreshPointLagInSeconds\":" + str(u43))
+    if v.timeOfAutoRefreshStart.is_some():
+        auto u44 = v.timeOfAutoRefreshStart.unwrap()
+        parts.append("\"timeOfAutoRefreshStart\":" + odb_json_ts_iso(u44))
+    if v.encryptionKeyProvider.is_some():
+        auto u45 = v.encryptionKeyProvider.unwrap()
+        parts.append("\"encryptionKeyProvider\":" + u45.to_json())
+    if v.encryptionKeyConfiguration.is_some():
+        auto u46 = v.encryptionKeyConfiguration.unwrap()
+        parts.append("\"encryptionKeyConfiguration\":" + u46.to_json())
+    if v.adminPasswordSource.is_some():
+        auto u47 = v.adminPasswordSource.unwrap()
+        parts.append("\"adminPasswordSource\":" + u47.to_json())
+    if v.adminPasswordSourceConfiguration.is_some():
+        auto u48 = v.adminPasswordSourceConfiguration.unwrap()
+        parts.append("\"adminPasswordSourceConfiguration\":" + u48.to_json())
+    return odb_json_obj(parts)
+
+# Serialize UpdateCloudExadataInfrastructureInput to a compact JSON object (declaration order).
+def update_cloud_exadata_infrastructure_input_to_json(UpdateCloudExadataInfrastructureInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudExadataInfrastructureId\":" + odb_json_str(v.cloudExadataInfrastructureId))
+    if v.maintenanceWindow.is_some():
+        auto u0 = v.maintenanceWindow.unwrap()
+        parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u0))
+    return odb_json_obj(parts)
+
+# Serialize UpdateExadbVmClusterInput to a compact JSON object (declaration order).
+def update_exadb_vm_cluster_input_to_json(UpdateExadbVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"exadbVmClusterId\":" + odb_json_str(v.exadbVmClusterId))
+    if v.dataCollectionOptions.is_some():
+        auto u0 = v.dataCollectionOptions.unwrap()
+        parts.append("\"dataCollectionOptions\":" + u0.to_json())
+    if v.displayName.is_some():
+        auto u1 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u1))
+    if v.enabledEcpuCount.is_some():
+        auto u2 = v.enabledEcpuCount.unwrap()
+        parts.append("\"enabledEcpuCount\":" + str(u2))
+    if v.gridImageId.is_some():
+        auto u3 = v.gridImageId.unwrap()
+        parts.append("\"gridImageId\":" + odb_json_str(u3))
+    if v.licenseModel.is_some():
+        auto u4 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u4.to_json())
+    if v.sshPublicKeys.is_some():
+        auto u5 = v.sshPublicKeys.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(odb_json_str(x6))
+        parts.append("\"sshPublicKeys\":" + odb_json_arr(e6))
+    if v.systemVersion.is_some():
+        auto u7 = v.systemVersion.unwrap()
+        parts.append("\"systemVersion\":" + odb_json_str(u7))
+    if v.totalEcpuCount.is_some():
+        auto u8 = v.totalEcpuCount.unwrap()
+        parts.append("\"totalEcpuCount\":" + str(u8))
+    if v.updateAction.is_some():
+        auto u9 = v.updateAction.unwrap()
+        parts.append("\"updateAction\":" + u9.to_json())
+    if v.vmFileSystemStorageTotalSizeInGBs.is_some():
+        auto u10 = v.vmFileSystemStorageTotalSizeInGBs.unwrap()
+        parts.append("\"vmFileSystemStorageTotalSizeInGBs\":" + str(u10))
+    return odb_json_obj(parts)
+
+# Serialize UpdateOdbNetworkInput to a compact JSON object (declaration order).
+def update_odb_network_input_to_json(UpdateOdbNetworkInput v) -> str:
+    list[str] parts = []
+    parts.append("\"odbNetworkId\":" + odb_json_str(v.odbNetworkId))
+    if v.displayName.is_some():
+        auto u0 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u0))
+    if v.peeredCidrsToBeAdded.is_some():
+        auto u1 = v.peeredCidrsToBeAdded.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(odb_json_str(x2))
+        parts.append("\"peeredCidrsToBeAdded\":" + odb_json_arr(e2))
+    if v.peeredCidrsToBeRemoved.is_some():
+        auto u3 = v.peeredCidrsToBeRemoved.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(odb_json_str(x4))
+        parts.append("\"peeredCidrsToBeRemoved\":" + odb_json_arr(e4))
+    if v.s3Access.is_some():
+        auto u5 = v.s3Access.unwrap()
+        parts.append("\"s3Access\":" + u5.to_json())
+    if v.zeroEtlAccess.is_some():
+        auto u6 = v.zeroEtlAccess.unwrap()
+        parts.append("\"zeroEtlAccess\":" + u6.to_json())
+    if v.stsAccess.is_some():
+        auto u7 = v.stsAccess.unwrap()
+        parts.append("\"stsAccess\":" + u7.to_json())
+    if v.kmsAccess.is_some():
+        auto u8 = v.kmsAccess.unwrap()
+        parts.append("\"kmsAccess\":" + u8.to_json())
+    if v.s3PolicyDocument.is_some():
+        auto u9 = v.s3PolicyDocument.unwrap()
+        parts.append("\"s3PolicyDocument\":" + odb_json_str(u9))
+    if v.stsPolicyDocument.is_some():
+        auto u10 = v.stsPolicyDocument.unwrap()
+        parts.append("\"stsPolicyDocument\":" + odb_json_str(u10))
+    if v.kmsPolicyDocument.is_some():
+        auto u11 = v.kmsPolicyDocument.unwrap()
+        parts.append("\"kmsPolicyDocument\":" + odb_json_str(u11))
+    if v.crossRegionS3RestoreSourcesToEnable.is_some():
+        auto u12 = v.crossRegionS3RestoreSourcesToEnable.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(odb_json_str(x13))
+        parts.append("\"crossRegionS3RestoreSourcesToEnable\":" + odb_json_arr(e13))
+    if v.crossRegionS3RestoreSourcesToDisable.is_some():
+        auto u14 = v.crossRegionS3RestoreSourcesToDisable.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(odb_json_str(x15))
+        parts.append("\"crossRegionS3RestoreSourcesToDisable\":" + odb_json_arr(e15))
+    return odb_json_obj(parts)
+
+# Serialize UpdateOdbPeeringConnectionInput to a compact JSON object (declaration order).
+def update_odb_peering_connection_input_to_json(UpdateOdbPeeringConnectionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"odbPeeringConnectionId\":" + odb_json_str(v.odbPeeringConnectionId))
+    if v.displayName.is_some():
+        auto u0 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u0))
+    if v.peerNetworkCidrsToBeAdded.is_some():
+        auto u1 = v.peerNetworkCidrsToBeAdded.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(odb_json_str(x2))
+        parts.append("\"peerNetworkCidrsToBeAdded\":" + odb_json_arr(e2))
+    if v.peerNetworkCidrsToBeRemoved.is_some():
+        auto u3 = v.peerNetworkCidrsToBeRemoved.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(odb_json_str(x4))
+        parts.append("\"peerNetworkCidrsToBeRemoved\":" + odb_json_arr(e4))
+    return odb_json_obj(parts)
 
 # A bound odb client: credentials + region, threaded into every operation.
 struct odbClient:
@@ -3218,11 +4250,65 @@ struct odbClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "AssociateVirtualMachinesToExadbVmCluster", body)
 
+    # CreateAutonomousDatabase
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_autonomous_database(self, CreateAutonomousDatabaseInput input) -> str:
+        auto body = create_autonomous_database_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateAutonomousDatabase", body)
+
+    # CreateAutonomousDatabaseBackup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_autonomous_database_backup(self, CreateAutonomousDatabaseBackupInput input) -> str:
+        auto body = create_autonomous_database_backup_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateAutonomousDatabaseBackup", body)
+
     # CreateAutonomousDatabaseWallet
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_autonomous_database_wallet(self, CreateAutonomousDatabaseWalletInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateAutonomousDatabaseWallet", body)
+
+    # CreateCloudAutonomousVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cloud_autonomous_vm_cluster(self, CreateCloudAutonomousVmClusterInput input) -> str:
+        auto body = create_cloud_autonomous_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateCloudAutonomousVmCluster", body)
+
+    # CreateCloudExadataInfrastructure
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cloud_exadata_infrastructure(self, CreateCloudExadataInfrastructureInput input) -> str:
+        auto body = create_cloud_exadata_infrastructure_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateCloudExadataInfrastructure", body)
+
+    # CreateCloudVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cloud_vm_cluster(self, CreateCloudVmClusterInput input) -> str:
+        auto body = create_cloud_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateCloudVmCluster", body)
+
+    # CreateExadbVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_exadb_vm_cluster(self, CreateExadbVmClusterInput input) -> str:
+        auto body = create_exadb_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateExadbVmCluster", body)
+
+    # CreateExascaleDbStorageVault
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_exascale_db_storage_vault(self, CreateExascaleDbStorageVaultInput input) -> str:
+        auto body = create_exascale_db_storage_vault_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateExascaleDbStorageVault", body)
+
+    # CreateOdbNetwork
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_odb_network(self, CreateOdbNetworkInput input) -> str:
+        auto body = create_odb_network_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateOdbNetwork", body)
+
+    # CreateOdbPeeringConnection
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_odb_peering_connection(self, CreateOdbPeeringConnectionInput input) -> str:
+        auto body = create_odb_peering_connection_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "CreateOdbPeeringConnection", body)
 
     # DeleteAutonomousDatabase
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3284,6 +4370,12 @@ struct odbClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "DisassociateIamRoleFromResource", body)
 
+    # DisassociateVirtualMachinesFromExadbVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_virtual_machines_from_exadb_vm_cluster(self, DisassociateVirtualMachinesFromExadbVmClusterInput input) -> str:
+        auto body = disassociate_virtual_machines_from_exadb_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "DisassociateVirtualMachinesFromExadbVmCluster", body)
+
     # FailoverAutonomousDatabase
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def failover_autonomous_database(self, FailoverAutonomousDatabaseInput input) -> str:
@@ -3319,6 +4411,12 @@ struct odbClient:
     def get_cloud_exadata_infrastructure(self, GetCloudExadataInfrastructureInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "GetCloudExadataInfrastructure", body)
+
+    # GetCloudExadataInfrastructureUnallocatedResources
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_cloud_exadata_infrastructure_unallocated_resources(self, GetCloudExadataInfrastructureUnallocatedResourcesInput input) -> str:
+        auto body = get_cloud_exadata_infrastructure_unallocated_resources_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "GetCloudExadataInfrastructureUnallocatedResources", body)
 
     # GetCloudVmCluster
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3560,11 +4658,41 @@ struct odbClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "SwitchoverAutonomousDatabase", body)
 
+    # TagResource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateAutonomousDatabase
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_autonomous_database(self, UpdateAutonomousDatabaseInput input) -> str:
+        auto body = update_autonomous_database_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateAutonomousDatabase", body)
+
     # UpdateAutonomousDatabaseBackup
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_autonomous_database_backup(self, UpdateAutonomousDatabaseBackupInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateAutonomousDatabaseBackup", body)
+
+    # UpdateCloudExadataInfrastructure
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cloud_exadata_infrastructure(self, UpdateCloudExadataInfrastructureInput input) -> str:
+        auto body = update_cloud_exadata_infrastructure_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateCloudExadataInfrastructure", body)
+
+    # UpdateExadbVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_exadb_vm_cluster(self, UpdateExadbVmClusterInput input) -> str:
+        auto body = update_exadb_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateExadbVmCluster", body)
 
     # UpdateExascaleCloudExadataInfrastructure
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3577,6 +4705,18 @@ struct odbClient:
     def update_exascale_db_storage_vault(self, UpdateExascaleDbStorageVaultInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateExascaleDbStorageVault", body)
+
+    # UpdateOdbNetwork
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_odb_network(self, UpdateOdbNetworkInput input) -> str:
+        auto body = update_odb_network_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateOdbNetwork", body)
+
+    # UpdateOdbPeeringConnection
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_odb_peering_connection(self, UpdateOdbPeeringConnectionInput input) -> str:
+        auto body = update_odb_peering_connection_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateOdbPeeringConnection", body)
 
     # Paginator for ListAutonomousDatabaseBackups — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: autonomousDatabaseBackups).

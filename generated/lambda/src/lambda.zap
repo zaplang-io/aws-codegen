@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 88 operations — 66 with a generated method,
-#   22 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 88 operations — 82 with a generated method,
+#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   328 structs (227 @derive(Json)), 41 enums, 56 error variants.
 #   14 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,8 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
+import datetime
 
 # The Lambda rest-json protocol: SigV4 service "lambda" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -577,8 +579,9 @@ struct AddPermissionRequest:
 struct AddPermissionResponse:
     Optional[str] Statement
 
-# no @derive(Json): member(s) RoutingConfig: AliasRoutingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingConfig: AliasRoutingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AliasConfiguration:
     Optional[str] AliasArn
     Optional[str] Name
@@ -592,31 +595,36 @@ struct AliasLimitExceededException:
     Optional[str] Type
     Optional[str] message
 
-# no @derive(Json): member(s) AdditionalVersionWeights: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalVersionWeights: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AliasRoutingConfiguration:
     Optional[dict[str, float64]] AdditionalVersionWeights
 
-# no @derive(Json): member(s) SigningProfileVersionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SigningProfileVersionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllowedPublishers:
     list[str] SigningProfileVersionArns
 
-# no @derive(Json): member(s) SchemaRegistryConfig: KafkaSchemaRegistryConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaRegistryConfig: KafkaSchemaRegistryConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonManagedKafkaEventSourceConfig:
     Optional[str] ConsumerGroupId
     Optional[KafkaSchemaRegistryConfig] SchemaRegistryConfig
 
-# no @derive(Json): member(s) Error: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallbackDetails:
     Optional[str] CallbackId
     Optional[str] Result
     Optional[ErrorObject] Error
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallbackFailedDetails:
     EventError Error
 
@@ -635,8 +643,9 @@ struct CallbackStartedDetails:
 struct CallbackSucceededDetails:
     EventResult Result
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallbackTimedOutDetails:
     EventError Error
 
@@ -645,8 +654,9 @@ struct CallbackTimeoutException:
     Optional[str] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) VpcConfig: CapacityProviderVpcConfig, InstanceRequirements: InstanceRequirements, CapacityProviderScalingConfig: CapacityProviderScalingConfig, PropagateTags: PropagateTags not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: CapacityProviderVpcConfig, InstanceRequirements: InstanceRequirements, CapacityProviderScalingConfig: CapacityProviderScalingConfig, PropagateTags: PropagateTags not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityProvider:
     str CapacityProviderArn
     CapacityProviderState State
@@ -677,8 +687,9 @@ struct CapacityProviderLoggingConfig:
 struct CapacityProviderPermissionsConfig:
     str CapacityProviderOperatorRoleArn
 
-# no @derive(Json): member(s) ScalingPolicies: list[TargetTrackingScalingPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPolicies: list[TargetTrackingScalingPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityProviderScalingConfig:
     Optional[int64] MaxVCpuCount
     Optional[CapacityProviderScalingMode] ScalingMode
@@ -688,20 +699,23 @@ struct CapacityProviderScalingConfig:
 struct CapacityProviderTelemetryConfig:
     Optional[CapacityProviderLoggingConfig] LoggingConfig
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityProviderVpcConfig:
     list[str] SubnetIds
     list[str] SecurityGroupIds
 
-# no @derive(Json): member(s) Error: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChainedInvokeDetails:
     Optional[str] Result
     Optional[ErrorObject] Error
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChainedInvokeFailedDetails:
     EventError Error
 
@@ -719,8 +733,9 @@ struct ChainedInvokeStartedDetails:
     Optional[str] ExecutedVersion
     Optional[str] DurableExecutionArn
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChainedInvokeStoppedDetails:
     EventError Error
 
@@ -728,8 +743,9 @@ struct ChainedInvokeStoppedDetails:
 struct ChainedInvokeSucceededDetails:
     EventResult Result
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChainedInvokeTimedOutDetails:
     EventError Error
 
@@ -741,14 +757,16 @@ struct CheckpointDurableExecutionRequest:
     Optional[list[OperationUpdate]] Updates
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) NewExecutionState: CheckpointUpdatedExecutionState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewExecutionState: CheckpointUpdatedExecutionState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckpointDurableExecutionResponse:
     Optional[str] CheckpointToken
     CheckpointUpdatedExecutionState NewExecutionState
 
-# no @derive(Json): member(s) Operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckpointUpdatedExecutionState:
     Optional[list[Operation]] Operations
     Optional[str] NextMarker
@@ -768,8 +786,9 @@ struct CodeArtifactUserPendingException:
     Optional[str] Type
     Optional[str] message
 
-# no @derive(Json): member(s) AllowedPublishers: AllowedPublishers not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedPublishers: AllowedPublishers not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeSigningConfig:
     str CodeSigningConfigId
     str CodeSigningConfigArn
@@ -801,15 +820,17 @@ struct CodeVerificationFailedException:
 struct Concurrency:
     Optional[int64] ReservedConcurrentExecutions
 
-# no @derive(Json): member(s) Error: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextDetails:
     Optional[bool] ReplayChildren
     Optional[str] Result
     Optional[ErrorObject] Error
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextFailedDetails:
     EventError Error
 
@@ -826,8 +847,9 @@ struct ContextStartedDetails:
 struct ContextSucceededDetails:
     EventResult Result
 
-# no @derive(Json): member(s) AllowHeaders: list[str], AllowMethods: list[str], AllowOrigins: list[str], ExposeHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowHeaders: list[str], AllowMethods: list[str], AllowOrigins: list[str], ExposeHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cors:
     Optional[bool] AllowCredentials
     Optional[list[str]] AllowHeaders
@@ -858,8 +880,9 @@ struct CreateCapacityProviderRequest:
     Optional[PropagateTags] PropagateTags
     Optional[CapacityProviderTelemetryConfig] TelemetryConfig
 
-# no @derive(Json): member(s) CapacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapacityProviderResponse:
     CapacityProvider CapacityProvider
 
@@ -871,8 +894,9 @@ struct CreateCodeSigningConfigRequest:
     Optional[CodeSigningPolicies] CodeSigningPolicies
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CodeSigningConfig: CodeSigningConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeSigningConfig: CodeSigningConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCodeSigningConfigResponse:
     CodeSigningConfig CodeSigningConfig
 
@@ -949,8 +973,9 @@ struct CreateFunctionUrlConfigRequest:
     Optional[Cors] Cors
     Optional[InvokeMode] InvokeMode
 
-# no @derive(Json): member(s) Cors: Cors not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cors: Cors not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFunctionUrlConfigResponse:
     str FunctionUrl
     str FunctionArn
@@ -974,8 +999,9 @@ struct DeleteAliasRequest:
 struct DeleteCapacityProviderRequest:
     str CapacityProviderName
 
-# no @derive(Json): member(s) CapacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCapacityProviderResponse:
     CapacityProvider CapacityProvider
 
@@ -1112,8 +1138,9 @@ struct ENINotReadyException:
     Optional[str] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) Variables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Variables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Environment:
     Optional[dict[str, str]] Variables
 
@@ -1122,8 +1149,9 @@ struct EnvironmentError:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Variables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Variables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentResponse:
     Optional[dict[str, str]] Variables
     Optional[EnvironmentError] Error
@@ -1132,16 +1160,18 @@ struct EnvironmentResponse:
 struct EphemeralStorage:
     int64 Size
 
-# no @derive(Json): member(s) StackTrace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackTrace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorObject:
     Optional[str] ErrorMessage
     Optional[str] ErrorType
     Optional[str] ErrorData
     Optional[list[str]] StackTrace
 
-# no @derive(Json): member(s) ExecutionFailedDetails: ExecutionFailedDetails, ExecutionTimedOutDetails: ExecutionTimedOutDetails, ExecutionStoppedDetails: ExecutionStoppedDetails, ContextFailedDetails: ContextFailedDetails, WaitCancelledDetails: WaitCancelledDetails, StepFailedDetails: StepFailedDetails, ChainedInvokeFailedDetails: ChainedInvokeFailedDetails, ChainedInvokeTimedOutDetails: ChainedInvokeTimedOutDetails, ChainedInvokeStoppedDetails: ChainedInvokeStoppedDetails, CallbackFailedDetails: CallbackFailedDetails, CallbackTimedOutDetails: CallbackTimedOutDetails, InvocationCompletedDetails: InvocationCompletedDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionFailedDetails: ExecutionFailedDetails, ExecutionTimedOutDetails: ExecutionTimedOutDetails, ExecutionStoppedDetails: ExecutionStoppedDetails, ContextFailedDetails: ContextFailedDetails, WaitCancelledDetails: WaitCancelledDetails, StepFailedDetails: StepFailedDetails, ChainedInvokeFailedDetails: ChainedInvokeFailedDetails, ChainedInvokeTimedOutDetails: ChainedInvokeTimedOutDetails, ChainedInvokeStoppedDetails: ChainedInvokeStoppedDetails, CallbackFailedDetails: CallbackFailedDetails, CallbackTimedOutDetails: CallbackTimedOutDetails, InvocationCompletedDetails: InvocationCompletedDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[EventType] EventType
     Optional[str] SubType
@@ -1175,8 +1205,9 @@ struct Event:
     Optional[CallbackTimedOutDetails] CallbackTimedOutDetails
     Optional[InvocationCompletedDetails] InvocationCompletedDetails
 
-# no @derive(Json): member(s) Payload: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventError:
     Optional[ErrorObject] Payload
     Optional[bool] Truncated
@@ -1191,8 +1222,9 @@ struct EventResult:
     Optional[str] Payload
     Optional[bool] Truncated
 
-# no @derive(Json): member(s) FilterCriteria: FilterCriteria, MetricsConfig: EventSourceMappingMetricsConfig, Topics: list[str], Queues: list[str], SourceAccessConfigurations: list[SourceAccessConfiguration], SelfManagedEventSource: SelfManagedEventSource, FunctionResponseTypes: list[str], AmazonManagedKafkaEventSourceConfig: AmazonManagedKafkaEventSourceConfig, SelfManagedKafkaEventSourceConfig: SelfManagedKafkaEventSourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterCriteria: FilterCriteria, MetricsConfig: EventSourceMappingMetricsConfig, Topics: list[str], Queues: list[str], SourceAccessConfigurations: list[SourceAccessConfiguration], SelfManagedEventSource: SelfManagedEventSource, FunctionResponseTypes: list[str], AmazonManagedKafkaEventSourceConfig: AmazonManagedKafkaEventSourceConfig, SelfManagedKafkaEventSourceConfig: SelfManagedKafkaEventSourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSourceMappingConfiguration:
     Optional[str] UUID
     Optional[EventSourcePosition] StartingPosition
@@ -1232,8 +1264,9 @@ struct EventSourceMappingConfiguration:
 struct EventSourceMappingLoggingConfig:
     Optional[EventSourceMappingSystemLogLevel] SystemLogLevel
 
-# no @derive(Json): member(s) Metrics: list[EventSourceMappingMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: list[EventSourceMappingMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSourceMappingMetricsConfig:
     Optional[list[EventSourceMappingMetric]] Metrics
 
@@ -1251,8 +1284,9 @@ struct Execution:
 struct ExecutionDetails:
     Optional[str] InputPayload
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionFailedDetails:
     EventError Error
 
@@ -1261,8 +1295,9 @@ struct ExecutionStartedDetails:
     EventInput Input
     int64 ExecutionTimeout
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionStoppedDetails:
     EventError Error
 
@@ -1270,8 +1305,9 @@ struct ExecutionStoppedDetails:
 struct ExecutionSucceededDetails:
     EventResult Result
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionTimedOutDetails:
     Optional[EventError] Error
 
@@ -1285,8 +1321,9 @@ struct FileSystemConfig:
 struct Filter:
     Optional[str] Pattern
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCriteria:
     Optional[list[Filter]] Filters
 
@@ -1320,8 +1357,9 @@ struct FunctionCodeLocationError:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) VpcConfig: VpcConfigResponse, Environment: EnvironmentResponse, Layers: list[Layer], FileSystemConfigs: list[FileSystemConfig], ImageConfigResponse: ImageConfigResponse, Architectures: list[Architecture] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfigResponse, Environment: EnvironmentResponse, Layers: list[Layer], FileSystemConfigs: list[FileSystemConfig], ImageConfigResponse: ImageConfigResponse, Architectures: list[Architecture] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionConfiguration:
     Optional[str] FunctionName
     Optional[str] FunctionArn
@@ -1377,8 +1415,9 @@ struct FunctionScalingConfig:
     Optional[int64] MinExecutionEnvironments
     Optional[int64] MaxExecutionEnvironments
 
-# no @derive(Json): member(s) Cors: Cors not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cors: Cors not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionUrlConfig:
     str FunctionUrl
     str FunctionArn
@@ -1420,8 +1459,9 @@ struct GetAliasRequest:
 struct GetCapacityProviderRequest:
     str CapacityProviderName
 
-# no @derive(Json): member(s) CapacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCapacityProviderResponse:
     CapacityProvider CapacityProvider
 
@@ -1430,8 +1470,9 @@ struct GetCapacityProviderResponse:
 struct GetCodeSigningConfigRequest:
     str CodeSigningConfigArn
 
-# no @derive(Json): member(s) CodeSigningConfig: CodeSigningConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeSigningConfig: CodeSigningConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeSigningConfigResponse:
     CodeSigningConfig CodeSigningConfig
 
@@ -1444,8 +1485,9 @@ struct GetDurableExecutionHistoryRequest:
     Optional[str] Marker
     Optional[bool] ReverseOrder
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDurableExecutionHistoryResponse:
     list[Event] Events
     Optional[str] NextMarker
@@ -1456,8 +1498,9 @@ struct GetDurableExecutionRequest:
     str DurableExecutionArn
     Optional[bool] IncludeExecutionData
 
-# no @derive(Json): member(s) Error: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDurableExecutionResponse:
     str DurableExecutionArn
     str DurableExecutionName
@@ -1481,8 +1524,9 @@ struct GetDurableExecutionStateRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDurableExecutionStateResponse:
     list[Operation] Operations
     Optional[str] NextMarker
@@ -1538,8 +1582,9 @@ struct GetFunctionRequest:
     str FunctionName
     Optional[str] Qualifier
 
-# no @derive(Json): member(s) Configuration: FunctionConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: FunctionConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFunctionResponse:
     Optional[FunctionConfiguration] Configuration
     Optional[FunctionCodeLocation] Code
@@ -1565,8 +1610,9 @@ struct GetFunctionUrlConfigRequest:
     str FunctionName
     Optional[str] Qualifier
 
-# no @derive(Json): member(s) Cors: Cors not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cors: Cors not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFunctionUrlConfigResponse:
     str FunctionUrl
     str FunctionArn
@@ -1598,8 +1644,9 @@ struct GetLayerVersionRequest:
     str LayerName
     int64 VersionNumber
 
-# no @derive(Json): member(s) CompatibleArchitectures: list[Architecture], CompatibleRuntimes: list[Runtime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompatibleArchitectures: list[Architecture], CompatibleRuntimes: list[Runtime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLayerVersionResponse:
     Optional[LayerVersionContentOutput] Content
     Optional[str] LayerArn
@@ -1659,8 +1706,9 @@ struct GetRuntimeManagementConfigResponse:
     Optional[str] FunctionArn
     Optional[str] RuntimeVersionArn
 
-# no @derive(Json): member(s) EntryPoint: list[str], Command: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntryPoint: list[str], Command: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageConfig:
     Optional[list[str]] EntryPoint
     Optional[list[str]] Command
@@ -1671,14 +1719,16 @@ struct ImageConfigError:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) ImageConfig: ImageConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageConfig: ImageConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageConfigResponse:
     Optional[ImageConfig] ImageConfig
     Optional[ImageConfigError] Error
 
-# no @derive(Json): member(s) Architectures: list[Architecture], AllowedInstanceTypes: list[str], ExcludedInstanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Architectures: list[Architecture], AllowedInstanceTypes: list[str], ExcludedInstanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceRequirements:
     Optional[list[Architecture]] Architectures
     Optional[list[str]] AllowedInstanceTypes
@@ -1719,8 +1769,9 @@ struct InvalidZipFileException:
     Optional[str] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvocationCompletedDetails:
     DateTime StartTimestamp
     DateTime EndTimestamp
@@ -1820,8 +1871,9 @@ struct KafkaSchemaRegistryAccessConfig:
     Optional[KafkaSchemaRegistryAuthType] Type
     Optional[str] URI
 
-# no @derive(Json): member(s) AccessConfigs: list[KafkaSchemaRegistryAccessConfig], SchemaValidationConfigs: list[KafkaSchemaValidationConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessConfigs: list[KafkaSchemaRegistryAccessConfig], SchemaValidationConfigs: list[KafkaSchemaValidationConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaSchemaRegistryConfig:
     Optional[str] SchemaRegistryURI
     Optional[SchemaRegistryEventRecordFormat] EventRecordFormat
@@ -1862,8 +1914,9 @@ struct LayerVersionContentOutput:
     Optional[str] SigningJobArn
     Optional[ResolvedS3Object] ResolvedS3Object
 
-# no @derive(Json): member(s) CompatibleArchitectures: list[Architecture], CompatibleRuntimes: list[Runtime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompatibleArchitectures: list[Architecture], CompatibleRuntimes: list[Runtime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayerVersionsListItem:
     Optional[str] LayerVersionArn
     Optional[int64] Version
@@ -1873,8 +1926,9 @@ struct LayerVersionsListItem:
     Optional[list[Runtime]] CompatibleRuntimes
     Optional[str] LicenseInfo
 
-# no @derive(Json): member(s) LatestMatchingVersion: LayerVersionsListItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LatestMatchingVersion: LayerVersionsListItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayersListItem:
     Optional[str] LayerName
     Optional[str] LayerArn
@@ -1888,8 +1942,9 @@ struct ListAliasesRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Aliases: list[AliasConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[AliasConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAliasesResponse:
     Optional[str] NextMarker
     Optional[list[AliasConfiguration]] Aliases
@@ -1902,8 +1957,9 @@ struct ListCapacityProvidersRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) CapacityProviders: list[CapacityProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProviders: list[CapacityProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCapacityProvidersResponse:
     list[CapacityProvider] CapacityProviders
     Optional[str] NextMarker
@@ -1914,8 +1970,9 @@ struct ListCodeSigningConfigsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) CodeSigningConfigs: list[CodeSigningConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeSigningConfigs: list[CodeSigningConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeSigningConfigsResponse:
     Optional[str] NextMarker
     Optional[list[CodeSigningConfig]] CodeSigningConfigs
@@ -1933,8 +1990,9 @@ struct ListDurableExecutionsByFunctionRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) DurableExecutions: list[Execution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DurableExecutions: list[Execution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDurableExecutionsByFunctionResponse:
     Optional[list[Execution]] DurableExecutions
     Optional[str] NextMarker
@@ -1947,8 +2005,9 @@ struct ListEventSourceMappingsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) EventSourceMappings: list[EventSourceMappingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSourceMappings: list[EventSourceMappingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventSourceMappingsResponse:
     Optional[str] NextMarker
     Optional[list[EventSourceMappingConfiguration]] EventSourceMappings
@@ -1960,8 +2019,9 @@ struct ListFunctionEventInvokeConfigsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) FunctionEventInvokeConfigs: list[FunctionEventInvokeConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionEventInvokeConfigs: list[FunctionEventInvokeConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionEventInvokeConfigsResponse:
     Optional[list[FunctionEventInvokeConfig]] FunctionEventInvokeConfigs
     Optional[str] NextMarker
@@ -1973,8 +2033,9 @@ struct ListFunctionUrlConfigsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) FunctionUrlConfigs: list[FunctionUrlConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionUrlConfigs: list[FunctionUrlConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionUrlConfigsResponse:
     list[FunctionUrlConfig] FunctionUrlConfigs
     Optional[str] NextMarker
@@ -1986,8 +2047,9 @@ struct ListFunctionVersionsByCapacityProviderRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) FunctionVersions: list[FunctionVersionsByCapacityProviderListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionVersions: list[FunctionVersionsByCapacityProviderListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionVersionsByCapacityProviderResponse:
     str CapacityProviderArn
     list[FunctionVersionsByCapacityProviderListItem] FunctionVersions
@@ -2000,8 +2062,9 @@ struct ListFunctionsByCodeSigningConfigRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) FunctionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionsByCodeSigningConfigResponse:
     Optional[str] NextMarker
     Optional[list[str]] FunctionArns
@@ -2014,8 +2077,9 @@ struct ListFunctionsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Functions: list[FunctionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Functions: list[FunctionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionsResponse:
     Optional[str] NextMarker
     Optional[list[FunctionConfiguration]] Functions
@@ -2031,8 +2095,9 @@ struct ListLayerVersionsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) LayerVersions: list[LayerVersionsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LayerVersions: list[LayerVersionsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLayerVersionsResponse:
     Optional[str] NextMarker
     Optional[list[LayerVersionsListItem]] LayerVersions
@@ -2047,8 +2112,9 @@ struct ListLayersRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Layers: list[LayersListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Layers: list[LayersListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLayersResponse:
     Optional[str] NextMarker
     Optional[list[LayersListItem]] Layers
@@ -2060,8 +2126,9 @@ struct ListProvisionedConcurrencyConfigsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) ProvisionedConcurrencyConfigs: list[ProvisionedConcurrencyConfigListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedConcurrencyConfigs: list[ProvisionedConcurrencyConfigListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisionedConcurrencyConfigsResponse:
     Optional[list[ProvisionedConcurrencyConfigListItem]] ProvisionedConcurrencyConfigs
     Optional[str] NextMarker
@@ -2071,8 +2138,9 @@ struct ListProvisionedConcurrencyConfigsResponse:
 struct ListTagsRequest:
     str Resource
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[dict[str, str]] Tags
 
@@ -2083,8 +2151,9 @@ struct ListVersionsByFunctionRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Versions: list[FunctionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[FunctionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVersionsByFunctionResponse:
     Optional[str] NextMarker
     Optional[list[FunctionConfiguration]] Versions
@@ -2114,8 +2183,9 @@ struct OnFailure:
 struct OnSuccess:
     Optional[str] Destination
 
-# no @derive(Json): member(s) ContextDetails: ContextDetails, StepDetails: StepDetails, CallbackDetails: CallbackDetails, ChainedInvokeDetails: ChainedInvokeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextDetails: ContextDetails, StepDetails: StepDetails, CallbackDetails: CallbackDetails, ChainedInvokeDetails: ChainedInvokeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Operation:
     str Id
     Optional[str] ParentId
@@ -2132,8 +2202,9 @@ struct Operation:
     Optional[CallbackDetails] CallbackDetails
     Optional[ChainedInvokeDetails] ChainedInvokeDetails
 
-# no @derive(Json): member(s) Error: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OperationUpdate:
     str Id
     Optional[str] ParentId
@@ -2159,8 +2230,9 @@ struct PreconditionFailedException:
     Optional[str] Type
     Optional[str] message
 
-# no @derive(Json): member(s) ExplicitTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExplicitTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropagateTags:
     Optional[PropagateTagsMode] Mode
     Optional[dict[str, str]] ExplicitTags
@@ -2201,8 +2273,9 @@ struct PublishLayerVersionRequest:
     Optional[list[Runtime]] CompatibleRuntimes
     Optional[str] LicenseInfo
 
-# no @derive(Json): member(s) CompatibleArchitectures: list[Architecture], CompatibleRuntimes: list[Runtime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompatibleArchitectures: list[Architecture], CompatibleRuntimes: list[Runtime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublishLayerVersionResponse:
     Optional[LayerVersionContentOutput] Content
     Optional[str] LayerArn
@@ -2402,13 +2475,15 @@ struct S3FilesMountTimeoutException:
 struct ScalingConfig:
     Optional[int64] MaximumConcurrency
 
-# no @derive(Json): member(s) Endpoints: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedEventSource:
     Optional[dict[str, list[str]]] Endpoints
 
-# no @derive(Json): member(s) SchemaRegistryConfig: KafkaSchemaRegistryConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaRegistryConfig: KafkaSchemaRegistryConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedKafkaEventSourceConfig:
     Optional[str] ConsumerGroupId
     Optional[KafkaSchemaRegistryConfig] SchemaRegistryConfig
@@ -2494,16 +2569,18 @@ struct SourceAccessConfiguration:
     Optional[SourceAccessType] Type
     Optional[str] URI
 
-# no @derive(Json): member(s) Error: ErrorObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: ErrorObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepDetails:
     Optional[int64] Attempt
     Optional[DateTime] NextAttemptTimestamp
     Optional[str] Result
     Optional[ErrorObject] Error
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepFailedDetails:
     EventError Error
     RetryDetails RetryDetails
@@ -2605,8 +2682,9 @@ struct UpdateCapacityProviderRequest:
     Optional[PropagateTags] PropagateTags
     Optional[CapacityProviderTelemetryConfig] TelemetryConfig
 
-# no @derive(Json): member(s) CapacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapacityProviderResponse:
     CapacityProvider CapacityProvider
 
@@ -2618,8 +2696,9 @@ struct UpdateCodeSigningConfigRequest:
     Optional[AllowedPublishers] AllowedPublishers
     Optional[CodeSigningPolicies] CodeSigningPolicies
 
-# no @derive(Json): member(s) CodeSigningConfig: CodeSigningConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeSigningConfig: CodeSigningConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCodeSigningConfigResponse:
     CodeSigningConfig CodeSigningConfig
 
@@ -2709,8 +2788,9 @@ struct UpdateFunctionUrlConfigRequest:
     Optional[Cors] Cors
     Optional[InvokeMode] InvokeMode
 
-# no @derive(Json): member(s) Cors: Cors not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cors: Cors not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFunctionUrlConfigResponse:
     str FunctionUrl
     str FunctionArn
@@ -2720,23 +2800,26 @@ struct UpdateFunctionUrlConfigResponse:
     str LastModifiedTime
     Optional[InvokeMode] InvokeMode
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
     Optional[bool] Ipv6AllowedForDualStack
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigResponse:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
     Optional[str] VpcId
     Optional[bool] Ipv6AllowedForDualStack
 
-# no @derive(Json): member(s) Error: EventError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: EventError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaitCancelledDetails:
     Optional[EventError] Error
 
@@ -2942,28 +3025,12 @@ def lambda__error_from_code(str code) -> LambdaError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CheckpointDurableExecution (document member `Updates: list[OperationUpdate]` is not serializable by derive)
-#   CreateAlias (document member `RoutingConfig: AliasRoutingConfiguration` is not serializable by derive)
-#   CreateCapacityProvider (document member `VpcConfig: CapacityProviderVpcConfig` is not serializable by derive)
-#   CreateCodeSigningConfig (document member `AllowedPublishers: AllowedPublishers` is not serializable by derive)
-#   CreateEventSourceMapping (document member `FilterCriteria: FilterCriteria` is not serializable by derive)
-#   CreateFunction (document member `VpcConfig: VpcConfig` is not serializable by derive)
-#   CreateFunctionUrlConfig (document member `Cors: Cors` is not serializable by derive)
 #   GetDurableExecution (httpQuery `IncludeExecutionData` has unsupported type bool)
 #   GetDurableExecutionHistory (httpQuery `IncludeExecutionData` has unsupported type bool)
 #   ListDurableExecutionsByFunction (httpQuery `Statuses` has unsupported type list[ExecutionStatus])
-#   PublishLayerVersion (document member `CompatibleArchitectures: list[Architecture]` is not serializable by derive)
 #   SendDurableExecutionCallbackFailure (httpPayload member `Error` is a non-derivable structure)
 #   StopDurableExecution (httpPayload member `Error` is a non-derivable structure)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateAlias (document member `RoutingConfig: AliasRoutingConfiguration` is not serializable by derive)
-#   UpdateCapacityProvider (document member `CapacityProviderScalingConfig: CapacityProviderScalingConfig` is not serializable by derive)
-#   UpdateCodeSigningConfig (document member `AllowedPublishers: AllowedPublishers` is not serializable by derive)
-#   UpdateEventSourceMapping (document member `FilterCriteria: FilterCriteria` is not serializable by derive)
-#   UpdateFunctionCode (document member `Architectures: list[Architecture]` is not serializable by derive)
-#   UpdateFunctionConfiguration (document member `VpcConfig: VpcConfig` is not serializable by derive)
-#   UpdateFunctionUrlConfig (document member `Cors: Cors` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -3054,6 +3121,348 @@ struct UpdateFunctionEventInvokeConfigDocument:
     Optional[int64] MaximumEventAgeInSeconds
     Optional[DestinationConfig] DestinationConfig
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def lambda__json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def lambda__json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def lambda__json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AliasRoutingConfiguration to a compact JSON object (declaration order).
+def alias_routing_configuration_to_json(AliasRoutingConfiguration v) -> str:
+    list[str] parts = []
+    if v.AdditionalVersionWeights.is_some():
+        auto u0 = v.AdditionalVersionWeights.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(lambda__json_str(k1) + ":" + str(u0[k1]))
+        parts.append("\"AdditionalVersionWeights\":" + lambda__json_obj(m1))
+    return lambda__json_obj(parts)
+
+# Serialize AllowedPublishers to a compact JSON object (declaration order).
+def allowed_publishers_to_json(AllowedPublishers v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SigningProfileVersionArns:
+        e0.append(lambda__json_str(x0))
+    parts.append("\"SigningProfileVersionArns\":" + lambda__json_arr(e0))
+    return lambda__json_obj(parts)
+
+# Serialize AmazonManagedKafkaEventSourceConfig to a compact JSON object (declaration order).
+def amazon_managed_kafka_event_source_config_to_json(AmazonManagedKafkaEventSourceConfig v) -> str:
+    list[str] parts = []
+    if v.ConsumerGroupId.is_some():
+        auto u0 = v.ConsumerGroupId.unwrap()
+        parts.append("\"ConsumerGroupId\":" + lambda__json_str(u0))
+    if v.SchemaRegistryConfig.is_some():
+        auto u1 = v.SchemaRegistryConfig.unwrap()
+        parts.append("\"SchemaRegistryConfig\":" + kafka_schema_registry_config_to_json(u1))
+    return lambda__json_obj(parts)
+
+# Serialize CapacityProviderScalingConfig to a compact JSON object (declaration order).
+def capacity_provider_scaling_config_to_json(CapacityProviderScalingConfig v) -> str:
+    list[str] parts = []
+    if v.MaxVCpuCount.is_some():
+        auto u0 = v.MaxVCpuCount.unwrap()
+        parts.append("\"MaxVCpuCount\":" + str(u0))
+    if v.ScalingMode.is_some():
+        auto u1 = v.ScalingMode.unwrap()
+        parts.append("\"ScalingMode\":" + u1.to_json())
+    if v.ScalingPolicies.is_some():
+        auto u2 = v.ScalingPolicies.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ScalingPolicies\":" + lambda__json_arr(e3))
+    return lambda__json_obj(parts)
+
+# Serialize CapacityProviderVpcConfig to a compact JSON object (declaration order).
+def capacity_provider_vpc_config_to_json(CapacityProviderVpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(lambda__json_str(x0))
+    parts.append("\"SubnetIds\":" + lambda__json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(lambda__json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + lambda__json_arr(e1))
+    return lambda__json_obj(parts)
+
+# Serialize Cors to a compact JSON object (declaration order).
+def cors_to_json(Cors v) -> str:
+    list[str] parts = []
+    if v.AllowCredentials.is_some():
+        auto u0 = v.AllowCredentials.unwrap()
+        parts.append("\"AllowCredentials\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AllowHeaders.is_some():
+        auto u1 = v.AllowHeaders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lambda__json_str(x2))
+        parts.append("\"AllowHeaders\":" + lambda__json_arr(e2))
+    if v.AllowMethods.is_some():
+        auto u3 = v.AllowMethods.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(lambda__json_str(x4))
+        parts.append("\"AllowMethods\":" + lambda__json_arr(e4))
+    if v.AllowOrigins.is_some():
+        auto u5 = v.AllowOrigins.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(lambda__json_str(x6))
+        parts.append("\"AllowOrigins\":" + lambda__json_arr(e6))
+    if v.ExposeHeaders.is_some():
+        auto u7 = v.ExposeHeaders.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(lambda__json_str(x8))
+        parts.append("\"ExposeHeaders\":" + lambda__json_arr(e8))
+    if v.MaxAge.is_some():
+        auto u9 = v.MaxAge.unwrap()
+        parts.append("\"MaxAge\":" + str(u9))
+    return lambda__json_obj(parts)
+
+# Serialize Environment to a compact JSON object (declaration order).
+def environment_to_json(Environment v) -> str:
+    list[str] parts = []
+    if v.Variables.is_some():
+        auto u0 = v.Variables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(lambda__json_str(k1) + ":" + lambda__json_str(u0[k1]))
+        parts.append("\"Variables\":" + lambda__json_obj(m1))
+    return lambda__json_obj(parts)
+
+# Serialize ErrorObject to a compact JSON object (declaration order).
+def error_object_to_json(ErrorObject v) -> str:
+    list[str] parts = []
+    if v.ErrorMessage.is_some():
+        auto u0 = v.ErrorMessage.unwrap()
+        parts.append("\"ErrorMessage\":" + lambda__json_str(u0))
+    if v.ErrorType.is_some():
+        auto u1 = v.ErrorType.unwrap()
+        parts.append("\"ErrorType\":" + lambda__json_str(u1))
+    if v.ErrorData.is_some():
+        auto u2 = v.ErrorData.unwrap()
+        parts.append("\"ErrorData\":" + lambda__json_str(u2))
+    if v.StackTrace.is_some():
+        auto u3 = v.StackTrace.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(lambda__json_str(x4))
+        parts.append("\"StackTrace\":" + lambda__json_arr(e4))
+    return lambda__json_obj(parts)
+
+# Serialize EventSourceMappingMetricsConfig to a compact JSON object (declaration order).
+def event_source_mapping_metrics_config_to_json(EventSourceMappingMetricsConfig v) -> str:
+    list[str] parts = []
+    if v.Metrics.is_some():
+        auto u0 = v.Metrics.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Metrics\":" + lambda__json_arr(e1))
+    return lambda__json_obj(parts)
+
+# Serialize FilterCriteria to a compact JSON object (declaration order).
+def filter_criteria_to_json(FilterCriteria v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + lambda__json_arr(e1))
+    return lambda__json_obj(parts)
+
+# Serialize ImageConfig to a compact JSON object (declaration order).
+def image_config_to_json(ImageConfig v) -> str:
+    list[str] parts = []
+    if v.EntryPoint.is_some():
+        auto u0 = v.EntryPoint.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lambda__json_str(x1))
+        parts.append("\"EntryPoint\":" + lambda__json_arr(e1))
+    if v.Command.is_some():
+        auto u2 = v.Command.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lambda__json_str(x3))
+        parts.append("\"Command\":" + lambda__json_arr(e3))
+    if v.WorkingDirectory.is_some():
+        auto u4 = v.WorkingDirectory.unwrap()
+        parts.append("\"WorkingDirectory\":" + lambda__json_str(u4))
+    return lambda__json_obj(parts)
+
+# Serialize InstanceRequirements to a compact JSON object (declaration order).
+def instance_requirements_to_json(InstanceRequirements v) -> str:
+    list[str] parts = []
+    if v.Architectures.is_some():
+        auto u0 = v.Architectures.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Architectures\":" + lambda__json_arr(e1))
+    if v.AllowedInstanceTypes.is_some():
+        auto u2 = v.AllowedInstanceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lambda__json_str(x3))
+        parts.append("\"AllowedInstanceTypes\":" + lambda__json_arr(e3))
+    if v.ExcludedInstanceTypes.is_some():
+        auto u4 = v.ExcludedInstanceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(lambda__json_str(x5))
+        parts.append("\"ExcludedInstanceTypes\":" + lambda__json_arr(e5))
+    return lambda__json_obj(parts)
+
+# Serialize KafkaSchemaRegistryConfig to a compact JSON object (declaration order).
+def kafka_schema_registry_config_to_json(KafkaSchemaRegistryConfig v) -> str:
+    list[str] parts = []
+    if v.SchemaRegistryURI.is_some():
+        auto u0 = v.SchemaRegistryURI.unwrap()
+        parts.append("\"SchemaRegistryURI\":" + lambda__json_str(u0))
+    if v.EventRecordFormat.is_some():
+        auto u1 = v.EventRecordFormat.unwrap()
+        parts.append("\"EventRecordFormat\":" + u1.to_json())
+    if v.AccessConfigs.is_some():
+        auto u2 = v.AccessConfigs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AccessConfigs\":" + lambda__json_arr(e3))
+    if v.SchemaValidationConfigs.is_some():
+        auto u4 = v.SchemaValidationConfigs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SchemaValidationConfigs\":" + lambda__json_arr(e5))
+    return lambda__json_obj(parts)
+
+# Serialize OperationUpdate to a compact JSON object (declaration order).
+def operation_update_to_json(OperationUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + lambda__json_str(v.Id))
+    if v.ParentId.is_some():
+        auto u0 = v.ParentId.unwrap()
+        parts.append("\"ParentId\":" + lambda__json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + lambda__json_str(u1))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.SubType.is_some():
+        auto u2 = v.SubType.unwrap()
+        parts.append("\"SubType\":" + lambda__json_str(u2))
+    parts.append("\"Action\":" + v.Action.to_json())
+    if v.Payload.is_some():
+        auto u3 = v.Payload.unwrap()
+        parts.append("\"Payload\":" + lambda__json_str(u3))
+    if v.Error.is_some():
+        auto u4 = v.Error.unwrap()
+        parts.append("\"Error\":" + error_object_to_json(u4))
+    if v.ContextOptions.is_some():
+        auto u5 = v.ContextOptions.unwrap()
+        parts.append("\"ContextOptions\":" + u5.to_json())
+    if v.StepOptions.is_some():
+        auto u6 = v.StepOptions.unwrap()
+        parts.append("\"StepOptions\":" + u6.to_json())
+    if v.WaitOptions.is_some():
+        auto u7 = v.WaitOptions.unwrap()
+        parts.append("\"WaitOptions\":" + u7.to_json())
+    if v.CallbackOptions.is_some():
+        auto u8 = v.CallbackOptions.unwrap()
+        parts.append("\"CallbackOptions\":" + u8.to_json())
+    if v.ChainedInvokeOptions.is_some():
+        auto u9 = v.ChainedInvokeOptions.unwrap()
+        parts.append("\"ChainedInvokeOptions\":" + u9.to_json())
+    return lambda__json_obj(parts)
+
+# Serialize PropagateTags to a compact JSON object (declaration order).
+def propagate_tags_to_json(PropagateTags v) -> str:
+    list[str] parts = []
+    if v.Mode.is_some():
+        auto u0 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u0.to_json())
+    if v.ExplicitTags.is_some():
+        auto u1 = v.ExplicitTags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(lambda__json_str(k2) + ":" + lambda__json_str(u1[k2]))
+        parts.append("\"ExplicitTags\":" + lambda__json_obj(m2))
+    return lambda__json_obj(parts)
+
+# Serialize SelfManagedEventSource to a compact JSON object (declaration order).
+def self_managed_event_source_to_json(SelfManagedEventSource v) -> str:
+    list[str] parts = []
+    if v.Endpoints.is_some():
+        auto u0 = v.Endpoints.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(lambda__json_str(x2))
+            m1.append(lambda__json_str(k1) + ":" + lambda__json_arr(e2))
+        parts.append("\"Endpoints\":" + lambda__json_obj(m1))
+    return lambda__json_obj(parts)
+
+# Serialize SelfManagedKafkaEventSourceConfig to a compact JSON object (declaration order).
+def self_managed_kafka_event_source_config_to_json(SelfManagedKafkaEventSourceConfig v) -> str:
+    list[str] parts = []
+    if v.ConsumerGroupId.is_some():
+        auto u0 = v.ConsumerGroupId.unwrap()
+        parts.append("\"ConsumerGroupId\":" + lambda__json_str(u0))
+    if v.SchemaRegistryConfig.is_some():
+        auto u1 = v.SchemaRegistryConfig.unwrap()
+        parts.append("\"SchemaRegistryConfig\":" + kafka_schema_registry_config_to_json(u1))
+    return lambda__json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lambda__json_str(x1))
+        parts.append("\"SubnetIds\":" + lambda__json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lambda__json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + lambda__json_arr(e3))
+    if v.Ipv6AllowedForDualStack.is_some():
+        auto u4 = v.Ipv6AllowedForDualStack.unwrap()
+        parts.append("\"Ipv6AllowedForDualStack\":" + json.dumps(JsonValue.Bool(u4)))
+    return lambda__json_obj(parts)
+
 # A bound Lambda client: credentials + region, threaded into every operation.
 struct LambdaClient:
     core.Credentials creds
@@ -3086,6 +3495,327 @@ struct LambdaClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddPermissionDocument(StatementId=input.StatementId, Action=input.Action, Principal=input.Principal, SourceArn=input.SourceArn, FunctionUrlAuthType=input.FunctionUrlAuthType, InvokedViaFunctionUrl=input.InvokedViaFunctionUrl, SourceAccount=input.SourceAccount, EventSourceToken=input.EventSourceToken, RevisionId=input.RevisionId, PrincipalOrgID=input.PrincipalOrgID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CheckpointDurableExecution  POST /2025-12-01/durable-executions/{DurableExecutionArn}/checkpoint
+    # errors: InvalidParameterValueException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ServiceException, TooManyRequestsException
+    def checkpoint_durable_execution(self, CheckpointDurableExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["DurableExecutionArn"] = input.DurableExecutionArn
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/checkpoint", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CheckpointToken\":" + lambda__json_str(input.CheckpointToken))
+        if input.Updates.is_some():
+            auto u0 = input.Updates.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(operation_update_to_json(x1))
+            parts.append("\"Updates\":" + lambda__json_arr(e1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + lambda__json_str(u2))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateAlias  POST /2015-03-31/functions/{FunctionName}/aliases
+    # errors: AliasLimitExceededException, InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def create_alias(self, CreateAliasRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionName"] = input.FunctionName
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/aliases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lambda__json_str(input.Name))
+        parts.append("\"FunctionVersion\":" + lambda__json_str(input.FunctionVersion))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u0))
+        if input.RoutingConfig.is_some():
+            auto u1 = input.RoutingConfig.unwrap()
+            parts.append("\"RoutingConfig\":" + alias_routing_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateCapacityProvider  POST /2025-11-30/capacity-providers
+    # errors: CapacityProviderLimitExceededException, InvalidParameterValueException, ResourceConflictException, ServiceException, TooManyRequestsException
+    def create_capacity_provider(self, CreateCapacityProviderRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-11-30/capacity-providers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CapacityProviderName\":" + lambda__json_str(input.CapacityProviderName))
+        parts.append("\"VpcConfig\":" + capacity_provider_vpc_config_to_json(input.VpcConfig))
+        parts.append("\"PermissionsConfig\":" + input.PermissionsConfig.to_json())
+        if input.InstanceRequirements.is_some():
+            auto u0 = input.InstanceRequirements.unwrap()
+            parts.append("\"InstanceRequirements\":" + instance_requirements_to_json(u0))
+        if input.CapacityProviderScalingConfig.is_some():
+            auto u1 = input.CapacityProviderScalingConfig.unwrap()
+            parts.append("\"CapacityProviderScalingConfig\":" + capacity_provider_scaling_config_to_json(u1))
+        if input.KmsKeyArn.is_some():
+            auto u2 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + lambda__json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(lambda__json_str(k4) + ":" + lambda__json_str(u3[k4]))
+            parts.append("\"Tags\":" + lambda__json_obj(m4))
+        if input.PropagateTags.is_some():
+            auto u5 = input.PropagateTags.unwrap()
+            parts.append("\"PropagateTags\":" + propagate_tags_to_json(u5))
+        if input.TelemetryConfig.is_some():
+            auto u6 = input.TelemetryConfig.unwrap()
+            parts.append("\"TelemetryConfig\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateCodeSigningConfig  POST /2020-04-22/code-signing-configs
+    # errors: InvalidParameterValueException, ServiceException
+    def create_code_signing_config(self, CreateCodeSigningConfigRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2020-04-22/code-signing-configs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u0))
+        parts.append("\"AllowedPublishers\":" + allowed_publishers_to_json(input.AllowedPublishers))
+        if input.CodeSigningPolicies.is_some():
+            auto u1 = input.CodeSigningPolicies.unwrap()
+            parts.append("\"CodeSigningPolicies\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(lambda__json_str(k3) + ":" + lambda__json_str(u2[k3]))
+            parts.append("\"Tags\":" + lambda__json_obj(m3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateEventSourceMapping  POST /2015-03-31/event-source-mappings
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def create_event_source_mapping(self, CreateEventSourceMappingRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/event-source-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.EventSourceArn.is_some():
+            auto u0 = input.EventSourceArn.unwrap()
+            parts.append("\"EventSourceArn\":" + lambda__json_str(u0))
+        parts.append("\"FunctionName\":" + lambda__json_str(input.FunctionName))
+        if input.Enabled.is_some():
+            auto u1 = input.Enabled.unwrap()
+            parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.BatchSize.is_some():
+            auto u2 = input.BatchSize.unwrap()
+            parts.append("\"BatchSize\":" + str(u2))
+        if input.FilterCriteria.is_some():
+            auto u3 = input.FilterCriteria.unwrap()
+            parts.append("\"FilterCriteria\":" + filter_criteria_to_json(u3))
+        if input.KMSKeyArn.is_some():
+            auto u4 = input.KMSKeyArn.unwrap()
+            parts.append("\"KMSKeyArn\":" + lambda__json_str(u4))
+        if input.MetricsConfig.is_some():
+            auto u5 = input.MetricsConfig.unwrap()
+            parts.append("\"MetricsConfig\":" + event_source_mapping_metrics_config_to_json(u5))
+        if input.LoggingConfig.is_some():
+            auto u6 = input.LoggingConfig.unwrap()
+            parts.append("\"LoggingConfig\":" + u6.to_json())
+        if input.ScalingConfig.is_some():
+            auto u7 = input.ScalingConfig.unwrap()
+            parts.append("\"ScalingConfig\":" + u7.to_json())
+        if input.MaximumBatchingWindowInSeconds.is_some():
+            auto u8 = input.MaximumBatchingWindowInSeconds.unwrap()
+            parts.append("\"MaximumBatchingWindowInSeconds\":" + str(u8))
+        if input.ParallelizationFactor.is_some():
+            auto u9 = input.ParallelizationFactor.unwrap()
+            parts.append("\"ParallelizationFactor\":" + str(u9))
+        if input.StartingPosition.is_some():
+            auto u10 = input.StartingPosition.unwrap()
+            parts.append("\"StartingPosition\":" + u10.to_json())
+        if input.StartingPositionTimestamp.is_some():
+            auto u11 = input.StartingPositionTimestamp.unwrap()
+            parts.append("\"StartingPositionTimestamp\":" + str(datetime.to_timestamp(u11)))
+        if input.DestinationConfig.is_some():
+            auto u12 = input.DestinationConfig.unwrap()
+            parts.append("\"DestinationConfig\":" + u12.to_json())
+        if input.MaximumRecordAgeInSeconds.is_some():
+            auto u13 = input.MaximumRecordAgeInSeconds.unwrap()
+            parts.append("\"MaximumRecordAgeInSeconds\":" + str(u13))
+        if input.BisectBatchOnFunctionError.is_some():
+            auto u14 = input.BisectBatchOnFunctionError.unwrap()
+            parts.append("\"BisectBatchOnFunctionError\":" + json.dumps(JsonValue.Bool(u14)))
+        if input.MaximumRetryAttempts.is_some():
+            auto u15 = input.MaximumRetryAttempts.unwrap()
+            parts.append("\"MaximumRetryAttempts\":" + str(u15))
+        if input.Tags.is_some():
+            auto u16 = input.Tags.unwrap()
+            list[str] m17 = []
+            for k17 in sorted(u16.keys()):
+                m17.append(lambda__json_str(k17) + ":" + lambda__json_str(u16[k17]))
+            parts.append("\"Tags\":" + lambda__json_obj(m17))
+        if input.TumblingWindowInSeconds.is_some():
+            auto u18 = input.TumblingWindowInSeconds.unwrap()
+            parts.append("\"TumblingWindowInSeconds\":" + str(u18))
+        if input.Topics.is_some():
+            auto u19 = input.Topics.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(lambda__json_str(x20))
+            parts.append("\"Topics\":" + lambda__json_arr(e20))
+        if input.Queues.is_some():
+            auto u21 = input.Queues.unwrap()
+            list[str] e22 = []
+            for x22 in u21:
+                e22.append(lambda__json_str(x22))
+            parts.append("\"Queues\":" + lambda__json_arr(e22))
+        if input.SourceAccessConfigurations.is_some():
+            auto u23 = input.SourceAccessConfigurations.unwrap()
+            list[str] e24 = []
+            for x24 in u23:
+                e24.append(x24.to_json())
+            parts.append("\"SourceAccessConfigurations\":" + lambda__json_arr(e24))
+        if input.SelfManagedEventSource.is_some():
+            auto u25 = input.SelfManagedEventSource.unwrap()
+            parts.append("\"SelfManagedEventSource\":" + self_managed_event_source_to_json(u25))
+        if input.FunctionResponseTypes.is_some():
+            auto u26 = input.FunctionResponseTypes.unwrap()
+            list[str] e27 = []
+            for x27 in u26:
+                e27.append(lambda__json_str(x27))
+            parts.append("\"FunctionResponseTypes\":" + lambda__json_arr(e27))
+        if input.AmazonManagedKafkaEventSourceConfig.is_some():
+            auto u28 = input.AmazonManagedKafkaEventSourceConfig.unwrap()
+            parts.append("\"AmazonManagedKafkaEventSourceConfig\":" + amazon_managed_kafka_event_source_config_to_json(u28))
+        if input.SelfManagedKafkaEventSourceConfig.is_some():
+            auto u29 = input.SelfManagedKafkaEventSourceConfig.unwrap()
+            parts.append("\"SelfManagedKafkaEventSourceConfig\":" + self_managed_kafka_event_source_config_to_json(u29))
+        if input.DocumentDBEventSourceConfig.is_some():
+            auto u30 = input.DocumentDBEventSourceConfig.unwrap()
+            parts.append("\"DocumentDBEventSourceConfig\":" + u30.to_json())
+        if input.ProvisionedPollerConfig.is_some():
+            auto u31 = input.ProvisionedPollerConfig.unwrap()
+            parts.append("\"ProvisionedPollerConfig\":" + u31.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateFunction  POST /2015-03-31/functions
+    # errors: CodeSigningConfigNotFoundException, CodeStorageExceededException, CodeVerificationFailedException, FunctionVersionsPerCapacityProviderLimitExceededException, InvalidCodeSignatureException, InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def create_function(self, CreateFunctionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FunctionName\":" + lambda__json_str(input.FunctionName))
+        if input.Runtime.is_some():
+            auto u0 = input.Runtime.unwrap()
+            parts.append("\"Runtime\":" + u0.to_json())
+        parts.append("\"Role\":" + lambda__json_str(input.Role))
+        if input.Handler.is_some():
+            auto u1 = input.Handler.unwrap()
+            parts.append("\"Handler\":" + lambda__json_str(u1))
+        parts.append("\"Code\":" + input.Code.to_json())
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u2))
+        if input.Timeout.is_some():
+            auto u3 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u3))
+        if input.MemorySize.is_some():
+            auto u4 = input.MemorySize.unwrap()
+            parts.append("\"MemorySize\":" + str(u4))
+        if input.Publish.is_some():
+            auto u5 = input.Publish.unwrap()
+            parts.append("\"Publish\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.PublishTo.is_some():
+            auto u6 = input.PublishTo.unwrap()
+            parts.append("\"PublishTo\":" + lambda__json_str(u6))
+        if input.VpcConfig.is_some():
+            auto u7 = input.VpcConfig.unwrap()
+            parts.append("\"VpcConfig\":" + vpc_config_to_json(u7))
+        if input.PackageType.is_some():
+            auto u8 = input.PackageType.unwrap()
+            parts.append("\"PackageType\":" + u8.to_json())
+        if input.DeadLetterConfig.is_some():
+            auto u9 = input.DeadLetterConfig.unwrap()
+            parts.append("\"DeadLetterConfig\":" + u9.to_json())
+        if input.Environment.is_some():
+            auto u10 = input.Environment.unwrap()
+            parts.append("\"Environment\":" + environment_to_json(u10))
+        if input.KMSKeyArn.is_some():
+            auto u11 = input.KMSKeyArn.unwrap()
+            parts.append("\"KMSKeyArn\":" + lambda__json_str(u11))
+        if input.TracingConfig.is_some():
+            auto u12 = input.TracingConfig.unwrap()
+            parts.append("\"TracingConfig\":" + u12.to_json())
+        if input.Tags.is_some():
+            auto u13 = input.Tags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(lambda__json_str(k14) + ":" + lambda__json_str(u13[k14]))
+            parts.append("\"Tags\":" + lambda__json_obj(m14))
+        if input.Layers.is_some():
+            auto u15 = input.Layers.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(lambda__json_str(x16))
+            parts.append("\"Layers\":" + lambda__json_arr(e16))
+        if input.FileSystemConfigs.is_some():
+            auto u17 = input.FileSystemConfigs.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(x18.to_json())
+            parts.append("\"FileSystemConfigs\":" + lambda__json_arr(e18))
+        if input.CodeSigningConfigArn.is_some():
+            auto u19 = input.CodeSigningConfigArn.unwrap()
+            parts.append("\"CodeSigningConfigArn\":" + lambda__json_str(u19))
+        if input.ImageConfig.is_some():
+            auto u20 = input.ImageConfig.unwrap()
+            parts.append("\"ImageConfig\":" + image_config_to_json(u20))
+        if input.Architectures.is_some():
+            auto u21 = input.Architectures.unwrap()
+            list[str] e22 = []
+            for x22 in u21:
+                e22.append(x22.to_json())
+            parts.append("\"Architectures\":" + lambda__json_arr(e22))
+        if input.EphemeralStorage.is_some():
+            auto u23 = input.EphemeralStorage.unwrap()
+            parts.append("\"EphemeralStorage\":" + u23.to_json())
+        if input.SnapStart.is_some():
+            auto u24 = input.SnapStart.unwrap()
+            parts.append("\"SnapStart\":" + u24.to_json())
+        if input.LoggingConfig.is_some():
+            auto u25 = input.LoggingConfig.unwrap()
+            parts.append("\"LoggingConfig\":" + u25.to_json())
+        if input.TenancyConfig.is_some():
+            auto u26 = input.TenancyConfig.unwrap()
+            parts.append("\"TenancyConfig\":" + u26.to_json())
+        if input.CapacityProviderConfig.is_some():
+            auto u27 = input.CapacityProviderConfig.unwrap()
+            parts.append("\"CapacityProviderConfig\":" + u27.to_json())
+        if input.DurableConfig.is_some():
+            auto u28 = input.DurableConfig.unwrap()
+            parts.append("\"DurableConfig\":" + u28.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateFunctionUrlConfig  POST /2021-10-31/functions/{FunctionName}/url
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def create_function_url_config(self, CreateFunctionUrlConfigRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionName"] = input.FunctionName
+        dict[str, str] query = {}
+        if input.Qualifier.is_some():
+            query["Qualifier"] = input.Qualifier.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AuthType\":" + input.AuthType.to_json())
+        if input.Cors.is_some():
+            auto u0 = input.Cors.unwrap()
+            parts.append("\"Cors\":" + cors_to_json(u0))
+        if input.InvokeMode.is_some():
+            auto u1 = input.InvokeMode.unwrap()
+            parts.append("\"InvokeMode\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # DeleteAlias  DELETE /2015-03-31/functions/{FunctionName}/aliases/{Name}
@@ -3687,6 +4417,36 @@ struct LambdaClient:
         auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # PublishLayerVersion  POST /2018-10-31/layers/{LayerName}/versions
+    # errors: CodeStorageExceededException, InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def publish_layer_version(self, PublishLayerVersionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["LayerName"] = input.LayerName
+        auto b = binding.HttpBinding(method="POST", path_template="/2018-10-31/layers/{LayerName}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u0))
+        parts.append("\"Content\":" + input.Content.to_json())
+        if input.CompatibleArchitectures.is_some():
+            auto u1 = input.CompatibleArchitectures.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"CompatibleArchitectures\":" + lambda__json_arr(e2))
+        if input.CompatibleRuntimes.is_some():
+            auto u3 = input.CompatibleRuntimes.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"CompatibleRuntimes\":" + lambda__json_arr(e4))
+        if input.LicenseInfo.is_some():
+            auto u5 = input.LicenseInfo.unwrap()
+            parts.append("\"LicenseInfo\":" + lambda__json_str(u5))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
     # PublishVersion  POST /2015-03-31/functions/{FunctionName}/versions
     # errors: CodeStorageExceededException, FunctionVersionsPerCapacityProviderLimitExceededException, InvalidParameterValueException, PreconditionFailedException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def publish_version(self, PublishVersionRequest input) -> str:
@@ -3844,6 +4604,292 @@ struct LambdaClient:
         auto bp = restjson.rest_json_raw_payload(b, str(input.Result.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
+    # TagResource  POST /2017-03-31/tags/{Resource}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["Resource"] = input.Resource
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(lambda__json_str(k0) + ":" + lambda__json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + lambda__json_obj(m0))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateAlias  PUT /2015-03-31/functions/{FunctionName}/aliases/{Name}
+    # errors: InvalidParameterValueException, PreconditionFailedException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_alias(self, UpdateAliasRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionName"] = input.FunctionName
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FunctionVersion.is_some():
+            auto u0 = input.FunctionVersion.unwrap()
+            parts.append("\"FunctionVersion\":" + lambda__json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u1))
+        if input.RoutingConfig.is_some():
+            auto u2 = input.RoutingConfig.unwrap()
+            parts.append("\"RoutingConfig\":" + alias_routing_configuration_to_json(u2))
+        if input.RevisionId.is_some():
+            auto u3 = input.RevisionId.unwrap()
+            parts.append("\"RevisionId\":" + lambda__json_str(u3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateCapacityProvider  PUT /2025-11-30/capacity-providers/{CapacityProviderName}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_capacity_provider(self, UpdateCapacityProviderRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["CapacityProviderName"] = input.CapacityProviderName
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CapacityProviderScalingConfig.is_some():
+            auto u0 = input.CapacityProviderScalingConfig.unwrap()
+            parts.append("\"CapacityProviderScalingConfig\":" + capacity_provider_scaling_config_to_json(u0))
+        if input.PropagateTags.is_some():
+            auto u1 = input.PropagateTags.unwrap()
+            parts.append("\"PropagateTags\":" + propagate_tags_to_json(u1))
+        if input.TelemetryConfig.is_some():
+            auto u2 = input.TelemetryConfig.unwrap()
+            parts.append("\"TelemetryConfig\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateCodeSigningConfig  PUT /2020-04-22/code-signing-configs/{CodeSigningConfigArn}
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException
+    def update_code_signing_config(self, UpdateCodeSigningConfigRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["CodeSigningConfigArn"] = input.CodeSigningConfigArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u0))
+        if input.AllowedPublishers.is_some():
+            auto u1 = input.AllowedPublishers.unwrap()
+            parts.append("\"AllowedPublishers\":" + allowed_publishers_to_json(u1))
+        if input.CodeSigningPolicies.is_some():
+            auto u2 = input.CodeSigningPolicies.unwrap()
+            parts.append("\"CodeSigningPolicies\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateEventSourceMapping  PUT /2015-03-31/event-source-mappings/{UUID}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceInUseException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_event_source_mapping(self, UpdateEventSourceMappingRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["UUID"] = input.UUID
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FunctionName.is_some():
+            auto u0 = input.FunctionName.unwrap()
+            parts.append("\"FunctionName\":" + lambda__json_str(u0))
+        if input.Enabled.is_some():
+            auto u1 = input.Enabled.unwrap()
+            parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.BatchSize.is_some():
+            auto u2 = input.BatchSize.unwrap()
+            parts.append("\"BatchSize\":" + str(u2))
+        if input.FilterCriteria.is_some():
+            auto u3 = input.FilterCriteria.unwrap()
+            parts.append("\"FilterCriteria\":" + filter_criteria_to_json(u3))
+        if input.KMSKeyArn.is_some():
+            auto u4 = input.KMSKeyArn.unwrap()
+            parts.append("\"KMSKeyArn\":" + lambda__json_str(u4))
+        if input.MetricsConfig.is_some():
+            auto u5 = input.MetricsConfig.unwrap()
+            parts.append("\"MetricsConfig\":" + event_source_mapping_metrics_config_to_json(u5))
+        if input.LoggingConfig.is_some():
+            auto u6 = input.LoggingConfig.unwrap()
+            parts.append("\"LoggingConfig\":" + u6.to_json())
+        if input.ScalingConfig.is_some():
+            auto u7 = input.ScalingConfig.unwrap()
+            parts.append("\"ScalingConfig\":" + u7.to_json())
+        if input.MaximumBatchingWindowInSeconds.is_some():
+            auto u8 = input.MaximumBatchingWindowInSeconds.unwrap()
+            parts.append("\"MaximumBatchingWindowInSeconds\":" + str(u8))
+        if input.ParallelizationFactor.is_some():
+            auto u9 = input.ParallelizationFactor.unwrap()
+            parts.append("\"ParallelizationFactor\":" + str(u9))
+        if input.DestinationConfig.is_some():
+            auto u10 = input.DestinationConfig.unwrap()
+            parts.append("\"DestinationConfig\":" + u10.to_json())
+        if input.MaximumRecordAgeInSeconds.is_some():
+            auto u11 = input.MaximumRecordAgeInSeconds.unwrap()
+            parts.append("\"MaximumRecordAgeInSeconds\":" + str(u11))
+        if input.BisectBatchOnFunctionError.is_some():
+            auto u12 = input.BisectBatchOnFunctionError.unwrap()
+            parts.append("\"BisectBatchOnFunctionError\":" + json.dumps(JsonValue.Bool(u12)))
+        if input.MaximumRetryAttempts.is_some():
+            auto u13 = input.MaximumRetryAttempts.unwrap()
+            parts.append("\"MaximumRetryAttempts\":" + str(u13))
+        if input.TumblingWindowInSeconds.is_some():
+            auto u14 = input.TumblingWindowInSeconds.unwrap()
+            parts.append("\"TumblingWindowInSeconds\":" + str(u14))
+        if input.SourceAccessConfigurations.is_some():
+            auto u15 = input.SourceAccessConfigurations.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"SourceAccessConfigurations\":" + lambda__json_arr(e16))
+        if input.FunctionResponseTypes.is_some():
+            auto u17 = input.FunctionResponseTypes.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(lambda__json_str(x18))
+            parts.append("\"FunctionResponseTypes\":" + lambda__json_arr(e18))
+        if input.AmazonManagedKafkaEventSourceConfig.is_some():
+            auto u19 = input.AmazonManagedKafkaEventSourceConfig.unwrap()
+            parts.append("\"AmazonManagedKafkaEventSourceConfig\":" + amazon_managed_kafka_event_source_config_to_json(u19))
+        if input.SelfManagedKafkaEventSourceConfig.is_some():
+            auto u20 = input.SelfManagedKafkaEventSourceConfig.unwrap()
+            parts.append("\"SelfManagedKafkaEventSourceConfig\":" + self_managed_kafka_event_source_config_to_json(u20))
+        if input.DocumentDBEventSourceConfig.is_some():
+            auto u21 = input.DocumentDBEventSourceConfig.unwrap()
+            parts.append("\"DocumentDBEventSourceConfig\":" + u21.to_json())
+        if input.ProvisionedPollerConfig.is_some():
+            auto u22 = input.ProvisionedPollerConfig.unwrap()
+            parts.append("\"ProvisionedPollerConfig\":" + u22.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateFunctionCode  PUT /2015-03-31/functions/{FunctionName}/code
+    # errors: CodeSigningConfigNotFoundException, CodeStorageExceededException, CodeVerificationFailedException, InvalidCodeSignatureException, InvalidParameterValueException, PreconditionFailedException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_function_code(self, UpdateFunctionCodeRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionName"] = input.FunctionName
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/code", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ZipFile.is_some():
+            auto u0 = input.ZipFile.unwrap()
+            parts.append("\"ZipFile\":" + lambda__json_str(base64.encode(u0)))
+        if input.S3Bucket.is_some():
+            auto u1 = input.S3Bucket.unwrap()
+            parts.append("\"S3Bucket\":" + lambda__json_str(u1))
+        if input.S3Key.is_some():
+            auto u2 = input.S3Key.unwrap()
+            parts.append("\"S3Key\":" + lambda__json_str(u2))
+        if input.S3ObjectVersion.is_some():
+            auto u3 = input.S3ObjectVersion.unwrap()
+            parts.append("\"S3ObjectVersion\":" + lambda__json_str(u3))
+        if input.S3ObjectStorageMode.is_some():
+            auto u4 = input.S3ObjectStorageMode.unwrap()
+            parts.append("\"S3ObjectStorageMode\":" + u4.to_json())
+        if input.ImageUri.is_some():
+            auto u5 = input.ImageUri.unwrap()
+            parts.append("\"ImageUri\":" + lambda__json_str(u5))
+        if input.Architectures.is_some():
+            auto u6 = input.Architectures.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Architectures\":" + lambda__json_arr(e7))
+        if input.Publish.is_some():
+            auto u8 = input.Publish.unwrap()
+            parts.append("\"Publish\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.PublishTo.is_some():
+            auto u9 = input.PublishTo.unwrap()
+            parts.append("\"PublishTo\":" + lambda__json_str(u9))
+        if input.DryRun.is_some():
+            auto u10 = input.DryRun.unwrap()
+            parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.RevisionId.is_some():
+            auto u11 = input.RevisionId.unwrap()
+            parts.append("\"RevisionId\":" + lambda__json_str(u11))
+        if input.SourceKMSKeyArn.is_some():
+            auto u12 = input.SourceKMSKeyArn.unwrap()
+            parts.append("\"SourceKMSKeyArn\":" + lambda__json_str(u12))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateFunctionConfiguration  PUT /2015-03-31/functions/{FunctionName}/configuration
+    # errors: CodeSigningConfigNotFoundException, CodeVerificationFailedException, InvalidCodeSignatureException, InvalidParameterValueException, PreconditionFailedException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_function_configuration(self, UpdateFunctionConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionName"] = input.FunctionName
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Role.is_some():
+            auto u0 = input.Role.unwrap()
+            parts.append("\"Role\":" + lambda__json_str(u0))
+        if input.Handler.is_some():
+            auto u1 = input.Handler.unwrap()
+            parts.append("\"Handler\":" + lambda__json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u2))
+        if input.Timeout.is_some():
+            auto u3 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u3))
+        if input.MemorySize.is_some():
+            auto u4 = input.MemorySize.unwrap()
+            parts.append("\"MemorySize\":" + str(u4))
+        if input.VpcConfig.is_some():
+            auto u5 = input.VpcConfig.unwrap()
+            parts.append("\"VpcConfig\":" + vpc_config_to_json(u5))
+        if input.Environment.is_some():
+            auto u6 = input.Environment.unwrap()
+            parts.append("\"Environment\":" + environment_to_json(u6))
+        if input.Runtime.is_some():
+            auto u7 = input.Runtime.unwrap()
+            parts.append("\"Runtime\":" + u7.to_json())
+        if input.DeadLetterConfig.is_some():
+            auto u8 = input.DeadLetterConfig.unwrap()
+            parts.append("\"DeadLetterConfig\":" + u8.to_json())
+        if input.KMSKeyArn.is_some():
+            auto u9 = input.KMSKeyArn.unwrap()
+            parts.append("\"KMSKeyArn\":" + lambda__json_str(u9))
+        if input.TracingConfig.is_some():
+            auto u10 = input.TracingConfig.unwrap()
+            parts.append("\"TracingConfig\":" + u10.to_json())
+        if input.RevisionId.is_some():
+            auto u11 = input.RevisionId.unwrap()
+            parts.append("\"RevisionId\":" + lambda__json_str(u11))
+        if input.Layers.is_some():
+            auto u12 = input.Layers.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(lambda__json_str(x13))
+            parts.append("\"Layers\":" + lambda__json_arr(e13))
+        if input.FileSystemConfigs.is_some():
+            auto u14 = input.FileSystemConfigs.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"FileSystemConfigs\":" + lambda__json_arr(e15))
+        if input.ImageConfig.is_some():
+            auto u16 = input.ImageConfig.unwrap()
+            parts.append("\"ImageConfig\":" + image_config_to_json(u16))
+        if input.EphemeralStorage.is_some():
+            auto u17 = input.EphemeralStorage.unwrap()
+            parts.append("\"EphemeralStorage\":" + u17.to_json())
+        if input.SnapStart.is_some():
+            auto u18 = input.SnapStart.unwrap()
+            parts.append("\"SnapStart\":" + u18.to_json())
+        if input.LoggingConfig.is_some():
+            auto u19 = input.LoggingConfig.unwrap()
+            parts.append("\"LoggingConfig\":" + u19.to_json())
+        if input.CapacityProviderConfig.is_some():
+            auto u20 = input.CapacityProviderConfig.unwrap()
+            parts.append("\"CapacityProviderConfig\":" + u20.to_json())
+        if input.DurableConfig.is_some():
+            auto u21 = input.DurableConfig.unwrap()
+            parts.append("\"DurableConfig\":" + u21.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
     # UpdateFunctionEventInvokeConfig  POST /2019-09-25/functions/{FunctionName}/event-invoke-config
     # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def update_function_event_invoke_config(self, UpdateFunctionEventInvokeConfigRequest input) -> str:
@@ -3856,6 +4902,29 @@ struct LambdaClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFunctionEventInvokeConfigDocument(MaximumRetryAttempts=input.MaximumRetryAttempts, MaximumEventAgeInSeconds=input.MaximumEventAgeInSeconds, DestinationConfig=input.DestinationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateFunctionUrlConfig  PUT /2021-10-31/functions/{FunctionName}/url
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_function_url_config(self, UpdateFunctionUrlConfigRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionName"] = input.FunctionName
+        dict[str, str] query = {}
+        if input.Qualifier.is_some():
+            query["Qualifier"] = input.Qualifier.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthType.is_some():
+            auto u0 = input.AuthType.unwrap()
+            parts.append("\"AuthType\":" + u0.to_json())
+        if input.Cors.is_some():
+            auto u1 = input.Cors.unwrap()
+            parts.append("\"Cors\":" + cors_to_json(u1))
+        if input.InvokeMode.is_some():
+            auto u2 = input.InvokeMode.unwrap()
+            parts.append("\"InvokeMode\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # Paginator for GetDurableExecutionState — yields each Response page, threading the

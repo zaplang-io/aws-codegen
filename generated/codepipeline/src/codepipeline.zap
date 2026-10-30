@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 44 operations — 33 with a generated method,
-#   11 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 44 operations — 44 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   231 structs (156 @derive(Json)), 27 enums, 41 error variants.
-#   7 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -301,8 +301,9 @@ struct AcknowledgeThirdPartyJobInput:
 struct AcknowledgeThirdPartyJobOutput:
     Optional[JobStatus] status
 
-# no @derive(Json): member(s) configuration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionConfiguration:
     Optional[dict[str, str]] configuration
 
@@ -321,8 +322,9 @@ struct ActionContext:
     Optional[str] name
     Optional[str] actionExecutionId
 
-# no @derive(Json): member(s) configuration: dict[str, str], commands: list[str], outputArtifacts: list[OutputArtifact], inputArtifacts: list[InputArtifact], outputVariables: list[str], environmentVariables: list[EnvironmentVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[str, str], commands: list[str], outputArtifacts: list[OutputArtifact], inputArtifacts: list[InputArtifact], outputVariables: list[str], environmentVariables: list[EnvironmentVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionDeclaration:
     str name
     ActionTypeId actionTypeId
@@ -352,8 +354,9 @@ struct ActionExecution:
     Optional[ErrorDetails] errorDetails
     Optional[str] logStreamARN
 
-# no @derive(Json): member(s) input: ActionExecutionInput, output: ActionExecutionOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) input: ActionExecutionInput, output: ActionExecutionOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionExecutionDetail:
     Optional[str] pipelineExecutionId
     Optional[str] actionExecutionId
@@ -372,8 +375,9 @@ struct ActionExecutionFilter:
     Optional[str] pipelineExecutionId
     Optional[LatestInPipelineExecutionFilter] latestInPipelineExecution
 
-# no @derive(Json): member(s) configuration: dict[str, str], resolvedConfiguration: dict[str, str], inputArtifacts: list[ArtifactDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[str, str], resolvedConfiguration: dict[str, str], inputArtifacts: list[ArtifactDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionExecutionInput:
     Optional[ActionTypeId] actionTypeId
     Optional[dict[str, str]] configuration
@@ -387,8 +391,9 @@ struct ActionExecutionInput:
 struct ActionExecutionNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) outputArtifacts: list[ArtifactDetail], outputVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputArtifacts: list[ArtifactDetail], outputVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionExecutionOutput:
     Optional[list[ArtifactDetail]] outputArtifacts
     Optional[ActionExecutionResult] executionResult
@@ -421,8 +426,9 @@ struct ActionState:
     Optional[str] entityUrl
     Optional[str] revisionUrl
 
-# no @derive(Json): member(s) actionConfigurationProperties: list[ActionConfigurationProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionConfigurationProperties: list[ActionConfigurationProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionType:
     ActionTypeId id
     Optional[ActionTypeSettings] settings
@@ -440,8 +446,9 @@ struct ActionTypeArtifactDetails:
     int64 minimumCount
     int64 maximumCount
 
-# no @derive(Json): member(s) executor: ActionTypeExecutor, permissions: ActionTypePermissions, properties: list[ActionTypeProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executor: ActionTypeExecutor, permissions: ActionTypePermissions, properties: list[ActionTypeProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionTypeDeclaration:
     Optional[str] description
     ActionTypeExecutor executor
@@ -452,8 +459,9 @@ struct ActionTypeDeclaration:
     Optional[list[ActionTypeProperty]] properties
     Optional[ActionTypeUrls] urls
 
-# no @derive(Json): member(s) configuration: ExecutorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: ExecutorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionTypeExecutor:
     ExecutorConfiguration configuration
     ExecutorType type
@@ -479,8 +487,9 @@ struct ActionTypeNotFoundException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) allowedAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionTypePermissions:
     list[str] allowedAccounts
 
@@ -553,8 +562,9 @@ struct ArtifactStore:
     str location
     Optional[EncryptionKey] encryptionKey
 
-# no @derive(Json): member(s) conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BeforeEntryConditions:
     list[Condition] conditions
 
@@ -571,8 +581,9 @@ struct ConcurrentModificationException:
 struct ConcurrentPipelineExecutionsLimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) rules: list[RuleDeclaration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[RuleDeclaration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Condition:
     Optional[Result] result
     Optional[list[RuleDeclaration]] rules
@@ -587,8 +598,9 @@ struct ConditionExecution:
 struct ConditionNotOverridableException:
     Optional[str] message
 
-# no @derive(Json): member(s) ruleStates: list[RuleState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleStates: list[RuleState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionState:
     Optional[ConditionExecution] latestExecution
     Optional[list[RuleState]] ruleStates
@@ -597,8 +609,9 @@ struct ConditionState:
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) configurationProperties: list[ActionConfigurationProperty], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationProperties: list[ActionConfigurationProperty], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomActionTypeInput:
     ActionCategory category
     str provider
@@ -609,20 +622,23 @@ struct CreateCustomActionTypeInput:
     ArtifactDetails outputArtifactDetails
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) actionType: ActionType, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionType: ActionType, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomActionTypeOutput:
     ActionType actionType
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipeline: PipelineDeclaration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePipelineInput:
     PipelineDeclaration pipeline
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipeline: PipelineDeclaration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePipelineOutput:
     Optional[PipelineDeclaration] pipeline
     Optional[list[Tag]] tags
@@ -653,8 +669,9 @@ struct DeleteWebhookOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) events: list[DeployTargetEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[DeployTargetEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeployActionExecutionTarget:
     Optional[str] targetId
     Optional[str] targetType
@@ -729,14 +746,16 @@ struct ExecutionTrigger:
     Optional[TriggerType] triggerType
     Optional[str] triggerDetail
 
-# no @derive(Json): member(s) jobWorkerExecutorConfiguration: JobWorkerExecutorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobWorkerExecutorConfiguration: JobWorkerExecutorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutorConfiguration:
     Optional[LambdaExecutorConfiguration] lambdaExecutorConfiguration
     Optional[JobWorkerExecutorConfiguration] jobWorkerExecutorConfiguration
 
-# no @derive(Json): member(s) conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailureConditions:
     Optional[Result] result
     Optional[RetryConfiguration] retryConfiguration
@@ -755,8 +774,9 @@ struct GetActionTypeInput:
     str provider
     str version
 
-# no @derive(Json): member(s) actionType: ActionTypeDeclaration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionType: ActionTypeDeclaration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetActionTypeOutput:
     Optional[ActionTypeDeclaration] actionType
 
@@ -764,8 +784,9 @@ struct GetActionTypeOutput:
 struct GetJobDetailsInput:
     str jobId
 
-# no @derive(Json): member(s) jobDetails: JobDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobDetails: JobDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobDetailsOutput:
     Optional[JobDetails] jobDetails
 
@@ -774,8 +795,9 @@ struct GetPipelineExecutionInput:
     str pipelineName
     str pipelineExecutionId
 
-# no @derive(Json): member(s) pipelineExecution: PipelineExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineExecution: PipelineExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPipelineExecutionOutput:
     Optional[PipelineExecution] pipelineExecution
 
@@ -784,8 +806,9 @@ struct GetPipelineInput:
     str name
     Optional[int64] version
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipeline: PipelineDeclaration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPipelineOutput:
     Optional[PipelineDeclaration] pipeline
     Optional[PipelineMetadata] metadata
@@ -794,8 +817,9 @@ struct GetPipelineOutput:
 struct GetPipelineStateInput:
     str name
 
-# no @derive(Json): member(s) stageStates: list[StageState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stageStates: list[StageState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPipelineStateOutput:
     Optional[str] pipelineName
     Optional[int64] pipelineVersion
@@ -808,46 +832,53 @@ struct GetThirdPartyJobDetailsInput:
     str jobId
     str clientToken
 
-# no @derive(Json): member(s) jobDetails: ThirdPartyJobDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobDetails: ThirdPartyJobDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetThirdPartyJobDetailsOutput:
     Optional[ThirdPartyJobDetails] jobDetails
 
-# no @derive(Json): member(s) includes: list[str], excludes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includes: list[str], excludes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitBranchFilterCriteria:
     Optional[list[str]] includes
     Optional[list[str]] excludes
 
-# no @derive(Json): member(s) push: list[GitPushFilter], pullRequest: list[GitPullRequestFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) push: list[GitPushFilter], pullRequest: list[GitPullRequestFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitConfiguration:
     str sourceActionName
     Optional[list[GitPushFilter]] push
     Optional[list[GitPullRequestFilter]] pullRequest
 
-# no @derive(Json): member(s) includes: list[str], excludes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includes: list[str], excludes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitFilePathFilterCriteria:
     Optional[list[str]] includes
     Optional[list[str]] excludes
 
-# no @derive(Json): member(s) events: list[GitPullRequestEventType], branches: GitBranchFilterCriteria, filePaths: GitFilePathFilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[GitPullRequestEventType], branches: GitBranchFilterCriteria, filePaths: GitFilePathFilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitPullRequestFilter:
     Optional[list[GitPullRequestEventType]] events
     Optional[GitBranchFilterCriteria] branches
     Optional[GitFilePathFilterCriteria] filePaths
 
-# no @derive(Json): member(s) tags: GitTagFilterCriteria, branches: GitBranchFilterCriteria, filePaths: GitFilePathFilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: GitTagFilterCriteria, branches: GitBranchFilterCriteria, filePaths: GitFilePathFilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitPushFilter:
     Optional[GitTagFilterCriteria] tags
     Optional[GitBranchFilterCriteria] branches
     Optional[GitFilePathFilterCriteria] filePaths
 
-# no @derive(Json): member(s) includes: list[str], excludes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includes: list[str], excludes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitTagFilterCriteria:
     Optional[list[str]] includes
     Optional[list[str]] excludes
@@ -924,16 +955,18 @@ struct InvalidWebhookFilterPatternException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) data: JobData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: JobData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[str] id
     Optional[JobData] data
     Optional[str] nonce
     Optional[str] accountId
 
-# no @derive(Json): member(s) actionConfiguration: ActionConfiguration, inputArtifacts: list[Artifact], outputArtifacts: list[Artifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionConfiguration: ActionConfiguration, inputArtifacts: list[Artifact], outputArtifacts: list[Artifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobData:
     Optional[ActionTypeId] actionTypeId
     Optional[ActionConfiguration] actionConfiguration
@@ -944,8 +977,9 @@ struct JobData:
     Optional[str] continuationToken
     Optional[EncryptionKey] encryptionKey
 
-# no @derive(Json): member(s) data: JobData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: JobData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobDetails:
     Optional[str] id
     Optional[JobData] data
@@ -956,8 +990,9 @@ struct JobNotFoundException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) pollingAccounts: list[str], pollingServicePrincipals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pollingAccounts: list[str], pollingServicePrincipals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobWorkerExecutorConfiguration:
     Optional[list[str]] pollingAccounts
     Optional[list[str]] pollingServicePrincipals
@@ -983,8 +1018,9 @@ struct ListActionExecutionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actionExecutionDetails: list[ActionExecutionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionExecutionDetails: list[ActionExecutionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionExecutionsOutput:
     Optional[list[ActionExecutionDetail]] actionExecutionDetails
     Optional[str] nextToken
@@ -995,14 +1031,16 @@ struct ListActionTypesInput:
     Optional[str] nextToken
     Optional[str] regionFilter
 
-# no @derive(Json): member(s) actionTypes: list[ActionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionTypes: list[ActionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionTypesOutput:
     list[ActionType] actionTypes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[TargetFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[TargetFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeployActionExecutionTargetsInput:
     Optional[str] pipelineName
     str actionExecutionId
@@ -1010,8 +1048,9 @@ struct ListDeployActionExecutionTargetsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targets: list[DeployActionExecutionTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[DeployActionExecutionTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeployActionExecutionTargetsOutput:
     Optional[list[DeployActionExecutionTarget]] targets
     Optional[str] nextToken
@@ -1023,8 +1062,9 @@ struct ListPipelineExecutionsInput:
     Optional[PipelineExecutionFilter] filter
     Optional[str] nextToken
 
-# no @derive(Json): member(s) pipelineExecutionSummaries: list[PipelineExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineExecutionSummaries: list[PipelineExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineExecutionsOutput:
     Optional[list[PipelineExecutionSummary]] pipelineExecutionSummaries
     Optional[str] nextToken
@@ -1034,8 +1074,9 @@ struct ListPipelinesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) pipelines: list[PipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelines: list[PipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelinesOutput:
     Optional[list[PipelineSummary]] pipelines
     Optional[str] nextToken
@@ -1047,8 +1088,9 @@ struct ListRuleExecutionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ruleExecutionDetails: list[RuleExecutionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleExecutionDetails: list[RuleExecutionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleExecutionsOutput:
     Optional[list[RuleExecutionDetail]] ruleExecutionDetails
     Optional[str] nextToken
@@ -1058,8 +1100,9 @@ struct ListRuleTypesInput:
     Optional[str] ruleOwnerFilter
     Optional[str] regionFilter
 
-# no @derive(Json): member(s) ruleTypes: list[RuleType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleTypes: list[RuleType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleTypesOutput:
     list[RuleType] ruleTypes
 
@@ -1069,14 +1112,16 @@ struct ListTagsForResourceInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] tags
     Optional[str] nextToken
 
-# no @derive(Json): member(s) definition: WebhookDefinition, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) definition: WebhookDefinition, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebhookItem:
     WebhookDefinition definition
     str url
@@ -1091,8 +1136,9 @@ struct ListWebhooksInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) webhooks: list[ListWebhookItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhooks: list[ListWebhookItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebhooksOutput:
     Optional[list[ListWebhookItem]] webhooks
     Optional[str] NextToken
@@ -1102,8 +1148,9 @@ struct NotLatestPipelineExecutionException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) files: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) files: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputArtifact:
     str name
     Optional[list[str]] files
@@ -1127,8 +1174,9 @@ struct PipelineContext:
     Optional[str] pipelineArn
     Optional[str] pipelineExecutionId
 
-# no @derive(Json): member(s) artifactStores: dict[str, ArtifactStore], stages: list[StageDeclaration], variables: list[PipelineVariableDeclaration], triggers: list[PipelineTriggerDeclaration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifactStores: dict[str, ArtifactStore], stages: list[StageDeclaration], variables: list[PipelineVariableDeclaration], triggers: list[PipelineTriggerDeclaration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineDeclaration:
     str name
     str roleArn
@@ -1141,8 +1189,9 @@ struct PipelineDeclaration:
     Optional[list[PipelineVariableDeclaration]] variables
     Optional[list[PipelineTriggerDeclaration]] triggers
 
-# no @derive(Json): member(s) artifactRevisions: list[ArtifactRevision], variables: list[ResolvedPipelineVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifactRevisions: list[ArtifactRevision], variables: list[ResolvedPipelineVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecution:
     Optional[str] pipelineName
     Optional[int64] pipelineVersion
@@ -1173,8 +1222,9 @@ struct PipelineExecutionNotStoppableException:
 struct PipelineExecutionOutdatedException:
     Optional[str] message
 
-# no @derive(Json): member(s) sourceRevisions: list[SourceRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceRevisions: list[SourceRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionSummary:
     Optional[str] pipelineExecutionId
     Optional[PipelineExecutionStatus] status
@@ -1218,8 +1268,9 @@ struct PipelineSummary:
     Optional[DateTime] created
     Optional[DateTime] updated
 
-# no @derive(Json): member(s) gitConfiguration: GitConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gitConfiguration: GitConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineTriggerDeclaration:
     str providerType
     GitConfiguration gitConfiguration
@@ -1240,15 +1291,17 @@ struct PipelineVersionNotFoundException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) queryParam: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queryParam: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PollForJobsInput:
     ActionTypeId actionTypeId
     Optional[int64] maxBatchSize
     Optional[dict[str, str]] queryParam
 
-# no @derive(Json): member(s) jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PollForJobsOutput:
     Optional[list[Job]] jobs
 
@@ -1257,8 +1310,9 @@ struct PollForThirdPartyJobsInput:
     ActionTypeId actionTypeId
     Optional[int64] maxBatchSize
 
-# no @derive(Json): member(s) jobs: list[ThirdPartyJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[ThirdPartyJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PollForThirdPartyJobsOutput:
     Optional[list[ThirdPartyJob]] jobs
 
@@ -1291,8 +1345,9 @@ struct PutJobFailureResultInput:
     str jobId
     FailureDetails failureDetails
 
-# no @derive(Json): member(s) outputVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutJobSuccessResultInput:
     str jobId
     Optional[CurrentRevision] currentRevision
@@ -1314,14 +1369,16 @@ struct PutThirdPartyJobSuccessResultInput:
     Optional[str] continuationToken
     Optional[ExecutionDetails] executionDetails
 
-# no @derive(Json): member(s) webhook: WebhookDefinition, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhook: WebhookDefinition, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutWebhookInput:
     WebhookDefinition webhook
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) webhook: ListWebhookItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhook: ListWebhookItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutWebhookOutput:
     Optional[ListWebhookItem] webhook
 
@@ -1389,8 +1446,9 @@ struct RuleConfigurationProperty:
     Optional[str] description
     Optional[RuleConfigurationPropertyType] type
 
-# no @derive(Json): member(s) configuration: dict[str, str], commands: list[str], inputArtifacts: list[InputArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[str, str], commands: list[str], inputArtifacts: list[InputArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleDeclaration:
     str name
     RuleTypeId ruleTypeId
@@ -1413,8 +1471,9 @@ struct RuleExecution:
     Optional[str] externalExecutionUrl
     Optional[ErrorDetails] errorDetails
 
-# no @derive(Json): member(s) input: RuleExecutionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) input: RuleExecutionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleExecutionDetail:
     Optional[str] pipelineExecutionId
     Optional[str] ruleExecutionId
@@ -1433,8 +1492,9 @@ struct RuleExecutionFilter:
     Optional[str] pipelineExecutionId
     Optional[LatestInPipelineExecutionFilter] latestInPipelineExecution
 
-# no @derive(Json): member(s) configuration: dict[str, str], resolvedConfiguration: dict[str, str], inputArtifacts: list[ArtifactDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[str, str], resolvedConfiguration: dict[str, str], inputArtifacts: list[ArtifactDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleExecutionInput:
     Optional[RuleTypeId] ruleTypeId
     Optional[dict[str, str]] configuration
@@ -1468,8 +1528,9 @@ struct RuleState:
     Optional[str] entityUrl
     Optional[str] revisionUrl
 
-# no @derive(Json): member(s) ruleConfigurationProperties: list[RuleConfigurationProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleConfigurationProperties: list[RuleConfigurationProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleType:
     RuleTypeId id
     Optional[RuleTypeSettings] settings
@@ -1513,8 +1574,9 @@ struct SourceRevisionOverride:
     SourceRevisionType revisionType
     str revisionValue
 
-# no @derive(Json): member(s) conditionStates: list[ConditionState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditionStates: list[ConditionState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StageConditionState:
     Optional[StageConditionsExecution] latestExecution
     Optional[list[ConditionState]] conditionStates
@@ -1528,8 +1590,9 @@ struct StageConditionsExecution:
 struct StageContext:
     Optional[str] name
 
-# no @derive(Json): member(s) blockers: list[BlockerDeclaration], actions: list[ActionDeclaration], onFailure: FailureConditions, onSuccess: SuccessConditions, beforeEntry: BeforeEntryConditions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockers: list[BlockerDeclaration], actions: list[ActionDeclaration], onFailure: FailureConditions, onSuccess: SuccessConditions, beforeEntry: BeforeEntryConditions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StageDeclaration:
     str name
     Optional[list[BlockerDeclaration]] blockers
@@ -1554,8 +1617,9 @@ struct StageNotRetryableException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) inboundExecutions: list[StageExecution], actionStates: list[ActionState], beforeEntryConditionState: StageConditionState, onSuccessConditionState: StageConditionState, onFailureConditionState: StageConditionState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inboundExecutions: list[StageExecution], actionStates: list[ActionState], beforeEntryConditionState: StageConditionState, onSuccessConditionState: StageConditionState, onFailureConditionState: StageConditionState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StageState:
     Optional[str] stageName
     Optional[StageExecution] inboundExecution
@@ -1568,8 +1632,9 @@ struct StageState:
     Optional[StageConditionState] onFailureConditionState
     Optional[RetryStageMetadata] retryStageMetadata
 
-# no @derive(Json): member(s) variables: list[PipelineVariable], sourceRevisions: list[SourceRevisionOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variables: list[PipelineVariable], sourceRevisions: list[SourceRevisionOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartPipelineExecutionInput:
     str name
     Optional[list[PipelineVariable]] variables
@@ -1599,8 +1664,9 @@ struct StopPipelineExecutionOutput:
 struct SucceededInStageFilter:
     Optional[str] stageName
 
-# no @derive(Json): member(s) conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuccessConditions:
     list[Condition] conditions
 
@@ -1609,8 +1675,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     list[Tag] tags
@@ -1620,8 +1687,9 @@ struct TagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetFilter:
     Optional[str] name
     Optional[list[str]] values
@@ -1631,8 +1699,9 @@ struct ThirdPartyJob:
     Optional[str] clientId
     Optional[str] jobId
 
-# no @derive(Json): member(s) actionConfiguration: ActionConfiguration, inputArtifacts: list[Artifact], outputArtifacts: list[Artifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionConfiguration: ActionConfiguration, inputArtifacts: list[Artifact], outputArtifacts: list[Artifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThirdPartyJobData:
     Optional[ActionTypeId] actionTypeId
     Optional[ActionConfiguration] actionConfiguration
@@ -1643,8 +1712,9 @@ struct ThirdPartyJobData:
     Optional[str] continuationToken
     Optional[EncryptionKey] encryptionKey
 
-# no @derive(Json): member(s) data: ThirdPartyJobData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: ThirdPartyJobData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThirdPartyJobDetails:
     Optional[str] id
     Optional[ThirdPartyJobData] data
@@ -1665,8 +1735,9 @@ struct TransitionState:
 struct UnableToRollbackStageException:
     Optional[str] message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
@@ -1676,18 +1747,21 @@ struct UntagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) actionType: ActionTypeDeclaration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionType: ActionTypeDeclaration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateActionTypeInput:
     ActionTypeDeclaration actionType
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipeline: PipelineDeclaration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipelineInput:
     PipelineDeclaration pipeline
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipeline: PipelineDeclaration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipelineOutput:
     Optional[PipelineDeclaration] pipeline
 
@@ -1701,8 +1775,9 @@ struct WebhookAuthConfiguration:
     Optional[str] AllowedIPRange
     Optional[str] SecretToken
 
-# no @derive(Json): member(s) filters: list[WebhookFilterRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[WebhookFilterRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebhookDefinition:
     str name
     str targetPipeline
@@ -1857,23 +1932,622 @@ def codepipeline_error_from_code(str code) -> CodePipelineError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCustomActionType (input CreateCustomActionTypeInput)
-#   CreatePipeline (input CreatePipelineInput)
-#   ListDeployActionExecutionTargets (input ListDeployActionExecutionTargetsInput)
-#   PollForJobs (input PollForJobsInput)
-#   PutJobSuccessResult (input PutJobSuccessResultInput)
-#   PutWebhook (input PutWebhookInput)
-#   StartPipelineExecution (input StartPipelineExecutionInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateActionType (input UpdateActionTypeInput)
-#   UpdatePipeline (input UpdatePipelineInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codepipeline_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListDeployActionExecutionTargets (input not derivable (no generated method))
+def codepipeline_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codepipeline_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActionDeclaration to a compact JSON object (declaration order).
+def action_declaration_to_json(ActionDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    parts.append("\"actionTypeId\":" + v.actionTypeId.to_json())
+    if v.runOrder.is_some():
+        auto u0 = v.runOrder.unwrap()
+        parts.append("\"runOrder\":" + str(u0))
+    if v.configuration.is_some():
+        auto u1 = v.configuration.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(codepipeline_json_str(k2) + ":" + codepipeline_json_str(u1[k2]))
+        parts.append("\"configuration\":" + codepipeline_json_obj(m2))
+    if v.commands.is_some():
+        auto u3 = v.commands.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(codepipeline_json_str(x4))
+        parts.append("\"commands\":" + codepipeline_json_arr(e4))
+    if v.outputArtifacts.is_some():
+        auto u5 = v.outputArtifacts.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(output_artifact_to_json(x6))
+        parts.append("\"outputArtifacts\":" + codepipeline_json_arr(e6))
+    if v.inputArtifacts.is_some():
+        auto u7 = v.inputArtifacts.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"inputArtifacts\":" + codepipeline_json_arr(e8))
+    if v.outputVariables.is_some():
+        auto u9 = v.outputVariables.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(codepipeline_json_str(x10))
+        parts.append("\"outputVariables\":" + codepipeline_json_arr(e10))
+    if v.roleArn.is_some():
+        auto u11 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + codepipeline_json_str(u11))
+    if v.region.is_some():
+        auto u12 = v.region.unwrap()
+        parts.append("\"region\":" + codepipeline_json_str(u12))
+    if v.namespace.is_some():
+        auto u13 = v.namespace.unwrap()
+        parts.append("\"namespace\":" + codepipeline_json_str(u13))
+    if v.timeoutInMinutes.is_some():
+        auto u14 = v.timeoutInMinutes.unwrap()
+        parts.append("\"timeoutInMinutes\":" + str(u14))
+    if v.environmentVariables.is_some():
+        auto u15 = v.environmentVariables.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"environmentVariables\":" + codepipeline_json_arr(e16))
+    return codepipeline_json_obj(parts)
+
+# Serialize ActionTypeDeclaration to a compact JSON object (declaration order).
+def action_type_declaration_to_json(ActionTypeDeclaration v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + codepipeline_json_str(u0))
+    parts.append("\"executor\":" + action_type_executor_to_json(v.executor))
+    parts.append("\"id\":" + v.id.to_json())
+    parts.append("\"inputArtifactDetails\":" + v.inputArtifactDetails.to_json())
+    parts.append("\"outputArtifactDetails\":" + v.outputArtifactDetails.to_json())
+    if v.permissions.is_some():
+        auto u1 = v.permissions.unwrap()
+        parts.append("\"permissions\":" + action_type_permissions_to_json(u1))
+    if v.properties.is_some():
+        auto u2 = v.properties.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"properties\":" + codepipeline_json_arr(e3))
+    if v.urls.is_some():
+        auto u4 = v.urls.unwrap()
+        parts.append("\"urls\":" + u4.to_json())
+    return codepipeline_json_obj(parts)
+
+# Serialize ActionTypeExecutor to a compact JSON object (declaration order).
+def action_type_executor_to_json(ActionTypeExecutor v) -> str:
+    list[str] parts = []
+    parts.append("\"configuration\":" + executor_configuration_to_json(v.configuration))
+    parts.append("\"type\":" + v.type.to_json())
+    if v.policyStatementsTemplate.is_some():
+        auto u0 = v.policyStatementsTemplate.unwrap()
+        parts.append("\"policyStatementsTemplate\":" + codepipeline_json_str(u0))
+    if v.jobTimeout.is_some():
+        auto u1 = v.jobTimeout.unwrap()
+        parts.append("\"jobTimeout\":" + str(u1))
+    return codepipeline_json_obj(parts)
+
+# Serialize ActionTypePermissions to a compact JSON object (declaration order).
+def action_type_permissions_to_json(ActionTypePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.allowedAccounts:
+        e0.append(codepipeline_json_str(x0))
+    parts.append("\"allowedAccounts\":" + codepipeline_json_arr(e0))
+    return codepipeline_json_obj(parts)
+
+# Serialize BeforeEntryConditions to a compact JSON object (declaration order).
+def before_entry_conditions_to_json(BeforeEntryConditions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.conditions:
+        e0.append(condition_to_json(x0))
+    parts.append("\"conditions\":" + codepipeline_json_arr(e0))
+    return codepipeline_json_obj(parts)
+
+# Serialize Condition to a compact JSON object (declaration order).
+def condition_to_json(Condition v) -> str:
+    list[str] parts = []
+    if v.result.is_some():
+        auto u0 = v.result.unwrap()
+        parts.append("\"result\":" + u0.to_json())
+    if v.rules.is_some():
+        auto u1 = v.rules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(rule_declaration_to_json(x2))
+        parts.append("\"rules\":" + codepipeline_json_arr(e2))
+    return codepipeline_json_obj(parts)
+
+# Serialize CreateCustomActionTypeInput to a compact JSON object (declaration order).
+def create_custom_action_type_input_to_json(CreateCustomActionTypeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"category\":" + v.category.to_json())
+    parts.append("\"provider\":" + codepipeline_json_str(v.provider))
+    parts.append("\"version\":" + codepipeline_json_str(v.version))
+    if v.settings.is_some():
+        auto u0 = v.settings.unwrap()
+        parts.append("\"settings\":" + u0.to_json())
+    if v.configurationProperties.is_some():
+        auto u1 = v.configurationProperties.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"configurationProperties\":" + codepipeline_json_arr(e2))
+    parts.append("\"inputArtifactDetails\":" + v.inputArtifactDetails.to_json())
+    parts.append("\"outputArtifactDetails\":" + v.outputArtifactDetails.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + codepipeline_json_arr(e4))
+    return codepipeline_json_obj(parts)
+
+# Serialize CreatePipelineInput to a compact JSON object (declaration order).
+def create_pipeline_input_to_json(CreatePipelineInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipeline\":" + pipeline_declaration_to_json(v.pipeline))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + codepipeline_json_arr(e1))
+    return codepipeline_json_obj(parts)
+
+# Serialize ExecutorConfiguration to a compact JSON object (declaration order).
+def executor_configuration_to_json(ExecutorConfiguration v) -> str:
+    list[str] parts = []
+    if v.lambdaExecutorConfiguration.is_some():
+        auto u0 = v.lambdaExecutorConfiguration.unwrap()
+        parts.append("\"lambdaExecutorConfiguration\":" + u0.to_json())
+    if v.jobWorkerExecutorConfiguration.is_some():
+        auto u1 = v.jobWorkerExecutorConfiguration.unwrap()
+        parts.append("\"jobWorkerExecutorConfiguration\":" + job_worker_executor_configuration_to_json(u1))
+    return codepipeline_json_obj(parts)
+
+# Serialize FailureConditions to a compact JSON object (declaration order).
+def failure_conditions_to_json(FailureConditions v) -> str:
+    list[str] parts = []
+    if v.result.is_some():
+        auto u0 = v.result.unwrap()
+        parts.append("\"result\":" + u0.to_json())
+    if v.retryConfiguration.is_some():
+        auto u1 = v.retryConfiguration.unwrap()
+        parts.append("\"retryConfiguration\":" + u1.to_json())
+    if v.conditions.is_some():
+        auto u2 = v.conditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(condition_to_json(x3))
+        parts.append("\"conditions\":" + codepipeline_json_arr(e3))
+    return codepipeline_json_obj(parts)
+
+# Serialize GitBranchFilterCriteria to a compact JSON object (declaration order).
+def git_branch_filter_criteria_to_json(GitBranchFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.includes.is_some():
+        auto u0 = v.includes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codepipeline_json_str(x1))
+        parts.append("\"includes\":" + codepipeline_json_arr(e1))
+    if v.excludes.is_some():
+        auto u2 = v.excludes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codepipeline_json_str(x3))
+        parts.append("\"excludes\":" + codepipeline_json_arr(e3))
+    return codepipeline_json_obj(parts)
+
+# Serialize GitConfiguration to a compact JSON object (declaration order).
+def git_configuration_to_json(GitConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceActionName\":" + codepipeline_json_str(v.sourceActionName))
+    if v.push.is_some():
+        auto u0 = v.push.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(git_push_filter_to_json(x1))
+        parts.append("\"push\":" + codepipeline_json_arr(e1))
+    if v.pullRequest.is_some():
+        auto u2 = v.pullRequest.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(git_pull_request_filter_to_json(x3))
+        parts.append("\"pullRequest\":" + codepipeline_json_arr(e3))
+    return codepipeline_json_obj(parts)
+
+# Serialize GitFilePathFilterCriteria to a compact JSON object (declaration order).
+def git_file_path_filter_criteria_to_json(GitFilePathFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.includes.is_some():
+        auto u0 = v.includes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codepipeline_json_str(x1))
+        parts.append("\"includes\":" + codepipeline_json_arr(e1))
+    if v.excludes.is_some():
+        auto u2 = v.excludes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codepipeline_json_str(x3))
+        parts.append("\"excludes\":" + codepipeline_json_arr(e3))
+    return codepipeline_json_obj(parts)
+
+# Serialize GitPullRequestFilter to a compact JSON object (declaration order).
+def git_pull_request_filter_to_json(GitPullRequestFilter v) -> str:
+    list[str] parts = []
+    if v.events.is_some():
+        auto u0 = v.events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"events\":" + codepipeline_json_arr(e1))
+    if v.branches.is_some():
+        auto u2 = v.branches.unwrap()
+        parts.append("\"branches\":" + git_branch_filter_criteria_to_json(u2))
+    if v.filePaths.is_some():
+        auto u3 = v.filePaths.unwrap()
+        parts.append("\"filePaths\":" + git_file_path_filter_criteria_to_json(u3))
+    return codepipeline_json_obj(parts)
+
+# Serialize GitPushFilter to a compact JSON object (declaration order).
+def git_push_filter_to_json(GitPushFilter v) -> str:
+    list[str] parts = []
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        parts.append("\"tags\":" + git_tag_filter_criteria_to_json(u0))
+    if v.branches.is_some():
+        auto u1 = v.branches.unwrap()
+        parts.append("\"branches\":" + git_branch_filter_criteria_to_json(u1))
+    if v.filePaths.is_some():
+        auto u2 = v.filePaths.unwrap()
+        parts.append("\"filePaths\":" + git_file_path_filter_criteria_to_json(u2))
+    return codepipeline_json_obj(parts)
+
+# Serialize GitTagFilterCriteria to a compact JSON object (declaration order).
+def git_tag_filter_criteria_to_json(GitTagFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.includes.is_some():
+        auto u0 = v.includes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codepipeline_json_str(x1))
+        parts.append("\"includes\":" + codepipeline_json_arr(e1))
+    if v.excludes.is_some():
+        auto u2 = v.excludes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codepipeline_json_str(x3))
+        parts.append("\"excludes\":" + codepipeline_json_arr(e3))
+    return codepipeline_json_obj(parts)
+
+# Serialize JobWorkerExecutorConfiguration to a compact JSON object (declaration order).
+def job_worker_executor_configuration_to_json(JobWorkerExecutorConfiguration v) -> str:
+    list[str] parts = []
+    if v.pollingAccounts.is_some():
+        auto u0 = v.pollingAccounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codepipeline_json_str(x1))
+        parts.append("\"pollingAccounts\":" + codepipeline_json_arr(e1))
+    if v.pollingServicePrincipals.is_some():
+        auto u2 = v.pollingServicePrincipals.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codepipeline_json_str(x3))
+        parts.append("\"pollingServicePrincipals\":" + codepipeline_json_arr(e3))
+    return codepipeline_json_obj(parts)
+
+# Serialize ListDeployActionExecutionTargetsInput to a compact JSON object (declaration order).
+def list_deploy_action_execution_targets_input_to_json(ListDeployActionExecutionTargetsInput v) -> str:
+    list[str] parts = []
+    if v.pipelineName.is_some():
+        auto u0 = v.pipelineName.unwrap()
+        parts.append("\"pipelineName\":" + codepipeline_json_str(u0))
+    parts.append("\"actionExecutionId\":" + codepipeline_json_str(v.actionExecutionId))
+    if v.filters.is_some():
+        auto u1 = v.filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(target_filter_to_json(x2))
+        parts.append("\"filters\":" + codepipeline_json_arr(e2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + codepipeline_json_str(u4))
+    return codepipeline_json_obj(parts)
+
+# Serialize OutputArtifact to a compact JSON object (declaration order).
+def output_artifact_to_json(OutputArtifact v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    if v.files.is_some():
+        auto u0 = v.files.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codepipeline_json_str(x1))
+        parts.append("\"files\":" + codepipeline_json_arr(e1))
+    return codepipeline_json_obj(parts)
+
+# Serialize PipelineDeclaration to a compact JSON object (declaration order).
+def pipeline_declaration_to_json(PipelineDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    parts.append("\"roleArn\":" + codepipeline_json_str(v.roleArn))
+    if v.artifactStore.is_some():
+        auto u0 = v.artifactStore.unwrap()
+        parts.append("\"artifactStore\":" + u0.to_json())
+    if v.artifactStores.is_some():
+        auto u1 = v.artifactStores.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(codepipeline_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"artifactStores\":" + codepipeline_json_obj(m2))
+    list[str] e3 = []
+    for x3 in v.stages:
+        e3.append(stage_declaration_to_json(x3))
+    parts.append("\"stages\":" + codepipeline_json_arr(e3))
+    if v.version.is_some():
+        auto u4 = v.version.unwrap()
+        parts.append("\"version\":" + str(u4))
+    if v.executionMode.is_some():
+        auto u5 = v.executionMode.unwrap()
+        parts.append("\"executionMode\":" + u5.to_json())
+    if v.pipelineType.is_some():
+        auto u6 = v.pipelineType.unwrap()
+        parts.append("\"pipelineType\":" + u6.to_json())
+    if v.variables.is_some():
+        auto u7 = v.variables.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"variables\":" + codepipeline_json_arr(e8))
+    if v.triggers.is_some():
+        auto u9 = v.triggers.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(pipeline_trigger_declaration_to_json(x10))
+        parts.append("\"triggers\":" + codepipeline_json_arr(e10))
+    return codepipeline_json_obj(parts)
+
+# Serialize PipelineTriggerDeclaration to a compact JSON object (declaration order).
+def pipeline_trigger_declaration_to_json(PipelineTriggerDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"providerType\":" + codepipeline_json_str(v.providerType))
+    parts.append("\"gitConfiguration\":" + git_configuration_to_json(v.gitConfiguration))
+    return codepipeline_json_obj(parts)
+
+# Serialize PollForJobsInput to a compact JSON object (declaration order).
+def poll_for_jobs_input_to_json(PollForJobsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"actionTypeId\":" + v.actionTypeId.to_json())
+    if v.maxBatchSize.is_some():
+        auto u0 = v.maxBatchSize.unwrap()
+        parts.append("\"maxBatchSize\":" + str(u0))
+    if v.queryParam.is_some():
+        auto u1 = v.queryParam.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(codepipeline_json_str(k2) + ":" + codepipeline_json_str(u1[k2]))
+        parts.append("\"queryParam\":" + codepipeline_json_obj(m2))
+    return codepipeline_json_obj(parts)
+
+# Serialize PutJobSuccessResultInput to a compact JSON object (declaration order).
+def put_job_success_result_input_to_json(PutJobSuccessResultInput v) -> str:
+    list[str] parts = []
+    parts.append("\"jobId\":" + codepipeline_json_str(v.jobId))
+    if v.currentRevision.is_some():
+        auto u0 = v.currentRevision.unwrap()
+        parts.append("\"currentRevision\":" + u0.to_json())
+    if v.continuationToken.is_some():
+        auto u1 = v.continuationToken.unwrap()
+        parts.append("\"continuationToken\":" + codepipeline_json_str(u1))
+    if v.executionDetails.is_some():
+        auto u2 = v.executionDetails.unwrap()
+        parts.append("\"executionDetails\":" + u2.to_json())
+    if v.outputVariables.is_some():
+        auto u3 = v.outputVariables.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(codepipeline_json_str(k4) + ":" + codepipeline_json_str(u3[k4]))
+        parts.append("\"outputVariables\":" + codepipeline_json_obj(m4))
+    return codepipeline_json_obj(parts)
+
+# Serialize PutWebhookInput to a compact JSON object (declaration order).
+def put_webhook_input_to_json(PutWebhookInput v) -> str:
+    list[str] parts = []
+    parts.append("\"webhook\":" + webhook_definition_to_json(v.webhook))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + codepipeline_json_arr(e1))
+    return codepipeline_json_obj(parts)
+
+# Serialize RuleDeclaration to a compact JSON object (declaration order).
+def rule_declaration_to_json(RuleDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    parts.append("\"ruleTypeId\":" + v.ruleTypeId.to_json())
+    if v.configuration.is_some():
+        auto u0 = v.configuration.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(codepipeline_json_str(k1) + ":" + codepipeline_json_str(u0[k1]))
+        parts.append("\"configuration\":" + codepipeline_json_obj(m1))
+    if v.commands.is_some():
+        auto u2 = v.commands.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codepipeline_json_str(x3))
+        parts.append("\"commands\":" + codepipeline_json_arr(e3))
+    if v.inputArtifacts.is_some():
+        auto u4 = v.inputArtifacts.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"inputArtifacts\":" + codepipeline_json_arr(e5))
+    if v.roleArn.is_some():
+        auto u6 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + codepipeline_json_str(u6))
+    if v.region.is_some():
+        auto u7 = v.region.unwrap()
+        parts.append("\"region\":" + codepipeline_json_str(u7))
+    if v.timeoutInMinutes.is_some():
+        auto u8 = v.timeoutInMinutes.unwrap()
+        parts.append("\"timeoutInMinutes\":" + str(u8))
+    return codepipeline_json_obj(parts)
+
+# Serialize StageDeclaration to a compact JSON object (declaration order).
+def stage_declaration_to_json(StageDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    if v.blockers.is_some():
+        auto u0 = v.blockers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"blockers\":" + codepipeline_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.actions:
+        e2.append(action_declaration_to_json(x2))
+    parts.append("\"actions\":" + codepipeline_json_arr(e2))
+    if v.onFailure.is_some():
+        auto u3 = v.onFailure.unwrap()
+        parts.append("\"onFailure\":" + failure_conditions_to_json(u3))
+    if v.onSuccess.is_some():
+        auto u4 = v.onSuccess.unwrap()
+        parts.append("\"onSuccess\":" + success_conditions_to_json(u4))
+    if v.beforeEntry.is_some():
+        auto u5 = v.beforeEntry.unwrap()
+        parts.append("\"beforeEntry\":" + before_entry_conditions_to_json(u5))
+    return codepipeline_json_obj(parts)
+
+# Serialize StartPipelineExecutionInput to a compact JSON object (declaration order).
+def start_pipeline_execution_input_to_json(StartPipelineExecutionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    if v.variables.is_some():
+        auto u0 = v.variables.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"variables\":" + codepipeline_json_arr(e1))
+    if v.clientRequestToken.is_some():
+        auto u2 = v.clientRequestToken.unwrap()
+        parts.append("\"clientRequestToken\":" + codepipeline_json_str(u2))
+    if v.sourceRevisions.is_some():
+        auto u3 = v.sourceRevisions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"sourceRevisions\":" + codepipeline_json_arr(e4))
+    return codepipeline_json_obj(parts)
+
+# Serialize SuccessConditions to a compact JSON object (declaration order).
+def success_conditions_to_json(SuccessConditions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.conditions:
+        e0.append(condition_to_json(x0))
+    parts.append("\"conditions\":" + codepipeline_json_arr(e0))
+    return codepipeline_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + codepipeline_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + codepipeline_json_arr(e0))
+    return codepipeline_json_obj(parts)
+
+# Serialize TargetFilter to a compact JSON object (declaration order).
+def target_filter_to_json(TargetFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + codepipeline_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(codepipeline_json_str(x2))
+        parts.append("\"values\":" + codepipeline_json_arr(e2))
+    return codepipeline_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + codepipeline_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(codepipeline_json_str(x0))
+    parts.append("\"tagKeys\":" + codepipeline_json_arr(e0))
+    return codepipeline_json_obj(parts)
+
+# Serialize UpdateActionTypeInput to a compact JSON object (declaration order).
+def update_action_type_input_to_json(UpdateActionTypeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"actionType\":" + action_type_declaration_to_json(v.actionType))
+    return codepipeline_json_obj(parts)
+
+# Serialize UpdatePipelineInput to a compact JSON object (declaration order).
+def update_pipeline_input_to_json(UpdatePipelineInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipeline\":" + pipeline_declaration_to_json(v.pipeline))
+    return codepipeline_json_obj(parts)
+
+# Serialize WebhookDefinition to a compact JSON object (declaration order).
+def webhook_definition_to_json(WebhookDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codepipeline_json_str(v.name))
+    parts.append("\"targetPipeline\":" + codepipeline_json_str(v.targetPipeline))
+    parts.append("\"targetAction\":" + codepipeline_json_str(v.targetAction))
+    list[str] e0 = []
+    for x0 in v.filters:
+        e0.append(x0.to_json())
+    parts.append("\"filters\":" + codepipeline_json_arr(e0))
+    parts.append("\"authentication\":" + v.authentication.to_json())
+    parts.append("\"authenticationConfiguration\":" + v.authenticationConfiguration.to_json())
+    return codepipeline_json_obj(parts)
 
 # A bound CodePipeline client: credentials + region, threaded into every operation.
 struct CodePipelineClient:
@@ -1891,6 +2565,18 @@ struct CodePipelineClient:
     def acknowledge_third_party_job(self, AcknowledgeThirdPartyJobInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "AcknowledgeThirdPartyJob", body)
+
+    # CreateCustomActionType
+    # errors: ConcurrentModificationException, InvalidTagsException, LimitExceededException, TooManyTagsException, ValidationException
+    def create_custom_action_type(self, CreateCustomActionTypeInput input) -> str:
+        auto body = create_custom_action_type_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "CreateCustomActionType", body)
+
+    # CreatePipeline
+    # errors: ConcurrentModificationException, InvalidActionDeclarationException, InvalidBlockerDeclarationException, InvalidStageDeclarationException, InvalidStructureException, InvalidTagsException, LimitExceededException, PipelineNameInUseException, TooManyTagsException, ValidationException
+    def create_pipeline(self, CreatePipelineInput input) -> str:
+        auto body = create_pipeline_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "CreatePipeline", body)
 
     # DeleteCustomActionType
     # errors: ConcurrentModificationException, ValidationException
@@ -1976,6 +2662,12 @@ struct CodePipelineClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListActionTypes", body)
 
+    # ListDeployActionExecutionTargets
+    # errors: ActionExecutionNotFoundException, InvalidNextTokenException, PipelineNotFoundException, ValidationException
+    def list_deploy_action_execution_targets(self, ListDeployActionExecutionTargetsInput input) -> str:
+        auto body = list_deploy_action_execution_targets_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListDeployActionExecutionTargets", body)
+
     # ListPipelineExecutions
     # errors: InvalidNextTokenException, PipelineNotFoundException, ValidationException
     def list_pipeline_executions(self, ListPipelineExecutionsInput input) -> str:
@@ -2018,6 +2710,12 @@ struct CodePipelineClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "OverrideStageCondition", body)
 
+    # PollForJobs
+    # errors: ActionTypeNotFoundException, ValidationException
+    def poll_for_jobs(self, PollForJobsInput input) -> str:
+        auto body = poll_for_jobs_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PollForJobs", body)
+
     # PollForThirdPartyJobs
     # errors: ActionTypeNotFoundException, ValidationException
     def poll_for_third_party_jobs(self, PollForThirdPartyJobsInput input) -> str:
@@ -2042,6 +2740,12 @@ struct CodePipelineClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutJobFailureResult", body)
 
+    # PutJobSuccessResult
+    # errors: InvalidJobStateException, JobNotFoundException, OutputVariablesSizeExceededException, ValidationException
+    def put_job_success_result(self, PutJobSuccessResultInput input) -> str:
+        auto body = put_job_success_result_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutJobSuccessResult", body)
+
     # PutThirdPartyJobFailureResult
     # errors: InvalidClientTokenException, InvalidJobStateException, JobNotFoundException, ValidationException
     def put_third_party_job_failure_result(self, PutThirdPartyJobFailureResultInput input) -> str:
@@ -2053,6 +2757,12 @@ struct CodePipelineClient:
     def put_third_party_job_success_result(self, PutThirdPartyJobSuccessResultInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutThirdPartyJobSuccessResult", body)
+
+    # PutWebhook
+    # errors: ConcurrentModificationException, InvalidTagsException, InvalidWebhookAuthenticationParametersException, InvalidWebhookFilterPatternException, LimitExceededException, PipelineNotFoundException, TooManyTagsException, ValidationException
+    def put_webhook(self, PutWebhookInput input) -> str:
+        auto body = put_webhook_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutWebhook", body)
 
     # RegisterWebhookWithThirdParty
     # errors: ValidationException, WebhookNotFoundException
@@ -2072,11 +2782,41 @@ struct CodePipelineClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "RollbackStage", body)
 
+    # StartPipelineExecution
+    # errors: ConcurrentPipelineExecutionsLimitExceededException, ConflictException, PipelineNotFoundException, ValidationException
+    def start_pipeline_execution(self, StartPipelineExecutionInput input) -> str:
+        auto body = start_pipeline_execution_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "StartPipelineExecution", body)
+
     # StopPipelineExecution
     # errors: ConflictException, DuplicatedStopRequestException, PipelineExecutionNotStoppableException, PipelineNotFoundException, ValidationException
     def stop_pipeline_execution(self, StopPipelineExecutionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "StopPipelineExecution", body)
+
+    # TagResource
+    # errors: ConcurrentModificationException, InvalidArnException, InvalidTagsException, ResourceNotFoundException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ConcurrentModificationException, InvalidArnException, InvalidTagsException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateActionType
+    # errors: ActionTypeNotFoundException, RequestFailedException, ValidationException
+    def update_action_type(self, UpdateActionTypeInput input) -> str:
+        auto body = update_action_type_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "UpdateActionType", body)
+
+    # UpdatePipeline
+    # errors: InvalidActionDeclarationException, InvalidBlockerDeclarationException, InvalidStageDeclarationException, InvalidStructureException, LimitExceededException, ValidationException
+    def update_pipeline(self, UpdatePipelineInput input) -> str:
+        auto body = update_pipeline_input_to_json(input)
+        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "UpdatePipeline", body)
 
     # Paginator for ListActionExecutions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: actionExecutionDetails).
@@ -2099,6 +2839,20 @@ struct CodePipelineClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListActionTypes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDeployActionExecutionTargets — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: targets).
+    def paginate_list_deploy_action_execution_targets(self, ListDeployActionExecutionTargetsInput input):
+        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
+        while True:
+            auto body = list_deploy_action_execution_targets_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListDeployActionExecutionTargets", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 34 operations — 27 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 34 operations — 34 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   103 structs (76 @derive(Json)), 22 enums, 7 error variants.
-#   1 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -294,8 +294,9 @@ struct AcceptConnectionInvitationRequest:
     str Identifier
     str ClientToken
 
-# no @derive(Json): member(s) Connection: Connection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connection: Connection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptConnectionInvitationResponse:
     Connection Connection
 
@@ -381,8 +382,9 @@ struct CancelConnectionRequest:
     str Reason
     str ClientToken
 
-# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelConnectionResponse:
     str Catalog
     str Id
@@ -398,8 +400,9 @@ struct CancelProfileUpdateTaskRequest:
     Optional[str] ClientToken
     str TaskId
 
-# no @derive(Json): member(s) TaskDetails: TaskDetails, ErrorDetailList: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskDetails: TaskDetails, ErrorDetailList: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelProfileUpdateTaskResponse:
     str Catalog
     str Arn
@@ -416,8 +419,9 @@ struct ConflictException:
     str Message
     ConflictExceptionReason Reason
 
-# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connection:
     str Catalog
     str Id
@@ -443,8 +447,9 @@ struct ConnectionInvitationSummary:
     ParticipantType ParticipantType
     InvitationStatus Status
 
-# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionSummary:
     str Catalog
     str Id
@@ -500,8 +505,9 @@ struct CreateConnectionInvitationResponse:
     str InviterEmail
     str InviterName
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnerRequest:
     str Catalog
     Optional[str] ClientToken
@@ -511,8 +517,9 @@ struct CreatePartnerRequest:
     str EmailVerificationCode
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Profile: PartnerProfile, AwsTrainingCertificationEmailDomains: list[PartnerDomain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profile: PartnerProfile, AwsTrainingCertificationEmailDomains: list[PartnerDomain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnerResponse:
     str Catalog
     str Arn
@@ -588,8 +595,9 @@ struct GetConnectionInvitationResponse:
 struct GetConnectionPreferencesRequest:
     str Catalog
 
-# no @derive(Json): member(s) ExcludedParticipantIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedParticipantIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionPreferencesResponse:
     str Catalog
     str Arn
@@ -603,8 +611,9 @@ struct GetConnectionRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionTypes: dict[ConnectionType, ConnectionTypeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionResponse:
     str Catalog
     str Id
@@ -618,8 +627,9 @@ struct GetPartnerRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) Profile: PartnerProfile, AwsTrainingCertificationEmailDomains: list[PartnerDomain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profile: PartnerProfile, AwsTrainingCertificationEmailDomains: list[PartnerDomain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartnerResponse:
     str Catalog
     str Arn
@@ -634,8 +644,9 @@ struct GetProfileUpdateTaskRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) TaskDetails: TaskDetails, ErrorDetailList: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskDetails: TaskDetails, ErrorDetailList: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProfileUpdateTaskResponse:
     str Catalog
     str Arn
@@ -665,8 +676,9 @@ struct GetQualificationsAssociationDetailsRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) AssociatedPartners: list[QualificationsAssociationPartner] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedPartners: list[QualificationsAssociationPartner] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQualificationsAssociationDetailsResponse:
     str Catalog
     str Arn
@@ -736,8 +748,9 @@ struct Headquarters:
 struct InternalServerException:
     str Message
 
-# no @derive(Json): member(s) OtherParticipantIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherParticipantIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionInvitationsRequest:
     str Catalog
     Optional[str] NextToken
@@ -747,14 +760,16 @@ struct ListConnectionInvitationsRequest:
     Optional[ParticipantType] ParticipantType
     Optional[InvitationStatus] Status
 
-# no @derive(Json): member(s) ConnectionInvitationSummaries: list[ConnectionInvitationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionInvitationSummaries: list[ConnectionInvitationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionInvitationsResponse:
     list[ConnectionInvitationSummary] ConnectionInvitationSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OtherParticipantIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherParticipantIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionsRequest:
     str Catalog
     Optional[str] NextToken
@@ -762,8 +777,9 @@ struct ListConnectionsRequest:
     Optional[int64] MaxResults
     Optional[list[str]] OtherParticipantIdentifiers
 
-# no @derive(Json): member(s) ConnectionSummaries: list[ConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionSummaries: list[ConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionsResponse:
     list[ConnectionSummary] ConnectionSummaries
     Optional[str] NextToken
@@ -773,8 +789,9 @@ struct ListPartnersRequest:
     str Catalog
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PartnerSummaryList: list[PartnerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartnerSummaryList: list[PartnerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartnersResponse:
     list[PartnerSummary] PartnerSummaryList
     Optional[str] NextToken
@@ -783,8 +800,9 @@ struct ListPartnersResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     str ResourceArn
     Optional[list[Tag]] Tags
@@ -809,8 +827,9 @@ struct PartnerDomain:
     @json(timestamp="iso8601")
     DateTime RegisteredAt
 
-# no @derive(Json): member(s) IndustrySegments: list[IndustrySegment], LocalizedContents: list[LocalizedContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndustrySegments: list[IndustrySegment], LocalizedContents: list[LocalizedContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartnerProfile:
     str DisplayName
     str Description
@@ -933,16 +952,18 @@ struct ServiceQuotaExceededException:
     str Message
     ServiceQuotaExceededExceptionReason Reason
 
-# no @derive(Json): member(s) TaskDetails: TaskDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskDetails: TaskDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProfileUpdateTaskRequest:
     str Catalog
     str Identifier
     Optional[str] ClientToken
     TaskDetails TaskDetails
 
-# no @derive(Json): member(s) TaskDetails: TaskDetails, ErrorDetailList: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskDetails: TaskDetails, ErrorDetailList: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProfileUpdateTaskResponse:
     str Catalog
     str Arn
@@ -1011,8 +1032,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -1022,8 +1044,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) IndustrySegments: list[IndustrySegment], LocalizedContents: list[LocalizedContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndustrySegments: list[IndustrySegment], LocalizedContents: list[LocalizedContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskDetails:
     str DisplayName
     str Description
@@ -1041,8 +1064,9 @@ struct ThrottlingException:
     Optional[str] ServiceCode
     Optional[str] QuotaCode
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1052,16 +1076,18 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ExcludedParticipantIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedParticipantIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionPreferencesRequest:
     str Catalog
     int64 Revision
     AccessType AccessType
     Optional[list[str]] ExcludedParticipantIdentifiers
 
-# no @derive(Json): member(s) ExcludedParticipantIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedParticipantIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionPreferencesResponse:
     str Catalog
     str Arn
@@ -1075,8 +1101,9 @@ struct ValidationError:
     Optional[FieldValidationError] FieldValidationError
     Optional[BusinessValidationError] BusinessValidationError
 
-# no @derive(Json): member(s) ErrorDetails: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -1126,20 +1153,171 @@ def partnercentral_account_error_from_code(str code) -> PartnerCentral_AccountEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreatePartner (input CreatePartnerRequest)
-#   ListConnectionInvitations (input ListConnectionInvitationsRequest)
-#   ListConnections (input ListConnectionsRequest)
-#   StartProfileUpdateTask (input StartProfileUpdateTaskRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateConnectionPreferences (input UpdateConnectionPreferencesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def partnercentral_account_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListConnectionInvitations (input not derivable (no generated method))
-#   ListConnections (input not derivable (no generated method))
+def partnercentral_account_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def partnercentral_account_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreatePartnerRequest to a compact JSON object (declaration order).
+def create_partner_request_to_json(CreatePartnerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_account_json_str(v.Catalog))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + partnercentral_account_json_str(u0))
+    parts.append("\"LegalName\":" + partnercentral_account_json_str(v.LegalName))
+    parts.append("\"PrimarySolutionType\":" + v.PrimarySolutionType.to_json())
+    parts.append("\"AllianceLeadContact\":" + v.AllianceLeadContact.to_json())
+    parts.append("\"EmailVerificationCode\":" + partnercentral_account_json_str(v.EmailVerificationCode))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + partnercentral_account_json_arr(e2))
+    return partnercentral_account_json_obj(parts)
+
+# Serialize ListConnectionInvitationsRequest to a compact JSON object (declaration order).
+def list_connection_invitations_request_to_json(ListConnectionInvitationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_account_json_str(v.Catalog))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_account_json_str(u0))
+    if v.ConnectionType.is_some():
+        auto u1 = v.ConnectionType.unwrap()
+        parts.append("\"ConnectionType\":" + u1.to_json())
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.OtherParticipantIdentifiers.is_some():
+        auto u3 = v.OtherParticipantIdentifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(partnercentral_account_json_str(x4))
+        parts.append("\"OtherParticipantIdentifiers\":" + partnercentral_account_json_arr(e4))
+    if v.ParticipantType.is_some():
+        auto u5 = v.ParticipantType.unwrap()
+        parts.append("\"ParticipantType\":" + u5.to_json())
+    if v.Status.is_some():
+        auto u6 = v.Status.unwrap()
+        parts.append("\"Status\":" + u6.to_json())
+    return partnercentral_account_json_obj(parts)
+
+# Serialize ListConnectionsRequest to a compact JSON object (declaration order).
+def list_connections_request_to_json(ListConnectionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_account_json_str(v.Catalog))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_account_json_str(u0))
+    if v.ConnectionType.is_some():
+        auto u1 = v.ConnectionType.unwrap()
+        parts.append("\"ConnectionType\":" + partnercentral_account_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.OtherParticipantIdentifiers.is_some():
+        auto u3 = v.OtherParticipantIdentifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(partnercentral_account_json_str(x4))
+        parts.append("\"OtherParticipantIdentifiers\":" + partnercentral_account_json_arr(e4))
+    return partnercentral_account_json_obj(parts)
+
+# Serialize StartProfileUpdateTaskRequest to a compact JSON object (declaration order).
+def start_profile_update_task_request_to_json(StartProfileUpdateTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_account_json_str(v.Catalog))
+    parts.append("\"Identifier\":" + partnercentral_account_json_str(v.Identifier))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + partnercentral_account_json_str(u0))
+    parts.append("\"TaskDetails\":" + task_details_to_json(v.TaskDetails))
+    return partnercentral_account_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + partnercentral_account_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + partnercentral_account_json_arr(e0))
+    return partnercentral_account_json_obj(parts)
+
+# Serialize TaskDetails to a compact JSON object (declaration order).
+def task_details_to_json(TaskDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"DisplayName\":" + partnercentral_account_json_str(v.DisplayName))
+    parts.append("\"Description\":" + partnercentral_account_json_str(v.Description))
+    parts.append("\"WebsiteUrl\":" + partnercentral_account_json_str(v.WebsiteUrl))
+    parts.append("\"LogoUrl\":" + partnercentral_account_json_str(v.LogoUrl))
+    parts.append("\"PrimarySolutionType\":" + v.PrimarySolutionType.to_json())
+    list[str] e0 = []
+    for x0 in v.IndustrySegments:
+        e0.append(x0.to_json())
+    parts.append("\"IndustrySegments\":" + partnercentral_account_json_arr(e0))
+    parts.append("\"TranslationSourceLocale\":" + partnercentral_account_json_str(v.TranslationSourceLocale))
+    if v.LocalizedContents.is_some():
+        auto u1 = v.LocalizedContents.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"LocalizedContents\":" + partnercentral_account_json_arr(e2))
+    if v.Headquarters.is_some():
+        auto u3 = v.Headquarters.unwrap()
+        parts.append("\"Headquarters\":" + u3.to_json())
+    return partnercentral_account_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + partnercentral_account_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(partnercentral_account_json_str(x0))
+    parts.append("\"TagKeys\":" + partnercentral_account_json_arr(e0))
+    return partnercentral_account_json_obj(parts)
+
+# Serialize UpdateConnectionPreferencesRequest to a compact JSON object (declaration order).
+def update_connection_preferences_request_to_json(UpdateConnectionPreferencesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_account_json_str(v.Catalog))
+    parts.append("\"Revision\":" + str(v.Revision))
+    parts.append("\"AccessType\":" + v.AccessType.to_json())
+    if v.ExcludedParticipantIdentifiers.is_some():
+        auto u0 = v.ExcludedParticipantIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(partnercentral_account_json_str(x1))
+        parts.append("\"ExcludedParticipantIdentifiers\":" + partnercentral_account_json_arr(e1))
+    return partnercentral_account_json_obj(parts)
 
 # A bound PartnerCentral_Account client: credentials + region, threaded into every operation.
 struct PartnerCentral_AccountClient:
@@ -1181,6 +1359,12 @@ struct PartnerCentral_AccountClient:
     def create_connection_invitation(self, CreateConnectionInvitationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "CreateConnectionInvitation", body)
+
+    # CreatePartner
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_partner(self, CreatePartnerRequest input) -> str:
+        auto body = create_partner_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "CreatePartner", body)
 
     # DisassociateAwsTrainingCertificationEmailDomain
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1254,6 +1438,18 @@ struct PartnerCentral_AccountClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "GetVerification", body)
 
+    # ListConnectionInvitations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_connection_invitations(self, ListConnectionInvitationsRequest input) -> str:
+        auto body = list_connection_invitations_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "ListConnectionInvitations", body)
+
+    # ListConnections
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_connections(self, ListConnectionsRequest input) -> str:
+        auto body = list_connections_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "ListConnections", body)
+
     # ListPartners
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_partners(self, ListPartnersRequest input) -> str:
@@ -1290,6 +1486,12 @@ struct PartnerCentral_AccountClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "SendEmailVerificationCode", body)
 
+    # StartProfileUpdateTask
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_profile_update_task(self, StartProfileUpdateTaskRequest input) -> str:
+        auto body = start_profile_update_task_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "StartProfileUpdateTask", body)
+
     # StartQualificationsAssociationTask
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_qualifications_association_task(self, StartQualificationsAssociationTaskRequest input) -> str:
@@ -1307,6 +1509,52 @@ struct PartnerCentral_AccountClient:
     def start_verification(self, StartVerificationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "StartVerification", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateConnectionPreferences
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def update_connection_preferences(self, UpdateConnectionPreferencesRequest input) -> str:
+        auto body = update_connection_preferences_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "UpdateConnectionPreferences", body)
+
+    # Paginator for ListConnectionInvitations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConnectionInvitationSummaries).
+    def paginate_list_connection_invitations(self, ListConnectionInvitationsRequest input):
+        auto host = endpoints.regional_host(partnercentral_account_protocol().service, self.region)
+        while True:
+            auto body = list_connection_invitations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "ListConnectionInvitations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListConnections — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConnectionSummaries).
+    def paginate_list_connections(self, ListConnectionsRequest input):
+        auto host = endpoints.regional_host(partnercentral_account_protocol().service, self.region)
+        while True:
+            auto body = list_connections_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_account_protocol(), self.creds, self.region, "ListConnections", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListPartners — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: PartnerSummaryList).

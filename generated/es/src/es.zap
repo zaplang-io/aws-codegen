@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 51 operations — 40 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 51 operations — 49 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   197 structs (133 @derive(Json)), 33 enums, 11 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -418,14 +418,16 @@ struct AddTagsRequest:
     str ARN
     list[Tag] TagList
 
-# no @derive(Json): member(s) LimitValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LimitValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalLimit:
     Optional[str] LimitName
     Optional[list[str]] LimitValues
 
-# no @derive(Json): member(s) Options: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedOptionsStatus:
     dict[str, str] Options
     OptionStatus Status
@@ -491,15 +493,17 @@ struct AutoTuneMaintenanceSchedule:
     Optional[Duration] Duration
     Optional[str] CronExpressionForRecurrence
 
-# no @derive(Json): member(s) MaintenanceSchedules: list[AutoTuneMaintenanceSchedule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MaintenanceSchedules: list[AutoTuneMaintenanceSchedule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoTuneOptions:
     Optional[AutoTuneDesiredState] DesiredState
     Optional[RollbackOnDisable] RollbackOnDisable
     Optional[list[AutoTuneMaintenanceSchedule]] MaintenanceSchedules
 
-# no @derive(Json): member(s) MaintenanceSchedules: list[AutoTuneMaintenanceSchedule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MaintenanceSchedules: list[AutoTuneMaintenanceSchedule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoTuneOptionsInput:
     Optional[AutoTuneDesiredState] DesiredState
     Optional[list[AutoTuneMaintenanceSchedule]] MaintenanceSchedules
@@ -509,8 +513,9 @@ struct AutoTuneOptionsOutput:
     Optional[AutoTuneState] State
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Options: AutoTuneOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: AutoTuneOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoTuneOptionsStatus:
     Optional[AutoTuneOptions] Options
     Optional[AutoTuneStatus] Status
@@ -552,8 +557,9 @@ struct CancelDomainConfigChangeRequest:
     str DomainName
     Optional[bool] DryRun
 
-# no @derive(Json): member(s) CancelledChangeIds: list[str], CancelledChangeProperties: list[CancelledChangeProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CancelledChangeIds: list[str], CancelledChangeProperties: list[CancelledChangeProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelDomainConfigChangeResponse:
     Optional[bool] DryRun
     Optional[list[str]] CancelledChangeIds
@@ -590,8 +596,9 @@ struct ChangeProgressStage:
     Optional[str] Description
     Optional[DateTime] LastUpdated
 
-# no @derive(Json): member(s) PendingProperties: list[str], CompletedProperties: list[str], ChangeProgressStages: list[ChangeProgressStage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingProperties: list[str], CompletedProperties: list[str], ChangeProgressStages: list[ChangeProgressStage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeProgressStatusDetails:
     Optional[str] ChangeId
     Optional[DateTime] StartTime
@@ -620,8 +627,9 @@ struct CognitoOptionsStatus:
 struct ColdStorageOptions:
     bool Enabled
 
-# no @derive(Json): member(s) TargetVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompatibleVersionsMap:
     Optional[str] SourceVersion
     Optional[list[str]] TargetVersions
@@ -655,8 +663,9 @@ struct CreateElasticsearchDomainRequest:
     Optional[DomainUseCase] UseCase
     Optional[DomainEngineMode] EngineMode
 
-# no @derive(Json): member(s) DomainStatus: ElasticsearchDomainStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainStatus: ElasticsearchDomainStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateElasticsearchDomainResponse:
     Optional[ElasticsearchDomainStatus] DomainStatus
 
@@ -694,8 +703,9 @@ struct CreateVpcEndpointRequest:
     VPCOptions VpcOptions
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) VpcEndpoint: VpcEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpoint: VpcEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcEndpointResponse:
     VpcEndpoint VpcEndpoint
 
@@ -704,8 +714,9 @@ struct CreateVpcEndpointResponse:
 struct DeleteElasticsearchDomainRequest:
     str DomainName
 
-# no @derive(Json): member(s) DomainStatus: ElasticsearchDomainStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainStatus: ElasticsearchDomainStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteElasticsearchDomainResponse:
     Optional[ElasticsearchDomainStatus] DomainStatus
 
@@ -761,8 +772,9 @@ struct DescribeDomainAutoTunesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AutoTunes: list[AutoTune] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoTunes: list[AutoTune] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDomainAutoTunesResponse:
     Optional[list[AutoTune]] AutoTunes
     Optional[str] NextToken
@@ -773,8 +785,9 @@ struct DescribeDomainChangeProgressRequest:
     str DomainName
     Optional[str] ChangeId
 
-# no @derive(Json): member(s) ChangeProgressStatus: ChangeProgressStatusDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangeProgressStatus: ChangeProgressStatusDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDomainChangeProgressResponse:
     Optional[ChangeProgressStatusDetails] ChangeProgressStatus
 
@@ -783,8 +796,9 @@ struct DescribeDomainChangeProgressResponse:
 struct DescribeElasticsearchDomainConfigRequest:
     str DomainName
 
-# no @derive(Json): member(s) DomainConfig: ElasticsearchDomainConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainConfig: ElasticsearchDomainConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeElasticsearchDomainConfigResponse:
     ElasticsearchDomainConfig DomainConfig
 
@@ -793,8 +807,9 @@ struct DescribeElasticsearchDomainConfigResponse:
 struct DescribeElasticsearchDomainRequest:
     str DomainName
 
-# no @derive(Json): member(s) DomainStatus: ElasticsearchDomainStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainStatus: ElasticsearchDomainStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeElasticsearchDomainResponse:
     ElasticsearchDomainStatus DomainStatus
 
@@ -803,8 +818,9 @@ struct DescribeElasticsearchDomainResponse:
 struct DescribeElasticsearchDomainsRequest:
     list[str] DomainNames
 
-# no @derive(Json): member(s) DomainStatusList: list[ElasticsearchDomainStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainStatusList: list[ElasticsearchDomainStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeElasticsearchDomainsResponse:
     list[ElasticsearchDomainStatus] DomainStatusList
 
@@ -816,8 +832,9 @@ struct DescribeElasticsearchInstanceTypeLimitsRequest:
     str InstanceType
     str ElasticsearchVersion
 
-# no @derive(Json): member(s) LimitsByRole: dict[str, Limits] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LimitsByRole: dict[str, Limits] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeElasticsearchInstanceTypeLimitsResponse:
     Optional[dict[str, Limits]] LimitsByRole
 
@@ -828,8 +845,9 @@ struct DescribeInboundCrossClusterSearchConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrossClusterSearchConnections: list[InboundCrossClusterSearchConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossClusterSearchConnections: list[InboundCrossClusterSearchConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInboundCrossClusterSearchConnectionsResponse:
     Optional[list[InboundCrossClusterSearchConnection]] CrossClusterSearchConnections
     Optional[str] NextToken
@@ -841,14 +859,16 @@ struct DescribeOutboundCrossClusterSearchConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrossClusterSearchConnections: list[OutboundCrossClusterSearchConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossClusterSearchConnections: list[OutboundCrossClusterSearchConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOutboundCrossClusterSearchConnectionsResponse:
     Optional[list[OutboundCrossClusterSearchConnection]] CrossClusterSearchConnections
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePackagesFilter:
     Optional[DescribePackagesFilterName] Name
     Optional[list[str]] Value
@@ -860,8 +880,9 @@ struct DescribePackagesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PackageDetailsList: list[PackageDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PackageDetailsList: list[PackageDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePackagesResponse:
     Optional[list[PackageDetails]] PackageDetailsList
     Optional[str] NextToken
@@ -873,8 +894,9 @@ struct DescribeReservedElasticsearchInstanceOfferingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReservedElasticsearchInstanceOfferings: list[ReservedElasticsearchInstanceOffering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReservedElasticsearchInstanceOfferings: list[ReservedElasticsearchInstanceOffering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReservedElasticsearchInstanceOfferingsResponse:
     Optional[str] NextToken
     Optional[list[ReservedElasticsearchInstanceOffering]] ReservedElasticsearchInstanceOfferings
@@ -886,8 +908,9 @@ struct DescribeReservedElasticsearchInstancesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReservedElasticsearchInstances: list[ReservedElasticsearchInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReservedElasticsearchInstances: list[ReservedElasticsearchInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReservedElasticsearchInstancesResponse:
     Optional[str] NextToken
     Optional[list[ReservedElasticsearchInstance]] ReservedElasticsearchInstances
@@ -897,8 +920,9 @@ struct DescribeReservedElasticsearchInstancesResponse:
 struct DescribeVpcEndpointsRequest:
     list[str] VpcEndpointIds
 
-# no @derive(Json): member(s) VpcEndpoints: list[VpcEndpoint], VpcEndpointErrors: list[VpcEndpointError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpoints: list[VpcEndpoint], VpcEndpointErrors: list[VpcEndpointError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVpcEndpointsResponse:
     list[VpcEndpoint] VpcEndpoints
     list[VpcEndpointError] VpcEndpointErrors
@@ -996,8 +1020,9 @@ struct ElasticsearchClusterConfigStatus:
     ElasticsearchClusterConfig Options
     OptionStatus Status
 
-# no @derive(Json): member(s) VPCOptions: VPCDerivedInfoStatus, AdvancedOptions: AdvancedOptionsStatus, LogPublishingOptions: LogPublishingOptionsStatus, AutoTuneOptions: AutoTuneOptionsStatus, ModifyingProperties: list[ModifyingProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCOptions: VPCDerivedInfoStatus, AdvancedOptions: AdvancedOptionsStatus, LogPublishingOptions: LogPublishingOptionsStatus, AutoTuneOptions: AutoTuneOptionsStatus, ModifyingProperties: list[ModifyingProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElasticsearchDomainConfig:
     Optional[ElasticsearchVersionStatus] ElasticsearchVersion
     Optional[ElasticsearchClusterConfigStatus] ElasticsearchClusterConfig
@@ -1020,8 +1045,9 @@ struct ElasticsearchDomainConfig:
     Optional[UseCaseStatus] UseCase
     Optional[EngineModeStatus] EngineMode
 
-# no @derive(Json): member(s) Endpoints: dict[str, str], VPCOptions: VPCDerivedInfo, AdvancedOptions: dict[str, str], LogPublishingOptions: dict[LogType, LogPublishingOption], ModifyingProperties: list[ModifyingProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: dict[str, str], VPCOptions: VPCDerivedInfo, AdvancedOptions: dict[str, str], LogPublishingOptions: dict[LogType, LogPublishingOption], ModifyingProperties: list[ModifyingProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElasticsearchDomainStatus:
     str DomainId
     str DomainName
@@ -1080,8 +1106,9 @@ struct ErrorDetails:
     Optional[str] ErrorType
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -1091,8 +1118,9 @@ struct Filter:
 struct GetCompatibleElasticsearchVersionsRequest:
     Optional[str] DomainName
 
-# no @derive(Json): member(s) CompatibleElasticsearchVersions: list[CompatibleVersionsMap] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompatibleElasticsearchVersions: list[CompatibleVersionsMap] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCompatibleElasticsearchVersionsResponse:
     Optional[list[CompatibleVersionsMap]] CompatibleElasticsearchVersions
 
@@ -1103,8 +1131,9 @@ struct GetPackageVersionHistoryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PackageVersionHistoryList: list[PackageVersionHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PackageVersionHistoryList: list[PackageVersionHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPackageVersionHistoryResponse:
     Optional[str] PackageID
     Optional[list[PackageVersionHistory]] PackageVersionHistoryList
@@ -1117,8 +1146,9 @@ struct GetUpgradeHistoryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UpgradeHistories: list[UpgradeHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpgradeHistories: list[UpgradeHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUpgradeHistoryResponse:
     Optional[list[UpgradeHistory]] UpgradeHistories
     Optional[str] NextToken
@@ -1175,8 +1205,9 @@ struct LimitExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) StorageTypes: list[StorageType], AdditionalLimits: list[AdditionalLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageTypes: list[StorageType], AdditionalLimits: list[AdditionalLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Limits:
     Optional[list[StorageType]] StorageTypes
     Optional[InstanceLimits] InstanceLimits
@@ -1188,8 +1219,9 @@ struct ListDomainNamesRequest:
     # wire string of the EngineType enum (querystring binding)
     Optional[str] EngineType
 
-# no @derive(Json): member(s) DomainNames: list[DomainInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNames: list[DomainInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainNamesResponse:
     Optional[list[DomainInfo]] DomainNames
 
@@ -1200,8 +1232,9 @@ struct ListDomainsForPackageRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DomainPackageDetailsList: list[DomainPackageDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainPackageDetailsList: list[DomainPackageDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsForPackageResponse:
     Optional[list[DomainPackageDetails]] DomainPackageDetailsList
     Optional[str] NextToken
@@ -1214,8 +1247,9 @@ struct ListElasticsearchInstanceTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ElasticsearchInstanceTypes: list[ESPartitionInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ElasticsearchInstanceTypes: list[ESPartitionInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListElasticsearchInstanceTypesResponse:
     Optional[list[ESPartitionInstanceType]] ElasticsearchInstanceTypes
     Optional[str] NextToken
@@ -1226,8 +1260,9 @@ struct ListElasticsearchVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ElasticsearchVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ElasticsearchVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListElasticsearchVersionsResponse:
     Optional[list[str]] ElasticsearchVersions
     Optional[str] NextToken
@@ -1239,8 +1274,9 @@ struct ListPackagesForDomainRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DomainPackageDetailsList: list[DomainPackageDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainPackageDetailsList: list[DomainPackageDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackagesForDomainResponse:
     Optional[list[DomainPackageDetails]] DomainPackageDetailsList
     Optional[str] NextToken
@@ -1250,8 +1286,9 @@ struct ListPackagesForDomainResponse:
 struct ListTagsRequest:
     str ARN
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[list[Tag]] TagList
 
@@ -1261,8 +1298,9 @@ struct ListVpcEndpointAccessRequest:
     str DomainName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuthorizedPrincipalList: list[AuthorizedPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedPrincipalList: list[AuthorizedPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcEndpointAccessResponse:
     list[AuthorizedPrincipal] AuthorizedPrincipalList
     str NextToken
@@ -1273,8 +1311,9 @@ struct ListVpcEndpointsForDomainRequest:
     str DomainName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VpcEndpointSummaryList: list[VpcEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpointSummaryList: list[VpcEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcEndpointsForDomainResponse:
     list[VpcEndpointSummary] VpcEndpointSummaryList
     str NextToken
@@ -1284,8 +1323,9 @@ struct ListVpcEndpointsForDomainResponse:
 struct ListVpcEndpointsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VpcEndpointSummaryList: list[VpcEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpointSummaryList: list[VpcEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcEndpointsResponse:
     list[VpcEndpointSummary] VpcEndpointSummaryList
     str NextToken
@@ -1295,8 +1335,9 @@ struct LogPublishingOption:
     Optional[str] CloudWatchLogsLogGroupArn
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Options: dict[LogType, LogPublishingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: dict[LogType, LogPublishingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogPublishingOptionsStatus:
     Optional[dict[LogType, LogPublishingOption]] Options
     Optional[OptionStatus] Status
@@ -1399,8 +1440,9 @@ struct RemoveTagsRequest:
     str ARN
     list[str] TagKeys
 
-# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservedElasticsearchInstance:
     Optional[str] ReservationName
     Optional[str] ReservedElasticsearchInstanceId
@@ -1416,8 +1458,9 @@ struct ReservedElasticsearchInstance:
     Optional[ReservedElasticsearchInstancePaymentOption] PaymentOption
     Optional[list[RecurringCharge]] RecurringCharges
 
-# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservedElasticsearchInstanceOffering:
     Optional[str] ReservedElasticsearchInstanceOfferingId
     Optional[ESPartitionInstanceType] ElasticsearchInstanceType
@@ -1508,15 +1551,17 @@ struct StartElasticsearchServiceSoftwareUpdateRequest:
 struct StartElasticsearchServiceSoftwareUpdateResponse:
     Optional[ServiceSoftwareOptions] ServiceSoftwareOptions
 
-# no @derive(Json): member(s) StorageTypeLimits: list[StorageTypeLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageTypeLimits: list[StorageTypeLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageType:
     Optional[str] StorageTypeName
     Optional[str] StorageSubTypeName
     Optional[list[StorageTypeLimit]] StorageTypeLimits
 
-# no @derive(Json): member(s) LimitValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LimitValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageTypeLimit:
     Optional[str] LimitName
     Optional[list[str]] LimitValues
@@ -1549,8 +1594,9 @@ struct UpdateElasticsearchDomainConfigRequest:
     Optional[DomainUseCase] UseCase
     Optional[DomainEngineMode] EngineMode
 
-# no @derive(Json): member(s) DomainConfig: ElasticsearchDomainConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainConfig: ElasticsearchDomainConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateElasticsearchDomainConfigResponse:
     ElasticsearchDomainConfig DomainConfig
     Optional[DryRunResults] DryRunResults
@@ -1573,8 +1619,9 @@ struct UpdateVpcEndpointRequest:
     str VpcEndpointId
     VPCOptions VpcOptions
 
-# no @derive(Json): member(s) VpcEndpoint: VpcEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpoint: VpcEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVpcEndpointResponse:
     VpcEndpoint VpcEndpoint
 
@@ -1592,16 +1639,18 @@ struct UpgradeElasticsearchDomainResponse:
     Optional[bool] PerformCheckOnly
     Optional[ChangeProgressDetails] ChangeProgressDetails
 
-# no @derive(Json): member(s) StepsList: list[UpgradeStepItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepsList: list[UpgradeStepItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpgradeHistory:
     Optional[str] UpgradeName
     Optional[DateTime] StartTimestamp
     Optional[UpgradeStatus] UpgradeStatus
     Optional[list[UpgradeStepItem]] StepsList
 
-# no @derive(Json): member(s) Issues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Issues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpgradeStepItem:
     Optional[UpgradeStep] UpgradeStep
     Optional[UpgradeStatus] UpgradeStepStatus
@@ -1613,22 +1662,25 @@ struct UseCaseStatus:
     DomainUseCase Options
     OptionStatus Status
 
-# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VPCDerivedInfo:
     Optional[str] VPCId
     Optional[list[str]] SubnetIds
     Optional[list[str]] AvailabilityZones
     Optional[list[str]] SecurityGroupIds
 
-# no @derive(Json): member(s) Options: VPCDerivedInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: VPCDerivedInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VPCDerivedInfoStatus:
     VPCDerivedInfo Options
     OptionStatus Status
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VPCOptions:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
@@ -1638,8 +1690,9 @@ struct ValidationException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcOptions: VPCDerivedInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcOptions: VPCDerivedInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpoint:
     Optional[str] VpcEndpointId
     Optional[str] VpcEndpointOwner
@@ -1715,17 +1768,8 @@ def es_error_from_code(str code) -> Elasticsearch_ServiceError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddTags (document member `TagList: list[Tag]` is not serializable by derive)
-#   CreateElasticsearchDomain (document member `VPCOptions: VPCOptions` is not serializable by derive)
-#   CreateVpcEndpoint (document member `VpcOptions: VPCOptions` is not serializable by derive)
-#   DescribeElasticsearchDomains (document member `DomainNames: list[str]` is not serializable by derive)
-#   DescribeInboundCrossClusterSearchConnections (document member `Filters: list[Filter]` is not serializable by derive)
-#   DescribeOutboundCrossClusterSearchConnections (document member `Filters: list[Filter]` is not serializable by derive)
-#   DescribePackages (document member `Filters: list[DescribePackagesFilter]` is not serializable by derive)
-#   DescribeVpcEndpoints (document member `VpcEndpointIds: list[str]` is not serializable by derive)
-#   RemoveTags (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateElasticsearchDomainConfig (document member `VPCOptions: VPCOptions` is not serializable by derive)
-#   UpdateVpcEndpoint (document member `VpcOptions: VPCOptions` is not serializable by derive)
+#   CreateElasticsearchDomain (document member `LogPublishingOptions: dict[LogType, LogPublishingOption]` is not serializable)
+#   UpdateElasticsearchDomainConfig (document member `LogPublishingOptions: dict[LogType, LogPublishingOption]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1792,6 +1836,81 @@ struct UpgradeElasticsearchDomainDocument:
     str TargetVersion
     Optional[bool] PerformCheckOnly
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def es_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def es_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def es_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DescribePackagesFilter to a compact JSON object (declaration order).
+def describe_packages_filter_to_json(DescribePackagesFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + u0.to_json())
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(es_json_str(x2))
+        parts.append("\"Value\":" + es_json_arr(e2))
+    return es_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + es_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(es_json_str(x2))
+        parts.append("\"Values\":" + es_json_arr(e2))
+    return es_json_obj(parts)
+
+# Serialize VPCOptions to a compact JSON object (declaration order).
+def vpc_options_to_json(VPCOptions v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(es_json_str(x1))
+        parts.append("\"SubnetIds\":" + es_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(es_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + es_json_arr(e3))
+    return es_json_obj(parts)
+
 # A bound Elasticsearch_Service client: credentials + region, threaded into every operation.
 struct Elasticsearch_ServiceClient:
     core.Credentials creds
@@ -1805,6 +1924,20 @@ struct Elasticsearch_ServiceClient:
         labels["ConnectionId"] = input.CrossClusterSearchConnectionId
         auto b = binding.HttpBinding(method="PUT", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
+
+    # AddTags  POST /2015-01-01/tags
+    # errors: BaseException, InternalException, LimitExceededException, ValidationException
+    def add_tags(self, AddTagsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ARN\":" + es_json_str(input.ARN))
+        list[str] e0 = []
+        for x0 in input.TagList:
+            e0.append(x0.to_json())
+        parts.append("\"TagList\":" + es_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
     # AssociatePackage  POST /2015-01-01/packages/associate/{PackageID}/{DomainName}
     # errors: AccessDeniedException, BaseException, ConflictException, InternalException, ResourceNotFoundException, ValidationException
@@ -1863,6 +1996,20 @@ struct Elasticsearch_ServiceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePackageDocument(PackageName=input.PackageName, PackageType=input.PackageType, PackageDescription=input.PackageDescription, PackageSource=input.PackageSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
+    # CreateVpcEndpoint  POST /2015-01-01/es/vpcEndpoints
+    # errors: BaseException, ConflictException, DisabledOperationException, InternalException, LimitExceededException, ValidationException
+    def create_vpc_endpoint(self, CreateVpcEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DomainArn\":" + es_json_str(input.DomainArn))
+        parts.append("\"VpcOptions\":" + vpc_options_to_json(input.VpcOptions))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + es_json_str(u0))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
     # DeleteElasticsearchDomain  DELETE /2015-01-01/es/domain/{DomainName}
@@ -1961,6 +2108,19 @@ struct Elasticsearch_ServiceClient:
         auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
+    # DescribeElasticsearchDomains  POST /2015-01-01/es/domain-info
+    # errors: BaseException, InternalException, ValidationException
+    def describe_elasticsearch_domains(self, DescribeElasticsearchDomainsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain-info", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DomainNames:
+            e0.append(es_json_str(x0))
+        parts.append("\"DomainNames\":" + es_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
     # DescribeElasticsearchInstanceTypeLimits  GET /2015-01-01/es/instanceTypeLimits/{ElasticsearchVersion}/{InstanceType}
     # errors: BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
     def describe_elasticsearch_instance_type_limits(self, DescribeElasticsearchInstanceTypeLimitsRequest input) -> str:
@@ -1973,6 +2133,69 @@ struct Elasticsearch_ServiceClient:
             query["domainName"] = input.DomainName.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/instanceTypeLimits/{ElasticsearchVersion}/{InstanceType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
+
+    # DescribeInboundCrossClusterSearchConnections  POST /2015-01-01/es/ccs/inboundConnection/search
+    # errors: DisabledOperationException, InvalidPaginationTokenException
+    def describe_inbound_cross_cluster_search_connections(self, DescribeInboundCrossClusterSearchConnectionsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/inboundConnection/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"Filters\":" + es_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + es_json_str(u3))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
+    # DescribeOutboundCrossClusterSearchConnections  POST /2015-01-01/es/ccs/outboundConnection/search
+    # errors: DisabledOperationException, InvalidPaginationTokenException
+    def describe_outbound_cross_cluster_search_connections(self, DescribeOutboundCrossClusterSearchConnectionsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/outboundConnection/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"Filters\":" + es_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + es_json_str(u3))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
+    # DescribePackages  POST /2015-01-01/packages/describe
+    # errors: AccessDeniedException, BaseException, InternalException, ResourceNotFoundException, ValidationException
+    def describe_packages(self, DescribePackagesRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(describe_packages_filter_to_json(x1))
+            parts.append("\"Filters\":" + es_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + es_json_str(u3))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
     # DescribeReservedElasticsearchInstanceOfferings  GET /2015-01-01/es/reservedInstanceOfferings
     # errors: DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
@@ -2001,6 +2224,19 @@ struct Elasticsearch_ServiceClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/reservedInstances", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
+
+    # DescribeVpcEndpoints  POST /2015-01-01/es/vpcEndpoints/describe
+    # errors: BaseException, DisabledOperationException, InternalException, ValidationException
+    def describe_vpc_endpoints(self, DescribeVpcEndpointsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.VpcEndpointIds:
+            e0.append(es_json_str(x0))
+        parts.append("\"VpcEndpointIds\":" + es_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
     # DissociatePackage  POST /2015-01-01/packages/dissociate/{PackageID}/{DomainName}
     # errors: AccessDeniedException, BaseException, ConflictException, InternalException, ResourceNotFoundException, ValidationException
@@ -2186,6 +2422,20 @@ struct Elasticsearch_ServiceClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
+    # RemoveTags  POST /2015-01-01/tags-removal
+    # errors: BaseException, InternalException, ValidationException
+    def remove_tags(self, RemoveTagsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/tags-removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ARN\":" + es_json_str(input.ARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(es_json_str(x0))
+        parts.append("\"TagKeys\":" + es_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
     # RevokeVpcEndpointAccess  POST /2015-01-01/es/domain/{DomainName}/revokeVpcEndpointAccess
     # errors: BaseException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def revoke_vpc_endpoint_access(self, RevokeVpcEndpointAccessRequest input) -> str:
@@ -2213,6 +2463,17 @@ struct Elasticsearch_ServiceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageDocument(PackageID=input.PackageID, PackageSource=input.PackageSource, PackageDescription=input.PackageDescription, CommitMessage=input.CommitMessage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
+    # UpdateVpcEndpoint  POST /2015-01-01/es/vpcEndpoints/update
+    # errors: BaseException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
+    def update_vpc_endpoint(self, UpdateVpcEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"VpcEndpointId\":" + es_json_str(input.VpcEndpointId))
+        parts.append("\"VpcOptions\":" + vpc_options_to_json(input.VpcOptions))
+        auto bp = restjson.rest_json_document(b, es_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
     # UpgradeElasticsearchDomain  POST /2015-01-01/es/upgradeDomain

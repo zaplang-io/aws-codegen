@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 15 with a generated method,
-#   16 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 29 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   96 structs (57 @derive(Json)), 6 enums, 6 error variants.
-#   1 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -105,8 +105,9 @@ struct AwsIdentity:
     str externalId
     str principal
 
-# no @derive(Json): member(s) accounts: list[str], regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[str], regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsLogSourceConfiguration:
     Optional[list[str]] accounts
     list[str] regions
@@ -133,8 +134,9 @@ struct ConflictException:
 struct CreateAwsLogSourceRequest:
     list[AwsLogSourceConfiguration] sources
 
-# no @derive(Json): member(s) failed: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failed: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAwsLogSourceResponse:
     Optional[list[str]] failed
 
@@ -179,8 +181,9 @@ struct CreateDataLakeRequest:
     str metaStoreManagerRoleArn
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) dataLakes: list[DataLakeResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataLakes: list[DataLakeResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataLakeResponse:
     Optional[list[DataLakeResource]] dataLakes
 
@@ -204,8 +207,9 @@ struct CreateSubscriberRequest:
     str subscriberName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) subscriber: SubscriberResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriber: SubscriberResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubscriberResponse:
     Optional[SubscriberResource] subscriber
 
@@ -236,14 +240,16 @@ struct CustomLogSourceResource:
     Optional[str] sourceName
     Optional[str] sourceVersion
 
-# no @derive(Json): member(s) sources: list[AwsLogSourceResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[AwsLogSourceResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeAutoEnableNewAccountConfiguration:
     str region
     list[AwsLogSourceResource] sources
 
-# no @derive(Json): member(s) lifecycleConfiguration: DataLakeLifecycleConfiguration, replicationConfiguration: DataLakeReplicationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleConfiguration: DataLakeLifecycleConfiguration, replicationConfiguration: DataLakeReplicationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeConfiguration:
     Optional[DataLakeEncryptionConfiguration] encryptionConfiguration
     Optional[DataLakeLifecycleConfiguration] lifecycleConfiguration
@@ -262,8 +268,9 @@ struct DataLakeException:
     @json(timestamp="iso8601")
     Optional[DateTime] timestamp
 
-# no @derive(Json): member(s) transitions: list[DataLakeLifecycleTransition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transitions: list[DataLakeLifecycleTransition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeLifecycleConfiguration:
     Optional[DataLakeLifecycleExpiration] expiration
     Optional[list[DataLakeLifecycleTransition]] transitions
@@ -277,14 +284,16 @@ struct DataLakeLifecycleTransition:
     Optional[int64] days
     Optional[str] storageClass
 
-# no @derive(Json): member(s) regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeReplicationConfiguration:
     Optional[list[str]] regions
     Optional[str] roleArn
 
-# no @derive(Json): member(s) lifecycleConfiguration: DataLakeLifecycleConfiguration, replicationConfiguration: DataLakeReplicationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleConfiguration: DataLakeLifecycleConfiguration, replicationConfiguration: DataLakeReplicationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeResource:
     Optional[DataLakeStatus] createStatus
     str dataLakeArn
@@ -295,8 +304,9 @@ struct DataLakeResource:
     Optional[str] s3BucketArn
     Optional[DataLakeUpdateStatus] updateStatus
 
-# no @derive(Json): member(s) eventClasses: list[str], sourceStatuses: list[DataLakeSourceStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventClasses: list[str], sourceStatuses: list[DataLakeSourceStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeSource:
     Optional[str] account
     Optional[list[str]] eventClasses
@@ -324,8 +334,9 @@ struct DataLakeUpdateStatus:
 struct DeleteAwsLogSourceRequest:
     list[AwsLogSourceConfiguration] sources
 
-# no @derive(Json): member(s) failed: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failed: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAwsLogSourceResponse:
     Optional[list[str]] failed
 
@@ -420,8 +431,9 @@ struct GetDataLakeOrganizationConfigurationRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) autoEnableNewAccount: list[DataLakeAutoEnableNewAccountConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoEnableNewAccount: list[DataLakeAutoEnableNewAccountConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataLakeOrganizationConfigurationResponse:
     Optional[list[DataLakeAutoEnableNewAccountConfiguration]] autoEnableNewAccount
 
@@ -432,8 +444,9 @@ struct GetDataLakeSourcesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dataLakeSources: list[DataLakeSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataLakeSources: list[DataLakeSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataLakeSourcesResponse:
     Optional[str] dataLakeArn
     Optional[list[DataLakeSource]] dataLakeSources
@@ -444,8 +457,9 @@ struct GetDataLakeSourcesResponse:
 struct GetSubscriberRequest:
     str subscriberId
 
-# no @derive(Json): member(s) subscriber: SubscriberResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriber: SubscriberResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriberResponse:
     Optional[SubscriberResource] subscriber
 
@@ -468,8 +482,9 @@ struct ListDataLakeExceptionsRequest:
     Optional[str] nextToken
     Optional[list[str]] regions
 
-# no @derive(Json): member(s) exceptions: list[DataLakeException] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exceptions: list[DataLakeException] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataLakeExceptionsResponse:
     Optional[list[DataLakeException]] exceptions
     Optional[str] nextToken
@@ -479,8 +494,9 @@ struct ListDataLakeExceptionsResponse:
 struct ListDataLakesRequest:
     Optional[list[str]] regions
 
-# no @derive(Json): member(s) dataLakes: list[DataLakeResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataLakes: list[DataLakeResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataLakesResponse:
     Optional[list[DataLakeResource]] dataLakes
 
@@ -493,8 +509,9 @@ struct ListLogSourcesRequest:
     Optional[list[str]] regions
     Optional[list[LogSourceResource]] sources
 
-# no @derive(Json): member(s) sources: list[LogSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[LogSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLogSourcesResponse:
     Optional[str] nextToken
     Optional[list[LogSource]] sources
@@ -505,8 +522,9 @@ struct ListSubscribersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) subscribers: list[SubscriberResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribers: list[SubscriberResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscribersResponse:
     Optional[str] nextToken
     Optional[list[SubscriberResource]] subscribers
@@ -516,13 +534,15 @@ struct ListSubscribersResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) sources: list[LogSourceResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[LogSourceResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogSource:
     Optional[str] account
     Optional[str] region
@@ -559,8 +579,9 @@ struct SqsNotificationConfiguration:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) accessTypes: list[AccessType], sources: list[LogSourceResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTypes: list[AccessType], sources: list[LogSourceResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriberResource:
     Optional[list[AccessType]] accessTypes
     Optional[DateTime] createdAt
@@ -630,8 +651,9 @@ struct UpdateDataLakeRequest:
     list[DataLakeConfiguration] configurations
     Optional[str] metaStoreManagerRoleArn
 
-# no @derive(Json): member(s) dataLakes: list[DataLakeResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataLakes: list[DataLakeResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataLakeResponse:
     Optional[list[DataLakeResource]] dataLakes
 
@@ -654,8 +676,9 @@ struct UpdateSubscriberRequest:
     Optional[AwsIdentity] subscriberIdentity
     Optional[str] subscriberName
 
-# no @derive(Json): member(s) subscriber: SubscriberResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriber: SubscriberResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubscriberResponse:
     Optional[SubscriberResource] subscriber
 
@@ -694,28 +717,8 @@ def securitylake_error_from_code(str code) -> SecurityLakeError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAwsLogSource (document member `sources: list[AwsLogSourceConfiguration]` is not serializable by derive)
-#   CreateCustomLogSource (document member `eventClasses: list[str]` is not serializable by derive)
-#   CreateDataLake (document member `configurations: list[DataLakeConfiguration]` is not serializable by derive)
-#   CreateDataLakeOrganizationConfiguration (document member `autoEnableNewAccount: list[DataLakeAutoEnableNewAccountConfiguration]` is not serializable by derive)
-#   CreateSubscriber (document member `accessTypes: list[AccessType]` is not serializable by derive)
-#   DeleteAwsLogSource (document member `sources: list[AwsLogSourceConfiguration]` is not serializable by derive)
-#   DeleteDataLake (document member `regions: list[str]` is not serializable by derive)
-#   DeleteDataLakeOrganizationConfiguration (document member `autoEnableNewAccount: list[DataLakeAutoEnableNewAccountConfiguration]` is not serializable by derive)
-#   GetDataLakeSources (document member `accounts: list[str]` is not serializable by derive)
-#   ListDataLakeExceptions (document member `regions: list[str]` is not serializable by derive)
 #   ListDataLakes (httpQuery `regions` has unsupported type list[str])
-#   ListLogSources (document member `accounts: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateDataLake (document member `configurations: list[DataLakeConfiguration]` is not serializable by derive)
-#   UpdateSubscriber (document member `sources: list[LogSourceResource]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   GetDataLakeSources (operation not generated)
-#   ListDataLakeExceptions (operation not generated)
-#   ListLogSources (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -749,10 +752,165 @@ struct UpdateSubscriberNotificationDocument:
     # document members of UpdateSubscriberNotification
     NotificationConfiguration configuration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def securitylake_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def securitylake_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def securitylake_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AwsLogSourceConfiguration to a compact JSON object (declaration order).
+def aws_log_source_configuration_to_json(AwsLogSourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.accounts.is_some():
+        auto u0 = v.accounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securitylake_json_str(x1))
+        parts.append("\"accounts\":" + securitylake_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.regions:
+        e2.append(securitylake_json_str(x2))
+    parts.append("\"regions\":" + securitylake_json_arr(e2))
+    parts.append("\"sourceName\":" + v.sourceName.to_json())
+    if v.sourceVersion.is_some():
+        auto u3 = v.sourceVersion.unwrap()
+        parts.append("\"sourceVersion\":" + securitylake_json_str(u3))
+    return securitylake_json_obj(parts)
+
+# Serialize DataLakeAutoEnableNewAccountConfiguration to a compact JSON object (declaration order).
+def data_lake_auto_enable_new_account_configuration_to_json(DataLakeAutoEnableNewAccountConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"region\":" + securitylake_json_str(v.region))
+    list[str] e0 = []
+    for x0 in v.sources:
+        e0.append(x0.to_json())
+    parts.append("\"sources\":" + securitylake_json_arr(e0))
+    return securitylake_json_obj(parts)
+
+# Serialize DataLakeConfiguration to a compact JSON object (declaration order).
+def data_lake_configuration_to_json(DataLakeConfiguration v) -> str:
+    list[str] parts = []
+    if v.encryptionConfiguration.is_some():
+        auto u0 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + u0.to_json())
+    if v.lifecycleConfiguration.is_some():
+        auto u1 = v.lifecycleConfiguration.unwrap()
+        parts.append("\"lifecycleConfiguration\":" + data_lake_lifecycle_configuration_to_json(u1))
+    parts.append("\"region\":" + securitylake_json_str(v.region))
+    if v.replicationConfiguration.is_some():
+        auto u2 = v.replicationConfiguration.unwrap()
+        parts.append("\"replicationConfiguration\":" + data_lake_replication_configuration_to_json(u2))
+    return securitylake_json_obj(parts)
+
+# Serialize DataLakeLifecycleConfiguration to a compact JSON object (declaration order).
+def data_lake_lifecycle_configuration_to_json(DataLakeLifecycleConfiguration v) -> str:
+    list[str] parts = []
+    if v.expiration.is_some():
+        auto u0 = v.expiration.unwrap()
+        parts.append("\"expiration\":" + u0.to_json())
+    if v.transitions.is_some():
+        auto u1 = v.transitions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"transitions\":" + securitylake_json_arr(e2))
+    return securitylake_json_obj(parts)
+
+# Serialize DataLakeReplicationConfiguration to a compact JSON object (declaration order).
+def data_lake_replication_configuration_to_json(DataLakeReplicationConfiguration v) -> str:
+    list[str] parts = []
+    if v.regions.is_some():
+        auto u0 = v.regions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securitylake_json_str(x1))
+        parts.append("\"regions\":" + securitylake_json_arr(e1))
+    if v.roleArn.is_some():
+        auto u2 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + securitylake_json_str(u2))
+    return securitylake_json_obj(parts)
+
 # A bound SecurityLake client: credentials + region, threaded into every operation.
 struct SecurityLakeClient:
     core.Credentials creds
     str region
+
+    # CreateAwsLogSource  POST /v1/datalake/logsources/aws
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_aws_log_source(self, CreateAwsLogSourceRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/aws", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sources:
+            e0.append(aws_log_source_configuration_to_json(x0))
+        parts.append("\"sources\":" + securitylake_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # CreateCustomLogSource  POST /v1/datalake/logsources/custom
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_custom_log_source(self, CreateCustomLogSourceRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/custom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"configuration\":" + input.configuration.to_json())
+        if input.eventClasses.is_some():
+            auto u0 = input.eventClasses.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securitylake_json_str(x1))
+            parts.append("\"eventClasses\":" + securitylake_json_arr(e1))
+        parts.append("\"sourceName\":" + securitylake_json_str(input.sourceName))
+        if input.sourceVersion.is_some():
+            auto u2 = input.sourceVersion.unwrap()
+            parts.append("\"sourceVersion\":" + securitylake_json_str(u2))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # CreateDataLake  POST /v1/datalake
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_data_lake(self, CreateDataLakeRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.configurations:
+            e0.append(data_lake_configuration_to_json(x0))
+        parts.append("\"configurations\":" + securitylake_json_arr(e0))
+        parts.append("\"metaStoreManagerRoleArn\":" + securitylake_json_str(input.metaStoreManagerRoleArn))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + securitylake_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
     # CreateDataLakeExceptionSubscription  POST /v1/datalake/exceptions/subscription
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -761,6 +919,51 @@ struct SecurityLakeClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDataLakeExceptionSubscriptionDocument(exceptionTimeToLive=input.exceptionTimeToLive, notificationEndpoint=input.notificationEndpoint, subscriptionProtocol=input.subscriptionProtocol)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # CreateDataLakeOrganizationConfiguration  POST /v1/datalake/organization/configuration
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_data_lake_organization_configuration(self, CreateDataLakeOrganizationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.autoEnableNewAccount.is_some():
+            auto u0 = input.autoEnableNewAccount.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(data_lake_auto_enable_new_account_configuration_to_json(x1))
+            parts.append("\"autoEnableNewAccount\":" + securitylake_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # CreateSubscriber  POST /v1/subscribers
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_subscriber(self, CreateSubscriberRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/subscribers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accessTypes.is_some():
+            auto u0 = input.accessTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"accessTypes\":" + securitylake_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.sources:
+            e2.append(x2.to_json())
+        parts.append("\"sources\":" + securitylake_json_arr(e2))
+        if input.subscriberDescription.is_some():
+            auto u3 = input.subscriberDescription.unwrap()
+            parts.append("\"subscriberDescription\":" + securitylake_json_str(u3))
+        parts.append("\"subscriberIdentity\":" + input.subscriberIdentity.to_json())
+        parts.append("\"subscriberName\":" + securitylake_json_str(input.subscriberName))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + securitylake_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
     # CreateSubscriberNotification  POST /v1/subscribers/{subscriberId}/notification
@@ -772,6 +975,19 @@ struct SecurityLakeClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSubscriberNotificationDocument(configuration=input.configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # DeleteAwsLogSource  POST /v1/datalake/logsources/aws/delete
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def delete_aws_log_source(self, DeleteAwsLogSourceRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/aws/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sources:
+            e0.append(aws_log_source_configuration_to_json(x0))
+        parts.append("\"sources\":" + securitylake_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
     # DeleteCustomLogSource  DELETE /v1/datalake/logsources/custom/{sourceName}
@@ -786,12 +1002,40 @@ struct SecurityLakeClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/logsources/custom/{sourceName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
+    # DeleteDataLake  POST /v1/datalake/delete
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def delete_data_lake(self, DeleteDataLakeRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.regions:
+            e0.append(securitylake_json_str(x0))
+        parts.append("\"regions\":" + securitylake_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
     # DeleteDataLakeExceptionSubscription  DELETE /v1/datalake/exceptions/subscription
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def delete_data_lake_exception_subscription(self) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
+
+    # DeleteDataLakeOrganizationConfiguration  POST /v1/datalake/organization/configuration/delete
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def delete_data_lake_organization_configuration(self, DeleteDataLakeOrganizationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/organization/configuration/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.autoEnableNewAccount.is_some():
+            auto u0 = input.autoEnableNewAccount.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(data_lake_auto_enable_new_account_configuration_to_json(x1))
+            parts.append("\"autoEnableNewAccount\":" + securitylake_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
     # DeleteSubscriber  DELETE /v1/subscribers/{subscriberId}
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -832,6 +1076,27 @@ struct SecurityLakeClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/datalake/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
+    # GetDataLakeSources  POST /v1/datalake/sources
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def get_data_lake_sources(self, GetDataLakeSourcesRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accounts.is_some():
+            auto u0 = input.accounts.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securitylake_json_str(x1))
+            parts.append("\"accounts\":" + securitylake_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + securitylake_json_str(u3))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
     # GetSubscriber  GET /v1/subscribers/{subscriberId}
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_subscriber(self, GetSubscriberRequest input) -> str:
@@ -840,6 +1105,60 @@ struct SecurityLakeClient:
         labels["subscriberId"] = input.subscriberId
         auto b = binding.HttpBinding(method="GET", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
+
+    # ListDataLakeExceptions  POST /v1/datalake/exceptions
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def list_data_lake_exceptions(self, ListDataLakeExceptionsRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/exceptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + securitylake_json_str(u1))
+        if input.regions.is_some():
+            auto u2 = input.regions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(securitylake_json_str(x3))
+            parts.append("\"regions\":" + securitylake_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # ListLogSources  POST /v1/datalake/logsources/list
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def list_log_sources(self, ListLogSourcesRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accounts.is_some():
+            auto u0 = input.accounts.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securitylake_json_str(x1))
+            parts.append("\"accounts\":" + securitylake_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + securitylake_json_str(u3))
+        if input.regions.is_some():
+            auto u4 = input.regions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(securitylake_json_str(x5))
+            parts.append("\"regions\":" + securitylake_json_arr(e5))
+        if input.sources.is_some():
+            auto u6 = input.sources.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"sources\":" + securitylake_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
     # ListSubscribers  GET /v1/subscribers
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -871,6 +1190,37 @@ struct SecurityLakeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + securitylake_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # UpdateDataLake  PUT /v1/datalake
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def update_data_lake(self, UpdateDataLakeRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/datalake", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.configurations:
+            e0.append(data_lake_configuration_to_json(x0))
+        parts.append("\"configurations\":" + securitylake_json_arr(e0))
+        if input.metaStoreManagerRoleArn.is_some():
+            auto u1 = input.metaStoreManagerRoleArn.unwrap()
+            parts.append("\"metaStoreManagerRoleArn\":" + securitylake_json_str(u1))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
     # UpdateDataLakeExceptionSubscription  PUT /v1/datalake/exceptions/subscription
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def update_data_lake_exception_subscription(self, UpdateDataLakeExceptionSubscriptionRequest input) -> str:
@@ -878,6 +1228,32 @@ struct SecurityLakeClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataLakeExceptionSubscriptionDocument(exceptionTimeToLive=input.exceptionTimeToLive, notificationEndpoint=input.notificationEndpoint, subscriptionProtocol=input.subscriptionProtocol)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # UpdateSubscriber  PUT /v1/subscribers/{subscriberId}
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def update_subscriber(self, UpdateSubscriberRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        dict[str, str] labels = {}
+        labels["subscriberId"] = input.subscriberId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sources.is_some():
+            auto u0 = input.sources.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"sources\":" + securitylake_json_arr(e1))
+        if input.subscriberDescription.is_some():
+            auto u2 = input.subscriberDescription.unwrap()
+            parts.append("\"subscriberDescription\":" + securitylake_json_str(u2))
+        if input.subscriberIdentity.is_some():
+            auto u3 = input.subscriberIdentity.unwrap()
+            parts.append("\"subscriberIdentity\":" + u3.to_json())
+        if input.subscriberName.is_some():
+            auto u4 = input.subscriberName.unwrap()
+            parts.append("\"subscriberName\":" + securitylake_json_str(u4))
+        auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
     # UpdateSubscriberNotification  PUT /v1/subscribers/{subscriberId}/notification
@@ -890,6 +1266,45 @@ struct SecurityLakeClient:
         auto doc = UpdateSubscriberNotificationDocument(configuration=input.configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
+
+    # Paginator for GetDataLakeSources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: dataLakeSources).
+    def paginate_get_data_lake_sources(self, GetDataLakeSourcesRequest input):
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        while True:
+            auto raw = self.get_data_lake_sources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDataLakeExceptions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: exceptions).
+    def paginate_list_data_lake_exceptions(self, ListDataLakeExceptionsRequest input):
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        while True:
+            auto raw = self.list_data_lake_exceptions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListLogSources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: sources).
+    def paginate_list_log_sources(self, ListLogSourcesRequest input):
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        while True:
+            auto raw = self.list_log_sources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListSubscribers — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: subscribers).

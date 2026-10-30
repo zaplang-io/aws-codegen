@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 23 operations — 15 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 23 operations — 21 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   75 structs (51 @derive(Json)), 5 enums, 9 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -94,8 +94,9 @@ struct ApplicationAssociationSummary:
 struct ApplicationConfig:
     Optional[ContactHandling] ContactHandling
 
-# no @derive(Json): member(s) ExternalUrlConfig: ExternalUrlConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalUrlConfig: ExternalUrlConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationSourceConfig:
     Optional[ExternalUrlConfig] ExternalUrlConfig
 
@@ -177,8 +178,9 @@ struct CreateDataIntegrationRequest:
     Optional[FileConfiguration] FileConfiguration
     Optional[dict[str, dict[str, list[str]]]] ObjectConfiguration
 
-# no @derive(Json): member(s) Tags: dict[str, str], FileConfiguration: FileConfiguration, ObjectConfiguration: dict[str, dict[str, list[str]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], FileConfiguration: FileConfiguration, ObjectConfiguration: dict[str, dict[str, list[str]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataIntegrationResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -260,8 +262,9 @@ struct DuplicateResourceException:
 struct EventFilter:
     str Source
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventIntegration:
     Optional[str] EventIntegrationArn
     Optional[str] Name
@@ -270,8 +273,9 @@ struct EventIntegration:
     Optional[str] EventBridgeBus
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ClientAssociationMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientAssociationMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventIntegrationAssociation:
     Optional[str] EventIntegrationAssociationArn
     Optional[str] EventIntegrationAssociationId
@@ -286,14 +290,16 @@ struct ExecutionConfiguration:
     Optional[OnDemandConfiguration] OnDemandConfiguration
     Optional[ScheduleConfiguration] ScheduleConfiguration
 
-# no @derive(Json): member(s) ApprovedOrigins: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApprovedOrigins: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalUrlConfig:
     str AccessUrl
     Optional[list[str]] ApprovedOrigins
 
-# no @derive(Json): member(s) Folders: list[str], Filters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Folders: list[str], Filters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileConfiguration:
     list[str] Folders
     Optional[dict[str, list[str]]] Filters
@@ -303,8 +309,9 @@ struct FileConfiguration:
 struct GetApplicationRequest:
     str Arn
 
-# no @derive(Json): member(s) ApplicationSourceConfig: ApplicationSourceConfig, Subscriptions: list[Subscription], Publications: list[Publication], Tags: dict[str, str], Permissions: list[str], IframeConfig: IframeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationSourceConfig: ApplicationSourceConfig, Subscriptions: list[Subscription], Publications: list[Publication], Tags: dict[str, str], Permissions: list[str], IframeConfig: IframeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -330,8 +337,9 @@ struct GetApplicationResponse:
 struct GetDataIntegrationRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str], FileConfiguration: FileConfiguration, ObjectConfiguration: dict[str, dict[str, list[str]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], FileConfiguration: FileConfiguration, ObjectConfiguration: dict[str, dict[str, list[str]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataIntegrationResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -349,8 +357,9 @@ struct GetDataIntegrationResponse:
 struct GetEventIntegrationRequest:
     str Name
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventIntegrationResponse:
     Optional[str] Name
     Optional[str] Description
@@ -359,8 +368,9 @@ struct GetEventIntegrationResponse:
     Optional[EventFilter] EventFilter
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Allow: list[str], Sandbox: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Allow: list[str], Sandbox: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IframeConfig:
     Optional[list[str]] Allow
     Optional[list[str]] Sandbox
@@ -385,8 +395,9 @@ struct ListApplicationAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ApplicationAssociations: list[ApplicationAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationAssociations: list[ApplicationAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationAssociationsResponse:
     Optional[list[ApplicationAssociationSummary]] ApplicationAssociations
     Optional[str] NextToken
@@ -399,8 +410,9 @@ struct ListApplicationsRequest:
     # wire string of the ApplicationType enum (querystring binding)
     Optional[str] ApplicationType
 
-# no @derive(Json): member(s) Applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[list[ApplicationSummary]] Applications
     Optional[str] NextToken
@@ -412,8 +424,9 @@ struct ListDataIntegrationAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataIntegrationAssociations: list[DataIntegrationAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataIntegrationAssociations: list[DataIntegrationAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataIntegrationAssociationsResponse:
     Optional[list[DataIntegrationAssociationSummary]] DataIntegrationAssociations
     Optional[str] NextToken
@@ -424,8 +437,9 @@ struct ListDataIntegrationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataIntegrations: list[DataIntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataIntegrations: list[DataIntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataIntegrationsResponse:
     Optional[list[DataIntegrationSummary]] DataIntegrations
     Optional[str] NextToken
@@ -437,8 +451,9 @@ struct ListEventIntegrationAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventIntegrationAssociations: list[EventIntegrationAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventIntegrationAssociations: list[EventIntegrationAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventIntegrationAssociationsResponse:
     Optional[list[EventIntegrationAssociation]] EventIntegrationAssociations
     Optional[str] NextToken
@@ -449,8 +464,9 @@ struct ListEventIntegrationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventIntegrations: list[EventIntegration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventIntegrations: list[EventIntegration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventIntegrationsResponse:
     Optional[list[EventIntegration]] EventIntegrations
     Optional[str] NextToken
@@ -460,8 +476,9 @@ struct ListEventIntegrationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -626,14 +643,8 @@ def app_integrations_error_from_code(str code) -> AppIntegrationsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApplication (document member `ApplicationSourceConfig: ApplicationSourceConfig` is not serializable by derive)
-#   CreateDataIntegration (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateDataIntegrationAssociation (document member `ObjectConfiguration: dict[str, dict[str, list[str]]]` is not serializable by derive)
-#   CreateEventIntegration (document member `Tags: dict[str, str]` is not serializable by derive)
 #   DeleteApplication (httpQuery `Force` has unsupported type bool)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateApplication (document member `ApplicationSourceConfig: ApplicationSourceConfig` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -654,10 +665,264 @@ struct UpdateEventIntegrationDocument:
     # document members of UpdateEventIntegration
     Optional[str] Description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def app_integrations_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def app_integrations_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def app_integrations_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApplicationSourceConfig to a compact JSON object (declaration order).
+def application_source_config_to_json(ApplicationSourceConfig v) -> str:
+    list[str] parts = []
+    if v.ExternalUrlConfig.is_some():
+        auto u0 = v.ExternalUrlConfig.unwrap()
+        parts.append("\"ExternalUrlConfig\":" + external_url_config_to_json(u0))
+    return app_integrations_json_obj(parts)
+
+# Serialize ExternalUrlConfig to a compact JSON object (declaration order).
+def external_url_config_to_json(ExternalUrlConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"AccessUrl\":" + app_integrations_json_str(v.AccessUrl))
+    if v.ApprovedOrigins.is_some():
+        auto u0 = v.ApprovedOrigins.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(app_integrations_json_str(x1))
+        parts.append("\"ApprovedOrigins\":" + app_integrations_json_arr(e1))
+    return app_integrations_json_obj(parts)
+
+# Serialize FileConfiguration to a compact JSON object (declaration order).
+def file_configuration_to_json(FileConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Folders:
+        e0.append(app_integrations_json_str(x0))
+    parts.append("\"Folders\":" + app_integrations_json_arr(e0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(app_integrations_json_str(x3))
+            m2.append(app_integrations_json_str(k2) + ":" + app_integrations_json_arr(e3))
+        parts.append("\"Filters\":" + app_integrations_json_obj(m2))
+    return app_integrations_json_obj(parts)
+
+# Serialize IframeConfig to a compact JSON object (declaration order).
+def iframe_config_to_json(IframeConfig v) -> str:
+    list[str] parts = []
+    if v.Allow.is_some():
+        auto u0 = v.Allow.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(app_integrations_json_str(x1))
+        parts.append("\"Allow\":" + app_integrations_json_arr(e1))
+    if v.Sandbox.is_some():
+        auto u2 = v.Sandbox.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(app_integrations_json_str(x3))
+        parts.append("\"Sandbox\":" + app_integrations_json_arr(e3))
+    return app_integrations_json_obj(parts)
+
 # A bound AppIntegrations client: credentials + region, threaded into every operation.
 struct AppIntegrationsClient:
     core.Credentials creds
     str region
+
+    # CreateApplication  POST /applications
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceError, InvalidRequestException, ResourceQuotaExceededException, ThrottlingException, UnsupportedOperationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + app_integrations_json_str(input.Name))
+        parts.append("\"Namespace\":" + app_integrations_json_str(input.Namespace))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + app_integrations_json_str(u0))
+        parts.append("\"ApplicationSourceConfig\":" + application_source_config_to_json(input.ApplicationSourceConfig))
+        if input.Subscriptions.is_some():
+            auto u1 = input.Subscriptions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Subscriptions\":" + app_integrations_json_arr(e2))
+        if input.Publications.is_some():
+            auto u3 = input.Publications.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Publications\":" + app_integrations_json_arr(e4))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + app_integrations_json_str(u5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(app_integrations_json_str(k7) + ":" + app_integrations_json_str(u6[k7]))
+            parts.append("\"Tags\":" + app_integrations_json_obj(m7))
+        if input.Permissions.is_some():
+            auto u8 = input.Permissions.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(app_integrations_json_str(x9))
+            parts.append("\"Permissions\":" + app_integrations_json_arr(e9))
+        if input.IsService.is_some():
+            auto u10 = input.IsService.unwrap()
+            parts.append("\"IsService\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.InitializationTimeout.is_some():
+            auto u11 = input.InitializationTimeout.unwrap()
+            parts.append("\"InitializationTimeout\":" + str(u11))
+        if input.ApplicationConfig.is_some():
+            auto u12 = input.ApplicationConfig.unwrap()
+            parts.append("\"ApplicationConfig\":" + u12.to_json())
+        if input.IframeConfig.is_some():
+            auto u13 = input.IframeConfig.unwrap()
+            parts.append("\"IframeConfig\":" + iframe_config_to_json(u13))
+        if input.ApplicationType.is_some():
+            auto u14 = input.ApplicationType.unwrap()
+            parts.append("\"ApplicationType\":" + u14.to_json())
+        if input.AuthConfig.is_some():
+            auto u15 = input.AuthConfig.unwrap()
+            parts.append("\"AuthConfig\":" + u15.to_json())
+        auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
+
+    # CreateDataIntegration  POST /dataIntegrations
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceError, InvalidRequestException, ResourceQuotaExceededException, ThrottlingException
+    def create_data_integration(self, CreateDataIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/dataIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + app_integrations_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + app_integrations_json_str(u0))
+        parts.append("\"KmsKey\":" + app_integrations_json_str(input.KmsKey))
+        if input.SourceURI.is_some():
+            auto u1 = input.SourceURI.unwrap()
+            parts.append("\"SourceURI\":" + app_integrations_json_str(u1))
+        if input.ScheduleConfig.is_some():
+            auto u2 = input.ScheduleConfig.unwrap()
+            parts.append("\"ScheduleConfig\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(app_integrations_json_str(k4) + ":" + app_integrations_json_str(u3[k4]))
+            parts.append("\"Tags\":" + app_integrations_json_obj(m4))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + app_integrations_json_str(u5))
+        if input.FileConfiguration.is_some():
+            auto u6 = input.FileConfiguration.unwrap()
+            parts.append("\"FileConfiguration\":" + file_configuration_to_json(u6))
+        if input.ObjectConfiguration.is_some():
+            auto u7 = input.ObjectConfiguration.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                list[str] m9 = []
+                for k9 in sorted(u7[k8].keys()):
+                    list[str] e10 = []
+                    for x10 in u7[k8][k9]:
+                        e10.append(app_integrations_json_str(x10))
+                    m9.append(app_integrations_json_str(k9) + ":" + app_integrations_json_arr(e10))
+                m8.append(app_integrations_json_str(k8) + ":" + app_integrations_json_obj(m9))
+            parts.append("\"ObjectConfiguration\":" + app_integrations_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
+
+    # CreateDataIntegrationAssociation  POST /dataIntegrations/{Identifier}/associations
+    # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ResourceQuotaExceededException, ThrottlingException
+    def create_data_integration_association(self, CreateDataIntegrationAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.DataIntegrationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/dataIntegrations/{Identifier}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientId.is_some():
+            auto u0 = input.ClientId.unwrap()
+            parts.append("\"ClientId\":" + app_integrations_json_str(u0))
+        if input.ObjectConfiguration.is_some():
+            auto u1 = input.ObjectConfiguration.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                list[str] m3 = []
+                for k3 in sorted(u1[k2].keys()):
+                    list[str] e4 = []
+                    for x4 in u1[k2][k3]:
+                        e4.append(app_integrations_json_str(x4))
+                    m3.append(app_integrations_json_str(k3) + ":" + app_integrations_json_arr(e4))
+                m2.append(app_integrations_json_str(k2) + ":" + app_integrations_json_obj(m3))
+            parts.append("\"ObjectConfiguration\":" + app_integrations_json_obj(m2))
+        if input.DestinationURI.is_some():
+            auto u5 = input.DestinationURI.unwrap()
+            parts.append("\"DestinationURI\":" + app_integrations_json_str(u5))
+        if input.ClientAssociationMetadata.is_some():
+            auto u6 = input.ClientAssociationMetadata.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(app_integrations_json_str(k7) + ":" + app_integrations_json_str(u6[k7]))
+            parts.append("\"ClientAssociationMetadata\":" + app_integrations_json_obj(m7))
+        if input.ClientToken.is_some():
+            auto u8 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + app_integrations_json_str(u8))
+        if input.ExecutionConfiguration.is_some():
+            auto u9 = input.ExecutionConfiguration.unwrap()
+            parts.append("\"ExecutionConfiguration\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
+
+    # CreateEventIntegration  POST /eventIntegrations
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceError, InvalidRequestException, ResourceQuotaExceededException, ThrottlingException
+    def create_event_integration(self, CreateEventIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/eventIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + app_integrations_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + app_integrations_json_str(u0))
+        parts.append("\"EventFilter\":" + input.EventFilter.to_json())
+        parts.append("\"EventBridgeBus\":" + app_integrations_json_str(input.EventBridgeBus))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + app_integrations_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(app_integrations_json_str(k3) + ":" + app_integrations_json_str(u2[k3]))
+            parts.append("\"Tags\":" + app_integrations_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
 
     # DeleteDataIntegration  DELETE /dataIntegrations/{Identifier}
     # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -792,6 +1057,77 @@ struct AppIntegrationsClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(app_integrations_json_str(k0) + ":" + app_integrations_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + app_integrations_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
+
+    # UpdateApplication  PATCH /applications/{ApplicationIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
+    def update_application(self, UpdateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.Arn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + app_integrations_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + app_integrations_json_str(u1))
+        if input.ApplicationSourceConfig.is_some():
+            auto u2 = input.ApplicationSourceConfig.unwrap()
+            parts.append("\"ApplicationSourceConfig\":" + application_source_config_to_json(u2))
+        if input.Subscriptions.is_some():
+            auto u3 = input.Subscriptions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Subscriptions\":" + app_integrations_json_arr(e4))
+        if input.Publications.is_some():
+            auto u5 = input.Publications.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Publications\":" + app_integrations_json_arr(e6))
+        if input.Permissions.is_some():
+            auto u7 = input.Permissions.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(app_integrations_json_str(x8))
+            parts.append("\"Permissions\":" + app_integrations_json_arr(e8))
+        if input.IsService.is_some():
+            auto u9 = input.IsService.unwrap()
+            parts.append("\"IsService\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.InitializationTimeout.is_some():
+            auto u10 = input.InitializationTimeout.unwrap()
+            parts.append("\"InitializationTimeout\":" + str(u10))
+        if input.ApplicationConfig.is_some():
+            auto u11 = input.ApplicationConfig.unwrap()
+            parts.append("\"ApplicationConfig\":" + u11.to_json())
+        if input.IframeConfig.is_some():
+            auto u12 = input.IframeConfig.unwrap()
+            parts.append("\"IframeConfig\":" + iframe_config_to_json(u12))
+        if input.ApplicationType.is_some():
+            auto u13 = input.ApplicationType.unwrap()
+            parts.append("\"ApplicationType\":" + u13.to_json())
+        if input.AuthConfig.is_some():
+            auto u14 = input.AuthConfig.unwrap()
+            parts.append("\"AuthConfig\":" + u14.to_json())
+        auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
 
     # UpdateDataIntegration  PATCH /dataIntegrations/{Identifier}
     # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException

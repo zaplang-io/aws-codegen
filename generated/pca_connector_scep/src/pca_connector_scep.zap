@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 8 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 12 operations — 11 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   36 structs (29 @derive(Json)), 4 enums, 8 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -220,8 +220,9 @@ struct ListChallengeMetadataRequest:
     Optional[str] NextToken
     str ConnectorArn
 
-# no @derive(Json): member(s) Challenges: list[ChallengeMetadataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Challenges: list[ChallengeMetadataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChallengeMetadataResponse:
     Optional[list[ChallengeMetadataSummary]] Challenges
     Optional[str] NextToken
@@ -232,8 +233,9 @@ struct ListConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Connectors: list[ConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connectors: list[ConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[list[ConnectorSummary]] Connectors
     Optional[str] NextToken
@@ -243,8 +245,9 @@ struct ListConnectorsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -333,15 +336,56 @@ def pca_connector_scep_error_from_code(str code) -> Pca_Connector_ScepError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateChallenge (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateConnector (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # A bound Pca_Connector_Scep client: credentials + region, threaded into every operation.
 struct Pca_Connector_ScepClient:
     core.Credentials creds
     str region
+
+    # CreateChallenge  POST /challenges
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_challenge(self, CreateChallengeRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/challenges", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ConnectorArn\":" + pca_connector_scep_json_str(input.ConnectorArn))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + pca_connector_scep_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(pca_connector_scep_json_str(k2) + ":" + pca_connector_scep_json_str(u1[k2]))
+            parts.append("\"Tags\":" + pca_connector_scep_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, pca_connector_scep_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_scep_service(), self.region, host)
+
+    # CreateConnector  POST /connectors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CertificateAuthorityArn\":" + pca_connector_scep_json_str(input.CertificateAuthorityArn))
+        if input.MobileDeviceManagement.is_some():
+            auto u0 = input.MobileDeviceManagement.unwrap()
+            parts.append("\"MobileDeviceManagement\":" + u0.to_json())
+        if input.VpcEndpointId.is_some():
+            auto u1 = input.VpcEndpointId.unwrap()
+            parts.append("\"VpcEndpointId\":" + pca_connector_scep_json_str(u1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + pca_connector_scep_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(pca_connector_scep_json_str(k4) + ":" + pca_connector_scep_json_str(u3[k4]))
+            parts.append("\"Tags\":" + pca_connector_scep_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, pca_connector_scep_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_scep_service(), self.region, host)
 
     # DeleteChallenge  DELETE /challenges/{ChallengeArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -421,6 +465,21 @@ struct Pca_Connector_ScepClient:
         labels["ResourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(pca_connector_scep_json_str(k0) + ":" + pca_connector_scep_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + pca_connector_scep_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, pca_connector_scep_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pca_connector_scep_service(), self.region, host)
 
     # Paginator for ListChallengeMetadata — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Challenges).

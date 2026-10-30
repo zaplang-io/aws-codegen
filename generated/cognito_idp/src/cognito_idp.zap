@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 132 operations — 90 with a generated method,
-#   42 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 132 operations — 132 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   406 structs (286 @derive(Json)), 54 enums, 59 error variants.
-#   8 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -510,8 +510,9 @@ enum WebAuthnFactorConfigurationType:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) RecoveryMechanisms: list[RecoveryOptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryMechanisms: list[RecoveryOptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountRecoverySettingType:
     Optional[list[RecoveryOptionType]] RecoveryMechanisms
 
@@ -535,8 +536,9 @@ struct AccountTakeoverRiskConfigurationType:
 struct AcrLevelConfigType:
     str AcrValue
 
-# no @derive(Json): member(s) CustomAttributes: list[SchemaAttributeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomAttributes: list[SchemaAttributeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddCustomAttributesRequest:
     str UserPoolId
     list[SchemaAttributeType] CustomAttributes
@@ -562,8 +564,9 @@ struct AdminAddUserToGroupRequest:
     str Username
     str GroupName
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminConfirmSignUpRequest:
     str UserPoolId
     str Username
@@ -580,8 +583,9 @@ struct AdminCreateUserConfigType:
     Optional[int64] UnusedAccountValidityDays
     Optional[MessageTemplateType] InviteMessageTemplate
 
-# no @derive(Json): member(s) UserAttributes: list[AttributeType], ValidationData: list[AttributeType], DesiredDeliveryMediums: list[DeliveryMediumType], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: list[AttributeType], ValidationData: list[AttributeType], DesiredDeliveryMediums: list[DeliveryMediumType], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminCreateUserRequest:
     str UserPoolId
     str Username
@@ -593,8 +597,9 @@ struct AdminCreateUserRequest:
     Optional[list[DeliveryMediumType]] DesiredDeliveryMediums
     Optional[dict[str, str]] ClientMetadata
 
-# no @derive(Json): member(s) User: UserType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) User: UserType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminCreateUserResponse:
     Optional[UserType] User
 
@@ -608,8 +613,9 @@ struct AdminDeleteSoftwareTokenResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) UserAttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminDeleteUserAttributesRequest:
     str UserPoolId
     str Username
@@ -667,8 +673,9 @@ struct AdminGetDeviceRequest:
     str UserPoolId
     str Username
 
-# no @derive(Json): member(s) Device: DeviceType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Device: DeviceType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminGetDeviceResponse:
     DeviceType Device
 
@@ -677,8 +684,9 @@ struct AdminGetUserAuthFactorsRequest:
     str UserPoolId
     str Username
 
-# no @derive(Json): member(s) UserMFASettingList: list[str], ConfiguredUserAuthFactors: list[AuthFactorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserMFASettingList: list[str], ConfiguredUserAuthFactors: list[AuthFactorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminGetUserAuthFactorsResponse:
     str Username
     Optional[str] PreferredMfaSetting
@@ -690,8 +698,9 @@ struct AdminGetUserRequest:
     str UserPoolId
     str Username
 
-# no @derive(Json): member(s) UserAttributes: list[AttributeType], MFAOptions: list[MFAOptionType], UserMFASettingList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: list[AttributeType], MFAOptions: list[MFAOptionType], UserMFASettingList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminGetUserResponse:
     str Username
     Optional[list[AttributeType]] UserAttributes
@@ -703,8 +712,9 @@ struct AdminGetUserResponse:
     Optional[str] PreferredMfaSetting
     Optional[list[str]] UserMFASettingList
 
-# no @derive(Json): member(s) AuthParameters: dict[str, str], ClientMetadata: dict[str, str], ContextData: ContextDataType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthParameters: dict[str, str], ClientMetadata: dict[str, str], ContextData: ContextDataType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminInitiateAuthRequest:
     str UserPoolId
     str ClientId
@@ -715,8 +725,9 @@ struct AdminInitiateAuthRequest:
     Optional[ContextDataType] ContextData
     Optional[str] Session
 
-# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminInitiateAuthResponse:
     Optional[ChallengeNameType] ChallengeName
     Optional[str] Session
@@ -742,8 +753,9 @@ struct AdminListDevicesRequest:
     Optional[int64] Limit
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) Devices: list[DeviceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Devices: list[DeviceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminListDevicesResponse:
     Optional[list[DeviceType]] Devices
     Optional[str] PaginationToken
@@ -755,8 +767,9 @@ struct AdminListGroupsForUserRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Groups: list[GroupType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminListGroupsForUserResponse:
     Optional[list[GroupType]] Groups
     Optional[str] NextToken
@@ -768,8 +781,9 @@ struct AdminListUserAuthEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuthEvents: list[AuthEventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthEvents: list[AuthEventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminListUserAuthEventsResponse:
     Optional[list[AuthEventType]] AuthEvents
     Optional[str] NextToken
@@ -780,8 +794,9 @@ struct AdminRemoveUserFromGroupRequest:
     str Username
     str GroupName
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminResetUserPasswordRequest:
     str UserPoolId
     str Username
@@ -792,8 +807,9 @@ struct AdminResetUserPasswordResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ChallengeResponses: dict[str, str], ContextData: ContextDataType, ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeResponses: dict[str, str], ContextData: ContextDataType, ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminRespondToAuthChallengeRequest:
     str UserPoolId
     str ClientId
@@ -804,8 +820,9 @@ struct AdminRespondToAuthChallengeRequest:
     Optional[ContextDataType] ContextData
     Optional[dict[str, str]] ClientMetadata
 
-# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminRespondToAuthChallengeResponse:
     Optional[ChallengeNameType] ChallengeName
     Optional[str] Session
@@ -839,8 +856,9 @@ struct AdminSetUserPasswordResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) MFAOptions: list[MFAOptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MFAOptions: list[MFAOptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminSetUserSettingsRequest:
     str UserPoolId
     str Username
@@ -875,8 +893,9 @@ struct AdminUpdateDeviceStatusResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) UserAttributes: list[AttributeType], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: list[AttributeType], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminUpdateUserAttributesRequest:
     str UserPoolId
     str Username
@@ -941,8 +960,9 @@ struct AttributeType:
     str Name
     Optional[str] Value
 
-# no @derive(Json): member(s) ChallengeResponses: list[ChallengeResponseType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeResponses: list[ChallengeResponseType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthEventType:
     Optional[str] EventId
     Optional[EventType] EventType
@@ -1022,8 +1042,9 @@ struct CompleteWebAuthnRegistrationResponse:
 struct CompromisedCredentialsActionsType:
     CompromisedCredentialsEventActionType EventAction
 
-# no @derive(Json): member(s) EventFilter: list[EventFilterType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventFilter: list[EventFilterType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompromisedCredentialsRiskConfigurationType:
     Optional[list[EventFilterType]] EventFilter
     CompromisedCredentialsActionsType Actions
@@ -1043,8 +1064,9 @@ struct ConfirmDeviceRequest:
 struct ConfirmDeviceResponse:
     Optional[bool] UserConfirmationNecessary
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfirmForgotPasswordRequest:
     str ClientId
     Optional[str] SecretHash
@@ -1060,8 +1082,9 @@ struct ConfirmForgotPasswordResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfirmSignUpRequest:
     str ClientId
     Optional[str] SecretHash
@@ -1077,8 +1100,9 @@ struct ConfirmSignUpRequest:
 struct ConfirmSignUpResponse:
     Optional[str] Session
 
-# no @derive(Json): member(s) HttpHeaders: list[HttpHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HttpHeaders: list[HttpHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextDataType:
     str IpAddress
     str ServerName
@@ -1098,8 +1122,9 @@ struct CreateGroupRequest:
 struct CreateGroupResponse:
     Optional[GroupType] Group
 
-# no @derive(Json): member(s) ProviderDetails: dict[str, str], AttributeMapping: dict[str, str], IdpIdentifiers: list[str], AcrMapping: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderDetails: dict[str, str], AttributeMapping: dict[str, str], IdpIdentifiers: list[str], AcrMapping: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdentityProviderRequest:
     str UserPoolId
     str ProviderName
@@ -1109,13 +1134,15 @@ struct CreateIdentityProviderRequest:
     Optional[list[str]] IdpIdentifiers
     Optional[dict[str, str]] AcrMapping
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdentityProviderResponse:
     IdentityProviderType IdentityProvider
 
-# no @derive(Json): member(s) Assets: list[AssetType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateManagedLoginBrandingRequest:
     str UserPoolId
     str ClientId
@@ -1123,26 +1150,30 @@ struct CreateManagedLoginBrandingRequest:
     Optional[Document] Settings
     Optional[list[AssetType]] Assets
 
-# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateManagedLoginBrandingResponse:
     Optional[ManagedLoginBrandingType] ManagedLoginBranding
 
-# no @derive(Json): member(s) Scopes: list[ResourceServerScopeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[ResourceServerScopeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceServerRequest:
     str UserPoolId
     str Identifier
     str Name
     Optional[list[ResourceServerScopeType]] Scopes
 
-# no @derive(Json): member(s) ResourceServer: ResourceServerType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceServer: ResourceServerType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceServerResponse:
     ResourceServerType ResourceServer
 
-# no @derive(Json): member(s) Links: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Links: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTermsRequest:
     str UserPoolId
     str ClientId
@@ -1151,8 +1182,9 @@ struct CreateTermsRequest:
     str Enforcement
     Optional[dict[str, str]] Links
 
-# no @derive(Json): member(s) Terms: TermsType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Terms: TermsType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTermsResponse:
     Optional[TermsType] Terms
 
@@ -1167,8 +1199,9 @@ struct CreateUserImportJobRequest:
 struct CreateUserImportJobResponse:
     Optional[UserImportJobType] UserImportJob
 
-# no @derive(Json): member(s) ReadAttributes: list[str], WriteAttributes: list[str], ExplicitAuthFlows: list[ExplicitAuthFlowsType], SupportedIdentityProviders: list[str], CallbackURLs: list[str], LogoutURLs: list[str], AllowedOAuthFlows: list[OAuthFlowType], AllowedOAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadAttributes: list[str], WriteAttributes: list[str], ExplicitAuthFlows: list[ExplicitAuthFlowsType], SupportedIdentityProviders: list[str], CallbackURLs: list[str], LogoutURLs: list[str], AllowedOAuthFlows: list[OAuthFlowType], AllowedOAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserPoolClientRequest:
     str UserPoolId
     str ClientName
@@ -1195,8 +1228,9 @@ struct CreateUserPoolClientRequest:
     Optional[int64] AuthSessionValidity
     Optional[RefreshTokenRotationType] RefreshTokenRotation
 
-# no @derive(Json): member(s) UserPoolClient: UserPoolClientType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolClient: UserPoolClientType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserPoolClientResponse:
     Optional[UserPoolClientType] UserPoolClient
 
@@ -1214,8 +1248,9 @@ struct CreateUserPoolDomainResponse:
     Optional[str] CloudFrontDomain
     Optional[RoutingType] Routing
 
-# no @derive(Json): member(s) UserPoolTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserPoolReplicaRequest:
     str UserPoolId
     str RegionName
@@ -1225,8 +1260,9 @@ struct CreateUserPoolReplicaRequest:
 struct CreateUserPoolReplicaResponse:
     Optional[UserPoolReplicaType] UserPoolReplica
 
-# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], Schema: list[SchemaAttributeType], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], Schema: list[SchemaAttributeType], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserPoolRequest:
     str PoolName
     Optional[UserPoolPolicyType] Policies
@@ -1256,8 +1292,9 @@ struct CreateUserPoolRequest:
     Optional[IssuerConfigurationType] IssuerConfiguration
     Optional[dict[str, AcrLevelConfigType]] AcrConfiguration
 
-# no @derive(Json): member(s) UserPool: UserPoolType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPool: UserPoolType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserPoolResponse:
     Optional[UserPoolType] UserPool
 
@@ -1301,8 +1338,9 @@ struct DeleteTermsRequest:
     str TermsId
     str UserPoolId
 
-# no @derive(Json): member(s) UserAttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteUserAttributesRequest:
     list[str] UserAttributeNames
     str AccessToken
@@ -1370,8 +1408,9 @@ struct DescribeIdentityProviderRequest:
     str UserPoolId
     str ProviderName
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIdentityProviderResponse:
     IdentityProviderType IdentityProvider
 
@@ -1381,8 +1420,9 @@ struct DescribeManagedLoginBrandingByClientRequest:
     str ClientId
     Optional[bool] ReturnMergedResources
 
-# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeManagedLoginBrandingByClientResponse:
     Optional[ManagedLoginBrandingType] ManagedLoginBranding
 
@@ -1392,8 +1432,9 @@ struct DescribeManagedLoginBrandingRequest:
     str ManagedLoginBrandingId
     Optional[bool] ReturnMergedResources
 
-# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeManagedLoginBrandingResponse:
     Optional[ManagedLoginBrandingType] ManagedLoginBranding
 
@@ -1402,8 +1443,9 @@ struct DescribeResourceServerRequest:
     str UserPoolId
     str Identifier
 
-# no @derive(Json): member(s) ResourceServer: ResourceServerType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceServer: ResourceServerType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResourceServerResponse:
     ResourceServerType ResourceServer
 
@@ -1412,8 +1454,9 @@ struct DescribeRiskConfigurationRequest:
     str UserPoolId
     Optional[str] ClientId
 
-# no @derive(Json): member(s) RiskConfiguration: RiskConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RiskConfiguration: RiskConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRiskConfigurationResponse:
     RiskConfigurationType RiskConfiguration
 
@@ -1423,8 +1466,9 @@ struct DescribeTermsByClientRequest:
     str UserPoolId
     str TermsName
 
-# no @derive(Json): member(s) Terms: TermsType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Terms: TermsType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTermsByClientResponse:
     Optional[TermsType] Terms
 
@@ -1433,8 +1477,9 @@ struct DescribeTermsRequest:
     str TermsId
     str UserPoolId
 
-# no @derive(Json): member(s) Terms: TermsType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Terms: TermsType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTermsResponse:
     Optional[TermsType] Terms
 
@@ -1452,8 +1497,9 @@ struct DescribeUserPoolClientRequest:
     str UserPoolId
     str ClientId
 
-# no @derive(Json): member(s) UserPoolClient: UserPoolClientType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolClient: UserPoolClientType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserPoolClientResponse:
     Optional[UserPoolClientType] UserPoolClient
 
@@ -1469,8 +1515,9 @@ struct DescribeUserPoolDomainResponse:
 struct DescribeUserPoolRequest:
     str UserPoolId
 
-# no @derive(Json): member(s) UserPool: UserPoolType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPool: UserPoolType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserPoolResponse:
     Optional[UserPoolType] UserPool
 
@@ -1488,8 +1535,9 @@ struct DeviceSecretVerifierConfigType:
     Optional[str] PasswordVerifier
     Optional[str] Salt
 
-# no @derive(Json): member(s) DeviceAttributes: list[AttributeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceAttributes: list[AttributeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceType:
     Optional[str] DeviceKey
     Optional[list[AttributeType]] DeviceAttributes
@@ -1597,8 +1645,9 @@ struct ForgetDeviceRequest:
     Optional[str] AccessToken
     str DeviceKey
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForgotPasswordRequest:
     str ClientId
     Optional[str] SecretHash
@@ -1615,14 +1664,16 @@ struct ForgotPasswordResponse:
 struct GetCSVHeaderRequest:
     str UserPoolId
 
-# no @derive(Json): member(s) CSVHeader: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CSVHeader: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCSVHeaderResponse:
     Optional[str] UserPoolId
     Optional[list[str]] CSVHeader
 
-# no @derive(Json): member(s) Scopes: list[str], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[str], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClientTokenRequest:
     str ClientId
     str Secret
@@ -1638,8 +1689,9 @@ struct GetDeviceRequest:
     str DeviceKey
     Optional[str] AccessToken
 
-# no @derive(Json): member(s) Device: DeviceType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Device: DeviceType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceResponse:
     DeviceType Device
 
@@ -1657,8 +1709,9 @@ struct GetIdentityProviderByIdentifierRequest:
     str UserPoolId
     str IdpIdentifier
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentityProviderByIdentifierResponse:
     IdentityProviderType IdentityProvider
 
@@ -1666,18 +1719,21 @@ struct GetIdentityProviderByIdentifierResponse:
 struct GetLogDeliveryConfigurationRequest:
     str UserPoolId
 
-# no @derive(Json): member(s) LogDeliveryConfiguration: LogDeliveryConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogDeliveryConfiguration: LogDeliveryConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogDeliveryConfigurationResponse:
     Optional[LogDeliveryConfigurationType] LogDeliveryConfiguration
 
-# no @derive(Json): member(s) LimitDefinition: LimitDefinitionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LimitDefinition: LimitDefinitionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProvisionedLimitRequest:
     LimitDefinitionType LimitDefinition
 
-# no @derive(Json): member(s) Limit: LimitType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Limit: LimitType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProvisionedLimitResponse:
     LimitType Limit
 
@@ -1689,8 +1745,9 @@ struct GetSigningCertificateRequest:
 struct GetSigningCertificateResponse:
     Optional[str] Certificate
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTokensFromRefreshTokenRequest:
     str RefreshToken
     str ClientId
@@ -1711,8 +1768,9 @@ struct GetUICustomizationRequest:
 struct GetUICustomizationResponse:
     UICustomizationType UICustomization
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserAttributeVerificationCodeRequest:
     str AccessToken
     str AttributeName
@@ -1726,8 +1784,9 @@ struct GetUserAttributeVerificationCodeResponse:
 struct GetUserAuthFactorsRequest:
     str AccessToken
 
-# no @derive(Json): member(s) UserMFASettingList: list[str], ConfiguredUserAuthFactors: list[AuthFactorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserMFASettingList: list[str], ConfiguredUserAuthFactors: list[AuthFactorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserAuthFactorsResponse:
     str Username
     Optional[str] PreferredMfaSetting
@@ -1750,8 +1809,9 @@ struct GetUserPoolMfaConfigResponse:
 struct GetUserRequest:
     str AccessToken
 
-# no @derive(Json): member(s) UserAttributes: list[AttributeType], MFAOptions: list[MFAOptionType], UserMFASettingList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: list[AttributeType], MFAOptions: list[MFAOptionType], UserMFASettingList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserResponse:
     str Username
     list[AttributeType] UserAttributes
@@ -1787,8 +1847,9 @@ struct HttpHeader:
     Optional[str] headerName
     Optional[str] headerValue
 
-# no @derive(Json): member(s) ProviderDetails: dict[str, str], AttributeMapping: dict[str, str], IdpIdentifiers: list[str], AcrMapping: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderDetails: dict[str, str], AttributeMapping: dict[str, str], IdpIdentifiers: list[str], AcrMapping: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityProviderType:
     Optional[str] UserPoolId
     Optional[str] ProviderName
@@ -1805,8 +1866,9 @@ struct InboundFederationLambdaType:
     str LambdaVersion
     str LambdaArn
 
-# no @derive(Json): member(s) AuthParameters: dict[str, str], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthParameters: dict[str, str], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InitiateAuthRequest:
     AuthFlowType AuthFlow
     Optional[dict[str, str]] AuthParameters
@@ -1816,8 +1878,9 @@ struct InitiateAuthRequest:
     Optional[UserContextDataType] UserContextData
     Optional[str] Session
 
-# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InitiateAuthResponse:
     Optional[ChallengeNameType] ChallengeName
     Optional[str] Session
@@ -1893,8 +1956,9 @@ struct LambdaConfigType:
     Optional[str] KMSKeyID
     Optional[InboundFederationLambdaType] InboundFederation
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LimitDefinitionType:
     str LimitClass
     dict[str, str] Attributes
@@ -1903,8 +1967,9 @@ struct LimitDefinitionType:
 struct LimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) LimitDefinition: LimitDefinitionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LimitDefinition: LimitDefinitionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LimitType:
     LimitDefinitionType LimitDefinition
     int64 ProvisionedLimitValue
@@ -1916,8 +1981,9 @@ struct ListDevicesRequest:
     Optional[int64] Limit
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) Devices: list[DeviceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Devices: list[DeviceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesResponse:
     Optional[list[DeviceType]] Devices
     Optional[str] PaginationToken
@@ -1928,8 +1994,9 @@ struct ListGroupsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Groups: list[GroupType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     Optional[list[GroupType]] Groups
     Optional[str] NextToken
@@ -1940,8 +2007,9 @@ struct ListIdentityProvidersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Providers: list[ProviderDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Providers: list[ProviderDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityProvidersResponse:
     list[ProviderDescription] Providers
     Optional[str] NextToken
@@ -1952,8 +2020,9 @@ struct ListResourceServersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceServers: list[ResourceServerType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceServers: list[ResourceServerType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceServersResponse:
     list[ResourceServerType] ResourceServers
     Optional[str] NextToken
@@ -1962,8 +2031,9 @@ struct ListResourceServersResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -1973,8 +2043,9 @@ struct ListTermsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Terms: list[TermsDescriptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Terms: list[TermsDescriptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTermsResponse:
     list[TermsDescriptionType] Terms
     Optional[str] NextToken
@@ -1985,8 +2056,9 @@ struct ListUserImportJobsRequest:
     int64 MaxResults
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) UserImportJobs: list[UserImportJobType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserImportJobs: list[UserImportJobType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserImportJobsResponse:
     Optional[list[UserImportJobType]] UserImportJobs
     Optional[str] PaginationToken
@@ -1997,8 +2069,9 @@ struct ListUserPoolClientSecretsRequest:
     str ClientId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClientSecrets: list[ClientSecretDescriptorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientSecrets: list[ClientSecretDescriptorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserPoolClientSecretsResponse:
     Optional[list[ClientSecretDescriptorType]] ClientSecrets
     Optional[str] NextToken
@@ -2009,8 +2082,9 @@ struct ListUserPoolClientsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UserPoolClients: list[UserPoolClientDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolClients: list[UserPoolClientDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserPoolClientsResponse:
     Optional[list[UserPoolClientDescription]] UserPoolClients
     Optional[str] NextToken
@@ -2020,8 +2094,9 @@ struct ListUserPoolReplicasRequest:
     str UserPoolId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UserPoolReplicas: list[UserPoolReplicaType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolReplicas: list[UserPoolReplicaType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserPoolReplicasResponse:
     Optional[list[UserPoolReplicaType]] UserPoolReplicas
     Optional[str] NextToken
@@ -2031,8 +2106,9 @@ struct ListUserPoolsRequest:
     Optional[str] NextToken
     int64 MaxResults
 
-# no @derive(Json): member(s) UserPools: list[UserPoolDescriptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPools: list[UserPoolDescriptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserPoolsResponse:
     Optional[list[UserPoolDescriptionType]] UserPools
     Optional[str] NextToken
@@ -2044,14 +2120,16 @@ struct ListUsersInGroupRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Users: list[UserType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersInGroupResponse:
     Optional[list[UserType]] Users
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AttributesToGet: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributesToGet: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersRequest:
     str UserPoolId
     Optional[list[str]] AttributesToGet
@@ -2059,8 +2137,9 @@ struct ListUsersRequest:
     Optional[str] PaginationToken
     Optional[str] Filter
 
-# no @derive(Json): member(s) Users: list[UserType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[list[UserType]] Users
     Optional[str] PaginationToken
@@ -2071,8 +2150,9 @@ struct ListWebAuthnCredentialsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Credentials: list[WebAuthnCredentialDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Credentials: list[WebAuthnCredentialDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebAuthnCredentialsResponse:
     list[WebAuthnCredentialDescription] Credentials
     Optional[str] NextToken
@@ -2085,8 +2165,9 @@ struct LogConfigurationType:
     Optional[S3ConfigurationType] S3Configuration
     Optional[FirehoseConfigurationType] FirehoseConfiguration
 
-# no @derive(Json): member(s) LogConfigurations: list[LogConfigurationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogConfigurations: list[LogConfigurationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogDeliveryConfigurationType:
     str UserPoolId
     list[LogConfigurationType] LogConfigurations
@@ -2104,8 +2185,9 @@ struct MFAOptionType:
 struct ManagedLoginBrandingExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Assets: list[AssetType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedLoginBrandingType:
     Optional[str] ManagedLoginBrandingId
     Optional[str] UserPoolId
@@ -2208,8 +2290,9 @@ struct RefreshTokenRotationType:
     FeatureType Feature
     Optional[int64] RetryGracePeriodSeconds
 
-# no @derive(Json): member(s) ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResendConfirmationCodeRequest:
     str ClientId
     Optional[str] SecretHash
@@ -2231,16 +2314,18 @@ struct ResourceServerScopeType:
     str ScopeName
     str ScopeDescription
 
-# no @derive(Json): member(s) Scopes: list[ResourceServerScopeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[ResourceServerScopeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceServerType:
     Optional[str] UserPoolId
     Optional[str] Identifier
     Optional[str] Name
     Optional[list[ResourceServerScopeType]] Scopes
 
-# no @derive(Json): member(s) ChallengeResponses: dict[str, str], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeResponses: dict[str, str], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RespondToAuthChallengeRequest:
     str ClientId
     ChallengeNameType ChallengeName
@@ -2250,8 +2335,9 @@ struct RespondToAuthChallengeRequest:
     Optional[UserContextDataType] UserContextData
     Optional[dict[str, str]] ClientMetadata
 
-# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengeParameters: dict[str, str], AvailableChallenges: list[ChallengeNameType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RespondToAuthChallengeResponse:
     Optional[ChallengeNameType] ChallengeName
     Optional[str] Session
@@ -2270,8 +2356,9 @@ struct RevokeTokenResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CompromisedCredentialsRiskConfiguration: CompromisedCredentialsRiskConfigurationType, RiskExceptionConfiguration: RiskExceptionConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompromisedCredentialsRiskConfiguration: CompromisedCredentialsRiskConfigurationType, RiskExceptionConfiguration: RiskExceptionConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RiskConfigurationType:
     Optional[str] UserPoolId
     Optional[str] ClientId
@@ -2280,8 +2367,9 @@ struct RiskConfigurationType:
     Optional[RiskExceptionConfigurationType] RiskExceptionConfiguration
     Optional[DateTime] LastModifiedDate
 
-# no @derive(Json): member(s) BlockedIPRangeList: list[str], SkippedIPRangeList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockedIPRangeList: list[str], SkippedIPRangeList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RiskExceptionConfigurationType:
     Optional[list[str]] BlockedIPRangeList
     Optional[list[str]] SkippedIPRangeList
@@ -2317,19 +2405,22 @@ struct ScopeDoesNotExistException:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) LogConfigurations: list[LogConfigurationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogConfigurations: list[LogConfigurationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetLogDeliveryConfigurationRequest:
     str UserPoolId
     list[LogConfigurationType] LogConfigurations
 
-# no @derive(Json): member(s) LogDeliveryConfiguration: LogDeliveryConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogDeliveryConfiguration: LogDeliveryConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetLogDeliveryConfigurationResponse:
     Optional[LogDeliveryConfigurationType] LogDeliveryConfiguration
 
-# no @derive(Json): member(s) CompromisedCredentialsRiskConfiguration: CompromisedCredentialsRiskConfigurationType, RiskExceptionConfiguration: RiskExceptionConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompromisedCredentialsRiskConfiguration: CompromisedCredentialsRiskConfigurationType, RiskExceptionConfiguration: RiskExceptionConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetRiskConfigurationRequest:
     str UserPoolId
     Optional[str] ClientId
@@ -2337,8 +2428,9 @@ struct SetRiskConfigurationRequest:
     Optional[AccountTakeoverRiskConfigurationType] AccountTakeoverRiskConfiguration
     Optional[RiskExceptionConfigurationType] RiskExceptionConfiguration
 
-# no @derive(Json): member(s) RiskConfiguration: RiskConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RiskConfiguration: RiskConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetRiskConfigurationResponse:
     RiskConfigurationType RiskConfiguration
 
@@ -2383,8 +2475,9 @@ struct SetUserPoolMfaConfigResponse:
     Optional[UserPoolMfaType] MfaConfiguration
     Optional[WebAuthnConfigurationType] WebAuthnConfiguration
 
-# no @derive(Json): member(s) MFAOptions: list[MFAOptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MFAOptions: list[MFAOptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetUserSettingsRequest:
     str AccessToken
     list[MFAOptionType] MFAOptions
@@ -2394,13 +2487,15 @@ struct SetUserSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AllowedFirstAuthFactors: list[AuthFactorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedFirstAuthFactors: list[AuthFactorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignInPolicyType:
     Optional[list[AuthFactorType]] AllowedFirstAuthFactors
 
-# no @derive(Json): member(s) UserAttributes: list[AttributeType], ValidationData: list[AttributeType], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: list[AttributeType], ValidationData: list[AttributeType], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignUpRequest:
     str ClientId
     Optional[str] SecretHash
@@ -2475,8 +2570,9 @@ struct StringAttributeConstraintsType:
     Optional[str] MinLength
     Optional[str] MaxLength
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
@@ -2498,8 +2594,9 @@ struct TermsDescriptionType:
 struct TermsExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Links: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Links: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TermsType:
     str TermsId
     str UserPoolId
@@ -2563,8 +2660,9 @@ struct UnsupportedTokenTypeException:
 struct UnsupportedUserStateException:
     Optional[str] message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -2610,8 +2708,9 @@ struct UpdateGroupRequest:
 struct UpdateGroupResponse:
     Optional[GroupType] Group
 
-# no @derive(Json): member(s) ProviderDetails: dict[str, str], AttributeMapping: dict[str, str], IdpIdentifiers: list[str], AcrMapping: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderDetails: dict[str, str], AttributeMapping: dict[str, str], IdpIdentifiers: list[str], AcrMapping: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdentityProviderRequest:
     str UserPoolId
     str ProviderName
@@ -2620,13 +2719,15 @@ struct UpdateIdentityProviderRequest:
     Optional[list[str]] IdpIdentifiers
     Optional[dict[str, str]] AcrMapping
 
-# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProvider: IdentityProviderType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdentityProviderResponse:
     IdentityProviderType IdentityProvider
 
-# no @derive(Json): member(s) Assets: list[AssetType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateManagedLoginBrandingRequest:
     Optional[str] UserPoolId
     Optional[str] ManagedLoginBrandingId
@@ -2634,37 +2735,43 @@ struct UpdateManagedLoginBrandingRequest:
     Optional[Document] Settings
     Optional[list[AssetType]] Assets
 
-# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedLoginBranding: ManagedLoginBrandingType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateManagedLoginBrandingResponse:
     Optional[ManagedLoginBrandingType] ManagedLoginBranding
 
-# no @derive(Json): member(s) LimitDefinition: LimitDefinitionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LimitDefinition: LimitDefinitionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisionedLimitRequest:
     LimitDefinitionType LimitDefinition
     int64 RequestedLimitValue
 
-# no @derive(Json): member(s) Limit: LimitType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Limit: LimitType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisionedLimitResponse:
     LimitType Limit
 
-# no @derive(Json): member(s) Scopes: list[ResourceServerScopeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[ResourceServerScopeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceServerRequest:
     str UserPoolId
     str Identifier
     str Name
     Optional[list[ResourceServerScopeType]] Scopes
 
-# no @derive(Json): member(s) ResourceServer: ResourceServerType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceServer: ResourceServerType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceServerResponse:
     ResourceServerType ResourceServer
 
-# no @derive(Json): member(s) Links: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Links: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTermsRequest:
     str TermsId
     str UserPoolId
@@ -2673,25 +2780,29 @@ struct UpdateTermsRequest:
     Optional[str] Enforcement
     Optional[dict[str, str]] Links
 
-# no @derive(Json): member(s) Terms: TermsType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Terms: TermsType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTermsResponse:
     Optional[TermsType] Terms
 
-# no @derive(Json): member(s) UserAttributes: list[AttributeType], ClientMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: list[AttributeType], ClientMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserAttributesRequest:
     list[AttributeType] UserAttributes
     str AccessToken
     Optional[dict[str, str]] ClientMetadata
 
-# no @derive(Json): member(s) CodeDeliveryDetailsList: list[CodeDeliveryDetailsType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeDeliveryDetailsList: list[CodeDeliveryDetailsType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserAttributesResponse:
     Optional[list[CodeDeliveryDetailsType]] CodeDeliveryDetailsList
 
-# no @derive(Json): member(s) ReadAttributes: list[str], WriteAttributes: list[str], ExplicitAuthFlows: list[ExplicitAuthFlowsType], SupportedIdentityProviders: list[str], CallbackURLs: list[str], LogoutURLs: list[str], AllowedOAuthFlows: list[OAuthFlowType], AllowedOAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadAttributes: list[str], WriteAttributes: list[str], ExplicitAuthFlows: list[ExplicitAuthFlowsType], SupportedIdentityProviders: list[str], CallbackURLs: list[str], LogoutURLs: list[str], AllowedOAuthFlows: list[OAuthFlowType], AllowedOAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserPoolClientRequest:
     str UserPoolId
     str ClientId
@@ -2717,8 +2828,9 @@ struct UpdateUserPoolClientRequest:
     Optional[int64] AuthSessionValidity
     Optional[RefreshTokenRotationType] RefreshTokenRotation
 
-# no @derive(Json): member(s) UserPoolClient: UserPoolClientType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolClient: UserPoolClientType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserPoolClientResponse:
     Optional[UserPoolClientType] UserPoolClient
 
@@ -2746,8 +2858,9 @@ struct UpdateUserPoolReplicaRequest:
 struct UpdateUserPoolReplicaResponse:
     Optional[UserPoolReplicaType] UserPoolReplica
 
-# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserPoolRequest:
     str UserPoolId
     Optional[UserPoolPolicyType] Policies
@@ -2779,8 +2892,9 @@ struct UpdateUserPoolResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AttributesRequireVerificationBeforeUpdate: list[VerifiedAttributeType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributesRequireVerificationBeforeUpdate: list[VerifiedAttributeType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserAttributeUpdateSettingsType:
     Optional[list[VerifiedAttributeType]] AttributesRequireVerificationBeforeUpdate
 
@@ -2837,8 +2951,9 @@ struct UserPoolClientDescription:
     Optional[str] UserPoolId
     Optional[str] ClientName
 
-# no @derive(Json): member(s) ReadAttributes: list[str], WriteAttributes: list[str], ExplicitAuthFlows: list[ExplicitAuthFlowsType], SupportedIdentityProviders: list[str], CallbackURLs: list[str], LogoutURLs: list[str], AllowedOAuthFlows: list[OAuthFlowType], AllowedOAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadAttributes: list[str], WriteAttributes: list[str], ExplicitAuthFlows: list[ExplicitAuthFlowsType], SupportedIdentityProviders: list[str], CallbackURLs: list[str], LogoutURLs: list[str], AllowedOAuthFlows: list[OAuthFlowType], AllowedOAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserPoolClientType:
     Optional[str] UserPoolId
     Optional[str] ClientName
@@ -2867,8 +2982,9 @@ struct UserPoolClientType:
     Optional[int64] AuthSessionValidity
     Optional[RefreshTokenRotationType] RefreshTokenRotation
 
-# no @derive(Json): member(s) ReplicaRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserPoolDescriptionType:
     Optional[str] Id
     Optional[str] Name
@@ -2878,8 +2994,9 @@ struct UserPoolDescriptionType:
     Optional[DateTime] CreationDate
     Optional[list[str]] ReplicaRegions
 
-# no @derive(Json): member(s) SignInPolicy: SignInPolicyType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SignInPolicy: SignInPolicyType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserPoolPolicyType:
     Optional[PasswordPolicyType] PasswordPolicy
     Optional[SignInPolicyType] SignInPolicy
@@ -2895,8 +3012,9 @@ struct UserPoolReplicaType:
 struct UserPoolTaggingException:
     Optional[str] message
 
-# no @derive(Json): member(s) Policies: UserPoolPolicyType, SchemaAttributes: list[SchemaAttributeType], AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: UserPoolPolicyType, SchemaAttributes: list[SchemaAttributeType], AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserPoolType:
     Optional[str] Id
     Optional[str] Name
@@ -2936,8 +3054,9 @@ struct UserPoolType:
     Optional[IssuerConfigurationType] IssuerConfiguration
     Optional[dict[str, AcrLevelConfigType]] AcrConfiguration
 
-# no @derive(Json): member(s) Attributes: list[AttributeType], MFAOptions: list[MFAOptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeType], MFAOptions: list[MFAOptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserType:
     Optional[str] Username
     Optional[list[AttributeType]] Attributes
@@ -3005,8 +3124,9 @@ struct WebAuthnConfigurationType:
     Optional[UserVerificationType] UserVerification
     Optional[WebAuthnFactorConfigurationType] FactorConfiguration
 
-# no @derive(Json): member(s) AuthenticatorTransports: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticatorTransports: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebAuthnCredentialDescription:
     str CredentialId
     str FriendlyCredentialName
@@ -3225,59 +3345,1235 @@ def cognito_idp_error_from_code(str code) -> Cognito_Identity_ProviderError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddCustomAttributes (input AddCustomAttributesRequest)
-#   AdminConfirmSignUp (input AdminConfirmSignUpRequest)
-#   AdminCreateUser (input AdminCreateUserRequest)
-#   AdminDeleteUserAttributes (input AdminDeleteUserAttributesRequest)
-#   AdminInitiateAuth (input AdminInitiateAuthRequest)
-#   AdminResetUserPassword (input AdminResetUserPasswordRequest)
-#   AdminRespondToAuthChallenge (input AdminRespondToAuthChallengeRequest)
-#   AdminSetUserSettings (input AdminSetUserSettingsRequest)
-#   AdminUpdateUserAttributes (input AdminUpdateUserAttributesRequest)
-#   ConfirmForgotPassword (input ConfirmForgotPasswordRequest)
-#   ConfirmSignUp (input ConfirmSignUpRequest)
-#   CreateIdentityProvider (input CreateIdentityProviderRequest)
-#   CreateManagedLoginBranding (input CreateManagedLoginBrandingRequest)
-#   CreateResourceServer (input CreateResourceServerRequest)
-#   CreateTerms (input CreateTermsRequest)
-#   CreateUserPool (input CreateUserPoolRequest)
-#   CreateUserPoolClient (input CreateUserPoolClientRequest)
-#   CreateUserPoolReplica (input CreateUserPoolReplicaRequest)
-#   DeleteUserAttributes (input DeleteUserAttributesRequest)
-#   ForgotPassword (input ForgotPasswordRequest)
-#   GetClientToken (input GetClientTokenRequest)
-#   GetProvisionedLimit (input GetProvisionedLimitRequest)
-#   GetTokensFromRefreshToken (input GetTokensFromRefreshTokenRequest)
-#   GetUserAttributeVerificationCode (input GetUserAttributeVerificationCodeRequest)
-#   InitiateAuth (input InitiateAuthRequest)
-#   ListUsers (input ListUsersRequest)
-#   ResendConfirmationCode (input ResendConfirmationCodeRequest)
-#   RespondToAuthChallenge (input RespondToAuthChallengeRequest)
-#   SetLogDeliveryConfiguration (input SetLogDeliveryConfigurationRequest)
-#   SetRiskConfiguration (input SetRiskConfigurationRequest)
-#   SetUserSettings (input SetUserSettingsRequest)
-#   SignUp (input SignUpRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateIdentityProvider (input UpdateIdentityProviderRequest)
-#   UpdateManagedLoginBranding (input UpdateManagedLoginBrandingRequest)
-#   UpdateProvisionedLimit (input UpdateProvisionedLimitRequest)
-#   UpdateResourceServer (input UpdateResourceServerRequest)
-#   UpdateTerms (input UpdateTermsRequest)
-#   UpdateUserAttributes (input UpdateUserAttributesRequest)
-#   UpdateUserPool (input UpdateUserPoolRequest)
-#   UpdateUserPoolClient (input UpdateUserPoolClientRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cognito_idp_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListUsers (input not derivable (no generated method))
+def cognito_idp_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cognito_idp_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccountRecoverySettingType to a compact JSON object (declaration order).
+def account_recovery_setting_type_to_json(AccountRecoverySettingType v) -> str:
+    list[str] parts = []
+    if v.RecoveryMechanisms.is_some():
+        auto u0 = v.RecoveryMechanisms.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RecoveryMechanisms\":" + cognito_idp_json_arr(e1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AddCustomAttributesRequest to a compact JSON object (declaration order).
+def add_custom_attributes_request_to_json(AddCustomAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    list[str] e0 = []
+    for x0 in v.CustomAttributes:
+        e0.append(x0.to_json())
+    parts.append("\"CustomAttributes\":" + cognito_idp_json_arr(e0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminConfirmSignUpRequest to a compact JSON object (declaration order).
+def admin_confirm_sign_up_request_to_json(AdminConfirmSignUpRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    if v.ClientMetadata.is_some():
+        auto u0 = v.ClientMetadata.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminCreateUserRequest to a compact JSON object (declaration order).
+def admin_create_user_request_to_json(AdminCreateUserRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    if v.UserAttributes.is_some():
+        auto u0 = v.UserAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"UserAttributes\":" + cognito_idp_json_arr(e1))
+    if v.ValidationData.is_some():
+        auto u2 = v.ValidationData.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ValidationData\":" + cognito_idp_json_arr(e3))
+    if v.TemporaryPassword.is_some():
+        auto u4 = v.TemporaryPassword.unwrap()
+        parts.append("\"TemporaryPassword\":" + cognito_idp_json_str(u4))
+    if v.ForceAliasCreation.is_some():
+        auto u5 = v.ForceAliasCreation.unwrap()
+        parts.append("\"ForceAliasCreation\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.MessageAction.is_some():
+        auto u6 = v.MessageAction.unwrap()
+        parts.append("\"MessageAction\":" + u6.to_json())
+    if v.DesiredDeliveryMediums.is_some():
+        auto u7 = v.DesiredDeliveryMediums.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"DesiredDeliveryMediums\":" + cognito_idp_json_arr(e8))
+    if v.ClientMetadata.is_some():
+        auto u9 = v.ClientMetadata.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(cognito_idp_json_str(k10) + ":" + cognito_idp_json_str(u9[k10]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m10))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminDeleteUserAttributesRequest to a compact JSON object (declaration order).
+def admin_delete_user_attributes_request_to_json(AdminDeleteUserAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    list[str] e0 = []
+    for x0 in v.UserAttributeNames:
+        e0.append(cognito_idp_json_str(x0))
+    parts.append("\"UserAttributeNames\":" + cognito_idp_json_arr(e0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminInitiateAuthRequest to a compact JSON object (declaration order).
+def admin_initiate_auth_request_to_json(AdminInitiateAuthRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    parts.append("\"AuthFlow\":" + v.AuthFlow.to_json())
+    if v.AuthParameters.is_some():
+        auto u0 = v.AuthParameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"AuthParameters\":" + cognito_idp_json_obj(m1))
+    if v.ClientMetadata.is_some():
+        auto u2 = v.ClientMetadata.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cognito_idp_json_str(k3) + ":" + cognito_idp_json_str(u2[k3]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m3))
+    if v.AnalyticsMetadata.is_some():
+        auto u4 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u4.to_json())
+    if v.ContextData.is_some():
+        auto u5 = v.ContextData.unwrap()
+        parts.append("\"ContextData\":" + context_data_type_to_json(u5))
+    if v.Session.is_some():
+        auto u6 = v.Session.unwrap()
+        parts.append("\"Session\":" + cognito_idp_json_str(u6))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminResetUserPasswordRequest to a compact JSON object (declaration order).
+def admin_reset_user_password_request_to_json(AdminResetUserPasswordRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    if v.ClientMetadata.is_some():
+        auto u0 = v.ClientMetadata.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminRespondToAuthChallengeRequest to a compact JSON object (declaration order).
+def admin_respond_to_auth_challenge_request_to_json(AdminRespondToAuthChallengeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    parts.append("\"ChallengeName\":" + v.ChallengeName.to_json())
+    if v.ChallengeResponses.is_some():
+        auto u0 = v.ChallengeResponses.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"ChallengeResponses\":" + cognito_idp_json_obj(m1))
+    if v.Session.is_some():
+        auto u2 = v.Session.unwrap()
+        parts.append("\"Session\":" + cognito_idp_json_str(u2))
+    if v.AnalyticsMetadata.is_some():
+        auto u3 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u3.to_json())
+    if v.ContextData.is_some():
+        auto u4 = v.ContextData.unwrap()
+        parts.append("\"ContextData\":" + context_data_type_to_json(u4))
+    if v.ClientMetadata.is_some():
+        auto u5 = v.ClientMetadata.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(cognito_idp_json_str(k6) + ":" + cognito_idp_json_str(u5[k6]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m6))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminSetUserSettingsRequest to a compact JSON object (declaration order).
+def admin_set_user_settings_request_to_json(AdminSetUserSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    list[str] e0 = []
+    for x0 in v.MFAOptions:
+        e0.append(x0.to_json())
+    parts.append("\"MFAOptions\":" + cognito_idp_json_arr(e0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize AdminUpdateUserAttributesRequest to a compact JSON object (declaration order).
+def admin_update_user_attributes_request_to_json(AdminUpdateUserAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    list[str] e0 = []
+    for x0 in v.UserAttributes:
+        e0.append(x0.to_json())
+    parts.append("\"UserAttributes\":" + cognito_idp_json_arr(e0))
+    if v.ClientMetadata.is_some():
+        auto u1 = v.ClientMetadata.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_idp_json_str(k2) + ":" + cognito_idp_json_str(u1[k2]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m2))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CompromisedCredentialsRiskConfigurationType to a compact JSON object (declaration order).
+def compromised_credentials_risk_configuration_type_to_json(CompromisedCredentialsRiskConfigurationType v) -> str:
+    list[str] parts = []
+    if v.EventFilter.is_some():
+        auto u0 = v.EventFilter.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EventFilter\":" + cognito_idp_json_arr(e1))
+    parts.append("\"Actions\":" + v.Actions.to_json())
+    return cognito_idp_json_obj(parts)
+
+# Serialize ConfirmForgotPasswordRequest to a compact JSON object (declaration order).
+def confirm_forgot_password_request_to_json(ConfirmForgotPasswordRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.SecretHash.is_some():
+        auto u0 = v.SecretHash.unwrap()
+        parts.append("\"SecretHash\":" + cognito_idp_json_str(u0))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    parts.append("\"ConfirmationCode\":" + cognito_idp_json_str(v.ConfirmationCode))
+    parts.append("\"Password\":" + cognito_idp_json_str(v.Password))
+    if v.AnalyticsMetadata.is_some():
+        auto u1 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u1.to_json())
+    if v.UserContextData.is_some():
+        auto u2 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u2.to_json())
+    if v.ClientMetadata.is_some():
+        auto u3 = v.ClientMetadata.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(cognito_idp_json_str(k4) + ":" + cognito_idp_json_str(u3[k4]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m4))
+    return cognito_idp_json_obj(parts)
+
+# Serialize ConfirmSignUpRequest to a compact JSON object (declaration order).
+def confirm_sign_up_request_to_json(ConfirmSignUpRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.SecretHash.is_some():
+        auto u0 = v.SecretHash.unwrap()
+        parts.append("\"SecretHash\":" + cognito_idp_json_str(u0))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    parts.append("\"ConfirmationCode\":" + cognito_idp_json_str(v.ConfirmationCode))
+    if v.ForceAliasCreation.is_some():
+        auto u1 = v.ForceAliasCreation.unwrap()
+        parts.append("\"ForceAliasCreation\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.AnalyticsMetadata.is_some():
+        auto u2 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u2.to_json())
+    if v.UserContextData.is_some():
+        auto u3 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u3.to_json())
+    if v.ClientMetadata.is_some():
+        auto u4 = v.ClientMetadata.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(cognito_idp_json_str(k5) + ":" + cognito_idp_json_str(u4[k5]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m5))
+    if v.Session.is_some():
+        auto u6 = v.Session.unwrap()
+        parts.append("\"Session\":" + cognito_idp_json_str(u6))
+    return cognito_idp_json_obj(parts)
+
+# Serialize ContextDataType to a compact JSON object (declaration order).
+def context_data_type_to_json(ContextDataType v) -> str:
+    list[str] parts = []
+    parts.append("\"IpAddress\":" + cognito_idp_json_str(v.IpAddress))
+    parts.append("\"ServerName\":" + cognito_idp_json_str(v.ServerName))
+    parts.append("\"ServerPath\":" + cognito_idp_json_str(v.ServerPath))
+    list[str] e0 = []
+    for x0 in v.HttpHeaders:
+        e0.append(x0.to_json())
+    parts.append("\"HttpHeaders\":" + cognito_idp_json_arr(e0))
+    if v.EncodedData.is_some():
+        auto u1 = v.EncodedData.unwrap()
+        parts.append("\"EncodedData\":" + cognito_idp_json_str(u1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateIdentityProviderRequest to a compact JSON object (declaration order).
+def create_identity_provider_request_to_json(CreateIdentityProviderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ProviderName\":" + cognito_idp_json_str(v.ProviderName))
+    parts.append("\"ProviderType\":" + v.ProviderType.to_json())
+    list[str] m0 = []
+    for k0 in sorted(v.ProviderDetails.keys()):
+        m0.append(cognito_idp_json_str(k0) + ":" + cognito_idp_json_str(v.ProviderDetails[k0]))
+    parts.append("\"ProviderDetails\":" + cognito_idp_json_obj(m0))
+    if v.AttributeMapping.is_some():
+        auto u1 = v.AttributeMapping.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_idp_json_str(k2) + ":" + cognito_idp_json_str(u1[k2]))
+        parts.append("\"AttributeMapping\":" + cognito_idp_json_obj(m2))
+    if v.IdpIdentifiers.is_some():
+        auto u3 = v.IdpIdentifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(cognito_idp_json_str(x4))
+        parts.append("\"IdpIdentifiers\":" + cognito_idp_json_arr(e4))
+    if v.AcrMapping.is_some():
+        auto u5 = v.AcrMapping.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(cognito_idp_json_str(k6) + ":" + cognito_idp_json_str(u5[k6]))
+        parts.append("\"AcrMapping\":" + cognito_idp_json_obj(m6))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateManagedLoginBrandingRequest to a compact JSON object (declaration order).
+def create_managed_login_branding_request_to_json(CreateManagedLoginBrandingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.UseCognitoProvidedValues.is_some():
+        auto u0 = v.UseCognitoProvidedValues.unwrap()
+        parts.append("\"UseCognitoProvidedValues\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Settings.is_some():
+        auto u1 = v.Settings.unwrap()
+        parts.append("\"Settings\":" + u1.to_json())
+    if v.Assets.is_some():
+        auto u2 = v.Assets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Assets\":" + cognito_idp_json_arr(e3))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateResourceServerRequest to a compact JSON object (declaration order).
+def create_resource_server_request_to_json(CreateResourceServerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Identifier\":" + cognito_idp_json_str(v.Identifier))
+    parts.append("\"Name\":" + cognito_idp_json_str(v.Name))
+    if v.Scopes.is_some():
+        auto u0 = v.Scopes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Scopes\":" + cognito_idp_json_arr(e1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateTermsRequest to a compact JSON object (declaration order).
+def create_terms_request_to_json(CreateTermsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    parts.append("\"TermsName\":" + cognito_idp_json_str(v.TermsName))
+    parts.append("\"TermsSource\":" + cognito_idp_json_str(v.TermsSource))
+    parts.append("\"Enforcement\":" + cognito_idp_json_str(v.Enforcement))
+    if v.Links.is_some():
+        auto u0 = v.Links.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"Links\":" + cognito_idp_json_obj(m1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateUserPoolClientRequest to a compact JSON object (declaration order).
+def create_user_pool_client_request_to_json(CreateUserPoolClientRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ClientName\":" + cognito_idp_json_str(v.ClientName))
+    if v.GenerateSecret.is_some():
+        auto u0 = v.GenerateSecret.unwrap()
+        parts.append("\"GenerateSecret\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ClientSecret.is_some():
+        auto u1 = v.ClientSecret.unwrap()
+        parts.append("\"ClientSecret\":" + cognito_idp_json_str(u1))
+    if v.RefreshTokenValidity.is_some():
+        auto u2 = v.RefreshTokenValidity.unwrap()
+        parts.append("\"RefreshTokenValidity\":" + str(u2))
+    if v.AccessTokenValidity.is_some():
+        auto u3 = v.AccessTokenValidity.unwrap()
+        parts.append("\"AccessTokenValidity\":" + str(u3))
+    if v.IdTokenValidity.is_some():
+        auto u4 = v.IdTokenValidity.unwrap()
+        parts.append("\"IdTokenValidity\":" + str(u4))
+    if v.TokenValidityUnits.is_some():
+        auto u5 = v.TokenValidityUnits.unwrap()
+        parts.append("\"TokenValidityUnits\":" + u5.to_json())
+    if v.ReadAttributes.is_some():
+        auto u6 = v.ReadAttributes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(cognito_idp_json_str(x7))
+        parts.append("\"ReadAttributes\":" + cognito_idp_json_arr(e7))
+    if v.WriteAttributes.is_some():
+        auto u8 = v.WriteAttributes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(cognito_idp_json_str(x9))
+        parts.append("\"WriteAttributes\":" + cognito_idp_json_arr(e9))
+    if v.ExplicitAuthFlows.is_some():
+        auto u10 = v.ExplicitAuthFlows.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"ExplicitAuthFlows\":" + cognito_idp_json_arr(e11))
+    if v.SupportedIdentityProviders.is_some():
+        auto u12 = v.SupportedIdentityProviders.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(cognito_idp_json_str(x13))
+        parts.append("\"SupportedIdentityProviders\":" + cognito_idp_json_arr(e13))
+    if v.CallbackURLs.is_some():
+        auto u14 = v.CallbackURLs.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(cognito_idp_json_str(x15))
+        parts.append("\"CallbackURLs\":" + cognito_idp_json_arr(e15))
+    if v.LogoutURLs.is_some():
+        auto u16 = v.LogoutURLs.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(cognito_idp_json_str(x17))
+        parts.append("\"LogoutURLs\":" + cognito_idp_json_arr(e17))
+    if v.DefaultRedirectURI.is_some():
+        auto u18 = v.DefaultRedirectURI.unwrap()
+        parts.append("\"DefaultRedirectURI\":" + cognito_idp_json_str(u18))
+    if v.AllowedOAuthFlows.is_some():
+        auto u19 = v.AllowedOAuthFlows.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"AllowedOAuthFlows\":" + cognito_idp_json_arr(e20))
+    if v.AllowedOAuthScopes.is_some():
+        auto u21 = v.AllowedOAuthScopes.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(cognito_idp_json_str(x22))
+        parts.append("\"AllowedOAuthScopes\":" + cognito_idp_json_arr(e22))
+    if v.AllowedOAuthFlowsUserPoolClient.is_some():
+        auto u23 = v.AllowedOAuthFlowsUserPoolClient.unwrap()
+        parts.append("\"AllowedOAuthFlowsUserPoolClient\":" + json.dumps(JsonValue.Bool(u23)))
+    if v.AnalyticsConfiguration.is_some():
+        auto u24 = v.AnalyticsConfiguration.unwrap()
+        parts.append("\"AnalyticsConfiguration\":" + u24.to_json())
+    if v.PreventUserExistenceErrors.is_some():
+        auto u25 = v.PreventUserExistenceErrors.unwrap()
+        parts.append("\"PreventUserExistenceErrors\":" + u25.to_json())
+    if v.EnableTokenRevocation.is_some():
+        auto u26 = v.EnableTokenRevocation.unwrap()
+        parts.append("\"EnableTokenRevocation\":" + json.dumps(JsonValue.Bool(u26)))
+    if v.EnablePropagateAdditionalUserContextData.is_some():
+        auto u27 = v.EnablePropagateAdditionalUserContextData.unwrap()
+        parts.append("\"EnablePropagateAdditionalUserContextData\":" + json.dumps(JsonValue.Bool(u27)))
+    if v.AuthSessionValidity.is_some():
+        auto u28 = v.AuthSessionValidity.unwrap()
+        parts.append("\"AuthSessionValidity\":" + str(u28))
+    if v.RefreshTokenRotation.is_some():
+        auto u29 = v.RefreshTokenRotation.unwrap()
+        parts.append("\"RefreshTokenRotation\":" + u29.to_json())
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateUserPoolReplicaRequest to a compact JSON object (declaration order).
+def create_user_pool_replica_request_to_json(CreateUserPoolReplicaRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"RegionName\":" + cognito_idp_json_str(v.RegionName))
+    if v.UserPoolTags.is_some():
+        auto u0 = v.UserPoolTags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"UserPoolTags\":" + cognito_idp_json_obj(m1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize CreateUserPoolRequest to a compact JSON object (declaration order).
+def create_user_pool_request_to_json(CreateUserPoolRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PoolName\":" + cognito_idp_json_str(v.PoolName))
+    if v.Policies.is_some():
+        auto u0 = v.Policies.unwrap()
+        parts.append("\"Policies\":" + user_pool_policy_type_to_json(u0))
+    if v.DeletionProtection.is_some():
+        auto u1 = v.DeletionProtection.unwrap()
+        parts.append("\"DeletionProtection\":" + u1.to_json())
+    if v.LambdaConfig.is_some():
+        auto u2 = v.LambdaConfig.unwrap()
+        parts.append("\"LambdaConfig\":" + u2.to_json())
+    if v.AutoVerifiedAttributes.is_some():
+        auto u3 = v.AutoVerifiedAttributes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"AutoVerifiedAttributes\":" + cognito_idp_json_arr(e4))
+    if v.AliasAttributes.is_some():
+        auto u5 = v.AliasAttributes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"AliasAttributes\":" + cognito_idp_json_arr(e6))
+    if v.UsernameAttributes.is_some():
+        auto u7 = v.UsernameAttributes.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"UsernameAttributes\":" + cognito_idp_json_arr(e8))
+    if v.SmsVerificationMessage.is_some():
+        auto u9 = v.SmsVerificationMessage.unwrap()
+        parts.append("\"SmsVerificationMessage\":" + cognito_idp_json_str(u9))
+    if v.EmailVerificationMessage.is_some():
+        auto u10 = v.EmailVerificationMessage.unwrap()
+        parts.append("\"EmailVerificationMessage\":" + cognito_idp_json_str(u10))
+    if v.EmailVerificationSubject.is_some():
+        auto u11 = v.EmailVerificationSubject.unwrap()
+        parts.append("\"EmailVerificationSubject\":" + cognito_idp_json_str(u11))
+    if v.VerificationMessageTemplate.is_some():
+        auto u12 = v.VerificationMessageTemplate.unwrap()
+        parts.append("\"VerificationMessageTemplate\":" + u12.to_json())
+    if v.SmsAuthenticationMessage.is_some():
+        auto u13 = v.SmsAuthenticationMessage.unwrap()
+        parts.append("\"SmsAuthenticationMessage\":" + cognito_idp_json_str(u13))
+    if v.MfaConfiguration.is_some():
+        auto u14 = v.MfaConfiguration.unwrap()
+        parts.append("\"MfaConfiguration\":" + u14.to_json())
+    if v.UserAttributeUpdateSettings.is_some():
+        auto u15 = v.UserAttributeUpdateSettings.unwrap()
+        parts.append("\"UserAttributeUpdateSettings\":" + user_attribute_update_settings_type_to_json(u15))
+    if v.DeviceConfiguration.is_some():
+        auto u16 = v.DeviceConfiguration.unwrap()
+        parts.append("\"DeviceConfiguration\":" + u16.to_json())
+    if v.EmailConfiguration.is_some():
+        auto u17 = v.EmailConfiguration.unwrap()
+        parts.append("\"EmailConfiguration\":" + u17.to_json())
+    if v.SmsConfiguration.is_some():
+        auto u18 = v.SmsConfiguration.unwrap()
+        parts.append("\"SmsConfiguration\":" + u18.to_json())
+    if v.UserPoolTags.is_some():
+        auto u19 = v.UserPoolTags.unwrap()
+        list[str] m20 = []
+        for k20 in sorted(u19.keys()):
+            m20.append(cognito_idp_json_str(k20) + ":" + cognito_idp_json_str(u19[k20]))
+        parts.append("\"UserPoolTags\":" + cognito_idp_json_obj(m20))
+    if v.AdminCreateUserConfig.is_some():
+        auto u21 = v.AdminCreateUserConfig.unwrap()
+        parts.append("\"AdminCreateUserConfig\":" + u21.to_json())
+    if v.Schema.is_some():
+        auto u22 = v.Schema.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"Schema\":" + cognito_idp_json_arr(e23))
+    if v.UserPoolAddOns.is_some():
+        auto u24 = v.UserPoolAddOns.unwrap()
+        parts.append("\"UserPoolAddOns\":" + u24.to_json())
+    if v.UsernameConfiguration.is_some():
+        auto u25 = v.UsernameConfiguration.unwrap()
+        parts.append("\"UsernameConfiguration\":" + u25.to_json())
+    if v.AccountRecoverySetting.is_some():
+        auto u26 = v.AccountRecoverySetting.unwrap()
+        parts.append("\"AccountRecoverySetting\":" + account_recovery_setting_type_to_json(u26))
+    if v.UserPoolTier.is_some():
+        auto u27 = v.UserPoolTier.unwrap()
+        parts.append("\"UserPoolTier\":" + u27.to_json())
+    if v.KeyConfiguration.is_some():
+        auto u28 = v.KeyConfiguration.unwrap()
+        parts.append("\"KeyConfiguration\":" + u28.to_json())
+    if v.IssuerConfiguration.is_some():
+        auto u29 = v.IssuerConfiguration.unwrap()
+        parts.append("\"IssuerConfiguration\":" + u29.to_json())
+    if v.AcrConfiguration.is_some():
+        auto u30 = v.AcrConfiguration.unwrap()
+        list[str] m31 = []
+        for k31 in sorted(u30.keys()):
+            m31.append(cognito_idp_json_str(k31) + ":" + u30[k31].to_json())
+        parts.append("\"AcrConfiguration\":" + cognito_idp_json_obj(m31))
+    return cognito_idp_json_obj(parts)
+
+# Serialize DeleteUserAttributesRequest to a compact JSON object (declaration order).
+def delete_user_attributes_request_to_json(DeleteUserAttributesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.UserAttributeNames:
+        e0.append(cognito_idp_json_str(x0))
+    parts.append("\"UserAttributeNames\":" + cognito_idp_json_arr(e0))
+    parts.append("\"AccessToken\":" + cognito_idp_json_str(v.AccessToken))
+    return cognito_idp_json_obj(parts)
+
+# Serialize ForgotPasswordRequest to a compact JSON object (declaration order).
+def forgot_password_request_to_json(ForgotPasswordRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.SecretHash.is_some():
+        auto u0 = v.SecretHash.unwrap()
+        parts.append("\"SecretHash\":" + cognito_idp_json_str(u0))
+    if v.UserContextData.is_some():
+        auto u1 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u1.to_json())
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    if v.AnalyticsMetadata.is_some():
+        auto u2 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u2.to_json())
+    if v.ClientMetadata.is_some():
+        auto u3 = v.ClientMetadata.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(cognito_idp_json_str(k4) + ":" + cognito_idp_json_str(u3[k4]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m4))
+    return cognito_idp_json_obj(parts)
+
+# Serialize GetClientTokenRequest to a compact JSON object (declaration order).
+def get_client_token_request_to_json(GetClientTokenRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    parts.append("\"Secret\":" + cognito_idp_json_str(v.Secret))
+    if v.Scopes.is_some():
+        auto u0 = v.Scopes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cognito_idp_json_str(x1))
+        parts.append("\"Scopes\":" + cognito_idp_json_arr(e1))
+    if v.ClientMetadata.is_some():
+        auto u2 = v.ClientMetadata.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cognito_idp_json_str(k3) + ":" + cognito_idp_json_str(u2[k3]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m3))
+    return cognito_idp_json_obj(parts)
+
+# Serialize GetProvisionedLimitRequest to a compact JSON object (declaration order).
+def get_provisioned_limit_request_to_json(GetProvisionedLimitRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LimitDefinition\":" + limit_definition_type_to_json(v.LimitDefinition))
+    return cognito_idp_json_obj(parts)
+
+# Serialize GetTokensFromRefreshTokenRequest to a compact JSON object (declaration order).
+def get_tokens_from_refresh_token_request_to_json(GetTokensFromRefreshTokenRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RefreshToken\":" + cognito_idp_json_str(v.RefreshToken))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.ClientSecret.is_some():
+        auto u0 = v.ClientSecret.unwrap()
+        parts.append("\"ClientSecret\":" + cognito_idp_json_str(u0))
+    if v.DeviceKey.is_some():
+        auto u1 = v.DeviceKey.unwrap()
+        parts.append("\"DeviceKey\":" + cognito_idp_json_str(u1))
+    if v.ClientMetadata.is_some():
+        auto u2 = v.ClientMetadata.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cognito_idp_json_str(k3) + ":" + cognito_idp_json_str(u2[k3]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m3))
+    return cognito_idp_json_obj(parts)
+
+# Serialize GetUserAttributeVerificationCodeRequest to a compact JSON object (declaration order).
+def get_user_attribute_verification_code_request_to_json(GetUserAttributeVerificationCodeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccessToken\":" + cognito_idp_json_str(v.AccessToken))
+    parts.append("\"AttributeName\":" + cognito_idp_json_str(v.AttributeName))
+    if v.ClientMetadata.is_some():
+        auto u0 = v.ClientMetadata.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize InitiateAuthRequest to a compact JSON object (declaration order).
+def initiate_auth_request_to_json(InitiateAuthRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AuthFlow\":" + v.AuthFlow.to_json())
+    if v.AuthParameters.is_some():
+        auto u0 = v.AuthParameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"AuthParameters\":" + cognito_idp_json_obj(m1))
+    if v.ClientMetadata.is_some():
+        auto u2 = v.ClientMetadata.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cognito_idp_json_str(k3) + ":" + cognito_idp_json_str(u2[k3]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m3))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.AnalyticsMetadata.is_some():
+        auto u4 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u4.to_json())
+    if v.UserContextData.is_some():
+        auto u5 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u5.to_json())
+    if v.Session.is_some():
+        auto u6 = v.Session.unwrap()
+        parts.append("\"Session\":" + cognito_idp_json_str(u6))
+    return cognito_idp_json_obj(parts)
+
+# Serialize LimitDefinitionType to a compact JSON object (declaration order).
+def limit_definition_type_to_json(LimitDefinitionType v) -> str:
+    list[str] parts = []
+    parts.append("\"LimitClass\":" + cognito_idp_json_str(v.LimitClass))
+    list[str] m0 = []
+    for k0 in sorted(v.Attributes.keys()):
+        m0.append(cognito_idp_json_str(k0) + ":" + cognito_idp_json_str(v.Attributes[k0]))
+    parts.append("\"Attributes\":" + cognito_idp_json_obj(m0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize ListUsersRequest to a compact JSON object (declaration order).
+def list_users_request_to_json(ListUsersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    if v.AttributesToGet.is_some():
+        auto u0 = v.AttributesToGet.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cognito_idp_json_str(x1))
+        parts.append("\"AttributesToGet\":" + cognito_idp_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.PaginationToken.is_some():
+        auto u3 = v.PaginationToken.unwrap()
+        parts.append("\"PaginationToken\":" + cognito_idp_json_str(u3))
+    if v.Filter.is_some():
+        auto u4 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + cognito_idp_json_str(u4))
+    return cognito_idp_json_obj(parts)
+
+# Serialize ResendConfirmationCodeRequest to a compact JSON object (declaration order).
+def resend_confirmation_code_request_to_json(ResendConfirmationCodeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.SecretHash.is_some():
+        auto u0 = v.SecretHash.unwrap()
+        parts.append("\"SecretHash\":" + cognito_idp_json_str(u0))
+    if v.UserContextData.is_some():
+        auto u1 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u1.to_json())
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    if v.AnalyticsMetadata.is_some():
+        auto u2 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u2.to_json())
+    if v.ClientMetadata.is_some():
+        auto u3 = v.ClientMetadata.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(cognito_idp_json_str(k4) + ":" + cognito_idp_json_str(u3[k4]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m4))
+    return cognito_idp_json_obj(parts)
+
+# Serialize RespondToAuthChallengeRequest to a compact JSON object (declaration order).
+def respond_to_auth_challenge_request_to_json(RespondToAuthChallengeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    parts.append("\"ChallengeName\":" + v.ChallengeName.to_json())
+    if v.Session.is_some():
+        auto u0 = v.Session.unwrap()
+        parts.append("\"Session\":" + cognito_idp_json_str(u0))
+    if v.ChallengeResponses.is_some():
+        auto u1 = v.ChallengeResponses.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_idp_json_str(k2) + ":" + cognito_idp_json_str(u1[k2]))
+        parts.append("\"ChallengeResponses\":" + cognito_idp_json_obj(m2))
+    if v.AnalyticsMetadata.is_some():
+        auto u3 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u3.to_json())
+    if v.UserContextData.is_some():
+        auto u4 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u4.to_json())
+    if v.ClientMetadata.is_some():
+        auto u5 = v.ClientMetadata.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(cognito_idp_json_str(k6) + ":" + cognito_idp_json_str(u5[k6]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m6))
+    return cognito_idp_json_obj(parts)
+
+# Serialize RiskExceptionConfigurationType to a compact JSON object (declaration order).
+def risk_exception_configuration_type_to_json(RiskExceptionConfigurationType v) -> str:
+    list[str] parts = []
+    if v.BlockedIPRangeList.is_some():
+        auto u0 = v.BlockedIPRangeList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cognito_idp_json_str(x1))
+        parts.append("\"BlockedIPRangeList\":" + cognito_idp_json_arr(e1))
+    if v.SkippedIPRangeList.is_some():
+        auto u2 = v.SkippedIPRangeList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cognito_idp_json_str(x3))
+        parts.append("\"SkippedIPRangeList\":" + cognito_idp_json_arr(e3))
+    return cognito_idp_json_obj(parts)
+
+# Serialize SetLogDeliveryConfigurationRequest to a compact JSON object (declaration order).
+def set_log_delivery_configuration_request_to_json(SetLogDeliveryConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    list[str] e0 = []
+    for x0 in v.LogConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"LogConfigurations\":" + cognito_idp_json_arr(e0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize SetRiskConfigurationRequest to a compact JSON object (declaration order).
+def set_risk_configuration_request_to_json(SetRiskConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    if v.ClientId.is_some():
+        auto u0 = v.ClientId.unwrap()
+        parts.append("\"ClientId\":" + cognito_idp_json_str(u0))
+    if v.CompromisedCredentialsRiskConfiguration.is_some():
+        auto u1 = v.CompromisedCredentialsRiskConfiguration.unwrap()
+        parts.append("\"CompromisedCredentialsRiskConfiguration\":" + compromised_credentials_risk_configuration_type_to_json(u1))
+    if v.AccountTakeoverRiskConfiguration.is_some():
+        auto u2 = v.AccountTakeoverRiskConfiguration.unwrap()
+        parts.append("\"AccountTakeoverRiskConfiguration\":" + u2.to_json())
+    if v.RiskExceptionConfiguration.is_some():
+        auto u3 = v.RiskExceptionConfiguration.unwrap()
+        parts.append("\"RiskExceptionConfiguration\":" + risk_exception_configuration_type_to_json(u3))
+    return cognito_idp_json_obj(parts)
+
+# Serialize SetUserSettingsRequest to a compact JSON object (declaration order).
+def set_user_settings_request_to_json(SetUserSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccessToken\":" + cognito_idp_json_str(v.AccessToken))
+    list[str] e0 = []
+    for x0 in v.MFAOptions:
+        e0.append(x0.to_json())
+    parts.append("\"MFAOptions\":" + cognito_idp_json_arr(e0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize SignInPolicyType to a compact JSON object (declaration order).
+def sign_in_policy_type_to_json(SignInPolicyType v) -> str:
+    list[str] parts = []
+    if v.AllowedFirstAuthFactors.is_some():
+        auto u0 = v.AllowedFirstAuthFactors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AllowedFirstAuthFactors\":" + cognito_idp_json_arr(e1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize SignUpRequest to a compact JSON object (declaration order).
+def sign_up_request_to_json(SignUpRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.SecretHash.is_some():
+        auto u0 = v.SecretHash.unwrap()
+        parts.append("\"SecretHash\":" + cognito_idp_json_str(u0))
+    parts.append("\"Username\":" + cognito_idp_json_str(v.Username))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        parts.append("\"Password\":" + cognito_idp_json_str(u1))
+    if v.UserAttributes.is_some():
+        auto u2 = v.UserAttributes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"UserAttributes\":" + cognito_idp_json_arr(e3))
+    if v.ValidationData.is_some():
+        auto u4 = v.ValidationData.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ValidationData\":" + cognito_idp_json_arr(e5))
+    if v.AnalyticsMetadata.is_some():
+        auto u6 = v.AnalyticsMetadata.unwrap()
+        parts.append("\"AnalyticsMetadata\":" + u6.to_json())
+    if v.UserContextData.is_some():
+        auto u7 = v.UserContextData.unwrap()
+        parts.append("\"UserContextData\":" + u7.to_json())
+    if v.ClientMetadata.is_some():
+        auto u8 = v.ClientMetadata.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(cognito_idp_json_str(k9) + ":" + cognito_idp_json_str(u8[k9]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m9))
+    return cognito_idp_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + cognito_idp_json_str(v.ResourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(cognito_idp_json_str(k0) + ":" + cognito_idp_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + cognito_idp_json_obj(m0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + cognito_idp_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(cognito_idp_json_str(x0))
+    parts.append("\"TagKeys\":" + cognito_idp_json_arr(e0))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateIdentityProviderRequest to a compact JSON object (declaration order).
+def update_identity_provider_request_to_json(UpdateIdentityProviderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ProviderName\":" + cognito_idp_json_str(v.ProviderName))
+    if v.ProviderDetails.is_some():
+        auto u0 = v.ProviderDetails.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_idp_json_str(k1) + ":" + cognito_idp_json_str(u0[k1]))
+        parts.append("\"ProviderDetails\":" + cognito_idp_json_obj(m1))
+    if v.AttributeMapping.is_some():
+        auto u2 = v.AttributeMapping.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cognito_idp_json_str(k3) + ":" + cognito_idp_json_str(u2[k3]))
+        parts.append("\"AttributeMapping\":" + cognito_idp_json_obj(m3))
+    if v.IdpIdentifiers.is_some():
+        auto u4 = v.IdpIdentifiers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cognito_idp_json_str(x5))
+        parts.append("\"IdpIdentifiers\":" + cognito_idp_json_arr(e5))
+    if v.AcrMapping.is_some():
+        auto u6 = v.AcrMapping.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(cognito_idp_json_str(k7) + ":" + cognito_idp_json_str(u6[k7]))
+        parts.append("\"AcrMapping\":" + cognito_idp_json_obj(m7))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateManagedLoginBrandingRequest to a compact JSON object (declaration order).
+def update_managed_login_branding_request_to_json(UpdateManagedLoginBrandingRequest v) -> str:
+    list[str] parts = []
+    if v.UserPoolId.is_some():
+        auto u0 = v.UserPoolId.unwrap()
+        parts.append("\"UserPoolId\":" + cognito_idp_json_str(u0))
+    if v.ManagedLoginBrandingId.is_some():
+        auto u1 = v.ManagedLoginBrandingId.unwrap()
+        parts.append("\"ManagedLoginBrandingId\":" + cognito_idp_json_str(u1))
+    if v.UseCognitoProvidedValues.is_some():
+        auto u2 = v.UseCognitoProvidedValues.unwrap()
+        parts.append("\"UseCognitoProvidedValues\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Settings.is_some():
+        auto u3 = v.Settings.unwrap()
+        parts.append("\"Settings\":" + u3.to_json())
+    if v.Assets.is_some():
+        auto u4 = v.Assets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Assets\":" + cognito_idp_json_arr(e5))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateProvisionedLimitRequest to a compact JSON object (declaration order).
+def update_provisioned_limit_request_to_json(UpdateProvisionedLimitRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LimitDefinition\":" + limit_definition_type_to_json(v.LimitDefinition))
+    parts.append("\"RequestedLimitValue\":" + str(v.RequestedLimitValue))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateResourceServerRequest to a compact JSON object (declaration order).
+def update_resource_server_request_to_json(UpdateResourceServerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"Identifier\":" + cognito_idp_json_str(v.Identifier))
+    parts.append("\"Name\":" + cognito_idp_json_str(v.Name))
+    if v.Scopes.is_some():
+        auto u0 = v.Scopes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Scopes\":" + cognito_idp_json_arr(e1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateTermsRequest to a compact JSON object (declaration order).
+def update_terms_request_to_json(UpdateTermsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TermsId\":" + cognito_idp_json_str(v.TermsId))
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    if v.TermsName.is_some():
+        auto u0 = v.TermsName.unwrap()
+        parts.append("\"TermsName\":" + cognito_idp_json_str(u0))
+    if v.TermsSource.is_some():
+        auto u1 = v.TermsSource.unwrap()
+        parts.append("\"TermsSource\":" + cognito_idp_json_str(u1))
+    if v.Enforcement.is_some():
+        auto u2 = v.Enforcement.unwrap()
+        parts.append("\"Enforcement\":" + cognito_idp_json_str(u2))
+    if v.Links.is_some():
+        auto u3 = v.Links.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(cognito_idp_json_str(k4) + ":" + cognito_idp_json_str(u3[k4]))
+        parts.append("\"Links\":" + cognito_idp_json_obj(m4))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateUserAttributesRequest to a compact JSON object (declaration order).
+def update_user_attributes_request_to_json(UpdateUserAttributesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.UserAttributes:
+        e0.append(x0.to_json())
+    parts.append("\"UserAttributes\":" + cognito_idp_json_arr(e0))
+    parts.append("\"AccessToken\":" + cognito_idp_json_str(v.AccessToken))
+    if v.ClientMetadata.is_some():
+        auto u1 = v.ClientMetadata.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_idp_json_str(k2) + ":" + cognito_idp_json_str(u1[k2]))
+        parts.append("\"ClientMetadata\":" + cognito_idp_json_obj(m2))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateUserPoolClientRequest to a compact JSON object (declaration order).
+def update_user_pool_client_request_to_json(UpdateUserPoolClientRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    parts.append("\"ClientId\":" + cognito_idp_json_str(v.ClientId))
+    if v.ClientName.is_some():
+        auto u0 = v.ClientName.unwrap()
+        parts.append("\"ClientName\":" + cognito_idp_json_str(u0))
+    if v.RefreshTokenValidity.is_some():
+        auto u1 = v.RefreshTokenValidity.unwrap()
+        parts.append("\"RefreshTokenValidity\":" + str(u1))
+    if v.AccessTokenValidity.is_some():
+        auto u2 = v.AccessTokenValidity.unwrap()
+        parts.append("\"AccessTokenValidity\":" + str(u2))
+    if v.IdTokenValidity.is_some():
+        auto u3 = v.IdTokenValidity.unwrap()
+        parts.append("\"IdTokenValidity\":" + str(u3))
+    if v.TokenValidityUnits.is_some():
+        auto u4 = v.TokenValidityUnits.unwrap()
+        parts.append("\"TokenValidityUnits\":" + u4.to_json())
+    if v.ReadAttributes.is_some():
+        auto u5 = v.ReadAttributes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(cognito_idp_json_str(x6))
+        parts.append("\"ReadAttributes\":" + cognito_idp_json_arr(e6))
+    if v.WriteAttributes.is_some():
+        auto u7 = v.WriteAttributes.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(cognito_idp_json_str(x8))
+        parts.append("\"WriteAttributes\":" + cognito_idp_json_arr(e8))
+    if v.ExplicitAuthFlows.is_some():
+        auto u9 = v.ExplicitAuthFlows.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"ExplicitAuthFlows\":" + cognito_idp_json_arr(e10))
+    if v.SupportedIdentityProviders.is_some():
+        auto u11 = v.SupportedIdentityProviders.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(cognito_idp_json_str(x12))
+        parts.append("\"SupportedIdentityProviders\":" + cognito_idp_json_arr(e12))
+    if v.CallbackURLs.is_some():
+        auto u13 = v.CallbackURLs.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(cognito_idp_json_str(x14))
+        parts.append("\"CallbackURLs\":" + cognito_idp_json_arr(e14))
+    if v.LogoutURLs.is_some():
+        auto u15 = v.LogoutURLs.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(cognito_idp_json_str(x16))
+        parts.append("\"LogoutURLs\":" + cognito_idp_json_arr(e16))
+    if v.DefaultRedirectURI.is_some():
+        auto u17 = v.DefaultRedirectURI.unwrap()
+        parts.append("\"DefaultRedirectURI\":" + cognito_idp_json_str(u17))
+    if v.AllowedOAuthFlows.is_some():
+        auto u18 = v.AllowedOAuthFlows.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"AllowedOAuthFlows\":" + cognito_idp_json_arr(e19))
+    if v.AllowedOAuthScopes.is_some():
+        auto u20 = v.AllowedOAuthScopes.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(cognito_idp_json_str(x21))
+        parts.append("\"AllowedOAuthScopes\":" + cognito_idp_json_arr(e21))
+    if v.AllowedOAuthFlowsUserPoolClient.is_some():
+        auto u22 = v.AllowedOAuthFlowsUserPoolClient.unwrap()
+        parts.append("\"AllowedOAuthFlowsUserPoolClient\":" + json.dumps(JsonValue.Bool(u22)))
+    if v.AnalyticsConfiguration.is_some():
+        auto u23 = v.AnalyticsConfiguration.unwrap()
+        parts.append("\"AnalyticsConfiguration\":" + u23.to_json())
+    if v.PreventUserExistenceErrors.is_some():
+        auto u24 = v.PreventUserExistenceErrors.unwrap()
+        parts.append("\"PreventUserExistenceErrors\":" + u24.to_json())
+    if v.EnableTokenRevocation.is_some():
+        auto u25 = v.EnableTokenRevocation.unwrap()
+        parts.append("\"EnableTokenRevocation\":" + json.dumps(JsonValue.Bool(u25)))
+    if v.EnablePropagateAdditionalUserContextData.is_some():
+        auto u26 = v.EnablePropagateAdditionalUserContextData.unwrap()
+        parts.append("\"EnablePropagateAdditionalUserContextData\":" + json.dumps(JsonValue.Bool(u26)))
+    if v.AuthSessionValidity.is_some():
+        auto u27 = v.AuthSessionValidity.unwrap()
+        parts.append("\"AuthSessionValidity\":" + str(u27))
+    if v.RefreshTokenRotation.is_some():
+        auto u28 = v.RefreshTokenRotation.unwrap()
+        parts.append("\"RefreshTokenRotation\":" + u28.to_json())
+    return cognito_idp_json_obj(parts)
+
+# Serialize UpdateUserPoolRequest to a compact JSON object (declaration order).
+def update_user_pool_request_to_json(UpdateUserPoolRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserPoolId\":" + cognito_idp_json_str(v.UserPoolId))
+    if v.Policies.is_some():
+        auto u0 = v.Policies.unwrap()
+        parts.append("\"Policies\":" + user_pool_policy_type_to_json(u0))
+    if v.DeletionProtection.is_some():
+        auto u1 = v.DeletionProtection.unwrap()
+        parts.append("\"DeletionProtection\":" + u1.to_json())
+    if v.LambdaConfig.is_some():
+        auto u2 = v.LambdaConfig.unwrap()
+        parts.append("\"LambdaConfig\":" + u2.to_json())
+    if v.AutoVerifiedAttributes.is_some():
+        auto u3 = v.AutoVerifiedAttributes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"AutoVerifiedAttributes\":" + cognito_idp_json_arr(e4))
+    if v.SmsVerificationMessage.is_some():
+        auto u5 = v.SmsVerificationMessage.unwrap()
+        parts.append("\"SmsVerificationMessage\":" + cognito_idp_json_str(u5))
+    if v.EmailVerificationMessage.is_some():
+        auto u6 = v.EmailVerificationMessage.unwrap()
+        parts.append("\"EmailVerificationMessage\":" + cognito_idp_json_str(u6))
+    if v.EmailVerificationSubject.is_some():
+        auto u7 = v.EmailVerificationSubject.unwrap()
+        parts.append("\"EmailVerificationSubject\":" + cognito_idp_json_str(u7))
+    if v.VerificationMessageTemplate.is_some():
+        auto u8 = v.VerificationMessageTemplate.unwrap()
+        parts.append("\"VerificationMessageTemplate\":" + u8.to_json())
+    if v.SmsAuthenticationMessage.is_some():
+        auto u9 = v.SmsAuthenticationMessage.unwrap()
+        parts.append("\"SmsAuthenticationMessage\":" + cognito_idp_json_str(u9))
+    if v.UserAttributeUpdateSettings.is_some():
+        auto u10 = v.UserAttributeUpdateSettings.unwrap()
+        parts.append("\"UserAttributeUpdateSettings\":" + user_attribute_update_settings_type_to_json(u10))
+    if v.MfaConfiguration.is_some():
+        auto u11 = v.MfaConfiguration.unwrap()
+        parts.append("\"MfaConfiguration\":" + u11.to_json())
+    if v.DeviceConfiguration.is_some():
+        auto u12 = v.DeviceConfiguration.unwrap()
+        parts.append("\"DeviceConfiguration\":" + u12.to_json())
+    if v.EmailConfiguration.is_some():
+        auto u13 = v.EmailConfiguration.unwrap()
+        parts.append("\"EmailConfiguration\":" + u13.to_json())
+    if v.SmsConfiguration.is_some():
+        auto u14 = v.SmsConfiguration.unwrap()
+        parts.append("\"SmsConfiguration\":" + u14.to_json())
+    if v.UserPoolTags.is_some():
+        auto u15 = v.UserPoolTags.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(cognito_idp_json_str(k16) + ":" + cognito_idp_json_str(u15[k16]))
+        parts.append("\"UserPoolTags\":" + cognito_idp_json_obj(m16))
+    if v.AdminCreateUserConfig.is_some():
+        auto u17 = v.AdminCreateUserConfig.unwrap()
+        parts.append("\"AdminCreateUserConfig\":" + u17.to_json())
+    if v.UserPoolAddOns.is_some():
+        auto u18 = v.UserPoolAddOns.unwrap()
+        parts.append("\"UserPoolAddOns\":" + u18.to_json())
+    if v.AccountRecoverySetting.is_some():
+        auto u19 = v.AccountRecoverySetting.unwrap()
+        parts.append("\"AccountRecoverySetting\":" + account_recovery_setting_type_to_json(u19))
+    if v.PoolName.is_some():
+        auto u20 = v.PoolName.unwrap()
+        parts.append("\"PoolName\":" + cognito_idp_json_str(u20))
+    if v.UserPoolTier.is_some():
+        auto u21 = v.UserPoolTier.unwrap()
+        parts.append("\"UserPoolTier\":" + u21.to_json())
+    if v.KeyConfiguration.is_some():
+        auto u22 = v.KeyConfiguration.unwrap()
+        parts.append("\"KeyConfiguration\":" + u22.to_json())
+    if v.IssuerConfiguration.is_some():
+        auto u23 = v.IssuerConfiguration.unwrap()
+        parts.append("\"IssuerConfiguration\":" + u23.to_json())
+    if v.AcrConfiguration.is_some():
+        auto u24 = v.AcrConfiguration.unwrap()
+        list[str] m25 = []
+        for k25 in sorted(u24.keys()):
+            m25.append(cognito_idp_json_str(k25) + ":" + u24[k25].to_json())
+        parts.append("\"AcrConfiguration\":" + cognito_idp_json_obj(m25))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UserAttributeUpdateSettingsType to a compact JSON object (declaration order).
+def user_attribute_update_settings_type_to_json(UserAttributeUpdateSettingsType v) -> str:
+    list[str] parts = []
+    if v.AttributesRequireVerificationBeforeUpdate.is_some():
+        auto u0 = v.AttributesRequireVerificationBeforeUpdate.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributesRequireVerificationBeforeUpdate\":" + cognito_idp_json_arr(e1))
+    return cognito_idp_json_obj(parts)
+
+# Serialize UserPoolPolicyType to a compact JSON object (declaration order).
+def user_pool_policy_type_to_json(UserPoolPolicyType v) -> str:
+    list[str] parts = []
+    if v.PasswordPolicy.is_some():
+        auto u0 = v.PasswordPolicy.unwrap()
+        parts.append("\"PasswordPolicy\":" + u0.to_json())
+    if v.SignInPolicy.is_some():
+        auto u1 = v.SignInPolicy.unwrap()
+        parts.append("\"SignInPolicy\":" + sign_in_policy_type_to_json(u1))
+    return cognito_idp_json_obj(parts)
 
 # A bound Cognito_Identity_Provider client: credentials + region, threaded into every operation.
 struct Cognito_Identity_ProviderClient:
     core.Credentials creds
     str region
+
+    # AddCustomAttributes
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserImportInProgressException
+    def add_custom_attributes(self, AddCustomAttributesRequest input) -> str:
+        auto body = add_custom_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AddCustomAttributes", body)
 
     # AddUserPoolClientSecret
     # errors: AccessDeniedException, InternalServerException, InvalidParameterException, LimitExceededException, ResourceNotFoundException, TooManyRequestsException
@@ -3291,6 +4587,18 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminAddUserToGroup", body)
 
+    # AdminConfirmSignUp
+    # errors: InternalErrorException, InvalidLambdaResponseException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyFailedAttemptsException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def admin_confirm_sign_up(self, AdminConfirmSignUpRequest input) -> str:
+        auto body = admin_confirm_sign_up_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminConfirmSignUp", body)
+
+    # AdminCreateUser
+    # errors: CodeDeliveryFailureException, InternalErrorException, InvalidLambdaResponseException, InvalidParameterException, InvalidPasswordException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, NotAuthorizedException, OperationNotEnabledException, PreconditionNotMetException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UnsupportedUserStateException, UserLambdaValidationException, UserNotFoundException, UsernameExistsException
+    def admin_create_user(self, AdminCreateUserRequest input) -> str:
+        auto body = admin_create_user_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminCreateUser", body)
+
     # AdminDeleteSoftwareToken
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
     def admin_delete_software_token(self, AdminDeleteSoftwareTokenRequest input) -> str:
@@ -3302,6 +4610,12 @@ struct Cognito_Identity_ProviderClient:
     def admin_delete_user(self, AdminDeleteUserRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminDeleteUser", body)
+
+    # AdminDeleteUserAttributes
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
+    def admin_delete_user_attributes(self, AdminDeleteUserAttributesRequest input) -> str:
+        auto body = admin_delete_user_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminDeleteUserAttributes", body)
 
     # AdminDisableProviderForUser
     # errors: AliasExistsException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
@@ -3345,6 +4659,12 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminGetUserAuthFactors", body)
 
+    # AdminInitiateAuth
+    # errors: FeatureUnavailableInTierException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, InvalidUserPoolConfigurationException, MFAMethodNotFoundException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UnsupportedOperationException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def admin_initiate_auth(self, AdminInitiateAuthRequest input) -> str:
+        auto body = admin_initiate_auth_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminInitiateAuth", body)
+
     # AdminLinkProviderForUser
     # errors: AliasExistsException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
     def admin_link_provider_for_user(self, AdminLinkProviderForUserRequest input) -> str:
@@ -3375,6 +4695,18 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminRemoveUserFromGroup", body)
 
+    # AdminResetUserPassword
+    # errors: InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def admin_reset_user_password(self, AdminResetUserPasswordRequest input) -> str:
+        auto body = admin_reset_user_password_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminResetUserPassword", body)
+
+    # AdminRespondToAuthChallenge
+    # errors: AliasExistsException, CodeMismatchException, ExpiredCodeException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidPasswordException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, InvalidUserPoolConfigurationException, MFAMethodNotFoundException, NotAuthorizedException, OperationNotEnabledException, PasswordHistoryPolicyViolationException, PasswordResetRequiredException, ResourceNotFoundException, SoftwareTokenMFANotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def admin_respond_to_auth_challenge(self, AdminRespondToAuthChallengeRequest input) -> str:
+        auto body = admin_respond_to_auth_challenge_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminRespondToAuthChallenge", body)
+
     # AdminSetUserMFAPreference
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, UserNotConfirmedException, UserNotFoundException
     def admin_set_user_mfa_preference(self, AdminSetUserMFAPreferenceRequest input) -> str:
@@ -3387,6 +4719,12 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminSetUserPassword", body)
 
+    # AdminSetUserSettings
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, UserNotFoundException
+    def admin_set_user_settings(self, AdminSetUserSettingsRequest input) -> str:
+        auto body = admin_set_user_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminSetUserSettings", body)
+
     # AdminUpdateAuthEventFeedback
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException, UserPoolAddOnNotEnabledException
     def admin_update_auth_event_feedback(self, AdminUpdateAuthEventFeedbackRequest input) -> str:
@@ -3398,6 +4736,12 @@ struct Cognito_Identity_ProviderClient:
     def admin_update_device_status(self, AdminUpdateDeviceStatusRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminUpdateDeviceStatus", body)
+
+    # AdminUpdateUserAttributes
+    # errors: AliasExistsException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def admin_update_user_attributes(self, AdminUpdateUserAttributesRequest input) -> str:
+        auto body = admin_update_user_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminUpdateUserAttributes", body)
 
     # AdminUserGlobalSignOut
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
@@ -3429,11 +4773,47 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ConfirmDevice", body)
 
+    # ConfirmForgotPassword
+    # errors: CodeMismatchException, ExpiredCodeException, ForbiddenException, InternalErrorException, InvalidLambdaResponseException, InvalidParameterException, InvalidPasswordException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, PasswordHistoryPolicyViolationException, ResourceNotFoundException, TooManyFailedAttemptsException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def confirm_forgot_password(self, ConfirmForgotPasswordRequest input) -> str:
+        auto body = confirm_forgot_password_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ConfirmForgotPassword", body)
+
+    # ConfirmSignUp
+    # errors: AliasExistsException, CodeMismatchException, ExpiredCodeException, ForbiddenException, InternalErrorException, InvalidLambdaResponseException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyFailedAttemptsException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def confirm_sign_up(self, ConfirmSignUpRequest input) -> str:
+        auto body = confirm_sign_up_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ConfirmSignUp", body)
+
     # CreateGroup
     # errors: GroupExistsException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
     def create_group(self, CreateGroupRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateGroup", body)
+
+    # CreateIdentityProvider
+    # errors: DuplicateProviderException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def create_identity_provider(self, CreateIdentityProviderRequest input) -> str:
+        auto body = create_identity_provider_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateIdentityProvider", body)
+
+    # CreateManagedLoginBranding
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, LimitExceededException, ManagedLoginBrandingExistsException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def create_managed_login_branding(self, CreateManagedLoginBrandingRequest input) -> str:
+        auto body = create_managed_login_branding_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateManagedLoginBranding", body)
+
+    # CreateResourceServer
+    # errors: InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def create_resource_server(self, CreateResourceServerRequest input) -> str:
+        auto body = create_resource_server_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateResourceServer", body)
+
+    # CreateTerms
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TermsExistsException, TooManyRequestsException
+    def create_terms(self, CreateTermsRequest input) -> str:
+        auto body = create_terms_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateTerms", body)
 
     # CreateUserImportJob
     # errors: InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, PreconditionNotMetException, ResourceNotFoundException, TooManyRequestsException
@@ -3441,11 +4821,29 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateUserImportJob", body)
 
+    # CreateUserPool
+    # errors: FeatureUnavailableInTierException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, LimitExceededException, NotAuthorizedException, TierChangeNotAllowedException, TooManyRequestsException, UserPoolTaggingException
+    def create_user_pool(self, CreateUserPoolRequest input) -> str:
+        auto body = create_user_pool_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateUserPool", body)
+
+    # CreateUserPoolClient
+    # errors: FeatureUnavailableInTierException, InternalErrorException, InvalidOAuthFlowException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, ScopeDoesNotExistException, TooManyRequestsException
+    def create_user_pool_client(self, CreateUserPoolClientRequest input) -> str:
+        auto body = create_user_pool_client_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateUserPoolClient", body)
+
     # CreateUserPoolDomain
     # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException
     def create_user_pool_domain(self, CreateUserPoolDomainRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateUserPoolDomain", body)
+
+    # CreateUserPoolReplica
+    # errors: FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserPoolTaggingException
+    def create_user_pool_replica(self, CreateUserPoolReplicaRequest input) -> str:
+        auto body = create_user_pool_replica_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "CreateUserPoolReplica", body)
 
     # DeleteGroup
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
@@ -3482,6 +4880,12 @@ struct Cognito_Identity_ProviderClient:
     def delete_user(self, DeleteUserRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "DeleteUser", body)
+
+    # DeleteUserAttributes
+    # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
+    def delete_user_attributes(self, DeleteUserAttributesRequest input) -> str:
+        auto body = delete_user_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "DeleteUserAttributes", body)
 
     # DeleteUserPool
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserImportInProgressException
@@ -3591,11 +4995,23 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ForgetDevice", body)
 
+    # ForgotPassword
+    # errors: CodeDeliveryFailureException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def forgot_password(self, ForgotPasswordRequest input) -> str:
+        auto body = forgot_password_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ForgotPassword", body)
+
     # GetCSVHeader
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
     def get_csv_header(self, GetCSVHeaderRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetCSVHeader", body)
+
+    # GetClientToken
+    # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def get_client_token(self, GetClientTokenRequest input) -> str:
+        auto body = get_client_token_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetClientToken", body)
 
     # GetDevice
     # errors: ForbiddenException, InternalErrorException, InvalidParameterException, InvalidUserPoolConfigurationException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
@@ -3621,11 +5037,23 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetLogDeliveryConfiguration", body)
 
+    # GetProvisionedLimit
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def get_provisioned_limit(self, GetProvisionedLimitRequest input) -> str:
+        auto body = get_provisioned_limit_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetProvisionedLimit", body)
+
     # GetSigningCertificate
     # errors: InternalErrorException, InvalidParameterException, OperationNotEnabledException, ResourceNotFoundException
     def get_signing_certificate(self, GetSigningCertificateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetSigningCertificate", body)
+
+    # GetTokensFromRefreshToken
+    # errors: ForbiddenException, InternalErrorException, InvalidLambdaResponseException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, RefreshTokenReuseException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def get_tokens_from_refresh_token(self, GetTokensFromRefreshTokenRequest input) -> str:
+        auto body = get_tokens_from_refresh_token_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetTokensFromRefreshToken", body)
 
     # GetUICustomization
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
@@ -3638,6 +5066,12 @@ struct Cognito_Identity_ProviderClient:
     def get_user(self, GetUserRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetUser", body)
+
+    # GetUserAttributeVerificationCode
+    # errors: CodeDeliveryFailureException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def get_user_attribute_verification_code(self, GetUserAttributeVerificationCodeRequest input) -> str:
+        auto body = get_user_attribute_verification_code_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetUserAttributeVerificationCode", body)
 
     # GetUserAuthFactors
     # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
@@ -3656,6 +5090,12 @@ struct Cognito_Identity_ProviderClient:
     def global_sign_out(self, GlobalSignOutRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GlobalSignOut", body)
+
+    # InitiateAuth
+    # errors: FeatureUnavailableInTierException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, InvalidUserPoolConfigurationException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UnsupportedOperationException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def initiate_auth(self, InitiateAuthRequest input) -> str:
+        auto body = initiate_auth_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "InitiateAuth", body)
 
     # ListDevices
     # errors: ForbiddenException, InternalErrorException, InvalidParameterException, InvalidUserPoolConfigurationException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
@@ -3723,6 +5163,12 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ListUserPools", body)
 
+    # ListUsers
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def list_users(self, ListUsersRequest input) -> str:
+        auto body = list_users_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ListUsers", body)
+
     # ListUsersInGroup
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
     def list_users_in_group(self, ListUsersInGroupRequest input) -> str:
@@ -3735,11 +5181,35 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ListWebAuthnCredentials", body)
 
+    # ResendConfirmationCode
+    # errors: CodeDeliveryFailureException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotFoundException
+    def resend_confirmation_code(self, ResendConfirmationCodeRequest input) -> str:
+        auto body = resend_confirmation_code_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ResendConfirmationCode", body)
+
+    # RespondToAuthChallenge
+    # errors: AliasExistsException, CodeMismatchException, ExpiredCodeException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidPasswordException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, InvalidUserPoolConfigurationException, MFAMethodNotFoundException, NotAuthorizedException, OperationNotEnabledException, PasswordHistoryPolicyViolationException, PasswordResetRequiredException, ResourceNotFoundException, SoftwareTokenMFANotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def respond_to_auth_challenge(self, RespondToAuthChallengeRequest input) -> str:
+        auto body = respond_to_auth_challenge_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "RespondToAuthChallenge", body)
+
     # RevokeToken
     # errors: ForbiddenException, InternalErrorException, InvalidParameterException, OperationNotEnabledException, TooManyRequestsException, UnauthorizedException, UnsupportedOperationException, UnsupportedTokenTypeException
     def revoke_token(self, RevokeTokenRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "RevokeToken", body)
+
+    # SetLogDeliveryConfiguration
+    # errors: FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def set_log_delivery_configuration(self, SetLogDeliveryConfigurationRequest input) -> str:
+        auto body = set_log_delivery_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetLogDeliveryConfiguration", body)
+
+    # SetRiskConfiguration
+    # errors: CodeDeliveryFailureException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserPoolAddOnNotEnabledException
+    def set_risk_configuration(self, SetRiskConfigurationRequest input) -> str:
+        auto body = set_risk_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetRiskConfiguration", body)
 
     # SetUICustomization
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
@@ -3759,6 +5229,18 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetUserPoolMfaConfig", body)
 
+    # SetUserSettings
+    # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, UserNotConfirmedException, UserNotFoundException
+    def set_user_settings(self, SetUserSettingsRequest input) -> str:
+        auto body = set_user_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetUserSettings", body)
+
+    # SignUp
+    # errors: CodeDeliveryFailureException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidPasswordException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, LimitExceededException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UsernameExistsException
+    def sign_up(self, SignUpRequest input) -> str:
+        auto body = sign_up_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SignUp", body)
+
     # StartUserImportJob
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PreconditionNotMetException, ResourceNotFoundException, TooManyRequestsException
     def start_user_import_job(self, StartUserImportJobRequest input) -> str:
@@ -3777,6 +5259,18 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "StopUserImportJob", body)
 
+    # TagResource
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAuthEventFeedback
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException, UserPoolAddOnNotEnabledException
     def update_auth_event_feedback(self, UpdateAuthEventFeedbackRequest input) -> str:
@@ -3794,6 +5288,54 @@ struct Cognito_Identity_ProviderClient:
     def update_group(self, UpdateGroupRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateGroup", body)
+
+    # UpdateIdentityProvider
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException, UnsupportedIdentityProviderException
+    def update_identity_provider(self, UpdateIdentityProviderRequest input) -> str:
+        auto body = update_identity_provider_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateIdentityProvider", body)
+
+    # UpdateManagedLoginBranding
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def update_managed_login_branding(self, UpdateManagedLoginBrandingRequest input) -> str:
+        auto body = update_managed_login_branding_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateManagedLoginBranding", body)
+
+    # UpdateProvisionedLimit
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def update_provisioned_limit(self, UpdateProvisionedLimitRequest input) -> str:
+        auto body = update_provisioned_limit_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateProvisionedLimit", body)
+
+    # UpdateResourceServer
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def update_resource_server(self, UpdateResourceServerRequest input) -> str:
+        auto body = update_resource_server_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateResourceServer", body)
+
+    # UpdateTerms
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TermsExistsException, TooManyRequestsException
+    def update_terms(self, UpdateTermsRequest input) -> str:
+        auto body = update_terms_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateTerms", body)
+
+    # UpdateUserAttributes
+    # errors: AliasExistsException, CodeDeliveryFailureException, CodeMismatchException, ExpiredCodeException, ForbiddenException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidLambdaResponseException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UnexpectedLambdaException, UserLambdaValidationException, UserNotConfirmedException, UserNotFoundException
+    def update_user_attributes(self, UpdateUserAttributesRequest input) -> str:
+        auto body = update_user_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateUserAttributes", body)
+
+    # UpdateUserPool
+    # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidEmailRoleAccessPolicyException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TierChangeNotAllowedException, TooManyRequestsException, UserImportInProgressException, UserPoolTaggingException
+    def update_user_pool(self, UpdateUserPoolRequest input) -> str:
+        auto body = update_user_pool_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateUserPool", body)
+
+    # UpdateUserPoolClient
+    # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidOAuthFlowException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, ScopeDoesNotExistException, TooManyRequestsException
+    def update_user_pool_client(self, UpdateUserPoolClientRequest input) -> str:
+        auto body = update_user_pool_client_request_to_json(input)
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "UpdateUserPoolClient", body)
 
     # UpdateUserPoolDomain
     # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
@@ -3916,6 +5458,20 @@ struct Cognito_Identity_ProviderClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListUsers — yields each Response page, threading the
+    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: Users).
+    def paginate_list_users(self, ListUsersRequest input):
+        auto host = endpoints.regional_host(cognito_idp_protocol().service, self.region)
+        while True:
+            auto body = list_users_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ListUsers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "PaginationToken")
+            if not np.has_more:
+                break
+            input.PaginationToken = Optional.Some(np.token)
 
     # Paginator for ListUsersInGroup — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Users).

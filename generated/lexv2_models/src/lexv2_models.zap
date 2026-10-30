@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 107 operations — 67 with a generated method,
-#   40 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 107 operations — 98 with a generated method,
+#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   487 structs (288 @derive(Json)), 89 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Lex_Models_V2 rest-json protocol: SigV4 service "lex" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -832,8 +833,9 @@ struct AgentTurnResult:
 struct AgentTurnSpecification:
     str agentPrompt
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatedUtterancesFilter:
     str name
     list[str] values
@@ -869,8 +871,9 @@ struct AnalyticsBinKey:
     Optional[AnalyticsBinByName] name
     Optional[int64] value
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsIntentFilter:
     AnalyticsIntentFilterName name
     AnalyticsFilterOperator operator
@@ -905,15 +908,17 @@ struct AnalyticsIntentNodeSummary:
     Optional[int64] intentLevel
     Optional[AnalyticsNodeType] nodeType
 
-# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsIntentGroupByKey], metricsResults: list[AnalyticsIntentMetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsIntentGroupByKey], metricsResults: list[AnalyticsIntentMetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsIntentResult:
     Optional[list[AnalyticsBinKey]] binKeys
     Optional[list[AnalyticsIntentGroupByKey]] groupByKeys
     Optional[list[AnalyticsIntentMetricResult]] metricsResults
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsIntentStageFilter:
     AnalyticsIntentStageFilterName name
     AnalyticsFilterOperator operator
@@ -940,22 +945,25 @@ struct AnalyticsIntentStageMetricResult:
     Optional[AnalyticsMetricStatistic] statistic
     Optional[float64] value
 
-# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsIntentStageGroupByKey], metricsResults: list[AnalyticsIntentStageMetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsIntentStageGroupByKey], metricsResults: list[AnalyticsIntentStageMetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsIntentStageResult:
     Optional[list[AnalyticsBinKey]] binKeys
     Optional[list[AnalyticsIntentStageGroupByKey]] groupByKeys
     Optional[list[AnalyticsIntentStageMetricResult]] metricsResults
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsPathFilter:
     AnalyticsCommonFilterName name
     AnalyticsFilterOperator operator
     list[str] values
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsSessionFilter:
     AnalyticsSessionFilterName name
     AnalyticsFilterOperator operator
@@ -982,8 +990,9 @@ struct AnalyticsSessionMetricResult:
     Optional[AnalyticsMetricStatistic] statistic
     Optional[float64] value
 
-# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsSessionGroupByKey], metricsResults: list[AnalyticsSessionMetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsSessionGroupByKey], metricsResults: list[AnalyticsSessionMetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsSessionResult:
     Optional[list[AnalyticsBinKey]] binKeys
     Optional[list[AnalyticsSessionGroupByKey]] groupByKeys
@@ -997,8 +1006,9 @@ struct AnalyticsUtteranceAttribute:
 struct AnalyticsUtteranceAttributeResult:
     Optional[str] lastUsedIntent
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsUtteranceFilter:
     AnalyticsUtteranceFilterName name
     AnalyticsFilterOperator operator
@@ -1025,8 +1035,9 @@ struct AnalyticsUtteranceMetricResult:
     Optional[AnalyticsMetricStatistic] statistic
     Optional[float64] value
 
-# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsUtteranceGroupByKey], metricsResults: list[AnalyticsUtteranceMetricResult], attributeResults: list[AnalyticsUtteranceAttributeResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) binKeys: list[AnalyticsBinKey], groupByKeys: list[AnalyticsUtteranceGroupByKey], metricsResults: list[AnalyticsUtteranceMetricResult], attributeResults: list[AnalyticsUtteranceAttributeResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsUtteranceResult:
     Optional[list[AnalyticsBinKey]] binKeys
     Optional[list[AnalyticsUtteranceGroupByKey]] groupByKeys
@@ -1037,8 +1048,9 @@ struct AnalyticsUtteranceResult:
 struct AssociatedTranscript:
     Optional[str] transcript
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatedTranscriptFilter:
     AssociatedTranscriptFilterName name
     list[str] values
@@ -1080,8 +1092,9 @@ struct BatchCreateCustomVocabularyItemRequest:
     str localeId
     list[NewCustomVocabularyItem] customVocabularyItemList
 
-# no @derive(Json): member(s) errors: list[FailedCustomVocabularyItem], resources: list[CustomVocabularyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[FailedCustomVocabularyItem], resources: list[CustomVocabularyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateCustomVocabularyItemResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -1097,8 +1110,9 @@ struct BatchDeleteCustomVocabularyItemRequest:
     str localeId
     list[CustomVocabularyEntryId] customVocabularyItemList
 
-# no @derive(Json): member(s) errors: list[FailedCustomVocabularyItem], resources: list[CustomVocabularyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[FailedCustomVocabularyItem], resources: list[CustomVocabularyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteCustomVocabularyItemResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -1114,8 +1128,9 @@ struct BatchUpdateCustomVocabularyItemRequest:
     str localeId
     list[CustomVocabularyItem] customVocabularyItemList
 
-# no @derive(Json): member(s) errors: list[FailedCustomVocabularyItem], resources: list[CustomVocabularyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[FailedCustomVocabularyItem], resources: list[CustomVocabularyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateCustomVocabularyItemResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -1156,8 +1171,9 @@ struct BotAliasLocaleSettings:
     bool enabled
     Optional[CodeHookSpecification] codeHookSpecification
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BotAliasReplicaSummary:
     Optional[str] botAliasId
     Optional[BotAliasReplicationStatus] botAliasReplicationStatus
@@ -1200,15 +1216,17 @@ struct BotExportSpecification:
     str botId
     str botVersion
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BotFilter:
     BotFilterName name
     list[str] values
     BotFilterOperator operator
 
-# no @derive(Json): member(s) botTags: dict[str, str], testBotAliasTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botTags: dict[str, str], testBotAliasTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BotImportSpecification:
     str botName
     str roleArn
@@ -1224,8 +1242,9 @@ struct BotLocaleExportSpecification:
     str botVersion
     str localeId
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BotLocaleFilter:
     str name
     list[str] values
@@ -1289,8 +1308,9 @@ struct BotRecommendationSummary:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BotReplicaSummary:
     Optional[str] replicaRegion
     Optional[DateTime] creationDateTime
@@ -1321,8 +1341,9 @@ struct BotVersionReplicaSortBy:
     str attribute
     SortOrder order
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BotVersionReplicaSummary:
     Optional[str] botVersion
     Optional[BotVersionReplicationStatus] botVersionReplicationStatus
@@ -1396,8 +1417,9 @@ struct CloudWatchLogGroupLogDestination:
 struct CodeHookSpecification:
     LambdaCodeHook lambdaCodeHook
 
-# no @derive(Json): member(s) subSlots: list[SubSlotTypeComposition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subSlots: list[SubSlotTypeComposition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositeSlotTypeSetting:
     Optional[list[SubSlotTypeComposition]] subSlots
 
@@ -1405,16 +1427,18 @@ struct CompositeSlotTypeSetting:
 struct Condition:
     str expressionString
 
-# no @derive(Json): member(s) nextStep: DialogState, response: ResponseSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nextStep: DialogState, response: ResponseSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalBranch:
     str name
     Condition condition
     DialogState nextStep
     Optional[ResponseSpecification] response
 
-# no @derive(Json): member(s) conditionalBranches: list[ConditionalBranch], defaultBranch: DefaultConditionalBranch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditionalBranches: list[ConditionalBranch], defaultBranch: DefaultConditionalBranch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalSpecification:
     bool active
     list[ConditionalBranch] conditionalBranches
@@ -1440,8 +1464,9 @@ struct ConversationLevelSlotResolutionResultItem:
     str slotName
     TestResultMatchStatus matchResult
 
-# no @derive(Json): member(s) intentClassificationResults: list[ConversationLevelIntentClassificationResultItem], slotResolutionResults: list[ConversationLevelSlotResolutionResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intentClassificationResults: list[ConversationLevelIntentClassificationResultItem], slotResolutionResults: list[ConversationLevelSlotResolutionResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConversationLevelTestResultItem:
     str conversationId
     TestResultMatchStatus endToEndResult
@@ -1449,8 +1474,9 @@ struct ConversationLevelTestResultItem:
     list[ConversationLevelIntentClassificationResultItem] intentClassificationResults
     list[ConversationLevelSlotResolutionResultItem] slotResolutionResults
 
-# no @derive(Json): member(s) items: list[ConversationLevelTestResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ConversationLevelTestResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConversationLevelTestResults:
     list[ConversationLevelTestResultItem] items
 
@@ -1458,8 +1484,9 @@ struct ConversationLevelTestResults:
 struct ConversationLevelTestResultsFilterBy:
     Optional[TestResultMatchStatus] endToEndResult
 
-# no @derive(Json): member(s) textLogSettings: list[TextLogSetting], audioLogSettings: list[AudioLogSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textLogSettings: list[TextLogSetting], audioLogSettings: list[AudioLogSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConversationLogSettings:
     Optional[list[TextLogSetting]] textLogSettings
     Optional[list[AudioLogSetting]] audioLogSettings
@@ -1489,8 +1516,9 @@ struct CreateBotAliasRequest:
     str botId
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) botAliasLocaleSettings: dict[str, BotAliasLocaleSettings], conversationLogSettings: ConversationLogSettings, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAliasLocaleSettings: dict[str, BotAliasLocaleSettings], conversationLogSettings: ConversationLogSettings, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBotAliasResponse:
     Optional[str] botAliasId
     Optional[str] botAliasName
@@ -1566,8 +1594,9 @@ struct CreateBotRequest:
     Optional[list[BotMember]] botMembers
     Optional[ErrorLogSettings] errorLogSettings
 
-# no @derive(Json): member(s) botTags: dict[str, str], testBotAliasTags: dict[str, str], botMembers: list[BotMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botTags: dict[str, str], testBotAliasTags: dict[str, str], botMembers: list[BotMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBotResponse:
     Optional[str] botId
     Optional[str] botName
@@ -1590,8 +1619,9 @@ struct CreateBotVersionRequest:
     Optional[str] description
     dict[str, BotVersionLocaleDetails] botVersionLocaleSpecification
 
-# no @derive(Json): member(s) botVersionLocaleSpecification: dict[str, BotVersionLocaleDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botVersionLocaleSpecification: dict[str, BotVersionLocaleDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBotVersionResponse:
     Optional[str] botId
     Optional[str] description
@@ -1637,8 +1667,9 @@ struct CreateIntentRequest:
     Optional[QnAIntentConfiguration] qnAIntentConfiguration
     Optional[QInConnectIntentConfiguration] qInConnectIntentConfiguration
 
-# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance], fulfillmentCodeHook: FulfillmentCodeHookSettings, intentConfirmationSetting: IntentConfirmationSetting, intentClosingSetting: IntentClosingSetting, inputContexts: list[InputContext], outputContexts: list[OutputContext], initialResponseSetting: InitialResponseSetting, qnAIntentConfiguration: QnAIntentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance], fulfillmentCodeHook: FulfillmentCodeHookSettings, intentConfirmationSetting: IntentConfirmationSetting, intentClosingSetting: IntentClosingSetting, inputContexts: list[InputContext], outputContexts: list[OutputContext], initialResponseSetting: InitialResponseSetting, qnAIntentConfiguration: QnAIntentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntentResponse:
     Optional[str] intentId
     Optional[str] intentName
@@ -1703,8 +1734,9 @@ struct CreateSlotRequest:
     Optional[MultipleValuesSetting] multipleValuesSetting
     Optional[SubSlotSetting] subSlotSetting
 
-# no @derive(Json): member(s) valueElicitationSetting: SlotValueElicitationSetting, subSlotSetting: SubSlotSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueElicitationSetting: SlotValueElicitationSetting, subSlotSetting: SubSlotSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSlotResponse:
     Optional[str] slotId
     Optional[str] slotName
@@ -1734,8 +1766,9 @@ struct CreateSlotTypeRequest:
     Optional[ExternalSourceSetting] externalSourceSetting
     Optional[CompositeSlotTypeSetting] compositeSlotTypeSetting
 
-# no @derive(Json): member(s) slotTypeValues: list[SlotTypeValue], compositeSlotTypeSetting: CompositeSlotTypeSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotTypeValues: list[SlotTypeValue], compositeSlotTypeSetting: CompositeSlotTypeSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSlotTypeResponse:
     Optional[str] slotTypeId
     Optional[str] slotTypeName
@@ -1812,8 +1845,9 @@ struct DTMFSpecification:
 struct DataPrivacy:
     bool childDirected
 
-# no @derive(Json): member(s) opensearchConfiguration: OpensearchConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) opensearchConfiguration: OpensearchConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceConfiguration:
     Optional[OpensearchConfiguration] opensearchConfiguration
     Optional[QnAKendraConfiguration] kendraConfiguration
@@ -1829,8 +1863,9 @@ struct DeepgramSpeechModelConfig:
     str apiTokenSecretArn
     Optional[str] modelId
 
-# no @derive(Json): member(s) nextStep: DialogState, response: ResponseSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nextStep: DialogState, response: ResponseSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultConditionalBranch:
     Optional[DialogState] nextStep
     Optional[ResponseSpecification] response
@@ -2015,8 +2050,9 @@ struct DescribeBotAliasRequest:
     str botAliasId
     str botId
 
-# no @derive(Json): member(s) botAliasLocaleSettings: dict[str, BotAliasLocaleSettings], conversationLogSettings: ConversationLogSettings, botAliasHistoryEvents: list[BotAliasHistoryEvent], parentBotNetworks: list[ParentBotNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAliasLocaleSettings: dict[str, BotAliasLocaleSettings], conversationLogSettings: ConversationLogSettings, botAliasHistoryEvents: list[BotAliasHistoryEvent], parentBotNetworks: list[ParentBotNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotAliasResponse:
     Optional[str] botAliasId
     Optional[str] botAliasName
@@ -2040,8 +2076,9 @@ struct DescribeBotAnalyzerRecommendationRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) botAnalyzerRecommendationList: list[BotAnalyzerRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAnalyzerRecommendationList: list[BotAnalyzerRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotAnalyzerRecommendationResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2058,8 +2095,9 @@ struct DescribeBotLocaleRequest:
     str botVersion
     str localeId
 
-# no @derive(Json): member(s) failureReasons: list[str], botLocaleHistoryEvents: list[BotLocaleHistoryEvent], recommendedActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str], botLocaleHistoryEvents: list[BotLocaleHistoryEvent], recommendedActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotLocaleResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2092,8 +2130,9 @@ struct DescribeBotRecommendationRequest:
     str localeId
     str botRecommendationId
 
-# no @derive(Json): member(s) failureReasons: list[str], transcriptSourceSetting: TranscriptSourceSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str], transcriptSourceSetting: TranscriptSourceSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotRecommendationResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2113,8 +2152,9 @@ struct DescribeBotReplicaRequest:
     str botId
     str replicaRegion
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotReplicaResponse:
     Optional[str] botId
     Optional[str] replicaRegion
@@ -2136,8 +2176,9 @@ struct DescribeBotResourceGenerationRequest:
     str localeId
     str generationId
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotResourceGenerationResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2151,8 +2192,9 @@ struct DescribeBotResourceGenerationResponse:
     Optional[str] modelArn
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) botMembers: list[BotMember], failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botMembers: list[BotMember], failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotResponse:
     Optional[str] botId
     Optional[str] botName
@@ -2174,8 +2216,9 @@ struct DescribeBotVersionRequest:
     str botId
     str botVersion
 
-# no @derive(Json): member(s) failureReasons: list[str], parentBotNetworks: list[ParentBotNetwork], botMembers: list[BotMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str], parentBotNetworks: list[ParentBotNetwork], botMembers: list[BotMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBotVersionResponse:
     Optional[str] botId
     Optional[str] botName
@@ -2212,8 +2255,9 @@ struct DescribeCustomVocabularyMetadataResponse:
 struct DescribeExportRequest:
     str exportId
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportResponse:
     Optional[str] exportId
     Optional[ExportResourceSpecification] resourceSpecification
@@ -2229,8 +2273,9 @@ struct DescribeExportResponse:
 struct DescribeImportRequest:
     str importId
 
-# no @derive(Json): member(s) resourceSpecification: ImportResourceSpecification, failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceSpecification: ImportResourceSpecification, failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportResponse:
     Optional[str] importId
     Optional[ImportResourceSpecification] resourceSpecification
@@ -2250,8 +2295,9 @@ struct DescribeIntentRequest:
     str botVersion
     str localeId
 
-# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance], fulfillmentCodeHook: FulfillmentCodeHookSettings, slotPriorities: list[SlotPriority], intentConfirmationSetting: IntentConfirmationSetting, intentClosingSetting: IntentClosingSetting, inputContexts: list[InputContext], outputContexts: list[OutputContext], initialResponseSetting: InitialResponseSetting, qnAIntentConfiguration: QnAIntentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance], fulfillmentCodeHook: FulfillmentCodeHookSettings, slotPriorities: list[SlotPriority], intentConfirmationSetting: IntentConfirmationSetting, intentClosingSetting: IntentClosingSetting, inputContexts: list[InputContext], outputContexts: list[OutputContext], initialResponseSetting: InitialResponseSetting, qnAIntentConfiguration: QnAIntentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIntentResponse:
     Optional[str] intentId
     Optional[str] intentName
@@ -2296,8 +2342,9 @@ struct DescribeSlotRequest:
     str localeId
     str intentId
 
-# no @derive(Json): member(s) valueElicitationSetting: SlotValueElicitationSetting, subSlotSetting: SubSlotSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueElicitationSetting: SlotValueElicitationSetting, subSlotSetting: SubSlotSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSlotResponse:
     Optional[str] slotId
     Optional[str] slotName
@@ -2322,8 +2369,9 @@ struct DescribeSlotTypeRequest:
     str botVersion
     str localeId
 
-# no @derive(Json): member(s) slotTypeValues: list[SlotTypeValue], compositeSlotTypeSetting: CompositeSlotTypeSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotTypeValues: list[SlotTypeValue], compositeSlotTypeSetting: CompositeSlotTypeSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSlotTypeResponse:
     Optional[str] slotTypeId
     Optional[str] slotTypeName
@@ -2344,8 +2392,9 @@ struct DescribeSlotTypeResponse:
 struct DescribeTestExecutionRequest:
     str testExecutionId
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTestExecutionResponse:
     Optional[str] testExecutionId
     Optional[DateTime] creationDateTime
@@ -2363,8 +2412,9 @@ struct DescribeTestExecutionResponse:
 struct DescribeTestSetDiscrepancyReportRequest:
     str testSetDiscrepancyReportId
 
-# no @derive(Json): member(s) testSetDiscrepancyTopErrors: TestSetDiscrepancyErrors, failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testSetDiscrepancyTopErrors: TestSetDiscrepancyErrors, failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTestSetDiscrepancyReportResponse:
     Optional[str] testSetDiscrepancyReportId
     Optional[str] testSetId
@@ -2381,8 +2431,9 @@ struct DescribeTestSetDiscrepancyReportResponse:
 struct DescribeTestSetGenerationRequest:
     str testSetGenerationId
 
-# no @derive(Json): member(s) failureReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTestSetGenerationResponse:
     Optional[str] testSetGenerationId
     Optional[TestSetGenerationStatus] testSetGenerationStatus
@@ -2425,8 +2476,9 @@ struct DialogAction:
     Optional[str] slotToElicit
     Optional[bool] suppressNextMessage
 
-# no @derive(Json): member(s) postCodeHookSpecification: PostDialogCodeHookInvocationSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postCodeHookSpecification: PostDialogCodeHookInvocationSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DialogCodeHookInvocationSetting:
     bool enableCodeHookInvocation
     bool active
@@ -2437,8 +2489,9 @@ struct DialogCodeHookInvocationSetting:
 struct DialogCodeHookSettings:
     bool enabled
 
-# no @derive(Json): member(s) intent: IntentOverride, sessionAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intent: IntentOverride, sessionAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DialogState:
     Optional[DialogAction] dialogAction
     Optional[IntentOverride] intent
@@ -2469,8 +2522,9 @@ struct ExecutionErrorDetails:
     str errorCode
     str errorMessage
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportFilter:
     str name
     list[str] values
@@ -2507,30 +2561,34 @@ struct FailedCustomVocabularyItem:
     Optional[str] errorMessage
     Optional[ErrorCode] errorCode
 
-# no @derive(Json): member(s) postFulfillmentStatusSpecification: PostFulfillmentStatusSpecification, fulfillmentUpdatesSpecification: FulfillmentUpdatesSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postFulfillmentStatusSpecification: PostFulfillmentStatusSpecification, fulfillmentUpdatesSpecification: FulfillmentUpdatesSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FulfillmentCodeHookSettings:
     bool enabled
     Optional[PostFulfillmentStatusSpecification] postFulfillmentStatusSpecification
     Optional[FulfillmentUpdatesSpecification] fulfillmentUpdatesSpecification
     Optional[bool] active
 
-# no @derive(Json): member(s) messageGroups: list[MessageGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageGroups: list[MessageGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FulfillmentStartResponseSpecification:
     int64 delayInSeconds
     list[MessageGroup] messageGroups
     Optional[bool] allowInterrupt
 
-# no @derive(Json): member(s) messageGroups: list[MessageGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageGroups: list[MessageGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FulfillmentUpdateResponseSpecification:
     int64 frequencyInSeconds
     list[MessageGroup] messageGroups
     Optional[bool] allowInterrupt
 
-# no @derive(Json): member(s) startResponse: FulfillmentStartResponseSpecification, updateResponse: FulfillmentUpdateResponseSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) startResponse: FulfillmentStartResponseSpecification, updateResponse: FulfillmentUpdateResponseSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FulfillmentUpdatesSpecification:
     bool active
     Optional[FulfillmentStartResponseSpecification] startResponse
@@ -2545,8 +2603,9 @@ struct GenerateBotElementRequest:
     str botVersion
     str localeId
 
-# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateBotElementResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2591,23 +2650,26 @@ struct GrammarSlotTypeSource:
     str s3ObjectKey
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) buttons: list[Button] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buttons: list[Button] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageResponseCard:
     str title
     Optional[str] subtitle
     Optional[str] imageUrl
     Optional[list[Button]] buttons
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportFilter:
     str name
     list[str] values
     ImportFilterOperator operator
 
-# no @derive(Json): member(s) botImportSpecification: BotImportSpecification, testSetImportResourceSpecification: TestSetImportResourceSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botImportSpecification: BotImportSpecification, testSetImportResourceSpecification: TestSetImportResourceSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportResourceSpecification:
     Optional[BotImportSpecification] botImportSpecification
     Optional[BotLocaleImportSpecification] botLocaleImportSpecification
@@ -2630,8 +2692,9 @@ struct ImportSummary:
     Optional[DateTime] lastUpdatedDateTime
     Optional[ImportResourceType] importedResourceType
 
-# no @derive(Json): member(s) initialResponse: ResponseSpecification, nextStep: DialogState, conditional: ConditionalSpecification, codeHook: DialogCodeHookInvocationSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) initialResponse: ResponseSpecification, nextStep: DialogState, conditional: ConditionalSpecification, codeHook: DialogCodeHookInvocationSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InitialResponseSetting:
     Optional[ResponseSpecification] initialResponse
     Optional[DialogState] nextStep
@@ -2642,42 +2705,48 @@ struct InitialResponseSetting:
 struct InputContext:
     str name
 
-# no @derive(Json): member(s) sessionAttributes: dict[str, str], activeContexts: list[ActiveContext], runtimeHints: RuntimeHints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionAttributes: dict[str, str], activeContexts: list[ActiveContext], runtimeHints: RuntimeHints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputSessionStateSpecification:
     Optional[dict[str, str]] sessionAttributes
     Optional[list[ActiveContext]] activeContexts
     Optional[RuntimeHints] runtimeHints
 
-# no @derive(Json): member(s) resultCounts: IntentClassificationTestResultItemCounts not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resultCounts: IntentClassificationTestResultItemCounts not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentClassificationTestResultItem:
     str intentName
     bool multiTurnConversation
     IntentClassificationTestResultItemCounts resultCounts
 
-# no @derive(Json): member(s) speechTranscriptionResultCounts: dict[TestResultMatchStatus, int64], intentMatchResultCounts: dict[TestResultMatchStatus, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) speechTranscriptionResultCounts: dict[TestResultMatchStatus, int64], intentMatchResultCounts: dict[TestResultMatchStatus, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentClassificationTestResultItemCounts:
     int64 totalResultCount
     Optional[dict[TestResultMatchStatus, int64]] speechTranscriptionResultCounts
     dict[TestResultMatchStatus, int64] intentMatchResultCounts
 
-# no @derive(Json): member(s) items: list[IntentClassificationTestResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[IntentClassificationTestResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentClassificationTestResults:
     list[IntentClassificationTestResultItem] items
 
-# no @derive(Json): member(s) closingResponse: ResponseSpecification, nextStep: DialogState, conditional: ConditionalSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) closingResponse: ResponseSpecification, nextStep: DialogState, conditional: ConditionalSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentClosingSetting:
     Optional[ResponseSpecification] closingResponse
     Optional[bool] active
     Optional[DialogState] nextStep
     Optional[ConditionalSpecification] conditional
 
-# no @derive(Json): member(s) promptSpecification: PromptSpecification, declinationResponse: ResponseSpecification, confirmationResponse: ResponseSpecification, confirmationNextStep: DialogState, confirmationConditional: ConditionalSpecification, declinationNextStep: DialogState, declinationConditional: ConditionalSpecification, failureResponse: ResponseSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, codeHook: DialogCodeHookInvocationSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) promptSpecification: PromptSpecification, declinationResponse: ResponseSpecification, confirmationResponse: ResponseSpecification, confirmationNextStep: DialogState, confirmationConditional: ConditionalSpecification, declinationNextStep: DialogState, declinationConditional: ConditionalSpecification, failureResponse: ResponseSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, codeHook: DialogCodeHookInvocationSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentConfirmationSetting:
     Optional[PromptSpecification] promptSpecification
     Optional[ResponseSpecification] declinationResponse
@@ -2699,27 +2768,31 @@ struct IntentDisambiguationSettings:
     Optional[int64] maxDisambiguationIntents
     Optional[str] customDisambiguationMessage
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentFilter:
     str name
     list[str] values
     IntentFilterOperator operator
 
-# no @derive(Json): member(s) slotResolutionResults: list[SlotResolutionTestResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotResolutionResults: list[SlotResolutionTestResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentLevelSlotResolutionTestResultItem:
     str intentName
     bool multiTurnConversation
     list[SlotResolutionTestResultItem] slotResolutionResults
 
-# no @derive(Json): member(s) items: list[IntentLevelSlotResolutionTestResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[IntentLevelSlotResolutionTestResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentLevelSlotResolutionTestResults:
     list[IntentLevelSlotResolutionTestResultItem] items
 
-# no @derive(Json): member(s) slots: dict[str, SlotValueOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slots: dict[str, SlotValueOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentOverride:
     Optional[str] name
     Optional[dict[str, SlotValueOverride]] slots
@@ -2733,8 +2806,9 @@ struct IntentSortBy:
 struct IntentStatistics:
     Optional[int64] discoveredIntentCount
 
-# no @derive(Json): member(s) inputContexts: list[InputContext], outputContexts: list[OutputContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputContexts: list[InputContext], outputContexts: list[OutputContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntentSummary:
     Optional[str] intentId
     Optional[str] intentName
@@ -2787,8 +2861,9 @@ struct ListAggregatedUtterancesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) aggregatedUtterancesSummaries: list[AggregatedUtterancesSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregatedUtterancesSummaries: list[AggregatedUtterancesSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAggregatedUtterancesResponse:
     Optional[str] botId
     Optional[str] botAliasId
@@ -2809,8 +2884,9 @@ struct ListBotAliasReplicasRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) botAliasReplicaSummaries: list[BotAliasReplicaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAliasReplicaSummaries: list[BotAliasReplicaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotAliasReplicasResponse:
     Optional[str] botId
     Optional[str] sourceRegion
@@ -2825,8 +2901,9 @@ struct ListBotAliasesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) botAliasSummaries: list[BotAliasSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAliasSummaries: list[BotAliasSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotAliasesResponse:
     Optional[list[BotAliasSummary]] botAliasSummaries
     Optional[str] nextToken
@@ -2841,8 +2918,9 @@ struct ListBotAnalyzerHistoryRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) botAnalyzerHistoryList: list[BotAnalyzerHistorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAnalyzerHistoryList: list[BotAnalyzerHistorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotAnalyzerHistoryResponse:
     Optional[str] botId
     Optional[str] localeId
@@ -2860,8 +2938,9 @@ struct ListBotLocalesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) botLocaleSummaries: list[BotLocaleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botLocaleSummaries: list[BotLocaleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotLocalesResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2877,8 +2956,9 @@ struct ListBotRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) botRecommendationSummaries: list[BotRecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botRecommendationSummaries: list[BotRecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotRecommendationsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2891,8 +2971,9 @@ struct ListBotRecommendationsResponse:
 struct ListBotReplicasRequest:
     str botId
 
-# no @derive(Json): member(s) botReplicaSummaries: list[BotReplicaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botReplicaSummaries: list[BotReplicaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotReplicasResponse:
     Optional[str] botId
     Optional[str] sourceRegion
@@ -2908,8 +2989,9 @@ struct ListBotResourceGenerationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) generationSummaries: list[GenerationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) generationSummaries: list[GenerationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotResourceGenerationsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -2926,8 +3008,9 @@ struct ListBotVersionReplicasRequest:
     Optional[str] nextToken
     Optional[BotVersionReplicaSortBy] sortBy
 
-# no @derive(Json): member(s) botVersionReplicaSummaries: list[BotVersionReplicaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botVersionReplicaSummaries: list[BotVersionReplicaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotVersionReplicasResponse:
     Optional[str] botId
     Optional[str] sourceRegion
@@ -2943,8 +3026,9 @@ struct ListBotVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) botVersionSummaries: list[BotVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botVersionSummaries: list[BotVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotVersionsResponse:
     Optional[str] botId
     Optional[list[BotVersionSummary]] botVersionSummaries
@@ -2958,8 +3042,9 @@ struct ListBotsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) botSummaries: list[BotSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botSummaries: list[BotSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotsResponse:
     Optional[list[BotSummary]] botSummaries
     Optional[str] nextToken
@@ -2972,8 +3057,9 @@ struct ListBuiltInIntentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) builtInIntentSummaries: list[BuiltInIntentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) builtInIntentSummaries: list[BuiltInIntentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBuiltInIntentsResponse:
     Optional[list[BuiltInIntentSummary]] builtInIntentSummaries
     Optional[str] nextToken
@@ -2987,8 +3073,9 @@ struct ListBuiltInSlotTypesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) builtInSlotTypeSummaries: list[BuiltInSlotTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) builtInSlotTypeSummaries: list[BuiltInSlotTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBuiltInSlotTypesResponse:
     Optional[list[BuiltInSlotTypeSummary]] builtInSlotTypeSummaries
     Optional[str] nextToken
@@ -3003,8 +3090,9 @@ struct ListCustomVocabularyItemsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) customVocabularyItems: list[CustomVocabularyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customVocabularyItems: list[CustomVocabularyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomVocabularyItemsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3023,8 +3111,9 @@ struct ListExportsRequest:
     Optional[str] nextToken
     Optional[str] localeId
 
-# no @derive(Json): member(s) exportSummaries: list[ExportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportSummaries: list[ExportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3043,8 +3132,9 @@ struct ListImportsRequest:
     Optional[str] nextToken
     Optional[str] localeId
 
-# no @derive(Json): member(s) importSummaries: list[ImportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importSummaries: list[ImportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3065,8 +3155,9 @@ struct ListIntentMetricsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) results: list[AnalyticsIntentResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[AnalyticsIntentResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntentMetricsResponse:
     Optional[str] botId
     Optional[list[AnalyticsIntentResult]] results
@@ -3081,8 +3172,9 @@ struct ListIntentPathsRequest:
     str intentPath
     Optional[list[AnalyticsPathFilter]] filters
 
-# no @derive(Json): member(s) nodeSummaries: list[AnalyticsIntentNodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeSummaries: list[AnalyticsIntentNodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntentPathsResponse:
     Optional[list[AnalyticsIntentNodeSummary]] nodeSummaries
 
@@ -3099,8 +3191,9 @@ struct ListIntentStageMetricsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) results: list[AnalyticsIntentStageResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[AnalyticsIntentStageResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntentStageMetricsResponse:
     Optional[str] botId
     Optional[list[AnalyticsIntentStageResult]] results
@@ -3117,8 +3210,9 @@ struct ListIntentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) intentSummaries: list[IntentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intentSummaries: list[IntentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntentsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3136,8 +3230,9 @@ struct ListRecommendedIntentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaryList: list[RecommendedIntentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaryList: list[RecommendedIntentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendedIntentsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3157,8 +3252,9 @@ struct ListSessionAnalyticsDataRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sessions: list[SessionSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessions: list[SessionSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionAnalyticsDataResponse:
     Optional[str] botId
     Optional[str] nextToken
@@ -3177,8 +3273,9 @@ struct ListSessionMetricsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) results: list[AnalyticsSessionResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[AnalyticsSessionResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionMetricsResponse:
     Optional[str] botId
     Optional[list[AnalyticsSessionResult]] results
@@ -3195,8 +3292,9 @@ struct ListSlotTypesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) slotTypeSummaries: list[SlotTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotTypeSummaries: list[SlotTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSlotTypesResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3216,8 +3314,9 @@ struct ListSlotsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) slotSummaries: list[SlotSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotSummaries: list[SlotSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSlotsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3231,8 +3330,9 @@ struct ListSlotsResponse:
 struct ListTagsForResourceRequest:
     str resourceARN
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -3244,8 +3344,9 @@ struct ListTestExecutionResultItemsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testExecutionResults: TestExecutionResultItems not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testExecutionResults: TestExecutionResultItems not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestExecutionResultItemsResponse:
     Optional[TestExecutionResultItems] testExecutionResults
     Optional[str] nextToken
@@ -3257,8 +3358,9 @@ struct ListTestExecutionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testExecutions: list[TestExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testExecutions: list[TestExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestExecutionsResponse:
     Optional[list[TestExecutionSummary]] testExecutions
     Optional[str] nextToken
@@ -3270,8 +3372,9 @@ struct ListTestSetRecordsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testSetRecords: list[TestSetTurnRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testSetRecords: list[TestSetTurnRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestSetRecordsResponse:
     Optional[list[TestSetTurnRecord]] testSetRecords
     Optional[str] nextToken
@@ -3283,8 +3386,9 @@ struct ListTestSetsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testSets: list[TestSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testSets: list[TestSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestSetsResponse:
     Optional[list[TestSetSummary]] testSets
     Optional[str] nextToken
@@ -3300,8 +3404,9 @@ struct ListUtteranceAnalyticsDataRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) utterances: list[UtteranceSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) utterances: list[UtteranceSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUtteranceAnalyticsDataResponse:
     Optional[str] botId
     Optional[str] nextToken
@@ -3321,23 +3426,26 @@ struct ListUtteranceMetricsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) results: list[AnalyticsUtteranceResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[AnalyticsUtteranceResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUtteranceMetricsResponse:
     Optional[str] botId
     Optional[list[AnalyticsUtteranceResult]] results
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imageResponseCard: ImageResponseCard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageResponseCard: ImageResponseCard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Message:
     Optional[PlainTextMessage] plainTextMessage
     Optional[CustomPayload] customPayload
     Optional[SSMLMessage] ssmlMessage
     Optional[ImageResponseCard] imageResponseCard
 
-# no @derive(Json): member(s) message: Message, variations: list[Message] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) message: Message, variations: list[Message] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageGroup:
     Message message
     Optional[list[Message]] variations
@@ -3362,8 +3470,9 @@ struct NluImprovementSpecification:
 struct ObfuscationSetting:
     ObfuscationSettingType obfuscationSettingType
 
-# no @derive(Json): member(s) includeFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includeFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpensearchConfiguration:
     str domainEndpoint
     str indexName
@@ -3377,16 +3486,18 @@ struct OutputContext:
     int64 timeToLiveInSeconds
     int64 turnsToLive
 
-# no @derive(Json): member(s) speechTranscriptionResultCounts: dict[TestResultMatchStatus, int64], endToEndResultCounts: dict[TestResultMatchStatus, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) speechTranscriptionResultCounts: dict[TestResultMatchStatus, int64], endToEndResultCounts: dict[TestResultMatchStatus, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OverallTestResultItem:
     bool multiTurnConversation
     int64 totalResultCount
     Optional[dict[TestResultMatchStatus, int64]] speechTranscriptionResultCounts
     dict[TestResultMatchStatus, int64] endToEndResultCounts
 
-# no @derive(Json): member(s) items: list[OverallTestResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[OverallTestResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OverallTestResults:
     list[OverallTestResultItem] items
 
@@ -3395,8 +3506,9 @@ struct ParentBotNetwork:
     str botId
     str botVersion
 
-# no @derive(Json): member(s) objectPrefixes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objectPrefixes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PathFormat:
     Optional[list[str]] objectPrefixes
 
@@ -3404,8 +3516,9 @@ struct PathFormat:
 struct PlainTextMessage:
     str value
 
-# no @derive(Json): member(s) successResponse: ResponseSpecification, successNextStep: DialogState, successConditional: ConditionalSpecification, failureResponse: ResponseSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, timeoutResponse: ResponseSpecification, timeoutNextStep: DialogState, timeoutConditional: ConditionalSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successResponse: ResponseSpecification, successNextStep: DialogState, successConditional: ConditionalSpecification, failureResponse: ResponseSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, timeoutResponse: ResponseSpecification, timeoutNextStep: DialogState, timeoutConditional: ConditionalSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostDialogCodeHookInvocationSpecification:
     Optional[ResponseSpecification] successResponse
     Optional[DialogState] successNextStep
@@ -3417,8 +3530,9 @@ struct PostDialogCodeHookInvocationSpecification:
     Optional[DialogState] timeoutNextStep
     Optional[ConditionalSpecification] timeoutConditional
 
-# no @derive(Json): member(s) successResponse: ResponseSpecification, failureResponse: ResponseSpecification, timeoutResponse: ResponseSpecification, successNextStep: DialogState, successConditional: ConditionalSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, timeoutNextStep: DialogState, timeoutConditional: ConditionalSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successResponse: ResponseSpecification, failureResponse: ResponseSpecification, timeoutResponse: ResponseSpecification, successNextStep: DialogState, successConditional: ConditionalSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, timeoutNextStep: DialogState, timeoutConditional: ConditionalSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostFulfillmentStatusSpecification:
     Optional[ResponseSpecification] successResponse
     Optional[ResponseSpecification] failureResponse
@@ -3446,8 +3560,9 @@ struct PromptAttemptSpecification:
     Optional[AudioAndDTMFInputSpecification] audioAndDTMFInputSpecification
     Optional[TextInputSpecification] textInputSpecification
 
-# no @derive(Json): member(s) messageGroups: list[MessageGroup], promptAttemptsSpecification: dict[PromptAttempt, PromptAttemptSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageGroups: list[MessageGroup], promptAttemptsSpecification: dict[PromptAttempt, PromptAttemptSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PromptSpecification:
     list[MessageGroup] messageGroups
     int64 maxRetries
@@ -3463,8 +3578,9 @@ struct QInConnectAssistantConfiguration:
 struct QInConnectIntentConfiguration:
     Optional[QInConnectAssistantConfiguration] qInConnectAssistantConfiguration
 
-# no @derive(Json): member(s) dataSourceConfiguration: DataSourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSourceConfiguration: DataSourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QnAIntentConfiguration:
     Optional[DataSourceConfiguration] dataSourceConfiguration
     Optional[BedrockModelSpecification] bedrockModelConfiguration
@@ -3491,14 +3607,16 @@ struct RelativeAggregationDuration:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) messageGroups: list[MessageGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageGroups: list[MessageGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseSpecification:
     list[MessageGroup] messageGroups
     Optional[bool] allowInterrupt
 
-# no @derive(Json): member(s) runtimeHintValues: list[RuntimeHintValue], subSlotHints: dict[str, RuntimeHintDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runtimeHintValues: list[RuntimeHintValue], subSlotHints: dict[str, RuntimeHintDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuntimeHintDetails:
     Optional[list[RuntimeHintValue]] runtimeHintValues
     Optional[dict[str, RuntimeHintDetails]] subSlotHints
@@ -3507,8 +3625,9 @@ struct RuntimeHintDetails:
 struct RuntimeHintValue:
     str phrase
 
-# no @derive(Json): member(s) slotHints: dict[str, dict[str, RuntimeHintDetails]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotHints: dict[str, dict[str, RuntimeHintDetails]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuntimeHints:
     Optional[dict[str, dict[str, RuntimeHintDetails]]] slotHints
 
@@ -3523,8 +3642,9 @@ struct S3BucketLogDestination:
     str s3BucketArn
     str logPrefix
 
-# no @derive(Json): member(s) pathFormat: PathFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pathFormat: PathFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3BucketTranscriptSource:
     str s3BucketName
     Optional[PathFormat] pathFormat
@@ -3561,8 +3681,9 @@ struct SearchAssociatedTranscriptsRequest:
     Optional[int64] maxResults
     Optional[int64] nextIndex
 
-# no @derive(Json): member(s) associatedTranscripts: list[AssociatedTranscript] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedTranscripts: list[AssociatedTranscript] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAssociatedTranscriptsResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3585,8 +3706,9 @@ struct SessionDataSortBy:
     AnalyticsSessionSortByName name
     AnalyticsSortOrder order
 
-# no @derive(Json): member(s) invokedIntentSamples: list[InvokedIntentSample] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invokedIntentSamples: list[InvokedIntentSample] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionSpecification:
     Optional[str] botAliasId
     Optional[str] botVersion
@@ -3603,8 +3725,9 @@ struct SessionSpecification:
     Optional[list[InvokedIntentSample]] invokedIntentSamples
     Optional[str] originatingRequestId
 
-# no @derive(Json): member(s) captureResponse: ResponseSpecification, captureNextStep: DialogState, captureConditional: ConditionalSpecification, failureResponse: ResponseSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, codeHook: DialogCodeHookInvocationSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) captureResponse: ResponseSpecification, captureNextStep: DialogState, captureConditional: ConditionalSpecification, failureResponse: ResponseSpecification, failureNextStep: DialogState, failureConditional: ConditionalSpecification, codeHook: DialogCodeHookInvocationSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotCaptureSetting:
     Optional[ResponseSpecification] captureResponse
     Optional[DialogState] captureNextStep
@@ -3619,13 +3742,15 @@ struct SlotCaptureSetting:
 struct SlotDefaultValue:
     str defaultValue
 
-# no @derive(Json): member(s) defaultValueList: list[SlotDefaultValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultValueList: list[SlotDefaultValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotDefaultValueSpecification:
     list[SlotDefaultValue] defaultValueList
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotFilter:
     str name
     list[str] values
@@ -3645,14 +3770,16 @@ struct SlotResolutionImprovementSpecification:
 struct SlotResolutionSetting:
     SlotResolutionStrategy slotResolutionStrategy
 
-# no @derive(Json): member(s) resultCounts: SlotResolutionTestResultItemCounts not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resultCounts: SlotResolutionTestResultItemCounts not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotResolutionTestResultItem:
     str slotName
     SlotResolutionTestResultItemCounts resultCounts
 
-# no @derive(Json): member(s) speechTranscriptionResultCounts: dict[TestResultMatchStatus, int64], slotMatchResultCounts: dict[TestResultMatchStatus, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) speechTranscriptionResultCounts: dict[TestResultMatchStatus, int64], slotMatchResultCounts: dict[TestResultMatchStatus, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotResolutionTestResultItemCounts:
     int64 totalResultCount
     Optional[dict[TestResultMatchStatus, int64]] speechTranscriptionResultCounts
@@ -3663,8 +3790,9 @@ struct SlotSortBy:
     SlotSortAttribute attribute
     SortOrder order
 
-# no @derive(Json): member(s) valueElicitationPromptSpecification: PromptSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueElicitationPromptSpecification: PromptSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotSummary:
     Optional[str] slotId
     Optional[str] slotName
@@ -3674,8 +3802,9 @@ struct SlotSummary:
     Optional[PromptSpecification] valueElicitationPromptSpecification
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotTypeFilter:
     SlotTypeFilterName name
     list[str] values
@@ -3699,8 +3828,9 @@ struct SlotTypeSummary:
     Optional[DateTime] lastUpdatedDateTime
     Optional[SlotTypeCategory] slotTypeCategory
 
-# no @derive(Json): member(s) synonyms: list[SampleValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) synonyms: list[SampleValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotTypeValue:
     Optional[SampleValue] sampleValue
     Optional[list[SampleValue]] synonyms
@@ -3709,8 +3839,9 @@ struct SlotTypeValue:
 struct SlotValue:
     Optional[str] interpretedValue
 
-# no @derive(Json): member(s) defaultValueSpecification: SlotDefaultValueSpecification, promptSpecification: PromptSpecification, sampleUtterances: list[SampleUtterance], waitAndContinueSpecification: WaitAndContinueSpecification, slotCaptureSetting: SlotCaptureSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultValueSpecification: SlotDefaultValueSpecification, promptSpecification: PromptSpecification, sampleUtterances: list[SampleUtterance], waitAndContinueSpecification: WaitAndContinueSpecification, slotCaptureSetting: SlotCaptureSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotValueElicitationSetting:
     Optional[SlotDefaultValueSpecification] defaultValueSpecification
     SlotConstraint slotConstraint
@@ -3720,8 +3851,9 @@ struct SlotValueElicitationSetting:
     Optional[SlotCaptureSetting] slotCaptureSetting
     Optional[SlotResolutionSetting] slotResolutionSetting
 
-# no @derive(Json): member(s) values: list[SlotValueOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[SlotValueOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlotValueOverride:
     Optional[SlotShape] shape
     Optional[SlotValue] value
@@ -3741,8 +3873,9 @@ struct SlotValueSelectionSetting:
 struct SpeakerDiarizationSettings:
     bool enabled
 
-# no @derive(Json): member(s) valueElicitationSetting: SubSlotValueElicitationSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueElicitationSetting: SubSlotValueElicitationSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Specifications:
     str slotTypeId
     SubSlotValueElicitationSetting valueElicitationSetting
@@ -3787,8 +3920,9 @@ struct StartBotRecommendationRequest:
     TranscriptSourceSetting transcriptSourceSetting
     Optional[EncryptionSetting] encryptionSetting
 
-# no @derive(Json): member(s) transcriptSourceSetting: TranscriptSourceSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transcriptSourceSetting: TranscriptSourceSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBotRecommendationResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -3825,8 +3959,9 @@ struct StartImportRequest:
     MergeStrategy mergeStrategy
     Optional[str] filePassword
 
-# no @derive(Json): member(s) resourceSpecification: ImportResourceSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceSpecification: ImportResourceSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartImportResponse:
     Optional[str] importId
     Optional[ImportResourceSpecification] resourceSpecification
@@ -3861,8 +3996,9 @@ struct StartTestSetGenerationRequest:
     str roleArn
     Optional[dict[str, str]] testSetTags
 
-# no @derive(Json): member(s) testSetTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testSetTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTestSetGenerationResponse:
     Optional[str] testSetGenerationId
     Optional[DateTime] creationDateTime
@@ -3874,8 +4010,9 @@ struct StartTestSetGenerationResponse:
     Optional[str] roleArn
     Optional[dict[str, str]] testSetTags
 
-# no @derive(Json): member(s) messageGroups: list[MessageGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageGroups: list[MessageGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StillWaitingResponseSpecification:
     list[MessageGroup] messageGroups
     int64 frequencyInSeconds
@@ -3912,8 +4049,9 @@ struct StopBotRecommendationResponse:
     Optional[BotRecommendationStatus] botRecommendationStatus
     Optional[str] botRecommendationId
 
-# no @derive(Json): member(s) slotSpecifications: dict[str, Specifications] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotSpecifications: dict[str, Specifications] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubSlotSetting:
     Optional[str] expression
     Optional[dict[str, Specifications]] slotSpecifications
@@ -3923,8 +4061,9 @@ struct SubSlotTypeComposition:
     str name
     str slotTypeId
 
-# no @derive(Json): member(s) defaultValueSpecification: SlotDefaultValueSpecification, promptSpecification: PromptSpecification, sampleUtterances: list[SampleUtterance], waitAndContinueSpecification: WaitAndContinueSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultValueSpecification: SlotDefaultValueSpecification, promptSpecification: PromptSpecification, sampleUtterances: list[SampleUtterance], waitAndContinueSpecification: WaitAndContinueSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubSlotValueElicitationSetting:
     Optional[SlotDefaultValueSpecification] defaultValueSpecification
     PromptSpecification promptSpecification
@@ -3947,8 +4086,9 @@ struct TestExecutionResultFilterBy:
     TestResultTypeFilter resultTypeFilter
     Optional[ConversationLevelTestResultsFilterBy] conversationLevelTestResultsFilterBy
 
-# no @derive(Json): member(s) overallTestResults: OverallTestResults, conversationLevelTestResults: ConversationLevelTestResults, intentClassificationTestResults: IntentClassificationTestResults, intentLevelSlotResolutionTestResults: IntentLevelSlotResolutionTestResults, utteranceLevelTestResults: UtteranceLevelTestResults not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) overallTestResults: OverallTestResults, conversationLevelTestResults: ConversationLevelTestResults, intentClassificationTestResults: IntentClassificationTestResults, intentLevelSlotResolutionTestResults: IntentLevelSlotResolutionTestResults, utteranceLevelTestResults: UtteranceLevelTestResults not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestExecutionResultItems:
     Optional[OverallTestResults] overallTestResults
     Optional[ConversationLevelTestResults] conversationLevelTestResults
@@ -3977,8 +4117,9 @@ struct TestExecutionSummary:
 struct TestExecutionTarget:
     Optional[BotAliasTestExecutionTarget] botAliasTarget
 
-# no @derive(Json): member(s) intentDiscrepancies: list[TestSetIntentDiscrepancyItem], slotDiscrepancies: list[TestSetSlotDiscrepancyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intentDiscrepancies: list[TestSetIntentDiscrepancyItem], slotDiscrepancies: list[TestSetSlotDiscrepancyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestSetDiscrepancyErrors:
     list[TestSetIntentDiscrepancyItem] intentDiscrepancies
     list[TestSetSlotDiscrepancyItem] slotDiscrepancies
@@ -4006,8 +4147,9 @@ struct TestSetImportInputLocation:
     str s3BucketName
     str s3Path
 
-# no @derive(Json): member(s) testSetTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testSetTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestSetImportResourceSpecification:
     str testSetName
     Optional[str] description
@@ -4052,16 +4194,18 @@ struct TestSetSummary:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) turnSpecification: TurnSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) turnSpecification: TurnSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestSetTurnRecord:
     int64 recordNumber
     Optional[str] conversationId
     Optional[int64] turnNumber
     TurnSpecification turnSpecification
 
-# no @derive(Json): member(s) user: UserTurnResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) user: UserTurnResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestSetTurnResult:
     Optional[AgentTurnResult] agent
     Optional[UserTurnResult] user
@@ -4089,13 +4233,15 @@ struct ThrottlingException:
 struct TranscriptFilter:
     Optional[LexTranscriptFilter] lexTranscriptFilter
 
-# no @derive(Json): member(s) s3BucketTranscriptSource: S3BucketTranscriptSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3BucketTranscriptSource: S3BucketTranscriptSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TranscriptSourceSetting:
     Optional[S3BucketTranscriptSource] s3BucketTranscriptSource
 
-# no @derive(Json): member(s) userTurn: UserTurnSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userTurn: UserTurnSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TurnSpecification:
     Optional[AgentTurnSpecification] agentTurn
     Optional[UserTurnSpecification] userTurn
@@ -4127,8 +4273,9 @@ struct UpdateBotAliasRequest:
     Optional[SentimentAnalysisSettings] sentimentAnalysisSettings
     str botId
 
-# no @derive(Json): member(s) botAliasLocaleSettings: dict[str, BotAliasLocaleSettings], conversationLogSettings: ConversationLogSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botAliasLocaleSettings: dict[str, BotAliasLocaleSettings], conversationLogSettings: ConversationLogSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBotAliasResponse:
     Optional[str] botAliasId
     Optional[str] botAliasName
@@ -4158,8 +4305,9 @@ struct UpdateBotLocaleRequest:
     Optional[SpeechDetectionSensitivity] speechDetectionSensitivity
     Optional[SpeakerDiarizationSettings] speakerDiarizationSettings
 
-# no @derive(Json): member(s) failureReasons: list[str], recommendedActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[str], recommendedActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBotLocaleResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -4189,8 +4337,9 @@ struct UpdateBotRecommendationRequest:
     str botRecommendationId
     EncryptionSetting encryptionSetting
 
-# no @derive(Json): member(s) transcriptSourceSetting: TranscriptSourceSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transcriptSourceSetting: TranscriptSourceSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBotRecommendationResponse:
     Optional[str] botId
     Optional[str] botVersion
@@ -4215,8 +4364,9 @@ struct UpdateBotRequest:
     Optional[list[BotMember]] botMembers
     Optional[ErrorLogSettings] errorLogSettings
 
-# no @derive(Json): member(s) botMembers: list[BotMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botMembers: list[BotMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBotResponse:
     Optional[str] botId
     Optional[str] botName
@@ -4270,8 +4420,9 @@ struct UpdateIntentRequest:
     Optional[QnAIntentConfiguration] qnAIntentConfiguration
     Optional[QInConnectIntentConfiguration] qInConnectIntentConfiguration
 
-# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance], fulfillmentCodeHook: FulfillmentCodeHookSettings, slotPriorities: list[SlotPriority], intentConfirmationSetting: IntentConfirmationSetting, intentClosingSetting: IntentClosingSetting, inputContexts: list[InputContext], outputContexts: list[OutputContext], initialResponseSetting: InitialResponseSetting, qnAIntentConfiguration: QnAIntentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleUtterances: list[SampleUtterance], fulfillmentCodeHook: FulfillmentCodeHookSettings, slotPriorities: list[SlotPriority], intentConfirmationSetting: IntentConfirmationSetting, intentClosingSetting: IntentClosingSetting, inputContexts: list[InputContext], outputContexts: list[OutputContext], initialResponseSetting: InitialResponseSetting, qnAIntentConfiguration: QnAIntentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntentResponse:
     Optional[str] intentId
     Optional[str] intentName
@@ -4324,8 +4475,9 @@ struct UpdateSlotRequest:
     Optional[MultipleValuesSetting] multipleValuesSetting
     Optional[SubSlotSetting] subSlotSetting
 
-# no @derive(Json): member(s) valueElicitationSetting: SlotValueElicitationSetting, subSlotSetting: SubSlotSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueElicitationSetting: SlotValueElicitationSetting, subSlotSetting: SubSlotSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSlotResponse:
     Optional[str] slotId
     Optional[str] slotName
@@ -4357,8 +4509,9 @@ struct UpdateSlotTypeRequest:
     Optional[ExternalSourceSetting] externalSourceSetting
     Optional[CompositeSlotTypeSetting] compositeSlotTypeSetting
 
-# no @derive(Json): member(s) slotTypeValues: list[SlotTypeValue], compositeSlotTypeSetting: CompositeSlotTypeSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slotTypeValues: list[SlotTypeValue], compositeSlotTypeSetting: CompositeSlotTypeSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSlotTypeResponse:
     Optional[str] slotTypeId
     Optional[str] slotTypeName
@@ -4394,28 +4547,32 @@ struct UpdateTestSetResponse:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) requestAttributes: dict[str, str], sessionState: InputSessionStateSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestAttributes: dict[str, str], sessionState: InputSessionStateSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserTurnInputSpecification:
     UtteranceInputSpecification utteranceInput
     Optional[dict[str, str]] requestAttributes
     Optional[InputSessionStateSpecification] sessionState
 
-# no @derive(Json): member(s) slots: dict[str, UserTurnSlotOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slots: dict[str, UserTurnSlotOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserTurnIntentOutput:
     str name
     Optional[dict[str, UserTurnSlotOutput]] slots
 
-# no @derive(Json): member(s) intent: UserTurnIntentOutput, activeContexts: list[ActiveContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) intent: UserTurnIntentOutput, activeContexts: list[ActiveContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserTurnOutputSpecification:
     UserTurnIntentOutput intent
     Optional[list[ActiveContext]] activeContexts
     Optional[str] transcript
 
-# no @derive(Json): member(s) input: UserTurnInputSpecification, expectedOutput: UserTurnOutputSpecification, actualOutput: UserTurnOutputSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) input: UserTurnInputSpecification, expectedOutput: UserTurnOutputSpecification, actualOutput: UserTurnOutputSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserTurnResult:
     UserTurnInputSpecification input
     UserTurnOutputSpecification expectedOutput
@@ -4427,15 +4584,17 @@ struct UserTurnResult:
     Optional[TestResultMatchStatus] speechTranscriptionResult
     Optional[ConversationLevelResultDetail] conversationLevelResult
 
-# no @derive(Json): member(s) values: list[UserTurnSlotOutput], subSlots: dict[str, UserTurnSlotOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[UserTurnSlotOutput], subSlots: dict[str, UserTurnSlotOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserTurnSlotOutput:
     Optional[str] value
     Optional[list[UserTurnSlotOutput]] values
     Optional[dict[str, UserTurnSlotOutput]] subSlots
 
-# no @derive(Json): member(s) input: UserTurnInputSpecification, expected: UserTurnOutputSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) input: UserTurnInputSpecification, expected: UserTurnOutputSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserTurnSpecification:
     UserTurnInputSpecification input
     UserTurnOutputSpecification expected
@@ -4448,8 +4607,9 @@ struct UtteranceAggregationDuration:
 struct UtteranceAudioInputSpecification:
     str audioFileS3Location
 
-# no @derive(Json): member(s) imageResponseCard: ImageResponseCard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageResponseCard: ImageResponseCard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UtteranceBotResponse:
     Optional[str] content
     Optional[UtteranceContentType] contentType
@@ -4465,20 +4625,23 @@ struct UtteranceInputSpecification:
     Optional[str] textInput
     Optional[UtteranceAudioInputSpecification] audioInput
 
-# no @derive(Json): member(s) turnResult: TestSetTurnResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) turnResult: TestSetTurnResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UtteranceLevelTestResultItem:
     int64 recordNumber
     Optional[str] conversationId
     TestSetTurnResult turnResult
 
-# no @derive(Json): member(s) items: list[UtteranceLevelTestResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[UtteranceLevelTestResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UtteranceLevelTestResults:
     list[UtteranceLevelTestResultItem] items
 
-# no @derive(Json): member(s) botResponses: list[UtteranceBotResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) botResponses: list[UtteranceBotResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UtteranceSpecification:
     Optional[str] botAliasId
     Optional[str] botVersion
@@ -4513,8 +4676,9 @@ struct VoiceSettings:
     Optional[VoiceEngine] engine
     str voiceId
 
-# no @derive(Json): member(s) waitingResponse: ResponseSpecification, continueResponse: ResponseSpecification, stillWaitingResponse: StillWaitingResponseSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) waitingResponse: ResponseSpecification, continueResponse: ResponseSpecification, stillWaitingResponse: StillWaitingResponseSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaitAndContinueSpecification:
     Optional[ResponseSpecification] waitingResponse
     Optional[ResponseSpecification] continueResponse
@@ -4559,46 +4723,15 @@ def models_v2_lex_error_from_code(str code) -> Lex_Models_V2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateCustomVocabularyItem (document member `customVocabularyItemList: list[NewCustomVocabularyItem]` is not serializable by derive)
-#   BatchDeleteCustomVocabularyItem (document member `customVocabularyItemList: list[CustomVocabularyEntryId]` is not serializable by derive)
-#   BatchUpdateCustomVocabularyItem (document member `customVocabularyItemList: list[CustomVocabularyItem]` is not serializable by derive)
-#   CreateBot (document member `botTags: dict[str, str]` is not serializable by derive)
-#   CreateBotAlias (document member `botAliasLocaleSettings: dict[str, BotAliasLocaleSettings]` is not serializable by derive)
-#   CreateBotVersion (document member `botVersionLocaleSpecification: dict[str, BotVersionLocaleDetails]` is not serializable by derive)
-#   CreateIntent (document member `sampleUtterances: list[SampleUtterance]` is not serializable by derive)
-#   CreateResourcePolicyStatement (document member `principal: list[Principal]` is not serializable by derive)
-#   CreateSlot (document member `valueElicitationSetting: SlotValueElicitationSetting` is not serializable by derive)
-#   CreateSlotType (document member `slotTypeValues: list[SlotTypeValue]` is not serializable by derive)
+#   CreateIntent (document member `intentConfirmationSetting: IntentConfirmationSetting` is not serializable)
+#   CreateSlot (document member `valueElicitationSetting: SlotValueElicitationSetting` is not serializable)
 #   DeleteBot (httpQuery `skipResourceInUseCheck` has unsupported type bool)
 #   DeleteBotAlias (httpQuery `skipResourceInUseCheck` has unsupported type bool)
 #   DeleteBotVersion (httpQuery `skipResourceInUseCheck` has unsupported type bool)
 #   DeleteSlotType (httpQuery `skipResourceInUseCheck` has unsupported type bool)
-#   ListAggregatedUtterances (document member `filters: list[AggregatedUtterancesFilter]` is not serializable by derive)
-#   ListBotLocales (document member `filters: list[BotLocaleFilter]` is not serializable by derive)
-#   ListBots (document member `filters: list[BotFilter]` is not serializable by derive)
-#   ListExports (document member `filters: list[ExportFilter]` is not serializable by derive)
-#   ListImports (document member `filters: list[ImportFilter]` is not serializable by derive)
-#   ListIntentMetrics (document member `metrics: list[AnalyticsIntentMetric]` is not serializable by derive)
-#   ListIntentPaths (document member `filters: list[AnalyticsPathFilter]` is not serializable by derive)
-#   ListIntentStageMetrics (document member `metrics: list[AnalyticsIntentStageMetric]` is not serializable by derive)
-#   ListIntents (document member `filters: list[IntentFilter]` is not serializable by derive)
-#   ListSessionAnalyticsData (document member `filters: list[AnalyticsSessionFilter]` is not serializable by derive)
-#   ListSessionMetrics (document member `metrics: list[AnalyticsSessionMetric]` is not serializable by derive)
-#   ListSlotTypes (document member `filters: list[SlotTypeFilter]` is not serializable by derive)
-#   ListSlots (document member `filters: list[SlotFilter]` is not serializable by derive)
-#   ListUtteranceAnalyticsData (document member `filters: list[AnalyticsUtteranceFilter]` is not serializable by derive)
-#   ListUtteranceMetrics (document member `metrics: list[AnalyticsUtteranceMetric]` is not serializable by derive)
-#   SearchAssociatedTranscripts (document member `filters: list[AssociatedTranscriptFilter]` is not serializable by derive)
-#   StartBotRecommendation (document member `transcriptSourceSetting: TranscriptSourceSetting` is not serializable by derive)
-#   StartImport (document member `resourceSpecification: ImportResourceSpecification` is not serializable by derive)
-#   StartTestSetGeneration (document member `testSetTags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateBot (document member `botMembers: list[BotMember]` is not serializable by derive)
-#   UpdateBotAlias (document member `botAliasLocaleSettings: dict[str, BotAliasLocaleSettings]` is not serializable by derive)
-#   UpdateIntent (document member `sampleUtterances: list[SampleUtterance]` is not serializable by derive)
-#   UpdateSlot (document member `valueElicitationSetting: SlotValueElicitationSetting` is not serializable by derive)
-#   UpdateSlotType (document member `slotTypeValues: list[SlotTypeValue]` is not serializable by derive)
+#   UpdateIntent (document member `intentConfirmationSetting: IntentConfirmationSetting` is not serializable)
+#   UpdateSlot (document member `valueElicitationSetting: SlotValueElicitationSetting` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -4803,10 +4936,383 @@ struct UpdateTestSetDocument:
     str testSetName
     Optional[str] description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def models_v2_lex_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def models_v2_lex_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def models_v2_lex_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AggregatedUtterancesFilter to a compact JSON object (declaration order).
+def aggregated_utterances_filter_to_json(AggregatedUtterancesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + models_v2_lex_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize AnalyticsIntentFilter to a compact JSON object (declaration order).
+def analytics_intent_filter_to_json(AnalyticsIntentFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize AnalyticsIntentStageFilter to a compact JSON object (declaration order).
+def analytics_intent_stage_filter_to_json(AnalyticsIntentStageFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize AnalyticsPathFilter to a compact JSON object (declaration order).
+def analytics_path_filter_to_json(AnalyticsPathFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize AnalyticsSessionFilter to a compact JSON object (declaration order).
+def analytics_session_filter_to_json(AnalyticsSessionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize AnalyticsUtteranceFilter to a compact JSON object (declaration order).
+def analytics_utterance_filter_to_json(AnalyticsUtteranceFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize AssociatedTranscriptFilter to a compact JSON object (declaration order).
+def associated_transcript_filter_to_json(AssociatedTranscriptFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize BotFilter to a compact JSON object (declaration order).
+def bot_filter_to_json(BotFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize BotImportSpecification to a compact JSON object (declaration order).
+def bot_import_specification_to_json(BotImportSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"botName\":" + models_v2_lex_json_str(v.botName))
+    parts.append("\"roleArn\":" + models_v2_lex_json_str(v.roleArn))
+    parts.append("\"dataPrivacy\":" + v.dataPrivacy.to_json())
+    if v.errorLogSettings.is_some():
+        auto u0 = v.errorLogSettings.unwrap()
+        parts.append("\"errorLogSettings\":" + u0.to_json())
+    if v.idleSessionTTLInSeconds.is_some():
+        auto u1 = v.idleSessionTTLInSeconds.unwrap()
+        parts.append("\"idleSessionTTLInSeconds\":" + str(u1))
+    if v.botTags.is_some():
+        auto u2 = v.botTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(models_v2_lex_json_str(k3) + ":" + models_v2_lex_json_str(u2[k3]))
+        parts.append("\"botTags\":" + models_v2_lex_json_obj(m3))
+    if v.testBotAliasTags.is_some():
+        auto u4 = v.testBotAliasTags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(models_v2_lex_json_str(k5) + ":" + models_v2_lex_json_str(u4[k5]))
+        parts.append("\"testBotAliasTags\":" + models_v2_lex_json_obj(m5))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize BotLocaleFilter to a compact JSON object (declaration order).
+def bot_locale_filter_to_json(BotLocaleFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + models_v2_lex_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize CompositeSlotTypeSetting to a compact JSON object (declaration order).
+def composite_slot_type_setting_to_json(CompositeSlotTypeSetting v) -> str:
+    list[str] parts = []
+    if v.subSlots.is_some():
+        auto u0 = v.subSlots.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"subSlots\":" + models_v2_lex_json_arr(e1))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize ConversationLogSettings to a compact JSON object (declaration order).
+def conversation_log_settings_to_json(ConversationLogSettings v) -> str:
+    list[str] parts = []
+    if v.textLogSettings.is_some():
+        auto u0 = v.textLogSettings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"textLogSettings\":" + models_v2_lex_json_arr(e1))
+    if v.audioLogSettings.is_some():
+        auto u2 = v.audioLogSettings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"audioLogSettings\":" + models_v2_lex_json_arr(e3))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize ExportFilter to a compact JSON object (declaration order).
+def export_filter_to_json(ExportFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + models_v2_lex_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize ImportFilter to a compact JSON object (declaration order).
+def import_filter_to_json(ImportFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + models_v2_lex_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize ImportResourceSpecification to a compact JSON object (declaration order).
+def import_resource_specification_to_json(ImportResourceSpecification v) -> str:
+    list[str] parts = []
+    if v.botImportSpecification.is_some():
+        auto u0 = v.botImportSpecification.unwrap()
+        parts.append("\"botImportSpecification\":" + bot_import_specification_to_json(u0))
+    if v.botLocaleImportSpecification.is_some():
+        auto u1 = v.botLocaleImportSpecification.unwrap()
+        parts.append("\"botLocaleImportSpecification\":" + u1.to_json())
+    if v.customVocabularyImportSpecification.is_some():
+        auto u2 = v.customVocabularyImportSpecification.unwrap()
+        parts.append("\"customVocabularyImportSpecification\":" + u2.to_json())
+    if v.testSetImportResourceSpecification.is_some():
+        auto u3 = v.testSetImportResourceSpecification.unwrap()
+        parts.append("\"testSetImportResourceSpecification\":" + test_set_import_resource_specification_to_json(u3))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize IntentFilter to a compact JSON object (declaration order).
+def intent_filter_to_json(IntentFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + models_v2_lex_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize PathFormat to a compact JSON object (declaration order).
+def path_format_to_json(PathFormat v) -> str:
+    list[str] parts = []
+    if v.objectPrefixes.is_some():
+        auto u0 = v.objectPrefixes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(models_v2_lex_json_str(x1))
+        parts.append("\"objectPrefixes\":" + models_v2_lex_json_arr(e1))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize S3BucketTranscriptSource to a compact JSON object (declaration order).
+def s3_bucket_transcript_source_to_json(S3BucketTranscriptSource v) -> str:
+    list[str] parts = []
+    parts.append("\"s3BucketName\":" + models_v2_lex_json_str(v.s3BucketName))
+    if v.pathFormat.is_some():
+        auto u0 = v.pathFormat.unwrap()
+        parts.append("\"pathFormat\":" + path_format_to_json(u0))
+    parts.append("\"transcriptFormat\":" + models_v2_lex_json_str(v.transcriptFormat))
+    if v.transcriptFilter.is_some():
+        auto u1 = v.transcriptFilter.unwrap()
+        parts.append("\"transcriptFilter\":" + u1.to_json())
+    if v.kmsKeyArn.is_some():
+        auto u2 = v.kmsKeyArn.unwrap()
+        parts.append("\"kmsKeyArn\":" + models_v2_lex_json_str(u2))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize SlotFilter to a compact JSON object (declaration order).
+def slot_filter_to_json(SlotFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + models_v2_lex_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize SlotTypeFilter to a compact JSON object (declaration order).
+def slot_type_filter_to_json(SlotTypeFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(models_v2_lex_json_str(x0))
+    parts.append("\"values\":" + models_v2_lex_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return models_v2_lex_json_obj(parts)
+
+# Serialize SlotTypeValue to a compact JSON object (declaration order).
+def slot_type_value_to_json(SlotTypeValue v) -> str:
+    list[str] parts = []
+    if v.sampleValue.is_some():
+        auto u0 = v.sampleValue.unwrap()
+        parts.append("\"sampleValue\":" + u0.to_json())
+    if v.synonyms.is_some():
+        auto u1 = v.synonyms.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"synonyms\":" + models_v2_lex_json_arr(e2))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize TestSetImportResourceSpecification to a compact JSON object (declaration order).
+def test_set_import_resource_specification_to_json(TestSetImportResourceSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"testSetName\":" + models_v2_lex_json_str(v.testSetName))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + models_v2_lex_json_str(u0))
+    parts.append("\"roleArn\":" + models_v2_lex_json_str(v.roleArn))
+    parts.append("\"storageLocation\":" + v.storageLocation.to_json())
+    parts.append("\"importInputLocation\":" + v.importInputLocation.to_json())
+    parts.append("\"modality\":" + v.modality.to_json())
+    if v.testSetTags.is_some():
+        auto u1 = v.testSetTags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(models_v2_lex_json_str(k2) + ":" + models_v2_lex_json_str(u1[k2]))
+        parts.append("\"testSetTags\":" + models_v2_lex_json_obj(m2))
+    return models_v2_lex_json_obj(parts)
+
+# Serialize TranscriptSourceSetting to a compact JSON object (declaration order).
+def transcript_source_setting_to_json(TranscriptSourceSetting v) -> str:
+    list[str] parts = []
+    if v.s3BucketTranscriptSource.is_some():
+        auto u0 = v.s3BucketTranscriptSource.unwrap()
+        parts.append("\"s3BucketTranscriptSource\":" + s3_bucket_transcript_source_to_json(u0))
+    return models_v2_lex_json_obj(parts)
+
 # A bound Lex_Models_V2 client: credentials + region, threaded into every operation.
 struct Lex_Models_V2Client:
     core.Credentials creds
     str region
+
+    # BatchCreateCustomVocabularyItem  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchcreate
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_custom_vocabulary_item(self, BatchCreateCustomVocabularyItemRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchcreate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.customVocabularyItemList:
+            e0.append(x0.to_json())
+        parts.append("\"customVocabularyItemList\":" + models_v2_lex_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # BatchDeleteCustomVocabularyItem  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchdelete
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_delete_custom_vocabulary_item(self, BatchDeleteCustomVocabularyItemRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchdelete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.customVocabularyItemList:
+            e0.append(x0.to_json())
+        parts.append("\"customVocabularyItemList\":" + models_v2_lex_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # BatchUpdateCustomVocabularyItem  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchupdate
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_update_custom_vocabulary_item(self, BatchUpdateCustomVocabularyItemRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/customvocabulary/DEFAULT/batchupdate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.customVocabularyItemList:
+            e0.append(x0.to_json())
+        parts.append("\"customVocabularyItemList\":" + models_v2_lex_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # BuildBotLocale  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/
     # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -4818,6 +5324,82 @@ struct Lex_Models_V2Client:
         labels["localeId"] = input.localeId
         auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_v2_lex_service(), self.region, host)
+
+    # CreateBot  PUT /bots/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_bot(self, CreateBotRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"botName\":" + models_v2_lex_json_str(input.botName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        parts.append("\"roleArn\":" + models_v2_lex_json_str(input.roleArn))
+        parts.append("\"dataPrivacy\":" + input.dataPrivacy.to_json())
+        parts.append("\"idleSessionTTLInSeconds\":" + str(input.idleSessionTTLInSeconds))
+        if input.botTags.is_some():
+            auto u1 = input.botTags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(models_v2_lex_json_str(k2) + ":" + models_v2_lex_json_str(u1[k2]))
+            parts.append("\"botTags\":" + models_v2_lex_json_obj(m2))
+        if input.testBotAliasTags.is_some():
+            auto u3 = input.testBotAliasTags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(models_v2_lex_json_str(k4) + ":" + models_v2_lex_json_str(u3[k4]))
+            parts.append("\"testBotAliasTags\":" + models_v2_lex_json_obj(m4))
+        if input.botType.is_some():
+            auto u5 = input.botType.unwrap()
+            parts.append("\"botType\":" + u5.to_json())
+        if input.botMembers.is_some():
+            auto u6 = input.botMembers.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"botMembers\":" + models_v2_lex_json_arr(e7))
+        if input.errorLogSettings.is_some():
+            auto u8 = input.errorLogSettings.unwrap()
+            parts.append("\"errorLogSettings\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # CreateBotAlias  PUT /bots/{botId}/botaliases/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_bot_alias(self, CreateBotAliasRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botaliases/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"botAliasName\":" + models_v2_lex_json_str(input.botAliasName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        if input.botVersion.is_some():
+            auto u1 = input.botVersion.unwrap()
+            parts.append("\"botVersion\":" + models_v2_lex_json_str(u1))
+        if input.botAliasLocaleSettings.is_some():
+            auto u2 = input.botAliasLocaleSettings.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(models_v2_lex_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"botAliasLocaleSettings\":" + models_v2_lex_json_obj(m3))
+        if input.conversationLogSettings.is_some():
+            auto u4 = input.conversationLogSettings.unwrap()
+            parts.append("\"conversationLogSettings\":" + conversation_log_settings_to_json(u4))
+        if input.sentimentAnalysisSettings.is_some():
+            auto u5 = input.sentimentAnalysisSettings.unwrap()
+            parts.append("\"sentimentAnalysisSettings\":" + u5.to_json())
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(models_v2_lex_json_str(k7) + ":" + models_v2_lex_json_str(u6[k7]))
+            parts.append("\"tags\":" + models_v2_lex_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # CreateBotLocale  PUT /bots/{botId}/botversions/{botVersion}/botlocales/
     # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -4842,6 +5424,24 @@ struct Lex_Models_V2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
+    # CreateBotVersion  PUT /bots/{botId}/botversions/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_bot_version(self, CreateBotVersionRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        list[str] m1 = []
+        for k1 in sorted(input.botVersionLocaleSpecification.keys()):
+            m1.append(models_v2_lex_json_str(k1) + ":" + input.botVersionLocaleSpecification[k1].to_json())
+        parts.append("\"botVersionLocaleSpecification\":" + models_v2_lex_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
     # CreateExport  PUT /exports/
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_export(self, CreateExportRequest input) -> str:
@@ -4860,6 +5460,74 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/policy/{resourceArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateResourcePolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # CreateResourcePolicyStatement  POST /policy/{resourceArn}/statements/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_resource_policy_statement(self, CreateResourcePolicyStatementRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, str] query = {}
+        if input.expectedRevisionId.is_some():
+            query["expectedRevisionId"] = input.expectedRevisionId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy/{resourceArn}/statements/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"statementId\":" + models_v2_lex_json_str(input.statementId))
+        parts.append("\"effect\":" + input.effect.to_json())
+        list[str] e0 = []
+        for x0 in input.principal:
+            e0.append(x0.to_json())
+        parts.append("\"principal\":" + models_v2_lex_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.action:
+            e1.append(models_v2_lex_json_str(x1))
+        parts.append("\"action\":" + models_v2_lex_json_arr(e1))
+        if input.condition.is_some():
+            auto u2 = input.condition.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                list[str] m4 = []
+                for k4 in sorted(u2[k3].keys()):
+                    m4.append(models_v2_lex_json_str(k4) + ":" + models_v2_lex_json_str(u2[k3][k4]))
+                m3.append(models_v2_lex_json_str(k3) + ":" + models_v2_lex_json_obj(m4))
+            parts.append("\"condition\":" + models_v2_lex_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # CreateSlotType  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/slottypes/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_slot_type(self, CreateSlotTypeRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/slottypes/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"slotTypeName\":" + models_v2_lex_json_str(input.slotTypeName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        if input.slotTypeValues.is_some():
+            auto u1 = input.slotTypeValues.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(slot_type_value_to_json(x2))
+            parts.append("\"slotTypeValues\":" + models_v2_lex_json_arr(e2))
+        if input.valueSelectionSetting.is_some():
+            auto u3 = input.valueSelectionSetting.unwrap()
+            parts.append("\"valueSelectionSetting\":" + u3.to_json())
+        if input.parentSlotTypeSignature.is_some():
+            auto u4 = input.parentSlotTypeSignature.unwrap()
+            parts.append("\"parentSlotTypeSignature\":" + models_v2_lex_json_str(u4))
+        if input.externalSourceSetting.is_some():
+            auto u5 = input.externalSourceSetting.unwrap()
+            parts.append("\"externalSourceSetting\":" + u5.to_json())
+        if input.compositeSlotTypeSetting.is_some():
+            auto u6 = input.compositeSlotTypeSetting.unwrap()
+            parts.append("\"compositeSlotTypeSetting\":" + composite_slot_type_setting_to_json(u6))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # CreateTestSetDiscrepancyReport  POST /testsets/{testSetId}/testsetdiscrepancy
@@ -5232,6 +5900,40 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="GET", path_template="/testexecutions/{testExecutionId}/artifacturl", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_v2_lex_service(), self.region, host)
 
+    # ListAggregatedUtterances  POST /bots/{botId}/aggregatedutterances/
+    # errors: InternalServerException, PreconditionFailedException, ThrottlingException, ValidationException
+    def list_aggregated_utterances(self, ListAggregatedUtterancesRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/aggregatedutterances/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.botAliasId.is_some():
+            auto u0 = input.botAliasId.unwrap()
+            parts.append("\"botAliasId\":" + models_v2_lex_json_str(u0))
+        if input.botVersion.is_some():
+            auto u1 = input.botVersion.unwrap()
+            parts.append("\"botVersion\":" + models_v2_lex_json_str(u1))
+        parts.append("\"localeId\":" + models_v2_lex_json_str(input.localeId))
+        parts.append("\"aggregationDuration\":" + input.aggregationDuration.to_json())
+        if input.sortBy.is_some():
+            auto u2 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u2.to_json())
+        if input.filters.is_some():
+            auto u3 = input.filters.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(aggregated_utterances_filter_to_json(x4))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u6))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
     # ListBotAliasReplicas  POST /bots/{botId}/replicas/{replicaRegion}/botaliases/
     # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_bot_alias_replicas(self, ListBotAliasReplicasRequest input) -> str:
@@ -5264,6 +5966,33 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botanalyzer/history/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListBotAnalyzerHistoryDocument(localeId=input.localeId, botVersion=input.botVersion, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListBotLocales  POST /bots/{botId}/botversions/{botVersion}/botlocales/
+    # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_bot_locales(self, ListBotLocalesRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(bot_locale_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # ListBotRecommendations  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/
@@ -5324,6 +6053,30 @@ struct Lex_Models_V2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
+    # ListBots  POST /bots/
+    # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_bots(self, ListBotsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(bot_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
     # ListBuiltInIntents  POST /builtins/locales/{localeId}/intents/
     # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_built_in_intents(self, ListBuiltInIntentsRequest input) -> str:
@@ -5359,6 +6112,202 @@ struct Lex_Models_V2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
+    # ListExports  POST /exports/
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_exports(self, ListExportsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/exports/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.botId.is_some():
+            auto u0 = input.botId.unwrap()
+            parts.append("\"botId\":" + models_v2_lex_json_str(u0))
+        if input.botVersion.is_some():
+            auto u1 = input.botVersion.unwrap()
+            parts.append("\"botVersion\":" + models_v2_lex_json_str(u1))
+        if input.sortBy.is_some():
+            auto u2 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u2.to_json())
+        if input.filters.is_some():
+            auto u3 = input.filters.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(export_filter_to_json(x4))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u6))
+        if input.localeId.is_some():
+            auto u7 = input.localeId.unwrap()
+            parts.append("\"localeId\":" + models_v2_lex_json_str(u7))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListImports  POST /imports/
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_imports(self, ListImportsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/imports/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.botId.is_some():
+            auto u0 = input.botId.unwrap()
+            parts.append("\"botId\":" + models_v2_lex_json_str(u0))
+        if input.botVersion.is_some():
+            auto u1 = input.botVersion.unwrap()
+            parts.append("\"botVersion\":" + models_v2_lex_json_str(u1))
+        if input.sortBy.is_some():
+            auto u2 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u2.to_json())
+        if input.filters.is_some():
+            auto u3 = input.filters.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(import_filter_to_json(x4))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u6))
+        if input.localeId.is_some():
+            auto u7 = input.localeId.unwrap()
+            parts.append("\"localeId\":" + models_v2_lex_json_str(u7))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListIntentMetrics  POST /bots/{botId}/analytics/intentmetrics
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_intent_metrics(self, ListIntentMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/intentmetrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        list[str] e0 = []
+        for x0 in input.metrics:
+            e0.append(x0.to_json())
+        parts.append("\"metrics\":" + models_v2_lex_json_arr(e0))
+        if input.binBy.is_some():
+            auto u1 = input.binBy.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"binBy\":" + models_v2_lex_json_arr(e2))
+        if input.groupBy.is_some():
+            auto u3 = input.groupBy.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"groupBy\":" + models_v2_lex_json_arr(e4))
+        if input.filters.is_some():
+            auto u5 = input.filters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(analytics_intent_filter_to_json(x6))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e6))
+        if input.maxResults.is_some():
+            auto u7 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u7))
+        if input.nextToken.is_some():
+            auto u8 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u8))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListIntentPaths  POST /bots/{botId}/analytics/intentpaths
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_intent_paths(self, ListIntentPathsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/intentpaths", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        parts.append("\"intentPath\":" + models_v2_lex_json_str(input.intentPath))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(analytics_path_filter_to_json(x1))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListIntentStageMetrics  POST /bots/{botId}/analytics/intentstagemetrics
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_intent_stage_metrics(self, ListIntentStageMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/intentstagemetrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        list[str] e0 = []
+        for x0 in input.metrics:
+            e0.append(x0.to_json())
+        parts.append("\"metrics\":" + models_v2_lex_json_arr(e0))
+        if input.binBy.is_some():
+            auto u1 = input.binBy.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"binBy\":" + models_v2_lex_json_arr(e2))
+        if input.groupBy.is_some():
+            auto u3 = input.groupBy.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"groupBy\":" + models_v2_lex_json_arr(e4))
+        if input.filters.is_some():
+            auto u5 = input.filters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(analytics_intent_stage_filter_to_json(x6))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e6))
+        if input.maxResults.is_some():
+            auto u7 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u7))
+        if input.nextToken.is_some():
+            auto u8 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u8))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListIntents  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/intents/
+    # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_intents(self, ListIntentsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/intents/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(intent_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
     # ListRecommendedIntents  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/{botRecommendationId}/intents
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_recommended_intents(self, ListRecommendedIntentsRequest input) -> str:
@@ -5371,6 +6320,132 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/{botRecommendationId}/intents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecommendedIntentsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListSessionAnalyticsData  POST /bots/{botId}/analytics/sessions
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_session_analytics_data(self, ListSessionAnalyticsDataRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(analytics_session_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListSessionMetrics  POST /bots/{botId}/analytics/sessionmetrics
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_session_metrics(self, ListSessionMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/sessionmetrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        list[str] e0 = []
+        for x0 in input.metrics:
+            e0.append(x0.to_json())
+        parts.append("\"metrics\":" + models_v2_lex_json_arr(e0))
+        if input.binBy.is_some():
+            auto u1 = input.binBy.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"binBy\":" + models_v2_lex_json_arr(e2))
+        if input.groupBy.is_some():
+            auto u3 = input.groupBy.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"groupBy\":" + models_v2_lex_json_arr(e4))
+        if input.filters.is_some():
+            auto u5 = input.filters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(analytics_session_filter_to_json(x6))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e6))
+        if input.maxResults.is_some():
+            auto u7 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u7))
+        if input.nextToken.is_some():
+            auto u8 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u8))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListSlotTypes  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/slottypes/
+    # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_slot_types(self, ListSlotTypesRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/slottypes/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(slot_type_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListSlots  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/intents/{intentId}/slots/
+    # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_slots(self, ListSlotsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        labels["intentId"] = input.intentId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/intents/{intentId}/slots/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(slot_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceARN}
@@ -5422,6 +6497,108 @@ struct Lex_Models_V2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
+    # ListUtteranceAnalyticsData  POST /bots/{botId}/analytics/utterances
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_utterance_analytics_data(self, ListUtteranceAnalyticsDataRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/utterances", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(analytics_utterance_filter_to_json(x2))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u4))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # ListUtteranceMetrics  POST /bots/{botId}/analytics/utterancemetrics
+    # errors: InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_utterance_metrics(self, ListUtteranceMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/analytics/utterancemetrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"startDateTime\":" + str(datetime.to_timestamp(input.startDateTime)))
+        parts.append("\"endDateTime\":" + str(datetime.to_timestamp(input.endDateTime)))
+        list[str] e0 = []
+        for x0 in input.metrics:
+            e0.append(x0.to_json())
+        parts.append("\"metrics\":" + models_v2_lex_json_arr(e0))
+        if input.binBy.is_some():
+            auto u1 = input.binBy.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"binBy\":" + models_v2_lex_json_arr(e2))
+        if input.groupBy.is_some():
+            auto u3 = input.groupBy.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"groupBy\":" + models_v2_lex_json_arr(e4))
+        if input.attributes.is_some():
+            auto u5 = input.attributes.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"attributes\":" + models_v2_lex_json_arr(e6))
+        if input.filters.is_some():
+            auto u7 = input.filters.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(analytics_utterance_filter_to_json(x8))
+            parts.append("\"filters\":" + models_v2_lex_json_arr(e8))
+        if input.maxResults.is_some():
+            auto u9 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u9))
+        if input.nextToken.is_some():
+            auto u10 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + models_v2_lex_json_str(u10))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # SearchAssociatedTranscripts  POST /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/{botRecommendationId}/associatedtranscripts
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def search_associated_transcripts(self, SearchAssociatedTranscriptsRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        labels["botRecommendationId"] = input.botRecommendationId
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/{botRecommendationId}/associatedtranscripts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.searchOrder.is_some():
+            auto u0 = input.searchOrder.unwrap()
+            parts.append("\"searchOrder\":" + u0.to_json())
+        list[str] e1 = []
+        for x1 in input.filters:
+            e1.append(associated_transcript_filter_to_json(x1))
+        parts.append("\"filters\":" + models_v2_lex_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextIndex.is_some():
+            auto u3 = input.nextIndex.unwrap()
+            parts.append("\"nextIndex\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
     # StartBotAnalyzer  POST /bots/{botId}/botanalyzer/
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_bot_analyzer(self, StartBotAnalyzerRequest input) -> str:
@@ -5431,6 +6608,23 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botanalyzer/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartBotAnalyzerDocument(analysisScope=input.analysisScope, localeId=input.localeId, botVersion=input.botVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # StartBotRecommendation  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/
+    # errors: ConflictException, ConflictException, InternalServerException, PreconditionFailedException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_bot_recommendation(self, StartBotRecommendationRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"transcriptSourceSetting\":" + transcript_source_setting_to_json(input.transcriptSourceSetting))
+        if input.encryptionSetting.is_some():
+            auto u0 = input.encryptionSetting.unwrap()
+            parts.append("\"encryptionSetting\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # StartBotResourceGeneration  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/startgeneration
@@ -5446,6 +6640,21 @@ struct Lex_Models_V2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
+    # StartImport  PUT /imports/
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_import(self, StartImportRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/imports/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"importId\":" + models_v2_lex_json_str(input.importId))
+        parts.append("\"resourceSpecification\":" + import_resource_specification_to_json(input.resourceSpecification))
+        parts.append("\"mergeStrategy\":" + input.mergeStrategy.to_json())
+        if input.filePassword.is_some():
+            auto u0 = input.filePassword.unwrap()
+            parts.append("\"filePassword\":" + models_v2_lex_json_str(u0))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
     # StartTestExecution  POST /testsets/{testSetId}/testexecutions
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_test_execution(self, StartTestExecutionRequest input) -> str:
@@ -5455,6 +6664,28 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/testsets/{testSetId}/testexecutions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTestExecutionDocument(target=input.target, apiMode=input.apiMode, testExecutionModality=input.testExecutionModality)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # StartTestSetGeneration  PUT /testsetgenerations
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_test_set_generation(self, StartTestSetGenerationRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/testsetgenerations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"testSetName\":" + models_v2_lex_json_str(input.testSetName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        parts.append("\"storageLocation\":" + input.storageLocation.to_json())
+        parts.append("\"generationDataSource\":" + input.generationDataSource.to_json())
+        parts.append("\"roleArn\":" + models_v2_lex_json_str(input.roleArn))
+        if input.testSetTags.is_some():
+            auto u1 = input.testSetTags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(models_v2_lex_json_str(k2) + ":" + models_v2_lex_json_str(u1[k2]))
+            parts.append("\"testSetTags\":" + models_v2_lex_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # StopBotAnalyzer  PUT /bots/{botId}/botanalyzer/{botAnalyzerRequestId}/stop/
@@ -5478,6 +6709,82 @@ struct Lex_Models_V2Client:
         labels["botRecommendationId"] = input.botRecommendationId
         auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/botrecommendations/{botRecommendationId}/stopbotrecommendation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_v2_lex_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceARN}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceARN"] = input.resourceARN
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(models_v2_lex_json_str(k0) + ":" + models_v2_lex_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + models_v2_lex_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # UpdateBot  PUT /bots/{botId}/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_bot(self, UpdateBotRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"botName\":" + models_v2_lex_json_str(input.botName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        parts.append("\"roleArn\":" + models_v2_lex_json_str(input.roleArn))
+        parts.append("\"dataPrivacy\":" + input.dataPrivacy.to_json())
+        parts.append("\"idleSessionTTLInSeconds\":" + str(input.idleSessionTTLInSeconds))
+        if input.botType.is_some():
+            auto u1 = input.botType.unwrap()
+            parts.append("\"botType\":" + u1.to_json())
+        if input.botMembers.is_some():
+            auto u2 = input.botMembers.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"botMembers\":" + models_v2_lex_json_arr(e3))
+        if input.errorLogSettings.is_some():
+            auto u4 = input.errorLogSettings.unwrap()
+            parts.append("\"errorLogSettings\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # UpdateBotAlias  PUT /bots/{botId}/botaliases/{botAliasId}/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_bot_alias(self, UpdateBotAliasRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botAliasId"] = input.botAliasId
+        labels["botId"] = input.botId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botaliases/{botAliasId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"botAliasName\":" + models_v2_lex_json_str(input.botAliasName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        if input.botVersion.is_some():
+            auto u1 = input.botVersion.unwrap()
+            parts.append("\"botVersion\":" + models_v2_lex_json_str(u1))
+        if input.botAliasLocaleSettings.is_some():
+            auto u2 = input.botAliasLocaleSettings.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(models_v2_lex_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"botAliasLocaleSettings\":" + models_v2_lex_json_obj(m3))
+        if input.conversationLogSettings.is_some():
+            auto u4 = input.conversationLogSettings.unwrap()
+            parts.append("\"conversationLogSettings\":" + conversation_log_settings_to_json(u4))
+        if input.sentimentAnalysisSettings.is_some():
+            auto u5 = input.sentimentAnalysisSettings.unwrap()
+            parts.append("\"sentimentAnalysisSettings\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # UpdateBotLocale  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/
     # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -5529,6 +6836,42 @@ struct Lex_Models_V2Client:
         auto b = binding.HttpBinding(method="PUT", path_template="/policy/{resourceArn}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResourcePolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
+
+    # UpdateSlotType  PUT /bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/slottypes/{slotTypeId}/
+    # errors: ConflictException, InternalServerException, PreconditionFailedException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_slot_type(self, UpdateSlotTypeRequest input) -> str:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["slotTypeId"] = input.slotTypeId
+        labels["botId"] = input.botId
+        labels["botVersion"] = input.botVersion
+        labels["localeId"] = input.localeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botId}/botversions/{botVersion}/botlocales/{localeId}/slottypes/{slotTypeId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"slotTypeName\":" + models_v2_lex_json_str(input.slotTypeName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + models_v2_lex_json_str(u0))
+        if input.slotTypeValues.is_some():
+            auto u1 = input.slotTypeValues.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(slot_type_value_to_json(x2))
+            parts.append("\"slotTypeValues\":" + models_v2_lex_json_arr(e2))
+        if input.valueSelectionSetting.is_some():
+            auto u3 = input.valueSelectionSetting.unwrap()
+            parts.append("\"valueSelectionSetting\":" + u3.to_json())
+        if input.parentSlotTypeSignature.is_some():
+            auto u4 = input.parentSlotTypeSignature.unwrap()
+            parts.append("\"parentSlotTypeSignature\":" + models_v2_lex_json_str(u4))
+        if input.externalSourceSetting.is_some():
+            auto u5 = input.externalSourceSetting.unwrap()
+            parts.append("\"externalSourceSetting\":" + u5.to_json())
+        if input.compositeSlotTypeSetting.is_some():
+            auto u6 = input.compositeSlotTypeSetting.unwrap()
+            parts.append("\"compositeSlotTypeSetting\":" + composite_slot_type_setting_to_json(u6))
+        auto bp = restjson.rest_json_document(b, models_v2_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_v2_lex_service(), self.region, host)
 
     # UpdateTestSet  PUT /testsets/{testSetId}

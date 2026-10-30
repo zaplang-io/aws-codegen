@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 31 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 44 operations — 42 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   130 structs (81 @derive(Json)), 12 enums, 7 error variants.
 #   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The amp rest-json protocol: SigV4 service "aps" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -189,8 +190,9 @@ struct AmpConfiguration:
 struct AnomalyDetectorConfiguration:
     Optional[RandomCutForestConfiguration] randomCutForest
 
-# no @derive(Json): member(s) labels: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labels: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalyDetectorDescription:
     str arn
     str anomalyDetectorId
@@ -214,8 +216,9 @@ struct AnomalyDetectorStatus:
     AnomalyDetectorStatusCode statusCode
     Optional[str] statusReason
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalyDetectorSummary:
     str arn
     str anomalyDetectorId
@@ -233,8 +236,9 @@ struct CloudWatchConfiguration:
 struct CloudWatchLogDestination:
     str logGroupArn
 
-# no @derive(Json): member(s) options: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentConfig:
     Optional[dict[str, str]] options
 
@@ -267,8 +271,9 @@ struct CreateAnomalyDetectorRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAnomalyDetectorResponse:
     str anomalyDetectorId
     str arn
@@ -306,8 +311,9 @@ struct CreateRuleGroupsNamespaceRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleGroupsNamespaceResponse:
     str name
     str arn
@@ -326,8 +332,9 @@ struct CreateScraperRequest:
     Optional[dict[str, str]] tags
     Optional[list[ExporterConfiguration]] exporters
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScraperResponse:
     str scraperId
     str arn
@@ -342,8 +349,9 @@ struct CreateWorkspaceRequest:
     Optional[dict[str, str]] tags
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspaceResponse:
     str workspaceId
     str arn
@@ -428,8 +436,9 @@ struct DescribeAnomalyDetectorRequest:
     str workspaceId
     str anomalyDetectorId
 
-# no @derive(Json): member(s) anomalyDetector: AnomalyDetectorDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anomalyDetector: AnomalyDetectorDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAnomalyDetectorResponse:
     AnomalyDetectorDescription anomalyDetector
 
@@ -447,8 +456,9 @@ struct DescribeLoggingConfigurationResponse:
 struct DescribeQueryLoggingConfigurationRequest:
     str workspaceId
 
-# no @derive(Json): member(s) queryLoggingConfiguration: QueryLoggingConfigurationMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queryLoggingConfiguration: QueryLoggingConfigurationMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQueryLoggingConfigurationResponse:
     QueryLoggingConfigurationMetadata queryLoggingConfiguration
 
@@ -469,8 +479,9 @@ struct DescribeRuleGroupsNamespaceRequest:
     str workspaceId
     str name
 
-# no @derive(Json): member(s) ruleGroupsNamespace: RuleGroupsNamespaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleGroupsNamespace: RuleGroupsNamespaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRuleGroupsNamespaceResponse:
     RuleGroupsNamespaceDescription ruleGroupsNamespace
 
@@ -479,8 +490,9 @@ struct DescribeRuleGroupsNamespaceResponse:
 struct DescribeScraperLoggingConfigurationRequest:
     str scraperId
 
-# no @derive(Json): member(s) scraperComponents: list[ScraperComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scraperComponents: list[ScraperComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScraperLoggingConfigurationResponse:
     ScraperLoggingConfigurationStatus status
     str scraperId
@@ -493,8 +505,9 @@ struct DescribeScraperLoggingConfigurationResponse:
 struct DescribeScraperRequest:
     str scraperId
 
-# no @derive(Json): member(s) scraper: ScraperDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scraper: ScraperDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScraperResponse:
     ScraperDescription scraper
 
@@ -503,8 +516,9 @@ struct DescribeScraperResponse:
 struct DescribeWorkspaceConfigurationRequest:
     str workspaceId
 
-# no @derive(Json): member(s) workspaceConfiguration: WorkspaceConfigurationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspaceConfiguration: WorkspaceConfigurationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceConfigurationResponse:
     WorkspaceConfigurationDescription workspaceConfiguration
 
@@ -513,8 +527,9 @@ struct DescribeWorkspaceConfigurationResponse:
 struct DescribeWorkspaceRequest:
     str workspaceId
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceResponse:
     WorkspaceDescription workspace
 
@@ -523,8 +538,9 @@ struct Destination:
     Optional[AmpConfiguration] ampConfiguration
     Optional[CloudWatchConfiguration] cloudWatchConfiguration
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksConfiguration:
     str clusterArn
     Optional[list[str]] securityGroupIds
@@ -554,8 +570,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) labelSet: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labelSet: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LimitsPerLabelSet:
     LimitsPerLabelSetEntry limits
     dict[str, str] labelSet
@@ -572,8 +589,9 @@ struct ListAnomalyDetectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) anomalyDetectors: list[AnomalyDetectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anomalyDetectors: list[AnomalyDetectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnomalyDetectorsResponse:
     list[AnomalyDetectorSummary] anomalyDetectors
     Optional[str] nextToken
@@ -586,8 +604,9 @@ struct ListRuleGroupsNamespacesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) ruleGroupsNamespaces: list[RuleGroupsNamespaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleGroupsNamespaces: list[RuleGroupsNamespaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleGroupsNamespacesResponse:
     list[RuleGroupsNamespaceSummary] ruleGroupsNamespaces
     Optional[str] nextToken
@@ -599,8 +618,9 @@ struct ListScrapersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scrapers: list[ScraperSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scrapers: list[ScraperSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScrapersResponse:
     list[ScraperSummary] scrapers
     Optional[str] nextToken
@@ -610,8 +630,9 @@ struct ListScrapersResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -622,8 +643,9 @@ struct ListWorkspacesRequest:
     Optional[str] alias
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) workspaces: list[WorkspaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspaces: list[WorkspaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspacesResponse:
     list[WorkspaceSummary] workspaces
     Optional[str] nextToken
@@ -676,8 +698,9 @@ struct PutAnomalyDetectorRequest:
     Optional[dict[str, str]] labels
     Optional[str] clientToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAnomalyDetectorResponse:
     str anomalyDetectorId
     str arn
@@ -705,16 +728,18 @@ struct PutRuleGroupsNamespaceRequest:
     bytes data
     Optional[str] clientToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRuleGroupsNamespaceResponse:
     str name
     str arn
     RuleGroupsNamespaceStatus status
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) destinations: list[LoggingDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[LoggingDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryLoggingConfigurationMetadata:
     QueryLoggingConfigurationStatus status
     str workspace
@@ -746,8 +771,9 @@ struct RoleConfiguration:
     Optional[str] sourceRoleArn
     Optional[str] targetRoleArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupsNamespaceDescription:
     str arn
     str name
@@ -762,8 +788,9 @@ struct RuleGroupsNamespaceStatus:
     RuleGroupsNamespaceStatusCode statusCode
     Optional[str] statusReason
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupsNamespaceSummary:
     str arn
     str name
@@ -776,14 +803,16 @@ struct RuleGroupsNamespaceSummary:
 struct ScrapeConfiguration:
     Optional[bytes] configurationBlob
 
-# no @derive(Json): member(s) config: ComponentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) config: ComponentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScraperComponent:
     ScraperComponentType type
     Optional[ComponentConfig] config
 
-# no @derive(Json): member(s) tags: dict[str, str], source: Source, exporters: list[ExporterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], source: Source, exporters: list[ExporterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScraperDescription:
     Optional[str] alias
     str scraperId
@@ -813,8 +842,9 @@ struct ScraperLoggingDestination:
 struct ScraperStatus:
     ScraperStatusCode statusCode
 
-# no @derive(Json): member(s) tags: dict[str, str], source: Source, exporters: list[ExporterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], source: Source, exporters: list[ExporterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScraperSummary:
     Optional[str] alias
     str scraperId
@@ -838,8 +868,9 @@ struct ServiceQuotaExceededException:
     str serviceCode
     str quotaCode
 
-# no @derive(Json): member(s) eksConfiguration: EksConfiguration, vpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eksConfiguration: EksConfiguration, vpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Source:
     Optional[EksConfiguration] eksConfiguration
     Optional[VpcConfiguration] vpcConfiguration
@@ -917,8 +948,9 @@ struct UpdateScraperRequest:
     Optional[str] clientToken
     Optional[list[ExporterConfiguration]] exporters
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScraperResponse:
     str scraperId
     str arn
@@ -946,8 +978,9 @@ struct UpdateWorkspaceConfigurationRequest:
 struct UpdateWorkspaceConfigurationResponse:
     WorkspaceConfigurationStatus status
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -958,14 +991,16 @@ struct ValidationExceptionField:
     str name
     str message
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfiguration:
     list[str] securityGroupIds
     list[str] subnetIds
 
-# no @derive(Json): member(s) limitsPerLabelSet: list[LimitsPerLabelSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) limitsPerLabelSet: list[LimitsPerLabelSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceConfigurationDescription:
     WorkspaceConfigurationStatus status
     Optional[list[LimitsPerLabelSet]] limitsPerLabelSet
@@ -978,8 +1013,9 @@ struct WorkspaceConfigurationStatus:
     WorkspaceConfigurationStatusCode statusCode
     Optional[str] statusReason
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceDescription:
     str workspaceId
     Optional[str] alias
@@ -994,8 +1030,9 @@ struct WorkspaceDescription:
 struct WorkspaceStatus:
     WorkspaceStatusCode statusCode
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceSummary:
     str workspaceId
     Optional[str] alias
@@ -1043,19 +1080,8 @@ def aps_error_from_code(str code) -> ampError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAnomalyDetector (document member `labels: dict[str, str]` is not serializable by derive)
-#   CreateQueryLoggingConfiguration (document member `destinations: list[LoggingDestination]` is not serializable by derive)
-#   CreateRuleGroupsNamespace (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateScraper (document member `source: Source` is not serializable by derive)
-#   CreateWorkspace (document member `tags: dict[str, str]` is not serializable by derive)
 #   ListScrapers (httpQuery `filters` has unsupported type dict[str, list[str]])
-#   PutAnomalyDetector (document member `labels: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateQueryLoggingConfiguration (document member `destinations: list[LoggingDestination]` is not serializable by derive)
-#   UpdateScraper (document member `exporters: list[ExporterConfiguration]` is not serializable by derive)
-#   UpdateScraperLoggingConfiguration (document member `scraperComponents: list[ScraperComponent]` is not serializable by derive)
-#   UpdateWorkspaceConfiguration (document member `limitsPerLabelSet: list[LimitsPerLabelSet]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1107,6 +1133,106 @@ struct UpdateWorkspaceAliasDocument:
     Optional[str] alias
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def aps_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def aps_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def aps_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ComponentConfig to a compact JSON object (declaration order).
+def component_config_to_json(ComponentConfig v) -> str:
+    list[str] parts = []
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(aps_json_str(k1) + ":" + aps_json_str(u0[k1]))
+        parts.append("\"options\":" + aps_json_obj(m1))
+    return aps_json_obj(parts)
+
+# Serialize EksConfiguration to a compact JSON object (declaration order).
+def eks_configuration_to_json(EksConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterArn\":" + aps_json_str(v.clusterArn))
+    if v.securityGroupIds.is_some():
+        auto u0 = v.securityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aps_json_str(x1))
+        parts.append("\"securityGroupIds\":" + aps_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.subnetIds:
+        e2.append(aps_json_str(x2))
+    parts.append("\"subnetIds\":" + aps_json_arr(e2))
+    return aps_json_obj(parts)
+
+# Serialize LimitsPerLabelSet to a compact JSON object (declaration order).
+def limits_per_label_set_to_json(LimitsPerLabelSet v) -> str:
+    list[str] parts = []
+    parts.append("\"limits\":" + v.limits.to_json())
+    list[str] m0 = []
+    for k0 in sorted(v.labelSet.keys()):
+        m0.append(aps_json_str(k0) + ":" + aps_json_str(v.labelSet[k0]))
+    parts.append("\"labelSet\":" + aps_json_obj(m0))
+    return aps_json_obj(parts)
+
+# Serialize ScraperComponent to a compact JSON object (declaration order).
+def scraper_component_to_json(ScraperComponent v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.config.is_some():
+        auto u0 = v.config.unwrap()
+        parts.append("\"config\":" + component_config_to_json(u0))
+    return aps_json_obj(parts)
+
+# Serialize Source to a compact JSON object (declaration order).
+def source_to_json(Source v) -> str:
+    list[str] parts = []
+    if v.eksConfiguration.is_some():
+        auto u0 = v.eksConfiguration.unwrap()
+        parts.append("\"eksConfiguration\":" + eks_configuration_to_json(u0))
+    if v.vpcConfiguration.is_some():
+        auto u1 = v.vpcConfiguration.unwrap()
+        parts.append("\"vpcConfiguration\":" + vpc_configuration_to_json(u1))
+    return aps_json_obj(parts)
+
+# Serialize VpcConfiguration to a compact JSON object (declaration order).
+def vpc_configuration_to_json(VpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.securityGroupIds:
+        e0.append(aps_json_str(x0))
+    parts.append("\"securityGroupIds\":" + aps_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.subnetIds:
+        e1.append(aps_json_str(x1))
+    parts.append("\"subnetIds\":" + aps_json_arr(e1))
+    return aps_json_obj(parts)
+
 # A bound amp client: credentials + region, threaded into every operation.
 struct ampClient:
     core.Credentials creds
@@ -1123,6 +1249,40 @@ struct ampClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
+    # CreateAnomalyDetector  POST /workspaces/{workspaceId}/anomalydetectors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_anomaly_detector(self, CreateAnomalyDetectorRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/anomalydetectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"alias\":" + aps_json_str(input.alias))
+        if input.evaluationIntervalInSeconds.is_some():
+            auto u0 = input.evaluationIntervalInSeconds.unwrap()
+            parts.append("\"evaluationIntervalInSeconds\":" + str(u0))
+        if input.missingDataAction.is_some():
+            auto u1 = input.missingDataAction.unwrap()
+            parts.append("\"missingDataAction\":" + u1.to_json())
+        parts.append("\"configuration\":" + input.configuration.to_json())
+        if input.labels.is_some():
+            auto u2 = input.labels.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(aps_json_str(k3) + ":" + aps_json_str(u2[k3]))
+            parts.append("\"labels\":" + aps_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(aps_json_str(k6) + ":" + aps_json_str(u5[k6]))
+            parts.append("\"tags\":" + aps_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
     # CreateLoggingConfiguration  POST /workspaces/{workspaceId}/logging
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_logging_configuration(self, CreateLoggingConfigurationRequest input) -> str:
@@ -1132,6 +1292,103 @@ struct ampClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateLoggingConfigurationDocument(logGroupArn=input.logGroupArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # CreateQueryLoggingConfiguration  POST /workspaces/{workspaceId}/logging/query
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def create_query_logging_configuration(self, CreateQueryLoggingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.destinations:
+            e0.append(x0.to_json())
+        parts.append("\"destinations\":" + aps_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u1))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # CreateRuleGroupsNamespace  POST /workspaces/{workspaceId}/rulegroupsnamespaces
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_rule_groups_namespace(self, CreateRuleGroupsNamespaceRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + aps_json_str(input.name))
+        parts.append("\"data\":" + aps_json_str(base64.encode(input.data)))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(aps_json_str(k2) + ":" + aps_json_str(u1[k2]))
+            parts.append("\"tags\":" + aps_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # CreateScraper  POST /scrapers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scraper(self, CreateScraperRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/scrapers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.alias.is_some():
+            auto u0 = input.alias.unwrap()
+            parts.append("\"alias\":" + aps_json_str(u0))
+        parts.append("\"scrapeConfiguration\":" + input.scrapeConfiguration.to_json())
+        parts.append("\"source\":" + source_to_json(input.source))
+        parts.append("\"destination\":" + input.destination.to_json())
+        if input.roleConfiguration.is_some():
+            auto u1 = input.roleConfiguration.unwrap()
+            parts.append("\"roleConfiguration\":" + u1.to_json())
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(aps_json_str(k4) + ":" + aps_json_str(u3[k4]))
+            parts.append("\"tags\":" + aps_json_obj(m4))
+        if input.exporters.is_some():
+            auto u5 = input.exporters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"exporters\":" + aps_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # CreateWorkspace  POST /workspaces
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workspace(self, CreateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.alias.is_some():
+            auto u0 = input.alias.unwrap()
+            parts.append("\"alias\":" + aps_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(aps_json_str(k3) + ":" + aps_json_str(u2[k3]))
+            parts.append("\"tags\":" + aps_json_obj(m3))
+        if input.kmsKeyArn.is_some():
+            auto u4 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + aps_json_str(u4))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
     # DeleteAlertManagerDefinition  DELETE /workspaces/{workspaceId}/alertmanager/definition
@@ -1411,6 +1668,34 @@ struct ampClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
+    # PutAnomalyDetector  PUT /workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def put_anomaly_detector(self, PutAnomalyDetectorRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["anomalyDetectorId"] = input.anomalyDetectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.evaluationIntervalInSeconds.is_some():
+            auto u0 = input.evaluationIntervalInSeconds.unwrap()
+            parts.append("\"evaluationIntervalInSeconds\":" + str(u0))
+        if input.missingDataAction.is_some():
+            auto u1 = input.missingDataAction.unwrap()
+            parts.append("\"missingDataAction\":" + u1.to_json())
+        parts.append("\"configuration\":" + input.configuration.to_json())
+        if input.labels.is_some():
+            auto u2 = input.labels.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(aps_json_str(k3) + ":" + aps_json_str(u2[k3]))
+            parts.append("\"labels\":" + aps_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u4))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
     # PutResourcePolicy  PUT /workspaces/{workspaceId}/policy
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
@@ -1434,6 +1719,21 @@ struct ampClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(aps_json_str(k0) + ":" + aps_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + aps_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
     # UpdateLoggingConfiguration  PUT /workspaces/{workspaceId}/logging
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> str:
@@ -1445,6 +1745,74 @@ struct ampClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
+    # UpdateQueryLoggingConfiguration  PUT /workspaces/{workspaceId}/logging/query
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_query_logging_configuration(self, UpdateQueryLoggingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.destinations:
+            e0.append(x0.to_json())
+        parts.append("\"destinations\":" + aps_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u1))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # UpdateScraper  PUT /scrapers/{scraperId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_scraper(self, UpdateScraperRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["scraperId"] = input.scraperId
+        auto b = binding.HttpBinding(method="PUT", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.alias.is_some():
+            auto u0 = input.alias.unwrap()
+            parts.append("\"alias\":" + aps_json_str(u0))
+        if input.scrapeConfiguration.is_some():
+            auto u1 = input.scrapeConfiguration.unwrap()
+            parts.append("\"scrapeConfiguration\":" + u1.to_json())
+        if input.destination.is_some():
+            auto u2 = input.destination.unwrap()
+            parts.append("\"destination\":" + u2.to_json())
+        if input.roleConfiguration.is_some():
+            auto u3 = input.roleConfiguration.unwrap()
+            parts.append("\"roleConfiguration\":" + u3.to_json())
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u4))
+        if input.exporters.is_some():
+            auto u5 = input.exporters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"exporters\":" + aps_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # UpdateScraperLoggingConfiguration  PUT /scrapers/{scraperId}/logging-configuration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_scraper_logging_configuration(self, UpdateScraperLoggingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["scraperId"] = input.scraperId
+        auto b = binding.HttpBinding(method="PUT", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"loggingDestination\":" + input.loggingDestination.to_json())
+        if input.scraperComponents.is_some():
+            auto u0 = input.scraperComponents.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(scraper_component_to_json(x1))
+            parts.append("\"scraperComponents\":" + aps_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
     # UpdateWorkspaceAlias  POST /workspaces/{workspaceId}/alias
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_workspace_alias(self, UpdateWorkspaceAliasRequest input) -> str:
@@ -1454,6 +1822,35 @@ struct ampClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceAliasDocument(alias=input.alias, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
+
+    # UpdateWorkspaceConfiguration  PATCH /workspaces/{workspaceId}/configuration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_workspace_configuration(self, UpdateWorkspaceConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aps_json_str(u0))
+        if input.limitsPerLabelSet.is_some():
+            auto u1 = input.limitsPerLabelSet.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(limits_per_label_set_to_json(x2))
+            parts.append("\"limitsPerLabelSet\":" + aps_json_arr(e2))
+        if input.retentionPeriodInDays.is_some():
+            auto u3 = input.retentionPeriodInDays.unwrap()
+            parts.append("\"retentionPeriodInDays\":" + str(u3))
+        if input.outOfOrderTimeWindowInSeconds.is_some():
+            auto u4 = input.outOfOrderTimeWindowInSeconds.unwrap()
+            parts.append("\"outOfOrderTimeWindowInSeconds\":" + str(u4))
+        if input.ruleQueryOffsetInSeconds.is_some():
+            auto u5 = input.ruleQueryOffsetInSeconds.unwrap()
+            parts.append("\"ruleQueryOffsetInSeconds\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
     # Paginator for ListAnomalyDetectors — yields each Response page, threading the

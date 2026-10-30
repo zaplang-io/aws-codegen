@@ -13,20 +13,22 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 14 with a generated method,
-#   9 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 23 operations — 23 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   67 structs (44 @derive(Json)), 4 enums, 12 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The Secrets_Manager awsJson protocol: version 1.1, API id "secretsmanager".
 def secretsmanager_protocol() -> awsjson.AwsJson:
@@ -78,16 +80,18 @@ struct APIErrorType:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) SecretIdList: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecretIdList: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSecretValueRequest:
     Optional[list[str]] SecretIdList
     Optional[list[Filter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SecretValues: list[SecretValueEntry], Errors: list[APIErrorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecretValues: list[SecretValueEntry], Errors: list[APIErrorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSecretValueResponse:
     Optional[list[SecretValueEntry]] SecretValues
     Optional[str] NextToken
@@ -103,8 +107,9 @@ struct CancelRotateSecretResponse:
     Optional[str] Name
     Optional[str] VersionId
 
-# no @derive(Json): member(s) Tags: list[Tag], AddReplicaRegions: list[ReplicaRegionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], AddReplicaRegions: list[ReplicaRegionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSecretRequest:
     str Name
     Optional[str] ClientRequestToken
@@ -117,8 +122,9 @@ struct CreateSecretRequest:
     Optional[bool] ForceOverwriteReplicaSecret
     Optional[str] Type
 
-# no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSecretResponse:
     Optional[str] ARN
     Optional[str] Name
@@ -154,8 +160,9 @@ struct DeleteSecretResponse:
 struct DescribeSecretRequest:
     str SecretId
 
-# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem], Tags: list[Tag], VersionIdsToStages: dict[str, list[str]], ReplicationStatus: list[ReplicationStatusType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem], Tags: list[Tag], VersionIdsToStages: dict[str, list[str]], ReplicationStatus: list[ReplicationStatusType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSecretResponse:
     Optional[str] ARN
     Optional[str] Name
@@ -188,8 +195,9 @@ struct ExternalSecretRotationMetadataItem:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[FilterNameStringType] Key
     Optional[list[str]] Values
@@ -225,8 +233,9 @@ struct GetSecretValueRequest:
     Optional[str] VersionId
     Optional[str] VersionStage
 
-# no @derive(Json): member(s) VersionStages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionStages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSecretValueResponse:
     Optional[str] ARN
     Optional[str] Name
@@ -263,16 +272,18 @@ struct ListSecretVersionIdsRequest:
     Optional[str] NextToken
     Optional[bool] IncludeDeprecated
 
-# no @derive(Json): member(s) Versions: list[SecretVersionsListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[SecretVersionsListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecretVersionIdsResponse:
     Optional[list[SecretVersionsListEntry]] Versions
     Optional[str] NextToken
     Optional[str] ARN
     Optional[str] Name
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecretsRequest:
     Optional[bool] IncludePlannedDeletion
     Optional[int64] MaxResults
@@ -281,8 +292,9 @@ struct ListSecretsRequest:
     Optional[SortOrderType] SortOrder
     Optional[SortByType] SortBy
 
-# no @derive(Json): member(s) SecretList: list[SecretListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecretList: list[SecretListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecretsResponse:
     Optional[list[SecretListEntry]] SecretList
     Optional[str] NextToken
@@ -310,8 +322,9 @@ struct PutResourcePolicyResponse:
     Optional[str] ARN
     Optional[str] Name
 
-# no @derive(Json): member(s) VersionStages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionStages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutSecretValueRequest:
     str SecretId
     Optional[str] ClientRequestToken
@@ -320,22 +333,25 @@ struct PutSecretValueRequest:
     Optional[list[str]] VersionStages
     Optional[str] RotationToken
 
-# no @derive(Json): member(s) VersionStages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionStages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutSecretValueResponse:
     Optional[str] ARN
     Optional[str] Name
     Optional[str] VersionId
     Optional[list[str]] VersionStages
 
-# no @derive(Json): member(s) RemoveReplicaRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemoveReplicaRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveRegionsFromReplicationRequest:
     str SecretId
     list[str] RemoveReplicaRegions
 
-# no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveRegionsFromReplicationResponse:
     Optional[str] ARN
     Optional[list[ReplicationStatusType]] ReplicationStatus
@@ -345,15 +361,17 @@ struct ReplicaRegionType:
     Optional[str] Region
     Optional[str] KmsKeyId
 
-# no @derive(Json): member(s) AddReplicaRegions: list[ReplicaRegionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddReplicaRegions: list[ReplicaRegionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicateSecretToRegionsRequest:
     str SecretId
     list[ReplicaRegionType] AddReplicaRegions
     Optional[bool] ForceOverwriteReplicaSecret
 
-# no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicateSecretToRegionsResponse:
     Optional[str] ARN
     Optional[list[ReplicationStatusType]] ReplicationStatus
@@ -383,8 +401,9 @@ struct RestoreSecretResponse:
     Optional[str] ARN
     Optional[str] Name
 
-# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RotateSecretRequest:
     str SecretId
     Optional[str] ClientRequestToken
@@ -406,8 +425,9 @@ struct RotationRulesType:
     Optional[str] Duration
     Optional[str] ScheduleExpression
 
-# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem], Tags: list[Tag], SecretVersionsToStages: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem], Tags: list[Tag], SecretVersionsToStages: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecretListEntry:
     Optional[str] ARN
     Optional[str] Name
@@ -430,8 +450,9 @@ struct SecretListEntry:
     Optional[DateTime] CreatedDate
     Optional[str] PrimaryRegion
 
-# no @derive(Json): member(s) VersionStages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionStages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecretValueEntry:
     Optional[str] ARN
     Optional[str] Name
@@ -441,8 +462,9 @@ struct SecretValueEntry:
     Optional[list[str]] VersionStages
     Optional[DateTime] CreatedDate
 
-# no @derive(Json): member(s) VersionStages: list[str], KmsKeyIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionStages: list[str], KmsKeyIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecretVersionsListEntry:
     Optional[str] VersionId
     Optional[list[str]] VersionStages
@@ -463,14 +485,16 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str SecretId
     list[Tag] Tags
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str SecretId
     list[str] TagKeys
@@ -508,8 +532,9 @@ struct ValidateResourcePolicyRequest:
     Optional[str] SecretId
     str ResourcePolicy
 
-# no @derive(Json): member(s) ValidationErrors: list[ValidationErrorsEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationErrors: list[ValidationErrorsEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateResourcePolicyResponse:
     Optional[bool] PolicyValidationPassed
     Optional[list[ValidationErrorsEntry]] ValidationErrors
@@ -568,32 +593,254 @@ def secretsmanager_error_from_code(str code) -> Secrets_ManagerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchGetSecretValue (input BatchGetSecretValueRequest)
-#   CreateSecret (input CreateSecretRequest)
-#   ListSecrets (input ListSecretsRequest)
-#   PutSecretValue (input PutSecretValueRequest)
-#   RemoveRegionsFromReplication (input RemoveRegionsFromReplicationRequest)
-#   ReplicateSecretToRegions (input ReplicateSecretToRegionsRequest)
-#   RotateSecret (input RotateSecretRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def secretsmanager_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListSecrets (input not derivable (no generated method))
+def secretsmanager_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def secretsmanager_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchGetSecretValueRequest to a compact JSON object (declaration order).
+def batch_get_secret_value_request_to_json(BatchGetSecretValueRequest v) -> str:
+    list[str] parts = []
+    if v.SecretIdList.is_some():
+        auto u0 = v.SecretIdList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(secretsmanager_json_str(x1))
+        parts.append("\"SecretIdList\":" + secretsmanager_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + secretsmanager_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + secretsmanager_json_str(u5))
+    return secretsmanager_json_obj(parts)
+
+# Serialize CreateSecretRequest to a compact JSON object (declaration order).
+def create_secret_request_to_json(CreateSecretRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + secretsmanager_json_str(v.Name))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + secretsmanager_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + secretsmanager_json_str(u1))
+    if v.KmsKeyId.is_some():
+        auto u2 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + secretsmanager_json_str(u2))
+    if v.SecretBinary.is_some():
+        auto u3 = v.SecretBinary.unwrap()
+        parts.append("\"SecretBinary\":" + secretsmanager_json_str(base64.encode(u3)))
+    if v.SecretString.is_some():
+        auto u4 = v.SecretString.unwrap()
+        parts.append("\"SecretString\":" + secretsmanager_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + secretsmanager_json_arr(e6))
+    if v.AddReplicaRegions.is_some():
+        auto u7 = v.AddReplicaRegions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"AddReplicaRegions\":" + secretsmanager_json_arr(e8))
+    if v.ForceOverwriteReplicaSecret.is_some():
+        auto u9 = v.ForceOverwriteReplicaSecret.unwrap()
+        parts.append("\"ForceOverwriteReplicaSecret\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.Type.is_some():
+        auto u10 = v.Type.unwrap()
+        parts.append("\"Type\":" + secretsmanager_json_str(u10))
+    return secretsmanager_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(secretsmanager_json_str(x2))
+        parts.append("\"Values\":" + secretsmanager_json_arr(e2))
+    return secretsmanager_json_obj(parts)
+
+# Serialize ListSecretsRequest to a compact JSON object (declaration order).
+def list_secrets_request_to_json(ListSecretsRequest v) -> str:
+    list[str] parts = []
+    if v.IncludePlannedDeletion.is_some():
+        auto u0 = v.IncludePlannedDeletion.unwrap()
+        parts.append("\"IncludePlannedDeletion\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + secretsmanager_json_str(u2))
+    if v.Filters.is_some():
+        auto u3 = v.Filters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(filter_to_json(x4))
+        parts.append("\"Filters\":" + secretsmanager_json_arr(e4))
+    if v.SortOrder.is_some():
+        auto u5 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u5.to_json())
+    if v.SortBy.is_some():
+        auto u6 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u6.to_json())
+    return secretsmanager_json_obj(parts)
+
+# Serialize PutSecretValueRequest to a compact JSON object (declaration order).
+def put_secret_value_request_to_json(PutSecretValueRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretId\":" + secretsmanager_json_str(v.SecretId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + secretsmanager_json_str(u0))
+    if v.SecretBinary.is_some():
+        auto u1 = v.SecretBinary.unwrap()
+        parts.append("\"SecretBinary\":" + secretsmanager_json_str(base64.encode(u1)))
+    if v.SecretString.is_some():
+        auto u2 = v.SecretString.unwrap()
+        parts.append("\"SecretString\":" + secretsmanager_json_str(u2))
+    if v.VersionStages.is_some():
+        auto u3 = v.VersionStages.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(secretsmanager_json_str(x4))
+        parts.append("\"VersionStages\":" + secretsmanager_json_arr(e4))
+    if v.RotationToken.is_some():
+        auto u5 = v.RotationToken.unwrap()
+        parts.append("\"RotationToken\":" + secretsmanager_json_str(u5))
+    return secretsmanager_json_obj(parts)
+
+# Serialize RemoveRegionsFromReplicationRequest to a compact JSON object (declaration order).
+def remove_regions_from_replication_request_to_json(RemoveRegionsFromReplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretId\":" + secretsmanager_json_str(v.SecretId))
+    list[str] e0 = []
+    for x0 in v.RemoveReplicaRegions:
+        e0.append(secretsmanager_json_str(x0))
+    parts.append("\"RemoveReplicaRegions\":" + secretsmanager_json_arr(e0))
+    return secretsmanager_json_obj(parts)
+
+# Serialize ReplicateSecretToRegionsRequest to a compact JSON object (declaration order).
+def replicate_secret_to_regions_request_to_json(ReplicateSecretToRegionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretId\":" + secretsmanager_json_str(v.SecretId))
+    list[str] e0 = []
+    for x0 in v.AddReplicaRegions:
+        e0.append(x0.to_json())
+    parts.append("\"AddReplicaRegions\":" + secretsmanager_json_arr(e0))
+    if v.ForceOverwriteReplicaSecret.is_some():
+        auto u1 = v.ForceOverwriteReplicaSecret.unwrap()
+        parts.append("\"ForceOverwriteReplicaSecret\":" + json.dumps(JsonValue.Bool(u1)))
+    return secretsmanager_json_obj(parts)
+
+# Serialize RotateSecretRequest to a compact JSON object (declaration order).
+def rotate_secret_request_to_json(RotateSecretRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretId\":" + secretsmanager_json_str(v.SecretId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + secretsmanager_json_str(u0))
+    if v.RotationLambdaARN.is_some():
+        auto u1 = v.RotationLambdaARN.unwrap()
+        parts.append("\"RotationLambdaARN\":" + secretsmanager_json_str(u1))
+    if v.RotationRules.is_some():
+        auto u2 = v.RotationRules.unwrap()
+        parts.append("\"RotationRules\":" + u2.to_json())
+    if v.ExternalSecretRotationMetadata.is_some():
+        auto u3 = v.ExternalSecretRotationMetadata.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ExternalSecretRotationMetadata\":" + secretsmanager_json_arr(e4))
+    if v.ExternalSecretRotationRoleArn.is_some():
+        auto u5 = v.ExternalSecretRotationRoleArn.unwrap()
+        parts.append("\"ExternalSecretRotationRoleArn\":" + secretsmanager_json_str(u5))
+    if v.RotateImmediately.is_some():
+        auto u6 = v.RotateImmediately.unwrap()
+        parts.append("\"RotateImmediately\":" + json.dumps(JsonValue.Bool(u6)))
+    return secretsmanager_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretId\":" + secretsmanager_json_str(v.SecretId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + secretsmanager_json_arr(e0))
+    return secretsmanager_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretId\":" + secretsmanager_json_str(v.SecretId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(secretsmanager_json_str(x0))
+    parts.append("\"TagKeys\":" + secretsmanager_json_arr(e0))
+    return secretsmanager_json_obj(parts)
 
 # A bound Secrets_Manager client: credentials + region, threaded into every operation.
 struct Secrets_ManagerClient:
     core.Credentials creds
     str region
 
+    # BatchGetSecretValue
+    # errors: DecryptionFailure, InternalServiceError, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def batch_get_secret_value(self, BatchGetSecretValueRequest input) -> str:
+        auto body = batch_get_secret_value_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "BatchGetSecretValue", body)
+
     # CancelRotateSecret
     # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def cancel_rotate_secret(self, CancelRotateSecretRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "CancelRotateSecret", body)
+
+    # CreateSecret
+    # errors: DecryptionFailure, EncryptionFailure, InternalServiceError, InvalidParameterException, InvalidRequestException, LimitExceededException, MalformedPolicyDocumentException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException
+    def create_secret(self, CreateSecretRequest input) -> str:
+        auto body = create_secret_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "CreateSecret", body)
 
     # DeleteResourcePolicy
     # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
@@ -637,11 +884,35 @@ struct Secrets_ManagerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ListSecretVersionIds", body)
 
+    # ListSecrets
+    # errors: InternalServiceError, InvalidNextTokenException, InvalidParameterException, InvalidRequestException
+    def list_secrets(self, ListSecretsRequest input) -> str:
+        auto body = list_secrets_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ListSecrets", body)
+
     # PutResourcePolicy
     # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, MalformedPolicyDocumentException, PublicPolicyException, ResourceNotFoundException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+
+    # PutSecretValue
+    # errors: DecryptionFailure, EncryptionFailure, InternalServiceError, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceExistsException, ResourceNotFoundException
+    def put_secret_value(self, PutSecretValueRequest input) -> str:
+        auto body = put_secret_value_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "PutSecretValue", body)
+
+    # RemoveRegionsFromReplication
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def remove_regions_from_replication(self, RemoveRegionsFromReplicationRequest input) -> str:
+        auto body = remove_regions_from_replication_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "RemoveRegionsFromReplication", body)
+
+    # ReplicateSecretToRegions
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def replicate_secret_to_regions(self, ReplicateSecretToRegionsRequest input) -> str:
+        auto body = replicate_secret_to_regions_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ReplicateSecretToRegions", body)
 
     # RestoreSecret
     # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
@@ -649,11 +920,29 @@ struct Secrets_ManagerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "RestoreSecret", body)
 
+    # RotateSecret
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def rotate_secret(self, RotateSecretRequest input) -> str:
+        auto body = rotate_secret_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "RotateSecret", body)
+
     # StopReplicationToReplica
     # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def stop_replication_to_replica(self, StopReplicationToReplicaRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "StopReplicationToReplica", body)
+
+    # TagResource
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateSecret
     # errors: DecryptionFailure, EncryptionFailure, InternalServiceError, InvalidParameterException, InvalidRequestException, LimitExceededException, MalformedPolicyDocumentException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException
@@ -672,6 +961,20 @@ struct Secrets_ManagerClient:
     def validate_resource_policy(self, ValidateResourcePolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ValidateResourcePolicy", body)
+
+    # Paginator for ListSecrets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SecretList).
+    def paginate_list_secrets(self, ListSecretsRequest input):
+        auto host = endpoints.regional_host(secretsmanager_protocol().service, self.region)
+        while True:
+            auto body = list_secrets_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ListSecrets", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a Secrets_ManagerClient bound to credentials + region.
 def secretsmanager_client(core.Credentials creds, str region) -> Secrets_ManagerClient:

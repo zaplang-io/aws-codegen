@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 4 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (27 @derive(Json)), 14 enums, 9 error variants.
-#   1 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Kinesis_Video_Archived_Media rest-json protocol: SigV4 service "kinesisvideo" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -241,8 +242,9 @@ struct GetImagesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Images: list[Image] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Images: list[Image] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImagesOutput:
     Optional[list[Image]] Images
     Optional[str] NextToken
@@ -296,8 +298,9 @@ struct ListFragmentsInput:
     Optional[str] NextToken
     Optional[FragmentSelector] FragmentSelector
 
-# no @derive(Json): member(s) Fragments: list[Fragment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fragments: list[Fragment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFragmentsOutput:
     Optional[list[Fragment]] Fragments
     Optional[str] NextToken
@@ -367,16 +370,6 @@ def kinesisvideo_error_from_code(str code) -> Kinesis_Video_Archived_MediaError:
     return Kinesis_Video_Archived_MediaError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetImages (document member `FormatConfig: dict[str, str]` is not serializable by derive)
-#   GetMediaForFragmentList (document member `Fragments: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   GetImages (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -454,6 +447,65 @@ struct Kinesis_Video_Archived_MediaClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
 
+    # GetImages  POST /getImages
+    # errors: ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, NotAuthorizedException, ResourceNotFoundException
+    def get_images(self, GetImagesInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getImages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StreamName.is_some():
+            auto u0 = input.StreamName.unwrap()
+            parts.append("\"StreamName\":" + kinesisvideo_json_str(u0))
+        if input.StreamARN.is_some():
+            auto u1 = input.StreamARN.unwrap()
+            parts.append("\"StreamARN\":" + kinesisvideo_json_str(u1))
+        parts.append("\"ImageSelectorType\":" + input.ImageSelectorType.to_json())
+        parts.append("\"StartTimestamp\":" + str(datetime.to_timestamp(input.StartTimestamp)))
+        parts.append("\"EndTimestamp\":" + str(datetime.to_timestamp(input.EndTimestamp)))
+        if input.SamplingInterval.is_some():
+            auto u2 = input.SamplingInterval.unwrap()
+            parts.append("\"SamplingInterval\":" + str(u2))
+        parts.append("\"Format\":" + input.Format.to_json())
+        if input.FormatConfig.is_some():
+            auto u3 = input.FormatConfig.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(kinesisvideo_json_str(k4) + ":" + kinesisvideo_json_str(u3[k4]))
+            parts.append("\"FormatConfig\":" + kinesisvideo_json_obj(m4))
+        if input.WidthPixels.is_some():
+            auto u5 = input.WidthPixels.unwrap()
+            parts.append("\"WidthPixels\":" + str(u5))
+        if input.HeightPixels.is_some():
+            auto u6 = input.HeightPixels.unwrap()
+            parts.append("\"HeightPixels\":" + str(u6))
+        if input.MaxResults.is_some():
+            auto u7 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u7))
+        if input.NextToken.is_some():
+            auto u8 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + kinesisvideo_json_str(u8))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # GetMediaForFragmentList  POST /getMediaForFragmentList
+    # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
+    def get_media_for_fragment_list(self, GetMediaForFragmentListInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getMediaForFragmentList", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StreamName.is_some():
+            auto u0 = input.StreamName.unwrap()
+            parts.append("\"StreamName\":" + kinesisvideo_json_str(u0))
+        if input.StreamARN.is_some():
+            auto u1 = input.StreamARN.unwrap()
+            parts.append("\"StreamARN\":" + kinesisvideo_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.Fragments:
+            e2.append(kinesisvideo_json_str(x2))
+        parts.append("\"Fragments\":" + kinesisvideo_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
     # ListFragments  POST /listFragments
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
     def list_fragments(self, ListFragmentsInput input) -> str:
@@ -462,6 +514,19 @@ struct Kinesis_Video_Archived_MediaClient:
         auto doc = ListFragmentsDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, MaxResults=input.MaxResults, NextToken=input.NextToken, FragmentSelector=input.FragmentSelector)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # Paginator for GetImages — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Images).
+    def paginate_get_images(self, GetImagesInput input):
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        while True:
+            auto raw = self.get_images(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListFragments — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Fragments).

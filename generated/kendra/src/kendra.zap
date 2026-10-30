@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 66 operations — 37 with a generated method,
-#   29 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 66 operations — 66 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   282 structs (139 @derive(Json)), 58 enums, 12 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -27,6 +27,8 @@
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
 import aws_core.awsjson
+import base64
+import datetime
 
 # The kendra awsJson protocol: version 1.1, API id "AWSKendraFrontendService".
 def kendra_protocol() -> awsjson.AwsJson:
@@ -596,20 +598,23 @@ struct AccessDeniedException:
 struct AclConfiguration:
     str AllowedGroupsColumnName
 
-# no @derive(Json): member(s) Value: AdditionalResultAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: AdditionalResultAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalResultAttribute:
     str Key
     str ValueType
     AdditionalResultAttributeValue Value
 
-# no @derive(Json): member(s) TextWithHighlightsValue: TextWithHighlights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextWithHighlightsValue: TextWithHighlights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalResultAttributeValue:
     Optional[TextWithHighlights] TextWithHighlightsValue
 
-# no @derive(Json): member(s) EntityFilter: list[AlfrescoEntity], DocumentLibraryFieldMappings: list[DataSourceToIndexFieldMapping], BlogFieldMappings: list[DataSourceToIndexFieldMapping], WikiFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityFilter: list[AlfrescoEntity], DocumentLibraryFieldMappings: list[DataSourceToIndexFieldMapping], BlogFieldMappings: list[DataSourceToIndexFieldMapping], WikiFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlfrescoConfiguration:
     str SiteUrl
     str SiteId
@@ -625,32 +630,37 @@ struct AlfrescoConfiguration:
     Optional[list[str]] ExclusionPatterns
     Optional[DataSourceVpcConfiguration] VpcConfiguration
 
-# no @derive(Json): member(s) EntityList: list[EntityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityList: list[EntityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateEntitiesToExperienceRequest:
     str Id
     str IndexId
     list[EntityConfiguration] EntityList
 
-# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateEntitiesToExperienceResponse:
     Optional[list[FailedEntity]] FailedEntityList
 
-# no @derive(Json): member(s) Personas: list[EntityPersonaConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Personas: list[EntityPersonaConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatePersonasToEntitiesRequest:
     str Id
     str IndexId
     list[EntityPersonaConfiguration] Personas
 
-# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatePersonasToEntitiesResponse:
     Optional[list[FailedEntity]] FailedEntityList
 
-# no @derive(Json): member(s) AndAllFilters: list[AttributeFilter], OrAllFilters: list[AttributeFilter], NotFilter: AttributeFilter, EqualsTo: DocumentAttribute, ContainsAll: DocumentAttribute, ContainsAny: DocumentAttribute, GreaterThan: DocumentAttribute, GreaterThanOrEquals: DocumentAttribute, LessThan: DocumentAttribute, LessThanOrEquals: DocumentAttribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AndAllFilters: list[AttributeFilter], OrAllFilters: list[AttributeFilter], NotFilter: AttributeFilter, EqualsTo: DocumentAttribute, ContainsAll: DocumentAttribute, ContainsAny: DocumentAttribute, GreaterThan: DocumentAttribute, GreaterThanOrEquals: DocumentAttribute, LessThan: DocumentAttribute, LessThanOrEquals: DocumentAttribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeFilter:
     Optional[list[AttributeFilter]] AndAllFilters
     Optional[list[AttributeFilter]] OrAllFilters
@@ -663,28 +673,32 @@ struct AttributeFilter:
     Optional[DocumentAttribute] LessThan
     Optional[DocumentAttribute] LessThanOrEquals
 
-# no @derive(Json): member(s) SuggestableConfigList: list[SuggestableConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuggestableConfigList: list[SuggestableConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeSuggestionsDescribeConfig:
     Optional[list[SuggestableConfig]] SuggestableConfigList
     Optional[AttributeSuggestionsMode] AttributeSuggestionsMode
 
-# no @derive(Json): member(s) SuggestionAttributes: list[str], AdditionalResponseAttributes: list[str], AttributeFilter: AttributeFilter, UserContext: UserContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuggestionAttributes: list[str], AdditionalResponseAttributes: list[str], AttributeFilter: AttributeFilter, UserContext: UserContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeSuggestionsGetConfig:
     Optional[list[str]] SuggestionAttributes
     Optional[list[str]] AdditionalResponseAttributes
     Optional[AttributeFilter] AttributeFilter
     Optional[UserContext] UserContext
 
-# no @derive(Json): member(s) SuggestableConfigList: list[SuggestableConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuggestableConfigList: list[SuggestableConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeSuggestionsUpdateConfig:
     Optional[list[SuggestableConfig]] SuggestableConfigList
     Optional[AttributeSuggestionsMode] AttributeSuggestionsMode
 
-# no @derive(Json): member(s) BasicAuthentication: list[BasicAuthenticationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BasicAuthentication: list[BasicAuthenticationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfiguration:
     Optional[list[BasicAuthenticationConfiguration]] BasicAuthentication
 
@@ -694,15 +708,17 @@ struct BasicAuthenticationConfiguration:
     int64 Port
     str Credentials
 
-# no @derive(Json): member(s) DocumentIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDocumentRequest:
     str IndexId
     list[str] DocumentIdList
     Optional[DataSourceSyncJobMetricTarget] DataSourceSyncJobMetricTarget
 
-# no @derive(Json): member(s) FailedDocuments: list[BatchDeleteDocumentResponseFailedDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedDocuments: list[BatchDeleteDocumentResponseFailedDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDocumentResponse:
     Optional[list[BatchDeleteDocumentResponseFailedDocument]] FailedDocuments
 
@@ -719,25 +735,29 @@ struct BatchDeleteFeaturedResultsSetError:
     ErrorCode ErrorCode
     str ErrorMessage
 
-# no @derive(Json): member(s) FeaturedResultsSetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeaturedResultsSetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteFeaturedResultsSetRequest:
     str IndexId
     list[str] FeaturedResultsSetIds
 
-# no @derive(Json): member(s) Errors: list[BatchDeleteFeaturedResultsSetError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchDeleteFeaturedResultsSetError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteFeaturedResultsSetResponse:
     list[BatchDeleteFeaturedResultsSetError] Errors
 
-# no @derive(Json): member(s) DocumentInfoList: list[DocumentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentInfoList: list[DocumentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDocumentStatusRequest:
     str IndexId
     list[DocumentInfo] DocumentInfoList
 
-# no @derive(Json): member(s) Errors: list[BatchGetDocumentStatusResponseError], DocumentStatusList: list[Status] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchGetDocumentStatusResponseError], DocumentStatusList: list[Status] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDocumentStatusResponse:
     Optional[list[BatchGetDocumentStatusResponseError]] Errors
     Optional[list[Status]] DocumentStatusList
@@ -749,16 +769,18 @@ struct BatchGetDocumentStatusResponseError:
     Optional[ErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Documents: list[Document], CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Documents: list[Document], CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutDocumentRequest:
     str IndexId
     Optional[str] RoleArn
     list[Document] Documents
     Optional[CustomDocumentEnrichmentConfiguration] CustomDocumentEnrichmentConfiguration
 
-# no @derive(Json): member(s) FailedDocuments: list[BatchPutDocumentResponseFailedDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedDocuments: list[BatchPutDocumentResponseFailedDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutDocumentResponse:
     Optional[list[BatchPutDocumentResponseFailedDocument]] FailedDocuments
 
@@ -769,8 +791,9 @@ struct BatchPutDocumentResponseFailedDocument:
     Optional[ErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) FileFieldMappings: list[DataSourceToIndexFieldMapping], TaskFieldMappings: list[DataSourceToIndexFieldMapping], CommentFieldMappings: list[DataSourceToIndexFieldMapping], WebLinkFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileFieldMappings: list[DataSourceToIndexFieldMapping], TaskFieldMappings: list[DataSourceToIndexFieldMapping], CommentFieldMappings: list[DataSourceToIndexFieldMapping], WebLinkFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BoxConfiguration:
     str EnterpriseId
     str SecretArn
@@ -800,8 +823,9 @@ struct ClickFeedback:
     str ResultId
     DateTime ClickTime
 
-# no @derive(Json): member(s) SortingConfigurations: list[SortingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SortingConfigurations: list[SortingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollapseConfiguration:
     str DocumentAttributeKey
     Optional[list[SortingConfiguration]] SortingConfigurations
@@ -809,14 +833,16 @@ struct CollapseConfiguration:
     Optional[bool] Expand
     Optional[ExpandConfiguration] ExpandConfiguration
 
-# no @derive(Json): member(s) DocumentAttribute: DocumentAttribute, ExpandedResults: list[ExpandedResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentAttribute: DocumentAttribute, ExpandedResults: list[ExpandedResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollapsedResultDetail:
     DocumentAttribute DocumentAttribute
     Optional[list[ExpandedResultItem]] ExpandedResults
 
-# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping], ChangeDetectingColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping], ChangeDetectingColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnConfiguration:
     str DocumentIdColumnName
     str DocumentDataColumnName
@@ -834,8 +860,9 @@ struct ConflictingItem:
     Optional[str] SetName
     Optional[str] SetId
 
-# no @derive(Json): member(s) AttachmentFieldMappings: list[ConfluenceAttachmentToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachmentFieldMappings: list[ConfluenceAttachmentToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfluenceAttachmentConfiguration:
     Optional[bool] CrawlAttachments
     Optional[list[ConfluenceAttachmentToIndexFieldMapping]] AttachmentFieldMappings
@@ -846,8 +873,9 @@ struct ConfluenceAttachmentToIndexFieldMapping:
     Optional[str] DateFieldFormat
     Optional[str] IndexFieldName
 
-# no @derive(Json): member(s) BlogFieldMappings: list[ConfluenceBlogToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlogFieldMappings: list[ConfluenceBlogToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfluenceBlogConfiguration:
     Optional[list[ConfluenceBlogToIndexFieldMapping]] BlogFieldMappings
 
@@ -857,8 +885,9 @@ struct ConfluenceBlogToIndexFieldMapping:
     Optional[str] DateFieldFormat
     Optional[str] IndexFieldName
 
-# no @derive(Json): member(s) SpaceConfiguration: ConfluenceSpaceConfiguration, PageConfiguration: ConfluencePageConfiguration, BlogConfiguration: ConfluenceBlogConfiguration, AttachmentConfiguration: ConfluenceAttachmentConfiguration, VpcConfiguration: DataSourceVpcConfiguration, InclusionPatterns: list[str], ExclusionPatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpaceConfiguration: ConfluenceSpaceConfiguration, PageConfiguration: ConfluencePageConfiguration, BlogConfiguration: ConfluenceBlogConfiguration, AttachmentConfiguration: ConfluenceAttachmentConfiguration, VpcConfiguration: DataSourceVpcConfiguration, InclusionPatterns: list[str], ExclusionPatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfluenceConfiguration:
     str ServerUrl
     str SecretArn
@@ -873,8 +902,9 @@ struct ConfluenceConfiguration:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[ConfluenceAuthenticationType] AuthenticationType
 
-# no @derive(Json): member(s) PageFieldMappings: list[ConfluencePageToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PageFieldMappings: list[ConfluencePageToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfluencePageConfiguration:
     Optional[list[ConfluencePageToIndexFieldMapping]] PageFieldMappings
 
@@ -884,8 +914,9 @@ struct ConfluencePageToIndexFieldMapping:
     Optional[str] DateFieldFormat
     Optional[str] IndexFieldName
 
-# no @derive(Json): member(s) IncludeSpaces: list[str], ExcludeSpaces: list[str], SpaceFieldMappings: list[ConfluenceSpaceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeSpaces: list[str], ExcludeSpaces: list[str], SpaceFieldMappings: list[ConfluenceSpaceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfluenceSpaceConfiguration:
     Optional[bool] CrawlPersonalSpaces
     Optional[bool] CrawlArchivedSpaces
@@ -907,8 +938,9 @@ struct ConnectionConfiguration:
     str TableName
     str SecretArn
 
-# no @derive(Json): member(s) DataSourceIds: list[str], FaqIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSourceIds: list[str], FaqIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentSourceConfiguration:
     Optional[list[str]] DataSourceIds
     Optional[list[str]] FaqIds
@@ -921,8 +953,9 @@ struct Correction:
     Optional[str] Term
     Optional[str] CorrectedTerm
 
-# no @derive(Json): member(s) AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccessControlConfigurationRequest:
     str IndexId
     str Name
@@ -935,8 +968,9 @@ struct CreateAccessControlConfigurationRequest:
 struct CreateAccessControlConfigurationResponse:
     str Id
 
-# no @derive(Json): member(s) Configuration: DataSourceConfiguration, VpcConfiguration: DataSourceVpcConfiguration, Tags: list[Tag], CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: DataSourceConfiguration, VpcConfiguration: DataSourceVpcConfiguration, Tags: list[Tag], CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataSourceRequest:
     str Name
     str IndexId
@@ -955,8 +989,9 @@ struct CreateDataSourceRequest:
 struct CreateDataSourceResponse:
     str Id
 
-# no @derive(Json): member(s) Configuration: ExperienceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ExperienceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExperienceRequest:
     str Name
     str IndexId
@@ -969,8 +1004,9 @@ struct CreateExperienceRequest:
 struct CreateExperienceResponse:
     str Id
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFaqRequest:
     str IndexId
     str Name
@@ -986,8 +1022,9 @@ struct CreateFaqRequest:
 struct CreateFaqResponse:
     Optional[str] Id
 
-# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocuments: list[FeaturedDocument], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocuments: list[FeaturedDocument], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFeaturedResultsSetRequest:
     str IndexId
     str FeaturedResultsSetName
@@ -998,13 +1035,15 @@ struct CreateFeaturedResultsSetRequest:
     Optional[list[FeaturedDocument]] FeaturedDocuments
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) FeaturedResultsSet: FeaturedResultsSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeaturedResultsSet: FeaturedResultsSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFeaturedResultsSetResponse:
     Optional[FeaturedResultsSet] FeaturedResultsSet
 
-# no @derive(Json): member(s) Tags: list[Tag], UserTokenConfigurations: list[UserTokenConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], UserTokenConfigurations: list[UserTokenConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIndexRequest:
     str Name
     Optional[IndexEdition] Edition
@@ -1021,8 +1060,9 @@ struct CreateIndexRequest:
 struct CreateIndexResponse:
     Optional[str] Id
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQuerySuggestionsBlockListRequest:
     str IndexId
     str Name
@@ -1036,8 +1076,9 @@ struct CreateQuerySuggestionsBlockListRequest:
 struct CreateQuerySuggestionsBlockListResponse:
     Optional[str] Id
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateThesaurusRequest:
     str IndexId
     str Name
@@ -1051,16 +1092,18 @@ struct CreateThesaurusRequest:
 struct CreateThesaurusResponse:
     Optional[str] Id
 
-# no @derive(Json): member(s) InlineConfigurations: list[InlineCustomDocumentEnrichmentConfiguration], PreExtractionHookConfiguration: HookConfiguration, PostExtractionHookConfiguration: HookConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InlineConfigurations: list[InlineCustomDocumentEnrichmentConfiguration], PreExtractionHookConfiguration: HookConfiguration, PostExtractionHookConfiguration: HookConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDocumentEnrichmentConfiguration:
     Optional[list[InlineCustomDocumentEnrichmentConfiguration]] InlineConfigurations
     Optional[HookConfiguration] PreExtractionHookConfiguration
     Optional[HookConfiguration] PostExtractionHookConfiguration
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) S3Configuration: S3DataSourceConfiguration, SharePointConfiguration: SharePointConfiguration, DatabaseConfiguration: DatabaseConfiguration, SalesforceConfiguration: SalesforceConfiguration, OneDriveConfiguration: OneDriveConfiguration, ServiceNowConfiguration: ServiceNowConfiguration, ConfluenceConfiguration: ConfluenceConfiguration, GoogleDriveConfiguration: GoogleDriveConfiguration, WebCrawlerConfiguration: WebCrawlerConfiguration, WorkDocsConfiguration: WorkDocsConfiguration, FsxConfiguration: FsxConfiguration, SlackConfiguration: SlackConfiguration, BoxConfiguration: BoxConfiguration, QuipConfiguration: QuipConfiguration, JiraConfiguration: JiraConfiguration, GitHubConfiguration: GitHubConfiguration, AlfrescoConfiguration: AlfrescoConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Configuration: S3DataSourceConfiguration, SharePointConfiguration: SharePointConfiguration, DatabaseConfiguration: DatabaseConfiguration, SalesforceConfiguration: SalesforceConfiguration, OneDriveConfiguration: OneDriveConfiguration, ServiceNowConfiguration: ServiceNowConfiguration, ConfluenceConfiguration: ConfluenceConfiguration, GoogleDriveConfiguration: GoogleDriveConfiguration, WebCrawlerConfiguration: WebCrawlerConfiguration, WorkDocsConfiguration: WorkDocsConfiguration, FsxConfiguration: FsxConfiguration, SlackConfiguration: SlackConfiguration, BoxConfiguration: BoxConfiguration, QuipConfiguration: QuipConfiguration, JiraConfiguration: JiraConfiguration, GitHubConfiguration: GitHubConfiguration, AlfrescoConfiguration: AlfrescoConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceConfiguration:
     Optional[S3DataSourceConfiguration] S3Configuration
     Optional[SharePointConfiguration] SharePointConfiguration
@@ -1126,14 +1169,16 @@ struct DataSourceToIndexFieldMapping:
     Optional[str] DateFieldFormat
     str IndexFieldName
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceVpcConfiguration:
     list[str] SubnetIds
     list[str] SecurityGroupIds
 
-# no @derive(Json): member(s) VpcConfiguration: DataSourceVpcConfiguration, ColumnConfiguration: ColumnConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: DataSourceVpcConfiguration, ColumnConfiguration: ColumnConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseConfiguration:
     DatabaseEngineType DatabaseEngineType
     ConnectionConfiguration ConnectionConfiguration
@@ -1198,8 +1243,9 @@ struct DescribeAccessControlConfigurationRequest:
     str IndexId
     str Id
 
-# no @derive(Json): member(s) AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccessControlConfigurationResponse:
     str Name
     Optional[str] Description
@@ -1212,8 +1258,9 @@ struct DescribeDataSourceRequest:
     str Id
     str IndexId
 
-# no @derive(Json): member(s) Configuration: DataSourceConfiguration, VpcConfiguration: DataSourceVpcConfiguration, CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: DataSourceConfiguration, VpcConfiguration: DataSourceVpcConfiguration, CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataSourceResponse:
     Optional[str] Id
     Optional[str] IndexId
@@ -1236,8 +1283,9 @@ struct DescribeExperienceRequest:
     str Id
     str IndexId
 
-# no @derive(Json): member(s) Endpoints: list[ExperienceEndpoint], Configuration: ExperienceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[ExperienceEndpoint], Configuration: ExperienceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExperienceResponse:
     Optional[str] Id
     Optional[str] IndexId
@@ -1276,8 +1324,9 @@ struct DescribeFeaturedResultsSetRequest:
     str IndexId
     str FeaturedResultsSetId
 
-# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocumentsWithMetadata: list[FeaturedDocumentWithMetadata], FeaturedDocumentsMissing: list[FeaturedDocumentMissing] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocumentsWithMetadata: list[FeaturedDocumentWithMetadata], FeaturedDocumentsMissing: list[FeaturedDocumentMissing] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFeaturedResultsSetResponse:
     Optional[str] FeaturedResultsSetId
     Optional[str] FeaturedResultsSetName
@@ -1293,8 +1342,9 @@ struct DescribeFeaturedResultsSetResponse:
 struct DescribeIndexRequest:
     str Id
 
-# no @derive(Json): member(s) DocumentMetadataConfigurations: list[DocumentMetadataConfiguration], UserTokenConfigurations: list[UserTokenConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentMetadataConfigurations: list[DocumentMetadataConfiguration], UserTokenConfigurations: list[UserTokenConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIndexResponse:
     Optional[str] Name
     Optional[str] Id
@@ -1319,8 +1369,9 @@ struct DescribePrincipalMappingRequest:
     Optional[str] DataSourceId
     str GroupId
 
-# no @derive(Json): member(s) GroupOrderingIdSummaries: list[GroupOrderingIdSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupOrderingIdSummaries: list[GroupOrderingIdSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePrincipalMappingResponse:
     Optional[str] IndexId
     Optional[str] DataSourceId
@@ -1351,8 +1402,9 @@ struct DescribeQuerySuggestionsBlockListResponse:
 struct DescribeQuerySuggestionsConfigRequest:
     str IndexId
 
-# no @derive(Json): member(s) AttributeSuggestionsConfig: AttributeSuggestionsDescribeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeSuggestionsConfig: AttributeSuggestionsDescribeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQuerySuggestionsConfigResponse:
     Optional[Mode] Mode
     Optional[QuerySuggestionsStatus] Status
@@ -1386,32 +1438,37 @@ struct DescribeThesaurusResponse:
     Optional[int64] TermCount
     Optional[int64] SynonymRuleCount
 
-# no @derive(Json): member(s) EntityList: list[EntityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityList: list[EntityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateEntitiesFromExperienceRequest:
     str Id
     str IndexId
     list[EntityConfiguration] EntityList
 
-# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateEntitiesFromExperienceResponse:
     Optional[list[FailedEntity]] FailedEntityList
 
-# no @derive(Json): member(s) EntityIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociatePersonasFromEntitiesRequest:
     str Id
     str IndexId
     list[str] EntityIds
 
-# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEntityList: list[FailedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociatePersonasFromEntitiesResponse:
     Optional[list[FailedEntity]] FailedEntityList
 
-# no @derive(Json): member(s) Attributes: list[DocumentAttribute], AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[DocumentAttribute], AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Document:
     str Id
     Optional[str] Title
@@ -1423,57 +1480,65 @@ struct Document:
     Optional[ContentType] ContentType
     Optional[str] AccessControlConfigurationId
 
-# no @derive(Json): member(s) Value: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttribute:
     str Key
     DocumentAttributeValue Value
 
-# no @derive(Json): member(s) ConditionOnValue: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionOnValue: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeCondition:
     str ConditionDocumentAttributeKey
     ConditionOperator Operator
     Optional[DocumentAttributeValue] ConditionOnValue
 
-# no @derive(Json): member(s) TargetDocumentAttributeValue: DocumentAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetDocumentAttributeValue: DocumentAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeTarget:
     Optional[str] TargetDocumentAttributeKey
     Optional[bool] TargetDocumentAttributeValueDeletion
     Optional[DocumentAttributeValue] TargetDocumentAttributeValue
 
-# no @derive(Json): member(s) StringListValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringListValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeValue:
     Optional[str] StringValue
     Optional[list[str]] StringListValue
     Optional[int64] LongValue
     Optional[DateTime] DateValue
 
-# no @derive(Json): member(s) DocumentAttributeValue: DocumentAttributeValue, FacetResults: list[FacetResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentAttributeValue: DocumentAttributeValue, FacetResults: list[FacetResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentAttributeValueCountPair:
     Optional[DocumentAttributeValue] DocumentAttributeValue
     Optional[int64] Count
     Optional[list[FacetResult]] FacetResults
 
-# no @derive(Json): member(s) Attributes: list[DocumentAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[DocumentAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentInfo:
     str DocumentId
     Optional[list[DocumentAttribute]] Attributes
 
-# no @derive(Json): member(s) Relevance: Relevance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Relevance: Relevance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentMetadataConfiguration:
     str Name
     DocumentAttributeValueType Type
     Optional[Relevance] Relevance
     Optional[Search] Search
 
-# no @derive(Json): member(s) Relevance: Relevance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Relevance: Relevance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentRelevanceConfiguration:
     str Name
     Relevance Relevance
@@ -1505,8 +1570,9 @@ struct ExpandConfiguration:
     Optional[int64] MaxResultItemsToExpand
     Optional[int64] MaxExpandedResultsPerItem
 
-# no @derive(Json): member(s) DocumentTitle: TextWithHighlights, DocumentExcerpt: TextWithHighlights, DocumentAttributes: list[DocumentAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentTitle: TextWithHighlights, DocumentExcerpt: TextWithHighlights, DocumentAttributes: list[DocumentAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpandedResultItem:
     Optional[str] Id
     Optional[str] DocumentId
@@ -1515,8 +1581,9 @@ struct ExpandedResultItem:
     Optional[str] DocumentURI
     Optional[list[DocumentAttribute]] DocumentAttributes
 
-# no @derive(Json): member(s) ContentSourceConfiguration: ContentSourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentSourceConfiguration: ContentSourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperienceConfiguration:
     Optional[ContentSourceConfiguration] ContentSourceConfiguration
     Optional[UserIdentityConfiguration] UserIdentityConfiguration
@@ -1532,8 +1599,9 @@ struct ExperienceEntitiesSummary:
     Optional[EntityType] EntityType
     Optional[EntityDisplayData] DisplayData
 
-# no @derive(Json): member(s) Endpoints: list[ExperienceEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[ExperienceEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperiencesSummary:
     Optional[str] Name
     Optional[str] Id
@@ -1541,15 +1609,17 @@ struct ExperiencesSummary:
     Optional[ExperienceStatus] Status
     Optional[list[ExperienceEndpoint]] Endpoints
 
-# no @derive(Json): member(s) Facets: list[Facet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Facets: list[Facet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Facet:
     Optional[str] DocumentAttributeKey
     Optional[list[Facet]] Facets
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentAttributeValueCountPairs: list[DocumentAttributeValueCountPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentAttributeValueCountPairs: list[DocumentAttributeValueCountPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FacetResult:
     Optional[str] DocumentAttributeKey
     Optional[DocumentAttributeValueType] DocumentAttributeValueType
@@ -1588,14 +1658,16 @@ struct FeaturedDocumentWithMetadata:
     Optional[str] Title
     Optional[str] URI
 
-# no @derive(Json): member(s) ConflictingItems: list[ConflictingItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConflictingItems: list[ConflictingItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeaturedResultsConflictException:
     Optional[str] Message
     Optional[list[ConflictingItem]] ConflictingItems
 
-# no @derive(Json): member(s) AdditionalAttributes: list[AdditionalResultAttribute], DocumentTitle: TextWithHighlights, DocumentExcerpt: TextWithHighlights, DocumentAttributes: list[DocumentAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAttributes: list[AdditionalResultAttribute], DocumentTitle: TextWithHighlights, DocumentExcerpt: TextWithHighlights, DocumentAttributes: list[DocumentAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeaturedResultsItem:
     Optional[str] Id
     Optional[QueryResultType] Type
@@ -1607,8 +1679,9 @@ struct FeaturedResultsItem:
     Optional[list[DocumentAttribute]] DocumentAttributes
     Optional[str] FeedbackToken
 
-# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocuments: list[FeaturedDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocuments: list[FeaturedDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeaturedResultsSet:
     Optional[str] FeaturedResultsSetId
     Optional[str] FeaturedResultsSetName
@@ -1627,8 +1700,9 @@ struct FeaturedResultsSetSummary:
     Optional[int64] LastUpdatedTimestamp
     Optional[int64] CreationTimestamp
 
-# no @derive(Json): member(s) VpcConfiguration: DataSourceVpcConfiguration, InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: DataSourceVpcConfiguration, InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FsxConfiguration:
     str FileSystemId
     str FileSystemType
@@ -1638,8 +1712,9 @@ struct FsxConfiguration:
     Optional[list[str]] ExclusionPatterns
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
 
-# no @derive(Json): member(s) SuggestionTypes: list[SuggestionType], AttributeSuggestionsConfig: AttributeSuggestionsGetConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuggestionTypes: list[SuggestionType], AttributeSuggestionsConfig: AttributeSuggestionsGetConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQuerySuggestionsRequest:
     str IndexId
     str QueryText
@@ -1647,8 +1722,9 @@ struct GetQuerySuggestionsRequest:
     Optional[list[SuggestionType]] SuggestionTypes
     Optional[AttributeSuggestionsGetConfig] AttributeSuggestionsConfig
 
-# no @derive(Json): member(s) Suggestions: list[Suggestion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Suggestions: list[Suggestion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQuerySuggestionsResponse:
     Optional[str] QuerySuggestionsId
     Optional[list[Suggestion]] Suggestions
@@ -1661,16 +1737,18 @@ struct GetSnapshotsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SnapshotsDataHeader: list[str], SnapshotsData: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnapshotsDataHeader: list[str], SnapshotsData: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSnapshotsResponse:
     Optional[TimeRange] SnapShotTimeFilter
     Optional[list[str]] SnapshotsDataHeader
     Optional[list[list[str]]] SnapshotsData
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RepositoryFilter: list[str], InclusionFolderNamePatterns: list[str], InclusionFileTypePatterns: list[str], InclusionFileNamePatterns: list[str], ExclusionFolderNamePatterns: list[str], ExclusionFileTypePatterns: list[str], ExclusionFileNamePatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration, GitHubRepositoryConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubCommitConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubIssueDocumentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubIssueCommentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubIssueAttachmentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubPullRequestCommentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubPullRequestDocumentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubPullRequestDocumentAttachmentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RepositoryFilter: list[str], InclusionFolderNamePatterns: list[str], InclusionFileTypePatterns: list[str], InclusionFileNamePatterns: list[str], ExclusionFolderNamePatterns: list[str], ExclusionFileTypePatterns: list[str], ExclusionFileNamePatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration, GitHubRepositoryConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubCommitConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubIssueDocumentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubIssueCommentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubIssueAttachmentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubPullRequestCommentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubPullRequestDocumentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping], GitHubPullRequestDocumentAttachmentConfigurationFieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitHubConfiguration:
     Optional[SaaSConfiguration] SaaSConfiguration
     Optional[OnPremiseConfiguration] OnPremiseConfiguration
@@ -1705,8 +1783,9 @@ struct GitHubDocumentCrawlProperties:
     Optional[bool] CrawlPullRequestComment
     Optional[bool] CrawlPullRequestCommentAttachment
 
-# no @derive(Json): member(s) InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping], ExcludeMimeTypes: list[str], ExcludeUserAccounts: list[str], ExcludeSharedDrives: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping], ExcludeMimeTypes: list[str], ExcludeUserAccounts: list[str], ExcludeSharedDrives: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GoogleDriveConfiguration:
     str SecretArn
     Optional[list[str]] InclusionPatterns
@@ -1716,8 +1795,9 @@ struct GoogleDriveConfiguration:
     Optional[list[str]] ExcludeUserAccounts
     Optional[list[str]] ExcludeSharedDrives
 
-# no @derive(Json): member(s) MemberGroups: list[MemberGroup], MemberUsers: list[MemberUser] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberGroups: list[MemberGroup], MemberUsers: list[MemberUser] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupMembers:
     Optional[list[MemberGroup]] MemberGroups
     Optional[list[MemberUser]] MemberUsers
@@ -1736,8 +1816,9 @@ struct GroupSummary:
     Optional[str] GroupId
     Optional[int64] OrderingId
 
-# no @derive(Json): member(s) PrincipalList: list[Principal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrincipalList: list[Principal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HierarchicalPrincipal:
     list[Principal] PrincipalList
 
@@ -1748,8 +1829,9 @@ struct Highlight:
     Optional[bool] TopAnswer
     Optional[HighlightType] Type
 
-# no @derive(Json): member(s) InvocationCondition: DocumentAttributeCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvocationCondition: DocumentAttributeCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HookConfiguration:
     Optional[DocumentAttributeCondition] InvocationCondition
     str LambdaArn
@@ -1769,8 +1851,9 @@ struct IndexStatistics:
     FaqStatistics FaqStatistics
     TextDocumentStatistics TextDocumentStatistics
 
-# no @derive(Json): member(s) Condition: DocumentAttributeCondition, Target: DocumentAttributeTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Condition: DocumentAttributeCondition, Target: DocumentAttributeTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineCustomDocumentEnrichmentConfiguration:
     Optional[DocumentAttributeCondition] Condition
     Optional[DocumentAttributeTarget] Target
@@ -1784,8 +1867,9 @@ struct InternalServerException:
 struct InvalidRequestException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Project: list[str], IssueType: list[str], Status: list[str], IssueSubEntityFilter: list[IssueSubEntity], AttachmentFieldMappings: list[DataSourceToIndexFieldMapping], CommentFieldMappings: list[DataSourceToIndexFieldMapping], IssueFieldMappings: list[DataSourceToIndexFieldMapping], ProjectFieldMappings: list[DataSourceToIndexFieldMapping], WorkLogFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Project: list[str], IssueType: list[str], Status: list[str], IssueSubEntityFilter: list[IssueSubEntity], AttachmentFieldMappings: list[DataSourceToIndexFieldMapping], CommentFieldMappings: list[DataSourceToIndexFieldMapping], IssueFieldMappings: list[DataSourceToIndexFieldMapping], ProjectFieldMappings: list[DataSourceToIndexFieldMapping], WorkLogFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JiraConfiguration:
     str JiraAccountUrl
     str SecretArn
@@ -1824,8 +1908,9 @@ struct ListAccessControlConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AccessControlConfigurations: list[AccessControlConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlConfigurations: list[AccessControlConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessControlConfigurationsResponse:
     Optional[str] NextToken
     list[AccessControlConfigurationSummary] AccessControlConfigurations
@@ -1839,8 +1924,9 @@ struct ListDataSourceSyncJobsRequest:
     Optional[TimeRange] StartTimeFilter
     Optional[DataSourceSyncJobStatus] StatusFilter
 
-# no @derive(Json): member(s) History: list[DataSourceSyncJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) History: list[DataSourceSyncJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourceSyncJobsResponse:
     Optional[list[DataSourceSyncJob]] History
     Optional[str] NextToken
@@ -1851,8 +1937,9 @@ struct ListDataSourcesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SummaryItems: list[DataSourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryItems: list[DataSourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourcesResponse:
     Optional[list[DataSourceSummary]] SummaryItems
     Optional[str] NextToken
@@ -1864,8 +1951,9 @@ struct ListEntityPersonasRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SummaryItems: list[PersonasSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryItems: list[PersonasSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntityPersonasResponse:
     Optional[list[PersonasSummary]] SummaryItems
     Optional[str] NextToken
@@ -1876,8 +1964,9 @@ struct ListExperienceEntitiesRequest:
     str IndexId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SummaryItems: list[ExperienceEntitiesSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryItems: list[ExperienceEntitiesSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperienceEntitiesResponse:
     Optional[list[ExperienceEntitiesSummary]] SummaryItems
     Optional[str] NextToken
@@ -1888,8 +1977,9 @@ struct ListExperiencesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SummaryItems: list[ExperiencesSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryItems: list[ExperiencesSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperiencesResponse:
     Optional[list[ExperiencesSummary]] SummaryItems
     Optional[str] NextToken
@@ -1900,8 +1990,9 @@ struct ListFaqsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FaqSummaryItems: list[FaqSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaqSummaryItems: list[FaqSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFaqsResponse:
     Optional[str] NextToken
     Optional[list[FaqSummary]] FaqSummaryItems
@@ -1912,8 +2003,9 @@ struct ListFeaturedResultsSetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FeaturedResultsSetSummaryItems: list[FeaturedResultsSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeaturedResultsSetSummaryItems: list[FeaturedResultsSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFeaturedResultsSetsResponse:
     Optional[list[FeaturedResultsSetSummary]] FeaturedResultsSetSummaryItems
     Optional[str] NextToken
@@ -1926,8 +2018,9 @@ struct ListGroupsOlderThanOrderingIdRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) GroupsSummaries: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupsSummaries: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsOlderThanOrderingIdResponse:
     Optional[list[GroupSummary]] GroupsSummaries
     Optional[str] NextToken
@@ -1937,8 +2030,9 @@ struct ListIndicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) IndexConfigurationSummaryItems: list[IndexConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexConfigurationSummaryItems: list[IndexConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndicesResponse:
     Optional[list[IndexConfigurationSummary]] IndexConfigurationSummaryItems
     Optional[str] NextToken
@@ -1949,8 +2043,9 @@ struct ListQuerySuggestionsBlockListsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BlockListSummaryItems: list[QuerySuggestionsBlockListSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockListSummaryItems: list[QuerySuggestionsBlockListSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQuerySuggestionsBlockListsResponse:
     Optional[list[QuerySuggestionsBlockListSummary]] BlockListSummaryItems
     Optional[str] NextToken
@@ -1959,8 +2054,9 @@ struct ListQuerySuggestionsBlockListsResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1970,8 +2066,9 @@ struct ListThesauriRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ThesaurusSummaryItems: list[ThesaurusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThesaurusSummaryItems: list[ThesaurusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThesauriResponse:
     Optional[str] NextToken
     Optional[list[ThesaurusSummary]] ThesaurusSummaryItems
@@ -1991,8 +2088,9 @@ struct OnPremiseConfiguration:
     str OrganizationName
     S3Path SslCertificateS3Path
 
-# no @derive(Json): member(s) OneDriveUsers: OneDriveUsers, InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OneDriveUsers: OneDriveUsers, InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OneDriveConfiguration:
     str TenantDomain
     str SecretArn
@@ -2002,8 +2100,9 @@ struct OneDriveConfiguration:
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
     Optional[bool] DisableLocalGroups
 
-# no @derive(Json): member(s) OneDriveUserList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OneDriveUserList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OneDriveUsers:
     Optional[list[str]] OneDriveUserList
     Optional[S3Path] OneDriveUserS3Path
@@ -2028,8 +2127,9 @@ struct ProxyConfiguration:
     int64 Port
     Optional[str] Credentials
 
-# no @derive(Json): member(s) GroupMembers: GroupMembers not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupMembers: GroupMembers not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutPrincipalMappingRequest:
     str IndexId
     Optional[str] DataSourceId
@@ -2038,8 +2138,9 @@ struct PutPrincipalMappingRequest:
     Optional[int64] OrderingId
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) AttributeFilter: AttributeFilter, Facets: list[Facet], RequestedDocumentAttributes: list[str], DocumentRelevanceOverrideConfigurations: list[DocumentRelevanceConfiguration], SortingConfigurations: list[SortingConfiguration], UserContext: UserContext, CollapseConfiguration: CollapseConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: AttributeFilter, Facets: list[Facet], RequestedDocumentAttributes: list[str], DocumentRelevanceOverrideConfigurations: list[DocumentRelevanceConfiguration], SortingConfigurations: list[SortingConfiguration], UserContext: UserContext, CollapseConfiguration: CollapseConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryRequest:
     str IndexId
     Optional[str] QueryText
@@ -2057,8 +2158,9 @@ struct QueryRequest:
     Optional[SpellCorrectionConfiguration] SpellCorrectionConfiguration
     Optional[CollapseConfiguration] CollapseConfiguration
 
-# no @derive(Json): member(s) ResultItems: list[QueryResultItem], FacetResults: list[FacetResult], Warnings: list[Warning], SpellCorrectedQueries: list[SpellCorrectedQuery], FeaturedResultsItems: list[FeaturedResultsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[QueryResultItem], FacetResults: list[FacetResult], Warnings: list[Warning], SpellCorrectedQueries: list[SpellCorrectedQuery], FeaturedResultsItems: list[FeaturedResultsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryResult:
     Optional[str] QueryId
     Optional[list[QueryResultItem]] ResultItems
@@ -2068,8 +2170,9 @@ struct QueryResult:
     Optional[list[SpellCorrectedQuery]] SpellCorrectedQueries
     Optional[list[FeaturedResultsItem]] FeaturedResultsItems
 
-# no @derive(Json): member(s) AdditionalAttributes: list[AdditionalResultAttribute], DocumentTitle: TextWithHighlights, DocumentExcerpt: TextWithHighlights, DocumentAttributes: list[DocumentAttribute], TableExcerpt: TableExcerpt, CollapsedResultDetail: CollapsedResultDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAttributes: list[AdditionalResultAttribute], DocumentTitle: TextWithHighlights, DocumentExcerpt: TextWithHighlights, DocumentAttributes: list[DocumentAttribute], TableExcerpt: TableExcerpt, CollapsedResultDetail: CollapsedResultDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryResultItem:
     Optional[str] Id
     Optional[QueryResultType] Type
@@ -2094,8 +2197,9 @@ struct QuerySuggestionsBlockListSummary:
     Optional[DateTime] UpdatedAt
     Optional[int64] ItemCount
 
-# no @derive(Json): member(s) FolderIds: list[str], ThreadFieldMappings: list[DataSourceToIndexFieldMapping], MessageFieldMappings: list[DataSourceToIndexFieldMapping], AttachmentFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderIds: list[str], ThreadFieldMappings: list[DataSourceToIndexFieldMapping], MessageFieldMappings: list[DataSourceToIndexFieldMapping], AttachmentFieldMappings: list[DataSourceToIndexFieldMapping], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuipConfiguration:
     str Domain
     str SecretArn
@@ -2110,8 +2214,9 @@ struct QuipConfiguration:
     Optional[list[str]] ExclusionPatterns
     Optional[DataSourceVpcConfiguration] VpcConfiguration
 
-# no @derive(Json): member(s) ValueImportanceMap: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueImportanceMap: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Relevance:
     Optional[bool] Freshness
     Optional[int64] Importance
@@ -2140,8 +2245,9 @@ struct ResourceNotFoundException:
 struct ResourceUnavailableException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AttributeFilter: AttributeFilter, RequestedDocumentAttributes: list[str], DocumentRelevanceOverrideConfigurations: list[DocumentRelevanceConfiguration], UserContext: UserContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: AttributeFilter, RequestedDocumentAttributes: list[str], DocumentRelevanceOverrideConfigurations: list[DocumentRelevanceConfiguration], UserContext: UserContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieveRequest:
     str IndexId
     str QueryText
@@ -2152,14 +2258,16 @@ struct RetrieveRequest:
     Optional[int64] PageSize
     Optional[UserContext] UserContext
 
-# no @derive(Json): member(s) ResultItems: list[RetrieveResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[RetrieveResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieveResult:
     Optional[str] QueryId
     Optional[list[RetrieveResultItem]] ResultItems
 
-# no @derive(Json): member(s) DocumentAttributes: list[DocumentAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentAttributes: list[DocumentAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieveResultItem:
     Optional[str] Id
     Optional[str] DocumentId
@@ -2169,8 +2277,9 @@ struct RetrieveResultItem:
     Optional[list[DocumentAttribute]] DocumentAttributes
     Optional[ScoreAttributes] ScoreAttributes
 
-# no @derive(Json): member(s) InclusionPrefixes: list[str], InclusionPatterns: list[str], ExclusionPatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionPrefixes: list[str], InclusionPatterns: list[str], ExclusionPatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DataSourceConfiguration:
     str BucketName
     Optional[list[str]] InclusionPrefixes
@@ -2189,16 +2298,18 @@ struct SaaSConfiguration:
     str OrganizationName
     str HostUrl
 
-# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping], IncludeFilterTypes: list[SalesforceChatterFeedIncludeFilterType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping], IncludeFilterTypes: list[SalesforceChatterFeedIncludeFilterType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceChatterFeedConfiguration:
     str DocumentDataFieldName
     Optional[str] DocumentTitleFieldName
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
     Optional[list[SalesforceChatterFeedIncludeFilterType]] IncludeFilterTypes
 
-# no @derive(Json): member(s) StandardObjectConfigurations: list[SalesforceStandardObjectConfiguration], KnowledgeArticleConfiguration: SalesforceKnowledgeArticleConfiguration, ChatterFeedConfiguration: SalesforceChatterFeedConfiguration, StandardObjectAttachmentConfiguration: SalesforceStandardObjectAttachmentConfiguration, IncludeAttachmentFilePatterns: list[str], ExcludeAttachmentFilePatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardObjectConfigurations: list[SalesforceStandardObjectConfiguration], KnowledgeArticleConfiguration: SalesforceKnowledgeArticleConfiguration, ChatterFeedConfiguration: SalesforceChatterFeedConfiguration, StandardObjectAttachmentConfiguration: SalesforceStandardObjectAttachmentConfiguration, IncludeAttachmentFilePatterns: list[str], ExcludeAttachmentFilePatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceConfiguration:
     str ServerUrl
     str SecretArn
@@ -2210,36 +2321,41 @@ struct SalesforceConfiguration:
     Optional[list[str]] IncludeAttachmentFilePatterns
     Optional[list[str]] ExcludeAttachmentFilePatterns
 
-# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceCustomKnowledgeArticleTypeConfiguration:
     str Name
     str DocumentDataFieldName
     Optional[str] DocumentTitleFieldName
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
 
-# no @derive(Json): member(s) IncludedStates: list[SalesforceKnowledgeArticleState], StandardKnowledgeArticleTypeConfiguration: SalesforceStandardKnowledgeArticleTypeConfiguration, CustomKnowledgeArticleTypeConfigurations: list[SalesforceCustomKnowledgeArticleTypeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedStates: list[SalesforceKnowledgeArticleState], StandardKnowledgeArticleTypeConfiguration: SalesforceStandardKnowledgeArticleTypeConfiguration, CustomKnowledgeArticleTypeConfigurations: list[SalesforceCustomKnowledgeArticleTypeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceKnowledgeArticleConfiguration:
     list[SalesforceKnowledgeArticleState] IncludedStates
     Optional[SalesforceStandardKnowledgeArticleTypeConfiguration] StandardKnowledgeArticleTypeConfiguration
     Optional[list[SalesforceCustomKnowledgeArticleTypeConfiguration]] CustomKnowledgeArticleTypeConfigurations
 
-# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceStandardKnowledgeArticleTypeConfiguration:
     str DocumentDataFieldName
     Optional[str] DocumentTitleFieldName
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
 
-# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceStandardObjectAttachmentConfiguration:
     Optional[str] DocumentTitleFieldName
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
 
-# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceStandardObjectConfiguration:
     SalesforceStandardObjectName Name
     str DocumentDataFieldName
@@ -2257,8 +2373,9 @@ struct Search:
     Optional[bool] Displayable
     Optional[bool] Sortable
 
-# no @derive(Json): member(s) SeedUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SeedUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SeedUrlConfiguration:
     list[str] SeedUrls
     Optional[WebCrawlerMode] WebCrawlerMode
@@ -2267,8 +2384,9 @@ struct SeedUrlConfiguration:
 struct ServerSideEncryptionConfiguration:
     Optional[str] KmsKeyId
 
-# no @derive(Json): member(s) KnowledgeArticleConfiguration: ServiceNowKnowledgeArticleConfiguration, ServiceCatalogConfiguration: ServiceNowServiceCatalogConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KnowledgeArticleConfiguration: ServiceNowKnowledgeArticleConfiguration, ServiceCatalogConfiguration: ServiceNowServiceCatalogConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowConfiguration:
     str HostUrl
     str SecretArn
@@ -2277,8 +2395,9 @@ struct ServiceNowConfiguration:
     Optional[ServiceNowServiceCatalogConfiguration] ServiceCatalogConfiguration
     Optional[ServiceNowAuthenticationType] AuthenticationType
 
-# no @derive(Json): member(s) IncludeAttachmentFilePatterns: list[str], ExcludeAttachmentFilePatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeAttachmentFilePatterns: list[str], ExcludeAttachmentFilePatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowKnowledgeArticleConfiguration:
     Optional[bool] CrawlAttachments
     Optional[list[str]] IncludeAttachmentFilePatterns
@@ -2288,8 +2407,9 @@ struct ServiceNowKnowledgeArticleConfiguration:
     Optional[list[DataSourceToIndexFieldMapping]] FieldMappings
     Optional[str] FilterQuery
 
-# no @derive(Json): member(s) IncludeAttachmentFilePatterns: list[str], ExcludeAttachmentFilePatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeAttachmentFilePatterns: list[str], ExcludeAttachmentFilePatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowServiceCatalogConfiguration:
     Optional[bool] CrawlAttachments
     Optional[list[str]] IncludeAttachmentFilePatterns
@@ -2302,8 +2422,9 @@ struct ServiceNowServiceCatalogConfiguration:
 struct ServiceQuotaExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Urls: list[str], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration, FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Urls: list[str], InclusionPatterns: list[str], ExclusionPatterns: list[str], VpcConfiguration: DataSourceVpcConfiguration, FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SharePointConfiguration:
     SharePointVersion SharePointVersion
     list[str] Urls
@@ -2320,13 +2441,15 @@ struct SharePointConfiguration:
     Optional[SharePointOnlineAuthenticationType] AuthenticationType
     Optional[ProxyConfiguration] ProxyConfiguration
 
-# no @derive(Json): member(s) SiteMaps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SiteMaps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SiteMapsConfiguration:
     list[str] SiteMaps
 
-# no @derive(Json): member(s) VpcConfiguration: DataSourceVpcConfiguration, SlackEntityList: list[SlackEntity], PrivateChannelFilter: list[str], PublicChannelFilter: list[str], InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: DataSourceVpcConfiguration, SlackEntityList: list[SlackEntity], PrivateChannelFilter: list[str], PublicChannelFilter: list[str], InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlackConfiguration:
     str TeamId
     str SecretArn
@@ -2348,15 +2471,17 @@ struct SortingConfiguration:
     str DocumentAttributeKey
     SortOrder SortOrder
 
-# no @derive(Json): member(s) SuggestionAttributes: list[str], AdditionalAttributes: list[DocumentAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuggestionAttributes: list[str], AdditionalAttributes: list[DocumentAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceDocument:
     Optional[str] DocumentId
     Optional[list[str]] SuggestionAttributes
     Optional[list[DocumentAttribute]] AdditionalAttributes
 
-# no @derive(Json): member(s) Corrections: list[Correction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Corrections: list[Correction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpellCorrectedQuery:
     Optional[str] SuggestedQueryText
     Optional[list[Correction]] Corrections
@@ -2390,8 +2515,9 @@ struct StopDataSourceSyncJobRequest:
     str Id
     str IndexId
 
-# no @derive(Json): member(s) ClickFeedbackItems: list[ClickFeedback], RelevanceFeedbackItems: list[RelevanceFeedback] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClickFeedbackItems: list[ClickFeedback], RelevanceFeedbackItems: list[RelevanceFeedback] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubmitFeedbackRequest:
     str IndexId
     str QueryId
@@ -2403,8 +2529,9 @@ struct SuggestableConfig:
     Optional[str] AttributeName
     Optional[bool] Suggestable
 
-# no @derive(Json): member(s) Value: SuggestionValue, SourceDocuments: list[SourceDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: SuggestionValue, SourceDocuments: list[SourceDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Suggestion:
     Optional[str] Id
     Optional[SuggestionValue] Value
@@ -2415,14 +2542,16 @@ struct SuggestionHighlight:
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
 
-# no @derive(Json): member(s) Highlights: list[SuggestionHighlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Highlights: list[SuggestionHighlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestionTextWithHighlights:
     Optional[str] Text
     Optional[list[SuggestionHighlight]] Highlights
 
-# no @derive(Json): member(s) Text: SuggestionTextWithHighlights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Text: SuggestionTextWithHighlights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestionValue:
     Optional[SuggestionTextWithHighlights] Text
 
@@ -2433,14 +2562,16 @@ struct TableCell:
     Optional[bool] Highlighted
     Optional[bool] Header
 
-# no @derive(Json): member(s) Rows: list[TableRow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rows: list[TableRow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableExcerpt:
     Optional[list[TableRow]] Rows
     Optional[int64] TotalNumberOfRows
 
-# no @derive(Json): member(s) Cells: list[TableCell] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[TableCell] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableRow:
     Optional[list[TableCell]] Cells
 
@@ -2449,8 +2580,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -2474,8 +2606,9 @@ struct TextDocumentStatistics:
     int64 IndexedTextDocumentsCount
     int64 IndexedTextBytes
 
-# no @derive(Json): member(s) Highlights: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Highlights: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextWithHighlights:
     Optional[str] Text
     Optional[list[Highlight]] Highlights
@@ -2497,8 +2630,9 @@ struct TimeRange:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -2508,8 +2642,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlList: list[Principal], HierarchicalAccessControlList: list[HierarchicalPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAccessControlConfigurationRequest:
     str IndexId
     str Id
@@ -2523,8 +2658,9 @@ struct UpdateAccessControlConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Configuration: DataSourceConfiguration, VpcConfiguration: DataSourceVpcConfiguration, CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: DataSourceConfiguration, VpcConfiguration: DataSourceVpcConfiguration, CustomDocumentEnrichmentConfiguration: CustomDocumentEnrichmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataSourceRequest:
     str Id
     Optional[str] Name
@@ -2537,8 +2673,9 @@ struct UpdateDataSourceRequest:
     Optional[str] LanguageCode
     Optional[CustomDocumentEnrichmentConfiguration] CustomDocumentEnrichmentConfiguration
 
-# no @derive(Json): member(s) Configuration: ExperienceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ExperienceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExperienceRequest:
     str Id
     Optional[str] Name
@@ -2547,8 +2684,9 @@ struct UpdateExperienceRequest:
     Optional[ExperienceConfiguration] Configuration
     Optional[str] Description
 
-# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocuments: list[FeaturedDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryTexts: list[str], FeaturedDocuments: list[FeaturedDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFeaturedResultsSetRequest:
     str IndexId
     str FeaturedResultsSetId
@@ -2558,13 +2696,15 @@ struct UpdateFeaturedResultsSetRequest:
     Optional[list[str]] QueryTexts
     Optional[list[FeaturedDocument]] FeaturedDocuments
 
-# no @derive(Json): member(s) FeaturedResultsSet: FeaturedResultsSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeaturedResultsSet: FeaturedResultsSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFeaturedResultsSetResponse:
     Optional[FeaturedResultsSet] FeaturedResultsSet
 
-# no @derive(Json): member(s) DocumentMetadataConfigurationUpdates: list[DocumentMetadataConfiguration], UserTokenConfigurations: list[UserTokenConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentMetadataConfigurationUpdates: list[DocumentMetadataConfiguration], UserTokenConfigurations: list[UserTokenConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIndexRequest:
     str Id
     Optional[str] Name
@@ -2585,8 +2725,9 @@ struct UpdateQuerySuggestionsBlockListRequest:
     Optional[S3Path] SourceS3Path
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) AttributeSuggestionsConfig: AttributeSuggestionsUpdateConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeSuggestionsConfig: AttributeSuggestionsUpdateConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQuerySuggestionsConfigRequest:
     str IndexId
     Optional[Mode] Mode
@@ -2605,14 +2746,16 @@ struct UpdateThesaurusRequest:
     Optional[str] RoleArn
     Optional[S3Path] SourceS3Path
 
-# no @derive(Json): member(s) SeedUrlConfiguration: SeedUrlConfiguration, SiteMapsConfiguration: SiteMapsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SeedUrlConfiguration: SeedUrlConfiguration, SiteMapsConfiguration: SiteMapsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Urls:
     Optional[SeedUrlConfiguration] SeedUrlConfiguration
     Optional[SiteMapsConfiguration] SiteMapsConfiguration
 
-# no @derive(Json): member(s) Groups: list[str], DataSourceGroups: list[DataSourceGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str], DataSourceGroups: list[DataSourceGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserContext:
     Optional[str] Token
     Optional[str] UserId
@@ -2641,8 +2784,9 @@ struct Warning:
     Optional[str] Message
     Optional[str] Code
 
-# no @derive(Json): member(s) Urls: Urls, UrlInclusionPatterns: list[str], UrlExclusionPatterns: list[str], AuthenticationConfiguration: AuthenticationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Urls: Urls, UrlInclusionPatterns: list[str], UrlExclusionPatterns: list[str], AuthenticationConfiguration: AuthenticationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebCrawlerConfiguration:
     Urls Urls
     Optional[int64] CrawlDepth
@@ -2654,8 +2798,9 @@ struct WebCrawlerConfiguration:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[AuthenticationConfiguration] AuthenticationConfiguration
 
-# no @derive(Json): member(s) InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionPatterns: list[str], ExclusionPatterns: list[str], FieldMappings: list[DataSourceToIndexFieldMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkDocsConfiguration:
     str OrganizationId
     Optional[bool] CrawlComments
@@ -2713,48 +2858,2317 @@ def kendra_error_from_code(str code) -> kendraError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateEntitiesToExperience (input AssociateEntitiesToExperienceRequest)
-#   AssociatePersonasToEntities (input AssociatePersonasToEntitiesRequest)
-#   BatchDeleteDocument (input BatchDeleteDocumentRequest)
-#   BatchDeleteFeaturedResultsSet (input BatchDeleteFeaturedResultsSetRequest)
-#   BatchGetDocumentStatus (input BatchGetDocumentStatusRequest)
-#   BatchPutDocument (input BatchPutDocumentRequest)
-#   CreateAccessControlConfiguration (input CreateAccessControlConfigurationRequest)
-#   CreateDataSource (input CreateDataSourceRequest)
-#   CreateExperience (input CreateExperienceRequest)
-#   CreateFaq (input CreateFaqRequest)
-#   CreateFeaturedResultsSet (input CreateFeaturedResultsSetRequest)
-#   CreateIndex (input CreateIndexRequest)
-#   CreateQuerySuggestionsBlockList (input CreateQuerySuggestionsBlockListRequest)
-#   CreateThesaurus (input CreateThesaurusRequest)
-#   DisassociateEntitiesFromExperience (input DisassociateEntitiesFromExperienceRequest)
-#   DisassociatePersonasFromEntities (input DisassociatePersonasFromEntitiesRequest)
-#   GetQuerySuggestions (input GetQuerySuggestionsRequest)
-#   PutPrincipalMapping (input PutPrincipalMappingRequest)
-#   Query (input QueryRequest)
-#   Retrieve (input RetrieveRequest)
-#   SubmitFeedback (input SubmitFeedbackRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAccessControlConfiguration (input UpdateAccessControlConfigurationRequest)
-#   UpdateDataSource (input UpdateDataSourceRequest)
-#   UpdateExperience (input UpdateExperienceRequest)
-#   UpdateFeaturedResultsSet (input UpdateFeaturedResultsSetRequest)
-#   UpdateIndex (input UpdateIndexRequest)
-#   UpdateQuerySuggestionsConfig (input UpdateQuerySuggestionsConfigRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kendra_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kendra_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kendra_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AlfrescoConfiguration to a compact JSON object (declaration order).
+def alfresco_configuration_to_json(AlfrescoConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SiteUrl\":" + kendra_json_str(v.SiteUrl))
+    parts.append("\"SiteId\":" + kendra_json_str(v.SiteId))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    parts.append("\"SslCertificateS3Path\":" + v.SslCertificateS3Path.to_json())
+    if v.CrawlSystemFolders.is_some():
+        auto u0 = v.CrawlSystemFolders.unwrap()
+        parts.append("\"CrawlSystemFolders\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.CrawlComments.is_some():
+        auto u1 = v.CrawlComments.unwrap()
+        parts.append("\"CrawlComments\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.EntityFilter.is_some():
+        auto u2 = v.EntityFilter.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"EntityFilter\":" + kendra_json_arr(e3))
+    if v.DocumentLibraryFieldMappings.is_some():
+        auto u4 = v.DocumentLibraryFieldMappings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"DocumentLibraryFieldMappings\":" + kendra_json_arr(e5))
+    if v.BlogFieldMappings.is_some():
+        auto u6 = v.BlogFieldMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"BlogFieldMappings\":" + kendra_json_arr(e7))
+    if v.WikiFieldMappings.is_some():
+        auto u8 = v.WikiFieldMappings.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"WikiFieldMappings\":" + kendra_json_arr(e9))
+    if v.InclusionPatterns.is_some():
+        auto u10 = v.InclusionPatterns.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(kendra_json_str(x11))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e11))
+    if v.ExclusionPatterns.is_some():
+        auto u12 = v.ExclusionPatterns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(kendra_json_str(x13))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e13))
+    if v.VpcConfiguration.is_some():
+        auto u14 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u14))
+    return kendra_json_obj(parts)
+
+# Serialize AssociateEntitiesToExperienceRequest to a compact JSON object (declaration order).
+def associate_entities_to_experience_request_to_json(AssociateEntitiesToExperienceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.EntityList:
+        e0.append(x0.to_json())
+    parts.append("\"EntityList\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize AssociatePersonasToEntitiesRequest to a compact JSON object (declaration order).
+def associate_personas_to_entities_request_to_json(AssociatePersonasToEntitiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.Personas:
+        e0.append(x0.to_json())
+    parts.append("\"Personas\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize AttributeFilter to a compact JSON object (declaration order).
+def attribute_filter_to_json(AttributeFilter v) -> str:
+    list[str] parts = []
+    if v.AndAllFilters.is_some():
+        auto u0 = v.AndAllFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_filter_to_json(x1))
+        parts.append("\"AndAllFilters\":" + kendra_json_arr(e1))
+    if v.OrAllFilters.is_some():
+        auto u2 = v.OrAllFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(attribute_filter_to_json(x3))
+        parts.append("\"OrAllFilters\":" + kendra_json_arr(e3))
+    if v.NotFilter.is_some():
+        auto u4 = v.NotFilter.unwrap()
+        parts.append("\"NotFilter\":" + attribute_filter_to_json(u4))
+    if v.EqualsTo.is_some():
+        auto u5 = v.EqualsTo.unwrap()
+        parts.append("\"EqualsTo\":" + document_attribute_to_json(u5))
+    if v.ContainsAll.is_some():
+        auto u6 = v.ContainsAll.unwrap()
+        parts.append("\"ContainsAll\":" + document_attribute_to_json(u6))
+    if v.ContainsAny.is_some():
+        auto u7 = v.ContainsAny.unwrap()
+        parts.append("\"ContainsAny\":" + document_attribute_to_json(u7))
+    if v.GreaterThan.is_some():
+        auto u8 = v.GreaterThan.unwrap()
+        parts.append("\"GreaterThan\":" + document_attribute_to_json(u8))
+    if v.GreaterThanOrEquals.is_some():
+        auto u9 = v.GreaterThanOrEquals.unwrap()
+        parts.append("\"GreaterThanOrEquals\":" + document_attribute_to_json(u9))
+    if v.LessThan.is_some():
+        auto u10 = v.LessThan.unwrap()
+        parts.append("\"LessThan\":" + document_attribute_to_json(u10))
+    if v.LessThanOrEquals.is_some():
+        auto u11 = v.LessThanOrEquals.unwrap()
+        parts.append("\"LessThanOrEquals\":" + document_attribute_to_json(u11))
+    return kendra_json_obj(parts)
+
+# Serialize AttributeSuggestionsGetConfig to a compact JSON object (declaration order).
+def attribute_suggestions_get_config_to_json(AttributeSuggestionsGetConfig v) -> str:
+    list[str] parts = []
+    if v.SuggestionAttributes.is_some():
+        auto u0 = v.SuggestionAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kendra_json_str(x1))
+        parts.append("\"SuggestionAttributes\":" + kendra_json_arr(e1))
+    if v.AdditionalResponseAttributes.is_some():
+        auto u2 = v.AdditionalResponseAttributes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"AdditionalResponseAttributes\":" + kendra_json_arr(e3))
+    if v.AttributeFilter.is_some():
+        auto u4 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + attribute_filter_to_json(u4))
+    if v.UserContext.is_some():
+        auto u5 = v.UserContext.unwrap()
+        parts.append("\"UserContext\":" + user_context_to_json(u5))
+    return kendra_json_obj(parts)
+
+# Serialize AttributeSuggestionsUpdateConfig to a compact JSON object (declaration order).
+def attribute_suggestions_update_config_to_json(AttributeSuggestionsUpdateConfig v) -> str:
+    list[str] parts = []
+    if v.SuggestableConfigList.is_some():
+        auto u0 = v.SuggestableConfigList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SuggestableConfigList\":" + kendra_json_arr(e1))
+    if v.AttributeSuggestionsMode.is_some():
+        auto u2 = v.AttributeSuggestionsMode.unwrap()
+        parts.append("\"AttributeSuggestionsMode\":" + u2.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize AuthenticationConfiguration to a compact JSON object (declaration order).
+def authentication_configuration_to_json(AuthenticationConfiguration v) -> str:
+    list[str] parts = []
+    if v.BasicAuthentication.is_some():
+        auto u0 = v.BasicAuthentication.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"BasicAuthentication\":" + kendra_json_arr(e1))
+    return kendra_json_obj(parts)
+
+# Serialize BatchDeleteDocumentRequest to a compact JSON object (declaration order).
+def batch_delete_document_request_to_json(BatchDeleteDocumentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.DocumentIdList:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"DocumentIdList\":" + kendra_json_arr(e0))
+    if v.DataSourceSyncJobMetricTarget.is_some():
+        auto u1 = v.DataSourceSyncJobMetricTarget.unwrap()
+        parts.append("\"DataSourceSyncJobMetricTarget\":" + u1.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize BatchDeleteFeaturedResultsSetRequest to a compact JSON object (declaration order).
+def batch_delete_featured_results_set_request_to_json(BatchDeleteFeaturedResultsSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.FeaturedResultsSetIds:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"FeaturedResultsSetIds\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize BatchGetDocumentStatusRequest to a compact JSON object (declaration order).
+def batch_get_document_status_request_to_json(BatchGetDocumentStatusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.DocumentInfoList:
+        e0.append(document_info_to_json(x0))
+    parts.append("\"DocumentInfoList\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize BatchPutDocumentRequest to a compact JSON object (declaration order).
+def batch_put_document_request_to_json(BatchPutDocumentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.RoleArn.is_some():
+        auto u0 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Documents:
+        e1.append(document_to_json(x1))
+    parts.append("\"Documents\":" + kendra_json_arr(e1))
+    if v.CustomDocumentEnrichmentConfiguration.is_some():
+        auto u2 = v.CustomDocumentEnrichmentConfiguration.unwrap()
+        parts.append("\"CustomDocumentEnrichmentConfiguration\":" + custom_document_enrichment_configuration_to_json(u2))
+    return kendra_json_obj(parts)
+
+# Serialize BoxConfiguration to a compact JSON object (declaration order).
+def box_configuration_to_json(BoxConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"EnterpriseId\":" + kendra_json_str(v.EnterpriseId))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.UseChangeLog.is_some():
+        auto u0 = v.UseChangeLog.unwrap()
+        parts.append("\"UseChangeLog\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.CrawlComments.is_some():
+        auto u1 = v.CrawlComments.unwrap()
+        parts.append("\"CrawlComments\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.CrawlTasks.is_some():
+        auto u2 = v.CrawlTasks.unwrap()
+        parts.append("\"CrawlTasks\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.CrawlWebLinks.is_some():
+        auto u3 = v.CrawlWebLinks.unwrap()
+        parts.append("\"CrawlWebLinks\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.FileFieldMappings.is_some():
+        auto u4 = v.FileFieldMappings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"FileFieldMappings\":" + kendra_json_arr(e5))
+    if v.TaskFieldMappings.is_some():
+        auto u6 = v.TaskFieldMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"TaskFieldMappings\":" + kendra_json_arr(e7))
+    if v.CommentFieldMappings.is_some():
+        auto u8 = v.CommentFieldMappings.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"CommentFieldMappings\":" + kendra_json_arr(e9))
+    if v.WebLinkFieldMappings.is_some():
+        auto u10 = v.WebLinkFieldMappings.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"WebLinkFieldMappings\":" + kendra_json_arr(e11))
+    if v.InclusionPatterns.is_some():
+        auto u12 = v.InclusionPatterns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(kendra_json_str(x13))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e13))
+    if v.ExclusionPatterns.is_some():
+        auto u14 = v.ExclusionPatterns.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(kendra_json_str(x15))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e15))
+    if v.VpcConfiguration.is_some():
+        auto u16 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u16))
+    return kendra_json_obj(parts)
+
+# Serialize CollapseConfiguration to a compact JSON object (declaration order).
+def collapse_configuration_to_json(CollapseConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentAttributeKey\":" + kendra_json_str(v.DocumentAttributeKey))
+    if v.SortingConfigurations.is_some():
+        auto u0 = v.SortingConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SortingConfigurations\":" + kendra_json_arr(e1))
+    if v.MissingAttributeKeyStrategy.is_some():
+        auto u2 = v.MissingAttributeKeyStrategy.unwrap()
+        parts.append("\"MissingAttributeKeyStrategy\":" + u2.to_json())
+    if v.Expand.is_some():
+        auto u3 = v.Expand.unwrap()
+        parts.append("\"Expand\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ExpandConfiguration.is_some():
+        auto u4 = v.ExpandConfiguration.unwrap()
+        parts.append("\"ExpandConfiguration\":" + u4.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize ColumnConfiguration to a compact JSON object (declaration order).
+def column_configuration_to_json(ColumnConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentIdColumnName\":" + kendra_json_str(v.DocumentIdColumnName))
+    parts.append("\"DocumentDataColumnName\":" + kendra_json_str(v.DocumentDataColumnName))
+    if v.DocumentTitleColumnName.is_some():
+        auto u0 = v.DocumentTitleColumnName.unwrap()
+        parts.append("\"DocumentTitleColumnName\":" + kendra_json_str(u0))
+    if v.FieldMappings.is_some():
+        auto u1 = v.FieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.ChangeDetectingColumns:
+        e3.append(kendra_json_str(x3))
+    parts.append("\"ChangeDetectingColumns\":" + kendra_json_arr(e3))
+    return kendra_json_obj(parts)
+
+# Serialize ConfluenceAttachmentConfiguration to a compact JSON object (declaration order).
+def confluence_attachment_configuration_to_json(ConfluenceAttachmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.CrawlAttachments.is_some():
+        auto u0 = v.CrawlAttachments.unwrap()
+        parts.append("\"CrawlAttachments\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AttachmentFieldMappings.is_some():
+        auto u1 = v.AttachmentFieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AttachmentFieldMappings\":" + kendra_json_arr(e2))
+    return kendra_json_obj(parts)
+
+# Serialize ConfluenceBlogConfiguration to a compact JSON object (declaration order).
+def confluence_blog_configuration_to_json(ConfluenceBlogConfiguration v) -> str:
+    list[str] parts = []
+    if v.BlogFieldMappings.is_some():
+        auto u0 = v.BlogFieldMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"BlogFieldMappings\":" + kendra_json_arr(e1))
+    return kendra_json_obj(parts)
+
+# Serialize ConfluenceConfiguration to a compact JSON object (declaration order).
+def confluence_configuration_to_json(ConfluenceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ServerUrl\":" + kendra_json_str(v.ServerUrl))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    parts.append("\"Version\":" + v.Version.to_json())
+    if v.SpaceConfiguration.is_some():
+        auto u0 = v.SpaceConfiguration.unwrap()
+        parts.append("\"SpaceConfiguration\":" + confluence_space_configuration_to_json(u0))
+    if v.PageConfiguration.is_some():
+        auto u1 = v.PageConfiguration.unwrap()
+        parts.append("\"PageConfiguration\":" + confluence_page_configuration_to_json(u1))
+    if v.BlogConfiguration.is_some():
+        auto u2 = v.BlogConfiguration.unwrap()
+        parts.append("\"BlogConfiguration\":" + confluence_blog_configuration_to_json(u2))
+    if v.AttachmentConfiguration.is_some():
+        auto u3 = v.AttachmentConfiguration.unwrap()
+        parts.append("\"AttachmentConfiguration\":" + confluence_attachment_configuration_to_json(u3))
+    if v.VpcConfiguration.is_some():
+        auto u4 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u4))
+    if v.InclusionPatterns.is_some():
+        auto u5 = v.InclusionPatterns.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(kendra_json_str(x6))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e6))
+    if v.ExclusionPatterns.is_some():
+        auto u7 = v.ExclusionPatterns.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(kendra_json_str(x8))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e8))
+    if v.ProxyConfiguration.is_some():
+        auto u9 = v.ProxyConfiguration.unwrap()
+        parts.append("\"ProxyConfiguration\":" + u9.to_json())
+    if v.AuthenticationType.is_some():
+        auto u10 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u10.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize ConfluencePageConfiguration to a compact JSON object (declaration order).
+def confluence_page_configuration_to_json(ConfluencePageConfiguration v) -> str:
+    list[str] parts = []
+    if v.PageFieldMappings.is_some():
+        auto u0 = v.PageFieldMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PageFieldMappings\":" + kendra_json_arr(e1))
+    return kendra_json_obj(parts)
+
+# Serialize ConfluenceSpaceConfiguration to a compact JSON object (declaration order).
+def confluence_space_configuration_to_json(ConfluenceSpaceConfiguration v) -> str:
+    list[str] parts = []
+    if v.CrawlPersonalSpaces.is_some():
+        auto u0 = v.CrawlPersonalSpaces.unwrap()
+        parts.append("\"CrawlPersonalSpaces\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.CrawlArchivedSpaces.is_some():
+        auto u1 = v.CrawlArchivedSpaces.unwrap()
+        parts.append("\"CrawlArchivedSpaces\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.IncludeSpaces.is_some():
+        auto u2 = v.IncludeSpaces.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"IncludeSpaces\":" + kendra_json_arr(e3))
+    if v.ExcludeSpaces.is_some():
+        auto u4 = v.ExcludeSpaces.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kendra_json_str(x5))
+        parts.append("\"ExcludeSpaces\":" + kendra_json_arr(e5))
+    if v.SpaceFieldMappings.is_some():
+        auto u6 = v.SpaceFieldMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"SpaceFieldMappings\":" + kendra_json_arr(e7))
+    return kendra_json_obj(parts)
+
+# Serialize ContentSourceConfiguration to a compact JSON object (declaration order).
+def content_source_configuration_to_json(ContentSourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.DataSourceIds.is_some():
+        auto u0 = v.DataSourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kendra_json_str(x1))
+        parts.append("\"DataSourceIds\":" + kendra_json_arr(e1))
+    if v.FaqIds.is_some():
+        auto u2 = v.FaqIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"FaqIds\":" + kendra_json_arr(e3))
+    if v.DirectPutContent.is_some():
+        auto u4 = v.DirectPutContent.unwrap()
+        parts.append("\"DirectPutContent\":" + json.dumps(JsonValue.Bool(u4)))
+    return kendra_json_obj(parts)
+
+# Serialize CreateAccessControlConfigurationRequest to a compact JSON object (declaration order).
+def create_access_control_configuration_request_to_json(CreateAccessControlConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u0))
+    if v.AccessControlList.is_some():
+        auto u1 = v.AccessControlList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AccessControlList\":" + kendra_json_arr(e2))
+    if v.HierarchicalAccessControlList.is_some():
+        auto u3 = v.HierarchicalAccessControlList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(hierarchical_principal_to_json(x4))
+        parts.append("\"HierarchicalAccessControlList\":" + kendra_json_arr(e4))
+    if v.ClientToken.is_some():
+        auto u5 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u5))
+    return kendra_json_obj(parts)
+
+# Serialize CreateDataSourceRequest to a compact JSON object (declaration order).
+def create_data_source_request_to_json(CreateDataSourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Configuration.is_some():
+        auto u0 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + data_source_configuration_to_json(u0))
+    if v.VpcConfiguration.is_some():
+        auto u1 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u2))
+    if v.Schedule.is_some():
+        auto u3 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + kendra_json_str(u3))
+    if v.RoleArn.is_some():
+        auto u4 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + kendra_json_arr(e6))
+    if v.ClientToken.is_some():
+        auto u7 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u7))
+    if v.LanguageCode.is_some():
+        auto u8 = v.LanguageCode.unwrap()
+        parts.append("\"LanguageCode\":" + kendra_json_str(u8))
+    if v.CustomDocumentEnrichmentConfiguration.is_some():
+        auto u9 = v.CustomDocumentEnrichmentConfiguration.unwrap()
+        parts.append("\"CustomDocumentEnrichmentConfiguration\":" + custom_document_enrichment_configuration_to_json(u9))
+    return kendra_json_obj(parts)
+
+# Serialize CreateExperienceRequest to a compact JSON object (declaration order).
+def create_experience_request_to_json(CreateExperienceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.RoleArn.is_some():
+        auto u0 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u0))
+    if v.Configuration.is_some():
+        auto u1 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + experience_configuration_to_json(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u2))
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u3))
+    return kendra_json_obj(parts)
+
+# Serialize CreateFaqRequest to a compact JSON object (declaration order).
+def create_faq_request_to_json(CreateFaqRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u0))
+    parts.append("\"S3Path\":" + v.S3Path.to_json())
+    parts.append("\"RoleArn\":" + kendra_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + kendra_json_arr(e2))
+    if v.FileFormat.is_some():
+        auto u3 = v.FileFormat.unwrap()
+        parts.append("\"FileFormat\":" + u3.to_json())
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u4))
+    if v.LanguageCode.is_some():
+        auto u5 = v.LanguageCode.unwrap()
+        parts.append("\"LanguageCode\":" + kendra_json_str(u5))
+    return kendra_json_obj(parts)
+
+# Serialize CreateFeaturedResultsSetRequest to a compact JSON object (declaration order).
+def create_featured_results_set_request_to_json(CreateFeaturedResultsSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"FeaturedResultsSetName\":" + kendra_json_str(v.FeaturedResultsSetName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u0))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u1))
+    if v.Status.is_some():
+        auto u2 = v.Status.unwrap()
+        parts.append("\"Status\":" + u2.to_json())
+    if v.QueryTexts.is_some():
+        auto u3 = v.QueryTexts.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"QueryTexts\":" + kendra_json_arr(e4))
+    if v.FeaturedDocuments.is_some():
+        auto u5 = v.FeaturedDocuments.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"FeaturedDocuments\":" + kendra_json_arr(e6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + kendra_json_arr(e8))
+    return kendra_json_obj(parts)
+
+# Serialize CreateIndexRequest to a compact JSON object (declaration order).
+def create_index_request_to_json(CreateIndexRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    if v.Edition.is_some():
+        auto u0 = v.Edition.unwrap()
+        parts.append("\"Edition\":" + u0.to_json())
+    parts.append("\"RoleArn\":" + kendra_json_str(v.RoleArn))
+    if v.ServerSideEncryptionConfiguration.is_some():
+        auto u1 = v.ServerSideEncryptionConfiguration.unwrap()
+        parts.append("\"ServerSideEncryptionConfiguration\":" + u1.to_json())
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u2))
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + kendra_json_arr(e5))
+    if v.UserTokenConfigurations.is_some():
+        auto u6 = v.UserTokenConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"UserTokenConfigurations\":" + kendra_json_arr(e7))
+    if v.UserContextPolicy.is_some():
+        auto u8 = v.UserContextPolicy.unwrap()
+        parts.append("\"UserContextPolicy\":" + u8.to_json())
+    if v.UserGroupResolutionConfiguration.is_some():
+        auto u9 = v.UserGroupResolutionConfiguration.unwrap()
+        parts.append("\"UserGroupResolutionConfiguration\":" + u9.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize CreateQuerySuggestionsBlockListRequest to a compact JSON object (declaration order).
+def create_query_suggestions_block_list_request_to_json(CreateQuerySuggestionsBlockListRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u0))
+    parts.append("\"SourceS3Path\":" + v.SourceS3Path.to_json())
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u1))
+    parts.append("\"RoleArn\":" + kendra_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + kendra_json_arr(e3))
+    return kendra_json_obj(parts)
+
+# Serialize CreateThesaurusRequest to a compact JSON object (declaration order).
+def create_thesaurus_request_to_json(CreateThesaurusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u0))
+    parts.append("\"RoleArn\":" + kendra_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + kendra_json_arr(e2))
+    parts.append("\"SourceS3Path\":" + v.SourceS3Path.to_json())
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + kendra_json_str(u3))
+    return kendra_json_obj(parts)
+
+# Serialize CustomDocumentEnrichmentConfiguration to a compact JSON object (declaration order).
+def custom_document_enrichment_configuration_to_json(CustomDocumentEnrichmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.InlineConfigurations.is_some():
+        auto u0 = v.InlineConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inline_custom_document_enrichment_configuration_to_json(x1))
+        parts.append("\"InlineConfigurations\":" + kendra_json_arr(e1))
+    if v.PreExtractionHookConfiguration.is_some():
+        auto u2 = v.PreExtractionHookConfiguration.unwrap()
+        parts.append("\"PreExtractionHookConfiguration\":" + hook_configuration_to_json(u2))
+    if v.PostExtractionHookConfiguration.is_some():
+        auto u3 = v.PostExtractionHookConfiguration.unwrap()
+        parts.append("\"PostExtractionHookConfiguration\":" + hook_configuration_to_json(u3))
+    if v.RoleArn.is_some():
+        auto u4 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u4))
+    return kendra_json_obj(parts)
+
+# Serialize DataSourceConfiguration to a compact JSON object (declaration order).
+def data_source_configuration_to_json(DataSourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.S3Configuration.is_some():
+        auto u0 = v.S3Configuration.unwrap()
+        parts.append("\"S3Configuration\":" + s3_data_source_configuration_to_json(u0))
+    if v.SharePointConfiguration.is_some():
+        auto u1 = v.SharePointConfiguration.unwrap()
+        parts.append("\"SharePointConfiguration\":" + share_point_configuration_to_json(u1))
+    if v.DatabaseConfiguration.is_some():
+        auto u2 = v.DatabaseConfiguration.unwrap()
+        parts.append("\"DatabaseConfiguration\":" + database_configuration_to_json(u2))
+    if v.SalesforceConfiguration.is_some():
+        auto u3 = v.SalesforceConfiguration.unwrap()
+        parts.append("\"SalesforceConfiguration\":" + salesforce_configuration_to_json(u3))
+    if v.OneDriveConfiguration.is_some():
+        auto u4 = v.OneDriveConfiguration.unwrap()
+        parts.append("\"OneDriveConfiguration\":" + one_drive_configuration_to_json(u4))
+    if v.ServiceNowConfiguration.is_some():
+        auto u5 = v.ServiceNowConfiguration.unwrap()
+        parts.append("\"ServiceNowConfiguration\":" + service_now_configuration_to_json(u5))
+    if v.ConfluenceConfiguration.is_some():
+        auto u6 = v.ConfluenceConfiguration.unwrap()
+        parts.append("\"ConfluenceConfiguration\":" + confluence_configuration_to_json(u6))
+    if v.GoogleDriveConfiguration.is_some():
+        auto u7 = v.GoogleDriveConfiguration.unwrap()
+        parts.append("\"GoogleDriveConfiguration\":" + google_drive_configuration_to_json(u7))
+    if v.WebCrawlerConfiguration.is_some():
+        auto u8 = v.WebCrawlerConfiguration.unwrap()
+        parts.append("\"WebCrawlerConfiguration\":" + web_crawler_configuration_to_json(u8))
+    if v.WorkDocsConfiguration.is_some():
+        auto u9 = v.WorkDocsConfiguration.unwrap()
+        parts.append("\"WorkDocsConfiguration\":" + work_docs_configuration_to_json(u9))
+    if v.FsxConfiguration.is_some():
+        auto u10 = v.FsxConfiguration.unwrap()
+        parts.append("\"FsxConfiguration\":" + fsx_configuration_to_json(u10))
+    if v.SlackConfiguration.is_some():
+        auto u11 = v.SlackConfiguration.unwrap()
+        parts.append("\"SlackConfiguration\":" + slack_configuration_to_json(u11))
+    if v.BoxConfiguration.is_some():
+        auto u12 = v.BoxConfiguration.unwrap()
+        parts.append("\"BoxConfiguration\":" + box_configuration_to_json(u12))
+    if v.QuipConfiguration.is_some():
+        auto u13 = v.QuipConfiguration.unwrap()
+        parts.append("\"QuipConfiguration\":" + quip_configuration_to_json(u13))
+    if v.JiraConfiguration.is_some():
+        auto u14 = v.JiraConfiguration.unwrap()
+        parts.append("\"JiraConfiguration\":" + jira_configuration_to_json(u14))
+    if v.GitHubConfiguration.is_some():
+        auto u15 = v.GitHubConfiguration.unwrap()
+        parts.append("\"GitHubConfiguration\":" + git_hub_configuration_to_json(u15))
+    if v.AlfrescoConfiguration.is_some():
+        auto u16 = v.AlfrescoConfiguration.unwrap()
+        parts.append("\"AlfrescoConfiguration\":" + alfresco_configuration_to_json(u16))
+    if v.TemplateConfiguration.is_some():
+        auto u17 = v.TemplateConfiguration.unwrap()
+        parts.append("\"TemplateConfiguration\":" + u17.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize DataSourceVpcConfiguration to a compact JSON object (declaration order).
+def data_source_vpc_configuration_to_json(DataSourceVpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"SubnetIds\":" + kendra_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(kendra_json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + kendra_json_arr(e1))
+    return kendra_json_obj(parts)
+
+# Serialize DatabaseConfiguration to a compact JSON object (declaration order).
+def database_configuration_to_json(DatabaseConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseEngineType\":" + v.DatabaseEngineType.to_json())
+    parts.append("\"ConnectionConfiguration\":" + v.ConnectionConfiguration.to_json())
+    if v.VpcConfiguration.is_some():
+        auto u0 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u0))
+    parts.append("\"ColumnConfiguration\":" + column_configuration_to_json(v.ColumnConfiguration))
+    if v.AclConfiguration.is_some():
+        auto u1 = v.AclConfiguration.unwrap()
+        parts.append("\"AclConfiguration\":" + u1.to_json())
+    if v.SqlConfiguration.is_some():
+        auto u2 = v.SqlConfiguration.unwrap()
+        parts.append("\"SqlConfiguration\":" + u2.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize DisassociateEntitiesFromExperienceRequest to a compact JSON object (declaration order).
+def disassociate_entities_from_experience_request_to_json(DisassociateEntitiesFromExperienceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.EntityList:
+        e0.append(x0.to_json())
+    parts.append("\"EntityList\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize DisassociatePersonasFromEntitiesRequest to a compact JSON object (declaration order).
+def disassociate_personas_from_entities_request_to_json(DisassociatePersonasFromEntitiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    list[str] e0 = []
+    for x0 in v.EntityIds:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"EntityIds\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize Document to a compact JSON object (declaration order).
+def document_to_json(Document v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + kendra_json_str(u0))
+    if v.Blob.is_some():
+        auto u1 = v.Blob.unwrap()
+        parts.append("\"Blob\":" + kendra_json_str(base64.encode(u1)))
+    if v.S3Path.is_some():
+        auto u2 = v.S3Path.unwrap()
+        parts.append("\"S3Path\":" + u2.to_json())
+    if v.Attributes.is_some():
+        auto u3 = v.Attributes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(document_attribute_to_json(x4))
+        parts.append("\"Attributes\":" + kendra_json_arr(e4))
+    if v.AccessControlList.is_some():
+        auto u5 = v.AccessControlList.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"AccessControlList\":" + kendra_json_arr(e6))
+    if v.HierarchicalAccessControlList.is_some():
+        auto u7 = v.HierarchicalAccessControlList.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(hierarchical_principal_to_json(x8))
+        parts.append("\"HierarchicalAccessControlList\":" + kendra_json_arr(e8))
+    if v.ContentType.is_some():
+        auto u9 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + u9.to_json())
+    if v.AccessControlConfigurationId.is_some():
+        auto u10 = v.AccessControlConfigurationId.unwrap()
+        parts.append("\"AccessControlConfigurationId\":" + kendra_json_str(u10))
+    return kendra_json_obj(parts)
+
+# Serialize DocumentAttribute to a compact JSON object (declaration order).
+def document_attribute_to_json(DocumentAttribute v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + kendra_json_str(v.Key))
+    parts.append("\"Value\":" + document_attribute_value_to_json(v.Value))
+    return kendra_json_obj(parts)
+
+# Serialize DocumentAttributeCondition to a compact JSON object (declaration order).
+def document_attribute_condition_to_json(DocumentAttributeCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"ConditionDocumentAttributeKey\":" + kendra_json_str(v.ConditionDocumentAttributeKey))
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    if v.ConditionOnValue.is_some():
+        auto u0 = v.ConditionOnValue.unwrap()
+        parts.append("\"ConditionOnValue\":" + document_attribute_value_to_json(u0))
+    return kendra_json_obj(parts)
+
+# Serialize DocumentAttributeTarget to a compact JSON object (declaration order).
+def document_attribute_target_to_json(DocumentAttributeTarget v) -> str:
+    list[str] parts = []
+    if v.TargetDocumentAttributeKey.is_some():
+        auto u0 = v.TargetDocumentAttributeKey.unwrap()
+        parts.append("\"TargetDocumentAttributeKey\":" + kendra_json_str(u0))
+    if v.TargetDocumentAttributeValueDeletion.is_some():
+        auto u1 = v.TargetDocumentAttributeValueDeletion.unwrap()
+        parts.append("\"TargetDocumentAttributeValueDeletion\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.TargetDocumentAttributeValue.is_some():
+        auto u2 = v.TargetDocumentAttributeValue.unwrap()
+        parts.append("\"TargetDocumentAttributeValue\":" + document_attribute_value_to_json(u2))
+    return kendra_json_obj(parts)
+
+# Serialize DocumentAttributeValue to a compact JSON object (declaration order).
+def document_attribute_value_to_json(DocumentAttributeValue v) -> str:
+    list[str] parts = []
+    if v.StringValue.is_some():
+        auto u0 = v.StringValue.unwrap()
+        parts.append("\"StringValue\":" + kendra_json_str(u0))
+    if v.StringListValue.is_some():
+        auto u1 = v.StringListValue.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kendra_json_str(x2))
+        parts.append("\"StringListValue\":" + kendra_json_arr(e2))
+    if v.LongValue.is_some():
+        auto u3 = v.LongValue.unwrap()
+        parts.append("\"LongValue\":" + str(u3))
+    if v.DateValue.is_some():
+        auto u4 = v.DateValue.unwrap()
+        parts.append("\"DateValue\":" + str(datetime.to_timestamp(u4)))
+    return kendra_json_obj(parts)
+
+# Serialize DocumentInfo to a compact JSON object (declaration order).
+def document_info_to_json(DocumentInfo v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentId\":" + kendra_json_str(v.DocumentId))
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(document_attribute_to_json(x1))
+        parts.append("\"Attributes\":" + kendra_json_arr(e1))
+    return kendra_json_obj(parts)
+
+# Serialize DocumentMetadataConfiguration to a compact JSON object (declaration order).
+def document_metadata_configuration_to_json(DocumentMetadataConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Relevance.is_some():
+        auto u0 = v.Relevance.unwrap()
+        parts.append("\"Relevance\":" + relevance_to_json(u0))
+    if v.Search.is_some():
+        auto u1 = v.Search.unwrap()
+        parts.append("\"Search\":" + u1.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize DocumentRelevanceConfiguration to a compact JSON object (declaration order).
+def document_relevance_configuration_to_json(DocumentRelevanceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    parts.append("\"Relevance\":" + relevance_to_json(v.Relevance))
+    return kendra_json_obj(parts)
+
+# Serialize ExperienceConfiguration to a compact JSON object (declaration order).
+def experience_configuration_to_json(ExperienceConfiguration v) -> str:
+    list[str] parts = []
+    if v.ContentSourceConfiguration.is_some():
+        auto u0 = v.ContentSourceConfiguration.unwrap()
+        parts.append("\"ContentSourceConfiguration\":" + content_source_configuration_to_json(u0))
+    if v.UserIdentityConfiguration.is_some():
+        auto u1 = v.UserIdentityConfiguration.unwrap()
+        parts.append("\"UserIdentityConfiguration\":" + u1.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize Facet to a compact JSON object (declaration order).
+def facet_to_json(Facet v) -> str:
+    list[str] parts = []
+    if v.DocumentAttributeKey.is_some():
+        auto u0 = v.DocumentAttributeKey.unwrap()
+        parts.append("\"DocumentAttributeKey\":" + kendra_json_str(u0))
+    if v.Facets.is_some():
+        auto u1 = v.Facets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(facet_to_json(x2))
+        parts.append("\"Facets\":" + kendra_json_arr(e2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return kendra_json_obj(parts)
+
+# Serialize FsxConfiguration to a compact JSON object (declaration order).
+def fsx_configuration_to_json(FsxConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"FileSystemId\":" + kendra_json_str(v.FileSystemId))
+    parts.append("\"FileSystemType\":" + kendra_json_str(v.FileSystemType))
+    parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(v.VpcConfiguration))
+    if v.SecretArn.is_some():
+        auto u0 = v.SecretArn.unwrap()
+        parts.append("\"SecretArn\":" + kendra_json_str(u0))
+    if v.InclusionPatterns.is_some():
+        auto u1 = v.InclusionPatterns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kendra_json_str(x2))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e2))
+    if v.ExclusionPatterns.is_some():
+        auto u3 = v.ExclusionPatterns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e4))
+    if v.FieldMappings.is_some():
+        auto u5 = v.FieldMappings.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e6))
+    return kendra_json_obj(parts)
+
+# Serialize GetQuerySuggestionsRequest to a compact JSON object (declaration order).
+def get_query_suggestions_request_to_json(GetQuerySuggestionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"QueryText\":" + kendra_json_str(v.QueryText))
+    if v.MaxSuggestionsCount.is_some():
+        auto u0 = v.MaxSuggestionsCount.unwrap()
+        parts.append("\"MaxSuggestionsCount\":" + str(u0))
+    if v.SuggestionTypes.is_some():
+        auto u1 = v.SuggestionTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SuggestionTypes\":" + kendra_json_arr(e2))
+    if v.AttributeSuggestionsConfig.is_some():
+        auto u3 = v.AttributeSuggestionsConfig.unwrap()
+        parts.append("\"AttributeSuggestionsConfig\":" + attribute_suggestions_get_config_to_json(u3))
+    return kendra_json_obj(parts)
+
+# Serialize GitHubConfiguration to a compact JSON object (declaration order).
+def git_hub_configuration_to_json(GitHubConfiguration v) -> str:
+    list[str] parts = []
+    if v.SaaSConfiguration.is_some():
+        auto u0 = v.SaaSConfiguration.unwrap()
+        parts.append("\"SaaSConfiguration\":" + u0.to_json())
+    if v.OnPremiseConfiguration.is_some():
+        auto u1 = v.OnPremiseConfiguration.unwrap()
+        parts.append("\"OnPremiseConfiguration\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.UseChangeLog.is_some():
+        auto u3 = v.UseChangeLog.unwrap()
+        parts.append("\"UseChangeLog\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.GitHubDocumentCrawlProperties.is_some():
+        auto u4 = v.GitHubDocumentCrawlProperties.unwrap()
+        parts.append("\"GitHubDocumentCrawlProperties\":" + u4.to_json())
+    if v.RepositoryFilter.is_some():
+        auto u5 = v.RepositoryFilter.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(kendra_json_str(x6))
+        parts.append("\"RepositoryFilter\":" + kendra_json_arr(e6))
+    if v.InclusionFolderNamePatterns.is_some():
+        auto u7 = v.InclusionFolderNamePatterns.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(kendra_json_str(x8))
+        parts.append("\"InclusionFolderNamePatterns\":" + kendra_json_arr(e8))
+    if v.InclusionFileTypePatterns.is_some():
+        auto u9 = v.InclusionFileTypePatterns.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(kendra_json_str(x10))
+        parts.append("\"InclusionFileTypePatterns\":" + kendra_json_arr(e10))
+    if v.InclusionFileNamePatterns.is_some():
+        auto u11 = v.InclusionFileNamePatterns.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(kendra_json_str(x12))
+        parts.append("\"InclusionFileNamePatterns\":" + kendra_json_arr(e12))
+    if v.ExclusionFolderNamePatterns.is_some():
+        auto u13 = v.ExclusionFolderNamePatterns.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(kendra_json_str(x14))
+        parts.append("\"ExclusionFolderNamePatterns\":" + kendra_json_arr(e14))
+    if v.ExclusionFileTypePatterns.is_some():
+        auto u15 = v.ExclusionFileTypePatterns.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(kendra_json_str(x16))
+        parts.append("\"ExclusionFileTypePatterns\":" + kendra_json_arr(e16))
+    if v.ExclusionFileNamePatterns.is_some():
+        auto u17 = v.ExclusionFileNamePatterns.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(kendra_json_str(x18))
+        parts.append("\"ExclusionFileNamePatterns\":" + kendra_json_arr(e18))
+    if v.VpcConfiguration.is_some():
+        auto u19 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u19))
+    if v.GitHubRepositoryConfigurationFieldMappings.is_some():
+        auto u20 = v.GitHubRepositoryConfigurationFieldMappings.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"GitHubRepositoryConfigurationFieldMappings\":" + kendra_json_arr(e21))
+    if v.GitHubCommitConfigurationFieldMappings.is_some():
+        auto u22 = v.GitHubCommitConfigurationFieldMappings.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"GitHubCommitConfigurationFieldMappings\":" + kendra_json_arr(e23))
+    if v.GitHubIssueDocumentConfigurationFieldMappings.is_some():
+        auto u24 = v.GitHubIssueDocumentConfigurationFieldMappings.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"GitHubIssueDocumentConfigurationFieldMappings\":" + kendra_json_arr(e25))
+    if v.GitHubIssueCommentConfigurationFieldMappings.is_some():
+        auto u26 = v.GitHubIssueCommentConfigurationFieldMappings.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"GitHubIssueCommentConfigurationFieldMappings\":" + kendra_json_arr(e27))
+    if v.GitHubIssueAttachmentConfigurationFieldMappings.is_some():
+        auto u28 = v.GitHubIssueAttachmentConfigurationFieldMappings.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"GitHubIssueAttachmentConfigurationFieldMappings\":" + kendra_json_arr(e29))
+    if v.GitHubPullRequestCommentConfigurationFieldMappings.is_some():
+        auto u30 = v.GitHubPullRequestCommentConfigurationFieldMappings.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"GitHubPullRequestCommentConfigurationFieldMappings\":" + kendra_json_arr(e31))
+    if v.GitHubPullRequestDocumentConfigurationFieldMappings.is_some():
+        auto u32 = v.GitHubPullRequestDocumentConfigurationFieldMappings.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"GitHubPullRequestDocumentConfigurationFieldMappings\":" + kendra_json_arr(e33))
+    if v.GitHubPullRequestDocumentAttachmentConfigurationFieldMappings.is_some():
+        auto u34 = v.GitHubPullRequestDocumentAttachmentConfigurationFieldMappings.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"GitHubPullRequestDocumentAttachmentConfigurationFieldMappings\":" + kendra_json_arr(e35))
+    return kendra_json_obj(parts)
+
+# Serialize GoogleDriveConfiguration to a compact JSON object (declaration order).
+def google_drive_configuration_to_json(GoogleDriveConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.InclusionPatterns.is_some():
+        auto u0 = v.InclusionPatterns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kendra_json_str(x1))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e1))
+    if v.ExclusionPatterns.is_some():
+        auto u2 = v.ExclusionPatterns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e3))
+    if v.FieldMappings.is_some():
+        auto u4 = v.FieldMappings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e5))
+    if v.ExcludeMimeTypes.is_some():
+        auto u6 = v.ExcludeMimeTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(kendra_json_str(x7))
+        parts.append("\"ExcludeMimeTypes\":" + kendra_json_arr(e7))
+    if v.ExcludeUserAccounts.is_some():
+        auto u8 = v.ExcludeUserAccounts.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(kendra_json_str(x9))
+        parts.append("\"ExcludeUserAccounts\":" + kendra_json_arr(e9))
+    if v.ExcludeSharedDrives.is_some():
+        auto u10 = v.ExcludeSharedDrives.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(kendra_json_str(x11))
+        parts.append("\"ExcludeSharedDrives\":" + kendra_json_arr(e11))
+    return kendra_json_obj(parts)
+
+# Serialize GroupMembers to a compact JSON object (declaration order).
+def group_members_to_json(GroupMembers v) -> str:
+    list[str] parts = []
+    if v.MemberGroups.is_some():
+        auto u0 = v.MemberGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"MemberGroups\":" + kendra_json_arr(e1))
+    if v.MemberUsers.is_some():
+        auto u2 = v.MemberUsers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MemberUsers\":" + kendra_json_arr(e3))
+    if v.S3PathforGroupMembers.is_some():
+        auto u4 = v.S3PathforGroupMembers.unwrap()
+        parts.append("\"S3PathforGroupMembers\":" + u4.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize HierarchicalPrincipal to a compact JSON object (declaration order).
+def hierarchical_principal_to_json(HierarchicalPrincipal v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PrincipalList:
+        e0.append(x0.to_json())
+    parts.append("\"PrincipalList\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize HookConfiguration to a compact JSON object (declaration order).
+def hook_configuration_to_json(HookConfiguration v) -> str:
+    list[str] parts = []
+    if v.InvocationCondition.is_some():
+        auto u0 = v.InvocationCondition.unwrap()
+        parts.append("\"InvocationCondition\":" + document_attribute_condition_to_json(u0))
+    parts.append("\"LambdaArn\":" + kendra_json_str(v.LambdaArn))
+    parts.append("\"S3Bucket\":" + kendra_json_str(v.S3Bucket))
+    return kendra_json_obj(parts)
+
+# Serialize InlineCustomDocumentEnrichmentConfiguration to a compact JSON object (declaration order).
+def inline_custom_document_enrichment_configuration_to_json(InlineCustomDocumentEnrichmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.Condition.is_some():
+        auto u0 = v.Condition.unwrap()
+        parts.append("\"Condition\":" + document_attribute_condition_to_json(u0))
+    if v.Target.is_some():
+        auto u1 = v.Target.unwrap()
+        parts.append("\"Target\":" + document_attribute_target_to_json(u1))
+    if v.DocumentContentDeletion.is_some():
+        auto u2 = v.DocumentContentDeletion.unwrap()
+        parts.append("\"DocumentContentDeletion\":" + json.dumps(JsonValue.Bool(u2)))
+    return kendra_json_obj(parts)
+
+# Serialize JiraConfiguration to a compact JSON object (declaration order).
+def jira_configuration_to_json(JiraConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"JiraAccountUrl\":" + kendra_json_str(v.JiraAccountUrl))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.UseChangeLog.is_some():
+        auto u0 = v.UseChangeLog.unwrap()
+        parts.append("\"UseChangeLog\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Project.is_some():
+        auto u1 = v.Project.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kendra_json_str(x2))
+        parts.append("\"Project\":" + kendra_json_arr(e2))
+    if v.IssueType.is_some():
+        auto u3 = v.IssueType.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"IssueType\":" + kendra_json_arr(e4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(kendra_json_str(x6))
+        parts.append("\"Status\":" + kendra_json_arr(e6))
+    if v.IssueSubEntityFilter.is_some():
+        auto u7 = v.IssueSubEntityFilter.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"IssueSubEntityFilter\":" + kendra_json_arr(e8))
+    if v.AttachmentFieldMappings.is_some():
+        auto u9 = v.AttachmentFieldMappings.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"AttachmentFieldMappings\":" + kendra_json_arr(e10))
+    if v.CommentFieldMappings.is_some():
+        auto u11 = v.CommentFieldMappings.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"CommentFieldMappings\":" + kendra_json_arr(e12))
+    if v.IssueFieldMappings.is_some():
+        auto u13 = v.IssueFieldMappings.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"IssueFieldMappings\":" + kendra_json_arr(e14))
+    if v.ProjectFieldMappings.is_some():
+        auto u15 = v.ProjectFieldMappings.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"ProjectFieldMappings\":" + kendra_json_arr(e16))
+    if v.WorkLogFieldMappings.is_some():
+        auto u17 = v.WorkLogFieldMappings.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"WorkLogFieldMappings\":" + kendra_json_arr(e18))
+    if v.InclusionPatterns.is_some():
+        auto u19 = v.InclusionPatterns.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(kendra_json_str(x20))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e20))
+    if v.ExclusionPatterns.is_some():
+        auto u21 = v.ExclusionPatterns.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(kendra_json_str(x22))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e22))
+    if v.VpcConfiguration.is_some():
+        auto u23 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u23))
+    return kendra_json_obj(parts)
+
+# Serialize OneDriveConfiguration to a compact JSON object (declaration order).
+def one_drive_configuration_to_json(OneDriveConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"TenantDomain\":" + kendra_json_str(v.TenantDomain))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    parts.append("\"OneDriveUsers\":" + one_drive_users_to_json(v.OneDriveUsers))
+    if v.InclusionPatterns.is_some():
+        auto u0 = v.InclusionPatterns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kendra_json_str(x1))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e1))
+    if v.ExclusionPatterns.is_some():
+        auto u2 = v.ExclusionPatterns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e3))
+    if v.FieldMappings.is_some():
+        auto u4 = v.FieldMappings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e5))
+    if v.DisableLocalGroups.is_some():
+        auto u6 = v.DisableLocalGroups.unwrap()
+        parts.append("\"DisableLocalGroups\":" + json.dumps(JsonValue.Bool(u6)))
+    return kendra_json_obj(parts)
+
+# Serialize OneDriveUsers to a compact JSON object (declaration order).
+def one_drive_users_to_json(OneDriveUsers v) -> str:
+    list[str] parts = []
+    if v.OneDriveUserList.is_some():
+        auto u0 = v.OneDriveUserList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kendra_json_str(x1))
+        parts.append("\"OneDriveUserList\":" + kendra_json_arr(e1))
+    if v.OneDriveUserS3Path.is_some():
+        auto u2 = v.OneDriveUserS3Path.unwrap()
+        parts.append("\"OneDriveUserS3Path\":" + u2.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize PutPrincipalMappingRequest to a compact JSON object (declaration order).
+def put_principal_mapping_request_to_json(PutPrincipalMappingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.DataSourceId.is_some():
+        auto u0 = v.DataSourceId.unwrap()
+        parts.append("\"DataSourceId\":" + kendra_json_str(u0))
+    parts.append("\"GroupId\":" + kendra_json_str(v.GroupId))
+    parts.append("\"GroupMembers\":" + group_members_to_json(v.GroupMembers))
+    if v.OrderingId.is_some():
+        auto u1 = v.OrderingId.unwrap()
+        parts.append("\"OrderingId\":" + str(u1))
+    if v.RoleArn.is_some():
+        auto u2 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u2))
+    return kendra_json_obj(parts)
+
+# Serialize QueryRequest to a compact JSON object (declaration order).
+def query_request_to_json(QueryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.QueryText.is_some():
+        auto u0 = v.QueryText.unwrap()
+        parts.append("\"QueryText\":" + kendra_json_str(u0))
+    if v.AttributeFilter.is_some():
+        auto u1 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + attribute_filter_to_json(u1))
+    if v.Facets.is_some():
+        auto u2 = v.Facets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(facet_to_json(x3))
+        parts.append("\"Facets\":" + kendra_json_arr(e3))
+    if v.RequestedDocumentAttributes.is_some():
+        auto u4 = v.RequestedDocumentAttributes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kendra_json_str(x5))
+        parts.append("\"RequestedDocumentAttributes\":" + kendra_json_arr(e5))
+    if v.QueryResultTypeFilter.is_some():
+        auto u6 = v.QueryResultTypeFilter.unwrap()
+        parts.append("\"QueryResultTypeFilter\":" + u6.to_json())
+    if v.DocumentRelevanceOverrideConfigurations.is_some():
+        auto u7 = v.DocumentRelevanceOverrideConfigurations.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(document_relevance_configuration_to_json(x8))
+        parts.append("\"DocumentRelevanceOverrideConfigurations\":" + kendra_json_arr(e8))
+    if v.PageNumber.is_some():
+        auto u9 = v.PageNumber.unwrap()
+        parts.append("\"PageNumber\":" + str(u9))
+    if v.PageSize.is_some():
+        auto u10 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u10))
+    if v.SortingConfiguration.is_some():
+        auto u11 = v.SortingConfiguration.unwrap()
+        parts.append("\"SortingConfiguration\":" + u11.to_json())
+    if v.SortingConfigurations.is_some():
+        auto u12 = v.SortingConfigurations.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"SortingConfigurations\":" + kendra_json_arr(e13))
+    if v.UserContext.is_some():
+        auto u14 = v.UserContext.unwrap()
+        parts.append("\"UserContext\":" + user_context_to_json(u14))
+    if v.VisitorId.is_some():
+        auto u15 = v.VisitorId.unwrap()
+        parts.append("\"VisitorId\":" + kendra_json_str(u15))
+    if v.SpellCorrectionConfiguration.is_some():
+        auto u16 = v.SpellCorrectionConfiguration.unwrap()
+        parts.append("\"SpellCorrectionConfiguration\":" + u16.to_json())
+    if v.CollapseConfiguration.is_some():
+        auto u17 = v.CollapseConfiguration.unwrap()
+        parts.append("\"CollapseConfiguration\":" + collapse_configuration_to_json(u17))
+    return kendra_json_obj(parts)
+
+# Serialize QuipConfiguration to a compact JSON object (declaration order).
+def quip_configuration_to_json(QuipConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Domain\":" + kendra_json_str(v.Domain))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.CrawlFileComments.is_some():
+        auto u0 = v.CrawlFileComments.unwrap()
+        parts.append("\"CrawlFileComments\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.CrawlChatRooms.is_some():
+        auto u1 = v.CrawlChatRooms.unwrap()
+        parts.append("\"CrawlChatRooms\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.CrawlAttachments.is_some():
+        auto u2 = v.CrawlAttachments.unwrap()
+        parts.append("\"CrawlAttachments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.FolderIds.is_some():
+        auto u3 = v.FolderIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"FolderIds\":" + kendra_json_arr(e4))
+    if v.ThreadFieldMappings.is_some():
+        auto u5 = v.ThreadFieldMappings.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ThreadFieldMappings\":" + kendra_json_arr(e6))
+    if v.MessageFieldMappings.is_some():
+        auto u7 = v.MessageFieldMappings.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"MessageFieldMappings\":" + kendra_json_arr(e8))
+    if v.AttachmentFieldMappings.is_some():
+        auto u9 = v.AttachmentFieldMappings.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"AttachmentFieldMappings\":" + kendra_json_arr(e10))
+    if v.InclusionPatterns.is_some():
+        auto u11 = v.InclusionPatterns.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(kendra_json_str(x12))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e12))
+    if v.ExclusionPatterns.is_some():
+        auto u13 = v.ExclusionPatterns.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(kendra_json_str(x14))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e14))
+    if v.VpcConfiguration.is_some():
+        auto u15 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u15))
+    return kendra_json_obj(parts)
+
+# Serialize Relevance to a compact JSON object (declaration order).
+def relevance_to_json(Relevance v) -> str:
+    list[str] parts = []
+    if v.Freshness.is_some():
+        auto u0 = v.Freshness.unwrap()
+        parts.append("\"Freshness\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Importance.is_some():
+        auto u1 = v.Importance.unwrap()
+        parts.append("\"Importance\":" + str(u1))
+    if v.Duration.is_some():
+        auto u2 = v.Duration.unwrap()
+        parts.append("\"Duration\":" + kendra_json_str(u2))
+    if v.RankOrder.is_some():
+        auto u3 = v.RankOrder.unwrap()
+        parts.append("\"RankOrder\":" + u3.to_json())
+    if v.ValueImportanceMap.is_some():
+        auto u4 = v.ValueImportanceMap.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(kendra_json_str(k5) + ":" + str(u4[k5]))
+        parts.append("\"ValueImportanceMap\":" + kendra_json_obj(m5))
+    return kendra_json_obj(parts)
+
+# Serialize RetrieveRequest to a compact JSON object (declaration order).
+def retrieve_request_to_json(RetrieveRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"QueryText\":" + kendra_json_str(v.QueryText))
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + attribute_filter_to_json(u0))
+    if v.RequestedDocumentAttributes.is_some():
+        auto u1 = v.RequestedDocumentAttributes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kendra_json_str(x2))
+        parts.append("\"RequestedDocumentAttributes\":" + kendra_json_arr(e2))
+    if v.DocumentRelevanceOverrideConfigurations.is_some():
+        auto u3 = v.DocumentRelevanceOverrideConfigurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(document_relevance_configuration_to_json(x4))
+        parts.append("\"DocumentRelevanceOverrideConfigurations\":" + kendra_json_arr(e4))
+    if v.PageNumber.is_some():
+        auto u5 = v.PageNumber.unwrap()
+        parts.append("\"PageNumber\":" + str(u5))
+    if v.PageSize.is_some():
+        auto u6 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u6))
+    if v.UserContext.is_some():
+        auto u7 = v.UserContext.unwrap()
+        parts.append("\"UserContext\":" + user_context_to_json(u7))
+    return kendra_json_obj(parts)
+
+# Serialize S3DataSourceConfiguration to a compact JSON object (declaration order).
+def s3_data_source_configuration_to_json(S3DataSourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"BucketName\":" + kendra_json_str(v.BucketName))
+    if v.InclusionPrefixes.is_some():
+        auto u0 = v.InclusionPrefixes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kendra_json_str(x1))
+        parts.append("\"InclusionPrefixes\":" + kendra_json_arr(e1))
+    if v.InclusionPatterns.is_some():
+        auto u2 = v.InclusionPatterns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e3))
+    if v.ExclusionPatterns.is_some():
+        auto u4 = v.ExclusionPatterns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kendra_json_str(x5))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e5))
+    if v.DocumentsMetadataConfiguration.is_some():
+        auto u6 = v.DocumentsMetadataConfiguration.unwrap()
+        parts.append("\"DocumentsMetadataConfiguration\":" + u6.to_json())
+    if v.AccessControlListConfiguration.is_some():
+        auto u7 = v.AccessControlListConfiguration.unwrap()
+        parts.append("\"AccessControlListConfiguration\":" + u7.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceChatterFeedConfiguration to a compact JSON object (declaration order).
+def salesforce_chatter_feed_configuration_to_json(SalesforceChatterFeedConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentDataFieldName\":" + kendra_json_str(v.DocumentDataFieldName))
+    if v.DocumentTitleFieldName.is_some():
+        auto u0 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u0))
+    if v.FieldMappings.is_some():
+        auto u1 = v.FieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e2))
+    if v.IncludeFilterTypes.is_some():
+        auto u3 = v.IncludeFilterTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"IncludeFilterTypes\":" + kendra_json_arr(e4))
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceConfiguration to a compact JSON object (declaration order).
+def salesforce_configuration_to_json(SalesforceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ServerUrl\":" + kendra_json_str(v.ServerUrl))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.StandardObjectConfigurations.is_some():
+        auto u0 = v.StandardObjectConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(salesforce_standard_object_configuration_to_json(x1))
+        parts.append("\"StandardObjectConfigurations\":" + kendra_json_arr(e1))
+    if v.KnowledgeArticleConfiguration.is_some():
+        auto u2 = v.KnowledgeArticleConfiguration.unwrap()
+        parts.append("\"KnowledgeArticleConfiguration\":" + salesforce_knowledge_article_configuration_to_json(u2))
+    if v.ChatterFeedConfiguration.is_some():
+        auto u3 = v.ChatterFeedConfiguration.unwrap()
+        parts.append("\"ChatterFeedConfiguration\":" + salesforce_chatter_feed_configuration_to_json(u3))
+    if v.CrawlAttachments.is_some():
+        auto u4 = v.CrawlAttachments.unwrap()
+        parts.append("\"CrawlAttachments\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.StandardObjectAttachmentConfiguration.is_some():
+        auto u5 = v.StandardObjectAttachmentConfiguration.unwrap()
+        parts.append("\"StandardObjectAttachmentConfiguration\":" + salesforce_standard_object_attachment_configuration_to_json(u5))
+    if v.IncludeAttachmentFilePatterns.is_some():
+        auto u6 = v.IncludeAttachmentFilePatterns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(kendra_json_str(x7))
+        parts.append("\"IncludeAttachmentFilePatterns\":" + kendra_json_arr(e7))
+    if v.ExcludeAttachmentFilePatterns.is_some():
+        auto u8 = v.ExcludeAttachmentFilePatterns.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(kendra_json_str(x9))
+        parts.append("\"ExcludeAttachmentFilePatterns\":" + kendra_json_arr(e9))
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceCustomKnowledgeArticleTypeConfiguration to a compact JSON object (declaration order).
+def salesforce_custom_knowledge_article_type_configuration_to_json(SalesforceCustomKnowledgeArticleTypeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + kendra_json_str(v.Name))
+    parts.append("\"DocumentDataFieldName\":" + kendra_json_str(v.DocumentDataFieldName))
+    if v.DocumentTitleFieldName.is_some():
+        auto u0 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u0))
+    if v.FieldMappings.is_some():
+        auto u1 = v.FieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e2))
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceKnowledgeArticleConfiguration to a compact JSON object (declaration order).
+def salesforce_knowledge_article_configuration_to_json(SalesforceKnowledgeArticleConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.IncludedStates:
+        e0.append(x0.to_json())
+    parts.append("\"IncludedStates\":" + kendra_json_arr(e0))
+    if v.StandardKnowledgeArticleTypeConfiguration.is_some():
+        auto u1 = v.StandardKnowledgeArticleTypeConfiguration.unwrap()
+        parts.append("\"StandardKnowledgeArticleTypeConfiguration\":" + salesforce_standard_knowledge_article_type_configuration_to_json(u1))
+    if v.CustomKnowledgeArticleTypeConfigurations.is_some():
+        auto u2 = v.CustomKnowledgeArticleTypeConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(salesforce_custom_knowledge_article_type_configuration_to_json(x3))
+        parts.append("\"CustomKnowledgeArticleTypeConfigurations\":" + kendra_json_arr(e3))
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceStandardKnowledgeArticleTypeConfiguration to a compact JSON object (declaration order).
+def salesforce_standard_knowledge_article_type_configuration_to_json(SalesforceStandardKnowledgeArticleTypeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentDataFieldName\":" + kendra_json_str(v.DocumentDataFieldName))
+    if v.DocumentTitleFieldName.is_some():
+        auto u0 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u0))
+    if v.FieldMappings.is_some():
+        auto u1 = v.FieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e2))
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceStandardObjectAttachmentConfiguration to a compact JSON object (declaration order).
+def salesforce_standard_object_attachment_configuration_to_json(SalesforceStandardObjectAttachmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.DocumentTitleFieldName.is_some():
+        auto u0 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u0))
+    if v.FieldMappings.is_some():
+        auto u1 = v.FieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e2))
+    return kendra_json_obj(parts)
+
+# Serialize SalesforceStandardObjectConfiguration to a compact JSON object (declaration order).
+def salesforce_standard_object_configuration_to_json(SalesforceStandardObjectConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    parts.append("\"DocumentDataFieldName\":" + kendra_json_str(v.DocumentDataFieldName))
+    if v.DocumentTitleFieldName.is_some():
+        auto u0 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u0))
+    if v.FieldMappings.is_some():
+        auto u1 = v.FieldMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e2))
+    return kendra_json_obj(parts)
+
+# Serialize SeedUrlConfiguration to a compact JSON object (declaration order).
+def seed_url_configuration_to_json(SeedUrlConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SeedUrls:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"SeedUrls\":" + kendra_json_arr(e0))
+    if v.WebCrawlerMode.is_some():
+        auto u1 = v.WebCrawlerMode.unwrap()
+        parts.append("\"WebCrawlerMode\":" + u1.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize ServiceNowConfiguration to a compact JSON object (declaration order).
+def service_now_configuration_to_json(ServiceNowConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"HostUrl\":" + kendra_json_str(v.HostUrl))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    parts.append("\"ServiceNowBuildVersion\":" + v.ServiceNowBuildVersion.to_json())
+    if v.KnowledgeArticleConfiguration.is_some():
+        auto u0 = v.KnowledgeArticleConfiguration.unwrap()
+        parts.append("\"KnowledgeArticleConfiguration\":" + service_now_knowledge_article_configuration_to_json(u0))
+    if v.ServiceCatalogConfiguration.is_some():
+        auto u1 = v.ServiceCatalogConfiguration.unwrap()
+        parts.append("\"ServiceCatalogConfiguration\":" + service_now_service_catalog_configuration_to_json(u1))
+    if v.AuthenticationType.is_some():
+        auto u2 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u2.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize ServiceNowKnowledgeArticleConfiguration to a compact JSON object (declaration order).
+def service_now_knowledge_article_configuration_to_json(ServiceNowKnowledgeArticleConfiguration v) -> str:
+    list[str] parts = []
+    if v.CrawlAttachments.is_some():
+        auto u0 = v.CrawlAttachments.unwrap()
+        parts.append("\"CrawlAttachments\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IncludeAttachmentFilePatterns.is_some():
+        auto u1 = v.IncludeAttachmentFilePatterns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kendra_json_str(x2))
+        parts.append("\"IncludeAttachmentFilePatterns\":" + kendra_json_arr(e2))
+    if v.ExcludeAttachmentFilePatterns.is_some():
+        auto u3 = v.ExcludeAttachmentFilePatterns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"ExcludeAttachmentFilePatterns\":" + kendra_json_arr(e4))
+    parts.append("\"DocumentDataFieldName\":" + kendra_json_str(v.DocumentDataFieldName))
+    if v.DocumentTitleFieldName.is_some():
+        auto u5 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u5))
+    if v.FieldMappings.is_some():
+        auto u6 = v.FieldMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e7))
+    if v.FilterQuery.is_some():
+        auto u8 = v.FilterQuery.unwrap()
+        parts.append("\"FilterQuery\":" + kendra_json_str(u8))
+    return kendra_json_obj(parts)
+
+# Serialize ServiceNowServiceCatalogConfiguration to a compact JSON object (declaration order).
+def service_now_service_catalog_configuration_to_json(ServiceNowServiceCatalogConfiguration v) -> str:
+    list[str] parts = []
+    if v.CrawlAttachments.is_some():
+        auto u0 = v.CrawlAttachments.unwrap()
+        parts.append("\"CrawlAttachments\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IncludeAttachmentFilePatterns.is_some():
+        auto u1 = v.IncludeAttachmentFilePatterns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kendra_json_str(x2))
+        parts.append("\"IncludeAttachmentFilePatterns\":" + kendra_json_arr(e2))
+    if v.ExcludeAttachmentFilePatterns.is_some():
+        auto u3 = v.ExcludeAttachmentFilePatterns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"ExcludeAttachmentFilePatterns\":" + kendra_json_arr(e4))
+    parts.append("\"DocumentDataFieldName\":" + kendra_json_str(v.DocumentDataFieldName))
+    if v.DocumentTitleFieldName.is_some():
+        auto u5 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u5))
+    if v.FieldMappings.is_some():
+        auto u6 = v.FieldMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e7))
+    return kendra_json_obj(parts)
+
+# Serialize SharePointConfiguration to a compact JSON object (declaration order).
+def share_point_configuration_to_json(SharePointConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SharePointVersion\":" + v.SharePointVersion.to_json())
+    list[str] e0 = []
+    for x0 in v.Urls:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"Urls\":" + kendra_json_arr(e0))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.CrawlAttachments.is_some():
+        auto u1 = v.CrawlAttachments.unwrap()
+        parts.append("\"CrawlAttachments\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.UseChangeLog.is_some():
+        auto u2 = v.UseChangeLog.unwrap()
+        parts.append("\"UseChangeLog\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.InclusionPatterns.is_some():
+        auto u3 = v.InclusionPatterns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e4))
+    if v.ExclusionPatterns.is_some():
+        auto u5 = v.ExclusionPatterns.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(kendra_json_str(x6))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e6))
+    if v.VpcConfiguration.is_some():
+        auto u7 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u7))
+    if v.FieldMappings.is_some():
+        auto u8 = v.FieldMappings.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e9))
+    if v.DocumentTitleFieldName.is_some():
+        auto u10 = v.DocumentTitleFieldName.unwrap()
+        parts.append("\"DocumentTitleFieldName\":" + kendra_json_str(u10))
+    if v.DisableLocalGroups.is_some():
+        auto u11 = v.DisableLocalGroups.unwrap()
+        parts.append("\"DisableLocalGroups\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.SslCertificateS3Path.is_some():
+        auto u12 = v.SslCertificateS3Path.unwrap()
+        parts.append("\"SslCertificateS3Path\":" + u12.to_json())
+    if v.AuthenticationType.is_some():
+        auto u13 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u13.to_json())
+    if v.ProxyConfiguration.is_some():
+        auto u14 = v.ProxyConfiguration.unwrap()
+        parts.append("\"ProxyConfiguration\":" + u14.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize SiteMapsConfiguration to a compact JSON object (declaration order).
+def site_maps_configuration_to_json(SiteMapsConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SiteMaps:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"SiteMaps\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize SlackConfiguration to a compact JSON object (declaration order).
+def slack_configuration_to_json(SlackConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"TeamId\":" + kendra_json_str(v.TeamId))
+    parts.append("\"SecretArn\":" + kendra_json_str(v.SecretArn))
+    if v.VpcConfiguration.is_some():
+        auto u0 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.SlackEntityList:
+        e1.append(x1.to_json())
+    parts.append("\"SlackEntityList\":" + kendra_json_arr(e1))
+    if v.UseChangeLog.is_some():
+        auto u2 = v.UseChangeLog.unwrap()
+        parts.append("\"UseChangeLog\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.CrawlBotMessage.is_some():
+        auto u3 = v.CrawlBotMessage.unwrap()
+        parts.append("\"CrawlBotMessage\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ExcludeArchived.is_some():
+        auto u4 = v.ExcludeArchived.unwrap()
+        parts.append("\"ExcludeArchived\":" + json.dumps(JsonValue.Bool(u4)))
+    parts.append("\"SinceCrawlDate\":" + kendra_json_str(v.SinceCrawlDate))
+    if v.LookBackPeriod.is_some():
+        auto u5 = v.LookBackPeriod.unwrap()
+        parts.append("\"LookBackPeriod\":" + str(u5))
+    if v.PrivateChannelFilter.is_some():
+        auto u6 = v.PrivateChannelFilter.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(kendra_json_str(x7))
+        parts.append("\"PrivateChannelFilter\":" + kendra_json_arr(e7))
+    if v.PublicChannelFilter.is_some():
+        auto u8 = v.PublicChannelFilter.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(kendra_json_str(x9))
+        parts.append("\"PublicChannelFilter\":" + kendra_json_arr(e9))
+    if v.InclusionPatterns.is_some():
+        auto u10 = v.InclusionPatterns.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(kendra_json_str(x11))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e11))
+    if v.ExclusionPatterns.is_some():
+        auto u12 = v.ExclusionPatterns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(kendra_json_str(x13))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e13))
+    if v.FieldMappings.is_some():
+        auto u14 = v.FieldMappings.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e15))
+    return kendra_json_obj(parts)
+
+# Serialize SubmitFeedbackRequest to a compact JSON object (declaration order).
+def submit_feedback_request_to_json(SubmitFeedbackRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"QueryId\":" + kendra_json_str(v.QueryId))
+    if v.ClickFeedbackItems.is_some():
+        auto u0 = v.ClickFeedbackItems.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ClickFeedbackItems\":" + kendra_json_arr(e1))
+    if v.RelevanceFeedbackItems.is_some():
+        auto u2 = v.RelevanceFeedbackItems.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"RelevanceFeedbackItems\":" + kendra_json_arr(e3))
+    return kendra_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + kendra_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + kendra_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(kendra_json_str(x0))
+    parts.append("\"TagKeys\":" + kendra_json_arr(e0))
+    return kendra_json_obj(parts)
+
+# Serialize UpdateAccessControlConfigurationRequest to a compact JSON object (declaration order).
+def update_access_control_configuration_request_to_json(UpdateAccessControlConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + kendra_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u1))
+    if v.AccessControlList.is_some():
+        auto u2 = v.AccessControlList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AccessControlList\":" + kendra_json_arr(e3))
+    if v.HierarchicalAccessControlList.is_some():
+        auto u4 = v.HierarchicalAccessControlList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(hierarchical_principal_to_json(x5))
+        parts.append("\"HierarchicalAccessControlList\":" + kendra_json_arr(e5))
+    return kendra_json_obj(parts)
+
+# Serialize UpdateDataSourceRequest to a compact JSON object (declaration order).
+def update_data_source_request_to_json(UpdateDataSourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + kendra_json_str(u0))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.Configuration.is_some():
+        auto u1 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + data_source_configuration_to_json(u1))
+    if v.VpcConfiguration.is_some():
+        auto u2 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + data_source_vpc_configuration_to_json(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u3))
+    if v.Schedule.is_some():
+        auto u4 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + kendra_json_str(u4))
+    if v.RoleArn.is_some():
+        auto u5 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u5))
+    if v.LanguageCode.is_some():
+        auto u6 = v.LanguageCode.unwrap()
+        parts.append("\"LanguageCode\":" + kendra_json_str(u6))
+    if v.CustomDocumentEnrichmentConfiguration.is_some():
+        auto u7 = v.CustomDocumentEnrichmentConfiguration.unwrap()
+        parts.append("\"CustomDocumentEnrichmentConfiguration\":" + custom_document_enrichment_configuration_to_json(u7))
+    return kendra_json_obj(parts)
+
+# Serialize UpdateExperienceRequest to a compact JSON object (declaration order).
+def update_experience_request_to_json(UpdateExperienceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + kendra_json_str(u0))
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.RoleArn.is_some():
+        auto u1 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u1))
+    if v.Configuration.is_some():
+        auto u2 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + experience_configuration_to_json(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u3))
+    return kendra_json_obj(parts)
+
+# Serialize UpdateFeaturedResultsSetRequest to a compact JSON object (declaration order).
+def update_featured_results_set_request_to_json(UpdateFeaturedResultsSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    parts.append("\"FeaturedResultsSetId\":" + kendra_json_str(v.FeaturedResultsSetId))
+    if v.FeaturedResultsSetName.is_some():
+        auto u0 = v.FeaturedResultsSetName.unwrap()
+        parts.append("\"FeaturedResultsSetName\":" + kendra_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u1))
+    if v.Status.is_some():
+        auto u2 = v.Status.unwrap()
+        parts.append("\"Status\":" + u2.to_json())
+    if v.QueryTexts.is_some():
+        auto u3 = v.QueryTexts.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kendra_json_str(x4))
+        parts.append("\"QueryTexts\":" + kendra_json_arr(e4))
+    if v.FeaturedDocuments.is_some():
+        auto u5 = v.FeaturedDocuments.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"FeaturedDocuments\":" + kendra_json_arr(e6))
+    return kendra_json_obj(parts)
+
+# Serialize UpdateIndexRequest to a compact JSON object (declaration order).
+def update_index_request_to_json(UpdateIndexRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + kendra_json_str(v.Id))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + kendra_json_str(u0))
+    if v.RoleArn.is_some():
+        auto u1 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + kendra_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + kendra_json_str(u2))
+    if v.DocumentMetadataConfigurationUpdates.is_some():
+        auto u3 = v.DocumentMetadataConfigurationUpdates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(document_metadata_configuration_to_json(x4))
+        parts.append("\"DocumentMetadataConfigurationUpdates\":" + kendra_json_arr(e4))
+    if v.CapacityUnits.is_some():
+        auto u5 = v.CapacityUnits.unwrap()
+        parts.append("\"CapacityUnits\":" + u5.to_json())
+    if v.UserTokenConfigurations.is_some():
+        auto u6 = v.UserTokenConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"UserTokenConfigurations\":" + kendra_json_arr(e7))
+    if v.UserContextPolicy.is_some():
+        auto u8 = v.UserContextPolicy.unwrap()
+        parts.append("\"UserContextPolicy\":" + u8.to_json())
+    if v.UserGroupResolutionConfiguration.is_some():
+        auto u9 = v.UserGroupResolutionConfiguration.unwrap()
+        parts.append("\"UserGroupResolutionConfiguration\":" + u9.to_json())
+    return kendra_json_obj(parts)
+
+# Serialize UpdateQuerySuggestionsConfigRequest to a compact JSON object (declaration order).
+def update_query_suggestions_config_request_to_json(UpdateQuerySuggestionsConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexId\":" + kendra_json_str(v.IndexId))
+    if v.Mode.is_some():
+        auto u0 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u0.to_json())
+    if v.QueryLogLookBackWindowInDays.is_some():
+        auto u1 = v.QueryLogLookBackWindowInDays.unwrap()
+        parts.append("\"QueryLogLookBackWindowInDays\":" + str(u1))
+    if v.IncludeQueriesWithoutUserInformation.is_some():
+        auto u2 = v.IncludeQueriesWithoutUserInformation.unwrap()
+        parts.append("\"IncludeQueriesWithoutUserInformation\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.MinimumNumberOfQueryingUsers.is_some():
+        auto u3 = v.MinimumNumberOfQueryingUsers.unwrap()
+        parts.append("\"MinimumNumberOfQueryingUsers\":" + str(u3))
+    if v.MinimumQueryCount.is_some():
+        auto u4 = v.MinimumQueryCount.unwrap()
+        parts.append("\"MinimumQueryCount\":" + str(u4))
+    if v.AttributeSuggestionsConfig.is_some():
+        auto u5 = v.AttributeSuggestionsConfig.unwrap()
+        parts.append("\"AttributeSuggestionsConfig\":" + attribute_suggestions_update_config_to_json(u5))
+    return kendra_json_obj(parts)
+
+# Serialize Urls to a compact JSON object (declaration order).
+def urls_to_json(Urls v) -> str:
+    list[str] parts = []
+    if v.SeedUrlConfiguration.is_some():
+        auto u0 = v.SeedUrlConfiguration.unwrap()
+        parts.append("\"SeedUrlConfiguration\":" + seed_url_configuration_to_json(u0))
+    if v.SiteMapsConfiguration.is_some():
+        auto u1 = v.SiteMapsConfiguration.unwrap()
+        parts.append("\"SiteMapsConfiguration\":" + site_maps_configuration_to_json(u1))
+    return kendra_json_obj(parts)
+
+# Serialize UserContext to a compact JSON object (declaration order).
+def user_context_to_json(UserContext v) -> str:
+    list[str] parts = []
+    if v.Token.is_some():
+        auto u0 = v.Token.unwrap()
+        parts.append("\"Token\":" + kendra_json_str(u0))
+    if v.UserId.is_some():
+        auto u1 = v.UserId.unwrap()
+        parts.append("\"UserId\":" + kendra_json_str(u1))
+    if v.Groups.is_some():
+        auto u2 = v.Groups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"Groups\":" + kendra_json_arr(e3))
+    if v.DataSourceGroups.is_some():
+        auto u4 = v.DataSourceGroups.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"DataSourceGroups\":" + kendra_json_arr(e5))
+    return kendra_json_obj(parts)
+
+# Serialize WebCrawlerConfiguration to a compact JSON object (declaration order).
+def web_crawler_configuration_to_json(WebCrawlerConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Urls\":" + urls_to_json(v.Urls))
+    if v.CrawlDepth.is_some():
+        auto u0 = v.CrawlDepth.unwrap()
+        parts.append("\"CrawlDepth\":" + str(u0))
+    if v.MaxLinksPerPage.is_some():
+        auto u1 = v.MaxLinksPerPage.unwrap()
+        parts.append("\"MaxLinksPerPage\":" + str(u1))
+    if v.MaxContentSizePerPageInMegaBytes.is_some():
+        auto u2 = v.MaxContentSizePerPageInMegaBytes.unwrap()
+        parts.append("\"MaxContentSizePerPageInMegaBytes\":" + str(u2))
+    if v.MaxUrlsPerMinuteCrawlRate.is_some():
+        auto u3 = v.MaxUrlsPerMinuteCrawlRate.unwrap()
+        parts.append("\"MaxUrlsPerMinuteCrawlRate\":" + str(u3))
+    if v.UrlInclusionPatterns.is_some():
+        auto u4 = v.UrlInclusionPatterns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kendra_json_str(x5))
+        parts.append("\"UrlInclusionPatterns\":" + kendra_json_arr(e5))
+    if v.UrlExclusionPatterns.is_some():
+        auto u6 = v.UrlExclusionPatterns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(kendra_json_str(x7))
+        parts.append("\"UrlExclusionPatterns\":" + kendra_json_arr(e7))
+    if v.ProxyConfiguration.is_some():
+        auto u8 = v.ProxyConfiguration.unwrap()
+        parts.append("\"ProxyConfiguration\":" + u8.to_json())
+    if v.AuthenticationConfiguration.is_some():
+        auto u9 = v.AuthenticationConfiguration.unwrap()
+        parts.append("\"AuthenticationConfiguration\":" + authentication_configuration_to_json(u9))
+    return kendra_json_obj(parts)
+
+# Serialize WorkDocsConfiguration to a compact JSON object (declaration order).
+def work_docs_configuration_to_json(WorkDocsConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationId\":" + kendra_json_str(v.OrganizationId))
+    if v.CrawlComments.is_some():
+        auto u0 = v.CrawlComments.unwrap()
+        parts.append("\"CrawlComments\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.UseChangeLog.is_some():
+        auto u1 = v.UseChangeLog.unwrap()
+        parts.append("\"UseChangeLog\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.InclusionPatterns.is_some():
+        auto u2 = v.InclusionPatterns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kendra_json_str(x3))
+        parts.append("\"InclusionPatterns\":" + kendra_json_arr(e3))
+    if v.ExclusionPatterns.is_some():
+        auto u4 = v.ExclusionPatterns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kendra_json_str(x5))
+        parts.append("\"ExclusionPatterns\":" + kendra_json_arr(e5))
+    if v.FieldMappings.is_some():
+        auto u6 = v.FieldMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"FieldMappings\":" + kendra_json_arr(e7))
+    return kendra_json_obj(parts)
 
 # A bound kendra client: credentials + region, threaded into every operation.
 struct kendraClient:
     core.Credentials creds
     str region
 
+    # AssociateEntitiesToExperience
+    # errors: AccessDeniedException, InternalServerException, ResourceAlreadyExistException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_entities_to_experience(self, AssociateEntitiesToExperienceRequest input) -> str:
+        auto body = associate_entities_to_experience_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "AssociateEntitiesToExperience", body)
+
+    # AssociatePersonasToEntities
+    # errors: AccessDeniedException, InternalServerException, ResourceAlreadyExistException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_personas_to_entities(self, AssociatePersonasToEntitiesRequest input) -> str:
+        auto body = associate_personas_to_entities_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "AssociatePersonasToEntities", body)
+
+    # BatchDeleteDocument
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_document(self, BatchDeleteDocumentRequest input) -> str:
+        auto body = batch_delete_document_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "BatchDeleteDocument", body)
+
+    # BatchDeleteFeaturedResultsSet
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_featured_results_set(self, BatchDeleteFeaturedResultsSetRequest input) -> str:
+        auto body = batch_delete_featured_results_set_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "BatchDeleteFeaturedResultsSet", body)
+
+    # BatchGetDocumentStatus
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_document_status(self, BatchGetDocumentStatusRequest input) -> str:
+        auto body = batch_get_document_status_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "BatchGetDocumentStatus", body)
+
+    # BatchPutDocument
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_put_document(self, BatchPutDocumentRequest input) -> str:
+        auto body = batch_put_document_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "BatchPutDocument", body)
+
     # ClearQuerySuggestions
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def clear_query_suggestions(self, ClearQuerySuggestionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "ClearQuerySuggestions", body)
+
+    # CreateAccessControlConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_access_control_configuration(self, CreateAccessControlConfigurationRequest input) -> str:
+        auto body = create_access_control_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateAccessControlConfiguration", body)
+
+    # CreateDataSource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceAlreadyExistException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_source(self, CreateDataSourceRequest input) -> str:
+        auto body = create_data_source_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateDataSource", body)
+
+    # CreateExperience
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_experience(self, CreateExperienceRequest input) -> str:
+        auto body = create_experience_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateExperience", body)
+
+    # CreateFaq
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_faq(self, CreateFaqRequest input) -> str:
+        auto body = create_faq_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateFaq", body)
+
+    # CreateFeaturedResultsSet
+    # errors: AccessDeniedException, ConflictException, FeaturedResultsConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_featured_results_set(self, CreateFeaturedResultsSetRequest input) -> str:
+        auto body = create_featured_results_set_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateFeaturedResultsSet", body)
+
+    # CreateIndex
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceAlreadyExistException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_index(self, CreateIndexRequest input) -> str:
+        auto body = create_index_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateIndex", body)
+
+    # CreateQuerySuggestionsBlockList
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_query_suggestions_block_list(self, CreateQuerySuggestionsBlockListRequest input) -> str:
+        auto body = create_query_suggestions_block_list_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateQuerySuggestionsBlockList", body)
+
+    # CreateThesaurus
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_thesaurus(self, CreateThesaurusRequest input) -> str:
+        auto body = create_thesaurus_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "CreateThesaurus", body)
 
     # DeleteAccessControlConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2864,6 +5278,24 @@ struct kendraClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "DescribeThesaurus", body)
 
+    # DisassociateEntitiesFromExperience
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_entities_from_experience(self, DisassociateEntitiesFromExperienceRequest input) -> str:
+        auto body = disassociate_entities_from_experience_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "DisassociateEntitiesFromExperience", body)
+
+    # DisassociatePersonasFromEntities
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_personas_from_entities(self, DisassociatePersonasFromEntitiesRequest input) -> str:
+        auto body = disassociate_personas_from_entities_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "DisassociatePersonasFromEntities", body)
+
+    # GetQuerySuggestions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def get_query_suggestions(self, GetQuerySuggestionsRequest input) -> str:
+        auto body = get_query_suggestions_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "GetQuerySuggestions", body)
+
     # GetSnapshots
     # errors: AccessDeniedException, InternalServerException, InvalidRequestException, ResourceNotFoundException
     def get_snapshots(self, GetSnapshotsRequest input) -> str:
@@ -2948,6 +5380,24 @@ struct kendraClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "ListThesauri", body)
 
+    # PutPrincipalMapping
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def put_principal_mapping(self, PutPrincipalMappingRequest input) -> str:
+        auto body = put_principal_mapping_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "PutPrincipalMapping", body)
+
+    # Query
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def query(self, QueryRequest input) -> str:
+        auto body = query_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "Query", body)
+
+    # Retrieve
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def retrieve(self, RetrieveRequest input) -> str:
+        auto body = retrieve_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "Retrieve", body)
+
     # StartDataSourceSyncJob
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_data_source_sync_job(self, StartDataSourceSyncJobRequest input) -> str:
@@ -2960,11 +5410,65 @@ struct kendraClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "StopDataSourceSyncJob", body)
 
+    # SubmitFeedback
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException, ValidationException
+    def submit_feedback(self, SubmitFeedbackRequest input) -> str:
+        auto body = submit_feedback_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "SubmitFeedback", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceUnavailableException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceUnavailableException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateAccessControlConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_access_control_configuration(self, UpdateAccessControlConfigurationRequest input) -> str:
+        auto body = update_access_control_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateAccessControlConfiguration", body)
+
+    # UpdateDataSource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_data_source(self, UpdateDataSourceRequest input) -> str:
+        auto body = update_data_source_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateDataSource", body)
+
+    # UpdateExperience
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_experience(self, UpdateExperienceRequest input) -> str:
+        auto body = update_experience_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateExperience", body)
+
+    # UpdateFeaturedResultsSet
+    # errors: AccessDeniedException, FeaturedResultsConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_featured_results_set(self, UpdateFeaturedResultsSetRequest input) -> str:
+        auto body = update_featured_results_set_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateFeaturedResultsSet", body)
+
+    # UpdateIndex
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_index(self, UpdateIndexRequest input) -> str:
+        auto body = update_index_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateIndex", body)
+
     # UpdateQuerySuggestionsBlockList
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_query_suggestions_block_list(self, UpdateQuerySuggestionsBlockListRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateQuerySuggestionsBlockList", body)
+
+    # UpdateQuerySuggestionsConfig
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_query_suggestions_config(self, UpdateQuerySuggestionsConfigRequest input) -> str:
+        auto body = update_query_suggestions_config_request_to_json(input)
+        return awsjson.awsjson_request_now(kendra_protocol(), self.creds, self.region, "UpdateQuerySuggestionsConfig", body)
 
     # UpdateThesaurus
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

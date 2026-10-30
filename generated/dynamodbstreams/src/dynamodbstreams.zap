@@ -14,12 +14,12 @@
 # Response.
 #
 # Coverage (v0, awsJson only): 4 operations — 4 with a generated method,
-#   0 skipped (input uses collections not yet serializable by derive).
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   23 structs (16 @derive(Json)), 5 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -79,8 +79,9 @@ enum StreamViewType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) SS: list[str], NS: list[str], BS: list[bytes], M: dict[str, AttributeValue], L: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SS: list[str], NS: list[str], BS: list[bytes], M: dict[str, AttributeValue], L: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValue:
     Optional[str] S
     Optional[str] N
@@ -100,8 +101,9 @@ struct DescribeStreamInput:
     Optional[str] ExclusiveStartShardId
     Optional[ShardFilter] ShardFilter
 
-# no @derive(Json): member(s) StreamDescription: StreamDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamDescription: StreamDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStreamOutput:
     Optional[StreamDescription] StreamDescription
 
@@ -114,8 +116,9 @@ struct GetRecordsInput:
     str ShardIterator
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecordsOutput:
     Optional[list[Record]] Records
     Optional[str] NextShardIterator
@@ -156,14 +159,16 @@ struct ListStreamsInput:
     Optional[int64] Limit
     Optional[str] ExclusiveStartStreamArn
 
-# no @derive(Json): member(s) Streams: list[Stream] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[Stream] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsOutput:
     Optional[list[Stream]] Streams
     Optional[str] LastEvaluatedStreamArn
 
-# no @derive(Json): member(s) dynamodb: StreamRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dynamodb: StreamRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Record:
     Optional[str] eventID
     Optional[OperationType] eventName
@@ -199,8 +204,9 @@ struct Stream:
     Optional[str] TableName
     Optional[str] StreamLabel
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Shards: list[Shard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Shards: list[Shard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamDescription:
     Optional[str] StreamArn
     Optional[str] StreamLabel
@@ -212,8 +218,9 @@ struct StreamDescription:
     Optional[list[Shard]] Shards
     Optional[str] LastEvaluatedShardId
 
-# no @derive(Json): member(s) Keys: dict[str, AttributeValue], NewImage: dict[str, AttributeValue], OldImage: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: dict[str, AttributeValue], NewImage: dict[str, AttributeValue], OldImage: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamRecord:
     Optional[DateTime] ApproximateCreationDateTime
     Optional[dict[str, AttributeValue]] Keys

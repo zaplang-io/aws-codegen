@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 9 operations — 6 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 9 operations — 8 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   27 structs (21 @derive(Json)), 2 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -128,8 +128,9 @@ struct ListEmailContactsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) emailContacts: list[EmailContact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) emailContacts: list[EmailContact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEmailContactsResponse:
     Optional[str] nextToken
     list[EmailContact] emailContacts
@@ -139,8 +140,9 @@ struct ListEmailContactsResponse:
 struct ListTagsForResourceRequest:
     str arn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -197,8 +199,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -247,8 +250,6 @@ def notifications_contacts_error_from_code(str code) -> NotificationsContactsErr
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateEmailContact (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # A bound NotificationsContacts client: credentials + region, threaded into every operation.
@@ -265,6 +266,23 @@ struct NotificationsContactsClient:
         labels["code"] = input.code
         auto b = binding.HttpBinding(method="PUT", path_template="/emailcontacts/{arn}/activate/{code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_contacts_service(), self.region, host)
+
+    # CreateEmailContact  POST /2022-09-19/emailcontacts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_email_contact(self, CreateEmailContactRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_contacts_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-09-19/emailcontacts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + notifications_contacts_json_str(input.name))
+        parts.append("\"emailAddress\":" + notifications_contacts_json_str(input.emailAddress))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(notifications_contacts_json_str(k1) + ":" + notifications_contacts_json_str(u0[k1]))
+            parts.append("\"tags\":" + notifications_contacts_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, notifications_contacts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, notifications_contacts_service(), self.region, host)
 
     # DeleteEmailContact  DELETE /emailcontacts/{arn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -313,6 +331,21 @@ struct NotificationsContactsClient:
         labels["arn"] = input.arn
         auto b = binding.HttpBinding(method="POST", path_template="/2022-10-31/emailcontacts/{arn}/activate/send", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_contacts_service(), self.region, host)
+
+    # TagResource  POST /tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_contacts_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(notifications_contacts_json_str(k0) + ":" + notifications_contacts_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + notifications_contacts_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, notifications_contacts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, notifications_contacts_service(), self.region, host)
 
     # Paginator for ListEmailContacts — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: emailContacts).

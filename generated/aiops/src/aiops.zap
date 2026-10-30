@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 7 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 11 operations — 10 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   32 structs (25 @derive(Json)), 1 enums, 8 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -117,8 +117,9 @@ struct GetInvestigationGroupPolicyResponse:
 struct GetInvestigationGroupRequest:
     str identifier
 
-# no @derive(Json): member(s) chatbotNotificationChannel: dict[str, list[str]], tagKeyBoundaries: list[str], crossAccountConfigurations: list[CrossAccountConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) chatbotNotificationChannel: dict[str, list[str]], tagKeyBoundaries: list[str], crossAccountConfigurations: list[CrossAccountConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInvestigationGroupResponse:
     Optional[str] createdBy
     Optional[int64] createdAt
@@ -149,14 +150,16 @@ struct ListInvestigationGroupsModel:
     Optional[str] arn
     Optional[str] name
 
-# no @derive(Json): member(s) investigationGroups: list[ListInvestigationGroupsModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) investigationGroups: list[ListInvestigationGroupsModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvestigationGroupsOutput:
     Optional[str] nextToken
     Optional[list[ListInvestigationGroupsModel]] investigationGroups
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -274,10 +277,7 @@ def aiops_error_from_code(str code) -> AIOpsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateInvestigationGroup (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateInvestigationGroup (document member `tagKeyBoundaries: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -291,6 +291,53 @@ struct PutInvestigationGroupPolicyDocument:
 struct AIOpsClient:
     core.Credentials creds
     str region
+
+    # CreateInvestigationGroup  POST /investigationGroups
+    # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_investigation_group(self, CreateInvestigationGroupInput input) -> str:
+        auto host = endpoints.regional_host(aiops_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/investigationGroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + aiops_json_str(input.name))
+        parts.append("\"roleArn\":" + aiops_json_str(input.roleArn))
+        if input.encryptionConfiguration.is_some():
+            auto u0 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u0.to_json())
+        if input.retentionInDays.is_some():
+            auto u1 = input.retentionInDays.unwrap()
+            parts.append("\"retentionInDays\":" + str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(aiops_json_str(k3) + ":" + aiops_json_str(u2[k3]))
+            parts.append("\"tags\":" + aiops_json_obj(m3))
+        if input.tagKeyBoundaries.is_some():
+            auto u4 = input.tagKeyBoundaries.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(aiops_json_str(x5))
+            parts.append("\"tagKeyBoundaries\":" + aiops_json_arr(e5))
+        if input.chatbotNotificationChannel.is_some():
+            auto u6 = input.chatbotNotificationChannel.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                list[str] e8 = []
+                for x8 in u6[k7]:
+                    e8.append(aiops_json_str(x8))
+                m7.append(aiops_json_str(k7) + ":" + aiops_json_arr(e8))
+            parts.append("\"chatbotNotificationChannel\":" + aiops_json_obj(m7))
+        if input.isCloudTrailEventHistoryEnabled.is_some():
+            auto u9 = input.isCloudTrailEventHistoryEnabled.unwrap()
+            parts.append("\"isCloudTrailEventHistoryEnabled\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.crossAccountConfigurations.is_some():
+            auto u10 = input.crossAccountConfigurations.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"crossAccountConfigurations\":" + aiops_json_arr(e11))
+        auto bp = restjson.rest_json_document(b, aiops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aiops_service(), self.region, host)
 
     # DeleteInvestigationGroup  DELETE /investigationGroups/{identifier}
     # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -358,6 +405,62 @@ struct AIOpsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutInvestigationGroupPolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, aiops_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(aiops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(aiops_json_str(k0) + ":" + aiops_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + aiops_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, aiops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aiops_service(), self.region, host)
+
+    # UpdateInvestigationGroup  PATCH /investigationGroups/{identifier}
+    # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_investigation_group(self, UpdateInvestigationGroupRequest input) -> str:
+        auto host = endpoints.regional_host(aiops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + aiops_json_str(u0))
+        if input.encryptionConfiguration.is_some():
+            auto u1 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u1.to_json())
+        if input.tagKeyBoundaries.is_some():
+            auto u2 = input.tagKeyBoundaries.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(aiops_json_str(x3))
+            parts.append("\"tagKeyBoundaries\":" + aiops_json_arr(e3))
+        if input.chatbotNotificationChannel.is_some():
+            auto u4 = input.chatbotNotificationChannel.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                list[str] e6 = []
+                for x6 in u4[k5]:
+                    e6.append(aiops_json_str(x6))
+                m5.append(aiops_json_str(k5) + ":" + aiops_json_arr(e6))
+            parts.append("\"chatbotNotificationChannel\":" + aiops_json_obj(m5))
+        if input.isCloudTrailEventHistoryEnabled.is_some():
+            auto u7 = input.isCloudTrailEventHistoryEnabled.unwrap()
+            parts.append("\"isCloudTrailEventHistoryEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.crossAccountConfigurations.is_some():
+            auto u8 = input.crossAccountConfigurations.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"crossAccountConfigurations\":" + aiops_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, aiops_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, aiops_service(), self.region, host)
 
     # Paginator for ListInvestigationGroups — yields each Response page, threading the

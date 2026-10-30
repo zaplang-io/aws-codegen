@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 13 with a generated method,
-#   12 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 19 with a generated method,
+#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   95 structs (62 @derive(Json)), 7 enums, 5 error variants.
 #   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -134,15 +134,17 @@ struct CloudWatchMonitoringConfiguration:
     str logGroupName
     Optional[str] logStreamNamePrefix
 
-# no @derive(Json): member(s) properties: dict[str, str], configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, str], configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     str classification
     Optional[dict[str, str]] properties
     Optional[list[Configuration]] configurations
 
-# no @derive(Json): member(s) applicationConfiguration: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationConfiguration: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationOverrides:
     Optional[list[Configuration]] applicationConfiguration
     Optional[MonitoringConfiguration] monitoringConfiguration
@@ -280,8 +282,9 @@ struct DescribeJobRunRequest:
     str id
     str virtualClusterId
 
-# no @derive(Json): member(s) jobRun: JobRun not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobRun: JobRun not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobRunResponse:
     Optional[JobRun] jobRun
 
@@ -290,8 +293,9 @@ struct DescribeJobRunResponse:
 struct DescribeJobTemplateRequest:
     str id
 
-# no @derive(Json): member(s) jobTemplate: JobTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobTemplate: JobTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobTemplateResponse:
     Optional[JobTemplate] jobTemplate
 
@@ -301,8 +305,9 @@ struct DescribeManagedEndpointRequest:
     str id
     str virtualClusterId
 
-# no @derive(Json): member(s) endpoint: Endpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoint: Endpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeManagedEndpointResponse:
     Optional[Endpoint] endpoint
 
@@ -311,8 +316,9 @@ struct DescribeManagedEndpointResponse:
 struct DescribeSecurityConfigurationRequest:
     str id
 
-# no @derive(Json): member(s) securityConfiguration: SecurityConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityConfiguration: SecurityConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSecurityConfigurationResponse:
     Optional[SecurityConfiguration] securityConfiguration
 
@@ -321,8 +327,9 @@ struct DescribeSecurityConfigurationResponse:
 struct DescribeVirtualClusterRequest:
     str id
 
-# no @derive(Json): member(s) virtualCluster: VirtualCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualCluster: VirtualCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVirtualClusterResponse:
     Optional[VirtualCluster] virtualCluster
 
@@ -339,8 +346,9 @@ struct EksInfo:
 struct EncryptionConfiguration:
     Optional[InTransitEncryptionConfiguration] inTransitEncryptionConfiguration
 
-# no @derive(Json): member(s) configurationOverrides: ConfigurationOverrides, subnetIds: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationOverrides: ConfigurationOverrides, subnetIds: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Endpoint:
     Optional[str] id
     Optional[str] name
@@ -400,14 +408,16 @@ struct InTransitEncryptionConfiguration:
 struct InternalServerException:
     Optional[str] message
 
-# no @derive(Json): member(s) sparkSubmitJobDriver: SparkSubmitJobDriver not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sparkSubmitJobDriver: SparkSubmitJobDriver not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobDriver:
     Optional[SparkSubmitJobDriver] sparkSubmitJobDriver
     Optional[SparkSqlJobDriver] sparkSqlJobDriver
 
-# no @derive(Json): member(s) configurationOverrides: ConfigurationOverrides, jobDriver: JobDriver, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationOverrides: ConfigurationOverrides, jobDriver: JobDriver, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobRun:
     Optional[str] id
     Optional[str] name
@@ -428,8 +438,9 @@ struct JobRun:
     Optional[RetryPolicyConfiguration] retryPolicyConfiguration
     Optional[RetryPolicyExecution] retryPolicyExecution
 
-# no @derive(Json): member(s) tags: dict[str, str], jobTemplateData: JobTemplateData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], jobTemplateData: JobTemplateData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobTemplate:
     Optional[str] name
     Optional[str] id
@@ -441,8 +452,9 @@ struct JobTemplate:
     Optional[str] kmsKeyArn
     Optional[str] decryptionError
 
-# no @derive(Json): member(s) configurationOverrides: ParametricConfigurationOverrides, jobDriver: JobDriver, parameterConfiguration: dict[str, TemplateParameterConfiguration], jobTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationOverrides: ParametricConfigurationOverrides, jobDriver: JobDriver, parameterConfiguration: dict[str, TemplateParameterConfiguration], jobTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobTemplateData:
     str executionRoleArn
     str releaseLabel
@@ -468,8 +480,9 @@ struct ListJobRunsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobRuns: list[JobRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobRuns: list[JobRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobRunsResponse:
     Optional[list[JobRun]] jobRuns
     Optional[str] nextToken
@@ -482,8 +495,9 @@ struct ListJobTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) templates: list[JobTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[JobTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobTemplatesResponse:
     Optional[list[JobTemplate]] templates
     Optional[str] nextToken
@@ -499,8 +513,9 @@ struct ListManagedEndpointsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedEndpointsResponse:
     Optional[list[Endpoint]] endpoints
     Optional[str] nextToken
@@ -513,8 +528,9 @@ struct ListSecurityConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) securityConfigurations: list[SecurityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityConfigurations: list[SecurityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityConfigurationsResponse:
     Optional[list[SecurityConfiguration]] securityConfigurations
     Optional[str] nextToken
@@ -524,8 +540,9 @@ struct ListSecurityConfigurationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -541,8 +558,9 @@ struct ListVirtualClustersRequest:
     Optional[str] nextToken
     Optional[bool] eksAccessEntryIntegrated
 
-# no @derive(Json): member(s) virtualClusters: list[VirtualCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualClusters: list[VirtualCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualClustersResponse:
     Optional[list[VirtualCluster]] virtualClusters
     Optional[str] nextToken
@@ -565,8 +583,9 @@ struct ParametricCloudWatchMonitoringConfiguration:
     Optional[str] logGroupName
     Optional[str] logStreamNamePrefix
 
-# no @derive(Json): member(s) applicationConfiguration: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationConfiguration: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParametricConfigurationOverrides:
     Optional[list[Configuration]] applicationConfiguration
     Optional[ParametricMonitoringConfiguration] monitoringConfiguration
@@ -617,8 +636,9 @@ struct SecureNamespaceInfo:
     Optional[str] clusterId
     Optional[str] namespace
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityConfiguration:
     Optional[str] id
     Optional[str] name
@@ -638,8 +658,9 @@ struct SparkSqlJobDriver:
     Optional[str] entryPoint
     Optional[str] sparkSqlParameters
 
-# no @derive(Json): member(s) entryPointArguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entryPointArguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkSubmitJobDriver:
     str entryPoint
     Optional[list[str]] entryPointArguments
@@ -707,8 +728,9 @@ struct UpdateVirtualClusterRequest:
     Optional[SchedulerConfiguration] schedulerConfiguration
     str clientToken
 
-# no @derive(Json): member(s) virtualCluster: VirtualCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualCluster: VirtualCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVirtualClusterResponse:
     Optional[VirtualCluster] virtualCluster
 
@@ -716,8 +738,9 @@ struct UpdateVirtualClusterResponse:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualCluster:
     Optional[str] id
     Optional[str] name
@@ -763,17 +786,11 @@ def emr_containers_error_from_code(str code) -> EMR_containersError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateJobTemplate (document member `jobTemplateData: JobTemplateData` is not serializable by derive)
-#   CreateManagedEndpoint (document member `configurationOverrides: ConfigurationOverrides` is not serializable by derive)
-#   CreateSecurityConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateVirtualCluster (document member `tags: dict[str, str]` is not serializable by derive)
 #   ListJobRuns (httpQuery `createdBefore` has unsupported type DateTime)
 #   ListJobTemplates (httpQuery `createdAfter` has unsupported type DateTime)
 #   ListManagedEndpoints (httpQuery `createdBefore` has unsupported type DateTime)
 #   ListSecurityConfigurations (httpQuery `createdAfter` has unsupported type DateTime)
 #   ListVirtualClusters (httpQuery `createdAfter` has unsupported type DateTime)
-#   StartJobRun (document member `jobDriver: JobDriver` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -802,6 +819,131 @@ struct UpdateVirtualClusterDocument:
     Optional[SchedulerConfiguration] schedulerConfiguration
     str clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def emr_containers_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def emr_containers_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def emr_containers_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Configuration to a compact JSON object (declaration order).
+def configuration_to_json(Configuration v) -> str:
+    list[str] parts = []
+    parts.append("\"classification\":" + emr_containers_json_str(v.classification))
+    if v.properties.is_some():
+        auto u0 = v.properties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(emr_containers_json_str(k1) + ":" + emr_containers_json_str(u0[k1]))
+        parts.append("\"properties\":" + emr_containers_json_obj(m1))
+    if v.configurations.is_some():
+        auto u2 = v.configurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(configuration_to_json(x3))
+        parts.append("\"configurations\":" + emr_containers_json_arr(e3))
+    return emr_containers_json_obj(parts)
+
+# Serialize ConfigurationOverrides to a compact JSON object (declaration order).
+def configuration_overrides_to_json(ConfigurationOverrides v) -> str:
+    list[str] parts = []
+    if v.applicationConfiguration.is_some():
+        auto u0 = v.applicationConfiguration.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(configuration_to_json(x1))
+        parts.append("\"applicationConfiguration\":" + emr_containers_json_arr(e1))
+    if v.monitoringConfiguration.is_some():
+        auto u2 = v.monitoringConfiguration.unwrap()
+        parts.append("\"monitoringConfiguration\":" + u2.to_json())
+    return emr_containers_json_obj(parts)
+
+# Serialize JobDriver to a compact JSON object (declaration order).
+def job_driver_to_json(JobDriver v) -> str:
+    list[str] parts = []
+    if v.sparkSubmitJobDriver.is_some():
+        auto u0 = v.sparkSubmitJobDriver.unwrap()
+        parts.append("\"sparkSubmitJobDriver\":" + spark_submit_job_driver_to_json(u0))
+    if v.sparkSqlJobDriver.is_some():
+        auto u1 = v.sparkSqlJobDriver.unwrap()
+        parts.append("\"sparkSqlJobDriver\":" + u1.to_json())
+    return emr_containers_json_obj(parts)
+
+# Serialize JobTemplateData to a compact JSON object (declaration order).
+def job_template_data_to_json(JobTemplateData v) -> str:
+    list[str] parts = []
+    parts.append("\"executionRoleArn\":" + emr_containers_json_str(v.executionRoleArn))
+    parts.append("\"releaseLabel\":" + emr_containers_json_str(v.releaseLabel))
+    if v.configurationOverrides.is_some():
+        auto u0 = v.configurationOverrides.unwrap()
+        parts.append("\"configurationOverrides\":" + parametric_configuration_overrides_to_json(u0))
+    parts.append("\"jobDriver\":" + job_driver_to_json(v.jobDriver))
+    if v.parameterConfiguration.is_some():
+        auto u1 = v.parameterConfiguration.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(emr_containers_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"parameterConfiguration\":" + emr_containers_json_obj(m2))
+    if v.jobTags.is_some():
+        auto u3 = v.jobTags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(emr_containers_json_str(k4) + ":" + emr_containers_json_str(u3[k4]))
+        parts.append("\"jobTags\":" + emr_containers_json_obj(m4))
+    return emr_containers_json_obj(parts)
+
+# Serialize ParametricConfigurationOverrides to a compact JSON object (declaration order).
+def parametric_configuration_overrides_to_json(ParametricConfigurationOverrides v) -> str:
+    list[str] parts = []
+    if v.applicationConfiguration.is_some():
+        auto u0 = v.applicationConfiguration.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(configuration_to_json(x1))
+        parts.append("\"applicationConfiguration\":" + emr_containers_json_arr(e1))
+    if v.monitoringConfiguration.is_some():
+        auto u2 = v.monitoringConfiguration.unwrap()
+        parts.append("\"monitoringConfiguration\":" + u2.to_json())
+    return emr_containers_json_obj(parts)
+
+# Serialize SparkSubmitJobDriver to a compact JSON object (declaration order).
+def spark_submit_job_driver_to_json(SparkSubmitJobDriver v) -> str:
+    list[str] parts = []
+    parts.append("\"entryPoint\":" + emr_containers_json_str(v.entryPoint))
+    if v.entryPointArguments.is_some():
+        auto u0 = v.entryPointArguments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(emr_containers_json_str(x1))
+        parts.append("\"entryPointArguments\":" + emr_containers_json_arr(e1))
+    if v.sparkSubmitParameters.is_some():
+        auto u2 = v.sparkSubmitParameters.unwrap()
+        parts.append("\"sparkSubmitParameters\":" + emr_containers_json_str(u2))
+    return emr_containers_json_obj(parts)
+
 # A bound EMR_containers client: credentials + region, threaded into every operation.
 struct EMR_containersClient:
     core.Credentials creds
@@ -816,6 +958,106 @@ struct EMR_containersClient:
         labels["virtualClusterId"] = input.virtualClusterId
         auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
+
+    # CreateJobTemplate  POST /jobtemplates
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def create_job_template(self, CreateJobTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/jobtemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + emr_containers_json_str(input.name))
+        parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
+        parts.append("\"jobTemplateData\":" + job_template_data_to_json(input.jobTemplateData))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(emr_containers_json_str(k1) + ":" + emr_containers_json_str(u0[k1]))
+            parts.append("\"tags\":" + emr_containers_json_obj(m1))
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + emr_containers_json_str(u2))
+        auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
+
+    # CreateManagedEndpoint  POST /virtualclusters/{virtualClusterId}/endpoints
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def create_managed_endpoint(self, CreateManagedEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        dict[str, str] labels = {}
+        labels["virtualClusterId"] = input.virtualClusterId
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + emr_containers_json_str(input.name))
+        parts.append("\"type\":" + emr_containers_json_str(input.type))
+        parts.append("\"releaseLabel\":" + emr_containers_json_str(input.releaseLabel))
+        parts.append("\"executionRoleArn\":" + emr_containers_json_str(input.executionRoleArn))
+        if input.certificateArn.is_some():
+            auto u0 = input.certificateArn.unwrap()
+            parts.append("\"certificateArn\":" + emr_containers_json_str(u0))
+        if input.configurationOverrides.is_some():
+            auto u1 = input.configurationOverrides.unwrap()
+            parts.append("\"configurationOverrides\":" + configuration_overrides_to_json(u1))
+        parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(emr_containers_json_str(k3) + ":" + emr_containers_json_str(u2[k3]))
+            parts.append("\"tags\":" + emr_containers_json_obj(m3))
+        if input.sessionIdleTimeoutInMinutes.is_some():
+            auto u4 = input.sessionIdleTimeoutInMinutes.unwrap()
+            parts.append("\"sessionIdleTimeoutInMinutes\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
+
+    # CreateSecurityConfiguration  POST /securityconfigurations
+    # errors: InternalServerException, ValidationException
+    def create_security_configuration(self, CreateSecurityConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/securityconfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
+        parts.append("\"name\":" + emr_containers_json_str(input.name))
+        if input.containerProvider.is_some():
+            auto u0 = input.containerProvider.unwrap()
+            parts.append("\"containerProvider\":" + u0.to_json())
+        parts.append("\"securityConfigurationData\":" + input.securityConfigurationData.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(emr_containers_json_str(k2) + ":" + emr_containers_json_str(u1[k2]))
+            parts.append("\"tags\":" + emr_containers_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
+
+    # CreateVirtualCluster  POST /virtualclusters
+    # errors: EKSRequestThrottledException, InternalServerException, ResourceNotFoundException, ValidationException
+    def create_virtual_cluster(self, CreateVirtualClusterRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + emr_containers_json_str(input.name))
+        parts.append("\"containerProvider\":" + input.containerProvider.to_json())
+        parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(emr_containers_json_str(k1) + ":" + emr_containers_json_str(u0[k1]))
+            parts.append("\"tags\":" + emr_containers_json_obj(m1))
+        if input.securityConfigurationId.is_some():
+            auto u2 = input.securityConfigurationId.unwrap()
+            parts.append("\"securityConfigurationId\":" + emr_containers_json_str(u2))
+        if input.sessionEnabled.is_some():
+            auto u3 = input.sessionEnabled.unwrap()
+            parts.append("\"sessionEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.schedulerConfiguration.is_some():
+            auto u4 = input.schedulerConfiguration.unwrap()
+            parts.append("\"schedulerConfiguration\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
 
     # DeleteJobTemplate  DELETE /jobtemplates/{templateId}
     # errors: InternalServerException, ValidationException
@@ -921,6 +1163,66 @@ struct EMR_containersClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
+
+    # StartJobRun  POST /virtualclusters/{virtualClusterId}/jobruns
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def start_job_run(self, StartJobRunRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        dict[str, str] labels = {}
+        labels["virtualClusterId"] = input.virtualClusterId
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/jobruns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + emr_containers_json_str(u0))
+        parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
+        if input.executionRoleArn.is_some():
+            auto u1 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + emr_containers_json_str(u1))
+        if input.releaseLabel.is_some():
+            auto u2 = input.releaseLabel.unwrap()
+            parts.append("\"releaseLabel\":" + emr_containers_json_str(u2))
+        if input.jobDriver.is_some():
+            auto u3 = input.jobDriver.unwrap()
+            parts.append("\"jobDriver\":" + job_driver_to_json(u3))
+        if input.configurationOverrides.is_some():
+            auto u4 = input.configurationOverrides.unwrap()
+            parts.append("\"configurationOverrides\":" + configuration_overrides_to_json(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(emr_containers_json_str(k6) + ":" + emr_containers_json_str(u5[k6]))
+            parts.append("\"tags\":" + emr_containers_json_obj(m6))
+        if input.jobTemplateId.is_some():
+            auto u7 = input.jobTemplateId.unwrap()
+            parts.append("\"jobTemplateId\":" + emr_containers_json_str(u7))
+        if input.jobTemplateParameters.is_some():
+            auto u8 = input.jobTemplateParameters.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(emr_containers_json_str(k9) + ":" + emr_containers_json_str(u8[k9]))
+            parts.append("\"jobTemplateParameters\":" + emr_containers_json_obj(m9))
+        if input.retryPolicyConfiguration.is_some():
+            auto u10 = input.retryPolicyConfiguration.unwrap()
+            parts.append("\"retryPolicyConfiguration\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(emr_containers_json_str(k0) + ":" + emr_containers_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + emr_containers_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
 
     # UpdateVirtualCluster  PATCH /virtualclusters/{virtualClusterId}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 23 operations — 10 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 23 operations — 14 with a generated method,
+#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   71 structs (40 @derive(Json)), 6 enums, 6 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -101,13 +101,15 @@ struct AddNotificationChannelsRequest:
     list[Channel] channels
     str profilingGroupName
 
-# no @derive(Json): member(s) notificationConfiguration: NotificationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationConfiguration: NotificationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddNotificationChannelsResponse:
     Optional[NotificationConfiguration] notificationConfiguration
 
-# no @derive(Json): member(s) agentParameters: dict[AgentParameterField, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentParameters: dict[AgentParameterField, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentConfiguration:
     Optional[dict[AgentParameterField, str]] agentParameters
     int64 periodInSeconds
@@ -123,8 +125,9 @@ struct AggregatedProfileTime:
     @json(timestamp="iso8601")
     Optional[DateTime] start
 
-# no @derive(Json): member(s) instances: list[AnomalyInstance], metric: Metric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instances: list[AnomalyInstance], metric: Metric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Anomaly:
     list[AnomalyInstance] instances
     Metric metric
@@ -150,8 +153,9 @@ struct BatchGetFrameMetricDataRequest:
     # wire string of the AggregationPeriod enum (querystring binding)
     Optional[str] targetResolution
 
-# no @derive(Json): member(s) endTimes: list[TimestampStructure], frameMetricData: list[FrameMetricDatum], unprocessedEndTimes: dict[str, list[TimestampStructure]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endTimes: list[TimestampStructure], frameMetricData: list[FrameMetricDatum], unprocessedEndTimes: dict[str, list[TimestampStructure]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFrameMetricDataResponse:
     DateTime endTime
     list[TimestampStructure] endTimes
@@ -160,8 +164,9 @@ struct BatchGetFrameMetricDataResponse:
     DateTime startTime
     dict[str, list[TimestampStructure]] unprocessedEndTimes
 
-# no @derive(Json): member(s) eventPublishers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventPublishers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Channel:
     list[str] eventPublishers
     Optional[str] id
@@ -174,8 +179,9 @@ struct ConfigureAgentRequest:
     Optional[dict[MetadataField, str]] metadata
     str profilingGroupName
 
-# no @derive(Json): member(s) configuration: AgentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: AgentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigureAgentResponse:
     AgentConfiguration configuration
 
@@ -192,8 +198,9 @@ struct CreateProfilingGroupRequest:
     str profilingGroupName
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) profilingGroup: ProfilingGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profilingGroup: ProfilingGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProfilingGroupResponse:
     ProfilingGroupDescription profilingGroup
 
@@ -212,8 +219,9 @@ struct DeleteProfilingGroupResponse:
 struct DescribeProfilingGroupRequest:
     str profilingGroupName
 
-# no @derive(Json): member(s) profilingGroup: ProfilingGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profilingGroup: ProfilingGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProfilingGroupResponse:
     ProfilingGroupDescription profilingGroup
 
@@ -227,15 +235,17 @@ struct FindingsReportSummary:
     Optional[str] profilingGroupName
     Optional[int64] totalNumberOfFindings
 
-# no @derive(Json): member(s) threadStates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threadStates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FrameMetric:
     str frameName
     list[str] threadStates
     str type
 
-# no @derive(Json): member(s) frameMetric: FrameMetric, values: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) frameMetric: FrameMetric, values: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FrameMetricDatum:
     FrameMetric frameMetric
     list[float64] values
@@ -247,8 +257,9 @@ struct GetFindingsReportAccountSummaryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) reportSummaries: list[FindingsReportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportSummaries: list[FindingsReportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsReportAccountSummaryResponse:
     Optional[str] nextToken
     list[FindingsReportSummary] reportSummaries
@@ -258,8 +269,9 @@ struct GetFindingsReportAccountSummaryResponse:
 struct GetNotificationConfigurationRequest:
     str profilingGroupName
 
-# no @derive(Json): member(s) notificationConfiguration: NotificationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationConfiguration: NotificationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNotificationConfigurationResponse:
     NotificationConfiguration notificationConfiguration
 
@@ -297,8 +309,9 @@ struct GetRecommendationsRequest:
     str profilingGroupName
     DateTime startTime
 
-# no @derive(Json): member(s) anomalies: list[Anomaly], recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anomalies: list[Anomaly], recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationsResponse:
     list[Anomaly] anomalies
     DateTime profileEndTime
@@ -320,8 +333,9 @@ struct ListFindingsReportsRequest:
     str profilingGroupName
     DateTime startTime
 
-# no @derive(Json): member(s) findingsReportSummaries: list[FindingsReportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingsReportSummaries: list[FindingsReportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsReportsResponse:
     list[FindingsReportSummary] findingsReportSummaries
     Optional[str] nextToken
@@ -339,8 +353,9 @@ struct ListProfileTimesRequest:
     str profilingGroupName
     DateTime startTime
 
-# no @derive(Json): member(s) profileTimes: list[ProfileTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profileTimes: list[ProfileTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileTimesResponse:
     Optional[str] nextToken
     list[ProfileTime] profileTimes
@@ -352,8 +367,9 @@ struct ListProfilingGroupsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) profilingGroupNames: list[str], profilingGroups: list[ProfilingGroupDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profilingGroupNames: list[str], profilingGroups: list[ProfilingGroupDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfilingGroupsResponse:
     Optional[str] nextToken
     list[str] profilingGroupNames
@@ -364,8 +380,9 @@ struct ListProfilingGroupsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -375,20 +392,23 @@ struct Match:
     Optional[int64] targetFramesIndex
     Optional[float64] thresholdBreachValue
 
-# no @derive(Json): member(s) threadStates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threadStates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Metric:
     str frameName
     list[str] threadStates
     str type
 
-# no @derive(Json): member(s) channels: list[Channel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[Channel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationConfiguration:
     Optional[list[Channel]] channels
 
-# no @derive(Json): member(s) countersToAggregate: list[str], targetFrames: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) countersToAggregate: list[str], targetFrames: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Pattern:
     Optional[list[str]] countersToAggregate
     Optional[str] description
@@ -416,8 +436,9 @@ struct ProfileTime:
     @json(timestamp="iso8601")
     Optional[DateTime] start
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfilingGroupDescription:
     Optional[AgentOrchestrationConfig] agentOrchestrationConfig
     Optional[str] arn
@@ -449,8 +470,9 @@ struct PutPermissionResponse:
     str policy
     str revisionId
 
-# no @derive(Json): member(s) pattern: Pattern, topMatches: list[Match] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pattern: Pattern, topMatches: list[Match] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommendation:
     int64 allMatchesCount
     float64 allMatchesSum
@@ -465,8 +487,9 @@ struct RemoveNotificationChannelRequest:
     str channelId
     str profilingGroupName
 
-# no @derive(Json): member(s) notificationConfiguration: NotificationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationConfiguration: NotificationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveNotificationChannelResponse:
     Optional[NotificationConfiguration] notificationConfiguration
 
@@ -540,8 +563,9 @@ struct UpdateProfilingGroupRequest:
     AgentOrchestrationConfig agentOrchestrationConfig
     str profilingGroupName
 
-# no @derive(Json): member(s) profilingGroup: ProfilingGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profilingGroup: ProfilingGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProfilingGroupResponse:
     ProfilingGroupDescription profilingGroup
 
@@ -588,18 +612,14 @@ def codeguru_profiler_error_from_code(str code) -> CodeGuruProfilerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddNotificationChannels (document member `channels: list[Channel]` is not serializable by derive)
 #   BatchGetFrameMetricData (httpQuery `endTime` has unsupported type DateTime)
-#   ConfigureAgent (document member `metadata: dict[MetadataField, str]` is not serializable by derive)
-#   CreateProfilingGroup (document member `tags: dict[str, str]` is not serializable by derive)
+#   ConfigureAgent (document member `metadata: dict[MetadataField, str]` is not serializable)
 #   GetFindingsReportAccountSummary (httpQuery `dailyReportsOnly` has unsupported type bool)
 #   GetProfile (httpQuery `endTime` has unsupported type DateTime)
 #   GetRecommendations (httpQuery `endTime` has unsupported type DateTime)
 #   ListFindingsReports (httpQuery `dailyReportsOnly` has unsupported type bool)
 #   ListProfileTimes (httpQuery `endTime` has unsupported type DateTime)
 #   ListProfilingGroups (httpQuery `includeDescription` has unsupported type bool)
-#   PutPermission (document member `principals: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -620,10 +640,92 @@ struct UpdateProfilingGroupDocument:
     # document members of UpdateProfilingGroup
     AgentOrchestrationConfig agentOrchestrationConfig
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codeguru_profiler_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codeguru_profiler_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codeguru_profiler_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Channel to a compact JSON object (declaration order).
+def channel__to_json(Channel v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.eventPublishers:
+        e0.append(codeguru_profiler_json_str(x0))
+    parts.append("\"eventPublishers\":" + codeguru_profiler_json_arr(e0))
+    if v.id.is_some():
+        auto u1 = v.id.unwrap()
+        parts.append("\"id\":" + codeguru_profiler_json_str(u1))
+    parts.append("\"uri\":" + codeguru_profiler_json_str(v.uri))
+    return codeguru_profiler_json_obj(parts)
+
 # A bound CodeGuruProfiler client: credentials + region, threaded into every operation.
 struct CodeGuruProfilerClient:
     core.Credentials creds
     str region
+
+    # AddNotificationChannels  POST /profilingGroups/{profilingGroupName}/notificationConfiguration
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def add_notification_channels(self, AddNotificationChannelsRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profilingGroupName"] = input.profilingGroupName
+        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.channels:
+            e0.append(channel__to_json(x0))
+        parts.append("\"channels\":" + codeguru_profiler_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
+
+    # CreateProfilingGroup  POST /profilingGroups
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_profiling_group(self, CreateProfilingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] query = {}
+        query["clientToken"] = input.clientToken
+        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.agentOrchestrationConfig.is_some():
+            auto u0 = input.agentOrchestrationConfig.unwrap()
+            parts.append("\"agentOrchestrationConfig\":" + u0.to_json())
+        if input.computePlatform.is_some():
+            auto u1 = input.computePlatform.unwrap()
+            parts.append("\"computePlatform\":" + u1.to_json())
+        parts.append("\"profilingGroupName\":" + codeguru_profiler_json_str(input.profilingGroupName))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(codeguru_profiler_json_str(k3) + ":" + codeguru_profiler_json_str(u2[k3]))
+            parts.append("\"tags\":" + codeguru_profiler_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
 
     # DeleteProfilingGroup  DELETE /profilingGroups/{profilingGroupName}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -685,6 +787,25 @@ struct CodeGuruProfilerClient:
         auto bp = restjson.rest_json_raw_payload(b, str(input.agentProfile), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
 
+    # PutPermission  PUT /profilingGroups/{profilingGroupName}/policy/{actionGroup}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_permission(self, PutPermissionRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["actionGroup"] = input.actionGroup
+        labels["profilingGroupName"] = input.profilingGroupName
+        auto b = binding.HttpBinding(method="PUT", path_template="/profilingGroups/{profilingGroupName}/policy/{actionGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.principals:
+            e0.append(codeguru_profiler_json_str(x0))
+        parts.append("\"principals\":" + codeguru_profiler_json_arr(e0))
+        if input.revisionId.is_some():
+            auto u1 = input.revisionId.unwrap()
+            parts.append("\"revisionId\":" + codeguru_profiler_json_str(u1))
+        auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
+
     # RemoveNotificationChannel  DELETE /profilingGroups/{profilingGroupName}/notificationConfiguration/{channelId}
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def remove_notification_channel(self, RemoveNotificationChannelRequest input) -> str:
@@ -717,6 +838,21 @@ struct CodeGuruProfilerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/internal/profilingGroups/{profilingGroupName}/anomalies/{anomalyInstanceId}/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SubmitFeedbackDocument(comment=input.comment, type=input.type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(codeguru_profiler_json_str(k0) + ":" + codeguru_profiler_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + codeguru_profiler_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
 
     # UpdateProfilingGroup  PUT /profilingGroups/{profilingGroupName}

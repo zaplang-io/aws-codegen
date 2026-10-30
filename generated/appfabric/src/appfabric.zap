@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 26 operations — 19 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 26 operations — 25 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   84 structs (69 @derive(Json)), 9 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -173,8 +173,9 @@ struct BatchGetUserAccessTasksRequest:
     str appBundleIdentifier
     list[str] taskIdList
 
-# no @derive(Json): member(s) userAccessResultsList: list[UserAccessResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAccessResultsList: list[UserAccessResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetUserAccessTasksResponse:
     Optional[list[UserAccessResultItem]] userAccessResultsList
 
@@ -400,8 +401,9 @@ struct ListAppAuthorizationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) appAuthorizationSummaryList: list[AppAuthorizationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appAuthorizationSummaryList: list[AppAuthorizationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppAuthorizationsResponse:
     list[AppAuthorizationSummary] appAuthorizationSummaryList
     Optional[str] nextToken
@@ -412,8 +414,9 @@ struct ListAppBundlesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) appBundleSummaryList: list[AppBundleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appBundleSummaryList: list[AppBundleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppBundlesResponse:
     list[AppBundleSummary] appBundleSummaryList
     Optional[str] nextToken
@@ -426,8 +429,9 @@ struct ListIngestionDestinationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ingestionDestinations: list[IngestionDestinationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionDestinations: list[IngestionDestinationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIngestionDestinationsResponse:
     list[IngestionDestinationSummary] ingestionDestinations
     Optional[str] nextToken
@@ -439,8 +443,9 @@ struct ListIngestionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ingestions: list[IngestionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestions: list[IngestionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIngestionsResponse:
     list[IngestionSummary] ingestions
     Optional[str] nextToken
@@ -450,8 +455,9 @@ struct ListIngestionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -500,8 +506,9 @@ struct StartUserAccessTasksRequest:
     str appBundleIdentifier
     str email
 
-# no @derive(Json): member(s) userAccessTasksList: list[UserAccessTaskItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAccessTasksList: list[UserAccessTaskItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartUserAccessTasksResponse:
     Optional[list[UserAccessTaskItem]] userAccessTasksList
 
@@ -606,8 +613,9 @@ struct UserAccessTaskItem:
     Optional[str] taskId
     Optional[TaskError] error
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -656,12 +664,6 @@ def appfabric_error_from_code(str code) -> AppFabricError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetUserAccessTasks (document member `taskIdList: list[str]` is not serializable by derive)
-#   CreateAppAuthorization (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateAppBundle (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateIngestion (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateIngestionDestination (document member `tags: list[Tag]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -694,6 +696,20 @@ struct AppFabricClient:
     core.Credentials creds
     str region
 
+    # BatchGetUserAccessTasks  POST /useraccess/batchget
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_user_access_tasks(self, BatchGetUserAccessTasksRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/useraccess/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appBundleIdentifier\":" + appfabric_json_str(input.appBundleIdentifier))
+        list[str] e0 = []
+        for x0 in input.taskIdList:
+            e0.append(appfabric_json_str(x0))
+        parts.append("\"taskIdList\":" + appfabric_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
+
     # ConnectAppAuthorization  POST /appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}/connect
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def connect_app_authorization(self, ConnectAppAuthorizationRequest input) -> str:
@@ -704,6 +720,97 @@ struct AppFabricClient:
         auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}/connect", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ConnectAppAuthorizationDocument(authRequest=input.authRequest)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
+
+    # CreateAppAuthorization  POST /appbundles/{appBundleIdentifier}/appauthorizations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_app_authorization(self, CreateAppAuthorizationRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appBundleIdentifier"] = input.appBundleIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/appauthorizations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"app\":" + appfabric_json_str(input.app))
+        parts.append("\"credential\":" + input.credential.to_json())
+        parts.append("\"tenant\":" + input.tenant.to_json())
+        parts.append("\"authType\":" + input.authType.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appfabric_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appfabric_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
+
+    # CreateAppBundle  POST /appbundles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_app_bundle(self, CreateAppBundleRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appfabric_json_str(u0))
+        if input.customerManagedKeyIdentifier.is_some():
+            auto u1 = input.customerManagedKeyIdentifier.unwrap()
+            parts.append("\"customerManagedKeyIdentifier\":" + appfabric_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + appfabric_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
+
+    # CreateIngestion  POST /appbundles/{appBundleIdentifier}/ingestions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_ingestion(self, CreateIngestionRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appBundleIdentifier"] = input.appBundleIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"app\":" + appfabric_json_str(input.app))
+        parts.append("\"tenantId\":" + appfabric_json_str(input.tenantId))
+        parts.append("\"ingestionType\":" + appfabric_json_str(input.ingestionType))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appfabric_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appfabric_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
+
+    # CreateIngestionDestination  POST /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_ingestion_destination(self, CreateIngestionDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appBundleIdentifier"] = input.appBundleIdentifier
+        labels["ingestionIdentifier"] = input.ingestionIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"processingConfiguration\":" + input.processingConfiguration.to_json())
+        parts.append("\"destinationConfiguration\":" + input.destinationConfiguration.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appfabric_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appfabric_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
 
     # DeleteAppAuthorization  DELETE /appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}
@@ -878,6 +985,21 @@ struct AppFabricClient:
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + appfabric_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
 
     # UpdateAppAuthorization  PATCH /appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

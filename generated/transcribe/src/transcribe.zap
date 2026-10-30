@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 44 operations — 29 with a generated method,
-#   15 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 44 operations — 42 with a generated method,
+#   2 skipped (input has a non-string-keyed map or free-form document member).
 #   132 structs (75 @derive(Json)), 22 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -372,8 +372,9 @@ struct AbsoluteTimeRange:
 struct BadRequestException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CallAnalyticsJobDetails: CallAnalyticsJobDetails, Settings: CallAnalyticsJobSettings, ChannelDefinitions: list[ChannelDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallAnalyticsJobDetails: CallAnalyticsJobDetails, Settings: CallAnalyticsJobSettings, ChannelDefinitions: list[ChannelDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallAnalyticsJob:
     Optional[str] CallAnalyticsJobName
     Optional[CallAnalyticsJobStatus] CallAnalyticsJobStatus
@@ -393,13 +394,15 @@ struct CallAnalyticsJob:
     Optional[list[ChannelDefinition]] ChannelDefinitions
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Skipped: list[CallAnalyticsSkippedFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Skipped: list[CallAnalyticsSkippedFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallAnalyticsJobDetails:
     Optional[list[CallAnalyticsSkippedFeature]] Skipped
 
-# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], LanguageIdSettings: dict[LanguageCode, LanguageIdSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], LanguageIdSettings: dict[LanguageCode, LanguageIdSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallAnalyticsJobSettings:
     Optional[str] VocabularyName
     Optional[str] VocabularyFilterName
@@ -410,8 +413,9 @@ struct CallAnalyticsJobSettings:
     Optional[dict[LanguageCode, LanguageIdSettings]] LanguageIdSettings
     Optional[Summarization] Summarization
 
-# no @derive(Json): member(s) CallAnalyticsJobDetails: CallAnalyticsJobDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallAnalyticsJobDetails: CallAnalyticsJobDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallAnalyticsJobSummary:
     Optional[str] CallAnalyticsJobName
     Optional[DateTime] CreationTime
@@ -428,8 +432,9 @@ struct CallAnalyticsSkippedFeature:
     Optional[CallAnalyticsSkippedReasonCode] ReasonCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoryProperties:
     Optional[str] CategoryName
     Optional[list[Rule]] Rules
@@ -451,28 +456,32 @@ struct ClinicalNoteGenerationSettings:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) PiiEntityTypes: list[PiiEntityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PiiEntityTypes: list[PiiEntityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentRedaction:
     str RedactionType
     RedactionOutput RedactionOutput
     Optional[list[PiiEntityType]] PiiEntityTypes
 
-# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCallAnalyticsCategoryRequest:
     str CategoryName
     list[Rule] Rules
     Optional[list[Tag]] Tags
     Optional[InputType] InputType
 
-# no @derive(Json): member(s) CategoryProperties: CategoryProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryProperties: CategoryProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCallAnalyticsCategoryResponse:
     Optional[CategoryProperties] CategoryProperties
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLanguageModelRequest:
     CLMLanguageCode LanguageCode
     BaseModelName BaseModelName
@@ -489,8 +498,9 @@ struct CreateLanguageModelResponse:
     Optional[InputDataConfig] InputDataConfig
     Optional[ModelStatus] ModelStatus
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMedicalVocabularyRequest:
     str VocabularyName
     LanguageCode LanguageCode
@@ -505,8 +515,9 @@ struct CreateMedicalVocabularyResponse:
     Optional[DateTime] LastModifiedTime
     Optional[str] FailureReason
 
-# no @derive(Json): member(s) Words: list[str], Tags: list[Tag], EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Words: list[str], Tags: list[Tag], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVocabularyFilterRequest:
     str VocabularyFilterName
     LanguageCode LanguageCode
@@ -522,8 +533,9 @@ struct CreateVocabularyFilterResponse:
     Optional[LanguageCode] LanguageCode
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) Phrases: list[str], Tags: list[Tag], EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Phrases: list[str], Tags: list[Tag], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVocabularyRequest:
     str VocabularyName
     LanguageCode LanguageCode
@@ -591,13 +603,15 @@ struct DeleteVocabularyRequest:
 struct DescribeLanguageModelRequest:
     str ModelName
 
-# no @derive(Json): member(s) LanguageModel: LanguageModel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LanguageModel: LanguageModel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLanguageModelResponse:
     Optional[LanguageModel] LanguageModel
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionConfiguration:
     Optional[dict[str, str]] KMSEncryptionContext
     str KMSKey
@@ -606,8 +620,9 @@ struct EncryptionConfiguration:
 struct GetCallAnalyticsCategoryRequest:
     str CategoryName
 
-# no @derive(Json): member(s) CategoryProperties: CategoryProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryProperties: CategoryProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCallAnalyticsCategoryResponse:
     Optional[CategoryProperties] CategoryProperties
 
@@ -615,8 +630,9 @@ struct GetCallAnalyticsCategoryResponse:
 struct GetCallAnalyticsJobRequest:
     str CallAnalyticsJobName
 
-# no @derive(Json): member(s) CallAnalyticsJob: CallAnalyticsJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallAnalyticsJob: CallAnalyticsJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCallAnalyticsJobResponse:
     Optional[CallAnalyticsJob] CallAnalyticsJob
 
@@ -624,8 +640,9 @@ struct GetCallAnalyticsJobResponse:
 struct GetMedicalScribeJobRequest:
     str MedicalScribeJobName
 
-# no @derive(Json): member(s) MedicalScribeJob: MedicalScribeJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MedicalScribeJob: MedicalScribeJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMedicalScribeJobResponse:
     Optional[MedicalScribeJob] MedicalScribeJob
 
@@ -633,8 +650,9 @@ struct GetMedicalScribeJobResponse:
 struct GetMedicalTranscriptionJobRequest:
     str MedicalTranscriptionJobName
 
-# no @derive(Json): member(s) MedicalTranscriptionJob: MedicalTranscriptionJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MedicalTranscriptionJob: MedicalTranscriptionJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMedicalTranscriptionJobResponse:
     Optional[MedicalTranscriptionJob] MedicalTranscriptionJob
 
@@ -655,8 +673,9 @@ struct GetMedicalVocabularyResponse:
 struct GetTranscriptionJobRequest:
     str TranscriptionJobName
 
-# no @derive(Json): member(s) TranscriptionJob: TranscriptionJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TranscriptionJob: TranscriptionJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTranscriptionJobResponse:
     Optional[TranscriptionJob] TranscriptionJob
 
@@ -664,8 +683,9 @@ struct GetTranscriptionJobResponse:
 struct GetVocabularyFilterRequest:
     str VocabularyFilterName
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVocabularyFilterResponse:
     Optional[str] VocabularyFilterName
     Optional[LanguageCode] LanguageCode
@@ -678,8 +698,9 @@ struct GetVocabularyFilterResponse:
 struct GetVocabularyRequest:
     str VocabularyName
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVocabularyResponse:
     Optional[str] VocabularyName
     Optional[LanguageCode] LanguageCode
@@ -724,8 +745,9 @@ struct LanguageIdSettings:
     Optional[str] VocabularyFilterName
     Optional[str] LanguageModelName
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LanguageModel:
     Optional[str] ModelName
     Optional[DateTime] CreateTime
@@ -747,8 +769,9 @@ struct ListCallAnalyticsCategoriesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Categories: list[CategoryProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[CategoryProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCallAnalyticsCategoriesResponse:
     Optional[str] NextToken
     Optional[list[CategoryProperties]] Categories
@@ -760,8 +783,9 @@ struct ListCallAnalyticsJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CallAnalyticsJobSummaries: list[CallAnalyticsJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallAnalyticsJobSummaries: list[CallAnalyticsJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCallAnalyticsJobsResponse:
     Optional[CallAnalyticsJobStatus] Status
     Optional[str] NextToken
@@ -774,8 +798,9 @@ struct ListLanguageModelsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Models: list[LanguageModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Models: list[LanguageModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLanguageModelsResponse:
     Optional[str] NextToken
     Optional[list[LanguageModel]] Models
@@ -787,8 +812,9 @@ struct ListMedicalScribeJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MedicalScribeJobSummaries: list[MedicalScribeJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MedicalScribeJobSummaries: list[MedicalScribeJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMedicalScribeJobsResponse:
     Optional[MedicalScribeJobStatus] Status
     Optional[str] NextToken
@@ -801,8 +827,9 @@ struct ListMedicalTranscriptionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MedicalTranscriptionJobSummaries: list[MedicalTranscriptionJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MedicalTranscriptionJobSummaries: list[MedicalTranscriptionJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMedicalTranscriptionJobsResponse:
     Optional[TranscriptionJobStatus] Status
     Optional[str] NextToken
@@ -815,8 +842,9 @@ struct ListMedicalVocabulariesRequest:
     Optional[VocabularyState] StateEquals
     Optional[str] NameContains
 
-# no @derive(Json): member(s) Vocabularies: list[VocabularyInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vocabularies: list[VocabularyInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMedicalVocabulariesResponse:
     Optional[VocabularyState] Status
     Optional[str] NextToken
@@ -826,8 +854,9 @@ struct ListMedicalVocabulariesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] ResourceArn
     Optional[list[Tag]] Tags
@@ -839,8 +868,9 @@ struct ListTranscriptionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TranscriptionJobSummaries: list[TranscriptionJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TranscriptionJobSummaries: list[TranscriptionJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTranscriptionJobsResponse:
     Optional[TranscriptionJobStatus] Status
     Optional[str] NextToken
@@ -853,8 +883,9 @@ struct ListVocabulariesRequest:
     Optional[VocabularyState] StateEquals
     Optional[str] NameContains
 
-# no @derive(Json): member(s) Vocabularies: list[VocabularyInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vocabularies: list[VocabularyInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVocabulariesResponse:
     Optional[VocabularyState] Status
     Optional[str] NextToken
@@ -866,8 +897,9 @@ struct ListVocabularyFiltersRequest:
     Optional[int64] MaxResults
     Optional[str] NameContains
 
-# no @derive(Json): member(s) VocabularyFilters: list[VocabularyFilterInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VocabularyFilters: list[VocabularyFilterInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVocabularyFiltersResponse:
     Optional[str] NextToken
     Optional[list[VocabularyFilterInfo]] VocabularyFilters
@@ -886,8 +918,9 @@ struct MedicalScribeChannelDefinition:
 struct MedicalScribeContext:
     Optional[MedicalScribePatientContext] PatientContext
 
-# no @derive(Json): member(s) ChannelDefinitions: list[MedicalScribeChannelDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelDefinitions: list[MedicalScribeChannelDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MedicalScribeJob:
     Optional[str] MedicalScribeJobName
     Optional[MedicalScribeJobStatus] MedicalScribeJobStatus
@@ -937,8 +970,9 @@ struct MedicalScribeSettings:
 struct MedicalTranscript:
     Optional[str] TranscriptFileUri
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MedicalTranscriptionJob:
     Optional[str] MedicalTranscriptionJobName
     Optional[TranscriptionJobStatus] TranscriptionJobStatus
@@ -1002,16 +1036,18 @@ struct RelativeTimeRange:
     Optional[int64] First
     Optional[int64] Last
 
-# no @derive(Json): member(s) TranscriptFilter: TranscriptFilter, SentimentFilter: SentimentFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TranscriptFilter: TranscriptFilter, SentimentFilter: SentimentFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     Optional[NonTalkTimeFilter] NonTalkTimeFilter
     Optional[InterruptionFilter] InterruptionFilter
     Optional[TranscriptFilter] TranscriptFilter
     Optional[SentimentFilter] SentimentFilter
 
-# no @derive(Json): member(s) Sentiments: list[SentimentValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sentiments: list[SentimentValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SentimentFilter:
     list[SentimentValue] Sentiments
     Optional[AbsoluteTimeRange] AbsoluteTimeRange
@@ -1030,8 +1066,9 @@ struct Settings:
     Optional[str] VocabularyFilterName
     Optional[VocabularyFilterMethod] VocabularyFilterMethod
 
-# no @derive(Json): member(s) Settings: CallAnalyticsJobSettings, Tags: list[Tag], ChannelDefinitions: list[ChannelDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: CallAnalyticsJobSettings, Tags: list[Tag], ChannelDefinitions: list[ChannelDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCallAnalyticsJobRequest:
     str CallAnalyticsJobName
     Media Media
@@ -1042,13 +1079,15 @@ struct StartCallAnalyticsJobRequest:
     Optional[list[Tag]] Tags
     Optional[list[ChannelDefinition]] ChannelDefinitions
 
-# no @derive(Json): member(s) CallAnalyticsJob: CallAnalyticsJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallAnalyticsJob: CallAnalyticsJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCallAnalyticsJobResponse:
     Optional[CallAnalyticsJob] CallAnalyticsJob
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], ChannelDefinitions: list[MedicalScribeChannelDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], ChannelDefinitions: list[MedicalScribeChannelDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMedicalScribeJobRequest:
     str MedicalScribeJobName
     Media Media
@@ -1061,13 +1100,15 @@ struct StartMedicalScribeJobRequest:
     Optional[list[Tag]] Tags
     Optional[MedicalScribeContext] MedicalScribeContext
 
-# no @derive(Json): member(s) MedicalScribeJob: MedicalScribeJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MedicalScribeJob: MedicalScribeJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMedicalScribeJobResponse:
     Optional[MedicalScribeJob] MedicalScribeJob
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMedicalTranscriptionJobRequest:
     str MedicalTranscriptionJobName
     LanguageCode LanguageCode
@@ -1084,13 +1125,15 @@ struct StartMedicalTranscriptionJobRequest:
     Type Type
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MedicalTranscriptionJob: MedicalTranscriptionJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MedicalTranscriptionJob: MedicalTranscriptionJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMedicalTranscriptionJobResponse:
     Optional[MedicalTranscriptionJob] MedicalTranscriptionJob
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], Subtitles: Subtitles, Tags: list[Tag], LanguageIdSettings: dict[LanguageCode, LanguageIdSettings], ToxicityDetection: list[ToxicityDetectionSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], Subtitles: Subtitles, Tags: list[Tag], LanguageIdSettings: dict[LanguageCode, LanguageIdSettings], ToxicityDetection: list[ToxicityDetectionSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTranscriptionJobRequest:
     str TranscriptionJobName
     Optional[LanguageCode] LanguageCode
@@ -1113,19 +1156,22 @@ struct StartTranscriptionJobRequest:
     Optional[dict[LanguageCode, LanguageIdSettings]] LanguageIdSettings
     Optional[list[ToxicityDetectionSettings]] ToxicityDetection
 
-# no @derive(Json): member(s) TranscriptionJob: TranscriptionJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TranscriptionJob: TranscriptionJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTranscriptionJobResponse:
     Optional[TranscriptionJob] TranscriptionJob
 
-# no @derive(Json): member(s) Formats: list[SubtitleFormat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Formats: list[SubtitleFormat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subtitles:
     Optional[list[SubtitleFormat]] Formats
     Optional[int64] OutputStartIndex
 
-# no @derive(Json): member(s) Formats: list[SubtitleFormat], SubtitleFileUris: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Formats: list[SubtitleFormat], SubtitleFileUris: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubtitlesOutput:
     Optional[list[SubtitleFormat]] Formats
     Optional[list[str]] SubtitleFileUris
@@ -1140,8 +1186,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -1151,8 +1198,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ToxicityCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ToxicityCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToxicityDetectionSettings:
     list[str] ToxicityCategories
 
@@ -1161,8 +1209,9 @@ struct Transcript:
     Optional[str] TranscriptFileUri
     Optional[str] RedactedTranscriptFileUri
 
-# no @derive(Json): member(s) Targets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TranscriptFilter:
     str TranscriptFilterType
     Optional[AbsoluteTimeRange] AbsoluteTimeRange
@@ -1171,8 +1220,9 @@ struct TranscriptFilter:
     Optional[bool] Negate
     list[str] Targets
 
-# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], LanguageCodes: list[LanguageCodeItem], Tags: list[Tag], Subtitles: SubtitlesOutput, LanguageIdSettings: dict[LanguageCode, LanguageIdSettings], ToxicityDetection: list[ToxicityDetectionSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], LanguageCodes: list[LanguageCodeItem], Tags: list[Tag], Subtitles: SubtitlesOutput, LanguageIdSettings: dict[LanguageCode, LanguageIdSettings], ToxicityDetection: list[ToxicityDetectionSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TranscriptionJob:
     Optional[str] TranscriptionJobName
     Optional[TranscriptionJobStatus] TranscriptionJobStatus
@@ -1199,8 +1249,9 @@ struct TranscriptionJob:
     Optional[dict[LanguageCode, LanguageIdSettings]] LanguageIdSettings
     Optional[list[ToxicityDetectionSettings]] ToxicityDetection
 
-# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageCodes: list[LanguageCodeItem], ToxicityDetection: list[ToxicityDetectionSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageCodes: list[LanguageCodeItem], ToxicityDetection: list[ToxicityDetectionSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TranscriptionJobSummary:
     Optional[str] TranscriptionJobName
     Optional[DateTime] CreationTime
@@ -1218,8 +1269,9 @@ struct TranscriptionJobSummary:
     Optional[list[LanguageCodeItem]] LanguageCodes
     Optional[list[ToxicityDetectionSettings]] ToxicityDetection
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1229,20 +1281,23 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCallAnalyticsCategoryRequest:
     str CategoryName
     list[Rule] Rules
     Optional[InputType] InputType
 
-# no @derive(Json): member(s) CategoryProperties: CategoryProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryProperties: CategoryProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCallAnalyticsCategoryResponse:
     Optional[CategoryProperties] CategoryProperties
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLanguageModelRequest:
     str ModelName
     Optional[str] DataAccessRoleArn
@@ -1267,8 +1322,9 @@ struct UpdateMedicalVocabularyResponse:
     Optional[DateTime] LastModifiedTime
     Optional[VocabularyState] VocabularyState
 
-# no @derive(Json): member(s) Words: list[str], EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Words: list[str], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVocabularyFilterRequest:
     str VocabularyFilterName
     Optional[list[str]] Words
@@ -1282,8 +1338,9 @@ struct UpdateVocabularyFilterResponse:
     Optional[LanguageCode] LanguageCode
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) Phrases: list[str], EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Phrases: list[str], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVocabularyRequest:
     str VocabularyName
     LanguageCode LanguageCode
@@ -1340,28 +1397,417 @@ def transcribe_error_from_code(str code) -> TranscribeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCallAnalyticsCategory (input CreateCallAnalyticsCategoryRequest)
-#   CreateLanguageModel (input CreateLanguageModelRequest)
-#   CreateMedicalVocabulary (input CreateMedicalVocabularyRequest)
-#   CreateVocabulary (input CreateVocabularyRequest)
-#   CreateVocabularyFilter (input CreateVocabularyFilterRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   StartCallAnalyticsJob (input StartCallAnalyticsJobRequest)
-#   StartMedicalScribeJob (input StartMedicalScribeJobRequest)
-#   StartMedicalTranscriptionJob (input StartMedicalTranscriptionJobRequest)
 #   StartTranscriptionJob (input StartTranscriptionJobRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCallAnalyticsCategory (input UpdateCallAnalyticsCategoryRequest)
-#   UpdateLanguageModel (input UpdateLanguageModelRequest)
-#   UpdateVocabulary (input UpdateVocabularyRequest)
-#   UpdateVocabularyFilter (input UpdateVocabularyFilterRequest)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def transcribe_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def transcribe_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def transcribe_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateCallAnalyticsCategoryRequest to a compact JSON object (declaration order).
+def create_call_analytics_category_request_to_json(CreateCallAnalyticsCategoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CategoryName\":" + transcribe_json_str(v.CategoryName))
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(rule_to_json(x0))
+    parts.append("\"Rules\":" + transcribe_json_arr(e0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e2))
+    if v.InputType.is_some():
+        auto u3 = v.InputType.unwrap()
+        parts.append("\"InputType\":" + u3.to_json())
+    return transcribe_json_obj(parts)
+
+# Serialize CreateLanguageModelRequest to a compact JSON object (declaration order).
+def create_language_model_request_to_json(CreateLanguageModelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    parts.append("\"BaseModelName\":" + v.BaseModelName.to_json())
+    parts.append("\"ModelName\":" + transcribe_json_str(v.ModelName))
+    parts.append("\"InputDataConfig\":" + v.InputDataConfig.to_json())
+    if v.EncryptionConfiguration.is_some():
+        auto u0 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e2))
+    return transcribe_json_obj(parts)
+
+# Serialize CreateMedicalVocabularyRequest to a compact JSON object (declaration order).
+def create_medical_vocabulary_request_to_json(CreateMedicalVocabularyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"VocabularyName\":" + transcribe_json_str(v.VocabularyName))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    parts.append("\"VocabularyFileUri\":" + transcribe_json_str(v.VocabularyFileUri))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e1))
+    return transcribe_json_obj(parts)
+
+# Serialize CreateVocabularyFilterRequest to a compact JSON object (declaration order).
+def create_vocabulary_filter_request_to_json(CreateVocabularyFilterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"VocabularyFilterName\":" + transcribe_json_str(v.VocabularyFilterName))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.Words.is_some():
+        auto u0 = v.Words.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transcribe_json_str(x1))
+        parts.append("\"Words\":" + transcribe_json_arr(e1))
+    if v.VocabularyFilterFileUri.is_some():
+        auto u2 = v.VocabularyFilterFileUri.unwrap()
+        parts.append("\"VocabularyFilterFileUri\":" + transcribe_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e4))
+    if v.DataAccessRoleArn.is_some():
+        auto u5 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u5))
+    if v.EncryptionConfiguration.is_some():
+        auto u6 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u6))
+    return transcribe_json_obj(parts)
+
+# Serialize CreateVocabularyRequest to a compact JSON object (declaration order).
+def create_vocabulary_request_to_json(CreateVocabularyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"VocabularyName\":" + transcribe_json_str(v.VocabularyName))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.Phrases.is_some():
+        auto u0 = v.Phrases.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transcribe_json_str(x1))
+        parts.append("\"Phrases\":" + transcribe_json_arr(e1))
+    if v.VocabularyFileUri.is_some():
+        auto u2 = v.VocabularyFileUri.unwrap()
+        parts.append("\"VocabularyFileUri\":" + transcribe_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e4))
+    if v.DataAccessRoleArn.is_some():
+        auto u5 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u5))
+    if v.EncryptionConfiguration.is_some():
+        auto u6 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u6))
+    return transcribe_json_obj(parts)
+
+# Serialize EncryptionConfiguration to a compact JSON object (declaration order).
+def encryption_configuration_to_json(EncryptionConfiguration v) -> str:
+    list[str] parts = []
+    if v.KMSEncryptionContext.is_some():
+        auto u0 = v.KMSEncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(transcribe_json_str(k1) + ":" + transcribe_json_str(u0[k1]))
+        parts.append("\"KMSEncryptionContext\":" + transcribe_json_obj(m1))
+    parts.append("\"KMSKey\":" + transcribe_json_str(v.KMSKey))
+    return transcribe_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    if v.NonTalkTimeFilter.is_some():
+        auto u0 = v.NonTalkTimeFilter.unwrap()
+        parts.append("\"NonTalkTimeFilter\":" + u0.to_json())
+    if v.InterruptionFilter.is_some():
+        auto u1 = v.InterruptionFilter.unwrap()
+        parts.append("\"InterruptionFilter\":" + u1.to_json())
+    if v.TranscriptFilter.is_some():
+        auto u2 = v.TranscriptFilter.unwrap()
+        parts.append("\"TranscriptFilter\":" + transcript_filter_to_json(u2))
+    if v.SentimentFilter.is_some():
+        auto u3 = v.SentimentFilter.unwrap()
+        parts.append("\"SentimentFilter\":" + sentiment_filter_to_json(u3))
+    return transcribe_json_obj(parts)
+
+# Serialize SentimentFilter to a compact JSON object (declaration order).
+def sentiment_filter_to_json(SentimentFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Sentiments:
+        e0.append(x0.to_json())
+    parts.append("\"Sentiments\":" + transcribe_json_arr(e0))
+    if v.AbsoluteTimeRange.is_some():
+        auto u1 = v.AbsoluteTimeRange.unwrap()
+        parts.append("\"AbsoluteTimeRange\":" + u1.to_json())
+    if v.RelativeTimeRange.is_some():
+        auto u2 = v.RelativeTimeRange.unwrap()
+        parts.append("\"RelativeTimeRange\":" + u2.to_json())
+    if v.ParticipantRole.is_some():
+        auto u3 = v.ParticipantRole.unwrap()
+        parts.append("\"ParticipantRole\":" + u3.to_json())
+    if v.Negate.is_some():
+        auto u4 = v.Negate.unwrap()
+        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u4)))
+    return transcribe_json_obj(parts)
+
+# Serialize StartMedicalScribeJobRequest to a compact JSON object (declaration order).
+def start_medical_scribe_job_request_to_json(StartMedicalScribeJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"MedicalScribeJobName\":" + transcribe_json_str(v.MedicalScribeJobName))
+    parts.append("\"Media\":" + v.Media.to_json())
+    parts.append("\"OutputBucketName\":" + transcribe_json_str(v.OutputBucketName))
+    if v.OutputEncryptionKMSKeyId.is_some():
+        auto u0 = v.OutputEncryptionKMSKeyId.unwrap()
+        parts.append("\"OutputEncryptionKMSKeyId\":" + transcribe_json_str(u0))
+    if v.KMSEncryptionContext.is_some():
+        auto u1 = v.KMSEncryptionContext.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(transcribe_json_str(k2) + ":" + transcribe_json_str(u1[k2]))
+        parts.append("\"KMSEncryptionContext\":" + transcribe_json_obj(m2))
+    parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(v.DataAccessRoleArn))
+    parts.append("\"Settings\":" + v.Settings.to_json())
+    if v.ChannelDefinitions.is_some():
+        auto u3 = v.ChannelDefinitions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ChannelDefinitions\":" + transcribe_json_arr(e4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e6))
+    if v.MedicalScribeContext.is_some():
+        auto u7 = v.MedicalScribeContext.unwrap()
+        parts.append("\"MedicalScribeContext\":" + u7.to_json())
+    return transcribe_json_obj(parts)
+
+# Serialize StartMedicalTranscriptionJobRequest to a compact JSON object (declaration order).
+def start_medical_transcription_job_request_to_json(StartMedicalTranscriptionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"MedicalTranscriptionJobName\":" + transcribe_json_str(v.MedicalTranscriptionJobName))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.MediaSampleRateHertz.is_some():
+        auto u0 = v.MediaSampleRateHertz.unwrap()
+        parts.append("\"MediaSampleRateHertz\":" + str(u0))
+    if v.MediaFormat.is_some():
+        auto u1 = v.MediaFormat.unwrap()
+        parts.append("\"MediaFormat\":" + u1.to_json())
+    parts.append("\"Media\":" + v.Media.to_json())
+    parts.append("\"OutputBucketName\":" + transcribe_json_str(v.OutputBucketName))
+    if v.OutputKey.is_some():
+        auto u2 = v.OutputKey.unwrap()
+        parts.append("\"OutputKey\":" + transcribe_json_str(u2))
+    if v.OutputEncryptionKMSKeyId.is_some():
+        auto u3 = v.OutputEncryptionKMSKeyId.unwrap()
+        parts.append("\"OutputEncryptionKMSKeyId\":" + transcribe_json_str(u3))
+    if v.KMSEncryptionContext.is_some():
+        auto u4 = v.KMSEncryptionContext.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(transcribe_json_str(k5) + ":" + transcribe_json_str(u4[k5]))
+        parts.append("\"KMSEncryptionContext\":" + transcribe_json_obj(m5))
+    if v.Settings.is_some():
+        auto u6 = v.Settings.unwrap()
+        parts.append("\"Settings\":" + u6.to_json())
+    if v.ContentIdentificationType.is_some():
+        auto u7 = v.ContentIdentificationType.unwrap()
+        parts.append("\"ContentIdentificationType\":" + transcribe_json_str(u7))
+    parts.append("\"Specialty\":" + transcribe_json_str(v.Specialty))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + transcribe_json_arr(e9))
+    return transcribe_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + transcribe_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + transcribe_json_arr(e0))
+    return transcribe_json_obj(parts)
+
+# Serialize TranscriptFilter to a compact JSON object (declaration order).
+def transcript_filter_to_json(TranscriptFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"TranscriptFilterType\":" + transcribe_json_str(v.TranscriptFilterType))
+    if v.AbsoluteTimeRange.is_some():
+        auto u0 = v.AbsoluteTimeRange.unwrap()
+        parts.append("\"AbsoluteTimeRange\":" + u0.to_json())
+    if v.RelativeTimeRange.is_some():
+        auto u1 = v.RelativeTimeRange.unwrap()
+        parts.append("\"RelativeTimeRange\":" + u1.to_json())
+    if v.ParticipantRole.is_some():
+        auto u2 = v.ParticipantRole.unwrap()
+        parts.append("\"ParticipantRole\":" + u2.to_json())
+    if v.Negate.is_some():
+        auto u3 = v.Negate.unwrap()
+        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u3)))
+    list[str] e4 = []
+    for x4 in v.Targets:
+        e4.append(transcribe_json_str(x4))
+    parts.append("\"Targets\":" + transcribe_json_arr(e4))
+    return transcribe_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + transcribe_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(transcribe_json_str(x0))
+    parts.append("\"TagKeys\":" + transcribe_json_arr(e0))
+    return transcribe_json_obj(parts)
+
+# Serialize UpdateCallAnalyticsCategoryRequest to a compact JSON object (declaration order).
+def update_call_analytics_category_request_to_json(UpdateCallAnalyticsCategoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CategoryName\":" + transcribe_json_str(v.CategoryName))
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(rule_to_json(x0))
+    parts.append("\"Rules\":" + transcribe_json_arr(e0))
+    if v.InputType.is_some():
+        auto u1 = v.InputType.unwrap()
+        parts.append("\"InputType\":" + u1.to_json())
+    return transcribe_json_obj(parts)
+
+# Serialize UpdateLanguageModelRequest to a compact JSON object (declaration order).
+def update_language_model_request_to_json(UpdateLanguageModelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelName\":" + transcribe_json_str(v.ModelName))
+    if v.DataAccessRoleArn.is_some():
+        auto u0 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u0))
+    if v.EncryptionConfiguration.is_some():
+        auto u1 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u1))
+    return transcribe_json_obj(parts)
+
+# Serialize UpdateVocabularyFilterRequest to a compact JSON object (declaration order).
+def update_vocabulary_filter_request_to_json(UpdateVocabularyFilterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"VocabularyFilterName\":" + transcribe_json_str(v.VocabularyFilterName))
+    if v.Words.is_some():
+        auto u0 = v.Words.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transcribe_json_str(x1))
+        parts.append("\"Words\":" + transcribe_json_arr(e1))
+    if v.VocabularyFilterFileUri.is_some():
+        auto u2 = v.VocabularyFilterFileUri.unwrap()
+        parts.append("\"VocabularyFilterFileUri\":" + transcribe_json_str(u2))
+    if v.DataAccessRoleArn.is_some():
+        auto u3 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u3))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u4))
+    return transcribe_json_obj(parts)
+
+# Serialize UpdateVocabularyRequest to a compact JSON object (declaration order).
+def update_vocabulary_request_to_json(UpdateVocabularyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"VocabularyName\":" + transcribe_json_str(v.VocabularyName))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.Phrases.is_some():
+        auto u0 = v.Phrases.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transcribe_json_str(x1))
+        parts.append("\"Phrases\":" + transcribe_json_arr(e1))
+    if v.VocabularyFileUri.is_some():
+        auto u2 = v.VocabularyFileUri.unwrap()
+        parts.append("\"VocabularyFileUri\":" + transcribe_json_str(u2))
+    if v.DataAccessRoleArn.is_some():
+        auto u3 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u3))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u4))
+    return transcribe_json_obj(parts)
 
 # A bound Transcribe client: credentials + region, threaded into every operation.
 struct TranscribeClient:
     core.Credentials creds
     str region
+
+    # CreateCallAnalyticsCategory
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def create_call_analytics_category(self, CreateCallAnalyticsCategoryRequest input) -> str:
+        auto body = create_call_analytics_category_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateCallAnalyticsCategory", body)
+
+    # CreateLanguageModel
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def create_language_model(self, CreateLanguageModelRequest input) -> str:
+        auto body = create_language_model_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateLanguageModel", body)
+
+    # CreateMedicalVocabulary
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def create_medical_vocabulary(self, CreateMedicalVocabularyRequest input) -> str:
+        auto body = create_medical_vocabulary_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateMedicalVocabulary", body)
+
+    # CreateVocabulary
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def create_vocabulary(self, CreateVocabularyRequest input) -> str:
+        auto body = create_vocabulary_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateVocabulary", body)
+
+    # CreateVocabularyFilter
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def create_vocabulary_filter(self, CreateVocabularyFilterRequest input) -> str:
+        auto body = create_vocabulary_filter_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateVocabularyFilter", body)
 
     # DeleteCallAnalyticsCategory
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
@@ -1531,11 +1977,59 @@ struct TranscribeClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListVocabularyFilters", body)
 
+    # StartMedicalScribeJob
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def start_medical_scribe_job(self, StartMedicalScribeJobRequest input) -> str:
+        auto body = start_medical_scribe_job_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "StartMedicalScribeJob", body)
+
+    # StartMedicalTranscriptionJob
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def start_medical_transcription_job(self, StartMedicalTranscriptionJobRequest input) -> str:
+        auto body = start_medical_transcription_job_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "StartMedicalTranscriptionJob", body)
+
+    # TagResource
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateCallAnalyticsCategory
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def update_call_analytics_category(self, UpdateCallAnalyticsCategoryRequest input) -> str:
+        auto body = update_call_analytics_category_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateCallAnalyticsCategory", body)
+
+    # UpdateLanguageModel
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def update_language_model(self, UpdateLanguageModelRequest input) -> str:
+        auto body = update_language_model_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateLanguageModel", body)
+
     # UpdateMedicalVocabulary
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
     def update_medical_vocabulary(self, UpdateMedicalVocabularyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateMedicalVocabulary", body)
+
+    # UpdateVocabulary
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def update_vocabulary(self, UpdateVocabularyRequest input) -> str:
+        auto body = update_vocabulary_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateVocabulary", body)
+
+    # UpdateVocabularyFilter
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def update_vocabulary_filter(self, UpdateVocabularyFilterRequest input) -> str:
+        auto body = update_vocabulary_filter_request_to_json(input)
+        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateVocabularyFilter", body)
 
 # Construct a TranscribeClient bound to credentials + region.
 def transcribe_client(core.Credentials creds, str region) -> TranscribeClient:

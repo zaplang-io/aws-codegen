@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 20 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 24 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (46 @derive(Json)), 3 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -69,8 +69,9 @@ enum Status:
 struct AccessDeniedException:
     str Message
 
-# no @derive(Json): member(s) AssertedControls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssertedControls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssertionRule:
     list[str] AssertedControls
     str ControlPanelArn
@@ -87,8 +88,9 @@ struct AssertionRuleUpdate:
     str SafetyRuleArn
     int64 WaitPeriodMs
 
-# no @derive(Json): member(s) ClusterEndpoints: list[ClusterEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterEndpoints: list[ClusterEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] ClusterArn
     Optional[list[ClusterEndpoint]] ClusterEndpoints
@@ -124,8 +126,9 @@ struct CreateClusterRequest:
     Optional[dict[str, str]] Tags
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] Cluster
 
@@ -161,8 +164,9 @@ struct CreateSafetyRuleRequest:
     Optional[NewGatingRule] GatingRule
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) AssertionRule: AssertionRule, GatingRule: GatingRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssertionRule: AssertionRule, GatingRule: GatingRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSafetyRuleResponse:
     Optional[AssertionRule] AssertionRule
     Optional[GatingRule] GatingRule
@@ -212,8 +216,9 @@ struct DeleteSafetyRuleResponse:
 struct DescribeClusterRequest:
     str ClusterArn
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterResponse:
     Optional[Cluster] Cluster
 
@@ -240,14 +245,16 @@ struct DescribeRoutingControlResponse:
 struct DescribeSafetyRuleRequest:
     str SafetyRuleArn
 
-# no @derive(Json): member(s) AssertionRule: AssertionRule, GatingRule: GatingRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssertionRule: AssertionRule, GatingRule: GatingRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSafetyRuleResponse:
     Optional[AssertionRule] AssertionRule
     Optional[GatingRule] GatingRule
 
-# no @derive(Json): member(s) GatingControls: list[str], TargetControls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatingControls: list[str], TargetControls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatingRule:
     str ControlPanelArn
     list[str] GatingControls
@@ -285,8 +292,9 @@ struct ListAssociatedRoute53HealthChecksRequest:
     Optional[str] NextToken
     str RoutingControlArn
 
-# no @derive(Json): member(s) HealthCheckIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HealthCheckIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedRoute53HealthChecksResponse:
     Optional[list[str]] HealthCheckIds
     Optional[str] NextToken
@@ -297,8 +305,9 @@ struct ListClustersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Clusters: list[Cluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[Cluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     Optional[list[Cluster]] Clusters
     Optional[str] NextToken
@@ -310,8 +319,9 @@ struct ListControlPanelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ControlPanels: list[ControlPanel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlPanels: list[ControlPanel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlPanelsResponse:
     Optional[list[ControlPanel]] ControlPanels
     Optional[str] NextToken
@@ -323,8 +333,9 @@ struct ListRoutingControlsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RoutingControls: list[RoutingControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingControls: list[RoutingControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutingControlsResponse:
     Optional[str] NextToken
     Optional[list[RoutingControl]] RoutingControls
@@ -336,8 +347,9 @@ struct ListSafetyRulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SafetyRules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SafetyRules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSafetyRulesResponse:
     Optional[str] NextToken
     Optional[list[Rule]] SafetyRules
@@ -347,13 +359,15 @@ struct ListSafetyRulesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) AssertedControls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssertedControls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewAssertionRule:
     list[str] AssertedControls
     str ControlPanelArn
@@ -361,8 +375,9 @@ struct NewAssertionRule:
     RuleConfig RuleConfig
     int64 WaitPeriodMs
 
-# no @derive(Json): member(s) GatingControls: list[str], TargetControls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatingControls: list[str], TargetControls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewGatingRule:
     str ControlPanelArn
     list[str] GatingControls
@@ -383,8 +398,9 @@ struct RoutingControl:
     Optional[Status] Status
     Optional[str] Owner
 
-# no @derive(Json): member(s) ASSERTION: AssertionRule, GATING: GatingRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ASSERTION: AssertionRule, GATING: GatingRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     Optional[AssertionRule] ASSERTION
     Optional[GatingRule] GATING
@@ -431,8 +447,9 @@ struct UpdateClusterRequest:
     str ClusterArn
     NetworkType NetworkType
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[Cluster] Cluster
 
@@ -462,8 +479,9 @@ struct UpdateSafetyRuleRequest:
     Optional[AssertionRuleUpdate] AssertionRuleUpdate
     Optional[GatingRuleUpdate] GatingRuleUpdate
 
-# no @derive(Json): member(s) AssertionRule: AssertionRule, GatingRule: GatingRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssertionRule: AssertionRule, GatingRule: GatingRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSafetyRuleResponse:
     Optional[AssertionRule] AssertionRule
     Optional[GatingRule] GatingRule
@@ -510,10 +528,6 @@ def route53_recovery_control_config_error_from_code(str code) -> Route53_Recover
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCluster (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateControlPanel (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateSafetyRule (document member `AssertionRule: NewAssertionRule` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -551,10 +565,112 @@ struct UpdateSafetyRuleDocument:
     Optional[AssertionRuleUpdate] AssertionRuleUpdate
     Optional[GatingRuleUpdate] GatingRuleUpdate
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def route53_recovery_control_config_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def route53_recovery_control_config_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def route53_recovery_control_config_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize NewAssertionRule to a compact JSON object (declaration order).
+def new_assertion_rule_to_json(NewAssertionRule v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AssertedControls:
+        e0.append(route53_recovery_control_config_json_str(x0))
+    parts.append("\"AssertedControls\":" + route53_recovery_control_config_json_arr(e0))
+    parts.append("\"ControlPanelArn\":" + route53_recovery_control_config_json_str(v.ControlPanelArn))
+    parts.append("\"Name\":" + route53_recovery_control_config_json_str(v.Name))
+    parts.append("\"RuleConfig\":" + v.RuleConfig.to_json())
+    parts.append("\"WaitPeriodMs\":" + str(v.WaitPeriodMs))
+    return route53_recovery_control_config_json_obj(parts)
+
+# Serialize NewGatingRule to a compact JSON object (declaration order).
+def new_gating_rule_to_json(NewGatingRule v) -> str:
+    list[str] parts = []
+    parts.append("\"ControlPanelArn\":" + route53_recovery_control_config_json_str(v.ControlPanelArn))
+    list[str] e0 = []
+    for x0 in v.GatingControls:
+        e0.append(route53_recovery_control_config_json_str(x0))
+    parts.append("\"GatingControls\":" + route53_recovery_control_config_json_arr(e0))
+    parts.append("\"Name\":" + route53_recovery_control_config_json_str(v.Name))
+    parts.append("\"RuleConfig\":" + v.RuleConfig.to_json())
+    list[str] e1 = []
+    for x1 in v.TargetControls:
+        e1.append(route53_recovery_control_config_json_str(x1))
+    parts.append("\"TargetControls\":" + route53_recovery_control_config_json_arr(e1))
+    parts.append("\"WaitPeriodMs\":" + str(v.WaitPeriodMs))
+    return route53_recovery_control_config_json_obj(parts)
+
 # A bound Route53_Recovery_Control_Config client: credentials + region, threaded into every operation.
 struct Route53_Recovery_Control_ConfigClient:
     core.Credentials creds
     str region
+
+    # CreateCluster  POST /cluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + route53_recovery_control_config_json_str(u0))
+        parts.append("\"ClusterName\":" + route53_recovery_control_config_json_str(input.ClusterName))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(route53_recovery_control_config_json_str(k2) + ":" + route53_recovery_control_config_json_str(u1[k2]))
+            parts.append("\"Tags\":" + route53_recovery_control_config_json_obj(m2))
+        if input.NetworkType.is_some():
+            auto u3 = input.NetworkType.unwrap()
+            parts.append("\"NetworkType\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, route53_recovery_control_config_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
+
+    # CreateControlPanel  POST /controlpanel
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_control_panel(self, CreateControlPanelRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/controlpanel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + route53_recovery_control_config_json_str(u0))
+        parts.append("\"ClusterArn\":" + route53_recovery_control_config_json_str(input.ClusterArn))
+        parts.append("\"ControlPanelName\":" + route53_recovery_control_config_json_str(input.ControlPanelName))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(route53_recovery_control_config_json_str(k2) + ":" + route53_recovery_control_config_json_str(u1[k2]))
+            parts.append("\"Tags\":" + route53_recovery_control_config_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, route53_recovery_control_config_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
 
     # CreateRoutingControl  POST /routingcontrol
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -563,6 +679,30 @@ struct Route53_Recovery_Control_ConfigClient:
         auto b = binding.HttpBinding(method="POST", path_template="/routingcontrol", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRoutingControlDocument(ClientToken=input.ClientToken, ClusterArn=input.ClusterArn, ControlPanelArn=input.ControlPanelArn, RoutingControlName=input.RoutingControlName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
+
+    # CreateSafetyRule  POST /safetyrule
+    # errors: InternalServerException, ValidationException
+    def create_safety_rule(self, CreateSafetyRuleRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/safetyrule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AssertionRule.is_some():
+            auto u0 = input.AssertionRule.unwrap()
+            parts.append("\"AssertionRule\":" + new_assertion_rule_to_json(u0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + route53_recovery_control_config_json_str(u1))
+        if input.GatingRule.is_some():
+            auto u2 = input.GatingRule.unwrap()
+            parts.append("\"GatingRule\":" + new_gating_rule_to_json(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(route53_recovery_control_config_json_str(k4) + ":" + route53_recovery_control_config_json_str(u3[k4]))
+            parts.append("\"Tags\":" + route53_recovery_control_config_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, route53_recovery_control_config_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
 
     # DeleteCluster  DELETE /cluster/{ClusterArn}
@@ -722,6 +862,21 @@ struct Route53_Recovery_Control_ConfigClient:
         labels["ResourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(route53_recovery_control_config_json_str(k0) + ":" + route53_recovery_control_config_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + route53_recovery_control_config_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, route53_recovery_control_config_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
 
     # UpdateCluster  PUT /cluster
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

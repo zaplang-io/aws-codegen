@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 4 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (26 @derive(Json)), 4 enums, 17 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The RDS_Data rest-json protocol: SigV4 service "rds-data" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -78,8 +79,9 @@ enum TypeHint:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) booleanValues: list[bool], longValues: list[int64], doubleValues: list[float64], stringValues: list[str], arrayValues: list[ArrayValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) booleanValues: list[bool], longValues: list[int64], doubleValues: list[float64], stringValues: list[str], arrayValues: list[ArrayValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArrayValue:
     Optional[list[bool]] booleanValues
     Optional[list[int64]] longValues
@@ -102,8 +104,9 @@ struct BatchExecuteStatementRequest:
     Optional[list[list[SqlParameter]]] parameterSets
     Optional[str] transactionId
 
-# no @derive(Json): member(s) updateResults: list[UpdateResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) updateResults: list[UpdateResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchExecuteStatementResponse:
     Optional[list[UpdateResult]] updateResults
 
@@ -173,8 +176,9 @@ struct ExecuteSqlRequest:
     Optional[str] database
     Optional[str] schema
 
-# no @derive(Json): member(s) sqlStatementResults: list[SqlStatementResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sqlStatementResults: list[SqlStatementResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteSqlResponse:
     Optional[list[SqlStatementResult]] sqlStatementResults
 
@@ -193,8 +197,9 @@ struct ExecuteStatementRequest:
     Optional[ResultSetOptions] resultSetOptions
     Optional[RecordsFormatType] formatRecordsAs
 
-# no @derive(Json): member(s) records: list[list[Field]], columnMetadata: list[ColumnMetadata], generatedFields: list[Field] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) records: list[list[Field]], columnMetadata: list[ColumnMetadata], generatedFields: list[Field] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteStatementResponse:
     Optional[list[list[Field]]] records
     Optional[list[ColumnMetadata]] columnMetadata
@@ -202,8 +207,9 @@ struct ExecuteStatementResponse:
     Optional[list[Field]] generatedFields
     Optional[str] formattedRecords
 
-# no @derive(Json): member(s) arrayValue: ArrayValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) arrayValue: ArrayValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Field:
     Optional[bool] isNull
     Optional[bool] booleanValue
@@ -238,19 +244,22 @@ struct InvalidSecretException:
 struct NotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) values: list[Value] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[Value] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Record:
     Optional[list[Value]] values
 
-# no @derive(Json): member(s) resultSetMetadata: ResultSetMetadata, records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resultSetMetadata: ResultSetMetadata, records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultFrame:
     Optional[ResultSetMetadata] resultSetMetadata
     Optional[list[Record]] records
 
-# no @derive(Json): member(s) columnMetadata: list[ColumnMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnMetadata: list[ColumnMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultSetMetadata:
     Optional[int64] columnCount
     Optional[list[ColumnMetadata]] columnMetadata
@@ -280,15 +289,17 @@ struct ServiceUnavailableError:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) value: Field not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: Field not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SqlParameter:
     Optional[str] name
     Optional[Field] value
     Optional[TypeHint] typeHint
 
-# no @derive(Json): member(s) resultFrame: ResultFrame not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resultFrame: ResultFrame not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SqlStatementResult:
     Optional[ResultFrame] resultFrame
     Optional[int64] numberOfRecordsUpdated
@@ -298,8 +309,9 @@ struct StatementTimeoutException:
     Optional[str] message
     Optional[int64] dbConnectionId
 
-# no @derive(Json): member(s) attributes: list[Value] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[Value] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StructValue:
     Optional[list[Value]] attributes
 
@@ -311,13 +323,15 @@ struct TransactionNotFoundException:
 struct UnsupportedResultException:
     Optional[str] message
 
-# no @derive(Json): member(s) generatedFields: list[Field] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) generatedFields: list[Field] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResult:
     Optional[list[Field]] generatedFields
 
-# no @derive(Json): member(s) arrayValues: list[Value], structValue: StructValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) arrayValues: list[Value], structValue: StructValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Value:
     Optional[bool] isNull
     Optional[bool] bitValue
@@ -395,12 +409,6 @@ def rds_data_error_from_code(str code) -> RDS_DataError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchExecuteStatement (document member `parameterSets: list[list[SqlParameter]]` is not serializable by derive)
-#   ExecuteStatement (document member `parameters: list[SqlParameter]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -435,10 +443,145 @@ struct RollbackTransactionDocument:
     str secretArn
     str transactionId
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def rds_data_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def rds_data_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def rds_data_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ArrayValue to a compact JSON object (declaration order).
+def array_value_to_json(ArrayValue v) -> str:
+    list[str] parts = []
+    if v.booleanValues.is_some():
+        auto u0 = v.booleanValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(json.dumps(JsonValue.Bool(x1)))
+        parts.append("\"booleanValues\":" + rds_data_json_arr(e1))
+    if v.longValues.is_some():
+        auto u2 = v.longValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"longValues\":" + rds_data_json_arr(e3))
+    if v.doubleValues.is_some():
+        auto u4 = v.doubleValues.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(x5))
+        parts.append("\"doubleValues\":" + rds_data_json_arr(e5))
+    if v.stringValues.is_some():
+        auto u6 = v.stringValues.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(rds_data_json_str(x7))
+        parts.append("\"stringValues\":" + rds_data_json_arr(e7))
+    if v.arrayValues.is_some():
+        auto u8 = v.arrayValues.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(array_value_to_json(x9))
+        parts.append("\"arrayValues\":" + rds_data_json_arr(e9))
+    return rds_data_json_obj(parts)
+
+# Serialize Field to a compact JSON object (declaration order).
+def field_to_json(Field v) -> str:
+    list[str] parts = []
+    if v.isNull.is_some():
+        auto u0 = v.isNull.unwrap()
+        parts.append("\"isNull\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.booleanValue.is_some():
+        auto u1 = v.booleanValue.unwrap()
+        parts.append("\"booleanValue\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.longValue.is_some():
+        auto u2 = v.longValue.unwrap()
+        parts.append("\"longValue\":" + str(u2))
+    if v.doubleValue.is_some():
+        auto u3 = v.doubleValue.unwrap()
+        parts.append("\"doubleValue\":" + str(u3))
+    if v.stringValue.is_some():
+        auto u4 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + rds_data_json_str(u4))
+    if v.blobValue.is_some():
+        auto u5 = v.blobValue.unwrap()
+        parts.append("\"blobValue\":" + rds_data_json_str(base64.encode(u5)))
+    if v.arrayValue.is_some():
+        auto u6 = v.arrayValue.unwrap()
+        parts.append("\"arrayValue\":" + array_value_to_json(u6))
+    return rds_data_json_obj(parts)
+
+# Serialize SqlParameter to a compact JSON object (declaration order).
+def sql_parameter_to_json(SqlParameter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + rds_data_json_str(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        parts.append("\"value\":" + field_to_json(u1))
+    if v.typeHint.is_some():
+        auto u2 = v.typeHint.unwrap()
+        parts.append("\"typeHint\":" + u2.to_json())
+    return rds_data_json_obj(parts)
+
 # A bound RDS_Data client: credentials + region, threaded into every operation.
 struct RDS_DataClient:
     core.Credentials creds
     str region
+
+    # BatchExecuteStatement  POST /BatchExecute
+    # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseResumingException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException
+    def batch_execute_statement(self, BatchExecuteStatementRequest input) -> str:
+        auto host = endpoints.regional_host(rds_data_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchExecute", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + rds_data_json_str(input.resourceArn))
+        parts.append("\"secretArn\":" + rds_data_json_str(input.secretArn))
+        parts.append("\"sql\":" + rds_data_json_str(input.sql))
+        if input.database.is_some():
+            auto u0 = input.database.unwrap()
+            parts.append("\"database\":" + rds_data_json_str(u0))
+        if input.schema.is_some():
+            auto u1 = input.schema.unwrap()
+            parts.append("\"schema\":" + rds_data_json_str(u1))
+        if input.parameterSets.is_some():
+            auto u2 = input.parameterSets.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                list[str] e4 = []
+                for x4 in x3:
+                    e4.append(sql_parameter_to_json(x4))
+                e3.append(rds_data_json_arr(e4))
+            parts.append("\"parameterSets\":" + rds_data_json_arr(e3))
+        if input.transactionId.is_some():
+            auto u5 = input.transactionId.unwrap()
+            parts.append("\"transactionId\":" + rds_data_json_str(u5))
+        auto bp = restjson.rest_json_document(b, rds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)
 
     # BeginTransaction  POST /BeginTransaction
     # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseResumingException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException
@@ -465,6 +608,45 @@ struct RDS_DataClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ExecuteSql", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteSqlDocument(dbClusterOrInstanceArn=input.dbClusterOrInstanceArn, awsSecretStoreArn=input.awsSecretStoreArn, sqlStatements=input.sqlStatements, database=input.database, schema=input.schema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)
+
+    # ExecuteStatement  POST /Execute
+    # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseResumingException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException, UnsupportedResultException
+    def execute_statement(self, ExecuteStatementRequest input) -> str:
+        auto host = endpoints.regional_host(rds_data_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/Execute", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + rds_data_json_str(input.resourceArn))
+        parts.append("\"secretArn\":" + rds_data_json_str(input.secretArn))
+        parts.append("\"sql\":" + rds_data_json_str(input.sql))
+        if input.database.is_some():
+            auto u0 = input.database.unwrap()
+            parts.append("\"database\":" + rds_data_json_str(u0))
+        if input.schema.is_some():
+            auto u1 = input.schema.unwrap()
+            parts.append("\"schema\":" + rds_data_json_str(u1))
+        if input.parameters.is_some():
+            auto u2 = input.parameters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(sql_parameter_to_json(x3))
+            parts.append("\"parameters\":" + rds_data_json_arr(e3))
+        if input.transactionId.is_some():
+            auto u4 = input.transactionId.unwrap()
+            parts.append("\"transactionId\":" + rds_data_json_str(u4))
+        if input.includeResultMetadata.is_some():
+            auto u5 = input.includeResultMetadata.unwrap()
+            parts.append("\"includeResultMetadata\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.continueAfterTimeout.is_some():
+            auto u6 = input.continueAfterTimeout.unwrap()
+            parts.append("\"continueAfterTimeout\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.resultSetOptions.is_some():
+            auto u7 = input.resultSetOptions.unwrap()
+            parts.append("\"resultSetOptions\":" + u7.to_json())
+        if input.formatRecordsAs.is_some():
+            auto u8 = input.formatRecordsAs.unwrap()
+            parts.append("\"formatRecordsAs\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, rds_data_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)
 
     # RollbackTransaction  POST /RollbackTransaction

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 39 operations — 24 with a generated method,
-#   15 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 39 operations — 37 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   168 structs (85 @derive(Json)), 32 enums, 9 error variants.
-#   8 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The AccessAnalyzer rest-json protocol: SigV4 service "access-analyzer" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -365,8 +366,9 @@ enum ValidationExceptionReason:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) actions: list[str], resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[str], resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Access:
     Optional[list[str]] actions
     Optional[list[str]] resources
@@ -375,8 +377,9 @@ struct Access:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) configurations: dict[str, Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: dict[str, Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessPreview:
     str id
     str analyzerArn
@@ -385,8 +388,9 @@ struct AccessPreview:
     AccessPreviewStatus status
     Optional[AccessPreviewStatusReason] statusReason
 
-# no @derive(Json): member(s) principal: dict[str, str], action: list[str], condition: dict[str, str], sources: list[FindingSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principal: dict[str, str], action: list[str], condition: dict[str, str], sources: list[FindingSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessPreviewFinding:
     str id
     Optional[str] existingFindingId
@@ -423,19 +427,22 @@ struct AclGrantee:
     Optional[str] id
     Optional[str] uri
 
-# no @derive(Json): member(s) exclusions: list[AnalysisRuleCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclusions: list[AnalysisRuleCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRule:
     Optional[list[AnalysisRuleCriteria]] exclusions
 
-# no @derive(Json): member(s) accountIds: list[str], resourceTags: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], resourceTags: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisRuleCriteria:
     Optional[list[str]] accountIds
     Optional[list[dict[str, str]]] resourceTags
 
-# no @derive(Json): member(s) actions: list[str], sharedVia: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[str], sharedVia: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzedResource:
     str resourceArn
     ResourceType resourceType
@@ -455,14 +462,16 @@ struct AnalyzedResourceSummary:
     str resourceOwnerAccount
     ResourceType resourceType
 
-# no @derive(Json): member(s) unusedAccess: UnusedAccessConfiguration, internalAccess: InternalAccessConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unusedAccess: UnusedAccessConfiguration, internalAccess: InternalAccessConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzerConfiguration:
     Optional[UnusedAccessConfiguration] unusedAccess
     Optional[InternalAccessConfiguration] internalAccess
 
-# no @derive(Json): member(s) tags: dict[str, str], configuration: AnalyzerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], configuration: AnalyzerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzerSummary:
     str arn
     str name
@@ -483,8 +492,9 @@ struct ApplyArchiveRuleRequest:
     str ruleName
     Optional[str] clientToken
 
-# no @derive(Json): member(s) filter: dict[str, Criterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: dict[str, Criterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArchiveRuleSummary:
     str ruleName
     dict[str, Criterion] filter
@@ -508,8 +518,9 @@ struct CheckAccessNotGrantedRequest:
     list[Access] access
     AccessCheckPolicyType policyType
 
-# no @derive(Json): member(s) reasons: list[ReasonSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[ReasonSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckAccessNotGrantedResponse:
     Optional[CheckAccessNotGrantedResult] result
     Optional[str] message
@@ -522,8 +533,9 @@ struct CheckNoNewAccessRequest:
     str existingPolicyDocument
     AccessCheckPolicyType policyType
 
-# no @derive(Json): member(s) reasons: list[ReasonSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[ReasonSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckNoNewAccessResponse:
     Optional[CheckNoNewAccessResult] result
     Optional[str] message
@@ -535,30 +547,34 @@ struct CheckNoPublicAccessRequest:
     str policyDocument
     AccessCheckResourceType resourceType
 
-# no @derive(Json): member(s) reasons: list[ReasonSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[ReasonSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckNoPublicAccessResponse:
     Optional[CheckNoPublicAccessResult] result
     Optional[str] message
     Optional[list[ReasonSummary]] reasons
 
-# no @derive(Json): member(s) trails: list[Trail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trails: list[Trail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudTrailDetails:
     list[Trail] trails
     str accessRole
     DateTime startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) trailProperties: list[TrailProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trailProperties: list[TrailProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudTrailProperties:
     list[TrailProperties] trailProperties
     DateTime startTime
     DateTime endTime
 
-# no @derive(Json): member(s) ebsSnapshot: EbsSnapshotConfiguration, kmsKey: KmsKeyConfiguration, rdsDbClusterSnapshot: RdsDbClusterSnapshotConfiguration, rdsDbSnapshot: RdsDbSnapshotConfiguration, s3Bucket: S3BucketConfiguration, s3ExpressDirectoryBucket: S3ExpressDirectoryBucketConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ebsSnapshot: EbsSnapshotConfiguration, kmsKey: KmsKeyConfiguration, rdsDbClusterSnapshot: RdsDbClusterSnapshotConfiguration, rdsDbSnapshot: RdsDbSnapshotConfiguration, s3Bucket: S3BucketConfiguration, s3ExpressDirectoryBucket: S3ExpressDirectoryBucketConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     Optional[EbsSnapshotConfiguration] ebsSnapshot
     Optional[EcrRepositoryConfiguration] ecrRepository
@@ -626,8 +642,9 @@ struct CreateServiceLinkedAnalyzerRequest:
 struct CreateServiceLinkedAnalyzerResponse:
     Optional[str] arn
 
-# no @derive(Json): member(s) eq: list[str], neq: list[str], contains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eq: list[str], neq: list[str], contains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Criterion:
     Optional[list[str]] eq
     Optional[list[str]] neq
@@ -661,8 +678,9 @@ struct DynamodbStreamConfiguration:
 struct DynamodbTableConfiguration:
     Optional[str] tablePolicy
 
-# no @derive(Json): member(s) userIds: list[str], groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userIds: list[str], groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EbsSnapshotConfiguration:
     Optional[list[str]] userIds
     Optional[list[str]] groups
@@ -676,8 +694,9 @@ struct EcrRepositoryConfiguration:
 struct EfsFileSystemConfiguration:
     Optional[str] fileSystemPolicy
 
-# no @derive(Json): member(s) action: list[str], condition: dict[str, str], principal: dict[str, str], sources: list[FindingSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: list[str], condition: dict[str, str], principal: dict[str, str], sources: list[FindingSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalAccessDetails:
     Optional[list[str]] action
     dict[str, str] condition
@@ -686,16 +705,18 @@ struct ExternalAccessDetails:
     Optional[list[FindingSource]] sources
     Optional[ResourceControlPolicyRestriction] resourceControlPolicyRestriction
 
-# no @derive(Json): member(s) resourceTypeStatistics: dict[ResourceType, ResourceTypeDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypeStatistics: dict[ResourceType, ResourceTypeDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalAccessFindingsStatistics:
     Optional[dict[ResourceType, ResourceTypeDetails]] resourceTypeStatistics
     Optional[int64] totalActiveFindings
     Optional[int64] totalArchivedFindings
     Optional[int64] totalResolvedFindings
 
-# no @derive(Json): member(s) principal: dict[str, str], action: list[str], condition: dict[str, str], sources: list[FindingSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principal: dict[str, str], action: list[str], condition: dict[str, str], sources: list[FindingSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     str id
     Optional[dict[str, str]] principal
@@ -713,15 +734,17 @@ struct Finding:
     Optional[list[FindingSource]] sources
     Optional[ResourceControlPolicyRestriction] resourceControlPolicyRestriction
 
-# no @derive(Json): member(s) details: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingAggregationAccountDetails:
     Optional[str] account
     Optional[int64] numberOfActiveFindings
     Optional[dict[str, int64]] details
 
-# no @derive(Json): member(s) internalAccessDetails: InternalAccessDetails, externalAccessDetails: ExternalAccessDetails, unusedPermissionDetails: UnusedPermissionDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) internalAccessDetails: InternalAccessDetails, externalAccessDetails: ExternalAccessDetails, unusedPermissionDetails: UnusedPermissionDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingDetails:
     Optional[InternalAccessDetails] internalAccessDetails
     Optional[ExternalAccessDetails] externalAccessDetails
@@ -740,8 +763,9 @@ struct FindingSourceDetail:
     Optional[str] accessPointArn
     Optional[str] accessPointAccount
 
-# no @derive(Json): member(s) principal: dict[str, str], action: list[str], condition: dict[str, str], sources: list[FindingSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principal: dict[str, str], action: list[str], condition: dict[str, str], sources: list[FindingSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingSummary:
     str id
     Optional[dict[str, str]] principal
@@ -775,8 +799,9 @@ struct FindingSummaryV2:
     DateTime updatedAt
     Optional[FindingType] findingType
 
-# no @derive(Json): member(s) externalAccessFindingsStatistics: ExternalAccessFindingsStatistics, internalAccessFindingsStatistics: InternalAccessFindingsStatistics, unusedAccessFindingsStatistics: UnusedAccessFindingsStatistics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalAccessFindingsStatistics: ExternalAccessFindingsStatistics, internalAccessFindingsStatistics: InternalAccessFindingsStatistics, unusedAccessFindingsStatistics: UnusedAccessFindingsStatistics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingsStatistics:
     Optional[ExternalAccessFindingsStatistics] externalAccessFindingsStatistics
     Optional[InternalAccessFindingsStatistics] internalAccessFindingsStatistics
@@ -792,15 +817,17 @@ struct GenerateFindingRecommendationRequest:
 struct GeneratedPolicy:
     str policy
 
-# no @derive(Json): member(s) cloudTrailProperties: CloudTrailProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudTrailProperties: CloudTrailProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneratedPolicyProperties:
     Optional[bool] isComplete
     str principalArn
     Optional[CloudTrailProperties] cloudTrailProperties
 
-# no @derive(Json): member(s) properties: GeneratedPolicyProperties, generatedPolicies: list[GeneratedPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: GeneratedPolicyProperties, generatedPolicies: list[GeneratedPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneratedPolicyResult:
     GeneratedPolicyProperties properties
     Optional[list[GeneratedPolicy]] generatedPolicies
@@ -811,8 +838,9 @@ struct GetAccessPreviewRequest:
     str accessPreviewId
     str analyzerArn
 
-# no @derive(Json): member(s) accessPreview: AccessPreview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPreview: AccessPreview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccessPreviewResponse:
     AccessPreview accessPreview
 
@@ -822,8 +850,9 @@ struct GetAnalyzedResourceRequest:
     str analyzerArn
     str resourceArn
 
-# no @derive(Json): member(s) resource: AnalyzedResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resource: AnalyzedResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnalyzedResourceResponse:
     Optional[AnalyzedResource] resource
 
@@ -832,8 +861,9 @@ struct GetAnalyzedResourceResponse:
 struct GetAnalyzerRequest:
     str analyzerName
 
-# no @derive(Json): member(s) analyzer: AnalyzerSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analyzer: AnalyzerSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnalyzerResponse:
     AnalyzerSummary analyzer
 
@@ -843,8 +873,9 @@ struct GetArchiveRuleRequest:
     str analyzerName
     str ruleName
 
-# no @derive(Json): member(s) archiveRule: ArchiveRuleSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) archiveRule: ArchiveRuleSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetArchiveRuleResponse:
     ArchiveRuleSummary archiveRule
 
@@ -856,8 +887,9 @@ struct GetFindingRecommendationRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recommendedSteps: list[RecommendedStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendedSteps: list[RecommendedStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingRecommendationResponse:
     DateTime startedAt
     Optional[DateTime] completedAt
@@ -874,8 +906,9 @@ struct GetFindingRequest:
     str analyzerArn
     str id
 
-# no @derive(Json): member(s) finding: Finding not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) finding: Finding not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingResponse:
     Optional[Finding] finding
 
@@ -887,8 +920,9 @@ struct GetFindingV2Request:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) findingDetails: list[FindingDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingDetails: list[FindingDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingV2Response:
     DateTime analyzedAt
     DateTime createdAt
@@ -908,8 +942,9 @@ struct GetFindingV2Response:
 struct GetFindingsStatisticsRequest:
     str analyzerArn
 
-# no @derive(Json): member(s) findingsStatistics: list[FindingsStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingsStatistics: list[FindingsStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsStatisticsResponse:
     Optional[list[FindingsStatistics]] findingsStatistics
     Optional[DateTime] lastUpdatedAt
@@ -921,8 +956,9 @@ struct GetGeneratedPolicyRequest:
     Optional[bool] includeResourcePlaceholders
     Optional[bool] includeServiceLevelTemplate
 
-# no @derive(Json): member(s) generatedPolicyResult: GeneratedPolicyResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) generatedPolicyResult: GeneratedPolicyResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGeneratedPolicyResponse:
     JobDetails jobDetails
     GeneratedPolicyResult generatedPolicyResult
@@ -931,31 +967,36 @@ struct GetGeneratedPolicyResponse:
 struct IamRoleConfiguration:
     Optional[str] trustPolicy
 
-# no @derive(Json): member(s) filter: dict[str, Criterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: dict[str, Criterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineArchiveRule:
     str ruleName
     dict[str, Criterion] filter
 
-# no @derive(Json): member(s) inclusions: list[InternalAccessAnalysisRuleCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inclusions: list[InternalAccessAnalysisRuleCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalAccessAnalysisRule:
     Optional[list[InternalAccessAnalysisRuleCriteria]] inclusions
 
-# no @derive(Json): member(s) accountIds: list[str], resourceTypes: list[ResourceType], resourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], resourceTypes: list[ResourceType], resourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalAccessAnalysisRuleCriteria:
     Optional[list[str]] accountIds
     Optional[list[ResourceType]] resourceTypes
     Optional[list[str]] resourceArns
 
-# no @derive(Json): member(s) analysisRule: InternalAccessAnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: InternalAccessAnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalAccessConfiguration:
     Optional[InternalAccessAnalysisRule] analysisRule
 
-# no @derive(Json): member(s) action: list[str], condition: dict[str, str], principal: dict[str, str], sources: list[FindingSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: list[str], condition: dict[str, str], principal: dict[str, str], sources: list[FindingSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalAccessDetails:
     Optional[list[str]] action
     Optional[dict[str, str]] condition
@@ -967,8 +1008,9 @@ struct InternalAccessDetails:
     Optional[ResourceControlPolicyRestriction] resourceControlPolicyRestriction
     Optional[ServiceControlPolicyRestriction] serviceControlPolicyRestriction
 
-# no @derive(Json): member(s) resourceTypeStatistics: dict[ResourceType, InternalAccessResourceTypeDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypeStatistics: dict[ResourceType, InternalAccessResourceTypeDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalAccessFindingsStatistics:
     Optional[dict[ResourceType, InternalAccessResourceTypeDetails]] resourceTypeStatistics
     Optional[int64] totalActiveFindings
@@ -1010,8 +1052,9 @@ struct JobError:
     JobErrorCode code
     str message
 
-# no @derive(Json): member(s) operations: list[KmsGrantOperation], constraints: KmsGrantConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[KmsGrantOperation], constraints: KmsGrantConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KmsGrantConfiguration:
     list[KmsGrantOperation] operations
     str granteePrincipal
@@ -1019,14 +1062,16 @@ struct KmsGrantConfiguration:
     Optional[KmsGrantConstraints] constraints
     str issuingAccount
 
-# no @derive(Json): member(s) encryptionContextEquals: dict[str, str], encryptionContextSubset: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionContextEquals: dict[str, str], encryptionContextSubset: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KmsGrantConstraints:
     Optional[dict[str, str]] encryptionContextEquals
     Optional[dict[str, str]] encryptionContextSubset
 
-# no @derive(Json): member(s) keyPolicies: dict[str, str], grants: list[KmsGrantConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPolicies: dict[str, str], grants: list[KmsGrantConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KmsKeyConfiguration:
     Optional[dict[str, str]] keyPolicies
     Optional[list[KmsGrantConfiguration]] grants
@@ -1040,8 +1085,9 @@ struct ListAccessPreviewFindingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) findings: list[AccessPreviewFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[AccessPreviewFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPreviewFindingsResponse:
     list[AccessPreviewFinding] findings
     Optional[str] nextToken
@@ -1053,8 +1099,9 @@ struct ListAccessPreviewsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) accessPreviews: list[AccessPreviewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPreviews: list[AccessPreviewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPreviewsResponse:
     list[AccessPreviewSummary] accessPreviews
     Optional[str] nextToken
@@ -1067,8 +1114,9 @@ struct ListAnalyzedResourcesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) analyzedResources: list[AnalyzedResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analyzedResources: list[AnalyzedResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalyzedResourcesResponse:
     list[AnalyzedResourceSummary] analyzedResources
     Optional[str] nextToken
@@ -1081,8 +1129,9 @@ struct ListAnalyzersRequest:
     # wire string of the Type enum (querystring binding)
     Optional[str] type
 
-# no @derive(Json): member(s) analyzers: list[AnalyzerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analyzers: list[AnalyzerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalyzersResponse:
     list[AnalyzerSummary] analyzers
     Optional[str] nextToken
@@ -1094,8 +1143,9 @@ struct ListArchiveRulesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) archiveRules: list[ArchiveRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) archiveRules: list[ArchiveRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListArchiveRulesResponse:
     list[ArchiveRuleSummary] archiveRules
     Optional[str] nextToken
@@ -1109,8 +1159,9 @@ struct ListFindingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) findings: list[FindingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[FindingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsResponse:
     list[FindingSummary] findings
     Optional[str] nextToken
@@ -1124,8 +1175,9 @@ struct ListFindingsV2Request:
     Optional[str] nextToken
     Optional[SortCriteria] sort
 
-# no @derive(Json): member(s) findings: list[FindingSummaryV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[FindingSummaryV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsV2Response:
     list[FindingSummaryV2] findings
     Optional[str] nextToken
@@ -1137,8 +1189,9 @@ struct ListPolicyGenerationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) policyGenerations: list[PolicyGeneration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyGenerations: list[PolicyGeneration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyGenerationsResponse:
     list[PolicyGeneration] policyGenerations
     Optional[str] nextToken
@@ -1148,13 +1201,15 @@ struct ListPolicyGenerationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) path: list[PathElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) path: list[PathElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Location:
     list[PathElement] path
     Span span
@@ -1191,24 +1246,28 @@ struct Position:
     int64 column
     int64 offset
 
-# no @derive(Json): member(s) accountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbClusterSnapshotAttributeValue:
     Optional[list[str]] accountIds
 
-# no @derive(Json): member(s) attributes: dict[str, RdsDbClusterSnapshotAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, RdsDbClusterSnapshotAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbClusterSnapshotConfiguration:
     Optional[dict[str, RdsDbClusterSnapshotAttributeValue]] attributes
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) accountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbSnapshotAttributeValue:
     Optional[list[str]] accountIds
 
-# no @derive(Json): member(s) attributes: dict[str, RdsDbSnapshotAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, RdsDbSnapshotAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbSnapshotConfiguration:
     Optional[dict[str, RdsDbSnapshotAttributeValue]] attributes
     Optional[str] kmsKeyId
@@ -1251,8 +1310,9 @@ struct S3BucketAclGrantConfiguration:
     AclPermission permission
     AclGrantee grantee
 
-# no @derive(Json): member(s) bucketAclGrants: list[S3BucketAclGrantConfiguration], accessPoints: dict[str, S3AccessPointConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucketAclGrants: list[S3BucketAclGrantConfiguration], accessPoints: dict[str, S3AccessPointConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3BucketConfiguration:
     Optional[str] bucketPolicy
     Optional[list[S3BucketAclGrantConfiguration]] bucketAclGrants
@@ -1264,8 +1324,9 @@ struct S3ExpressDirectoryAccessPointConfiguration:
     Optional[str] accessPointPolicy
     Optional[NetworkOriginConfiguration] networkOrigin
 
-# no @derive(Json): member(s) accessPoints: dict[str, S3ExpressDirectoryAccessPointConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPoints: dict[str, S3ExpressDirectoryAccessPointConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ExpressDirectoryBucketConfiguration:
     Optional[str] bucketPolicy
     Optional[dict[str, S3ExpressDirectoryAccessPointConfiguration]] accessPoints
@@ -1347,15 +1408,17 @@ struct ThrottlingException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Trail:
     str cloudTrailArn
     Optional[list[str]] regions
     Optional[bool] allRegions
 
-# no @derive(Json): member(s) regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrailProperties:
     str cloudTrailArn
     Optional[list[str]] regions
@@ -1376,14 +1439,16 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) analysisRule: AnalysisRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analysisRule: AnalysisRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnusedAccessConfiguration:
     Optional[int64] unusedAccessAge
     Optional[AnalysisRule] analysisRule
 
-# no @derive(Json): member(s) unusedAccessTypeStatistics: list[UnusedAccessTypeStatistics], topAccounts: list[FindingAggregationAccountDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unusedAccessTypeStatistics: list[UnusedAccessTypeStatistics], topAccounts: list[FindingAggregationAccountDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnusedAccessFindingsStatistics:
     Optional[list[UnusedAccessTypeStatistics]] unusedAccessTypeStatistics
     Optional[list[FindingAggregationAccountDetails]] topAccounts
@@ -1418,8 +1483,9 @@ struct UnusedIamUserPasswordDetails:
     @json(timestamp="iso8601")
     Optional[DateTime] lastAccessed
 
-# no @derive(Json): member(s) actions: list[UnusedAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[UnusedAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnusedPermissionDetails:
     Optional[list[UnusedAction]] actions
     str serviceNamespace
@@ -1439,8 +1505,9 @@ struct UpdateAnalyzerRequest:
     str analyzerName
     Optional[AnalyzerConfiguration] configuration
 
-# no @derive(Json): member(s) configuration: AnalyzerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: AnalyzerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAnalyzerResponse:
     Optional[AnalyzerConfiguration] configuration
 
@@ -1461,8 +1528,9 @@ struct UpdateFindingsRequest:
     Optional[str] resourceArn
     Optional[str] clientToken
 
-# no @derive(Json): member(s) locations: list[Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) locations: list[Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidatePolicyFinding:
     str findingDetails
     ValidatePolicyFindingType findingType
@@ -1480,14 +1548,16 @@ struct ValidatePolicyRequest:
     PolicyType policyType
     Optional[ValidatePolicyResourceType] validatePolicyResourceType
 
-# no @derive(Json): member(s) findings: list[ValidatePolicyFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[ValidatePolicyFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidatePolicyResponse:
     list[ValidatePolicyFinding] findings
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -1546,27 +1616,8 @@ def access_analyzer_error_from_code(str code) -> AccessAnalyzerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CheckAccessNotGranted (document member `access: list[Access]` is not serializable by derive)
-#   CreateAccessPreview (document member `configurations: dict[str, Configuration]` is not serializable by derive)
-#   CreateAnalyzer (document member `archiveRules: list[InlineArchiveRule]` is not serializable by derive)
-#   CreateArchiveRule (document member `filter: dict[str, Criterion]` is not serializable by derive)
-#   CreateServiceLinkedAnalyzer (document member `archiveRules: list[InlineArchiveRule]` is not serializable by derive)
 #   GetGeneratedPolicy (httpQuery `includeResourcePlaceholders` has unsupported type bool)
-#   ListAccessPreviewFindings (document member `filter: dict[str, Criterion]` is not serializable by derive)
-#   ListFindings (document member `filter: dict[str, Criterion]` is not serializable by derive)
-#   ListFindingsV2 (document member `filter: dict[str, Criterion]` is not serializable by derive)
-#   StartPolicyGeneration (document member `cloudTrailDetails: CloudTrailDetails` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAnalyzer (document member `configuration: AnalyzerConfiguration` is not serializable by derive)
-#   UpdateArchiveRule (document member `filter: dict[str, Criterion]` is not serializable by derive)
-#   UpdateFindings (document member `ids: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAccessPreviewFindings (operation not generated)
-#   ListFindings (operation not generated)
-#   ListFindingsV2 (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1619,6 +1670,422 @@ struct ValidatePolicyDocument:
     PolicyType policyType
     Optional[ValidatePolicyResourceType] validatePolicyResourceType
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def access_analyzer_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def access_analyzer_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def access_analyzer_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def access_analyzer_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Access to a compact JSON object (declaration order).
+def access_to_json(Access v) -> str:
+    list[str] parts = []
+    if v.actions.is_some():
+        auto u0 = v.actions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"actions\":" + access_analyzer_json_arr(e1))
+    if v.resources.is_some():
+        auto u2 = v.resources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(access_analyzer_json_str(x3))
+        parts.append("\"resources\":" + access_analyzer_json_arr(e3))
+    return access_analyzer_json_obj(parts)
+
+# Serialize AnalysisRule to a compact JSON object (declaration order).
+def analysis_rule_to_json(AnalysisRule v) -> str:
+    list[str] parts = []
+    if v.exclusions.is_some():
+        auto u0 = v.exclusions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(analysis_rule_criteria_to_json(x1))
+        parts.append("\"exclusions\":" + access_analyzer_json_arr(e1))
+    return access_analyzer_json_obj(parts)
+
+# Serialize AnalysisRuleCriteria to a compact JSON object (declaration order).
+def analysis_rule_criteria_to_json(AnalysisRuleCriteria v) -> str:
+    list[str] parts = []
+    if v.accountIds.is_some():
+        auto u0 = v.accountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"accountIds\":" + access_analyzer_json_arr(e1))
+    if v.resourceTags.is_some():
+        auto u2 = v.resourceTags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            list[str] m4 = []
+            for k4 in sorted(x3.keys()):
+                m4.append(access_analyzer_json_str(k4) + ":" + access_analyzer_json_str(x3[k4]))
+            e3.append(access_analyzer_json_obj(m4))
+        parts.append("\"resourceTags\":" + access_analyzer_json_arr(e3))
+    return access_analyzer_json_obj(parts)
+
+# Serialize AnalyzerConfiguration to a compact JSON object (declaration order).
+def analyzer_configuration_to_json(AnalyzerConfiguration v) -> str:
+    list[str] parts = []
+    if v.unusedAccess.is_some():
+        auto u0 = v.unusedAccess.unwrap()
+        parts.append("\"unusedAccess\":" + unused_access_configuration_to_json(u0))
+    if v.internalAccess.is_some():
+        auto u1 = v.internalAccess.unwrap()
+        parts.append("\"internalAccess\":" + internal_access_configuration_to_json(u1))
+    return access_analyzer_json_obj(parts)
+
+# Serialize CloudTrailDetails to a compact JSON object (declaration order).
+def cloud_trail_details_to_json(CloudTrailDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.trails:
+        e0.append(trail_to_json(x0))
+    parts.append("\"trails\":" + access_analyzer_json_arr(e0))
+    parts.append("\"accessRole\":" + access_analyzer_json_str(v.accessRole))
+    parts.append("\"startTime\":" + access_analyzer_json_ts_iso(v.startTime))
+    if v.endTime.is_some():
+        auto u1 = v.endTime.unwrap()
+        parts.append("\"endTime\":" + access_analyzer_json_ts_iso(u1))
+    return access_analyzer_json_obj(parts)
+
+# Serialize Configuration to a compact JSON object (declaration order).
+def configuration_to_json(Configuration v) -> str:
+    list[str] parts = []
+    if v.ebsSnapshot.is_some():
+        auto u0 = v.ebsSnapshot.unwrap()
+        parts.append("\"ebsSnapshot\":" + ebs_snapshot_configuration_to_json(u0))
+    if v.ecrRepository.is_some():
+        auto u1 = v.ecrRepository.unwrap()
+        parts.append("\"ecrRepository\":" + u1.to_json())
+    if v.iamRole.is_some():
+        auto u2 = v.iamRole.unwrap()
+        parts.append("\"iamRole\":" + u2.to_json())
+    if v.efsFileSystem.is_some():
+        auto u3 = v.efsFileSystem.unwrap()
+        parts.append("\"efsFileSystem\":" + u3.to_json())
+    if v.kmsKey.is_some():
+        auto u4 = v.kmsKey.unwrap()
+        parts.append("\"kmsKey\":" + kms_key_configuration_to_json(u4))
+    if v.rdsDbClusterSnapshot.is_some():
+        auto u5 = v.rdsDbClusterSnapshot.unwrap()
+        parts.append("\"rdsDbClusterSnapshot\":" + rds_db_cluster_snapshot_configuration_to_json(u5))
+    if v.rdsDbSnapshot.is_some():
+        auto u6 = v.rdsDbSnapshot.unwrap()
+        parts.append("\"rdsDbSnapshot\":" + rds_db_snapshot_configuration_to_json(u6))
+    if v.secretsManagerSecret.is_some():
+        auto u7 = v.secretsManagerSecret.unwrap()
+        parts.append("\"secretsManagerSecret\":" + u7.to_json())
+    if v.s3Bucket.is_some():
+        auto u8 = v.s3Bucket.unwrap()
+        parts.append("\"s3Bucket\":" + s3_bucket_configuration_to_json(u8))
+    if v.snsTopic.is_some():
+        auto u9 = v.snsTopic.unwrap()
+        parts.append("\"snsTopic\":" + u9.to_json())
+    if v.sqsQueue.is_some():
+        auto u10 = v.sqsQueue.unwrap()
+        parts.append("\"sqsQueue\":" + u10.to_json())
+    if v.s3ExpressDirectoryBucket.is_some():
+        auto u11 = v.s3ExpressDirectoryBucket.unwrap()
+        parts.append("\"s3ExpressDirectoryBucket\":" + s3_express_directory_bucket_configuration_to_json(u11))
+    if v.dynamodbStream.is_some():
+        auto u12 = v.dynamodbStream.unwrap()
+        parts.append("\"dynamodbStream\":" + u12.to_json())
+    if v.dynamodbTable.is_some():
+        auto u13 = v.dynamodbTable.unwrap()
+        parts.append("\"dynamodbTable\":" + u13.to_json())
+    return access_analyzer_json_obj(parts)
+
+# Serialize Criterion to a compact JSON object (declaration order).
+def criterion_to_json(Criterion v) -> str:
+    list[str] parts = []
+    if v.eq.is_some():
+        auto u0 = v.eq.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"eq\":" + access_analyzer_json_arr(e1))
+    if v.neq.is_some():
+        auto u2 = v.neq.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(access_analyzer_json_str(x3))
+        parts.append("\"neq\":" + access_analyzer_json_arr(e3))
+    if v.contains.is_some():
+        auto u4 = v.contains.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(access_analyzer_json_str(x5))
+        parts.append("\"contains\":" + access_analyzer_json_arr(e5))
+    if v.exists.is_some():
+        auto u6 = v.exists.unwrap()
+        parts.append("\"exists\":" + json.dumps(JsonValue.Bool(u6)))
+    return access_analyzer_json_obj(parts)
+
+# Serialize EbsSnapshotConfiguration to a compact JSON object (declaration order).
+def ebs_snapshot_configuration_to_json(EbsSnapshotConfiguration v) -> str:
+    list[str] parts = []
+    if v.userIds.is_some():
+        auto u0 = v.userIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"userIds\":" + access_analyzer_json_arr(e1))
+    if v.groups.is_some():
+        auto u2 = v.groups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(access_analyzer_json_str(x3))
+        parts.append("\"groups\":" + access_analyzer_json_arr(e3))
+    if v.kmsKeyId.is_some():
+        auto u4 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + access_analyzer_json_str(u4))
+    return access_analyzer_json_obj(parts)
+
+# Serialize InlineArchiveRule to a compact JSON object (declaration order).
+def inline_archive_rule_to_json(InlineArchiveRule v) -> str:
+    list[str] parts = []
+    parts.append("\"ruleName\":" + access_analyzer_json_str(v.ruleName))
+    list[str] m0 = []
+    for k0 in sorted(v.filter.keys()):
+        m0.append(access_analyzer_json_str(k0) + ":" + criterion_to_json(v.filter[k0]))
+    parts.append("\"filter\":" + access_analyzer_json_obj(m0))
+    return access_analyzer_json_obj(parts)
+
+# Serialize InternalAccessAnalysisRule to a compact JSON object (declaration order).
+def internal_access_analysis_rule_to_json(InternalAccessAnalysisRule v) -> str:
+    list[str] parts = []
+    if v.inclusions.is_some():
+        auto u0 = v.inclusions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(internal_access_analysis_rule_criteria_to_json(x1))
+        parts.append("\"inclusions\":" + access_analyzer_json_arr(e1))
+    return access_analyzer_json_obj(parts)
+
+# Serialize InternalAccessAnalysisRuleCriteria to a compact JSON object (declaration order).
+def internal_access_analysis_rule_criteria_to_json(InternalAccessAnalysisRuleCriteria v) -> str:
+    list[str] parts = []
+    if v.accountIds.is_some():
+        auto u0 = v.accountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"accountIds\":" + access_analyzer_json_arr(e1))
+    if v.resourceTypes.is_some():
+        auto u2 = v.resourceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"resourceTypes\":" + access_analyzer_json_arr(e3))
+    if v.resourceArns.is_some():
+        auto u4 = v.resourceArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(access_analyzer_json_str(x5))
+        parts.append("\"resourceArns\":" + access_analyzer_json_arr(e5))
+    return access_analyzer_json_obj(parts)
+
+# Serialize InternalAccessConfiguration to a compact JSON object (declaration order).
+def internal_access_configuration_to_json(InternalAccessConfiguration v) -> str:
+    list[str] parts = []
+    if v.analysisRule.is_some():
+        auto u0 = v.analysisRule.unwrap()
+        parts.append("\"analysisRule\":" + internal_access_analysis_rule_to_json(u0))
+    return access_analyzer_json_obj(parts)
+
+# Serialize KmsGrantConfiguration to a compact JSON object (declaration order).
+def kms_grant_configuration_to_json(KmsGrantConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.operations:
+        e0.append(x0.to_json())
+    parts.append("\"operations\":" + access_analyzer_json_arr(e0))
+    parts.append("\"granteePrincipal\":" + access_analyzer_json_str(v.granteePrincipal))
+    if v.retiringPrincipal.is_some():
+        auto u1 = v.retiringPrincipal.unwrap()
+        parts.append("\"retiringPrincipal\":" + access_analyzer_json_str(u1))
+    if v.constraints.is_some():
+        auto u2 = v.constraints.unwrap()
+        parts.append("\"constraints\":" + kms_grant_constraints_to_json(u2))
+    parts.append("\"issuingAccount\":" + access_analyzer_json_str(v.issuingAccount))
+    return access_analyzer_json_obj(parts)
+
+# Serialize KmsGrantConstraints to a compact JSON object (declaration order).
+def kms_grant_constraints_to_json(KmsGrantConstraints v) -> str:
+    list[str] parts = []
+    if v.encryptionContextEquals.is_some():
+        auto u0 = v.encryptionContextEquals.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(access_analyzer_json_str(k1) + ":" + access_analyzer_json_str(u0[k1]))
+        parts.append("\"encryptionContextEquals\":" + access_analyzer_json_obj(m1))
+    if v.encryptionContextSubset.is_some():
+        auto u2 = v.encryptionContextSubset.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(access_analyzer_json_str(k3) + ":" + access_analyzer_json_str(u2[k3]))
+        parts.append("\"encryptionContextSubset\":" + access_analyzer_json_obj(m3))
+    return access_analyzer_json_obj(parts)
+
+# Serialize KmsKeyConfiguration to a compact JSON object (declaration order).
+def kms_key_configuration_to_json(KmsKeyConfiguration v) -> str:
+    list[str] parts = []
+    if v.keyPolicies.is_some():
+        auto u0 = v.keyPolicies.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(access_analyzer_json_str(k1) + ":" + access_analyzer_json_str(u0[k1]))
+        parts.append("\"keyPolicies\":" + access_analyzer_json_obj(m1))
+    if v.grants.is_some():
+        auto u2 = v.grants.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kms_grant_configuration_to_json(x3))
+        parts.append("\"grants\":" + access_analyzer_json_arr(e3))
+    return access_analyzer_json_obj(parts)
+
+# Serialize RdsDbClusterSnapshotAttributeValue to a compact JSON object (declaration order).
+def rds_db_cluster_snapshot_attribute_value_to_json(RdsDbClusterSnapshotAttributeValue v) -> str:
+    list[str] parts = []
+    if v.accountIds.is_some():
+        auto u0 = v.accountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"accountIds\":" + access_analyzer_json_arr(e1))
+    return access_analyzer_json_obj(parts)
+
+# Serialize RdsDbClusterSnapshotConfiguration to a compact JSON object (declaration order).
+def rds_db_cluster_snapshot_configuration_to_json(RdsDbClusterSnapshotConfiguration v) -> str:
+    list[str] parts = []
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(access_analyzer_json_str(k1) + ":" + rds_db_cluster_snapshot_attribute_value_to_json(u0[k1]))
+        parts.append("\"attributes\":" + access_analyzer_json_obj(m1))
+    if v.kmsKeyId.is_some():
+        auto u2 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + access_analyzer_json_str(u2))
+    return access_analyzer_json_obj(parts)
+
+# Serialize RdsDbSnapshotAttributeValue to a compact JSON object (declaration order).
+def rds_db_snapshot_attribute_value_to_json(RdsDbSnapshotAttributeValue v) -> str:
+    list[str] parts = []
+    if v.accountIds.is_some():
+        auto u0 = v.accountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"accountIds\":" + access_analyzer_json_arr(e1))
+    return access_analyzer_json_obj(parts)
+
+# Serialize RdsDbSnapshotConfiguration to a compact JSON object (declaration order).
+def rds_db_snapshot_configuration_to_json(RdsDbSnapshotConfiguration v) -> str:
+    list[str] parts = []
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(access_analyzer_json_str(k1) + ":" + rds_db_snapshot_attribute_value_to_json(u0[k1]))
+        parts.append("\"attributes\":" + access_analyzer_json_obj(m1))
+    if v.kmsKeyId.is_some():
+        auto u2 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + access_analyzer_json_str(u2))
+    return access_analyzer_json_obj(parts)
+
+# Serialize S3BucketConfiguration to a compact JSON object (declaration order).
+def s3_bucket_configuration_to_json(S3BucketConfiguration v) -> str:
+    list[str] parts = []
+    if v.bucketPolicy.is_some():
+        auto u0 = v.bucketPolicy.unwrap()
+        parts.append("\"bucketPolicy\":" + access_analyzer_json_str(u0))
+    if v.bucketAclGrants.is_some():
+        auto u1 = v.bucketAclGrants.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"bucketAclGrants\":" + access_analyzer_json_arr(e2))
+    if v.bucketPublicAccessBlock.is_some():
+        auto u3 = v.bucketPublicAccessBlock.unwrap()
+        parts.append("\"bucketPublicAccessBlock\":" + u3.to_json())
+    if v.accessPoints.is_some():
+        auto u4 = v.accessPoints.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(access_analyzer_json_str(k5) + ":" + u4[k5].to_json())
+        parts.append("\"accessPoints\":" + access_analyzer_json_obj(m5))
+    return access_analyzer_json_obj(parts)
+
+# Serialize S3ExpressDirectoryBucketConfiguration to a compact JSON object (declaration order).
+def s3_express_directory_bucket_configuration_to_json(S3ExpressDirectoryBucketConfiguration v) -> str:
+    list[str] parts = []
+    if v.bucketPolicy.is_some():
+        auto u0 = v.bucketPolicy.unwrap()
+        parts.append("\"bucketPolicy\":" + access_analyzer_json_str(u0))
+    if v.accessPoints.is_some():
+        auto u1 = v.accessPoints.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(access_analyzer_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"accessPoints\":" + access_analyzer_json_obj(m2))
+    return access_analyzer_json_obj(parts)
+
+# Serialize Trail to a compact JSON object (declaration order).
+def trail_to_json(Trail v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudTrailArn\":" + access_analyzer_json_str(v.cloudTrailArn))
+    if v.regions.is_some():
+        auto u0 = v.regions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(access_analyzer_json_str(x1))
+        parts.append("\"regions\":" + access_analyzer_json_arr(e1))
+    if v.allRegions.is_some():
+        auto u2 = v.allRegions.unwrap()
+        parts.append("\"allRegions\":" + json.dumps(JsonValue.Bool(u2)))
+    return access_analyzer_json_obj(parts)
+
+# Serialize UnusedAccessConfiguration to a compact JSON object (declaration order).
+def unused_access_configuration_to_json(UnusedAccessConfiguration v) -> str:
+    list[str] parts = []
+    if v.unusedAccessAge.is_some():
+        auto u0 = v.unusedAccessAge.unwrap()
+        parts.append("\"unusedAccessAge\":" + str(u0))
+    if v.analysisRule.is_some():
+        auto u1 = v.analysisRule.unwrap()
+        parts.append("\"analysisRule\":" + analysis_rule_to_json(u1))
+    return access_analyzer_json_obj(parts)
+
 # A bound AccessAnalyzer client: credentials + region, threaded into every operation.
 struct AccessAnalyzerClient:
     core.Credentials creds
@@ -1642,6 +2109,21 @@ struct AccessAnalyzerClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/policy/generation/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
+    # CheckAccessNotGranted  POST /policy/check-access-not-granted
+    # errors: AccessDeniedException, InternalServerException, InvalidParameterException, ThrottlingException, UnprocessableEntityException, ValidationException
+    def check_access_not_granted(self, CheckAccessNotGrantedRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-access-not-granted", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"policyDocument\":" + access_analyzer_json_str(input.policyDocument))
+        list[str] e0 = []
+        for x0 in input.access:
+            e0.append(access_to_json(x0))
+        parts.append("\"access\":" + access_analyzer_json_arr(e0))
+        parts.append("\"policyType\":" + input.policyType.to_json())
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
     # CheckNoNewAccess  POST /policy/check-no-new-access
     # errors: AccessDeniedException, InternalServerException, InvalidParameterException, ThrottlingException, UnprocessableEntityException, ValidationException
     def check_no_new_access(self, CheckNoNewAccessRequest input) -> str:
@@ -1658,6 +2140,93 @@ struct AccessAnalyzerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/policy/check-no-public-access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CheckNoPublicAccessDocument(policyDocument=input.policyDocument, resourceType=input.resourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # CreateAccessPreview  PUT /access-preview
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_access_preview(self, CreateAccessPreviewRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/access-preview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
+        list[str] m0 = []
+        for k0 in sorted(input.configurations.keys()):
+            m0.append(access_analyzer_json_str(k0) + ":" + configuration_to_json(input.configurations[k0]))
+        parts.append("\"configurations\":" + access_analyzer_json_obj(m0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u1))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # CreateAnalyzer  PUT /analyzer
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_analyzer(self, CreateAnalyzerRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analyzerName\":" + access_analyzer_json_str(input.analyzerName))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.archiveRules.is_some():
+            auto u0 = input.archiveRules.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inline_archive_rule_to_json(x1))
+            parts.append("\"archiveRules\":" + access_analyzer_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(access_analyzer_json_str(k3) + ":" + access_analyzer_json_str(u2[k3]))
+            parts.append("\"tags\":" + access_analyzer_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u4))
+        if input.configuration.is_some():
+            auto u5 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + analyzer_configuration_to_json(u5))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # CreateArchiveRule  PUT /analyzer/{analyzerName}/archive-rule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_archive_rule(self, CreateArchiveRuleRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["analyzerName"] = input.analyzerName
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}/archive-rule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ruleName\":" + access_analyzer_json_str(input.ruleName))
+        list[str] m0 = []
+        for k0 in sorted(input.filter.keys()):
+            m0.append(access_analyzer_json_str(k0) + ":" + criterion_to_json(input.filter[k0]))
+        parts.append("\"filter\":" + access_analyzer_json_obj(m0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u1))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # CreateServiceLinkedAnalyzer  PUT /service-linked-analyzer
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_linked_analyzer(self, CreateServiceLinkedAnalyzerRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/service-linked-analyzer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + input.type.to_json())
+        if input.archiveRules.is_some():
+            auto u0 = input.archiveRules.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inline_archive_rule_to_json(x1))
+            parts.append("\"archiveRules\":" + access_analyzer_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u2))
+        if input.configuration.is_some():
+            auto u3 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + analyzer_configuration_to_json(u3))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
 
     # DeleteAnalyzer  DELETE /analyzer/{analyzerName}
@@ -1798,6 +2367,30 @@ struct AccessAnalyzerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
 
+    # ListAccessPreviewFindings  POST /access-preview/{accessPreviewId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_access_preview_findings(self, ListAccessPreviewFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accessPreviewId"] = input.accessPreviewId
+        auto b = binding.HttpBinding(method="POST", path_template="/access-preview/{accessPreviewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(access_analyzer_json_str(k1) + ":" + criterion_to_json(u0[k1]))
+            parts.append("\"filter\":" + access_analyzer_json_obj(m1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + access_analyzer_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
     # ListAccessPreviews  GET /access-preview
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_access_previews(self, ListAccessPreviewsRequest input) -> str:
@@ -1848,6 +2441,56 @@ struct AccessAnalyzerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}/archive-rule", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
+    # ListFindings  POST /finding
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_findings(self, ListFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/finding", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(access_analyzer_json_str(k1) + ":" + criterion_to_json(u0[k1]))
+            parts.append("\"filter\":" + access_analyzer_json_obj(m1))
+        if input.sort.is_some():
+            auto u2 = input.sort.unwrap()
+            parts.append("\"sort\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + access_analyzer_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # ListFindingsV2  POST /findingv2
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_findings_v2(self, ListFindingsV2Request input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findingv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(access_analyzer_json_str(k1) + ":" + criterion_to_json(u0[k1]))
+            parts.append("\"filter\":" + access_analyzer_json_obj(m1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + access_analyzer_json_str(u3))
+        if input.sort.is_some():
+            auto u4 = input.sort.unwrap()
+            parts.append("\"sort\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
     # ListPolicyGenerations  GET /policy/generation
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_policy_generations(self, ListPolicyGenerationsRequest input) -> str:
@@ -1871,6 +2514,22 @@ struct AccessAnalyzerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
+    # StartPolicyGeneration  PUT /policy/generation
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_policy_generation(self, StartPolicyGenerationRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/policy/generation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"policyGenerationDetails\":" + input.policyGenerationDetails.to_json())
+        if input.cloudTrailDetails.is_some():
+            auto u0 = input.cloudTrailDetails.unwrap()
+            parts.append("\"cloudTrailDetails\":" + cloud_trail_details_to_json(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u1))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
     # StartResourceScan  POST /resource/scan
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_resource_scan(self, StartResourceScanRequest input) -> str:
@@ -1878,6 +2537,77 @@ struct AccessAnalyzerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/resource/scan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartResourceScanDocument(analyzerArn=input.analyzerArn, resourceArn=input.resourceArn, resourceOwnerAccount=input.resourceOwnerAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(access_analyzer_json_str(k0) + ":" + access_analyzer_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + access_analyzer_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # UpdateAnalyzer  PUT /analyzer/{analyzerName}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_analyzer(self, UpdateAnalyzerRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["analyzerName"] = input.analyzerName
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.configuration.is_some():
+            auto u0 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + analyzer_configuration_to_json(u0))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # UpdateArchiveRule  PUT /analyzer/{analyzerName}/archive-rule/{ruleName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_archive_rule(self, UpdateArchiveRuleRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["analyzerName"] = input.analyzerName
+        labels["ruleName"] = input.ruleName
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.filter.keys()):
+            m0.append(access_analyzer_json_str(k0) + ":" + criterion_to_json(input.filter[k0]))
+        parts.append("\"filter\":" + access_analyzer_json_obj(m0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u1))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # UpdateFindings  PUT /finding
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_findings(self, UpdateFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/finding", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
+        parts.append("\"status\":" + input.status.to_json())
+        if input.ids.is_some():
+            auto u0 = input.ids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(access_analyzer_json_str(x1))
+            parts.append("\"ids\":" + access_analyzer_json_arr(e1))
+        if input.resourceArn.is_some():
+            auto u2 = input.resourceArn.unwrap()
+            parts.append("\"resourceArn\":" + access_analyzer_json_str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + access_analyzer_json_str(u3))
+        auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
 
     # ValidatePolicy  POST /policy/validation
@@ -1913,6 +2643,19 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         while True:
             auto raw = self.get_finding_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAccessPreviewFindings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findings).
+    def paginate_list_access_preview_findings(self, ListAccessPreviewFindingsRequest input):
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        while True:
+            auto raw = self.list_access_preview_findings(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -1965,6 +2708,32 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         while True:
             auto raw = self.list_archive_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findings).
+    def paginate_list_findings(self, ListFindingsRequest input):
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        while True:
+            auto raw = self.list_findings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindingsV2 — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findings).
+    def paginate_list_findings_v2(self, ListFindingsV2Request input):
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        while True:
+            auto raw = self.list_findings_v2(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

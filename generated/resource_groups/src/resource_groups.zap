@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 23 operations — 13 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 23 operations — 23 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   71 structs (39 @derive(Json)), 10 enums, 7 error variants.
-#   1 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -149,8 +149,9 @@ struct CreateGroupInput:
     Optional[str] Owner
     Optional[str] DisplayName
 
-# no @derive(Json): member(s) Group: Group, Tags: dict[str, str], GroupConfiguration: GroupConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Group: Group, Tags: dict[str, str], GroupConfiguration: GroupConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGroupOutput:
     Optional[Group] Group
     Optional[ResourceQuery] ResourceQuery
@@ -163,8 +164,9 @@ struct DeleteGroupInput:
     Optional[str] GroupName
     Optional[str] Group
 
-# no @derive(Json): member(s) Group: Group not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Group: Group not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteGroupOutput:
     Optional[Group] Group
 
@@ -187,8 +189,9 @@ struct GetAccountSettingsOutput:
 struct GetGroupConfigurationInput:
     Optional[str] Group
 
-# no @derive(Json): member(s) GroupConfiguration: GroupConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupConfiguration: GroupConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGroupConfigurationOutput:
     Optional[GroupConfiguration] GroupConfiguration
 
@@ -198,8 +201,9 @@ struct GetGroupInput:
     Optional[str] GroupName
     Optional[str] Group
 
-# no @derive(Json): member(s) Group: Group not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Group: Group not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGroupOutput:
     Optional[Group] Group
 
@@ -236,14 +240,16 @@ struct GetTagSyncTaskOutput:
 struct GetTagsInput:
     str Arn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagsOutput:
     Optional[str] Arn
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ApplicationTag: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationTag: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Group:
     str GroupArn
     str Name
@@ -253,28 +259,32 @@ struct Group:
     Optional[str] DisplayName
     Optional[dict[str, str]] ApplicationTag
 
-# no @derive(Json): member(s) Configuration: list[GroupConfigurationItem], ProposedConfiguration: list[GroupConfigurationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: list[GroupConfigurationItem], ProposedConfiguration: list[GroupConfigurationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupConfiguration:
     Optional[list[GroupConfigurationItem]] Configuration
     Optional[list[GroupConfigurationItem]] ProposedConfiguration
     Optional[GroupConfigurationStatus] Status
     Optional[str] FailureReason
 
-# no @derive(Json): member(s) Parameters: list[GroupConfigurationParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[GroupConfigurationParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupConfigurationItem:
     str Type
     Optional[list[GroupConfigurationParameter]] Parameters
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupConfigurationParameter:
     str Name
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupFilter:
     GroupFilterName Name
     list[str] Values
@@ -299,8 +309,9 @@ struct GroupResourcesInput:
     str Group
     list[str] ResourceArns
 
-# no @derive(Json): member(s) Succeeded: list[str], Failed: list[FailedResource], Pending: list[PendingResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Succeeded: list[str], Failed: list[FailedResource], Pending: list[PendingResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupResourcesOutput:
     Optional[list[str]] Succeeded
     Optional[list[FailedResource]] Failed
@@ -333,16 +344,18 @@ struct ListGroupResourcesItem:
     Optional[ResourceIdentifier] Identifier
     Optional[ResourceStatus] Status
 
-# no @derive(Json): member(s) Resources: list[ListGroupResourcesItem], ResourceIdentifiers: list[ResourceIdentifier], QueryErrors: list[QueryError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[ListGroupResourcesItem], ResourceIdentifiers: list[ResourceIdentifier], QueryErrors: list[QueryError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupResourcesOutput:
     Optional[list[ListGroupResourcesItem]] Resources
     Optional[list[ResourceIdentifier]] ResourceIdentifiers
     Optional[str] NextToken
     Optional[list[QueryError]] QueryErrors
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupingStatusesFilter:
     ListGroupingStatusesFilterName Name
     list[str] Values
@@ -355,8 +368,9 @@ struct ListGroupingStatusesInput:
     Optional[list[ListGroupingStatusesFilter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GroupingStatuses: list[GroupingStatusesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupingStatuses: list[GroupingStatusesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupingStatusesOutput:
     Optional[str] Group
     Optional[list[GroupingStatusesItem]] GroupingStatuses
@@ -369,8 +383,9 @@ struct ListGroupsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GroupIdentifiers: list[GroupIdentifier], Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupIdentifiers: list[GroupIdentifier], Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsOutput:
     Optional[list[GroupIdentifier]] GroupIdentifiers
     Optional[list[Group]] Groups
@@ -388,8 +403,9 @@ struct ListTagSyncTasksInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TagSyncTasks: list[TagSyncTaskItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagSyncTasks: list[TagSyncTaskItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagSyncTasksOutput:
     Optional[list[TagSyncTaskItem]] TagSyncTasks
     Optional[str] NextToken
@@ -422,8 +438,9 @@ struct QueryError:
     Optional[QueryErrorCode] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceFilter:
     str Name
     list[str] Values
@@ -449,8 +466,9 @@ struct SearchResourcesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceIdentifiers: list[ResourceIdentifier], QueryErrors: list[QueryError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIdentifiers: list[ResourceIdentifier], QueryErrors: list[QueryError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesOutput:
     Optional[list[ResourceIdentifier]] ResourceIdentifiers
     Optional[str] NextToken
@@ -481,8 +499,9 @@ struct TagInput:
     str Arn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagOutput:
     Optional[str] Arn
     Optional[dict[str, str]] Tags
@@ -514,8 +533,9 @@ struct UngroupResourcesInput:
     str Group
     list[str] ResourceArns
 
-# no @derive(Json): member(s) Succeeded: list[str], Failed: list[FailedResource], Pending: list[PendingResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Succeeded: list[str], Failed: list[FailedResource], Pending: list[PendingResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UngroupResourcesOutput:
     Optional[list[str]] Succeeded
     Optional[list[FailedResource]] Failed
@@ -527,8 +547,9 @@ struct UntagInput:
     str Arn
     list[str] Keys
 
-# no @derive(Json): member(s) Keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagOutput:
     Optional[str] Arn
     Optional[list[str]] Keys
@@ -552,8 +573,9 @@ struct UpdateGroupInput:
     Optional[str] Owner
     Optional[str] DisplayName
 
-# no @derive(Json): member(s) Group: Group not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Group: Group not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGroupOutput:
     Optional[Group] Group
 
@@ -602,27 +624,6 @@ def resource_groups_error_from_code(str code) -> Resource_GroupsError:
     return Resource_GroupsError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   GroupResources (document member `ResourceArns: list[str]` is not serializable by derive)
-#   ListGroupResources (document member `Filters: list[ResourceFilter]` is not serializable by derive)
-#   ListGroupingStatuses (document member `Filters: list[ListGroupingStatusesFilter]` is not serializable by derive)
-#   ListGroups (document member `Filters: list[GroupFilter]` is not serializable by derive)
-#   ListTagSyncTasks (document member `Filters: list[ListTagSyncTasksFilter]` is not serializable by derive)
-#   PutGroupConfiguration (document member `Configuration: list[GroupConfigurationItem]` is not serializable by derive)
-#   Tag (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UngroupResources (document member `ResourceArns: list[str]` is not serializable by derive)
-#   Untag (document member `Keys: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListGroupResources (operation not generated)
-#   ListGroupingStatuses (operation not generated)
-#   ListGroups (operation not generated)
-#   ListTagSyncTasks (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -698,6 +699,90 @@ struct UpdateGroupQueryDocument:
     Optional[str] Group
     ResourceQuery ResourceQuery
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def resource_groups_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def resource_groups_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def resource_groups_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize GroupConfigurationItem to a compact JSON object (declaration order).
+def group_configuration_item_to_json(GroupConfigurationItem v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + resource_groups_json_str(v.Type))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(group_configuration_parameter_to_json(x1))
+        parts.append("\"Parameters\":" + resource_groups_json_arr(e1))
+    return resource_groups_json_obj(parts)
+
+# Serialize GroupConfigurationParameter to a compact JSON object (declaration order).
+def group_configuration_parameter_to_json(GroupConfigurationParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + resource_groups_json_str(v.Name))
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(resource_groups_json_str(x1))
+        parts.append("\"Values\":" + resource_groups_json_arr(e1))
+    return resource_groups_json_obj(parts)
+
+# Serialize GroupFilter to a compact JSON object (declaration order).
+def group_filter_to_json(GroupFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(resource_groups_json_str(x0))
+    parts.append("\"Values\":" + resource_groups_json_arr(e0))
+    return resource_groups_json_obj(parts)
+
+# Serialize ListGroupingStatusesFilter to a compact JSON object (declaration order).
+def list_grouping_statuses_filter_to_json(ListGroupingStatusesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(resource_groups_json_str(x0))
+    parts.append("\"Values\":" + resource_groups_json_arr(e0))
+    return resource_groups_json_obj(parts)
+
+# Serialize ResourceFilter to a compact JSON object (declaration order).
+def resource_filter_to_json(ResourceFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + resource_groups_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(resource_groups_json_str(x0))
+    parts.append("\"Values\":" + resource_groups_json_arr(e0))
+    return resource_groups_json_obj(parts)
+
 # A bound Resource_Groups client: credentials + region, threaded into every operation.
 struct Resource_GroupsClient:
     core.Credentials creds
@@ -710,6 +795,43 @@ struct Resource_GroupsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/cancel-tag-sync-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelTagSyncTaskDocument(TaskArn=input.TaskArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # CreateGroup  POST /groups
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def create_group(self, CreateGroupInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + resource_groups_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + resource_groups_json_str(u0))
+        if input.ResourceQuery.is_some():
+            auto u1 = input.ResourceQuery.unwrap()
+            parts.append("\"ResourceQuery\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(resource_groups_json_str(k3) + ":" + resource_groups_json_str(u2[k3]))
+            parts.append("\"Tags\":" + resource_groups_json_obj(m3))
+        if input.Configuration.is_some():
+            auto u4 = input.Configuration.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(group_configuration_item_to_json(x5))
+            parts.append("\"Configuration\":" + resource_groups_json_arr(e5))
+        if input.Criticality.is_some():
+            auto u6 = input.Criticality.unwrap()
+            parts.append("\"Criticality\":" + str(u6))
+        if input.Owner.is_some():
+            auto u7 = input.Owner.unwrap()
+            parts.append("\"Owner\":" + resource_groups_json_str(u7))
+        if input.DisplayName.is_some():
+            auto u8 = input.DisplayName.unwrap()
+            parts.append("\"DisplayName\":" + resource_groups_json_str(u8))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
 
     # DeleteGroup  POST /delete-group
@@ -773,6 +895,128 @@ struct Resource_GroupsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_groups_service(), self.region, host)
 
+    # GroupResources  POST /group-resources
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
+    def group_resources(self, GroupResourcesInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/group-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Group\":" + resource_groups_json_str(input.Group))
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(resource_groups_json_str(x0))
+        parts.append("\"ResourceArns\":" + resource_groups_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # ListGroupResources  POST /list-group-resources
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def list_group_resources(self, ListGroupResourcesInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-group-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GroupName.is_some():
+            auto u0 = input.GroupName.unwrap()
+            parts.append("\"GroupName\":" + resource_groups_json_str(u0))
+        if input.Group.is_some():
+            auto u1 = input.Group.unwrap()
+            parts.append("\"Group\":" + resource_groups_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_filter_to_json(x3))
+            parts.append("\"Filters\":" + resource_groups_json_arr(e3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.NextToken.is_some():
+            auto u5 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + resource_groups_json_str(u5))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # ListGroupingStatuses  POST /list-grouping-statuses
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def list_grouping_statuses(self, ListGroupingStatusesInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-grouping-statuses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Group\":" + resource_groups_json_str(input.Group))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(list_grouping_statuses_filter_to_json(x2))
+            parts.append("\"Filters\":" + resource_groups_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + resource_groups_json_str(u3))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # ListGroups  POST /groups-list
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def list_groups(self, ListGroupsInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/groups-list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(group_filter_to_json(x1))
+            parts.append("\"Filters\":" + resource_groups_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # ListTagSyncTasks  POST /list-tag-sync-tasks
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException, UnauthorizedException
+    def list_tag_sync_tasks(self, ListTagSyncTasksInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-tag-sync-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Filters\":" + resource_groups_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + resource_groups_json_str(u3))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # PutGroupConfiguration  POST /put-group-configuration
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
+    def put_group_configuration(self, PutGroupConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/put-group-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Group.is_some():
+            auto u0 = input.Group.unwrap()
+            parts.append("\"Group\":" + resource_groups_json_str(u0))
+        if input.Configuration.is_some():
+            auto u1 = input.Configuration.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(group_configuration_item_to_json(x2))
+            parts.append("\"Configuration\":" + resource_groups_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
     # SearchResources  POST /resources/search
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException, UnauthorizedException
     def search_resources(self, SearchResourcesInput input) -> str:
@@ -789,6 +1033,50 @@ struct Resource_GroupsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/start-tag-sync-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTagSyncTaskDocument(Group=input.Group, TagKey=input.TagKey, TagValue=input.TagValue, ResourceQuery=input.ResourceQuery, RoleArn=input.RoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # Tag  PUT /resources/{Arn}/tags
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
+    def tag(self, TagInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(resource_groups_json_str(k0) + ":" + resource_groups_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + resource_groups_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # UngroupResources  POST /ungroup-resources
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
+    def ungroup_resources(self, UngroupResourcesInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ungroup-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Group\":" + resource_groups_json_str(input.Group))
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(resource_groups_json_str(x0))
+        parts.append("\"ResourceArns\":" + resource_groups_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # Untag  PATCH /resources/{Arn}/tags
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
+    def untag(self, UntagInput input) -> str:
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Keys:
+            e0.append(resource_groups_json_str(x0))
+        parts.append("\"Keys\":" + resource_groups_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resource_groups_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
 
     # UpdateAccountSettings  POST /update-account-settings
@@ -817,6 +1105,58 @@ struct Resource_GroupsClient:
         auto doc = UpdateGroupQueryDocument(GroupName=input.GroupName, Group=input.Group, ResourceQuery=input.ResourceQuery)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
+
+    # Paginator for ListGroupResources — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ResourceIdentifiers, Resources).
+    def paginate_list_group_resources(self, ListGroupResourcesInput input):
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        while True:
+            auto raw = self.list_group_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListGroupingStatuses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: GroupingStatuses).
+    def paginate_list_grouping_statuses(self, ListGroupingStatusesInput input):
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        while True:
+            auto raw = self.list_grouping_statuses(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: GroupIdentifiers, Groups).
+    def paginate_list_groups(self, ListGroupsInput input):
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        while True:
+            auto raw = self.list_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListTagSyncTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TagSyncTasks).
+    def paginate_list_tag_sync_tasks(self, ListTagSyncTasksInput input):
+        auto host = endpoints.regional_host(resource_groups_service(), self.region)
+        while True:
+            auto raw = self.list_tag_sync_tasks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for SearchResources — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: ResourceIdentifiers).

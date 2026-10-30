@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 5 operations — 2 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   16 structs (13 @derive(Json)), 14 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -291,8 +291,9 @@ struct ResourceNotFoundException:
 struct ThrottlingException:
     str Message
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason

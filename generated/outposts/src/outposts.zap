@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 45 operations — 30 with a generated method,
-#   15 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 45 operations — 38 with a generated method,
+#   7 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   137 structs (66 @derive(Json)), 45 enums, 6 error variants.
 #   7 paginators generated (6 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -477,8 +477,9 @@ struct Address:
     str CountryCode
     Optional[str] Municipality
 
-# no @derive(Json): member(s) ComputeAttributes: ComputeAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeAttributes: ComputeAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetInfo:
     Optional[str] AssetId
     Optional[str] RackId
@@ -530,8 +531,9 @@ struct CancelOrderOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ExistingCapacities: list[QuoteCapacity], FinalCapacities: list[QuoteCapacity], CapacityChange: list[QuoteCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExistingCapacities: list[QuoteCapacity], FinalCapacities: list[QuoteCapacity], CapacityChange: list[QuoteCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacitySummary:
     Optional[list[QuoteCapacity]] ExistingCapacities
     Optional[list[QuoteCapacity]] FinalCapacities
@@ -553,8 +555,9 @@ struct CapacityTaskSummary:
     Optional[DateTime] CompletionDate
     Optional[DateTime] LastModifiedDate
 
-# no @derive(Json): member(s) EC2Capacities: list[EC2Capacity], SupportedUplinkGbps: list[int64], SupportedStorage: list[SupportedStorageEnum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EC2Capacities: list[EC2Capacity], SupportedUplinkGbps: list[int64], SupportedStorage: list[SupportedStorageEnum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogItem:
     Optional[str] CatalogItemId
     Optional[CatalogItemStatus] ItemStatus
@@ -565,8 +568,9 @@ struct CatalogItem:
     Optional[list[SupportedStorageEnum]] SupportedStorage
     Optional[RackScalingType] RackScalingType
 
-# no @derive(Json): member(s) InstanceFamilies: list[str], InstanceTypeCapacities: list[AssetInstanceTypeCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceFamilies: list[str], InstanceTypeCapacities: list[AssetInstanceTypeCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeAttributes:
     Optional[str] HostId
     Optional[ComputeAssetState] State
@@ -580,8 +584,9 @@ struct ConflictException:
     Optional[str] ResourceId
     Optional[ResourceType] ResourceType
 
-# no @derive(Json): member(s) AllowedIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionDetails:
     Optional[str] ClientPublicKey
     Optional[str] ServerPublicKey
@@ -600,8 +605,9 @@ struct CreateOrderInput:
     PaymentOption PaymentOption
     Optional[PaymentTerm] PaymentTerm
 
-# no @derive(Json): member(s) Order: Order not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Order: Order not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOrderOutput:
     Optional[Order] Order
 
@@ -616,8 +622,9 @@ struct CreateOutpostInput:
     Optional[dict[str, str]] Tags
     Optional[SupportedHardwareType] SupportedHardwareType
 
-# no @derive(Json): member(s) Outpost: Outpost not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outpost: Outpost not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOutpostOutput:
     Optional[Outpost] Outpost
 
@@ -627,8 +634,9 @@ struct CreatePrivateConnectivityConfigInput:
     str OutpostId
     list[VpcInformation] VpcInformationList
 
-# no @derive(Json): member(s) PrivateConnectivityConfig: PrivateConnectivityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrivateConnectivityConfig: PrivateConnectivityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivateConnectivityConfigOutput:
     Optional[PrivateConnectivityConfig] PrivateConnectivityConfig
     Optional[str] OutpostId
@@ -644,8 +652,9 @@ struct CreateQuoteInput:
     Optional[list[PaymentTerm]] RequestedPaymentTerms
     Optional[str] Description
 
-# no @derive(Json): member(s) Quote: Quote not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quote: Quote not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQuoteOutput:
     Optional[Quote] Quote
 
@@ -677,8 +686,9 @@ struct CreateSiteInput:
     Optional[Address] ShippingAddress
     Optional[RackPhysicalProperties] RackPhysicalProperties
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSiteOutput:
     Optional[Site] Site
 
@@ -712,8 +722,9 @@ struct DeleteSiteOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) FormFactorConfigs: list[FormFactorConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FormFactorConfigs: list[FormFactorConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetailedInstanceTypeItem:
     Optional[str] InstanceType
     Optional[int64] VCPUs
@@ -738,8 +749,9 @@ struct GetCapacityTaskInput:
     str CapacityTaskId
     str OutpostIdentifier
 
-# no @derive(Json): member(s) RequestedInstancePools: list[InstanceTypeCapacity], InstancesToExclude: InstancesToExclude not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedInstancePools: list[InstanceTypeCapacity], InstancesToExclude: InstancesToExclude not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCapacityTaskOutput:
     Optional[str] CapacityTaskId
     Optional[str] OutpostId
@@ -760,8 +772,9 @@ struct GetCapacityTaskOutput:
 struct GetCatalogItemInput:
     str CatalogItemId
 
-# no @derive(Json): member(s) CatalogItem: CatalogItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CatalogItem: CatalogItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCatalogItemOutput:
     Optional[CatalogItem] CatalogItem
 
@@ -770,8 +783,9 @@ struct GetCatalogItemOutput:
 struct GetConnectionRequest:
     str ConnectionId
 
-# no @derive(Json): member(s) ConnectionDetails: ConnectionDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionDetails: ConnectionDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionResponse:
     Optional[str] ConnectionId
     Optional[ConnectionDetails] ConnectionDetails
@@ -781,8 +795,9 @@ struct GetConnectionResponse:
 struct GetOrderInput:
     str OrderId
 
-# no @derive(Json): member(s) Order: Order not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Order: Order not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOrderOutput:
     Optional[Order] Order
 
@@ -793,8 +808,9 @@ struct GetOutpostBillingInformationInput:
     Optional[int64] MaxResults
     str OutpostIdentifier
 
-# no @derive(Json): member(s) Subscriptions: list[Subscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscriptions: list[Subscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutpostBillingInformationOutput:
     Optional[str] NextToken
     Optional[list[Subscription]] Subscriptions
@@ -814,16 +830,18 @@ struct GetOutpostInstanceTypesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InstanceTypes: list[InstanceTypeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypes: list[InstanceTypeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutpostInstanceTypesOutput:
     Optional[list[InstanceTypeItem]] InstanceTypes
     Optional[str] NextToken
     Optional[str] OutpostId
     Optional[str] OutpostArn
 
-# no @derive(Json): member(s) Outpost: Outpost not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outpost: Outpost not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutpostOutput:
     Optional[Outpost] Outpost
 
@@ -836,8 +854,9 @@ struct GetOutpostSupportedInstanceTypesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceTypes: list[InstanceTypeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypes: list[InstanceTypeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutpostSupportedInstanceTypesOutput:
     Optional[list[InstanceTypeItem]] InstanceTypes
     Optional[str] NextToken
@@ -847,8 +866,9 @@ struct GetOutpostSupportedInstanceTypesOutput:
 struct GetPrivateConnectivityConfigInput:
     str OutpostId
 
-# no @derive(Json): member(s) PrivateConnectivityConfig: PrivateConnectivityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrivateConnectivityConfig: PrivateConnectivityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPrivateConnectivityConfigOutput:
     Optional[PrivateConnectivityConfig] PrivateConnectivityConfig
 
@@ -857,8 +877,9 @@ struct GetPrivateConnectivityConfigOutput:
 struct GetQuoteInput:
     str QuoteIdentifier
 
-# no @derive(Json): member(s) Quote: Quote not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quote: Quote not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQuoteOutput:
     Optional[Quote] Quote
 
@@ -867,8 +888,9 @@ struct GetQuoteOutput:
 struct GetRenewalPricingInput:
     str OutpostIdentifier
 
-# no @derive(Json): member(s) PricingOptions: list[PricingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PricingOptions: list[PricingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRenewalPricingOutput:
     Optional[PricingResult] PricingResult
     Optional[list[PricingOption]] PricingOptions
@@ -891,8 +913,9 @@ struct GetSiteAddressOutput:
 struct GetSiteInput:
     str SiteId
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSiteOutput:
     Optional[Site] Site
 
@@ -906,8 +929,9 @@ struct InstanceTypeItem:
     Optional[str] InstanceType
     Optional[int64] VCPUs
 
-# no @derive(Json): member(s) Instances: list[str], AccountIds: list[str], Services: list[AWSServiceName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[str], AccountIds: list[str], Services: list[AWSServiceName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancesToExclude:
     Optional[list[str]] Instances
     Optional[list[str]] AccountIds
@@ -917,8 +941,9 @@ struct InstancesToExclude:
 struct InternalServerException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AssetInformationList: list[LineItemAssetInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetInformationList: list[LineItemAssetInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineItem:
     Optional[str] CatalogItemId
     Optional[str] LineItemId
@@ -929,8 +954,9 @@ struct LineItem:
     Optional[str] PreviousLineItemId
     Optional[str] PreviousOrderId
 
-# no @derive(Json): member(s) MacAddressList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MacAddressList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineItemAssetInformation:
     Optional[str] AssetId
     Optional[list[str]] MacAddressList
@@ -951,8 +977,9 @@ struct ListAssetInstancesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssetInstances: list[AssetInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetInstances: list[AssetInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetInstancesOutput:
     Optional[list[AssetInstance]] AssetInstances
     Optional[str] NextToken
@@ -967,8 +994,9 @@ struct ListAssetsInput:
     Optional[list[AssetState]] StatusFilter
     Optional[list[AssetType]] AssetTypeFilter
 
-# no @derive(Json): member(s) Assets: list[AssetInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetsOutput:
     Optional[list[AssetInfo]] Assets
     Optional[str] NextToken
@@ -981,8 +1009,9 @@ struct ListBlockingInstancesForCapacityTaskInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BlockingInstances: list[BlockingInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockingInstances: list[BlockingInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBlockingInstancesForCapacityTaskOutput:
     Optional[list[BlockingInstance]] BlockingInstances
     Optional[str] NextToken
@@ -995,8 +1024,9 @@ struct ListCapacityTasksInput:
     Optional[str] NextToken
     Optional[list[CapacityTaskStatus]] CapacityTaskStatusFilter
 
-# no @derive(Json): member(s) CapacityTasks: list[CapacityTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityTasks: list[CapacityTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCapacityTasksOutput:
     Optional[list[CapacityTaskSummary]] CapacityTasks
     Optional[str] NextToken
@@ -1010,8 +1040,9 @@ struct ListCatalogItemsInput:
     Optional[list[SupportedStorageEnum]] SupportedStorageFilter
     Optional[list[str]] EC2FamilyFilter
 
-# no @derive(Json): member(s) CatalogItems: list[CatalogItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CatalogItems: list[CatalogItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCatalogItemsOutput:
     Optional[list[CatalogItem]] CatalogItems
     Optional[str] NextToken
@@ -1024,8 +1055,9 @@ struct ListOrderableInstanceTypesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceTypes: list[DetailedInstanceTypeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypes: list[DetailedInstanceTypeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrderableInstanceTypesOutput:
     Optional[list[DetailedInstanceTypeItem]] InstanceTypes
     Optional[str] NextToken
@@ -1037,8 +1069,9 @@ struct ListOrdersInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Orders: list[OrderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Orders: list[OrderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrdersOutput:
     Optional[list[OrderSummary]] Orders
     Optional[str] NextToken
@@ -1052,8 +1085,9 @@ struct ListOutpostsInput:
     Optional[list[str]] AvailabilityZoneFilter
     Optional[list[str]] AvailabilityZoneIdFilter
 
-# no @derive(Json): member(s) Outposts: list[Outpost] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outposts: list[Outpost] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutpostsOutput:
     Optional[list[Outpost]] Outposts
     Optional[str] NextToken
@@ -1064,8 +1098,9 @@ struct ListQuotesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Quotes: list[QuoteSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quotes: list[QuoteSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQuotesOutput:
     Optional[list[QuoteSummary]] Quotes
     Optional[str] NextToken
@@ -1079,8 +1114,9 @@ struct ListSitesInput:
     Optional[list[str]] OperatingAddressStateOrRegionFilter
     Optional[list[str]] OperatingAddressCityFilter
 
-# no @derive(Json): member(s) Sites: list[Site] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sites: list[Site] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSitesOutput:
     Optional[list[Site]] Sites
     Optional[str] NextToken
@@ -1090,8 +1126,9 @@ struct ListSitesOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -1099,8 +1136,9 @@ struct ListTagsForResourceResponse:
 struct NotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) LineItems: list[LineItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineItems: list[LineItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Order:
     Optional[str] OutpostId
     Optional[str] QuoteIdentifier
@@ -1114,8 +1152,9 @@ struct Order:
     Optional[PaymentTerm] PaymentTerm
     Optional[OrderType] OrderType
 
-# no @derive(Json): member(s) LineItemCountsByStatus: dict[LineItemStatus, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineItemCountsByStatus: dict[LineItemStatus, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrderSummary:
     Optional[str] OutpostId
     Optional[str] OrderId
@@ -1131,8 +1170,9 @@ struct OrderingRequirement:
     Optional[OrderingRequirementType] OrderingRequirementType
     Optional[OrderingRequirementStatus] Status
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Outpost:
     Optional[str] OutpostId
     Optional[str] OwnerId
@@ -1154,16 +1194,18 @@ struct PricingOption:
     Optional[str] PricingType
     Optional[SubscriptionPricingDetails] SubscriptionPricingDetails
 
-# no @derive(Json): member(s) VpcInformationList: list[VpcInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcInformationList: list[VpcInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateConnectivityConfig:
     Optional[str] RoleArn
     Optional[PrivateConnectivityStatus] PrivateConnectivityStatus
     Optional[list[VpcInformation]] VpcInformationList
     Optional[str] ProvisioningRoleArn
 
-# no @derive(Json): member(s) RequestedCapacities: list[QuoteCapacity], RequestedConstraints: list[QuoteConstraint], RequestedPaymentOptions: list[PaymentOption], RequestedPaymentTerms: list[PaymentTerm], QuoteOptions: list[QuoteOption], OrderingRequirements: list[OrderingRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedCapacities: list[QuoteCapacity], RequestedConstraints: list[QuoteConstraint], RequestedPaymentOptions: list[PaymentOption], RequestedPaymentTerms: list[PaymentTerm], QuoteOptions: list[QuoteOption], OrderingRequirements: list[OrderingRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Quote:
     Optional[str] QuoteId
     Optional[str] AccountId
@@ -1193,8 +1235,9 @@ struct QuoteConstraint:
     Optional[QuoteConstraintType] QuoteConstraintType
     Optional[str] Value
 
-# no @derive(Json): member(s) Capacities: list[QuoteCapacity], CapacitySummary: CapacitySummary, Specifications: list[QuoteSpecification], PricingOptions: list[PricingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Capacities: list[QuoteCapacity], CapacitySummary: CapacitySummary, Specifications: list[QuoteSpecification], PricingOptions: list[PricingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuoteOption:
     Optional[str] QuoteOptionIdentifier
     Optional[list[QuoteCapacity]] Capacities
@@ -1202,16 +1245,18 @@ struct QuoteOption:
     Optional[list[QuoteSpecification]] Specifications
     Optional[list[PricingOption]] PricingOptions
 
-# no @derive(Json): member(s) ExistingRackSpecificationDetails: RackSpecificationDetails, FinalRackSpecificationDetails: RackSpecificationDetails, ServerSpecificationDetails: ServerSpecificationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExistingRackSpecificationDetails: RackSpecificationDetails, FinalRackSpecificationDetails: RackSpecificationDetails, ServerSpecificationDetails: ServerSpecificationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuoteSpecification:
     Optional[QuoteSpecificationType] QuoteSpecificationType
     Optional[RackSpecificationDetails] ExistingRackSpecificationDetails
     Optional[RackSpecificationDetails] FinalRackSpecificationDetails
     Optional[ServerSpecificationDetails] ServerSpecificationDetails
 
-# no @derive(Json): member(s) RequestedCapacities: list[QuoteCapacity], RequestedConstraints: list[QuoteConstraint], RequestedPaymentOptions: list[PaymentOption], RequestedPaymentTerms: list[PaymentTerm], QuoteOptions: list[QuoteOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedCapacities: list[QuoteCapacity], RequestedConstraints: list[QuoteConstraint], RequestedPaymentOptions: list[PaymentOption], RequestedPaymentTerms: list[PaymentTerm], QuoteOptions: list[QuoteOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuoteSummary:
     Optional[str] QuoteId
     Optional[str] AccountId
@@ -1241,8 +1286,9 @@ struct RackPhysicalProperties:
     Optional[OpticalStandard] OpticalStandard
     Optional[MaximumSupportedWeightLbs] MaximumSupportedWeightLbs
 
-# no @derive(Json): member(s) EC2Capacities: list[EC2Capacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EC2Capacities: list[EC2Capacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RackSpecificationDetails:
     Optional[str] RackId
     Optional[QuoteRackUseType] RackUse
@@ -1254,8 +1300,9 @@ struct RackSpecificationDetails:
     Optional[RackUnitHeight] RackUnitHeight
     Optional[list[EC2Capacity]] EC2Capacities
 
-# no @derive(Json): member(s) EC2Capacities: list[EC2Capacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EC2Capacities: list[EC2Capacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerSpecificationDetails:
     Optional[float64] ServerPowerDrawKva
     Optional[float64] ServerWeightLbs
@@ -1274,8 +1321,9 @@ struct ShipmentInformation:
     Optional[str] ShipmentTrackingNumber
     Optional[ShipmentCarrier] ShipmentCarrier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Site:
     Optional[str] SiteId
     Optional[str] AccountId
@@ -1300,8 +1348,9 @@ struct StartCapacityTaskInput:
     Optional[bool] DryRun
     Optional[TaskActionOnBlockingInstances] TaskActionOnBlockingInstances
 
-# no @derive(Json): member(s) RequestedInstancePools: list[InstanceTypeCapacity], InstancesToExclude: InstancesToExclude not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedInstancePools: list[InstanceTypeCapacity], InstancesToExclude: InstancesToExclude not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCapacityTaskOutput:
     Optional[str] CapacityTaskId
     Optional[str] OutpostId
@@ -1336,14 +1385,16 @@ struct StartOutpostDecommissionInput:
     str OutpostIdentifier
     Optional[bool] ValidateOnly
 
-# no @derive(Json): member(s) BlockingResourceTypes: list[BlockingResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockingResourceTypes: list[BlockingResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartOutpostDecommissionOutput:
     Optional[DecommissionRequestStatus] Status
     Optional[list[BlockingResourceType]] BlockingResourceTypes
 
-# no @derive(Json): member(s) OrderIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrderIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subscription:
     Optional[str] SubscriptionId
     Optional[SubscriptionType] SubscriptionType
@@ -1393,8 +1444,9 @@ struct UpdateOutpostInput:
     Optional[str] Description
     Optional[SupportedHardwareType] SupportedHardwareType
 
-# no @derive(Json): member(s) Outpost: Outpost not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outpost: Outpost not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOutpostOutput:
     Optional[Outpost] Outpost
 
@@ -1410,8 +1462,9 @@ struct UpdateQuoteInput:
     Optional[list[PaymentTerm]] RequestedPaymentTerms
     Optional[str] Description
 
-# no @derive(Json): member(s) Quote: Quote not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quote: Quote not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQuoteOutput:
     Optional[Quote] Quote
 
@@ -1435,8 +1488,9 @@ struct UpdateSiteInput:
     Optional[str] Description
     Optional[str] Notes
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSiteOutput:
     Optional[Site] Site
 
@@ -1454,8 +1508,9 @@ struct UpdateSiteRackPhysicalPropertiesInput:
     Optional[OpticalStandard] OpticalStandard
     Optional[MaximumSupportedWeightLbs] MaximumSupportedWeightLbs
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSiteRackPhysicalPropertiesOutput:
     Optional[Site] Site
 
@@ -1463,8 +1518,9 @@ struct UpdateSiteRackPhysicalPropertiesOutput:
 struct ValidationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcInformation:
     Optional[str] VpcId
     Optional[list[str]] SubnetIds
@@ -1505,21 +1561,13 @@ def outposts_error_from_code(str code) -> OutpostsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateOrder (document member `LineItems: list[LineItemRequest]` is not serializable by derive)
-#   CreateOutpost (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreatePrivateConnectivityConfig (document member `VpcInformationList: list[VpcInformation]` is not serializable by derive)
-#   CreateQuote (document member `RequestedCapacities: list[QuoteCapacity]` is not serializable by derive)
-#   CreateSite (document member `Tags: dict[str, str]` is not serializable by derive)
 #   ListAssetInstances (httpQuery `AssetIdFilter` has unsupported type list[str])
 #   ListAssets (httpQuery `HostIdFilter` has unsupported type list[str])
 #   ListCapacityTasks (httpQuery `CapacityTaskStatusFilter` has unsupported type list[CapacityTaskStatus])
 #   ListCatalogItems (httpQuery `ItemClassFilter` has unsupported type list[CatalogItemClass])
 #   ListOutposts (httpQuery `LifeCycleStatusFilter` has unsupported type list[str])
 #   ListSites (httpQuery `OperatingAddressCountryCodeFilter` has unsupported type list[str])
-#   StartCapacityTask (document member `InstancePools: list[InstanceTypeCapacity]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateQuote (document member `RequestedCapacities: list[QuoteCapacity]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1587,6 +1635,76 @@ struct UpdateSiteRackPhysicalPropertiesDocument:
     Optional[OpticalStandard] OpticalStandard
     Optional[MaximumSupportedWeightLbs] MaximumSupportedWeightLbs
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def outposts_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def outposts_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def outposts_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize InstancesToExclude to a compact JSON object (declaration order).
+def instances_to_exclude_to_json(InstancesToExclude v) -> str:
+    list[str] parts = []
+    if v.Instances.is_some():
+        auto u0 = v.Instances.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(outposts_json_str(x1))
+        parts.append("\"Instances\":" + outposts_json_arr(e1))
+    if v.AccountIds.is_some():
+        auto u2 = v.AccountIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(outposts_json_str(x3))
+        parts.append("\"AccountIds\":" + outposts_json_arr(e3))
+    if v.Services.is_some():
+        auto u4 = v.Services.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Services\":" + outposts_json_arr(e5))
+    return outposts_json_obj(parts)
+
+# Serialize VpcInformation to a compact JSON object (declaration order).
+def vpc_information_to_json(VpcInformation v) -> str:
+    list[str] parts = []
+    if v.VpcId.is_some():
+        auto u0 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + outposts_json_str(u0))
+    if v.SubnetIds.is_some():
+        auto u1 = v.SubnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(outposts_json_str(x2))
+        parts.append("\"SubnetIds\":" + outposts_json_arr(e2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        parts.append("\"VpcEndpointId\":" + outposts_json_str(u3))
+    return outposts_json_obj(parts)
+
 # A bound Outposts client: credentials + region, threaded into every operation.
 struct OutpostsClient:
     core.Credentials creds
@@ -1611,6 +1729,114 @@ struct OutpostsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/orders/{OrderId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
+    # CreateOrder  POST /orders
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_order(self, CreateOrderInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/orders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"OutpostIdentifier\":" + outposts_json_str(input.OutpostIdentifier))
+        if input.QuoteIdentifier.is_some():
+            auto u0 = input.QuoteIdentifier.unwrap()
+            parts.append("\"QuoteIdentifier\":" + outposts_json_str(u0))
+        if input.QuoteOptionIdentifier.is_some():
+            auto u1 = input.QuoteOptionIdentifier.unwrap()
+            parts.append("\"QuoteOptionIdentifier\":" + outposts_json_str(u1))
+        if input.LineItems.is_some():
+            auto u2 = input.LineItems.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"LineItems\":" + outposts_json_arr(e3))
+        parts.append("\"PaymentOption\":" + input.PaymentOption.to_json())
+        if input.PaymentTerm.is_some():
+            auto u4 = input.PaymentTerm.unwrap()
+            parts.append("\"PaymentTerm\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
+    # CreateOutpost  POST /outposts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_outpost(self, CreateOutpostInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + outposts_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + outposts_json_str(u0))
+        parts.append("\"SiteId\":" + outposts_json_str(input.SiteId))
+        if input.AvailabilityZone.is_some():
+            auto u1 = input.AvailabilityZone.unwrap()
+            parts.append("\"AvailabilityZone\":" + outposts_json_str(u1))
+        if input.AvailabilityZoneId.is_some():
+            auto u2 = input.AvailabilityZoneId.unwrap()
+            parts.append("\"AvailabilityZoneId\":" + outposts_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(outposts_json_str(k4) + ":" + outposts_json_str(u3[k4]))
+            parts.append("\"Tags\":" + outposts_json_obj(m4))
+        if input.SupportedHardwareType.is_some():
+            auto u5 = input.SupportedHardwareType.unwrap()
+            parts.append("\"SupportedHardwareType\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
+    # CreatePrivateConnectivityConfig  POST /outposts/{OutpostId}/privateConnectivity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ValidationException
+    def create_private_connectivity_config(self, CreatePrivateConnectivityConfigInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] labels = {}
+        labels["OutpostId"] = input.OutpostId
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/privateConnectivity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.VpcInformationList:
+            e0.append(vpc_information_to_json(x0))
+        parts.append("\"VpcInformationList\":" + outposts_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
+    # CreateQuote  POST /quotes
+    # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
+    def create_quote(self, CreateQuoteInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/quotes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.OutpostIdentifier.is_some():
+            auto u0 = input.OutpostIdentifier.unwrap()
+            parts.append("\"OutpostIdentifier\":" + outposts_json_str(u0))
+        parts.append("\"CountryCode\":" + outposts_json_str(input.CountryCode))
+        list[str] e1 = []
+        for x1 in input.RequestedCapacities:
+            e1.append(x1.to_json())
+        parts.append("\"RequestedCapacities\":" + outposts_json_arr(e1))
+        if input.RequestedConstraints.is_some():
+            auto u2 = input.RequestedConstraints.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"RequestedConstraints\":" + outposts_json_arr(e3))
+        if input.RequestedPaymentOptions.is_some():
+            auto u4 = input.RequestedPaymentOptions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"RequestedPaymentOptions\":" + outposts_json_arr(e5))
+        if input.RequestedPaymentTerms.is_some():
+            auto u6 = input.RequestedPaymentTerms.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"RequestedPaymentTerms\":" + outposts_json_arr(e7))
+        if input.Description.is_some():
+            auto u8 = input.Description.unwrap()
+            parts.append("\"Description\":" + outposts_json_str(u8))
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
     # CreateRenewal  POST /renewals
     # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
     def create_renewal(self, CreateRenewalInput input) -> str:
@@ -1618,6 +1844,37 @@ struct OutpostsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/renewals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRenewalDocument(PaymentOption=input.PaymentOption, PaymentTerm=input.PaymentTerm, OutpostIdentifier=input.OutpostIdentifier, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
+    # CreateSite  POST /sites
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_site(self, CreateSiteInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sites", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + outposts_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + outposts_json_str(u0))
+        if input.Notes.is_some():
+            auto u1 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + outposts_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(outposts_json_str(k3) + ":" + outposts_json_str(u2[k3]))
+            parts.append("\"Tags\":" + outposts_json_obj(m3))
+        if input.OperatingAddress.is_some():
+            auto u4 = input.OperatingAddress.unwrap()
+            parts.append("\"OperatingAddress\":" + u4.to_json())
+        if input.ShippingAddress.is_some():
+            auto u5 = input.ShippingAddress.unwrap()
+            parts.append("\"ShippingAddress\":" + u5.to_json())
+        if input.RackPhysicalProperties.is_some():
+            auto u6 = input.RackPhysicalProperties.unwrap()
+            parts.append("\"RackPhysicalProperties\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
 
     # DeleteOutpost  DELETE /outposts/{OutpostId}
@@ -1850,6 +2107,36 @@ struct OutpostsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
+    # StartCapacityTask  POST /outposts/{OutpostId}/capacity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ValidationException
+    def start_capacity_task(self, StartCapacityTaskInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] labels = {}
+        labels["OutpostId"] = input.OutpostIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.OrderId.is_some():
+            auto u0 = input.OrderId.unwrap()
+            parts.append("\"OrderId\":" + outposts_json_str(u0))
+        if input.AssetId.is_some():
+            auto u1 = input.AssetId.unwrap()
+            parts.append("\"AssetId\":" + outposts_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.InstancePools:
+            e2.append(x2.to_json())
+        parts.append("\"InstancePools\":" + outposts_json_arr(e2))
+        if input.InstancesToExclude.is_some():
+            auto u3 = input.InstancesToExclude.unwrap()
+            parts.append("\"InstancesToExclude\":" + instances_to_exclude_to_json(u3))
+        if input.DryRun.is_some():
+            auto u4 = input.DryRun.unwrap()
+            parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.TaskActionOnBlockingInstances.is_some():
+            auto u5 = input.TaskActionOnBlockingInstances.unwrap()
+            parts.append("\"TaskActionOnBlockingInstances\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
     # StartConnection  POST /connections
     # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
     def start_connection(self, StartConnectionRequest input) -> str:
@@ -1870,6 +2157,21 @@ struct OutpostsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
 
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalServerException, NotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(outposts_json_str(k0) + ":" + outposts_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + outposts_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
     # UpdateOutpost  PATCH /outposts/{OutpostId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ValidationException
     def update_outpost(self, UpdateOutpostInput input) -> str:
@@ -1879,6 +2181,50 @@ struct OutpostsClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOutpostDocument(Name=input.Name, Description=input.Description, SupportedHardwareType=input.SupportedHardwareType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
+
+    # UpdateQuote  PATCH /quotes/{QuoteIdentifier}
+    # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
+    def update_quote(self, UpdateQuoteInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] labels = {}
+        labels["QuoteIdentifier"] = input.QuoteIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.OutpostIdentifier.is_some():
+            auto u0 = input.OutpostIdentifier.unwrap()
+            parts.append("\"OutpostIdentifier\":" + outposts_json_str(u0))
+        if input.CountryCode.is_some():
+            auto u1 = input.CountryCode.unwrap()
+            parts.append("\"CountryCode\":" + outposts_json_str(u1))
+        if input.RequestedCapacities.is_some():
+            auto u2 = input.RequestedCapacities.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"RequestedCapacities\":" + outposts_json_arr(e3))
+        if input.RequestedConstraints.is_some():
+            auto u4 = input.RequestedConstraints.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"RequestedConstraints\":" + outposts_json_arr(e5))
+        if input.RequestedPaymentOptions.is_some():
+            auto u6 = input.RequestedPaymentOptions.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"RequestedPaymentOptions\":" + outposts_json_arr(e7))
+        if input.RequestedPaymentTerms.is_some():
+            auto u8 = input.RequestedPaymentTerms.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"RequestedPaymentTerms\":" + outposts_json_arr(e9))
+        if input.Description.is_some():
+            auto u10 = input.Description.unwrap()
+            parts.append("\"Description\":" + outposts_json_str(u10))
+        auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
 
     # UpdateSite  PATCH /sites/{SiteId}

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 12 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 15 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   48 structs (31 @derive(Json)), 13 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -171,8 +171,9 @@ struct CreateEnvironmentRequest:
     Optional[dict[str, str]] tags
     Optional[dict[str, str]] deviceCreationTags
 
-# no @derive(Json): member(s) environment: EnvironmentSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environment: EnvironmentSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentResponse:
     Optional[EnvironmentSummary] environment
 
@@ -253,8 +254,9 @@ struct DeviceSummary:
     Optional[str] arn
     Optional[str] lastUserId
 
-# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow, deviceCreationTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow, deviceCreationTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Environment:
     Optional[str] id
     Optional[str] name
@@ -276,8 +278,9 @@ struct Environment:
     Optional[str] kmsKeyArn
     Optional[dict[str, str]] deviceCreationTags
 
-# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentSummary:
     Optional[str] id
     Optional[str] name
@@ -308,8 +311,9 @@ struct GetDeviceResponse:
 struct GetEnvironmentRequest:
     str id
 
-# no @derive(Json): member(s) environment: Environment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environment: Environment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentResponse:
     Optional[Environment] environment
 
@@ -318,8 +322,9 @@ struct GetEnvironmentResponse:
 struct GetSoftwareSetRequest:
     str id
 
-# no @derive(Json): member(s) softwareSet: SoftwareSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) softwareSet: SoftwareSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSoftwareSetResponse:
     Optional[SoftwareSet] softwareSet
 
@@ -334,8 +339,9 @@ struct ListDevicesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) devices: list[DeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[DeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesResponse:
     Optional[list[DeviceSummary]] devices
     Optional[str] nextToken
@@ -346,8 +352,9 @@ struct ListEnvironmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) environments: list[EnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environments: list[EnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsResponse:
     Optional[list[EnvironmentSummary]] environments
     Optional[str] nextToken
@@ -358,8 +365,9 @@ struct ListSoftwareSetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) softwareSets: list[SoftwareSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) softwareSets: list[SoftwareSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSoftwareSetsResponse:
     Optional[list[SoftwareSetSummary]] softwareSets
     Optional[str] nextToken
@@ -369,13 +377,15 @@ struct ListSoftwareSetsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) daysOfTheWeek: list[DayOfWeek] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daysOfTheWeek: list[DayOfWeek] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindow:
     MaintenanceWindowType type
     Optional[int64] startTimeHour
@@ -404,8 +414,9 @@ struct Software:
     Optional[str] name
     Optional[str] version
 
-# no @derive(Json): member(s) software: list[Software] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) software: list[Software] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SoftwareSet:
     Optional[str] id
     Optional[str] version
@@ -478,8 +489,9 @@ struct UpdateEnvironmentRequest:
     Optional[str] desiredSoftwareSetId
     Optional[dict[str, str]] deviceCreationTags
 
-# no @derive(Json): member(s) environment: EnvironmentSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environment: EnvironmentSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentResponse:
     Optional[EnvironmentSummary] environment
 
@@ -494,8 +506,9 @@ struct UpdateSoftwareSetResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[ValidationExceptionReason] reason
@@ -544,10 +557,7 @@ def thinclient_error_from_code(str code) -> WorkSpaces_Thin_ClientError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateEnvironment (document member `maintenanceWindow: MaintenanceWindow` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateEnvironment (document member `maintenanceWindow: MaintenanceWindow` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -570,10 +580,113 @@ struct UpdateSoftwareSetDocument:
     # document members of UpdateSoftwareSet
     SoftwareSetValidationStatus validationStatus
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def thinclient_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def thinclient_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def thinclient_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize MaintenanceWindow to a compact JSON object (declaration order).
+def maintenance_window_to_json(MaintenanceWindow v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.startTimeHour.is_some():
+        auto u0 = v.startTimeHour.unwrap()
+        parts.append("\"startTimeHour\":" + str(u0))
+    if v.startTimeMinute.is_some():
+        auto u1 = v.startTimeMinute.unwrap()
+        parts.append("\"startTimeMinute\":" + str(u1))
+    if v.endTimeHour.is_some():
+        auto u2 = v.endTimeHour.unwrap()
+        parts.append("\"endTimeHour\":" + str(u2))
+    if v.endTimeMinute.is_some():
+        auto u3 = v.endTimeMinute.unwrap()
+        parts.append("\"endTimeMinute\":" + str(u3))
+    if v.daysOfTheWeek.is_some():
+        auto u4 = v.daysOfTheWeek.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"daysOfTheWeek\":" + thinclient_json_arr(e5))
+    if v.applyTimeOf.is_some():
+        auto u6 = v.applyTimeOf.unwrap()
+        parts.append("\"applyTimeOf\":" + u6.to_json())
+    return thinclient_json_obj(parts)
+
 # A bound WorkSpaces_Thin_Client client: credentials + region, threaded into every operation.
 struct WorkSpaces_Thin_ClientClient:
     core.Credentials creds
     str region
+
+    # CreateEnvironment  POST /environments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment(self, CreateEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(thinclient_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + thinclient_json_str(u0))
+        parts.append("\"desktopArn\":" + thinclient_json_str(input.desktopArn))
+        if input.desktopEndpoint.is_some():
+            auto u1 = input.desktopEndpoint.unwrap()
+            parts.append("\"desktopEndpoint\":" + thinclient_json_str(u1))
+        if input.softwareSetUpdateSchedule.is_some():
+            auto u2 = input.softwareSetUpdateSchedule.unwrap()
+            parts.append("\"softwareSetUpdateSchedule\":" + u2.to_json())
+        if input.maintenanceWindow.is_some():
+            auto u3 = input.maintenanceWindow.unwrap()
+            parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u3))
+        if input.softwareSetUpdateMode.is_some():
+            auto u4 = input.softwareSetUpdateMode.unwrap()
+            parts.append("\"softwareSetUpdateMode\":" + u4.to_json())
+        if input.desiredSoftwareSetId.is_some():
+            auto u5 = input.desiredSoftwareSetId.unwrap()
+            parts.append("\"desiredSoftwareSetId\":" + thinclient_json_str(u5))
+        if input.kmsKeyArn.is_some():
+            auto u6 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + thinclient_json_str(u6))
+        if input.clientToken.is_some():
+            auto u7 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + thinclient_json_str(u7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(thinclient_json_str(k9) + ":" + thinclient_json_str(u8[k9]))
+            parts.append("\"tags\":" + thinclient_json_obj(m9))
+        if input.deviceCreationTags.is_some():
+            auto u10 = input.deviceCreationTags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(thinclient_json_str(k11) + ":" + thinclient_json_str(u10[k11]))
+            parts.append("\"deviceCreationTags\":" + thinclient_json_obj(m11))
+        auto bp = restjson.rest_json_document(b, thinclient_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
 
     # DeleteDevice  DELETE /devices/{id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -682,6 +795,21 @@ struct WorkSpaces_Thin_ClientClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(thinclient_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(thinclient_json_str(k0) + ":" + thinclient_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + thinclient_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, thinclient_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
+
     # UpdateDevice  PATCH /devices/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_device(self, UpdateDeviceRequest input) -> str:
@@ -691,6 +819,44 @@ struct WorkSpaces_Thin_ClientClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/devices/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeviceDocument(name=input.name, desiredSoftwareSetId=input.desiredSoftwareSetId, softwareSetUpdateSchedule=input.softwareSetUpdateSchedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
+
+    # UpdateEnvironment  PATCH /environments/{id}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_environment(self, UpdateEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(thinclient_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + thinclient_json_str(u0))
+        if input.desktopArn.is_some():
+            auto u1 = input.desktopArn.unwrap()
+            parts.append("\"desktopArn\":" + thinclient_json_str(u1))
+        if input.desktopEndpoint.is_some():
+            auto u2 = input.desktopEndpoint.unwrap()
+            parts.append("\"desktopEndpoint\":" + thinclient_json_str(u2))
+        if input.softwareSetUpdateSchedule.is_some():
+            auto u3 = input.softwareSetUpdateSchedule.unwrap()
+            parts.append("\"softwareSetUpdateSchedule\":" + u3.to_json())
+        if input.maintenanceWindow.is_some():
+            auto u4 = input.maintenanceWindow.unwrap()
+            parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u4))
+        if input.softwareSetUpdateMode.is_some():
+            auto u5 = input.softwareSetUpdateMode.unwrap()
+            parts.append("\"softwareSetUpdateMode\":" + u5.to_json())
+        if input.desiredSoftwareSetId.is_some():
+            auto u6 = input.desiredSoftwareSetId.unwrap()
+            parts.append("\"desiredSoftwareSetId\":" + thinclient_json_str(u6))
+        if input.deviceCreationTags.is_some():
+            auto u7 = input.deviceCreationTags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(thinclient_json_str(k8) + ":" + thinclient_json_str(u7[k8]))
+            parts.append("\"deviceCreationTags\":" + thinclient_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, thinclient_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
 
     # UpdateSoftwareSet  PATCH /softwaresets/{id}

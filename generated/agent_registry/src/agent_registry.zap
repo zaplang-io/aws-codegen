@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 3 operations — 0 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 3 operations — 3 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   33 structs (23 @derive(Json)), 5 enums, 6 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -133,8 +133,9 @@ struct BatchGetDiscoverableRegistryRecordError:
 struct BatchGetDiscoverableRegistryRecordRequest:
     list[RegistryRecordsEntry] entries
 
-# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary], errors: list[BatchGetDiscoverableRegistryRecordError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary], errors: list[BatchGetDiscoverableRegistryRecordError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDiscoverableRegistryRecordResponse:
     list[RegistryRecordSummary] registryRecords
     list[BatchGetDiscoverableRegistryRecordError] errors
@@ -165,8 +166,9 @@ struct Descriptors:
     Optional[HttpDescriptor] http
     Optional[AgUiDescriptor] agui
 
-# no @derive(Json): member(s) descriptorTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) descriptorTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoverableRegistryRecordSummary:
     str registryArn
     str recordArn
@@ -197,8 +199,9 @@ struct ListDiscoverableRegistryRecordsRequest:
     Optional[str] nextToken
     Optional[list[RegistryRecordFilter]] filters
 
-# no @derive(Json): member(s) registryRecords: list[DiscoverableRegistryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryRecords: list[DiscoverableRegistryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoverableRegistryRecordsResponse:
     list[DiscoverableRegistryRecordSummary] registryRecords
     Optional[str] nextToken
@@ -224,8 +227,9 @@ struct MetadataFilterExpression:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordFilter:
     RegistryRecordFilterName name
     list[str] values
@@ -248,8 +252,9 @@ struct RegistryRecordSummary:
     DateTime updatedAt
     Optional[CustomMetadataDocument] customMetadata
 
-# no @derive(Json): member(s) recordIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordsEntry:
     str registryId
     list[str] recordIds
@@ -266,8 +271,9 @@ struct SearchDiscoverableRegistryRecordsRequest:
     Optional[int64] maxResults
     Optional[MetadataFilterExpression] filters
 
-# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDiscoverableRegistryRecordsResponse:
     list[RegistryRecordSummary] registryRecords
 
@@ -279,8 +285,9 @@ struct ThrottlingException:
 struct UnauthorizedException:
     Optional[str] message
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -323,23 +330,130 @@ def agent_registry_error_from_code(str code) -> Agent_RegistryError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchGetDiscoverableRegistryRecord (document member `entries: list[RegistryRecordsEntry]` is not serializable by derive)
-#   ListDiscoverableRegistryRecords (document member `filters: list[RegistryRecordFilter]` is not serializable by derive)
-#   SearchDiscoverableRegistryRecords (document member `registryIds: list[str]` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def agent_registry_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListDiscoverableRegistryRecords (operation not generated)
+def agent_registry_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def agent_registry_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize RegistryRecordFilter to a compact JSON object (declaration order).
+def registry_record_filter_to_json(RegistryRecordFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(agent_registry_json_str(x0))
+    parts.append("\"values\":" + agent_registry_json_arr(e0))
+    return agent_registry_json_obj(parts)
+
+# Serialize RegistryRecordsEntry to a compact JSON object (declaration order).
+def registry_records_entry_to_json(RegistryRecordsEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"registryId\":" + agent_registry_json_str(v.registryId))
+    list[str] e0 = []
+    for x0 in v.recordIds:
+        e0.append(agent_registry_json_str(x0))
+    parts.append("\"recordIds\":" + agent_registry_json_arr(e0))
+    return agent_registry_json_obj(parts)
 
 # A bound Agent_Registry client: credentials + region, threaded into every operation.
 struct Agent_RegistryClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # BatchGetDiscoverableRegistryRecord  POST /discoverable-records-batch
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_get_discoverable_registry_record(self, BatchGetDiscoverableRegistryRecordRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/discoverable-records-batch", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(registry_records_entry_to_json(x0))
+        parts.append("\"entries\":" + agent_registry_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, agent_registry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_service(), self.region, host)
+
+    # ListDiscoverableRegistryRecords  POST /registries/{registryId}/discoverable-records-list
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_discoverable_registry_records(self, ListDiscoverableRegistryRecordsRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/discoverable-records-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + agent_registry_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(registry_record_filter_to_json(x3))
+            parts.append("\"filters\":" + agent_registry_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, agent_registry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_service(), self.region, host)
+
+    # SearchDiscoverableRegistryRecords  POST /discoverable-records-search
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def search_discoverable_registry_records(self, SearchDiscoverableRegistryRecordsRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/discoverable-records-search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"searchQuery\":" + agent_registry_json_str(input.searchQuery))
+        list[str] e0 = []
+        for x0 in input.registryIds:
+            e0.append(agent_registry_json_str(x0))
+        parts.append("\"registryIds\":" + agent_registry_json_arr(e0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            parts.append("\"filters\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, agent_registry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_service(), self.region, host)
+
+    # Paginator for ListDiscoverableRegistryRecords — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: registryRecords).
+    def paginate_list_discoverable_registry_records(self, ListDiscoverableRegistryRecordsRequest input):
+        auto host = endpoints.regional_host(agent_registry_service(), self.region)
+        while True:
+            auto raw = self.list_discoverable_registry_records(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
 # Construct a Agent_RegistryClient bound to credentials + region.
 def agent_registry_client(core.Credentials creds, str region) -> Agent_RegistryClient:
     return Agent_RegistryClient(creds=creds, region=region)

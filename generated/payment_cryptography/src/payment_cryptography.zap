@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 32 operations — 23 with a generated method,
-#   9 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 32 operations — 32 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   102 structs (72 @derive(Json)), 20 enums, 9 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -261,14 +261,16 @@ enum WrappingKeySpec:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddKeyReplicationRegionsInput:
     str KeyIdentifier
     list[str] ReplicationRegions
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddKeyReplicationRegionsOutput:
     Key Key
 
@@ -310,8 +312,9 @@ struct CreateAliasInput:
 struct CreateAliasOutput:
     Alias Alias
 
-# no @derive(Json): member(s) Tags: list[Tag], ReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKeyInput:
     KeyAttributes KeyAttributes
     Optional[KeyCheckValueAlgorithm] KeyCheckValueAlgorithm
@@ -321,8 +324,9 @@ struct CreateKeyInput:
     Optional[DeriveKeyUsage] DeriveKeyUsage
     Optional[list[str]] ReplicationRegions
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKeyOutput:
     Key Key
 
@@ -340,8 +344,9 @@ struct DeleteKeyInput:
     str KeyIdentifier
     Optional[int64] DeleteKeyInDays
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteKeyOutput:
     Key Key
 
@@ -358,13 +363,15 @@ struct DeleteResourcePolicyOutput:
 struct DiffieHellmanDerivationData:
     Optional[str] SharedInformation
 
-# no @derive(Json): member(s) ReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisableDefaultKeyReplicationRegionsInput:
     list[str] ReplicationRegions
 
-# no @derive(Json): member(s) EnabledReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisableDefaultKeyReplicationRegionsOutput:
     list[str] EnabledReplicationRegions
 
@@ -377,13 +384,15 @@ struct DisassociateMpaTeamInput:
 struct DisassociateMpaTeamOutput:
     MpaTeamAssociation MpaTeamAssociation
 
-# no @derive(Json): member(s) ReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableDefaultKeyReplicationRegionsInput:
     list[str] ReplicationRegions
 
-# no @derive(Json): member(s) EnabledReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableDefaultKeyReplicationRegionsOutput:
     list[str] EnabledReplicationRegions
 
@@ -397,8 +406,9 @@ struct ExportAttributes:
     Optional[ExportDukptInitialKey] ExportDukptInitialKey
     Optional[KeyCheckValueAlgorithm] KeyCheckValueAlgorithm
 
-# no @derive(Json): member(s) KeyBlockHeaders: KeyBlockHeaders not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyBlockHeaders: KeyBlockHeaders not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportDiffieHellmanTr31KeyBlock:
     str PrivateKeyIdentifier
     str CertificateAuthorityPublicKeyIdentifier
@@ -419,15 +429,17 @@ struct ExportKeyCryptogram:
     str WrappingKeyCertificate
     Optional[WrappingKeySpec] WrappingSpec
 
-# no @derive(Json): member(s) KeyMaterial: ExportKeyMaterial not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyMaterial: ExportKeyMaterial not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportKeyInput:
     ExportKeyMaterial KeyMaterial
     str ExportKeyIdentifier
     Optional[ExportAttributes] ExportAttributes
 
-# no @derive(Json): member(s) Tr31KeyBlock: ExportTr31KeyBlock, Tr34KeyBlock: ExportTr34KeyBlock, DiffieHellmanTr31KeyBlock: ExportDiffieHellmanTr31KeyBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tr31KeyBlock: ExportTr31KeyBlock, Tr34KeyBlock: ExportTr34KeyBlock, DiffieHellmanTr31KeyBlock: ExportDiffieHellmanTr31KeyBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportKeyMaterial:
     Optional[ExportTr31KeyBlock] Tr31KeyBlock
     Optional[ExportTr34KeyBlock] Tr34KeyBlock
@@ -439,14 +451,16 @@ struct ExportKeyMaterial:
 struct ExportKeyOutput:
     Optional[WrappedKey] WrappedKey
 
-# no @derive(Json): member(s) KeyBlockHeaders: KeyBlockHeaders not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyBlockHeaders: KeyBlockHeaders not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportTr31KeyBlock:
     str WrappingKeyIdentifier
     Optional[KeyBlockHeaders] KeyBlockHeaders
 
-# no @derive(Json): member(s) KeyBlockHeaders: KeyBlockHeaders not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyBlockHeaders: KeyBlockHeaders not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportTr34KeyBlock:
     str CertificateAuthorityPublicKeyIdentifier
     str WrappingKeyCertificate
@@ -480,8 +494,9 @@ struct GetDefaultKeyReplicationRegionsInput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EnabledReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDefaultKeyReplicationRegionsOutput:
     list[str] EnabledReplicationRegions
 
@@ -489,8 +504,9 @@ struct GetDefaultKeyReplicationRegionsOutput:
 struct GetKeyInput:
     str KeyIdentifier
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetKeyOutput:
     Key Key
 
@@ -576,8 +592,9 @@ struct ImportKeyCryptogram:
     str ImportToken
     Optional[WrappingKeySpec] WrappingSpec
 
-# no @derive(Json): member(s) Tags: list[Tag], ReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportKeyInput:
     ImportKeyMaterial KeyMaterial
     Optional[KeyCheckValueAlgorithm] KeyCheckValueAlgorithm
@@ -596,8 +613,9 @@ struct ImportKeyMaterial:
     Optional[ImportDiffieHellmanTr31KeyBlock] DiffieHellmanTr31KeyBlock
     Optional[ImportAs2805KeyCryptogram] As2805KeyCryptogram
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportKeyOutput:
     Key Key
 
@@ -621,8 +639,9 @@ struct ImportTr34KeyBlock:
 struct InternalServerException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ReplicationStatus: dict[str, ReplicationStatusType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationStatus: dict[str, ReplicationStatusType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Key:
     str KeyArn
     KeyAttributes KeyAttributes
@@ -651,8 +670,9 @@ struct KeyAttributes:
     KeyAlgorithm KeyAlgorithm
     KeyModesOfUse KeyModesOfUse
 
-# no @derive(Json): member(s) OptionalBlocks: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptionalBlocks: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyBlockHeaders:
     Optional[KeyModesOfUse] KeyModesOfUse
     Optional[KeyExportability] KeyExportability
@@ -688,8 +708,9 @@ struct ListAliasesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Aliases: list[Alias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[Alias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAliasesOutput:
     list[Alias] Aliases
     Optional[str] NextToken
@@ -700,8 +721,9 @@ struct ListKeysInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Keys: list[KeySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[KeySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeysOutput:
     list[KeySummary] Keys
     Optional[str] NextToken
@@ -712,8 +734,9 @@ struct ListTagsForResourceInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     list[Tag] Tags
     Optional[str] NextToken
@@ -746,14 +769,16 @@ struct PutResourcePolicyOutput:
     str ResourceArn
     str Policy
 
-# no @derive(Json): member(s) ReplicationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveKeyReplicationRegionsInput:
     str KeyIdentifier
     list[str] ReplicationRegions
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveKeyReplicationRegionsOutput:
     Key Key
 
@@ -770,8 +795,9 @@ struct ResourceNotFoundException:
 struct RestoreKeyInput:
     str KeyIdentifier
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreKeyOutput:
     Key Key
 
@@ -792,8 +818,9 @@ struct ServiceUnavailableException:
 struct StartKeyUsageInput:
     str KeyIdentifier
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartKeyUsageOutput:
     Key Key
 
@@ -801,8 +828,9 @@ struct StartKeyUsageOutput:
 struct StopKeyUsageInput:
     str KeyIdentifier
 
-# no @derive(Json): member(s) Key: Key not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: Key not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopKeyUsageOutput:
     Key Key
 
@@ -811,8 +839,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceArn
     list[Tag] Tags
@@ -832,8 +861,9 @@ struct TrustedCertificatePublicKey:
     str PublicKeyCertificate
     str CertificateAuthorityPublicKeyIdentifier
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceArn
     list[str] TagKeys
@@ -904,22 +934,256 @@ def controlplane_payment_cryptography_error_from_code(str code) -> Payment_Crypt
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddKeyReplicationRegions (input AddKeyReplicationRegionsInput)
-#   CreateKey (input CreateKeyInput)
-#   DisableDefaultKeyReplicationRegions (input DisableDefaultKeyReplicationRegionsInput)
-#   EnableDefaultKeyReplicationRegions (input EnableDefaultKeyReplicationRegionsInput)
-#   ExportKey (input ExportKeyInput)
-#   ImportKey (input ImportKeyInput)
-#   RemoveKeyReplicationRegions (input RemoveKeyReplicationRegionsInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def controlplane_payment_cryptography_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def controlplane_payment_cryptography_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def controlplane_payment_cryptography_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddKeyReplicationRegionsInput to a compact JSON object (declaration order).
+def add_key_replication_regions_input_to_json(AddKeyReplicationRegionsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.KeyIdentifier))
+    list[str] e0 = []
+    for x0 in v.ReplicationRegions:
+        e0.append(controlplane_payment_cryptography_json_str(x0))
+    parts.append("\"ReplicationRegions\":" + controlplane_payment_cryptography_json_arr(e0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize CreateKeyInput to a compact JSON object (declaration order).
+def create_key_input_to_json(CreateKeyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyAttributes\":" + v.KeyAttributes.to_json())
+    if v.KeyCheckValueAlgorithm.is_some():
+        auto u0 = v.KeyCheckValueAlgorithm.unwrap()
+        parts.append("\"KeyCheckValueAlgorithm\":" + u0.to_json())
+    parts.append("\"Exportable\":" + json.dumps(JsonValue.Bool(v.Exportable)))
+    if v.Enabled.is_some():
+        auto u1 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + controlplane_payment_cryptography_json_arr(e3))
+    if v.DeriveKeyUsage.is_some():
+        auto u4 = v.DeriveKeyUsage.unwrap()
+        parts.append("\"DeriveKeyUsage\":" + u4.to_json())
+    if v.ReplicationRegions.is_some():
+        auto u5 = v.ReplicationRegions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(controlplane_payment_cryptography_json_str(x6))
+        parts.append("\"ReplicationRegions\":" + controlplane_payment_cryptography_json_arr(e6))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize DisableDefaultKeyReplicationRegionsInput to a compact JSON object (declaration order).
+def disable_default_key_replication_regions_input_to_json(DisableDefaultKeyReplicationRegionsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ReplicationRegions:
+        e0.append(controlplane_payment_cryptography_json_str(x0))
+    parts.append("\"ReplicationRegions\":" + controlplane_payment_cryptography_json_arr(e0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize EnableDefaultKeyReplicationRegionsInput to a compact JSON object (declaration order).
+def enable_default_key_replication_regions_input_to_json(EnableDefaultKeyReplicationRegionsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ReplicationRegions:
+        e0.append(controlplane_payment_cryptography_json_str(x0))
+    parts.append("\"ReplicationRegions\":" + controlplane_payment_cryptography_json_arr(e0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize ExportDiffieHellmanTr31KeyBlock to a compact JSON object (declaration order).
+def export_diffie_hellman_tr31_key_block_to_json(ExportDiffieHellmanTr31KeyBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"PrivateKeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.PrivateKeyIdentifier))
+    parts.append("\"CertificateAuthorityPublicKeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.CertificateAuthorityPublicKeyIdentifier))
+    parts.append("\"PublicKeyCertificate\":" + controlplane_payment_cryptography_json_str(v.PublicKeyCertificate))
+    parts.append("\"DeriveKeyAlgorithm\":" + v.DeriveKeyAlgorithm.to_json())
+    parts.append("\"KeyDerivationFunction\":" + v.KeyDerivationFunction.to_json())
+    parts.append("\"KeyDerivationHashAlgorithm\":" + v.KeyDerivationHashAlgorithm.to_json())
+    parts.append("\"DerivationData\":" + v.DerivationData.to_json())
+    if v.KeyBlockHeaders.is_some():
+        auto u0 = v.KeyBlockHeaders.unwrap()
+        parts.append("\"KeyBlockHeaders\":" + key_block_headers_to_json(u0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize ExportKeyInput to a compact JSON object (declaration order).
+def export_key_input_to_json(ExportKeyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyMaterial\":" + export_key_material_to_json(v.KeyMaterial))
+    parts.append("\"ExportKeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.ExportKeyIdentifier))
+    if v.ExportAttributes.is_some():
+        auto u0 = v.ExportAttributes.unwrap()
+        parts.append("\"ExportAttributes\":" + u0.to_json())
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize ExportKeyMaterial to a compact JSON object (declaration order).
+def export_key_material_to_json(ExportKeyMaterial v) -> str:
+    list[str] parts = []
+    if v.Tr31KeyBlock.is_some():
+        auto u0 = v.Tr31KeyBlock.unwrap()
+        parts.append("\"Tr31KeyBlock\":" + export_tr31_key_block_to_json(u0))
+    if v.Tr34KeyBlock.is_some():
+        auto u1 = v.Tr34KeyBlock.unwrap()
+        parts.append("\"Tr34KeyBlock\":" + export_tr34_key_block_to_json(u1))
+    if v.KeyCryptogram.is_some():
+        auto u2 = v.KeyCryptogram.unwrap()
+        parts.append("\"KeyCryptogram\":" + u2.to_json())
+    if v.DiffieHellmanTr31KeyBlock.is_some():
+        auto u3 = v.DiffieHellmanTr31KeyBlock.unwrap()
+        parts.append("\"DiffieHellmanTr31KeyBlock\":" + export_diffie_hellman_tr31_key_block_to_json(u3))
+    if v.As2805KeyCryptogram.is_some():
+        auto u4 = v.As2805KeyCryptogram.unwrap()
+        parts.append("\"As2805KeyCryptogram\":" + u4.to_json())
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize ExportTr31KeyBlock to a compact JSON object (declaration order).
+def export_tr31_key_block_to_json(ExportTr31KeyBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"WrappingKeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.WrappingKeyIdentifier))
+    if v.KeyBlockHeaders.is_some():
+        auto u0 = v.KeyBlockHeaders.unwrap()
+        parts.append("\"KeyBlockHeaders\":" + key_block_headers_to_json(u0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize ExportTr34KeyBlock to a compact JSON object (declaration order).
+def export_tr34_key_block_to_json(ExportTr34KeyBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateAuthorityPublicKeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.CertificateAuthorityPublicKeyIdentifier))
+    parts.append("\"WrappingKeyCertificate\":" + controlplane_payment_cryptography_json_str(v.WrappingKeyCertificate))
+    if v.ExportToken.is_some():
+        auto u0 = v.ExportToken.unwrap()
+        parts.append("\"ExportToken\":" + controlplane_payment_cryptography_json_str(u0))
+    if v.SigningKeyIdentifier.is_some():
+        auto u1 = v.SigningKeyIdentifier.unwrap()
+        parts.append("\"SigningKeyIdentifier\":" + controlplane_payment_cryptography_json_str(u1))
+    if v.SigningKeyCertificate.is_some():
+        auto u2 = v.SigningKeyCertificate.unwrap()
+        parts.append("\"SigningKeyCertificate\":" + controlplane_payment_cryptography_json_str(u2))
+    parts.append("\"KeyBlockFormat\":" + controlplane_payment_cryptography_json_str(v.KeyBlockFormat))
+    if v.RandomNonce.is_some():
+        auto u3 = v.RandomNonce.unwrap()
+        parts.append("\"RandomNonce\":" + controlplane_payment_cryptography_json_str(u3))
+    if v.KeyBlockHeaders.is_some():
+        auto u4 = v.KeyBlockHeaders.unwrap()
+        parts.append("\"KeyBlockHeaders\":" + key_block_headers_to_json(u4))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize ImportKeyInput to a compact JSON object (declaration order).
+def import_key_input_to_json(ImportKeyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyMaterial\":" + v.KeyMaterial.to_json())
+    if v.KeyCheckValueAlgorithm.is_some():
+        auto u0 = v.KeyCheckValueAlgorithm.unwrap()
+        parts.append("\"KeyCheckValueAlgorithm\":" + u0.to_json())
+    if v.Enabled.is_some():
+        auto u1 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + controlplane_payment_cryptography_json_arr(e3))
+    if v.ReplicationRegions.is_some():
+        auto u4 = v.ReplicationRegions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(controlplane_payment_cryptography_json_str(x5))
+        parts.append("\"ReplicationRegions\":" + controlplane_payment_cryptography_json_arr(e5))
+    if v.RequesterComment.is_some():
+        auto u6 = v.RequesterComment.unwrap()
+        parts.append("\"RequesterComment\":" + controlplane_payment_cryptography_json_str(u6))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize KeyBlockHeaders to a compact JSON object (declaration order).
+def key_block_headers_to_json(KeyBlockHeaders v) -> str:
+    list[str] parts = []
+    if v.KeyModesOfUse.is_some():
+        auto u0 = v.KeyModesOfUse.unwrap()
+        parts.append("\"KeyModesOfUse\":" + u0.to_json())
+    if v.KeyExportability.is_some():
+        auto u1 = v.KeyExportability.unwrap()
+        parts.append("\"KeyExportability\":" + u1.to_json())
+    if v.KeyVersion.is_some():
+        auto u2 = v.KeyVersion.unwrap()
+        parts.append("\"KeyVersion\":" + controlplane_payment_cryptography_json_str(u2))
+    if v.OptionalBlocks.is_some():
+        auto u3 = v.OptionalBlocks.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(controlplane_payment_cryptography_json_str(k4) + ":" + controlplane_payment_cryptography_json_str(u3[k4]))
+        parts.append("\"OptionalBlocks\":" + controlplane_payment_cryptography_json_obj(m4))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize RemoveKeyReplicationRegionsInput to a compact JSON object (declaration order).
+def remove_key_replication_regions_input_to_json(RemoveKeyReplicationRegionsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyIdentifier\":" + controlplane_payment_cryptography_json_str(v.KeyIdentifier))
+    list[str] e0 = []
+    for x0 in v.ReplicationRegions:
+        e0.append(controlplane_payment_cryptography_json_str(x0))
+    parts.append("\"ReplicationRegions\":" + controlplane_payment_cryptography_json_arr(e0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + controlplane_payment_cryptography_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + controlplane_payment_cryptography_json_arr(e0))
+    return controlplane_payment_cryptography_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + controlplane_payment_cryptography_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(controlplane_payment_cryptography_json_str(x0))
+    parts.append("\"TagKeys\":" + controlplane_payment_cryptography_json_arr(e0))
+    return controlplane_payment_cryptography_json_obj(parts)
 
 # A bound Payment_Cryptography client: credentials + region, threaded into every operation.
 struct Payment_CryptographyClient:
     core.Credentials creds
     str region
+
+    # AddKeyReplicationRegions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def add_key_replication_regions(self, AddKeyReplicationRegionsInput input) -> str:
+        auto body = add_key_replication_regions_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "AddKeyReplicationRegions", body)
 
     # AssociateMpaTeam
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
@@ -932,6 +1196,12 @@ struct Payment_CryptographyClient:
     def create_alias(self, CreateAliasInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "CreateAlias", body)
+
+    # CreateKey
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def create_key(self, CreateKeyInput input) -> str:
+        auto body = create_key_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "CreateKey", body)
 
     # DeleteAlias
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
@@ -951,11 +1221,29 @@ struct Payment_CryptographyClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
 
+    # DisableDefaultKeyReplicationRegions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def disable_default_key_replication_regions(self, DisableDefaultKeyReplicationRegionsInput input) -> str:
+        auto body = disable_default_key_replication_regions_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "DisableDefaultKeyReplicationRegions", body)
+
     # DisassociateMpaTeam
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
     def disassociate_mpa_team(self, DisassociateMpaTeamInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "DisassociateMpaTeam", body)
+
+    # EnableDefaultKeyReplicationRegions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def enable_default_key_replication_regions(self, EnableDefaultKeyReplicationRegionsInput input) -> str:
+        auto body = enable_default_key_replication_regions_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "EnableDefaultKeyReplicationRegions", body)
+
+    # ExportKey
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def export_key(self, ExportKeyInput input) -> str:
+        auto body = export_key_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "ExportKey", body)
 
     # GetAlias
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
@@ -1011,6 +1299,12 @@ struct Payment_CryptographyClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "GetResourcePolicy", body)
 
+    # ImportKey
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def import_key(self, ImportKeyInput input) -> str:
+        auto body = import_key_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "ImportKey", body)
+
     # ListAliases
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
     def list_aliases(self, ListAliasesInput input) -> str:
@@ -1035,6 +1329,12 @@ struct Payment_CryptographyClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "PutResourcePolicy", body)
 
+    # RemoveKeyReplicationRegions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def remove_key_replication_regions(self, RemoveKeyReplicationRegionsInput input) -> str:
+        auto body = remove_key_replication_regions_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "RemoveKeyReplicationRegions", body)
+
     # RestoreKey
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
     def restore_key(self, RestoreKeyInput input) -> str:
@@ -1052,6 +1352,18 @@ struct Payment_CryptographyClient:
     def stop_key_usage(self, StopKeyUsageInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "StopKeyUsage", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(controlplane_payment_cryptography_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAlias
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException

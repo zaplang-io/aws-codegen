@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 18 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 24 operations — 22 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   67 structs (43 @derive(Json)), 6 enums, 6 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -95,8 +95,9 @@ enum SyncAction:
 struct AppRegistryConfiguration:
     Optional[TagQueryConfiguration] tagQueryConfiguration
 
-# no @derive(Json): member(s) tags: dict[str, str], applicationTag: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], applicationTag: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     Optional[str] id
     Optional[str] arn
@@ -118,8 +119,9 @@ struct ApplicationSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] lastUpdateTime
 
-# no @derive(Json): member(s) resources: list[ResourcesListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[ResourcesListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationTagResult:
     Optional[ApplicationTagStatus] applicationTagStatus
     Optional[str] errorMessage
@@ -146,15 +148,17 @@ struct AssociateResourceRequest:
     str resource
     Optional[list[AssociationOption]] options
 
-# no @derive(Json): member(s) options: list[AssociationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: list[AssociationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateResourceResponse:
     Optional[str] applicationArn
     Optional[str] resourceArn
     Optional[list[AssociationOption]] options
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeGroup:
     Optional[str] id
     Optional[str] arn
@@ -195,8 +199,9 @@ struct CreateApplicationRequest:
     Optional[dict[str, str]] tags
     str clientToken
 
-# no @derive(Json): member(s) application: Application not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) application: Application not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationResponse:
     Optional[Application] application
 
@@ -209,8 +214,9 @@ struct CreateAttributeGroupRequest:
     Optional[dict[str, str]] tags
     str clientToken
 
-# no @derive(Json): member(s) attributeGroup: AttributeGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeGroup: AttributeGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAttributeGroupResponse:
     Optional[AttributeGroup] attributeGroup
 
@@ -261,8 +267,9 @@ struct DisassociateResourceResponse:
 struct GetApplicationRequest:
     str application
 
-# no @derive(Json): member(s) tags: dict[str, str], applicationTag: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], applicationTag: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     Optional[str] id
     Optional[str] arn
@@ -286,8 +293,9 @@ struct GetAssociatedResourceRequest:
     Optional[list[ResourceItemStatus]] resourceTagStatus
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) options: list[AssociationOption], applicationTagResult: ApplicationTagResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: list[AssociationOption], applicationTagResult: ApplicationTagResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssociatedResourceResponse:
     Optional[Resource] resource
     Optional[list[AssociationOption]] options
@@ -298,8 +306,9 @@ struct GetAssociatedResourceResponse:
 struct GetAttributeGroupRequest:
     str attributeGroup
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAttributeGroupResponse:
     Optional[str] id
     Optional[str] arn
@@ -330,8 +339,9 @@ struct ListApplicationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[list[ApplicationSummary]] applications
     Optional[str] nextToken
@@ -343,8 +353,9 @@ struct ListAssociatedAttributeGroupsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) attributeGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedAttributeGroupsResponse:
     Optional[list[str]] attributeGroups
     Optional[str] nextToken
@@ -356,8 +367,9 @@ struct ListAssociatedResourcesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) resources: list[ResourceInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[ResourceInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedResourcesResponse:
     Optional[list[ResourceInfo]] resources
     Optional[str] nextToken
@@ -369,8 +381,9 @@ struct ListAttributeGroupsForApplicationRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) attributeGroupsDetails: list[AttributeGroupDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeGroupsDetails: list[AttributeGroupDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttributeGroupsForApplicationResponse:
     Optional[list[AttributeGroupDetails]] attributeGroupsDetails
     Optional[str] nextToken
@@ -381,8 +394,9 @@ struct ListAttributeGroupsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) attributeGroups: list[AttributeGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeGroups: list[AttributeGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttributeGroupsResponse:
     Optional[list[AttributeGroupSummary]] attributeGroups
     Optional[str] nextToken
@@ -392,8 +406,9 @@ struct ListAttributeGroupsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -420,8 +435,9 @@ struct ResourceGroup:
     Optional[str] arn
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) options: list[AssociationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: list[AssociationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceInfo:
     Optional[str] name
     Optional[str] arn
@@ -499,8 +515,9 @@ struct UpdateApplicationRequest:
     Optional[str] name
     Optional[str] description
 
-# no @derive(Json): member(s) application: Application not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) application: Application not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationResponse:
     Optional[Application] application
 
@@ -512,8 +529,9 @@ struct UpdateAttributeGroupRequest:
     Optional[str] description
     Optional[str] attributes
 
-# no @derive(Json): member(s) attributeGroup: AttributeGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeGroup: AttributeGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAttributeGroupResponse:
     Optional[AttributeGroup] attributeGroup
 
@@ -556,11 +574,7 @@ def servicecatalog_appregistry_error_from_code(str code) -> Service_Catalog_AppR
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateResource (document member `options: list[AssociationOption]` is not serializable by derive)
-#   CreateApplication (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateAttributeGroup (document member `tags: dict[str, str]` is not serializable by derive)
 #   GetAssociatedResource (httpQuery `resourceTagStatus` has unsupported type list[ResourceItemStatus])
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -598,6 +612,66 @@ struct Service_Catalog_AppRegistryClient:
         labels["attributeGroup"] = input.attributeGroup
         auto b = binding.HttpBinding(method="PUT", path_template="/applications/{application}/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
+
+    # AssociateResource  PUT /applications/{application}/resources/{resourceType}/{resource}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def associate_resource(self, AssociateResourceRequest input) -> str:
+        auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application"] = input.application
+        labels["resourceType"] = input.resourceType
+        labels["resource"] = input.resource
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{application}/resources/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.options.is_some():
+            auto u0 = input.options.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"options\":" + servicecatalog_appregistry_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, servicecatalog_appregistry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
+
+    # CreateApplication  POST /applications
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + servicecatalog_appregistry_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + servicecatalog_appregistry_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(servicecatalog_appregistry_json_str(k2) + ":" + servicecatalog_appregistry_json_str(u1[k2]))
+            parts.append("\"tags\":" + servicecatalog_appregistry_json_obj(m2))
+        parts.append("\"clientToken\":" + servicecatalog_appregistry_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, servicecatalog_appregistry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
+
+    # CreateAttributeGroup  POST /attribute-groups
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_attribute_group(self, CreateAttributeGroupRequest input) -> str:
+        auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/attribute-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + servicecatalog_appregistry_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + servicecatalog_appregistry_json_str(u0))
+        parts.append("\"attributes\":" + servicecatalog_appregistry_json_str(input.attributes))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(servicecatalog_appregistry_json_str(k2) + ":" + servicecatalog_appregistry_json_str(u1[k2]))
+            parts.append("\"tags\":" + servicecatalog_appregistry_json_obj(m2))
+        parts.append("\"clientToken\":" + servicecatalog_appregistry_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, servicecatalog_appregistry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
 
     # DeleteApplication  DELETE /applications/{application}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -756,6 +830,21 @@ struct Service_Catalog_AppRegistryClient:
         labels["resource"] = input.resource
         auto b = binding.HttpBinding(method="POST", path_template="/sync/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(servicecatalog_appregistry_json_str(k0) + ":" + servicecatalog_appregistry_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + servicecatalog_appregistry_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, servicecatalog_appregistry_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
 
     # UpdateApplication  PATCH /applications/{application}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

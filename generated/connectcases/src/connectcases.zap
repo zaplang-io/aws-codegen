@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 43 operations — 21 with a generated method,
-#   22 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 43 operations — 40 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   174 structs (93 @derive(Json)), 10 enums, 7 error variants.
-#   1 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -132,8 +132,9 @@ enum TemplateStatus:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) fields: list[AuditEventField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[AuditEventField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditEvent:
     str eventId
     AuditEventType type
@@ -161,8 +162,9 @@ struct AuditEventPerformedBy:
     Optional[UserUnion] user
     str iamPrincipalArn
 
-# no @derive(Json): member(s) topPanel: LayoutSections, moreInfo: LayoutSections not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topPanel: LayoutSections, moreInfo: LayoutSections not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BasicLayout:
     Optional[LayoutSections] topPanel
     Optional[LayoutSections] moreInfo
@@ -173,8 +175,9 @@ struct BatchGetCaseRuleRequest:
     str domainId
     list[CaseRuleIdentifier] caseRules
 
-# no @derive(Json): member(s) caseRules: list[GetCaseRuleResponse], errors: list[CaseRuleError], unprocessedCaseRules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) caseRules: list[GetCaseRuleResponse], errors: list[CaseRuleError], unprocessedCaseRules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCaseRuleResponse:
     list[GetCaseRuleResponse] caseRules
     list[CaseRuleError] errors
@@ -186,8 +189,9 @@ struct BatchGetFieldRequest:
     str domainId
     list[FieldIdentifier] fields
 
-# no @derive(Json): member(s) fields: list[GetFieldResponse], errors: list[FieldError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[GetFieldResponse], errors: list[FieldError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFieldResponse:
     list[GetFieldResponse] fields
     list[FieldError] errors
@@ -199,13 +203,15 @@ struct BatchPutFieldOptionsRequest:
     str fieldId
     list[FieldOption] options
 
-# no @derive(Json): member(s) errors: list[FieldOptionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[FieldOptionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutFieldOptionsResponse:
     Optional[list[FieldOptionError]] errors
 
-# no @derive(Json): member(s) andAll: CompoundCondition, orAll: CompoundCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) andAll: CompoundCondition, orAll: CompoundCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BooleanCondition:
     Optional[BooleanOperands] equalTo
     Optional[BooleanOperands] notEqualTo
@@ -218,13 +224,15 @@ struct BooleanOperands:
     OperandTwo operandTwo
     bool result
 
-# no @derive(Json): member(s) fields: list[FieldIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaseEventIncludedData:
     list[FieldIdentifier] fields
 
-# no @derive(Json): member(s) not: CaseFilter, andAll: list[CaseFilter], orAll: list[CaseFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) not: CaseFilter, andAll: list[CaseFilter], orAll: list[CaseFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaseFilter:
     Optional[FieldFilter] field
     # wire name "not" differs from field; derive rename is a #346 follow-up
@@ -233,8 +241,9 @@ struct CaseFilter:
     Optional[list[CaseFilter]] andAll
     Optional[list[CaseFilter]] orAll
 
-# no @derive(Json): member(s) required: RequiredCaseRule, fieldOptions: FieldOptionsCaseRule, hidden: HiddenCaseRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) required: RequiredCaseRule, fieldOptions: FieldOptionsCaseRule, hidden: HiddenCaseRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaseRuleDetails:
     Optional[RequiredCaseRule] required
     Optional[FieldOptionsCaseRule] fieldOptions
@@ -278,8 +287,9 @@ struct CommentUpdateContent:
     str body
     str contentType
 
-# no @derive(Json): member(s) conditions: list[BooleanCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[BooleanCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompoundCondition:
     list[BooleanCondition] conditions
 
@@ -311,8 +321,9 @@ struct ContactContent:
     @json(timestamp="iso8601")
     DateTime connectedToSystemTime
 
-# no @derive(Json): member(s) channel: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channel: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFilter:
     # wire name "channel" differs from field; derive rename is a #346 follow-up
     Optional[list[str]] channel_
@@ -414,13 +425,15 @@ struct CreateTemplateResponse:
     str templateId
     str templateArn
 
-# no @derive(Json): member(s) fields: list[FieldValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomContent:
     list[FieldValue] fields
 
-# no @derive(Json): member(s) not: CustomFieldsFilter, andAll: list[CustomFieldsFilter], orAll: list[CustomFieldsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) not: CustomFieldsFilter, andAll: list[CustomFieldsFilter], orAll: list[CustomFieldsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomFieldsFilter:
     Optional[FieldFilter] field
     # wire name "not" differs from field; derive rename is a #346 follow-up
@@ -428,18 +441,21 @@ struct CustomFieldsFilter:
     Optional[list[CustomFieldsFilter]] andAll
     Optional[list[CustomFieldsFilter]] orAll
 
-# no @derive(Json): member(s) fields: CustomFieldsFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: CustomFieldsFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomFilter:
     Optional[CustomFieldsFilter] fields
 
-# no @derive(Json): member(s) fields: list[FieldValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomInputContent:
     list[FieldValue] fields
 
-# no @derive(Json): member(s) fields: list[FieldValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomUpdateContent:
     list[FieldValue] fields
 
@@ -536,14 +552,16 @@ struct EmptyOperandValue:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) includedData: EventIncludedData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includedData: EventIncludedData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventBridgeConfiguration:
     bool enabled
     Optional[EventIncludedData] includedData
 
-# no @derive(Json): member(s) caseData: CaseEventIncludedData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) caseData: CaseEventIncludedData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventIncludedData:
     Optional[CaseEventIncludedData] caseData
     Optional[RelatedItemEventIncludedData] relatedItemData
@@ -567,8 +585,9 @@ struct FieldFilter:
     Optional[FieldValue] lessThan
     Optional[FieldValue] lessThanOrEqualTo
 
-# no @derive(Json): member(s) fields: list[FieldItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldGroup:
     Optional[str] name
     list[FieldItem] fields
@@ -593,8 +612,9 @@ struct FieldOptionError:
     str errorCode
     str value
 
-# no @derive(Json): member(s) parentChildFieldOptionsMappings: list[ParentChildFieldOptionsMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parentChildFieldOptionsMappings: list[ParentChildFieldOptionsMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldOptionsCaseRule:
     Optional[str] parentFieldId
     Optional[str] childFieldId
@@ -638,8 +658,9 @@ struct GetCaseAuditEventsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) auditEvents: list[AuditEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) auditEvents: list[AuditEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCaseAuditEventsResponse:
     Optional[str] nextToken
     list[AuditEvent] auditEvents
@@ -649,8 +670,9 @@ struct GetCaseAuditEventsResponse:
 struct GetCaseEventConfigurationRequest:
     str domainId
 
-# no @derive(Json): member(s) eventBridge: EventBridgeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventBridge: EventBridgeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCaseEventConfigurationResponse:
     EventBridgeConfiguration eventBridge
 
@@ -662,16 +684,18 @@ struct GetCaseRequest:
     list[FieldIdentifier] fields
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fields: list[FieldValue], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldValue], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCaseResponse:
     list[FieldValue] fields
     str templateId
     Optional[str] nextToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) rule: CaseRuleDetails, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rule: CaseRuleDetails, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCaseRuleResponse:
     str caseRuleId
     str name
@@ -688,8 +712,9 @@ struct GetCaseRuleResponse:
 struct GetDomainRequest:
     str domainId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainResponse:
     str domainId
     str domainArn
@@ -698,8 +723,9 @@ struct GetDomainResponse:
     DomainStatus domainStatus
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFieldResponse:
     str fieldId
     str name
@@ -719,8 +745,9 @@ struct GetLayoutRequest:
     str domainId
     str layoutId
 
-# no @derive(Json): member(s) content: LayoutContent, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: LayoutContent, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLayoutResponse:
     str layoutId
     str layoutArn
@@ -737,8 +764,9 @@ struct GetTemplateRequest:
     str domainId
     str templateId
 
-# no @derive(Json): member(s) requiredFields: list[RequiredField], tags: dict[str, str], rules: list[TemplateRule], tagPropagationConfigurations: list[TagPropagationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredFields: list[RequiredField], tags: dict[str, str], rules: list[TemplateRule], tagPropagationConfigurations: list[TagPropagationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemplateResponse:
     str templateId
     str templateArn
@@ -754,8 +782,9 @@ struct GetTemplateResponse:
     Optional[list[TemplateRule]] rules
     Optional[list[TagPropagationConfiguration]] tagPropagationConfigurations
 
-# no @derive(Json): member(s) conditions: list[BooleanCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[BooleanCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HiddenCaseRule:
     bool defaultValue
     list[BooleanCondition] conditions
@@ -769,13 +798,15 @@ struct InternalServerException:
 struct LayoutConfiguration:
     Optional[str] defaultLayout
 
-# no @derive(Json): member(s) basic: BasicLayout not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) basic: BasicLayout not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayoutContent:
     Optional[BasicLayout] basic
 
-# no @derive(Json): member(s) sections: list[Section] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sections: list[Section] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayoutSections:
     Optional[list[Section]] sections
 
@@ -792,8 +823,9 @@ struct ListCaseRulesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) caseRules: list[CaseRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) caseRules: list[CaseRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCaseRulesResponse:
     list[CaseRuleSummary] caseRules
     Optional[str] nextToken
@@ -806,8 +838,9 @@ struct ListCasesForContactRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) cases: list[CaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cases: list[CaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCasesForContactResponse:
     list[CaseSummary] cases
     Optional[str] nextToken
@@ -818,8 +851,9 @@ struct ListDomainsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) domains: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domains: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     list[DomainSummary] domains
     Optional[str] nextToken
@@ -833,8 +867,9 @@ struct ListFieldOptionsRequest:
     Optional[str] nextToken
     Optional[list[str]] values
 
-# no @derive(Json): member(s) options: list[FieldOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: list[FieldOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFieldOptionsResponse:
     list[FieldOption] options
     Optional[str] nextToken
@@ -846,8 +881,9 @@ struct ListFieldsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fields: list[FieldSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFieldsResponse:
     list[FieldSummary] fields
     Optional[str] nextToken
@@ -859,8 +895,9 @@ struct ListLayoutsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) layouts: list[LayoutSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) layouts: list[LayoutSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLayoutsResponse:
     list[LayoutSummary] layouts
     Optional[str] nextToken
@@ -870,8 +907,9 @@ struct ListLayoutsResponse:
 struct ListTagsForResourceRequest:
     str arn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -883,8 +921,9 @@ struct ListTemplatesRequest:
     Optional[str] nextToken
     Optional[list[TemplateStatus]] status
 
-# no @derive(Json): member(s) templates: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplatesResponse:
     list[TemplateSummary] templates
     Optional[str] nextToken
@@ -900,8 +939,9 @@ struct OperandTwo:
     Optional[float64] doubleValue
     Optional[EmptyOperandValue] emptyValue
 
-# no @derive(Json): member(s) childFieldOptionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) childFieldOptionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParentChildFieldOptionsMapping:
     str parentFieldOptionValue
     list[str] childFieldOptionValues
@@ -917,8 +957,9 @@ struct PutCaseEventConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) sla: SlaContent, custom: CustomContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sla: SlaContent, custom: CustomContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedItemContent:
     Optional[ContactContent] contact
     Optional[CommentContent] comment
@@ -931,8 +972,9 @@ struct RelatedItemContent:
 struct RelatedItemEventIncludedData:
     bool includeContent
 
-# no @derive(Json): member(s) sla: SlaInputContent, custom: CustomInputContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sla: SlaInputContent, custom: CustomInputContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedItemInputContent:
     Optional[Contact] contact
     Optional[CommentContent] comment
@@ -941,8 +983,9 @@ struct RelatedItemInputContent:
     Optional[ConnectCaseInputContent] connectCase
     Optional[CustomInputContent] custom
 
-# no @derive(Json): member(s) contact: ContactFilter, custom: CustomFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contact: ContactFilter, custom: CustomFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedItemTypeFilter:
     Optional[ContactFilter] contact
     Optional[CommentFilter] comment
@@ -951,14 +994,16 @@ struct RelatedItemTypeFilter:
     Optional[ConnectCaseFilter] connectCase
     Optional[CustomFilter] custom
 
-# no @derive(Json): member(s) custom: CustomUpdateContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) custom: CustomUpdateContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedItemUpdateContent:
     Optional[CommentUpdateContent] comment
     Optional[CustomUpdateContent] custom
 
-# no @derive(Json): member(s) conditions: list[BooleanCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[BooleanCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequiredCaseRule:
     bool defaultValue
     list[BooleanCondition] conditions
@@ -982,14 +1027,16 @@ struct SearchAllRelatedItemsRequest:
     Optional[list[RelatedItemTypeFilter]] filters
     Optional[list[SearchAllRelatedItemsSort]] sorts
 
-# no @derive(Json): member(s) relatedItems: list[SearchAllRelatedItemsResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relatedItems: list[SearchAllRelatedItemsResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAllRelatedItemsResponse:
     Optional[str] nextToken
     list[SearchAllRelatedItemsResponseItem] relatedItems
 
-# no @derive(Json): member(s) content: RelatedItemContent, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: RelatedItemContent, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAllRelatedItemsResponseItem:
     str relatedItemId
     str caseId
@@ -1015,15 +1062,17 @@ struct SearchCasesRequest:
     Optional[list[Sort]] sorts
     Optional[list[FieldIdentifier]] fields
 
-# no @derive(Json): member(s) cases: list[SearchCasesResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cases: list[SearchCasesResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCasesResponse:
     Optional[str] nextToken
     list[SearchCasesResponseItem] cases
     Optional[int64] totalCount
 
-# no @derive(Json): member(s) fields: list[FieldValue], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[FieldValue], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCasesResponseItem:
     str caseId
     str templateId
@@ -1039,14 +1088,16 @@ struct SearchRelatedItemsRequest:
     Optional[str] nextToken
     Optional[list[RelatedItemTypeFilter]] filters
 
-# no @derive(Json): member(s) relatedItems: list[SearchRelatedItemsResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relatedItems: list[SearchRelatedItemsResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRelatedItemsResponse:
     Optional[str] nextToken
     list[SearchRelatedItemsResponseItem] relatedItems
 
-# no @derive(Json): member(s) content: RelatedItemContent, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: RelatedItemContent, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRelatedItemsResponseItem:
     str relatedItemId
     RelatedItemType type
@@ -1055,8 +1106,9 @@ struct SearchRelatedItemsResponseItem:
     Optional[dict[str, str]] tags
     Optional[UserUnion] performedBy
 
-# no @derive(Json): member(s) fieldGroup: FieldGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldGroup: FieldGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Section:
     Optional[FieldGroup] fieldGroup
 
@@ -1064,8 +1116,9 @@ struct Section:
 struct ServiceQuotaExceededException:
     str message
 
-# no @derive(Json): member(s) targetFieldValues: list[FieldValueUnion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetFieldValues: list[FieldValueUnion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlaConfiguration:
     str name
     str type
@@ -1075,8 +1128,9 @@ struct SlaConfiguration:
     DateTime targetTime
     Optional[DateTime] completionTime
 
-# no @derive(Json): member(s) slaConfiguration: SlaConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slaConfiguration: SlaConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlaContent:
     SlaConfiguration slaConfiguration
 
@@ -1085,8 +1139,9 @@ struct SlaFilter:
     Optional[str] name
     Optional[SlaStatus] status
 
-# no @derive(Json): member(s) targetFieldValues: list[FieldValueUnion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetFieldValues: list[FieldValueUnion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlaInputConfiguration:
     str name
     str type
@@ -1094,8 +1149,9 @@ struct SlaInputConfiguration:
     Optional[list[FieldValueUnion]] targetFieldValues
     int64 targetSlaMinutes
 
-# no @derive(Json): member(s) slaInputConfiguration: SlaInputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slaInputConfiguration: SlaInputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlaInputContent:
     Optional[SlaInputConfiguration] slaInputConfiguration
 
@@ -1108,8 +1164,9 @@ struct Sort:
 struct TagFilter:
     Optional[TagValue] equalTo
 
-# no @derive(Json): member(s) tagMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagPropagationConfiguration:
     str resourceType
     dict[str, str] tagMap
@@ -1130,8 +1187,9 @@ struct TemplateRule:
     str caseRuleId
     Optional[str] fieldId
 
-# no @derive(Json): member(s) tagPropagationConfigurations: list[TagPropagationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagPropagationConfigurations: list[TagPropagationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateSummary:
     str templateId
     str templateArn
@@ -1216,8 +1274,9 @@ struct UpdateRelatedItemRequest:
     RelatedItemUpdateContent content
     Optional[UserUnion] performedBy
 
-# no @derive(Json): member(s) content: RelatedItemContent, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: RelatedItemContent, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRelatedItemResponse:
     str relatedItemId
     str relatedItemArn
@@ -1293,34 +1352,9 @@ def cases_error_from_code(str code) -> ConnectCasesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetCaseRule (document member `caseRules: list[CaseRuleIdentifier]` is not serializable by derive)
-#   BatchGetField (document member `fields: list[FieldIdentifier]` is not serializable by derive)
-#   BatchPutFieldOptions (document member `options: list[FieldOption]` is not serializable by derive)
-#   CreateCase (document member `fields: list[FieldValue]` is not serializable by derive)
-#   CreateCaseRule (document member `rule: CaseRuleDetails` is not serializable by derive)
-#   CreateLayout (document member `content: LayoutContent` is not serializable by derive)
-#   CreateRelatedItem (document member `content: RelatedItemInputContent` is not serializable by derive)
-#   CreateTemplate (document member `requiredFields: list[RequiredField]` is not serializable by derive)
-#   GetCase (document member `fields: list[FieldIdentifier]` is not serializable by derive)
 #   ListFieldOptions (httpQuery `values` has unsupported type list[str])
 #   ListTemplates (httpQuery `status` has unsupported type list[TemplateStatus])
-#   PutCaseEventConfiguration (document member `eventBridge: EventBridgeConfiguration` is not serializable by derive)
-#   SearchAllRelatedItems (document member `filters: list[RelatedItemTypeFilter]` is not serializable by derive)
-#   SearchCases (document member `filter: CaseFilter` is not serializable by derive)
-#   SearchRelatedItems (document member `filters: list[RelatedItemTypeFilter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateCase (document member `fields: list[FieldValue]` is not serializable by derive)
-#   UpdateCaseRule (document member `rule: CaseRuleDetails` is not serializable by derive)
-#   UpdateLayout (document member `content: LayoutContent` is not serializable by derive)
-#   UpdateRelatedItem (document member `content: RelatedItemUpdateContent` is not serializable by derive)
-#   UpdateTemplate (document member `requiredFields: list[RequiredField]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchAllRelatedItems (operation not generated)
-#   SearchCases (operation not generated)
-#   SearchRelatedItems (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1358,10 +1392,475 @@ struct UpdateFieldDocument:
     Optional[str] description
     Optional[FieldAttributes] attributes
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cases_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cases_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cases_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BasicLayout to a compact JSON object (declaration order).
+def basic_layout_to_json(BasicLayout v) -> str:
+    list[str] parts = []
+    if v.topPanel.is_some():
+        auto u0 = v.topPanel.unwrap()
+        parts.append("\"topPanel\":" + layout_sections_to_json(u0))
+    if v.moreInfo.is_some():
+        auto u1 = v.moreInfo.unwrap()
+        parts.append("\"moreInfo\":" + layout_sections_to_json(u1))
+    return cases_json_obj(parts)
+
+# Serialize BooleanCondition to a compact JSON object (declaration order).
+def boolean_condition_to_json(BooleanCondition v) -> str:
+    list[str] parts = []
+    if v.equalTo.is_some():
+        auto u0 = v.equalTo.unwrap()
+        parts.append("\"equalTo\":" + u0.to_json())
+    if v.notEqualTo.is_some():
+        auto u1 = v.notEqualTo.unwrap()
+        parts.append("\"notEqualTo\":" + u1.to_json())
+    if v.andAll.is_some():
+        auto u2 = v.andAll.unwrap()
+        parts.append("\"andAll\":" + compound_condition_to_json(u2))
+    if v.orAll.is_some():
+        auto u3 = v.orAll.unwrap()
+        parts.append("\"orAll\":" + compound_condition_to_json(u3))
+    return cases_json_obj(parts)
+
+# Serialize CaseEventIncludedData to a compact JSON object (declaration order).
+def case_event_included_data_to_json(CaseEventIncludedData v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize CaseFilter to a compact JSON object (declaration order).
+def case_filter_to_json(CaseFilter v) -> str:
+    list[str] parts = []
+    if v.field.is_some():
+        auto u0 = v.field.unwrap()
+        parts.append("\"field\":" + u0.to_json())
+    if v.not_.is_some():
+        auto u1 = v.not_.unwrap()
+        parts.append("\"not\":" + case_filter_to_json(u1))
+    if v.tag.is_some():
+        auto u2 = v.tag.unwrap()
+        parts.append("\"tag\":" + u2.to_json())
+    if v.andAll.is_some():
+        auto u3 = v.andAll.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(case_filter_to_json(x4))
+        parts.append("\"andAll\":" + cases_json_arr(e4))
+    if v.orAll.is_some():
+        auto u5 = v.orAll.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(case_filter_to_json(x6))
+        parts.append("\"orAll\":" + cases_json_arr(e6))
+    return cases_json_obj(parts)
+
+# Serialize CaseRuleDetails to a compact JSON object (declaration order).
+def case_rule_details_to_json(CaseRuleDetails v) -> str:
+    list[str] parts = []
+    if v.required.is_some():
+        auto u0 = v.required.unwrap()
+        parts.append("\"required\":" + required_case_rule_to_json(u0))
+    if v.fieldOptions.is_some():
+        auto u1 = v.fieldOptions.unwrap()
+        parts.append("\"fieldOptions\":" + field_options_case_rule_to_json(u1))
+    if v.hidden.is_some():
+        auto u2 = v.hidden.unwrap()
+        parts.append("\"hidden\":" + hidden_case_rule_to_json(u2))
+    return cases_json_obj(parts)
+
+# Serialize CompoundCondition to a compact JSON object (declaration order).
+def compound_condition_to_json(CompoundCondition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.conditions:
+        e0.append(boolean_condition_to_json(x0))
+    parts.append("\"conditions\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize ContactFilter to a compact JSON object (declaration order).
+def contact_filter_to_json(ContactFilter v) -> str:
+    list[str] parts = []
+    if v.channel_.is_some():
+        auto u0 = v.channel_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cases_json_str(x1))
+        parts.append("\"channel\":" + cases_json_arr(e1))
+    if v.contactArn.is_some():
+        auto u2 = v.contactArn.unwrap()
+        parts.append("\"contactArn\":" + cases_json_str(u2))
+    return cases_json_obj(parts)
+
+# Serialize CustomFieldsFilter to a compact JSON object (declaration order).
+def custom_fields_filter_to_json(CustomFieldsFilter v) -> str:
+    list[str] parts = []
+    if v.field.is_some():
+        auto u0 = v.field.unwrap()
+        parts.append("\"field\":" + u0.to_json())
+    if v.not_.is_some():
+        auto u1 = v.not_.unwrap()
+        parts.append("\"not\":" + custom_fields_filter_to_json(u1))
+    if v.andAll.is_some():
+        auto u2 = v.andAll.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(custom_fields_filter_to_json(x3))
+        parts.append("\"andAll\":" + cases_json_arr(e3))
+    if v.orAll.is_some():
+        auto u4 = v.orAll.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(custom_fields_filter_to_json(x5))
+        parts.append("\"orAll\":" + cases_json_arr(e5))
+    return cases_json_obj(parts)
+
+# Serialize CustomFilter to a compact JSON object (declaration order).
+def custom_filter_to_json(CustomFilter v) -> str:
+    list[str] parts = []
+    if v.fields.is_some():
+        auto u0 = v.fields.unwrap()
+        parts.append("\"fields\":" + custom_fields_filter_to_json(u0))
+    return cases_json_obj(parts)
+
+# Serialize CustomInputContent to a compact JSON object (declaration order).
+def custom_input_content_to_json(CustomInputContent v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize CustomUpdateContent to a compact JSON object (declaration order).
+def custom_update_content_to_json(CustomUpdateContent v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize EventBridgeConfiguration to a compact JSON object (declaration order).
+def event_bridge_configuration_to_json(EventBridgeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(v.enabled)))
+    if v.includedData.is_some():
+        auto u0 = v.includedData.unwrap()
+        parts.append("\"includedData\":" + event_included_data_to_json(u0))
+    return cases_json_obj(parts)
+
+# Serialize EventIncludedData to a compact JSON object (declaration order).
+def event_included_data_to_json(EventIncludedData v) -> str:
+    list[str] parts = []
+    if v.caseData.is_some():
+        auto u0 = v.caseData.unwrap()
+        parts.append("\"caseData\":" + case_event_included_data_to_json(u0))
+    if v.relatedItemData.is_some():
+        auto u1 = v.relatedItemData.unwrap()
+        parts.append("\"relatedItemData\":" + u1.to_json())
+    return cases_json_obj(parts)
+
+# Serialize FieldGroup to a compact JSON object (declaration order).
+def field_group_to_json(FieldGroup v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + cases_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.fields:
+        e1.append(x1.to_json())
+    parts.append("\"fields\":" + cases_json_arr(e1))
+    return cases_json_obj(parts)
+
+# Serialize FieldOptionsCaseRule to a compact JSON object (declaration order).
+def field_options_case_rule_to_json(FieldOptionsCaseRule v) -> str:
+    list[str] parts = []
+    if v.parentFieldId.is_some():
+        auto u0 = v.parentFieldId.unwrap()
+        parts.append("\"parentFieldId\":" + cases_json_str(u0))
+    if v.childFieldId.is_some():
+        auto u1 = v.childFieldId.unwrap()
+        parts.append("\"childFieldId\":" + cases_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.parentChildFieldOptionsMappings:
+        e2.append(parent_child_field_options_mapping_to_json(x2))
+    parts.append("\"parentChildFieldOptionsMappings\":" + cases_json_arr(e2))
+    return cases_json_obj(parts)
+
+# Serialize HiddenCaseRule to a compact JSON object (declaration order).
+def hidden_case_rule_to_json(HiddenCaseRule v) -> str:
+    list[str] parts = []
+    parts.append("\"defaultValue\":" + json.dumps(JsonValue.Bool(v.defaultValue)))
+    list[str] e0 = []
+    for x0 in v.conditions:
+        e0.append(boolean_condition_to_json(x0))
+    parts.append("\"conditions\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize LayoutContent to a compact JSON object (declaration order).
+def layout_content_to_json(LayoutContent v) -> str:
+    list[str] parts = []
+    if v.basic.is_some():
+        auto u0 = v.basic.unwrap()
+        parts.append("\"basic\":" + basic_layout_to_json(u0))
+    return cases_json_obj(parts)
+
+# Serialize LayoutSections to a compact JSON object (declaration order).
+def layout_sections_to_json(LayoutSections v) -> str:
+    list[str] parts = []
+    if v.sections.is_some():
+        auto u0 = v.sections.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(section_to_json(x1))
+        parts.append("\"sections\":" + cases_json_arr(e1))
+    return cases_json_obj(parts)
+
+# Serialize ParentChildFieldOptionsMapping to a compact JSON object (declaration order).
+def parent_child_field_options_mapping_to_json(ParentChildFieldOptionsMapping v) -> str:
+    list[str] parts = []
+    parts.append("\"parentFieldOptionValue\":" + cases_json_str(v.parentFieldOptionValue))
+    list[str] e0 = []
+    for x0 in v.childFieldOptionValues:
+        e0.append(cases_json_str(x0))
+    parts.append("\"childFieldOptionValues\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize RelatedItemInputContent to a compact JSON object (declaration order).
+def related_item_input_content_to_json(RelatedItemInputContent v) -> str:
+    list[str] parts = []
+    if v.contact.is_some():
+        auto u0 = v.contact.unwrap()
+        parts.append("\"contact\":" + u0.to_json())
+    if v.comment.is_some():
+        auto u1 = v.comment.unwrap()
+        parts.append("\"comment\":" + u1.to_json())
+    if v.file.is_some():
+        auto u2 = v.file.unwrap()
+        parts.append("\"file\":" + u2.to_json())
+    if v.sla.is_some():
+        auto u3 = v.sla.unwrap()
+        parts.append("\"sla\":" + sla_input_content_to_json(u3))
+    if v.connectCase.is_some():
+        auto u4 = v.connectCase.unwrap()
+        parts.append("\"connectCase\":" + u4.to_json())
+    if v.custom.is_some():
+        auto u5 = v.custom.unwrap()
+        parts.append("\"custom\":" + custom_input_content_to_json(u5))
+    return cases_json_obj(parts)
+
+# Serialize RelatedItemTypeFilter to a compact JSON object (declaration order).
+def related_item_type_filter_to_json(RelatedItemTypeFilter v) -> str:
+    list[str] parts = []
+    if v.contact.is_some():
+        auto u0 = v.contact.unwrap()
+        parts.append("\"contact\":" + contact_filter_to_json(u0))
+    if v.comment.is_some():
+        auto u1 = v.comment.unwrap()
+        parts.append("\"comment\":" + u1.to_json())
+    if v.file.is_some():
+        auto u2 = v.file.unwrap()
+        parts.append("\"file\":" + u2.to_json())
+    if v.sla.is_some():
+        auto u3 = v.sla.unwrap()
+        parts.append("\"sla\":" + u3.to_json())
+    if v.connectCase.is_some():
+        auto u4 = v.connectCase.unwrap()
+        parts.append("\"connectCase\":" + u4.to_json())
+    if v.custom.is_some():
+        auto u5 = v.custom.unwrap()
+        parts.append("\"custom\":" + custom_filter_to_json(u5))
+    return cases_json_obj(parts)
+
+# Serialize RelatedItemUpdateContent to a compact JSON object (declaration order).
+def related_item_update_content_to_json(RelatedItemUpdateContent v) -> str:
+    list[str] parts = []
+    if v.comment.is_some():
+        auto u0 = v.comment.unwrap()
+        parts.append("\"comment\":" + u0.to_json())
+    if v.custom.is_some():
+        auto u1 = v.custom.unwrap()
+        parts.append("\"custom\":" + custom_update_content_to_json(u1))
+    return cases_json_obj(parts)
+
+# Serialize RequiredCaseRule to a compact JSON object (declaration order).
+def required_case_rule_to_json(RequiredCaseRule v) -> str:
+    list[str] parts = []
+    parts.append("\"defaultValue\":" + json.dumps(JsonValue.Bool(v.defaultValue)))
+    list[str] e0 = []
+    for x0 in v.conditions:
+        e0.append(boolean_condition_to_json(x0))
+    parts.append("\"conditions\":" + cases_json_arr(e0))
+    return cases_json_obj(parts)
+
+# Serialize Section to a compact JSON object (declaration order).
+def section_to_json(Section v) -> str:
+    list[str] parts = []
+    if v.fieldGroup.is_some():
+        auto u0 = v.fieldGroup.unwrap()
+        parts.append("\"fieldGroup\":" + field_group_to_json(u0))
+    return cases_json_obj(parts)
+
+# Serialize SlaInputConfiguration to a compact JSON object (declaration order).
+def sla_input_configuration_to_json(SlaInputConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + cases_json_str(v.name))
+    parts.append("\"type\":" + cases_json_str(v.type))
+    if v.fieldId.is_some():
+        auto u0 = v.fieldId.unwrap()
+        parts.append("\"fieldId\":" + cases_json_str(u0))
+    if v.targetFieldValues.is_some():
+        auto u1 = v.targetFieldValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"targetFieldValues\":" + cases_json_arr(e2))
+    parts.append("\"targetSlaMinutes\":" + str(v.targetSlaMinutes))
+    return cases_json_obj(parts)
+
+# Serialize SlaInputContent to a compact JSON object (declaration order).
+def sla_input_content_to_json(SlaInputContent v) -> str:
+    list[str] parts = []
+    if v.slaInputConfiguration.is_some():
+        auto u0 = v.slaInputConfiguration.unwrap()
+        parts.append("\"slaInputConfiguration\":" + sla_input_configuration_to_json(u0))
+    return cases_json_obj(parts)
+
+# Serialize TagPropagationConfiguration to a compact JSON object (declaration order).
+def tag_propagation_configuration_to_json(TagPropagationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceType\":" + cases_json_str(v.resourceType))
+    list[str] m0 = []
+    for k0 in sorted(v.tagMap.keys()):
+        m0.append(cases_json_str(k0) + ":" + cases_json_str(v.tagMap[k0]))
+    parts.append("\"tagMap\":" + cases_json_obj(m0))
+    return cases_json_obj(parts)
+
 # A bound ConnectCases client: credentials + region, threaded into every operation.
 struct ConnectCasesClient:
     core.Credentials creds
     str region
+
+    # BatchGetCaseRule  POST /domains/{domainId}/rules-batch
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_case_rule(self, BatchGetCaseRuleRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/rules-batch", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.caseRules:
+            e0.append(x0.to_json())
+        parts.append("\"caseRules\":" + cases_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # BatchGetField  POST /domains/{domainId}/fields-batch
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_field(self, BatchGetFieldRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields-batch", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.fields:
+            e0.append(x0.to_json())
+        parts.append("\"fields\":" + cases_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # BatchPutFieldOptions  PUT /domains/{domainId}/fields/{fieldId}/options
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_put_field_options(self, BatchPutFieldOptionsRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["fieldId"] = input.fieldId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/fields/{fieldId}/options", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.options:
+            e0.append(x0.to_json())
+        parts.append("\"options\":" + cases_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # CreateCase  POST /domains/{domainId}/cases
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_case(self, CreateCaseRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"templateId\":" + cases_json_str(input.templateId))
+        list[str] e0 = []
+        for x0 in input.fields:
+            e0.append(x0.to_json())
+        parts.append("\"fields\":" + cases_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + cases_json_str(u1))
+        if input.performedBy.is_some():
+            auto u2 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(cases_json_str(k4) + ":" + cases_json_str(u3[k4]))
+            parts.append("\"tags\":" + cases_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # CreateCaseRule  POST /domains/{domainId}/case-rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_case_rule(self, CreateCaseRuleRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/case-rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cases_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cases_json_str(u0))
+        parts.append("\"rule\":" + case_rule_details_to_json(input.rule))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
     # CreateDomain  POST /domains
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -1381,6 +1880,75 @@ struct ConnectCasesClient:
         auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFieldDocument(name=input.name, type=input.type, description=input.description, attributes=input.attributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # CreateLayout  POST /domains/{domainId}/layouts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_layout(self, CreateLayoutRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cases_json_str(input.name))
+        parts.append("\"content\":" + layout_content_to_json(input.content))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # CreateRelatedItem  POST /domains/{domainId}/cases/{caseId}/related-items/
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_related_item(self, CreateRelatedItemRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseId"] = input.caseId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/related-items/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"content\":" + related_item_input_content_to_json(input.content))
+        if input.performedBy.is_some():
+            auto u0 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # CreateTemplate  POST /domains/{domainId}/templates
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_template(self, CreateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/templates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cases_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cases_json_str(u0))
+        if input.layoutConfiguration.is_some():
+            auto u1 = input.layoutConfiguration.unwrap()
+            parts.append("\"layoutConfiguration\":" + u1.to_json())
+        if input.requiredFields.is_some():
+            auto u2 = input.requiredFields.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"requiredFields\":" + cases_json_arr(e3))
+        if input.status.is_some():
+            auto u4 = input.status.unwrap()
+            parts.append("\"status\":" + u4.to_json())
+        if input.rules.is_some():
+            auto u5 = input.rules.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"rules\":" + cases_json_arr(e6))
+        if input.tagPropagationConfigurations.is_some():
+            auto u7 = input.tagPropagationConfigurations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(tag_propagation_configuration_to_json(x8))
+            parts.append("\"tagPropagationConfigurations\":" + cases_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
     # DeleteCase  DELETE /domains/{domainId}/cases/{caseId}
@@ -1452,6 +2020,25 @@ struct ConnectCasesClient:
         labels["templateId"] = input.templateId
         auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
+
+    # GetCase  POST /domains/{domainId}/cases/{caseId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_case(self, GetCaseRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["caseId"] = input.caseId
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.fields:
+            e0.append(x0.to_json())
+        parts.append("\"fields\":" + cases_json_arr(e0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + cases_json_str(u1))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
     # GetCaseAuditEvents  POST /domains/{domainId}/cases/{caseId}/audit-history
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1577,6 +2164,161 @@ struct ConnectCasesClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
+    # PutCaseEventConfiguration  PUT /domains/{domainId}/case-event-configuration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_case_event_configuration(self, PutCaseEventConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/case-event-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"eventBridge\":" + event_bridge_configuration_to_json(input.eventBridge))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # SearchAllRelatedItems  POST /domains/{domainId}/related-items-search
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_all_related_items(self, SearchAllRelatedItemsRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/related-items-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + cases_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(related_item_type_filter_to_json(x3))
+            parts.append("\"filters\":" + cases_json_arr(e3))
+        if input.sorts.is_some():
+            auto u4 = input.sorts.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"sorts\":" + cases_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # SearchCases  POST /domains/{domainId}/cases-search
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_cases(self, SearchCasesRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + cases_json_str(u1))
+        if input.searchTerm.is_some():
+            auto u2 = input.searchTerm.unwrap()
+            parts.append("\"searchTerm\":" + cases_json_str(u2))
+        if input.filter.is_some():
+            auto u3 = input.filter.unwrap()
+            parts.append("\"filter\":" + case_filter_to_json(u3))
+        if input.sorts.is_some():
+            auto u4 = input.sorts.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"sorts\":" + cases_json_arr(e5))
+        if input.fields.is_some():
+            auto u6 = input.fields.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"fields\":" + cases_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # SearchRelatedItems  POST /domains/{domainId}/cases/{caseId}/related-items-search
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_related_items(self, SearchRelatedItemsRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseId"] = input.caseId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/related-items-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + cases_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(related_item_type_filter_to_json(x3))
+            parts.append("\"filters\":" + cases_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # TagResource  POST /tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(cases_json_str(k0) + ":" + cases_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + cases_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # UpdateCase  PUT /domains/{domainId}/cases/{caseId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_case(self, UpdateCaseRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseId"] = input.caseId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.fields:
+            e0.append(x0.to_json())
+        parts.append("\"fields\":" + cases_json_arr(e0))
+        if input.performedBy.is_some():
+            auto u1 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # UpdateCaseRule  PUT /domains/{domainId}/case-rules/{caseRuleId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_case_rule(self, UpdateCaseRuleRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseRuleId"] = input.caseRuleId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/case-rules/{caseRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + cases_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + cases_json_str(u1))
+        if input.rule.is_some():
+            auto u2 = input.rule.unwrap()
+            parts.append("\"rule\":" + case_rule_details_to_json(u2))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
     # UpdateField  PUT /domains/{domainId}/fields/{fieldId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_field(self, UpdateFieldRequest input) -> str:
@@ -1589,12 +2331,128 @@ struct ConnectCasesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
+    # UpdateLayout  PUT /domains/{domainId}/layouts/{layoutId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_layout(self, UpdateLayoutRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["layoutId"] = input.layoutId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + cases_json_str(u0))
+        if input.content.is_some():
+            auto u1 = input.content.unwrap()
+            parts.append("\"content\":" + layout_content_to_json(u1))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # UpdateRelatedItem  PUT /domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_related_item(self, UpdateRelatedItemRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseId"] = input.caseId
+        labels["relatedItemId"] = input.relatedItemId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"content\":" + related_item_update_content_to_json(input.content))
+        if input.performedBy.is_some():
+            auto u0 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # UpdateTemplate  PUT /domains/{domainId}/templates/{templateId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_template(self, UpdateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["templateId"] = input.templateId
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + cases_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + cases_json_str(u1))
+        if input.layoutConfiguration.is_some():
+            auto u2 = input.layoutConfiguration.unwrap()
+            parts.append("\"layoutConfiguration\":" + u2.to_json())
+        if input.requiredFields.is_some():
+            auto u3 = input.requiredFields.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"requiredFields\":" + cases_json_arr(e4))
+        if input.status.is_some():
+            auto u5 = input.status.unwrap()
+            parts.append("\"status\":" + u5.to_json())
+        if input.rules.is_some():
+            auto u6 = input.rules.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"rules\":" + cases_json_arr(e7))
+        if input.tagPropagationConfigurations.is_some():
+            auto u8 = input.tagPropagationConfigurations.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(tag_propagation_configuration_to_json(x9))
+            parts.append("\"tagPropagationConfigurations\":" + cases_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
     # Paginator for ListCaseRules — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: caseRules).
     def paginate_list_case_rules(self, ListCaseRulesRequest input):
         auto host = endpoints.regional_host(cases_service(), self.region)
         while True:
             auto raw = self.list_case_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchAllRelatedItems — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: relatedItems).
+    def paginate_search_all_related_items(self, SearchAllRelatedItemsRequest input):
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        while True:
+            auto raw = self.search_all_related_items(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchCases — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: cases).
+    def paginate_search_cases(self, SearchCasesRequest input):
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        while True:
+            auto raw = self.search_cases(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchRelatedItems — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: relatedItems).
+    def paginate_search_related_items(self, SearchRelatedItemsRequest input):
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        while True:
+            auto raw = self.search_related_items(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

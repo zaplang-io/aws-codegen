@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 272 operations — 173 with a generated method,
-#   99 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 272 operations — 226 with a generated method,
+#   46 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   791 structs (553 @derive(Json)), 82 enums, 33 error variants.
 #   41 paginators generated (23 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -792,8 +792,9 @@ enum ViolationEventType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) criteriaList: list[AbortCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criteriaList: list[AbortCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AbortConfig:
     list[AbortCriteria] criteriaList
 
@@ -810,8 +811,9 @@ struct AcceptCertificateTransferRequest:
     str certificateId
     Optional[bool] setAsActive
 
-# no @derive(Json): member(s) republish: RepublishAction, iotSiteWise: IotSiteWiseAction, timestream: TimestreamAction, http: HttpAction, kafka: KafkaAction, influxDB: InfluxDBAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) republish: RepublishAction, iotSiteWise: IotSiteWiseAction, timestream: TimestreamAction, http: HttpAction, kafka: KafkaAction, influxDB: InfluxDBAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[DynamoDBAction] dynamoDB
     Optional[DynamoDBv2Action] dynamoDBv2
@@ -839,8 +841,9 @@ struct Action:
     Optional[LocationAction] location
     Optional[InfluxDBAction] influxDB
 
-# no @derive(Json): member(s) behavior: Behavior, lastViolationValue: MetricValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) behavior: Behavior, lastViolationValue: MetricValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActiveViolation:
     Optional[str] violationId
     Optional[str] thingName
@@ -880,14 +883,16 @@ struct AddThingToThingGroupResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) thingGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddThingsToThingGroupParams:
     list[str] thingGroupNames
     Optional[bool] overrideDynamicGroups
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationType:
     AggregationTypeName name
     Optional[list[str]] values
@@ -897,8 +902,9 @@ struct AlertTarget:
     str alertTargetArn
     str roleArn
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Allowed:
     Optional[list[Policy]] policies
 
@@ -985,14 +991,16 @@ struct AttachThingPrincipalResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributePayload:
     Optional[dict[str, str]] attributes
     Optional[bool] merge
 
-# no @derive(Json): member(s) configuration: dict[ConfigName, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[ConfigName, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditCheckConfiguration:
     Optional[bool] enabled
     Optional[dict[ConfigName, str]] configuration
@@ -1007,8 +1015,9 @@ struct AuditCheckDetails:
     Optional[str] errorCode
     Optional[str] message
 
-# no @derive(Json): member(s) nonCompliantResource: NonCompliantResource, relatedResources: list[RelatedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nonCompliantResource: NonCompliantResource, relatedResources: list[RelatedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditFinding:
     Optional[str] findingId
     Optional[str] taskId
@@ -1040,8 +1049,9 @@ struct AuditMitigationActionsTaskMetadata:
     Optional[DateTime] startTime
     Optional[AuditMitigationActionsTaskStatus] taskStatus
 
-# no @derive(Json): member(s) findingIds: list[str], auditCheckToReasonCodeFilter: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingIds: list[str], auditCheckToReasonCodeFilter: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditMitigationActionsTaskTarget:
     Optional[str] auditTaskId
     Optional[list[str]] findingIds
@@ -1067,14 +1077,16 @@ struct AuditTaskMetadata:
     Optional[AuditTaskStatus] taskStatus
     Optional[AuditTaskType] taskType
 
-# no @derive(Json): member(s) resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthInfo:
     Optional[ActionType] actionType
     list[str] resources
 
-# no @derive(Json): member(s) authInfo: AuthInfo, allowed: Allowed, denied: Denied, missingContextValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authInfo: AuthInfo, allowed: Allowed, denied: Denied, missingContextValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthResult:
     Optional[AuthInfo] authInfo
     Optional[Allowed] allowed
@@ -1087,8 +1099,9 @@ struct AuthorizerConfig:
     Optional[str] defaultAuthorizerName
     Optional[bool] allowAuthorizerOverride
 
-# no @derive(Json): member(s) tokenSigningPublicKeys: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenSigningPublicKeys: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizerDescription:
     Optional[str] authorizerName
     Optional[str] authorizerArn
@@ -1106,8 +1119,9 @@ struct AuthorizerSummary:
     Optional[str] authorizerName
     Optional[str] authorizerArn
 
-# no @derive(Json): member(s) abortCriteriaList: list[AwsJobAbortCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) abortCriteriaList: list[AwsJobAbortCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsJobAbortConfig:
     list[AwsJobAbortCriteria] abortCriteriaList
 
@@ -1153,8 +1167,9 @@ struct BatchConfig:
     Optional[int64] maxBatchSizeBytes
     Optional[bool] batchAcrossTopics
 
-# no @derive(Json): member(s) criteria: BehaviorCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criteria: BehaviorCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Behavior:
     str name
     Optional[str] metric
@@ -1163,8 +1178,9 @@ struct Behavior:
     Optional[bool] suppressAlerts
     Optional[bool] exportMetric
 
-# no @derive(Json): member(s) value: MetricValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: MetricValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BehaviorCriteria:
     Optional[ComparisonOperator] comparisonOperator
     Optional[MetricValue] value
@@ -1395,8 +1411,9 @@ struct CommandExecutionSummary:
     Optional[DateTime] startedAt
     Optional[DateTime] completedAt
 
-# no @derive(Json): member(s) valueConditions: list[CommandParameterValueCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueConditions: list[CommandParameterValueCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommandParameter:
     str name
     Optional[CommandParameterType] type
@@ -1415,8 +1432,9 @@ struct CommandParameterValue:
     Optional[bytes] BIN
     Optional[str] UL
 
-# no @derive(Json): member(s) numbers: list[str], strings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) numbers: list[str], strings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommandParameterValueComparisonOperand:
     Optional[str] number
     Optional[list[str]] numbers
@@ -1424,8 +1442,9 @@ struct CommandParameterValueComparisonOperand:
     Optional[list[str]] strings
     Optional[CommandParameterValueNumberRange] numberRange
 
-# no @derive(Json): member(s) operand: CommandParameterValueComparisonOperand not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operand: CommandParameterValueComparisonOperand not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommandParameterValueCondition:
     CommandParameterValueComparisonOperator comparisonOperator
     CommandParameterValueComparisonOperand operand
@@ -1483,8 +1502,9 @@ struct ConflictException:
 struct ConflictingResourceUpdateException:
     Optional[str] message
 
-# no @derive(Json): member(s) includeSocketInformation: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includeSocketInformation: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectivityFilter:
     Optional[list[str]] includeSocketInformation
 
@@ -1790,8 +1810,9 @@ struct CreatePackageVersionRequest:
     Optional[dict[str, str]] tags
     Optional[str] clientToken
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePackageVersionResponse:
     Optional[str] packageVersionArn
     Optional[str] packageName
@@ -1979,8 +2000,9 @@ struct CreateThingTypeResponse:
 struct CreateTopicRuleDestinationRequest:
     TopicRuleDestinationConfiguration destinationConfiguration
 
-# no @derive(Json): member(s) topicRuleDestination: TopicRuleDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topicRuleDestination: TopicRuleDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTopicRuleDestinationResponse:
     Optional[TopicRuleDestination] topicRuleDestination
 
@@ -2341,8 +2363,9 @@ struct DeleteV2LoggingLevelRequest:
     str targetType
     str targetName
 
-# no @derive(Json): member(s) implicitDeny: ImplicitDeny, explicitDeny: ExplicitDeny not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) implicitDeny: ImplicitDeny, explicitDeny: ExplicitDeny not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Denied:
     Optional[ImplicitDeny] implicitDeny
     Optional[ExplicitDeny] explicitDeny
@@ -2364,8 +2387,9 @@ struct DescribeAccountAuditConfigurationRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) auditNotificationTargetConfigurations: dict[str, AuditNotificationTarget], auditCheckConfigurations: dict[str, AuditCheckConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) auditNotificationTargetConfigurations: dict[str, AuditNotificationTarget], auditCheckConfigurations: dict[str, AuditCheckConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountAuditConfigurationResponse:
     Optional[str] roleArn
     Optional[dict[str, AuditNotificationTarget]] auditNotificationTargetConfigurations
@@ -2376,8 +2400,9 @@ struct DescribeAccountAuditConfigurationResponse:
 struct DescribeAuditFindingRequest:
     str findingId
 
-# no @derive(Json): member(s) finding: AuditFinding not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) finding: AuditFinding not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAuditFindingResponse:
     Optional[AuditFinding] finding
 
@@ -2386,8 +2411,9 @@ struct DescribeAuditFindingResponse:
 struct DescribeAuditMitigationActionsTaskRequest:
     str taskId
 
-# no @derive(Json): member(s) taskStatistics: dict[str, TaskStatisticsForAuditCheck], target: AuditMitigationActionsTaskTarget, auditCheckToActionsMapping: dict[str, list[str]], actionsDefinition: list[MitigationAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskStatistics: dict[str, TaskStatisticsForAuditCheck], target: AuditMitigationActionsTaskTarget, auditCheckToActionsMapping: dict[str, list[str]], actionsDefinition: list[MitigationAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAuditMitigationActionsTaskResponse:
     Optional[AuditMitigationActionsTaskStatus] taskStatus
     Optional[DateTime] startTime
@@ -2416,8 +2442,9 @@ struct DescribeAuditSuppressionResponse:
 struct DescribeAuditTaskRequest:
     str taskId
 
-# no @derive(Json): member(s) auditDetails: dict[str, AuditCheckDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) auditDetails: dict[str, AuditCheckDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAuditTaskResponse:
     Optional[AuditTaskStatus] taskStatus
     Optional[AuditTaskType] taskType
@@ -2431,8 +2458,9 @@ struct DescribeAuditTaskResponse:
 struct DescribeAuthorizerRequest:
     str authorizerName
 
-# no @derive(Json): member(s) authorizerDescription: AuthorizerDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerDescription: AuthorizerDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAuthorizerResponse:
     Optional[AuthorizerDescription] authorizerDescription
 
@@ -2465,8 +2493,9 @@ struct DescribeCACertificateResponse:
 struct DescribeCertificateProviderRequest:
     str certificateProviderName
 
-# no @derive(Json): member(s) accountDefaultForOperations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountDefaultForOperations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCertificateProviderResponse:
     Optional[str] certificateProviderName
     Optional[str] certificateProviderArn
@@ -2504,8 +2533,9 @@ struct DescribeDefaultAuthorizerRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) authorizerDescription: AuthorizerDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerDescription: AuthorizerDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDefaultAuthorizerResponse:
     Optional[AuthorizerDescription] authorizerDescription
 
@@ -2514,8 +2544,9 @@ struct DescribeDefaultAuthorizerResponse:
 struct DescribeDetectMitigationActionsTaskRequest:
     str taskId
 
-# no @derive(Json): member(s) taskSummary: DetectMitigationActionsTaskSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSummary: DetectMitigationActionsTaskSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDetectMitigationActionsTaskResponse:
     Optional[DetectMitigationActionsTaskSummary] taskSummary
 
@@ -2524,8 +2555,9 @@ struct DescribeDetectMitigationActionsTaskResponse:
 struct DescribeDimensionRequest:
     str name
 
-# no @derive(Json): member(s) stringValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDimensionResponse:
     Optional[str] name
     Optional[str] arn
@@ -2539,8 +2571,9 @@ struct DescribeDimensionResponse:
 struct DescribeDomainConfigurationRequest:
     str domainConfigurationName
 
-# no @derive(Json): member(s) serverCertificates: list[ServerCertificateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serverCertificates: list[ServerCertificateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDomainConfigurationResponse:
     Optional[str] domainConfigurationName
     Optional[str] domainConfigurationArn
@@ -2586,8 +2619,9 @@ struct DescribeEventConfigurationsRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) eventConfigurations: dict[EventType, Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventConfigurations: dict[EventType, Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventConfigurationsResponse:
     Optional[dict[EventType, Configuration]] eventConfigurations
     Optional[DateTime] creationDate
@@ -2598,8 +2632,9 @@ struct DescribeEventConfigurationsResponse:
 struct DescribeFleetMetricRequest:
     str metricName
 
-# no @derive(Json): member(s) aggregationType: AggregationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregationType: AggregationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetMetricResponse:
     Optional[str] metricName
     Optional[str] queryString
@@ -2633,8 +2668,9 @@ struct DescribeJobExecutionRequest:
     str thingName
     Optional[int64] executionNumber
 
-# no @derive(Json): member(s) execution: JobExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) execution: JobExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobExecutionResponse:
     Optional[JobExecution] execution
 
@@ -2644,8 +2680,9 @@ struct DescribeJobRequest:
     str jobId
     Optional[bool] beforeSubstitution
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobResponse:
     Optional[str] documentSource
     Optional[Job] job
@@ -2655,8 +2692,9 @@ struct DescribeJobResponse:
 struct DescribeJobTemplateRequest:
     str jobTemplateId
 
-# no @derive(Json): member(s) abortConfig: AbortConfig, jobExecutionsRetryConfig: JobExecutionsRetryConfig, maintenanceWindows: list[MaintenanceWindow], destinationPackageVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) abortConfig: AbortConfig, jobExecutionsRetryConfig: JobExecutionsRetryConfig, maintenanceWindows: list[MaintenanceWindow], destinationPackageVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobTemplateResponse:
     Optional[str] jobTemplateArn
     Optional[str] jobTemplateId
@@ -2678,8 +2716,9 @@ struct DescribeManagedJobTemplateRequest:
     str templateName
     Optional[str] templateVersion
 
-# no @derive(Json): member(s) environments: list[str], documentParameters: list[DocumentParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environments: list[str], documentParameters: list[DocumentParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeManagedJobTemplateResponse:
     Optional[str] templateName
     Optional[str] templateArn
@@ -2694,8 +2733,9 @@ struct DescribeManagedJobTemplateResponse:
 struct DescribeMitigationActionRequest:
     str actionName
 
-# no @derive(Json): member(s) actionParams: MitigationActionParams not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionParams: MitigationActionParams not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMitigationActionResponse:
     Optional[str] actionName
     Optional[MitigationActionType] actionType
@@ -2752,8 +2792,9 @@ struct DescribeRoleAliasResponse:
 struct DescribeScheduledAuditRequest:
     str scheduledAuditName
 
-# no @derive(Json): member(s) targetCheckNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetCheckNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScheduledAuditResponse:
     Optional[AuditFrequency] frequency
     Optional[str] dayOfMonth
@@ -2767,8 +2808,9 @@ struct DescribeScheduledAuditResponse:
 struct DescribeSecurityProfileRequest:
     str securityProfileName
 
-# no @derive(Json): member(s) behaviors: list[Behavior], alertTargets: dict[str, AlertTarget], additionalMetricsToRetain: list[str], additionalMetricsToRetainV2: list[MetricToRetain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) behaviors: list[Behavior], alertTargets: dict[str, AlertTarget], additionalMetricsToRetain: list[str], additionalMetricsToRetainV2: list[MetricToRetain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSecurityProfileResponse:
     Optional[str] securityProfileName
     Optional[str] securityProfileArn
@@ -2787,8 +2829,9 @@ struct DescribeSecurityProfileResponse:
 struct DescribeStreamRequest:
     str streamId
 
-# no @derive(Json): member(s) streamInfo: StreamInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamInfo: StreamInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStreamResponse:
     Optional[StreamInfo] streamInfo
 
@@ -2797,8 +2840,9 @@ struct DescribeStreamResponse:
 struct DescribeThingGroupRequest:
     str thingGroupName
 
-# no @derive(Json): member(s) thingGroupProperties: ThingGroupProperties, thingGroupMetadata: ThingGroupMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingGroupProperties: ThingGroupProperties, thingGroupMetadata: ThingGroupMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThingGroupResponse:
     Optional[str] thingGroupName
     Optional[str] thingGroupId
@@ -2836,8 +2880,9 @@ struct DescribeThingRegistrationTaskResponse:
 struct DescribeThingRequest:
     str thingName
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThingResponse:
     Optional[str] defaultClientId
     Optional[str] thingName
@@ -2853,8 +2898,9 @@ struct DescribeThingResponse:
 struct DescribeThingTypeRequest:
     str thingTypeName
 
-# no @derive(Json): member(s) thingTypeProperties: ThingTypeProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingTypeProperties: ThingTypeProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThingTypeResponse:
     Optional[str] thingTypeName
     Optional[str] thingTypeId
@@ -2918,8 +2964,9 @@ struct DetectMitigationActionsTaskStatistics:
     Optional[int64] actionsSkipped
     Optional[int64] actionsFailed
 
-# no @derive(Json): member(s) target: DetectMitigationActionsTaskTarget, actionsDefinition: list[MitigationAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) target: DetectMitigationActionsTaskTarget, actionsDefinition: list[MitigationAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectMitigationActionsTaskSummary:
     Optional[str] taskId
     Optional[DetectMitigationActionsTaskStatus] taskStatus
@@ -2932,8 +2979,9 @@ struct DetectMitigationActionsTaskSummary:
     Optional[list[MitigationAction]] actionsDefinition
     Optional[DetectMitigationActionsTaskStatistics] taskStatistics
 
-# no @derive(Json): member(s) violationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) violationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectMitigationActionsTaskTarget:
     Optional[list[str]] violationIds
     Optional[str] securityProfileName
@@ -3017,8 +3065,9 @@ struct ErrorInfo:
     Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExplicitDeny:
     Optional[list[Policy]] policies
 
@@ -3062,8 +3111,9 @@ struct GetBehaviorModelTrainingSummariesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) summaries: list[BehaviorModelTrainingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[BehaviorModelTrainingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBehaviorModelTrainingSummariesResponse:
     Optional[list[BehaviorModelTrainingSummary]] summaries
     Optional[str] nextToken
@@ -3077,8 +3127,9 @@ struct GetBucketsAggregationRequest:
     Optional[str] queryVersion
     BucketsAggregationType bucketsAggregationType
 
-# no @derive(Json): member(s) buckets: list[Bucket] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buckets: list[Bucket] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBucketsAggregationResponse:
     Optional[int64] totalCount
     Optional[list[Bucket]] buckets
@@ -3102,8 +3153,9 @@ struct GetCommandExecutionRequest:
     str targetArn
     Optional[bool] includeResult
 
-# no @derive(Json): member(s) result: dict[str, CommandExecutionResult], parameters: dict[str, CommandParameterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) result: dict[str, CommandExecutionResult], parameters: dict[str, CommandParameterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommandExecutionResponse:
     Optional[str] executionId
     Optional[str] commandArn
@@ -3124,8 +3176,9 @@ struct GetCommandExecutionResponse:
 struct GetCommandRequest:
     str commandId
 
-# no @derive(Json): member(s) mandatoryParameters: list[CommandParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mandatoryParameters: list[CommandParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommandResponse:
     Optional[str] commandId
     Optional[str] commandArn
@@ -3149,8 +3202,9 @@ struct GetEffectivePoliciesRequest:
     Optional[str] cognitoIdentityPoolId
     Optional[str] thingName
 
-# no @derive(Json): member(s) effectivePolicies: list[EffectivePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) effectivePolicies: list[EffectivePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEffectivePoliciesResponse:
     Optional[list[EffectivePolicy]] effectivePolicies
 
@@ -3160,8 +3214,9 @@ struct GetIndexingConfigurationRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) thingIndexingConfiguration: ThingIndexingConfiguration, thingGroupIndexingConfiguration: ThingGroupIndexingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingIndexingConfiguration: ThingIndexingConfiguration, thingGroupIndexingConfiguration: ThingGroupIndexingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIndexingConfigurationResponse:
     Optional[ThingIndexingConfiguration] thingIndexingConfiguration
     Optional[ThingGroupIndexingConfiguration] thingGroupIndexingConfiguration
@@ -3192,8 +3247,9 @@ struct GetLoggingOptionsResponse:
 struct GetOTAUpdateRequest:
     str otaUpdateId
 
-# no @derive(Json): member(s) otaUpdateInfo: OTAUpdateInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) otaUpdateInfo: OTAUpdateInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOTAUpdateResponse:
     Optional[OTAUpdateInfo] otaUpdateInfo
 
@@ -3227,8 +3283,9 @@ struct GetPackageVersionRequest:
     str packageName
     str versionName
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPackageVersionResponse:
     Optional[str] packageVersionArn
     Optional[str] packageName
@@ -3253,8 +3310,9 @@ struct GetPercentilesRequest:
     Optional[str] queryVersion
     Optional[list[float64]] percents
 
-# no @derive(Json): member(s) percentiles: list[PercentPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) percentiles: list[PercentPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPercentilesResponse:
     Optional[list[PercentPair]] percentiles
 
@@ -3339,8 +3397,9 @@ struct GetThingConnectivityDataResponse:
 struct GetTopicRuleDestinationRequest:
     str arn
 
-# no @derive(Json): member(s) topicRuleDestination: TopicRuleDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topicRuleDestination: TopicRuleDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTopicRuleDestinationResponse:
     Optional[TopicRuleDestination] topicRuleDestination
 
@@ -3349,8 +3408,9 @@ struct GetTopicRuleDestinationResponse:
 struct GetTopicRuleRequest:
     str ruleName
 
-# no @derive(Json): member(s) rule: TopicRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rule: TopicRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTopicRuleResponse:
     Optional[str] ruleArn
     Optional[TopicRule] rule
@@ -3360,8 +3420,9 @@ struct GetTopicRuleResponse:
 struct GetV2LoggingOptionsRequest:
     Optional[bool] verbose
 
-# no @derive(Json): member(s) eventConfigurations: list[LogEventConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventConfigurations: list[LogEventConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetV2LoggingOptionsResponse:
     Optional[str] roleArn
     Optional[LogLevel] defaultLogLevel
@@ -3373,8 +3434,9 @@ struct GroupNameAndArn:
     Optional[str] groupName
     Optional[str] groupArn
 
-# no @derive(Json): member(s) headers: list[HttpActionHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: list[HttpActionHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpAction:
     str url
     Optional[str] confirmationUrl
@@ -3392,8 +3454,9 @@ struct HttpActionHeader:
 struct HttpAuthorization:
     Optional[SigV4Authorization] sigv4
 
-# no @derive(Json): member(s) headers: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpContext:
     Optional[dict[str, str]] headers
     Optional[str] queryString
@@ -3410,8 +3473,9 @@ struct HttpUrlDestinationProperties:
 struct HttpUrlDestinationSummary:
     Optional[str] confirmationUrl
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImplicitDeny:
     Optional[list[Policy]] policies
 
@@ -3419,15 +3483,17 @@ struct ImplicitDeny:
 struct IndexNotReadyException:
     Optional[str] message
 
-# no @derive(Json): member(s) namedShadowNames: list[str], geoLocations: list[GeoLocationTarget], connectivity: ConnectivityFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namedShadowNames: list[str], geoLocations: list[GeoLocationTarget], connectivity: ConnectivityFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IndexingFilter:
     Optional[list[str]] namedShadowNames
     Optional[list[GeoLocationTarget]] geoLocations
     Optional[ConnectivityFilter] connectivity
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InfluxDBAction:
     str destinationArn
     str roleArn
@@ -3515,8 +3581,9 @@ struct IotEventsAction:
     Optional[bool] batchMode
     str roleArn
 
-# no @derive(Json): member(s) putAssetPropertyValueEntries: list[PutAssetPropertyValueEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) putAssetPropertyValueEntries: list[PutAssetPropertyValueEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IotSiteWiseAction:
     list[PutAssetPropertyValueEntry] putAssetPropertyValueEntries
     str roleArn
@@ -3527,8 +3594,9 @@ struct IssuerCertificateIdentifier:
     Optional[str] issuerId
     Optional[str] issuerCertificateSerialNumber
 
-# no @derive(Json): member(s) targets: list[str], abortConfig: AbortConfig, jobProcessDetails: JobProcessDetails, jobExecutionsRetryConfig: JobExecutionsRetryConfig, documentParameters: dict[str, str], schedulingConfig: SchedulingConfig, scheduledJobRollouts: list[ScheduledJobRollout], destinationPackageVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[str], abortConfig: AbortConfig, jobProcessDetails: JobProcessDetails, jobExecutionsRetryConfig: JobExecutionsRetryConfig, documentParameters: dict[str, str], schedulingConfig: SchedulingConfig, scheduledJobRollouts: list[ScheduledJobRollout], destinationPackageVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[str] jobArn
     Optional[str] jobId
@@ -3556,8 +3624,9 @@ struct Job:
     Optional[list[ScheduledJobRollout]] scheduledJobRollouts
     Optional[list[str]] destinationPackageVersions
 
-# no @derive(Json): member(s) statusDetails: JobExecutionStatusDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusDetails: JobExecutionStatusDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobExecution:
     Optional[str] jobId
     Optional[JobExecutionStatus] status
@@ -3571,8 +3640,9 @@ struct JobExecution:
     Optional[int64] versionNumber
     Optional[int64] approximateSecondsBeforeTimedOut
 
-# no @derive(Json): member(s) detailsMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detailsMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobExecutionStatusDetails:
     Optional[dict[str, str]] detailsMap
 
@@ -3595,8 +3665,9 @@ struct JobExecutionSummaryForThing:
     Optional[str] jobId
     Optional[JobExecutionSummary] jobExecutionSummary
 
-# no @derive(Json): member(s) criteriaList: list[RetryCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criteriaList: list[RetryCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobExecutionsRetryConfig:
     list[RetryCriteria] criteriaList
 
@@ -3605,8 +3676,9 @@ struct JobExecutionsRolloutConfig:
     Optional[int64] maximumPerMinute
     Optional[ExponentialRolloutRate] exponentialRate
 
-# no @derive(Json): member(s) processingTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) processingTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobProcessDetails:
     Optional[list[str]] processingTargets
     Optional[int64] numberOfCanceledThings
@@ -3637,8 +3709,9 @@ struct JobTemplateSummary:
     Optional[str] description
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) clientProperties: dict[str, str], headers: list[KafkaActionHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientProperties: dict[str, str], headers: list[KafkaActionHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaAction:
     str destinationArn
     str topic
@@ -3684,8 +3757,9 @@ struct ListActiveViolationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) activeViolations: list[ActiveViolation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) activeViolations: list[ActiveViolation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActiveViolationsResponse:
     Optional[list[ActiveViolation]] activeViolations
     Optional[str] nextToken
@@ -3698,8 +3772,9 @@ struct ListAttachedPoliciesRequest:
     Optional[str] marker
     Optional[int64] pageSize
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachedPoliciesResponse:
     Optional[list[Policy]] policies
     Optional[str] nextMarker
@@ -3716,8 +3791,9 @@ struct ListAuditFindingsRequest:
     Optional[DateTime] endTime
     Optional[bool] listSuppressedFindings
 
-# no @derive(Json): member(s) findings: list[AuditFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[AuditFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuditFindingsResponse:
     Optional[list[AuditFinding]] findings
     Optional[str] nextToken
@@ -3732,8 +3808,9 @@ struct ListAuditMitigationActionsExecutionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actionsExecutions: list[AuditMitigationActionExecutionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionsExecutions: list[AuditMitigationActionExecutionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuditMitigationActionsExecutionsResponse:
     Optional[list[AuditMitigationActionExecutionMetadata]] actionsExecutions
     Optional[str] nextToken
@@ -3750,8 +3827,9 @@ struct ListAuditMitigationActionsTasksRequest:
     DateTime startTime
     DateTime endTime
 
-# no @derive(Json): member(s) tasks: list[AuditMitigationActionsTaskMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[AuditMitigationActionsTaskMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuditMitigationActionsTasksResponse:
     Optional[list[AuditMitigationActionsTaskMetadata]] tasks
     Optional[str] nextToken
@@ -3765,8 +3843,9 @@ struct ListAuditSuppressionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) suppressions: list[AuditSuppression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suppressions: list[AuditSuppression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuditSuppressionsResponse:
     Optional[list[AuditSuppression]] suppressions
     Optional[str] nextToken
@@ -3783,8 +3862,9 @@ struct ListAuditTasksRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tasks: list[AuditTaskMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[AuditTaskMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuditTasksResponse:
     Optional[list[AuditTaskMetadata]] tasks
     Optional[str] nextToken
@@ -3798,8 +3878,9 @@ struct ListAuthorizersRequest:
     # wire string of the AuthorizerStatus enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) authorizers: list[AuthorizerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizers: list[AuthorizerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuthorizersResponse:
     Optional[list[AuthorizerSummary]] authorizers
     Optional[str] nextMarker
@@ -3811,8 +3892,9 @@ struct ListBillingGroupsRequest:
     Optional[int64] maxResults
     Optional[str] namePrefixFilter
 
-# no @derive(Json): member(s) billingGroups: list[GroupNameAndArn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) billingGroups: list[GroupNameAndArn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingGroupsResponse:
     Optional[list[GroupNameAndArn]] billingGroups
     Optional[str] nextToken
@@ -3825,8 +3907,9 @@ struct ListCACertificatesRequest:
     Optional[bool] ascendingOrder
     Optional[str] templateName
 
-# no @derive(Json): member(s) certificates: list[CACertificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificates: list[CACertificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCACertificatesResponse:
     Optional[list[CACertificate]] certificates
     Optional[str] nextMarker
@@ -3837,8 +3920,9 @@ struct ListCertificateProvidersRequest:
     Optional[str] nextToken
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) certificateProviders: list[CertificateProviderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateProviders: list[CertificateProviderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificateProvidersResponse:
     Optional[list[CertificateProviderSummary]] certificateProviders
     Optional[str] nextToken
@@ -3851,8 +3935,9 @@ struct ListCertificatesByCARequest:
     Optional[str] marker
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) certificates: list[Certificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificates: list[Certificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificatesByCAResponse:
     Optional[list[Certificate]] certificates
     Optional[str] nextMarker
@@ -3864,8 +3949,9 @@ struct ListCertificatesRequest:
     Optional[str] marker
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) certificates: list[Certificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificates: list[Certificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificatesResponse:
     Optional[list[Certificate]] certificates
     Optional[str] nextMarker
@@ -3883,8 +3969,9 @@ struct ListCommandExecutionsRequest:
     Optional[str] targetArn
     Optional[str] commandArn
 
-# no @derive(Json): member(s) commandExecutions: list[CommandExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commandExecutions: list[CommandExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandExecutionsResponse:
     Optional[list[CommandExecutionSummary]] commandExecutions
     Optional[str] nextToken
@@ -3900,8 +3987,9 @@ struct ListCommandsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) commands: list[CommandSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commands: list[CommandSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandsResponse:
     Optional[list[CommandSummary]] commands
     Optional[str] nextToken
@@ -3912,8 +4000,9 @@ struct ListCustomMetricsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) metricNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomMetricsResponse:
     Optional[list[str]] metricNames
     Optional[str] nextToken
@@ -3929,8 +4018,9 @@ struct ListDetectMitigationActionsExecutionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actionsExecutions: list[DetectMitigationActionExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionsExecutions: list[DetectMitigationActionExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDetectMitigationActionsExecutionsResponse:
     Optional[list[DetectMitigationActionExecution]] actionsExecutions
     Optional[str] nextToken
@@ -3943,8 +4033,9 @@ struct ListDetectMitigationActionsTasksRequest:
     DateTime startTime
     DateTime endTime
 
-# no @derive(Json): member(s) tasks: list[DetectMitigationActionsTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[DetectMitigationActionsTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDetectMitigationActionsTasksResponse:
     Optional[list[DetectMitigationActionsTaskSummary]] tasks
     Optional[str] nextToken
@@ -3955,8 +4046,9 @@ struct ListDimensionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dimensionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDimensionsResponse:
     Optional[list[str]] dimensionNames
     Optional[str] nextToken
@@ -3969,8 +4061,9 @@ struct ListDomainConfigurationsRequest:
     # wire string of the ServiceType enum (querystring binding)
     Optional[str] serviceType
 
-# no @derive(Json): member(s) domainConfigurations: list[DomainConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainConfigurations: list[DomainConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainConfigurationsResponse:
     Optional[list[DomainConfigurationSummary]] domainConfigurations
     Optional[str] nextMarker
@@ -3981,8 +4074,9 @@ struct ListFleetMetricsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) fleetMetrics: list[FleetMetricNameAndArn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleetMetrics: list[FleetMetricNameAndArn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFleetMetricsResponse:
     Optional[list[FleetMetricNameAndArn]] fleetMetrics
     Optional[str] nextToken
@@ -3993,8 +4087,9 @@ struct ListIndicesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) indexNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) indexNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndicesResponse:
     Optional[list[str]] indexNames
     Optional[str] nextToken
@@ -4008,8 +4103,9 @@ struct ListJobExecutionsForJobRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) executionSummaries: list[JobExecutionSummaryForJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionSummaries: list[JobExecutionSummaryForJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobExecutionsForJobResponse:
     Optional[list[JobExecutionSummaryForJob]] executionSummaries
     Optional[str] nextToken
@@ -4025,8 +4121,9 @@ struct ListJobExecutionsForThingRequest:
     Optional[str] nextToken
     Optional[str] jobId
 
-# no @derive(Json): member(s) executionSummaries: list[JobExecutionSummaryForThing] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionSummaries: list[JobExecutionSummaryForThing] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobExecutionsForThingResponse:
     Optional[list[JobExecutionSummaryForThing]] executionSummaries
     Optional[str] nextToken
@@ -4037,8 +4134,9 @@ struct ListJobTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobTemplates: list[JobTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobTemplates: list[JobTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobTemplatesResponse:
     Optional[list[JobTemplateSummary]] jobTemplates
     Optional[str] nextToken
@@ -4056,8 +4154,9 @@ struct ListJobsRequest:
     Optional[str] thingGroupId
     Optional[str] namespaceId
 
-# no @derive(Json): member(s) jobs: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     Optional[list[JobSummary]] jobs
     Optional[str] nextToken
@@ -4069,8 +4168,9 @@ struct ListManagedJobTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) managedJobTemplates: list[ManagedJobTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedJobTemplates: list[ManagedJobTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedJobTemplatesResponse:
     Optional[list[ManagedJobTemplateSummary]] managedJobTemplates
     Optional[str] nextToken
@@ -4088,8 +4188,9 @@ struct ListMetricValuesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) metricDatumList: list[MetricDatum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricDatumList: list[MetricDatum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetricValuesResponse:
     Optional[list[MetricDatum]] metricDatumList
     Optional[str] nextToken
@@ -4102,8 +4203,9 @@ struct ListMitigationActionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actionIdentifiers: list[MitigationActionIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionIdentifiers: list[MitigationActionIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMitigationActionsResponse:
     Optional[list[MitigationActionIdentifier]] actionIdentifiers
     Optional[str] nextToken
@@ -4116,8 +4218,9 @@ struct ListOTAUpdatesRequest:
     # wire string of the OTAUpdateStatus enum (querystring binding)
     Optional[str] otaUpdateStatus
 
-# no @derive(Json): member(s) otaUpdates: list[OTAUpdateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) otaUpdates: list[OTAUpdateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOTAUpdatesResponse:
     Optional[list[OTAUpdateSummary]] otaUpdates
     Optional[str] nextToken
@@ -4129,8 +4232,9 @@ struct ListOutgoingCertificatesRequest:
     Optional[str] marker
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) outgoingCertificates: list[OutgoingCertificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outgoingCertificates: list[OutgoingCertificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutgoingCertificatesResponse:
     Optional[list[OutgoingCertificate]] outgoingCertificates
     Optional[str] nextMarker
@@ -4144,8 +4248,9 @@ struct ListPackageVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) packageVersionSummaries: list[PackageVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageVersionSummaries: list[PackageVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackageVersionsResponse:
     Optional[list[PackageVersionSummary]] packageVersionSummaries
     Optional[str] nextToken
@@ -4156,8 +4261,9 @@ struct ListPackagesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) packageSummaries: list[PackageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageSummaries: list[PackageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackagesResponse:
     Optional[list[PackageSummary]] packageSummaries
     Optional[str] nextToken
@@ -4169,8 +4275,9 @@ struct ListPoliciesRequest:
     Optional[int64] pageSize
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesResponse:
     Optional[list[Policy]] policies
     Optional[str] nextMarker
@@ -4183,8 +4290,9 @@ struct ListPolicyPrincipalsRequest:
     Optional[int64] pageSize
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) principals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyPrincipalsResponse:
     Optional[list[str]] principals
     Optional[str] nextMarker
@@ -4194,8 +4302,9 @@ struct ListPolicyPrincipalsResponse:
 struct ListPolicyVersionsRequest:
     str policyName
 
-# no @derive(Json): member(s) policyVersions: list[PolicyVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyVersions: list[PolicyVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyVersionsResponse:
     Optional[list[PolicyVersion]] policyVersions
 
@@ -4207,8 +4316,9 @@ struct ListPrincipalPoliciesRequest:
     Optional[int64] pageSize
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrincipalPoliciesResponse:
     Optional[list[Policy]] policies
     Optional[str] nextMarker
@@ -4220,8 +4330,9 @@ struct ListPrincipalThingsRequest:
     Optional[int64] maxResults
     str principal
 
-# no @derive(Json): member(s) things: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) things: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrincipalThingsResponse:
     Optional[list[str]] things
     Optional[str] nextToken
@@ -4235,8 +4346,9 @@ struct ListPrincipalThingsV2Request:
     # wire string of the ThingPrincipalType enum (querystring binding)
     Optional[str] thingPrincipalType
 
-# no @derive(Json): member(s) principalThingObjects: list[PrincipalThingObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principalThingObjects: list[PrincipalThingObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrincipalThingsV2Response:
     Optional[list[PrincipalThingObject]] principalThingObjects
     Optional[str] nextToken
@@ -4248,8 +4360,9 @@ struct ListProvisioningTemplateVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) versions: list[ProvisioningTemplateVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versions: list[ProvisioningTemplateVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisioningTemplateVersionsResponse:
     Optional[list[ProvisioningTemplateVersionSummary]] versions
     Optional[str] nextToken
@@ -4260,8 +4373,9 @@ struct ListProvisioningTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) templates: list[ProvisioningTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[ProvisioningTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisioningTemplatesResponse:
     Optional[list[ProvisioningTemplateSummary]] templates
     Optional[str] nextToken
@@ -4273,8 +4387,9 @@ struct ListRelatedResourcesForAuditFindingRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) relatedResources: list[RelatedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relatedResources: list[RelatedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRelatedResourcesForAuditFindingResponse:
     Optional[list[RelatedResource]] relatedResources
     Optional[str] nextToken
@@ -4286,8 +4401,9 @@ struct ListRoleAliasesRequest:
     Optional[str] marker
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) roleAliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) roleAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoleAliasesResponse:
     Optional[list[str]] roleAliases
     Optional[str] nextMarker
@@ -4302,8 +4418,9 @@ struct ListSbomValidationResultsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) validationResultSummaries: list[SbomValidationResultSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationResultSummaries: list[SbomValidationResultSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSbomValidationResultsResponse:
     Optional[list[SbomValidationResultSummary]] validationResultSummaries
     Optional[str] nextToken
@@ -4314,8 +4431,9 @@ struct ListScheduledAuditsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scheduledAudits: list[ScheduledAuditMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledAudits: list[ScheduledAuditMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduledAuditsResponse:
     Optional[list[ScheduledAuditMetadata]] scheduledAudits
     Optional[str] nextToken
@@ -4328,8 +4446,9 @@ struct ListSecurityProfilesForTargetRequest:
     Optional[bool] recursive
     str securityProfileTargetArn
 
-# no @derive(Json): member(s) securityProfileTargetMappings: list[SecurityProfileTargetMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityProfileTargetMappings: list[SecurityProfileTargetMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfilesForTargetResponse:
     Optional[list[SecurityProfileTargetMapping]] securityProfileTargetMappings
     Optional[str] nextToken
@@ -4342,8 +4461,9 @@ struct ListSecurityProfilesRequest:
     Optional[str] dimensionName
     Optional[str] metricName
 
-# no @derive(Json): member(s) securityProfileIdentifiers: list[SecurityProfileIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityProfileIdentifiers: list[SecurityProfileIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfilesResponse:
     Optional[list[SecurityProfileIdentifier]] securityProfileIdentifiers
     Optional[str] nextToken
@@ -4355,8 +4475,9 @@ struct ListStreamsRequest:
     Optional[str] nextToken
     Optional[bool] ascendingOrder
 
-# no @derive(Json): member(s) streams: list[StreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streams: list[StreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsResponse:
     Optional[list[StreamSummary]] streams
     Optional[str] nextToken
@@ -4367,8 +4488,9 @@ struct ListTagsForResourceRequest:
     str resourceArn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
     Optional[str] nextToken
@@ -4380,8 +4502,9 @@ struct ListTargetsForPolicyRequest:
     Optional[str] marker
     Optional[int64] pageSize
 
-# no @derive(Json): member(s) targets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetsForPolicyResponse:
     Optional[list[str]] targets
     Optional[str] nextMarker
@@ -4393,8 +4516,9 @@ struct ListTargetsForSecurityProfileRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) securityProfileTargets: list[SecurityProfileTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityProfileTargets: list[SecurityProfileTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetsForSecurityProfileResponse:
     Optional[list[SecurityProfileTarget]] securityProfileTargets
     Optional[str] nextToken
@@ -4406,8 +4530,9 @@ struct ListThingGroupsForThingRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) thingGroups: list[GroupNameAndArn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingGroups: list[GroupNameAndArn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingGroupsForThingResponse:
     Optional[list[GroupNameAndArn]] thingGroups
     Optional[str] nextToken
@@ -4421,8 +4546,9 @@ struct ListThingGroupsRequest:
     Optional[str] namePrefixFilter
     Optional[bool] recursive
 
-# no @derive(Json): member(s) thingGroups: list[GroupNameAndArn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingGroups: list[GroupNameAndArn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingGroupsResponse:
     Optional[list[GroupNameAndArn]] thingGroups
     Optional[str] nextToken
@@ -4434,8 +4560,9 @@ struct ListThingPrincipalsRequest:
     Optional[int64] maxResults
     str thingName
 
-# no @derive(Json): member(s) principals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingPrincipalsResponse:
     Optional[list[str]] principals
     Optional[str] nextToken
@@ -4449,8 +4576,9 @@ struct ListThingPrincipalsV2Request:
     # wire string of the ThingPrincipalType enum (querystring binding)
     Optional[str] thingPrincipalType
 
-# no @derive(Json): member(s) thingPrincipalObjects: list[ThingPrincipalObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingPrincipalObjects: list[ThingPrincipalObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingPrincipalsV2Response:
     Optional[list[ThingPrincipalObject]] thingPrincipalObjects
     Optional[str] nextToken
@@ -4464,8 +4592,9 @@ struct ListThingRegistrationTaskReportsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) resourceLinks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceLinks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingRegistrationTaskReportsResponse:
     Optional[list[str]] resourceLinks
     Optional[ReportType] reportType
@@ -4479,8 +4608,9 @@ struct ListThingRegistrationTasksRequest:
     # wire string of the Status enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) taskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingRegistrationTasksResponse:
     Optional[list[str]] taskIds
     Optional[str] nextToken
@@ -4492,8 +4622,9 @@ struct ListThingTypesRequest:
     Optional[int64] maxResults
     Optional[str] thingTypeName
 
-# no @derive(Json): member(s) thingTypes: list[ThingTypeDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingTypes: list[ThingTypeDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingTypesResponse:
     Optional[list[ThingTypeDefinition]] thingTypes
     Optional[str] nextToken
@@ -4505,8 +4636,9 @@ struct ListThingsInBillingGroupRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) things: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) things: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingsInBillingGroupResponse:
     Optional[list[str]] things
     Optional[str] nextToken
@@ -4519,8 +4651,9 @@ struct ListThingsInThingGroupRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) things: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) things: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingsInThingGroupResponse:
     Optional[list[str]] things
     Optional[str] nextToken
@@ -4535,8 +4668,9 @@ struct ListThingsRequest:
     Optional[str] thingTypeName
     Optional[bool] usePrefixAttributeValue
 
-# no @derive(Json): member(s) things: list[ThingAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) things: list[ThingAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThingsResponse:
     Optional[list[ThingAttribute]] things
     Optional[str] nextToken
@@ -4547,8 +4681,9 @@ struct ListTopicRuleDestinationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) destinationSummaries: list[TopicRuleDestinationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationSummaries: list[TopicRuleDestinationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicRuleDestinationsResponse:
     Optional[list[TopicRuleDestinationSummary]] destinationSummaries
     Optional[str] nextToken
@@ -4561,8 +4696,9 @@ struct ListTopicRulesRequest:
     Optional[str] nextToken
     Optional[bool] ruleDisabled
 
-# no @derive(Json): member(s) rules: list[TopicRuleListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[TopicRuleListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicRulesResponse:
     Optional[list[TopicRuleListItem]] rules
     Optional[str] nextToken
@@ -4575,8 +4711,9 @@ struct ListV2LoggingLevelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) logTargetConfigurations: list[LogTargetConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logTargetConfigurations: list[LogTargetConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListV2LoggingLevelsResponse:
     Optional[list[LogTargetConfiguration]] logTargetConfigurations
     Optional[str] nextToken
@@ -4596,8 +4733,9 @@ struct ListViolationEventsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) violationEvents: list[ViolationEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) violationEvents: list[ViolationEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListViolationEventsResponse:
     Optional[list[ViolationEvent]] violationEvents
     Optional[str] nextToken
@@ -4650,8 +4788,9 @@ struct MaintenanceWindow:
 struct MalformedPolicyException:
     Optional[str] message
 
-# no @derive(Json): member(s) environments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedJobTemplateSummary:
     Optional[str] templateArn
     Optional[str] templateName
@@ -4659,8 +4798,9 @@ struct ManagedJobTemplateSummary:
     Optional[list[str]] environments
     Optional[str] templateVersion
 
-# no @derive(Json): member(s) value: MetricValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: MetricValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDatum:
     Optional[DateTime] timestamp
     Optional[MetricValue] value
@@ -4676,8 +4816,9 @@ struct MetricToRetain:
     Optional[MetricDimension] metricDimension
     Optional[bool] exportMetric
 
-# no @derive(Json): member(s) cidrs: list[str], ports: list[int64], numbers: list[float64], strings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str], ports: list[int64], numbers: list[float64], strings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricValue:
     Optional[int64] count
     Optional[list[str]] cidrs
@@ -4691,8 +4832,9 @@ struct MetricsExportConfig:
     str mqttTopic
     str roleArn
 
-# no @derive(Json): member(s) actionParams: MitigationActionParams not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionParams: MitigationActionParams not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MitigationAction:
     Optional[str] name
     Optional[str] id
@@ -4705,8 +4847,9 @@ struct MitigationActionIdentifier:
     Optional[str] actionArn
     Optional[DateTime] creationDate
 
-# no @derive(Json): member(s) addThingsToThingGroupParams: AddThingsToThingGroupParams not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addThingsToThingGroupParams: AddThingsToThingGroupParams not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MitigationActionParams:
     Optional[UpdateDeviceCertificateParams] updateDeviceCertificateParams
     Optional[UpdateCACertificateParams] updateCACertificateParams
@@ -4715,8 +4858,9 @@ struct MitigationActionParams:
     Optional[EnableIoTLoggingParams] enableIoTLoggingParams
     Optional[PublishFindingToSnsParams] publishFindingToSnsParams
 
-# no @derive(Json): member(s) propagatingAttributes: list[PropagatingAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propagatingAttributes: list[PropagatingAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Mqtt5Configuration:
     Optional[list[PropagatingAttribute]] propagatingAttributes
 
@@ -4726,8 +4870,9 @@ struct MqttContext:
     Optional[bytes] password
     Optional[str] clientId
 
-# no @derive(Json): member(s) userProperties: list[UserProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userProperties: list[UserProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MqttHeaders:
     Optional[str] payloadFormatIndicator
     Optional[str] contentType
@@ -4736,8 +4881,9 @@ struct MqttHeaders:
     Optional[str] messageExpiry
     Optional[list[UserProperty]] userProperties
 
-# no @derive(Json): member(s) additionalInfo: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NonCompliantResource:
     Optional[ResourceType] resourceType
     Optional[ResourceIdentifier] resourceIdentifier
@@ -4747,8 +4893,9 @@ struct NonCompliantResource:
 struct NotConfiguredException:
     Optional[str] message
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OTAUpdateFile:
     Optional[str] fileName
     Optional[int64] fileType
@@ -4757,8 +4904,9 @@ struct OTAUpdateFile:
     Optional[CodeSigning] codeSigning
     Optional[dict[str, str]] attributes
 
-# no @derive(Json): member(s) targets: list[str], protocols: list[Protocol], otaUpdateFiles: list[OTAUpdateFile], additionalParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[str], protocols: list[Protocol], otaUpdateFiles: list[OTAUpdateFile], additionalParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OTAUpdateInfo:
     Optional[str] otaUpdateId
     Optional[str] otaUpdateArn
@@ -4881,8 +5029,9 @@ struct ProvisioningTemplateVersionSummary:
 struct PublishFindingToSnsParams:
     str topicArn
 
-# no @derive(Json): member(s) propertyValues: list[AssetPropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyValues: list[AssetPropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetPropertyValueEntry:
     Optional[str] entryId
     Optional[str] assetId
@@ -4957,8 +5106,9 @@ struct RegisterThingRequest:
     str templateBody
     Optional[dict[str, str]] parameters
 
-# no @derive(Json): member(s) resourceArns: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterThingResponse:
     Optional[str] certificatePem
     Optional[dict[str, str]] resourceArns
@@ -4979,8 +5129,9 @@ struct RejectCertificateTransferRequest:
     str certificateId
     Optional[str] rejectReason
 
-# no @derive(Json): member(s) additionalInfo: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedResource:
     Optional[ResourceType] resourceType
     Optional[ResourceIdentifier] resourceIdentifier
@@ -5022,8 +5173,9 @@ struct ReplaceTopicRuleRequest:
     str ruleName
     TopicRulePayload topicRulePayload
 
-# no @derive(Json): member(s) headers: MqttHeaders not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: MqttHeaders not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepublishAction:
     str roleArn
     str topic
@@ -5118,8 +5270,9 @@ struct ScheduledAuditMetadata:
 struct ScheduledJobRollout:
     Optional[str] startTime
 
-# no @derive(Json): member(s) maintenanceWindows: list[MaintenanceWindow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) maintenanceWindows: list[MaintenanceWindow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchedulingConfig:
     Optional[str] startTime
     Optional[str] endTime
@@ -5135,8 +5288,9 @@ struct SearchIndexRequest:
     Optional[int64] maxResults
     Optional[str] queryVersion
 
-# no @derive(Json): member(s) things: list[ThingDocument], thingGroups: list[ThingGroupDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) things: list[ThingDocument], thingGroups: list[ThingGroupDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchIndexResponse:
     Optional[str] nextToken
     Optional[list[ThingDocument]] things
@@ -5339,8 +5493,9 @@ struct StreamFile:
     Optional[int64] fileId
     Optional[S3Location] s3Location
 
-# no @derive(Json): member(s) files: list[StreamFile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) files: list[StreamFile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamInfo:
     Optional[str] streamId
     Optional[str] streamArn
@@ -5410,8 +5565,9 @@ struct TestAuthorizationRequest:
     Optional[list[str]] policyNamesToAdd
     Optional[list[str]] policyNamesToSkip
 
-# no @derive(Json): member(s) authResults: list[AuthResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authResults: list[AuthResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestAuthorizationResponse:
     Optional[list[AuthResult]] authResults
 
@@ -5425,8 +5581,9 @@ struct TestInvokeAuthorizerRequest:
     Optional[MqttContext] mqttContext
     Optional[TlsContext] tlsContext
 
-# no @derive(Json): member(s) policyDocuments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyDocuments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestInvokeAuthorizerResponse:
     Optional[bool] isAuthenticated
     Optional[str] principalId
@@ -5434,8 +5591,9 @@ struct TestInvokeAuthorizerResponse:
     Optional[int64] refreshAfterInSeconds
     Optional[int64] disconnectAfterInSeconds
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingAttribute:
     Optional[str] thingName
     Optional[str] thingTypeName
@@ -5453,8 +5611,9 @@ struct ThingConnectivity:
     Optional[int64] sessionExpiry
     Optional[str] clientId
 
-# no @derive(Json): member(s) thingGroupNames: list[str], attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingGroupNames: list[str], attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingDocument:
     Optional[str] thingName
     Optional[str] thingId
@@ -5465,8 +5624,9 @@ struct ThingDocument:
     Optional[str] deviceDefender
     Optional[ThingConnectivity] connectivity
 
-# no @derive(Json): member(s) attributes: dict[str, str], parentGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], parentGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingGroupDocument:
     Optional[str] thingGroupName
     Optional[str] thingGroupId
@@ -5474,28 +5634,32 @@ struct ThingGroupDocument:
     Optional[dict[str, str]] attributes
     Optional[list[str]] parentGroupNames
 
-# no @derive(Json): member(s) managedFields: list[Field], customFields: list[Field] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedFields: list[Field], customFields: list[Field] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingGroupIndexingConfiguration:
     ThingGroupIndexingMode thingGroupIndexingMode
     Optional[list[Field]] managedFields
     Optional[list[Field]] customFields
 
-# no @derive(Json): member(s) rootToParentThingGroups: list[GroupNameAndArn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rootToParentThingGroups: list[GroupNameAndArn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingGroupMetadata:
     Optional[str] parentGroupName
     Optional[list[GroupNameAndArn]] rootToParentThingGroups
     Optional[DateTime] creationDate
 
-# no @derive(Json): member(s) attributePayload: AttributePayload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributePayload: AttributePayload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingGroupProperties:
     Optional[str] thingGroupDescription
     Optional[AttributePayload] attributePayload
 
-# no @derive(Json): member(s) managedFields: list[Field], customFields: list[Field], filter: IndexingFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedFields: list[Field], customFields: list[Field], filter: IndexingFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingIndexingConfiguration:
     ThingIndexingMode thingIndexingMode
     Optional[ThingConnectivityIndexingMode] thingConnectivityIndexingMode
@@ -5510,8 +5674,9 @@ struct ThingPrincipalObject:
     str principal
     Optional[ThingPrincipalType] thingPrincipalType
 
-# no @derive(Json): member(s) thingTypeProperties: ThingTypeProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) thingTypeProperties: ThingTypeProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingTypeDefinition:
     Optional[str] thingTypeName
     Optional[str] thingTypeArn
@@ -5524,8 +5689,9 @@ struct ThingTypeMetadata:
     Optional[DateTime] deprecationDate
     Optional[DateTime] creationDate
 
-# no @derive(Json): member(s) searchableAttributes: list[str], mqtt5Configuration: Mqtt5Configuration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) searchableAttributes: list[str], mqtt5Configuration: Mqtt5Configuration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThingTypeProperties:
     Optional[str] thingTypeDescription
     Optional[list[str]] searchableAttributes
@@ -5544,8 +5710,9 @@ struct TimeFilter:
 struct TimeoutConfig:
     Optional[int64] inProgressTimeoutInMinutes
 
-# no @derive(Json): member(s) dimensions: list[TimestreamDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensions: list[TimestreamDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimestreamAction:
     str roleArn
     str databaseName
@@ -5571,8 +5738,9 @@ struct TlsConfig:
 struct TlsContext:
     Optional[str] serverName
 
-# no @derive(Json): member(s) actions: list[Action], errorAction: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[Action], errorAction: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicRule:
     Optional[str] ruleName
     Optional[str] sql
@@ -5583,8 +5751,9 @@ struct TopicRule:
     Optional[str] awsIotSqlVersion
     Optional[Action] errorAction
 
-# no @derive(Json): member(s) vpcProperties: VpcDestinationProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcProperties: VpcDestinationProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicRuleDestination:
     Optional[str] arn
     Optional[TopicRuleDestinationStatus] status
@@ -5595,15 +5764,17 @@ struct TopicRuleDestination:
     Optional[VpcDestinationProperties] vpcProperties
     Optional[InfluxDBDestinationProperties] influxDBProperties
 
-# no @derive(Json): member(s) vpcConfiguration: VpcDestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfiguration: VpcDestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicRuleDestinationConfiguration:
     Optional[HttpUrlDestinationConfiguration] httpUrlConfiguration
     Optional[VpcDestinationConfiguration] vpcConfiguration
     Optional[InfluxDBDestinationConfiguration] influxDBConfiguration
 
-# no @derive(Json): member(s) vpcDestinationSummary: VpcDestinationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcDestinationSummary: VpcDestinationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicRuleDestinationSummary:
     Optional[str] arn
     Optional[TopicRuleDestinationStatus] status
@@ -5622,8 +5793,9 @@ struct TopicRuleListItem:
     Optional[DateTime] createdAt
     Optional[bool] ruleDisabled
 
-# no @derive(Json): member(s) actions: list[Action], errorAction: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[Action], errorAction: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicRulePayload:
     str sql
     Optional[str] description
@@ -5801,8 +5973,9 @@ struct UpdateDimensionRequest:
     str name
     list[str] stringValues
 
-# no @derive(Json): member(s) stringValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDimensionResponse:
     Optional[str] name
     Optional[str] arn
@@ -6013,8 +6186,9 @@ struct UpdateSecurityProfileRequest:
     Optional[MetricsExportConfig] metricsExportConfig
     Optional[bool] deleteMetricsExportConfig
 
-# no @derive(Json): member(s) behaviors: list[Behavior], alertTargets: dict[str, AlertTarget], additionalMetricsToRetain: list[str], additionalMetricsToRetainV2: list[MetricToRetain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) behaviors: list[Behavior], alertTargets: dict[str, AlertTarget], additionalMetricsToRetain: list[str], additionalMetricsToRetainV2: list[MetricToRetain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSecurityProfileResponse:
     Optional[str] securityProfileName
     Optional[str] securityProfileArn
@@ -6113,8 +6287,9 @@ struct UserProperty:
 struct ValidateSecurityProfileBehaviorsRequest:
     list[Behavior] behaviors
 
-# no @derive(Json): member(s) validationErrors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationErrors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateSecurityProfileBehaviorsResponse:
     Optional[bool] valid
     Optional[list[ValidationError]] validationErrors
@@ -6140,8 +6315,9 @@ struct VersionUpdateByJobsConfig:
 struct VersionsLimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) behavior: Behavior, metricValue: MetricValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) behavior: Behavior, metricValue: MetricValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViolationEvent:
     Optional[str] violationId
     Optional[str] thingName
@@ -6163,24 +6339,27 @@ struct ViolationEventOccurrenceRange:
     DateTime startTime
     DateTime endTime
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcDestinationConfiguration:
     list[str] subnetIds
     Optional[list[str]] securityGroups
     str vpcId
     str roleArn
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcDestinationProperties:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroups
     Optional[str] vpcId
     Optional[str] roleArn
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcDestinationSummary:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroups
@@ -6304,39 +6483,13 @@ def iot_error_from_code(str code) -> IoTError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   AcceptCertificateTransfer (httpQuery `setAsActive` has unsupported type bool)
-#   AssociateTargetsWithJob (document member `targets: list[str]` is not serializable by derive)
 #   CancelJob (httpQuery `force` has unsupported type bool)
 #   CancelJobExecution (httpQuery `force` has unsupported type bool)
-#   CreateAuthorizer (document member `tokenSigningPublicKeys: dict[str, str]` is not serializable by derive)
-#   CreateBillingGroup (document member `tags: list[Tag]` is not serializable by derive)
 #   CreateCertificateFromCsr (httpQuery `setAsActive` has unsupported type bool)
-#   CreateCertificateProvider (document member `accountDefaultForOperations: list[str]` is not serializable by derive)
-#   CreateCommand (document member `mandatoryParameters: list[CommandParameter]` is not serializable by derive)
-#   CreateCustomMetric (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateDimension (document member `stringValues: list[str]` is not serializable by derive)
-#   CreateDomainConfiguration (document member `serverCertificateArns: list[str]` is not serializable by derive)
-#   CreateDynamicThingGroup (document member `thingGroupProperties: ThingGroupProperties` is not serializable by derive)
-#   CreateFleetMetric (document member `aggregationType: AggregationType` is not serializable by derive)
-#   CreateJob (document member `targets: list[str]` is not serializable by derive)
-#   CreateJobTemplate (document member `abortConfig: AbortConfig` is not serializable by derive)
 #   CreateKeysAndCertificate (httpQuery `setAsActive` has unsupported type bool)
-#   CreateMitigationAction (document member `actionParams: MitigationActionParams` is not serializable by derive)
-#   CreateOTAUpdate (document member `targets: list[str]` is not serializable by derive)
-#   CreatePackage (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePackageVersion (document member `attributes: dict[str, str]` is not serializable by derive)
-#   CreatePolicy (document member `tags: list[Tag]` is not serializable by derive)
 #   CreatePolicyVersion (httpQuery `setAsDefault` has unsupported type bool)
-#   CreateProvisioningTemplate (document member `tags: list[Tag]` is not serializable by derive)
 #   CreateProvisioningTemplateVersion (httpQuery `setAsDefault` has unsupported type bool)
-#   CreateRoleAlias (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateScheduledAudit (document member `targetCheckNames: list[str]` is not serializable by derive)
-#   CreateSecurityProfile (document member `behaviors: list[Behavior]` is not serializable by derive)
-#   CreateStream (document member `files: list[StreamFile]` is not serializable by derive)
-#   CreateThing (document member `attributePayload: AttributePayload` is not serializable by derive)
-#   CreateThingGroup (document member `thingGroupProperties: ThingGroupProperties` is not serializable by derive)
-#   CreateThingType (document member `thingTypeProperties: ThingTypeProperties` is not serializable by derive)
 #   CreateTopicRule (httpPayload member `topicRulePayload` is a non-derivable structure)
-#   CreateTopicRuleDestination (document member `destinationConfiguration: TopicRuleDestinationConfiguration` is not serializable by derive)
 #   DeleteAccountAuditConfiguration (httpQuery `deleteScheduledAudits` has unsupported type bool)
 #   DeleteCertificate (httpQuery `forceDelete` has unsupported type bool)
 #   DeleteJob (httpQuery `force` has unsupported type bool)
@@ -6345,7 +6498,6 @@ def iot_error_from_code(str code) -> IoTError:
 #   DescribeJob (httpQuery `beforeSubstitution` has unsupported type bool)
 #   GetCommandExecution (httpQuery `includeResult` has unsupported type bool)
 #   GetJobDocument (httpQuery `beforeSubstitution` has unsupported type bool)
-#   GetPercentiles (document member `percents: list[float64]` is not serializable by derive)
 #   GetV2LoggingOptions (httpQuery `verbose` has unsupported type bool)
 #   ListActiveViolations (httpQuery `listSuppressedAlerts` has unsupported type bool)
 #   ListAttachedPolicies (httpQuery `recursive` has unsupported type bool)
@@ -6373,35 +6525,9 @@ def iot_error_from_code(str code) -> IoTError:
 #   ListViolationEvents (httpQuery `startTime` has unsupported type DateTime)
 #   RegisterCACertificate (httpQuery `setAsActive` has unsupported type bool)
 #   RegisterCertificate (httpQuery `setAsActive` has unsupported type bool)
-#   RegisterThing (document member `parameters: dict[str, str]` is not serializable by derive)
 #   ReplaceTopicRule (httpPayload member `topicRulePayload` is a non-derivable structure)
-#   SetV2LoggingOptions (document member `eventConfigurations: list[LogEventConfiguration]` is not serializable by derive)
-#   StartAuditMitigationActionsTask (document member `target: AuditMitigationActionsTaskTarget` is not serializable by derive)
-#   StartDetectMitigationActionsTask (document member `target: DetectMitigationActionsTaskTarget` is not serializable by derive)
-#   StartOnDemandAuditTask (document member `targetCheckNames: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   TestAuthorization (document member `authInfos: list[AuthInfo]` is not serializable by derive)
-#   TestInvokeAuthorizer (document member `httpContext: HttpContext` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateAccountAuditConfiguration (document member `auditNotificationTargetConfigurations: dict[str, AuditNotificationTarget]` is not serializable by derive)
-#   UpdateAuthorizer (document member `tokenSigningPublicKeys: dict[str, str]` is not serializable by derive)
-#   UpdateCertificateProvider (document member `accountDefaultForOperations: list[str]` is not serializable by derive)
-#   UpdateDimension (document member `stringValues: list[str]` is not serializable by derive)
-#   UpdateDynamicThingGroup (document member `thingGroupProperties: ThingGroupProperties` is not serializable by derive)
-#   UpdateEventConfigurations (document member `eventConfigurations: dict[EventType, Configuration]` is not serializable by derive)
-#   UpdateFleetMetric (document member `aggregationType: AggregationType` is not serializable by derive)
-#   UpdateIndexingConfiguration (document member `thingIndexingConfiguration: ThingIndexingConfiguration` is not serializable by derive)
-#   UpdateJob (document member `abortConfig: AbortConfig` is not serializable by derive)
-#   UpdateMitigationAction (document member `actionParams: MitigationActionParams` is not serializable by derive)
-#   UpdatePackageVersion (document member `attributes: dict[str, str]` is not serializable by derive)
-#   UpdateScheduledAudit (document member `targetCheckNames: list[str]` is not serializable by derive)
-#   UpdateSecurityProfile (document member `behaviors: list[Behavior]` is not serializable by derive)
-#   UpdateStream (document member `files: list[StreamFile]` is not serializable by derive)
-#   UpdateThing (document member `attributePayload: AttributePayload` is not serializable by derive)
-#   UpdateThingGroup (document member `thingGroupProperties: ThingGroupProperties` is not serializable by derive)
-#   UpdateThingGroupsForThing (document member `thingGroupsToAdd: list[str]` is not serializable by derive)
-#   UpdateThingType (document member `thingTypeProperties: ThingTypeProperties` is not serializable by derive)
-#   ValidateSecurityProfileBehaviors (document member `behaviors: list[Behavior]` is not serializable by derive)
+#   UpdateAccountAuditConfiguration (document member `auditCheckConfigurations: dict[str, AuditCheckConfiguration]` is not serializable)
+#   UpdateEventConfigurations (document member `eventConfigurations: dict[EventType, Configuration]` is not serializable)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -6711,6 +6837,524 @@ struct UpdateTopicRuleDestinationDocument:
     str arn
     TopicRuleDestinationStatus status
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def iot_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def iot_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def iot_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AbortConfig to a compact JSON object (declaration order).
+def abort_config_to_json(AbortConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.criteriaList:
+        e0.append(x0.to_json())
+    parts.append("\"criteriaList\":" + iot_json_arr(e0))
+    return iot_json_obj(parts)
+
+# Serialize AddThingsToThingGroupParams to a compact JSON object (declaration order).
+def add_things_to_thing_group_params_to_json(AddThingsToThingGroupParams v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.thingGroupNames:
+        e0.append(iot_json_str(x0))
+    parts.append("\"thingGroupNames\":" + iot_json_arr(e0))
+    if v.overrideDynamicGroups.is_some():
+        auto u1 = v.overrideDynamicGroups.unwrap()
+        parts.append("\"overrideDynamicGroups\":" + json.dumps(JsonValue.Bool(u1)))
+    return iot_json_obj(parts)
+
+# Serialize AggregationType to a compact JSON object (declaration order).
+def aggregation_type_to_json(AggregationType v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    if v.values.is_some():
+        auto u0 = v.values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iot_json_str(x1))
+        parts.append("\"values\":" + iot_json_arr(e1))
+    return iot_json_obj(parts)
+
+# Serialize AttributePayload to a compact JSON object (declaration order).
+def attribute_payload_to_json(AttributePayload v) -> str:
+    list[str] parts = []
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(iot_json_str(k1) + ":" + iot_json_str(u0[k1]))
+        parts.append("\"attributes\":" + iot_json_obj(m1))
+    if v.merge.is_some():
+        auto u2 = v.merge.unwrap()
+        parts.append("\"merge\":" + json.dumps(JsonValue.Bool(u2)))
+    return iot_json_obj(parts)
+
+# Serialize AuditMitigationActionsTaskTarget to a compact JSON object (declaration order).
+def audit_mitigation_actions_task_target_to_json(AuditMitigationActionsTaskTarget v) -> str:
+    list[str] parts = []
+    if v.auditTaskId.is_some():
+        auto u0 = v.auditTaskId.unwrap()
+        parts.append("\"auditTaskId\":" + iot_json_str(u0))
+    if v.findingIds.is_some():
+        auto u1 = v.findingIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iot_json_str(x2))
+        parts.append("\"findingIds\":" + iot_json_arr(e2))
+    if v.auditCheckToReasonCodeFilter.is_some():
+        auto u3 = v.auditCheckToReasonCodeFilter.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(iot_json_str(x5))
+            m4.append(iot_json_str(k4) + ":" + iot_json_arr(e5))
+        parts.append("\"auditCheckToReasonCodeFilter\":" + iot_json_obj(m4))
+    return iot_json_obj(parts)
+
+# Serialize AuthInfo to a compact JSON object (declaration order).
+def auth_info_to_json(AuthInfo v) -> str:
+    list[str] parts = []
+    if v.actionType.is_some():
+        auto u0 = v.actionType.unwrap()
+        parts.append("\"actionType\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.resources:
+        e1.append(iot_json_str(x1))
+    parts.append("\"resources\":" + iot_json_arr(e1))
+    return iot_json_obj(parts)
+
+# Serialize AwsJobAbortConfig to a compact JSON object (declaration order).
+def aws_job_abort_config_to_json(AwsJobAbortConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.abortCriteriaList:
+        e0.append(x0.to_json())
+    parts.append("\"abortCriteriaList\":" + iot_json_arr(e0))
+    return iot_json_obj(parts)
+
+# Serialize Behavior to a compact JSON object (declaration order).
+def behavior_to_json(Behavior v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iot_json_str(v.name))
+    if v.metric.is_some():
+        auto u0 = v.metric.unwrap()
+        parts.append("\"metric\":" + iot_json_str(u0))
+    if v.metricDimension.is_some():
+        auto u1 = v.metricDimension.unwrap()
+        parts.append("\"metricDimension\":" + u1.to_json())
+    if v.criteria.is_some():
+        auto u2 = v.criteria.unwrap()
+        parts.append("\"criteria\":" + behavior_criteria_to_json(u2))
+    if v.suppressAlerts.is_some():
+        auto u3 = v.suppressAlerts.unwrap()
+        parts.append("\"suppressAlerts\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.exportMetric.is_some():
+        auto u4 = v.exportMetric.unwrap()
+        parts.append("\"exportMetric\":" + json.dumps(JsonValue.Bool(u4)))
+    return iot_json_obj(parts)
+
+# Serialize BehaviorCriteria to a compact JSON object (declaration order).
+def behavior_criteria_to_json(BehaviorCriteria v) -> str:
+    list[str] parts = []
+    if v.comparisonOperator.is_some():
+        auto u0 = v.comparisonOperator.unwrap()
+        parts.append("\"comparisonOperator\":" + u0.to_json())
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        parts.append("\"value\":" + metric_value_to_json(u1))
+    if v.durationSeconds.is_some():
+        auto u2 = v.durationSeconds.unwrap()
+        parts.append("\"durationSeconds\":" + str(u2))
+    if v.consecutiveDatapointsToAlarm.is_some():
+        auto u3 = v.consecutiveDatapointsToAlarm.unwrap()
+        parts.append("\"consecutiveDatapointsToAlarm\":" + str(u3))
+    if v.consecutiveDatapointsToClear.is_some():
+        auto u4 = v.consecutiveDatapointsToClear.unwrap()
+        parts.append("\"consecutiveDatapointsToClear\":" + str(u4))
+    if v.statisticalThreshold.is_some():
+        auto u5 = v.statisticalThreshold.unwrap()
+        parts.append("\"statisticalThreshold\":" + u5.to_json())
+    if v.mlDetectionConfig.is_some():
+        auto u6 = v.mlDetectionConfig.unwrap()
+        parts.append("\"mlDetectionConfig\":" + u6.to_json())
+    return iot_json_obj(parts)
+
+# Serialize CommandParameter to a compact JSON object (declaration order).
+def command_parameter_to_json(CommandParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iot_json_str(v.name))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        parts.append("\"value\":" + u1.to_json())
+    if v.defaultValue.is_some():
+        auto u2 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + u2.to_json())
+    if v.valueConditions.is_some():
+        auto u3 = v.valueConditions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(command_parameter_value_condition_to_json(x4))
+        parts.append("\"valueConditions\":" + iot_json_arr(e4))
+    if v.description.is_some():
+        auto u5 = v.description.unwrap()
+        parts.append("\"description\":" + iot_json_str(u5))
+    return iot_json_obj(parts)
+
+# Serialize CommandParameterValueComparisonOperand to a compact JSON object (declaration order).
+def command_parameter_value_comparison_operand_to_json(CommandParameterValueComparisonOperand v) -> str:
+    list[str] parts = []
+    if v.number.is_some():
+        auto u0 = v.number.unwrap()
+        parts.append("\"number\":" + iot_json_str(u0))
+    if v.numbers.is_some():
+        auto u1 = v.numbers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iot_json_str(x2))
+        parts.append("\"numbers\":" + iot_json_arr(e2))
+    if v.string.is_some():
+        auto u3 = v.string.unwrap()
+        parts.append("\"string\":" + iot_json_str(u3))
+    if v.strings.is_some():
+        auto u4 = v.strings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(iot_json_str(x5))
+        parts.append("\"strings\":" + iot_json_arr(e5))
+    if v.numberRange.is_some():
+        auto u6 = v.numberRange.unwrap()
+        parts.append("\"numberRange\":" + u6.to_json())
+    return iot_json_obj(parts)
+
+# Serialize CommandParameterValueCondition to a compact JSON object (declaration order).
+def command_parameter_value_condition_to_json(CommandParameterValueCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"comparisonOperator\":" + v.comparisonOperator.to_json())
+    parts.append("\"operand\":" + command_parameter_value_comparison_operand_to_json(v.operand))
+    return iot_json_obj(parts)
+
+# Serialize ConnectivityFilter to a compact JSON object (declaration order).
+def connectivity_filter_to_json(ConnectivityFilter v) -> str:
+    list[str] parts = []
+    if v.includeSocketInformation.is_some():
+        auto u0 = v.includeSocketInformation.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iot_json_str(x1))
+        parts.append("\"includeSocketInformation\":" + iot_json_arr(e1))
+    return iot_json_obj(parts)
+
+# Serialize DetectMitigationActionsTaskTarget to a compact JSON object (declaration order).
+def detect_mitigation_actions_task_target_to_json(DetectMitigationActionsTaskTarget v) -> str:
+    list[str] parts = []
+    if v.violationIds.is_some():
+        auto u0 = v.violationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iot_json_str(x1))
+        parts.append("\"violationIds\":" + iot_json_arr(e1))
+    if v.securityProfileName.is_some():
+        auto u2 = v.securityProfileName.unwrap()
+        parts.append("\"securityProfileName\":" + iot_json_str(u2))
+    if v.behaviorName.is_some():
+        auto u3 = v.behaviorName.unwrap()
+        parts.append("\"behaviorName\":" + iot_json_str(u3))
+    return iot_json_obj(parts)
+
+# Serialize HttpContext to a compact JSON object (declaration order).
+def http_context_to_json(HttpContext v) -> str:
+    list[str] parts = []
+    if v.headers.is_some():
+        auto u0 = v.headers.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(iot_json_str(k1) + ":" + iot_json_str(u0[k1]))
+        parts.append("\"headers\":" + iot_json_obj(m1))
+    if v.queryString.is_some():
+        auto u2 = v.queryString.unwrap()
+        parts.append("\"queryString\":" + iot_json_str(u2))
+    return iot_json_obj(parts)
+
+# Serialize IndexingFilter to a compact JSON object (declaration order).
+def indexing_filter_to_json(IndexingFilter v) -> str:
+    list[str] parts = []
+    if v.namedShadowNames.is_some():
+        auto u0 = v.namedShadowNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iot_json_str(x1))
+        parts.append("\"namedShadowNames\":" + iot_json_arr(e1))
+    if v.geoLocations.is_some():
+        auto u2 = v.geoLocations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"geoLocations\":" + iot_json_arr(e3))
+    if v.connectivity.is_some():
+        auto u4 = v.connectivity.unwrap()
+        parts.append("\"connectivity\":" + connectivity_filter_to_json(u4))
+    return iot_json_obj(parts)
+
+# Serialize JobExecutionsRetryConfig to a compact JSON object (declaration order).
+def job_executions_retry_config_to_json(JobExecutionsRetryConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.criteriaList:
+        e0.append(x0.to_json())
+    parts.append("\"criteriaList\":" + iot_json_arr(e0))
+    return iot_json_obj(parts)
+
+# Serialize MetricValue to a compact JSON object (declaration order).
+def metric_value_to_json(MetricValue v) -> str:
+    list[str] parts = []
+    if v.count.is_some():
+        auto u0 = v.count.unwrap()
+        parts.append("\"count\":" + str(u0))
+    if v.cidrs.is_some():
+        auto u1 = v.cidrs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iot_json_str(x2))
+        parts.append("\"cidrs\":" + iot_json_arr(e2))
+    if v.ports.is_some():
+        auto u3 = v.ports.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(str(x4))
+        parts.append("\"ports\":" + iot_json_arr(e4))
+    if v.number.is_some():
+        auto u5 = v.number.unwrap()
+        parts.append("\"number\":" + str(u5))
+    if v.numbers.is_some():
+        auto u6 = v.numbers.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(str(x7))
+        parts.append("\"numbers\":" + iot_json_arr(e7))
+    if v.strings.is_some():
+        auto u8 = v.strings.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(iot_json_str(x9))
+        parts.append("\"strings\":" + iot_json_arr(e9))
+    return iot_json_obj(parts)
+
+# Serialize MitigationActionParams to a compact JSON object (declaration order).
+def mitigation_action_params_to_json(MitigationActionParams v) -> str:
+    list[str] parts = []
+    if v.updateDeviceCertificateParams.is_some():
+        auto u0 = v.updateDeviceCertificateParams.unwrap()
+        parts.append("\"updateDeviceCertificateParams\":" + u0.to_json())
+    if v.updateCACertificateParams.is_some():
+        auto u1 = v.updateCACertificateParams.unwrap()
+        parts.append("\"updateCACertificateParams\":" + u1.to_json())
+    if v.addThingsToThingGroupParams.is_some():
+        auto u2 = v.addThingsToThingGroupParams.unwrap()
+        parts.append("\"addThingsToThingGroupParams\":" + add_things_to_thing_group_params_to_json(u2))
+    if v.replaceDefaultPolicyVersionParams.is_some():
+        auto u3 = v.replaceDefaultPolicyVersionParams.unwrap()
+        parts.append("\"replaceDefaultPolicyVersionParams\":" + u3.to_json())
+    if v.enableIoTLoggingParams.is_some():
+        auto u4 = v.enableIoTLoggingParams.unwrap()
+        parts.append("\"enableIoTLoggingParams\":" + u4.to_json())
+    if v.publishFindingToSnsParams.is_some():
+        auto u5 = v.publishFindingToSnsParams.unwrap()
+        parts.append("\"publishFindingToSnsParams\":" + u5.to_json())
+    return iot_json_obj(parts)
+
+# Serialize Mqtt5Configuration to a compact JSON object (declaration order).
+def mqtt5_configuration_to_json(Mqtt5Configuration v) -> str:
+    list[str] parts = []
+    if v.propagatingAttributes.is_some():
+        auto u0 = v.propagatingAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"propagatingAttributes\":" + iot_json_arr(e1))
+    return iot_json_obj(parts)
+
+# Serialize OTAUpdateFile to a compact JSON object (declaration order).
+def ota_update_file_to_json(OTAUpdateFile v) -> str:
+    list[str] parts = []
+    if v.fileName.is_some():
+        auto u0 = v.fileName.unwrap()
+        parts.append("\"fileName\":" + iot_json_str(u0))
+    if v.fileType.is_some():
+        auto u1 = v.fileType.unwrap()
+        parts.append("\"fileType\":" + str(u1))
+    if v.fileVersion.is_some():
+        auto u2 = v.fileVersion.unwrap()
+        parts.append("\"fileVersion\":" + iot_json_str(u2))
+    if v.fileLocation.is_some():
+        auto u3 = v.fileLocation.unwrap()
+        parts.append("\"fileLocation\":" + u3.to_json())
+    if v.codeSigning.is_some():
+        auto u4 = v.codeSigning.unwrap()
+        parts.append("\"codeSigning\":" + u4.to_json())
+    if v.attributes.is_some():
+        auto u5 = v.attributes.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(iot_json_str(k6) + ":" + iot_json_str(u5[k6]))
+        parts.append("\"attributes\":" + iot_json_obj(m6))
+    return iot_json_obj(parts)
+
+# Serialize SchedulingConfig to a compact JSON object (declaration order).
+def scheduling_config_to_json(SchedulingConfig v) -> str:
+    list[str] parts = []
+    if v.startTime.is_some():
+        auto u0 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + iot_json_str(u0))
+    if v.endTime.is_some():
+        auto u1 = v.endTime.unwrap()
+        parts.append("\"endTime\":" + iot_json_str(u1))
+    if v.endBehavior.is_some():
+        auto u2 = v.endBehavior.unwrap()
+        parts.append("\"endBehavior\":" + u2.to_json())
+    if v.maintenanceWindows.is_some():
+        auto u3 = v.maintenanceWindows.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"maintenanceWindows\":" + iot_json_arr(e4))
+    return iot_json_obj(parts)
+
+# Serialize ThingGroupIndexingConfiguration to a compact JSON object (declaration order).
+def thing_group_indexing_configuration_to_json(ThingGroupIndexingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"thingGroupIndexingMode\":" + v.thingGroupIndexingMode.to_json())
+    if v.managedFields.is_some():
+        auto u0 = v.managedFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"managedFields\":" + iot_json_arr(e1))
+    if v.customFields.is_some():
+        auto u2 = v.customFields.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"customFields\":" + iot_json_arr(e3))
+    return iot_json_obj(parts)
+
+# Serialize ThingGroupProperties to a compact JSON object (declaration order).
+def thing_group_properties_to_json(ThingGroupProperties v) -> str:
+    list[str] parts = []
+    if v.thingGroupDescription.is_some():
+        auto u0 = v.thingGroupDescription.unwrap()
+        parts.append("\"thingGroupDescription\":" + iot_json_str(u0))
+    if v.attributePayload.is_some():
+        auto u1 = v.attributePayload.unwrap()
+        parts.append("\"attributePayload\":" + attribute_payload_to_json(u1))
+    return iot_json_obj(parts)
+
+# Serialize ThingIndexingConfiguration to a compact JSON object (declaration order).
+def thing_indexing_configuration_to_json(ThingIndexingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"thingIndexingMode\":" + v.thingIndexingMode.to_json())
+    if v.thingConnectivityIndexingMode.is_some():
+        auto u0 = v.thingConnectivityIndexingMode.unwrap()
+        parts.append("\"thingConnectivityIndexingMode\":" + u0.to_json())
+    if v.deviceDefenderIndexingMode.is_some():
+        auto u1 = v.deviceDefenderIndexingMode.unwrap()
+        parts.append("\"deviceDefenderIndexingMode\":" + u1.to_json())
+    if v.namedShadowIndexingMode.is_some():
+        auto u2 = v.namedShadowIndexingMode.unwrap()
+        parts.append("\"namedShadowIndexingMode\":" + u2.to_json())
+    if v.managedFields.is_some():
+        auto u3 = v.managedFields.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"managedFields\":" + iot_json_arr(e4))
+    if v.customFields.is_some():
+        auto u5 = v.customFields.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"customFields\":" + iot_json_arr(e6))
+    if v.filter.is_some():
+        auto u7 = v.filter.unwrap()
+        parts.append("\"filter\":" + indexing_filter_to_json(u7))
+    return iot_json_obj(parts)
+
+# Serialize ThingTypeProperties to a compact JSON object (declaration order).
+def thing_type_properties_to_json(ThingTypeProperties v) -> str:
+    list[str] parts = []
+    if v.thingTypeDescription.is_some():
+        auto u0 = v.thingTypeDescription.unwrap()
+        parts.append("\"thingTypeDescription\":" + iot_json_str(u0))
+    if v.searchableAttributes.is_some():
+        auto u1 = v.searchableAttributes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iot_json_str(x2))
+        parts.append("\"searchableAttributes\":" + iot_json_arr(e2))
+    if v.mqtt5Configuration.is_some():
+        auto u3 = v.mqtt5Configuration.unwrap()
+        parts.append("\"mqtt5Configuration\":" + mqtt5_configuration_to_json(u3))
+    return iot_json_obj(parts)
+
+# Serialize TopicRuleDestinationConfiguration to a compact JSON object (declaration order).
+def topic_rule_destination_configuration_to_json(TopicRuleDestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.httpUrlConfiguration.is_some():
+        auto u0 = v.httpUrlConfiguration.unwrap()
+        parts.append("\"httpUrlConfiguration\":" + u0.to_json())
+    if v.vpcConfiguration.is_some():
+        auto u1 = v.vpcConfiguration.unwrap()
+        parts.append("\"vpcConfiguration\":" + vpc_destination_configuration_to_json(u1))
+    if v.influxDBConfiguration.is_some():
+        auto u2 = v.influxDBConfiguration.unwrap()
+        parts.append("\"influxDBConfiguration\":" + u2.to_json())
+    return iot_json_obj(parts)
+
+# Serialize VpcDestinationConfiguration to a compact JSON object (declaration order).
+def vpc_destination_configuration_to_json(VpcDestinationConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(iot_json_str(x0))
+    parts.append("\"subnetIds\":" + iot_json_arr(e0))
+    if v.securityGroups.is_some():
+        auto u1 = v.securityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iot_json_str(x2))
+        parts.append("\"securityGroups\":" + iot_json_arr(e2))
+    parts.append("\"vpcId\":" + iot_json_str(v.vpcId))
+    parts.append("\"roleArn\":" + iot_json_str(v.roleArn))
+    return iot_json_obj(parts)
+
 # A bound IoT client: credentials + region, threaded into every operation.
 struct IoTClient:
     core.Credentials creds
@@ -6747,6 +7391,27 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}/versions/{versionName}/sbom", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateSbomWithPackageVersionDocument(sbom=input.sbom)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # AssociateTargetsWithJob  POST /jobs/{jobId}/targets
+    # errors: InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def associate_targets_with_job(self, AssociateTargetsWithJobRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.namespaceId.is_some():
+            query["namespaceId"] = input.namespaceId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{jobId}/targets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targets:
+            e0.append(iot_json_str(x0))
+        parts.append("\"targets\":" + iot_json_arr(e0))
+        if input.comment.is_some():
+            auto u1 = input.comment.unwrap()
+            parts.append("\"comment\":" + iot_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # AttachPolicy  PUT /target-policies/{policyName}
@@ -6857,6 +7522,561 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # CreateAuthorizer  POST /authorizer/{authorizerName}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_authorizer(self, CreateAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["authorizerName"] = input.authorizerName
+        auto b = binding.HttpBinding(method="POST", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"authorizerFunctionArn\":" + iot_json_str(input.authorizerFunctionArn))
+        if input.tokenKeyName.is_some():
+            auto u0 = input.tokenKeyName.unwrap()
+            parts.append("\"tokenKeyName\":" + iot_json_str(u0))
+        if input.tokenSigningPublicKeys.is_some():
+            auto u1 = input.tokenSigningPublicKeys.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iot_json_str(k2) + ":" + iot_json_str(u1[k2]))
+            parts.append("\"tokenSigningPublicKeys\":" + iot_json_obj(m2))
+        if input.status.is_some():
+            auto u3 = input.status.unwrap()
+            parts.append("\"status\":" + u3.to_json())
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e5))
+        if input.signingDisabled.is_some():
+            auto u6 = input.signingDisabled.unwrap()
+            parts.append("\"signingDisabled\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.enableCachingForHttp.is_some():
+            auto u7 = input.enableCachingForHttp.unwrap()
+            parts.append("\"enableCachingForHttp\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateBillingGroup  POST /billing-groups/{billingGroupName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ThrottlingException
+    def create_billing_group(self, CreateBillingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["billingGroupName"] = input.billingGroupName
+        auto b = binding.HttpBinding(method="POST", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.billingGroupProperties.is_some():
+            auto u0 = input.billingGroupProperties.unwrap()
+            parts.append("\"billingGroupProperties\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateCertificateProvider  POST /certificate-providers/{certificateProviderName}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_certificate_provider(self, CreateCertificateProviderRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["certificateProviderName"] = input.certificateProviderName
+        auto b = binding.HttpBinding(method="POST", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"lambdaFunctionArn\":" + iot_json_str(input.lambdaFunctionArn))
+        list[str] e0 = []
+        for x0 in input.accountDefaultForOperations:
+            e0.append(iot_json_str(x0))
+        parts.append("\"accountDefaultForOperations\":" + iot_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iot_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateCommand  PUT /commands/{commandId}
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_command(self, CreateCommandRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["commandId"] = input.commandId
+        auto b = binding.HttpBinding(method="PUT", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.namespace.is_some():
+            auto u0 = input.namespace.unwrap()
+            parts.append("\"namespace\":" + u0.to_json())
+        if input.displayName.is_some():
+            auto u1 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + iot_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u2))
+        if input.payload.is_some():
+            auto u3 = input.payload.unwrap()
+            parts.append("\"payload\":" + u3.to_json())
+        if input.payloadTemplate.is_some():
+            auto u4 = input.payloadTemplate.unwrap()
+            parts.append("\"payloadTemplate\":" + iot_json_str(u4))
+        if input.preprocessor.is_some():
+            auto u5 = input.preprocessor.unwrap()
+            parts.append("\"preprocessor\":" + u5.to_json())
+        if input.mandatoryParameters.is_some():
+            auto u6 = input.mandatoryParameters.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(command_parameter_to_json(x7))
+            parts.append("\"mandatoryParameters\":" + iot_json_arr(e7))
+        if input.roleArn.is_some():
+            auto u8 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + iot_json_str(u8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e10))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateCustomMetric  POST /custom-metric/{metricName}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_custom_metric(self, CreateCustomMetricRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["metricName"] = input.metricName
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + iot_json_str(u0))
+        parts.append("\"metricType\":" + input.metricType.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e2))
+        parts.append("\"clientRequestToken\":" + iot_json_str(input.clientRequestToken))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateDimension  POST /dimensions/{name}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_dimension(self, CreateDimensionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="POST", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + iot_json_str(input.type))
+        list[str] e0 = []
+        for x0 in input.stringValues:
+            e0.append(iot_json_str(x0))
+        parts.append("\"stringValues\":" + iot_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e2))
+        parts.append("\"clientRequestToken\":" + iot_json_str(input.clientRequestToken))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateDomainConfiguration  POST /domainConfigurations/{domainConfigurationName}
+    # errors: CertificateValidationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_domain_configuration(self, CreateDomainConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainConfigurationName"] = input.domainConfigurationName
+        auto b = binding.HttpBinding(method="POST", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.domainName.is_some():
+            auto u0 = input.domainName.unwrap()
+            parts.append("\"domainName\":" + iot_json_str(u0))
+        if input.serverCertificateArns.is_some():
+            auto u1 = input.serverCertificateArns.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(iot_json_str(x2))
+            parts.append("\"serverCertificateArns\":" + iot_json_arr(e2))
+        if input.validationCertificateArn.is_some():
+            auto u3 = input.validationCertificateArn.unwrap()
+            parts.append("\"validationCertificateArn\":" + iot_json_str(u3))
+        if input.authorizerConfig.is_some():
+            auto u4 = input.authorizerConfig.unwrap()
+            parts.append("\"authorizerConfig\":" + u4.to_json())
+        if input.serviceType.is_some():
+            auto u5 = input.serviceType.unwrap()
+            parts.append("\"serviceType\":" + u5.to_json())
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e7))
+        if input.tlsConfig.is_some():
+            auto u8 = input.tlsConfig.unwrap()
+            parts.append("\"tlsConfig\":" + u8.to_json())
+        if input.serverCertificateConfig.is_some():
+            auto u9 = input.serverCertificateConfig.unwrap()
+            parts.append("\"serverCertificateConfig\":" + u9.to_json())
+        if input.authenticationType.is_some():
+            auto u10 = input.authenticationType.unwrap()
+            parts.append("\"authenticationType\":" + u10.to_json())
+        if input.applicationProtocol.is_some():
+            auto u11 = input.applicationProtocol.unwrap()
+            parts.append("\"applicationProtocol\":" + u11.to_json())
+        if input.clientCertificateConfig.is_some():
+            auto u12 = input.clientCertificateConfig.unwrap()
+            parts.append("\"clientCertificateConfig\":" + u12.to_json())
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateDynamicThingGroup  POST /dynamic-thing-groups/{thingGroupName}
+    # errors: InternalFailureException, InvalidQueryException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_dynamic_thing_group(self, CreateDynamicThingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingGroupName"] = input.thingGroupName
+        auto b = binding.HttpBinding(method="POST", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingGroupProperties.is_some():
+            auto u0 = input.thingGroupProperties.unwrap()
+            parts.append("\"thingGroupProperties\":" + thing_group_properties_to_json(u0))
+        if input.indexName.is_some():
+            auto u1 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + iot_json_str(u1))
+        parts.append("\"queryString\":" + iot_json_str(input.queryString))
+        if input.queryVersion.is_some():
+            auto u2 = input.queryVersion.unwrap()
+            parts.append("\"queryVersion\":" + iot_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateFleetMetric  PUT /fleet-metric/{metricName}
+    # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_fleet_metric(self, CreateFleetMetricRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["metricName"] = input.metricName
+        auto b = binding.HttpBinding(method="PUT", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"queryString\":" + iot_json_str(input.queryString))
+        parts.append("\"aggregationType\":" + aggregation_type_to_json(input.aggregationType))
+        parts.append("\"period\":" + str(input.period))
+        parts.append("\"aggregationField\":" + iot_json_str(input.aggregationField))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        if input.queryVersion.is_some():
+            auto u1 = input.queryVersion.unwrap()
+            parts.append("\"queryVersion\":" + iot_json_str(u1))
+        if input.indexName.is_some():
+            auto u2 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + iot_json_str(u2))
+        if input.unit.is_some():
+            auto u3 = input.unit.unwrap()
+            parts.append("\"unit\":" + u3.to_json())
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateJob  PUT /jobs/{jobId}
+    # errors: InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def create_job(self, CreateJobRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        auto b = binding.HttpBinding(method="PUT", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targets:
+            e0.append(iot_json_str(x0))
+        parts.append("\"targets\":" + iot_json_arr(e0))
+        if input.documentSource.is_some():
+            auto u1 = input.documentSource.unwrap()
+            parts.append("\"documentSource\":" + iot_json_str(u1))
+        if input.document.is_some():
+            auto u2 = input.document.unwrap()
+            parts.append("\"document\":" + iot_json_str(u2))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u3))
+        if input.presignedUrlConfig.is_some():
+            auto u4 = input.presignedUrlConfig.unwrap()
+            parts.append("\"presignedUrlConfig\":" + u4.to_json())
+        if input.targetSelection.is_some():
+            auto u5 = input.targetSelection.unwrap()
+            parts.append("\"targetSelection\":" + u5.to_json())
+        if input.jobExecutionsRolloutConfig.is_some():
+            auto u6 = input.jobExecutionsRolloutConfig.unwrap()
+            parts.append("\"jobExecutionsRolloutConfig\":" + u6.to_json())
+        if input.abortConfig.is_some():
+            auto u7 = input.abortConfig.unwrap()
+            parts.append("\"abortConfig\":" + abort_config_to_json(u7))
+        if input.timeoutConfig.is_some():
+            auto u8 = input.timeoutConfig.unwrap()
+            parts.append("\"timeoutConfig\":" + u8.to_json())
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e10))
+        if input.namespaceId.is_some():
+            auto u11 = input.namespaceId.unwrap()
+            parts.append("\"namespaceId\":" + iot_json_str(u11))
+        if input.jobTemplateArn.is_some():
+            auto u12 = input.jobTemplateArn.unwrap()
+            parts.append("\"jobTemplateArn\":" + iot_json_str(u12))
+        if input.jobExecutionsRetryConfig.is_some():
+            auto u13 = input.jobExecutionsRetryConfig.unwrap()
+            parts.append("\"jobExecutionsRetryConfig\":" + job_executions_retry_config_to_json(u13))
+        if input.documentParameters.is_some():
+            auto u14 = input.documentParameters.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(iot_json_str(k15) + ":" + iot_json_str(u14[k15]))
+            parts.append("\"documentParameters\":" + iot_json_obj(m15))
+        if input.schedulingConfig.is_some():
+            auto u16 = input.schedulingConfig.unwrap()
+            parts.append("\"schedulingConfig\":" + scheduling_config_to_json(u16))
+        if input.destinationPackageVersions.is_some():
+            auto u17 = input.destinationPackageVersions.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(iot_json_str(x18))
+            parts.append("\"destinationPackageVersions\":" + iot_json_arr(e18))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateJobTemplate  PUT /job-templates/{jobTemplateId}
+    # errors: ConflictException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_job_template(self, CreateJobTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobTemplateId"] = input.jobTemplateId
+        auto b = binding.HttpBinding(method="PUT", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.jobArn.is_some():
+            auto u0 = input.jobArn.unwrap()
+            parts.append("\"jobArn\":" + iot_json_str(u0))
+        if input.documentSource.is_some():
+            auto u1 = input.documentSource.unwrap()
+            parts.append("\"documentSource\":" + iot_json_str(u1))
+        if input.document.is_some():
+            auto u2 = input.document.unwrap()
+            parts.append("\"document\":" + iot_json_str(u2))
+        parts.append("\"description\":" + iot_json_str(input.description))
+        if input.presignedUrlConfig.is_some():
+            auto u3 = input.presignedUrlConfig.unwrap()
+            parts.append("\"presignedUrlConfig\":" + u3.to_json())
+        if input.jobExecutionsRolloutConfig.is_some():
+            auto u4 = input.jobExecutionsRolloutConfig.unwrap()
+            parts.append("\"jobExecutionsRolloutConfig\":" + u4.to_json())
+        if input.abortConfig.is_some():
+            auto u5 = input.abortConfig.unwrap()
+            parts.append("\"abortConfig\":" + abort_config_to_json(u5))
+        if input.timeoutConfig.is_some():
+            auto u6 = input.timeoutConfig.unwrap()
+            parts.append("\"timeoutConfig\":" + u6.to_json())
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e8))
+        if input.jobExecutionsRetryConfig.is_some():
+            auto u9 = input.jobExecutionsRetryConfig.unwrap()
+            parts.append("\"jobExecutionsRetryConfig\":" + job_executions_retry_config_to_json(u9))
+        if input.maintenanceWindows.is_some():
+            auto u10 = input.maintenanceWindows.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"maintenanceWindows\":" + iot_json_arr(e11))
+        if input.destinationPackageVersions.is_some():
+            auto u12 = input.destinationPackageVersions.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(iot_json_str(x13))
+            parts.append("\"destinationPackageVersions\":" + iot_json_arr(e13))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateMitigationAction  POST /mitigationactions/actions/{actionName}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_mitigation_action(self, CreateMitigationActionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["actionName"] = input.actionName
+        auto b = binding.HttpBinding(method="POST", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roleArn\":" + iot_json_str(input.roleArn))
+        parts.append("\"actionParams\":" + mitigation_action_params_to_json(input.actionParams))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateOTAUpdate  POST /otaUpdates/{otaUpdateId}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_ota_update(self, CreateOTAUpdateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["otaUpdateId"] = input.otaUpdateId
+        auto b = binding.HttpBinding(method="POST", path_template="/otaUpdates/{otaUpdateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.targets:
+            e1.append(iot_json_str(x1))
+        parts.append("\"targets\":" + iot_json_arr(e1))
+        if input.protocols.is_some():
+            auto u2 = input.protocols.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"protocols\":" + iot_json_arr(e3))
+        if input.targetSelection.is_some():
+            auto u4 = input.targetSelection.unwrap()
+            parts.append("\"targetSelection\":" + u4.to_json())
+        if input.awsJobExecutionsRolloutConfig.is_some():
+            auto u5 = input.awsJobExecutionsRolloutConfig.unwrap()
+            parts.append("\"awsJobExecutionsRolloutConfig\":" + u5.to_json())
+        if input.awsJobPresignedUrlConfig.is_some():
+            auto u6 = input.awsJobPresignedUrlConfig.unwrap()
+            parts.append("\"awsJobPresignedUrlConfig\":" + u6.to_json())
+        if input.awsJobAbortConfig.is_some():
+            auto u7 = input.awsJobAbortConfig.unwrap()
+            parts.append("\"awsJobAbortConfig\":" + aws_job_abort_config_to_json(u7))
+        if input.awsJobTimeoutConfig.is_some():
+            auto u8 = input.awsJobTimeoutConfig.unwrap()
+            parts.append("\"awsJobTimeoutConfig\":" + u8.to_json())
+        list[str] e9 = []
+        for x9 in input.files:
+            e9.append(ota_update_file_to_json(x9))
+        parts.append("\"files\":" + iot_json_arr(e9))
+        parts.append("\"roleArn\":" + iot_json_str(input.roleArn))
+        if input.additionalParameters.is_some():
+            auto u10 = input.additionalParameters.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(iot_json_str(k11) + ":" + iot_json_str(u10[k11]))
+            parts.append("\"additionalParameters\":" + iot_json_obj(m11))
+        if input.tags.is_some():
+            auto u12 = input.tags.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e13))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreatePackage  PUT /packages/{packageName}
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_package(self, CreatePackageRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["packageName"] = input.packageName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iot_json_str(k2) + ":" + iot_json_str(u1[k2]))
+            parts.append("\"tags\":" + iot_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreatePackageVersion  PUT /packages/{packageName}/versions/{versionName}
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_package_version(self, CreatePackageVersionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["packageName"] = input.packageName
+        labels["versionName"] = input.versionName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        if input.attributes.is_some():
+            auto u1 = input.attributes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iot_json_str(k2) + ":" + iot_json_str(u1[k2]))
+            parts.append("\"attributes\":" + iot_json_obj(m2))
+        if input.artifact.is_some():
+            auto u3 = input.artifact.unwrap()
+            parts.append("\"artifact\":" + u3.to_json())
+        if input.recipe.is_some():
+            auto u4 = input.recipe.unwrap()
+            parts.append("\"recipe\":" + iot_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(iot_json_str(k6) + ":" + iot_json_str(u5[k6]))
+            parts.append("\"tags\":" + iot_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreatePolicy  POST /policies/{policyName}
+    # errors: InternalFailureException, InvalidRequestException, MalformedPolicyException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_policy(self, CreatePolicyRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyName"] = input.policyName
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"policyDocument\":" + iot_json_str(input.policyDocument))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # CreateProvisioningClaim  POST /provisioning-templates/{templateName}/provisioning-claim
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def create_provisioning_claim(self, CreateProvisioningClaimRequest input) -> str:
@@ -6865,6 +8085,230 @@ struct IoTClient:
         labels["templateName"] = input.templateName
         auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates/{templateName}/provisioning-claim", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # CreateProvisioningTemplate  POST /provisioning-templates
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException, UnauthorizedException
+    def create_provisioning_template(self, CreateProvisioningTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"templateName\":" + iot_json_str(input.templateName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        parts.append("\"templateBody\":" + iot_json_str(input.templateBody))
+        if input.enabled.is_some():
+            auto u1 = input.enabled.unwrap()
+            parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u1)))
+        parts.append("\"provisioningRoleArn\":" + iot_json_str(input.provisioningRoleArn))
+        if input.preProvisioningHook.is_some():
+            auto u2 = input.preProvisioningHook.unwrap()
+            parts.append("\"preProvisioningHook\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e4))
+        if input.type.is_some():
+            auto u5 = input.type.unwrap()
+            parts.append("\"type\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateRoleAlias  POST /role-aliases/{roleAlias}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_role_alias(self, CreateRoleAliasRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["roleAlias"] = input.roleAlias
+        auto b = binding.HttpBinding(method="POST", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roleArn\":" + iot_json_str(input.roleArn))
+        if input.credentialDurationSeconds.is_some():
+            auto u0 = input.credentialDurationSeconds.unwrap()
+            parts.append("\"credentialDurationSeconds\":" + str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateScheduledAudit  POST /audit/scheduledaudits/{scheduledAuditName}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_scheduled_audit(self, CreateScheduledAuditRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["scheduledAuditName"] = input.scheduledAuditName
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"frequency\":" + input.frequency.to_json())
+        if input.dayOfMonth.is_some():
+            auto u0 = input.dayOfMonth.unwrap()
+            parts.append("\"dayOfMonth\":" + iot_json_str(u0))
+        if input.dayOfWeek.is_some():
+            auto u1 = input.dayOfWeek.unwrap()
+            parts.append("\"dayOfWeek\":" + u1.to_json())
+        list[str] e2 = []
+        for x2 in input.targetCheckNames:
+            e2.append(iot_json_str(x2))
+        parts.append("\"targetCheckNames\":" + iot_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateSecurityProfile  POST /security-profiles/{securityProfileName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ThrottlingException
+    def create_security_profile(self, CreateSecurityProfileRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["securityProfileName"] = input.securityProfileName
+        auto b = binding.HttpBinding(method="POST", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.securityProfileDescription.is_some():
+            auto u0 = input.securityProfileDescription.unwrap()
+            parts.append("\"securityProfileDescription\":" + iot_json_str(u0))
+        if input.behaviors.is_some():
+            auto u1 = input.behaviors.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(behavior_to_json(x2))
+            parts.append("\"behaviors\":" + iot_json_arr(e2))
+        if input.alertTargets.is_some():
+            auto u3 = input.alertTargets.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iot_json_str(k4) + ":" + u3[k4].to_json())
+            parts.append("\"alertTargets\":" + iot_json_obj(m4))
+        if input.additionalMetricsToRetain.is_some():
+            auto u5 = input.additionalMetricsToRetain.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(iot_json_str(x6))
+            parts.append("\"additionalMetricsToRetain\":" + iot_json_arr(e6))
+        if input.additionalMetricsToRetainV2.is_some():
+            auto u7 = input.additionalMetricsToRetainV2.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"additionalMetricsToRetainV2\":" + iot_json_arr(e8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e10))
+        if input.metricsExportConfig.is_some():
+            auto u11 = input.metricsExportConfig.unwrap()
+            parts.append("\"metricsExportConfig\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateStream  POST /streams/{streamId}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_stream(self, CreateStreamRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["streamId"] = input.streamId
+        auto b = binding.HttpBinding(method="POST", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.files:
+            e1.append(x1.to_json())
+        parts.append("\"files\":" + iot_json_arr(e1))
+        parts.append("\"roleArn\":" + iot_json_str(input.roleArn))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateThing  POST /things/{thingName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_thing(self, CreateThingRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingName"] = input.thingName
+        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingTypeName.is_some():
+            auto u0 = input.thingTypeName.unwrap()
+            parts.append("\"thingTypeName\":" + iot_json_str(u0))
+        if input.attributePayload.is_some():
+            auto u1 = input.attributePayload.unwrap()
+            parts.append("\"attributePayload\":" + attribute_payload_to_json(u1))
+        if input.billingGroupName.is_some():
+            auto u2 = input.billingGroupName.unwrap()
+            parts.append("\"billingGroupName\":" + iot_json_str(u2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateThingGroup  POST /thing-groups/{thingGroupName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ThrottlingException
+    def create_thing_group(self, CreateThingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingGroupName"] = input.thingGroupName
+        auto b = binding.HttpBinding(method="POST", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.parentGroupName.is_some():
+            auto u0 = input.parentGroupName.unwrap()
+            parts.append("\"parentGroupName\":" + iot_json_str(u0))
+        if input.thingGroupProperties.is_some():
+            auto u1 = input.thingGroupProperties.unwrap()
+            parts.append("\"thingGroupProperties\":" + thing_group_properties_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateThingType  POST /thing-types/{thingTypeName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_thing_type(self, CreateThingTypeRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingTypeName"] = input.thingTypeName
+        auto b = binding.HttpBinding(method="POST", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingTypeProperties.is_some():
+            auto u0 = input.thingTypeProperties.unwrap()
+            parts.append("\"thingTypeProperties\":" + thing_type_properties_to_json(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateTopicRuleDestination  POST /destinations
+    # errors: ConflictingResourceUpdateException, InternalException, InvalidRequestException, ResourceAlreadyExistsException, ServiceUnavailableException, UnauthorizedException
+    def create_topic_rule_destination(self, CreateTopicRuleDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"destinationConfiguration\":" + topic_rule_destination_configuration_to_json(input.destinationConfiguration))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # DeleteAuditSuppression  POST /audit/suppressions/delete
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException
@@ -7668,6 +9112,31 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
+    # GetPercentiles  POST /indices/percentiles
+    # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def get_percentiles(self, GetPercentilesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/indices/percentiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.indexName.is_some():
+            auto u0 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + iot_json_str(u0))
+        parts.append("\"queryString\":" + iot_json_str(input.queryString))
+        if input.aggregationField.is_some():
+            auto u1 = input.aggregationField.unwrap()
+            parts.append("\"aggregationField\":" + iot_json_str(u1))
+        if input.queryVersion.is_some():
+            auto u2 = input.queryVersion.unwrap()
+            parts.append("\"queryVersion\":" + iot_json_str(u2))
+        if input.percents.is_some():
+            auto u3 = input.percents.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(str(x4))
+            parts.append("\"percents\":" + iot_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # GetPolicy  GET /policies/{policyName}
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_policy(self, GetPolicyRequest input) -> str:
@@ -8323,6 +9792,22 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # RegisterThing  POST /things
+    # errors: ConflictingResourceUpdateException, InternalFailureException, InvalidRequestException, ResourceRegistrationFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def register_thing(self, RegisterThingRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/things", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"templateBody\":" + iot_json_str(input.templateBody))
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(iot_json_str(k1) + ":" + iot_json_str(u0[k1]))
+            parts.append("\"parameters\":" + iot_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # RejectCertificateTransfer  PATCH /reject-certificate-transfer/{certificateId}
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, TransferAlreadyCompletedException, UnauthorizedException
     def reject_certificate_transfer(self, RejectCertificateTransferRequest input) -> str:
@@ -8397,6 +9882,89 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # SetV2LoggingOptions  POST /v2LoggingOptions
+    # errors: InternalException, InvalidRequestException, ServiceUnavailableException
+    def set_v2_logging_options(self, SetV2LoggingOptionsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2LoggingOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + iot_json_str(u0))
+        if input.defaultLogLevel.is_some():
+            auto u1 = input.defaultLogLevel.unwrap()
+            parts.append("\"defaultLogLevel\":" + u1.to_json())
+        if input.disableAllLogs.is_some():
+            auto u2 = input.disableAllLogs.unwrap()
+            parts.append("\"disableAllLogs\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.eventConfigurations.is_some():
+            auto u3 = input.eventConfigurations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"eventConfigurations\":" + iot_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # StartAuditMitigationActionsTask  POST /audit/mitigationactions/tasks/{taskId}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, TaskAlreadyExistsException, ThrottlingException
+    def start_audit_mitigation_actions_task(self, StartAuditMitigationActionsTaskRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["taskId"] = input.taskId
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"target\":" + audit_mitigation_actions_task_target_to_json(input.target))
+        list[str] m0 = []
+        for k0 in sorted(input.auditCheckToActionsMapping.keys()):
+            list[str] e1 = []
+            for x1 in input.auditCheckToActionsMapping[k0]:
+                e1.append(iot_json_str(x1))
+            m0.append(iot_json_str(k0) + ":" + iot_json_arr(e1))
+        parts.append("\"auditCheckToActionsMapping\":" + iot_json_obj(m0))
+        parts.append("\"clientRequestToken\":" + iot_json_str(input.clientRequestToken))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # StartDetectMitigationActionsTask  PUT /detect/mitigationactions/tasks/{taskId}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, TaskAlreadyExistsException, ThrottlingException
+    def start_detect_mitigation_actions_task(self, StartDetectMitigationActionsTaskRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["taskId"] = input.taskId
+        auto b = binding.HttpBinding(method="PUT", path_template="/detect/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"target\":" + detect_mitigation_actions_task_target_to_json(input.target))
+        list[str] e0 = []
+        for x0 in input.actions:
+            e0.append(iot_json_str(x0))
+        parts.append("\"actions\":" + iot_json_arr(e0))
+        if input.violationEventOccurrenceRange.is_some():
+            auto u1 = input.violationEventOccurrenceRange.unwrap()
+            parts.append("\"violationEventOccurrenceRange\":" + u1.to_json())
+        if input.includeOnlyActiveViolations.is_some():
+            auto u2 = input.includeOnlyActiveViolations.unwrap()
+            parts.append("\"includeOnlyActiveViolations\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.includeSuppressedAlerts.is_some():
+            auto u3 = input.includeSuppressedAlerts.unwrap()
+            parts.append("\"includeSuppressedAlerts\":" + json.dumps(JsonValue.Bool(u3)))
+        parts.append("\"clientRequestToken\":" + iot_json_str(input.clientRequestToken))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # StartOnDemandAuditTask  POST /audit/tasks
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def start_on_demand_audit_task(self, StartOnDemandAuditTaskRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targetCheckNames:
+            e0.append(iot_json_str(x0))
+        parts.append("\"targetCheckNames\":" + iot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # StartThingRegistrationTask  POST /thing-registration-tasks
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException, UnauthorizedException
     def start_thing_registration_task(self, StartThingRegistrationTaskRequest input) -> str:
@@ -8415,6 +9983,80 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/thing-registration-tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
+    # TagResource  POST /tags
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + iot_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + iot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # TestAuthorization  POST /test-authorization
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def test_authorization(self, TestAuthorizationRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.clientId.is_some():
+            query["clientId"] = input.clientId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/test-authorization", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.principal.is_some():
+            auto u0 = input.principal.unwrap()
+            parts.append("\"principal\":" + iot_json_str(u0))
+        if input.cognitoIdentityPoolId.is_some():
+            auto u1 = input.cognitoIdentityPoolId.unwrap()
+            parts.append("\"cognitoIdentityPoolId\":" + iot_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.authInfos:
+            e2.append(auth_info_to_json(x2))
+        parts.append("\"authInfos\":" + iot_json_arr(e2))
+        if input.policyNamesToAdd.is_some():
+            auto u3 = input.policyNamesToAdd.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(iot_json_str(x4))
+            parts.append("\"policyNamesToAdd\":" + iot_json_arr(e4))
+        if input.policyNamesToSkip.is_some():
+            auto u5 = input.policyNamesToSkip.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(iot_json_str(x6))
+            parts.append("\"policyNamesToSkip\":" + iot_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # TestInvokeAuthorizer  POST /authorizer/{authorizerName}/test
+    # errors: InternalFailureException, InvalidRequestException, InvalidResponseException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def test_invoke_authorizer(self, TestInvokeAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["authorizerName"] = input.authorizerName
+        auto b = binding.HttpBinding(method="POST", path_template="/authorizer/{authorizerName}/test", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.token.is_some():
+            auto u0 = input.token.unwrap()
+            parts.append("\"token\":" + iot_json_str(u0))
+        if input.tokenSignature.is_some():
+            auto u1 = input.tokenSignature.unwrap()
+            parts.append("\"tokenSignature\":" + iot_json_str(u1))
+        if input.httpContext.is_some():
+            auto u2 = input.httpContext.unwrap()
+            parts.append("\"httpContext\":" + http_context_to_json(u2))
+        if input.mqttContext.is_some():
+            auto u3 = input.mqttContext.unwrap()
+            parts.append("\"mqttContext\":" + u3.to_json())
+        if input.tlsContext.is_some():
+            auto u4 = input.tlsContext.unwrap()
+            parts.append("\"tlsContext\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # TransferCertificate  PATCH /transfer-certificate/{certificateId}
     # errors: CertificateStateException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, TransferConflictException, UnauthorizedException
     def transfer_certificate(self, TransferCertificateRequest input) -> str:
@@ -8428,6 +10070,20 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # UntagResource  POST /untag
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + iot_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(iot_json_str(x0))
+        parts.append("\"tagKeys\":" + iot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # UpdateAuditSuppression  PATCH /audit/suppressions/update
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_audit_suppression(self, UpdateAuditSuppressionRequest input) -> str:
@@ -8435,6 +10091,35 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/audit/suppressions/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAuditSuppressionDocument(checkName=input.checkName, resourceIdentifier=input.resourceIdentifier, expirationDate=input.expirationDate, suppressIndefinitely=input.suppressIndefinitely, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateAuthorizer  PUT /authorizer/{authorizerName}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def update_authorizer(self, UpdateAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["authorizerName"] = input.authorizerName
+        auto b = binding.HttpBinding(method="PUT", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.authorizerFunctionArn.is_some():
+            auto u0 = input.authorizerFunctionArn.unwrap()
+            parts.append("\"authorizerFunctionArn\":" + iot_json_str(u0))
+        if input.tokenKeyName.is_some():
+            auto u1 = input.tokenKeyName.unwrap()
+            parts.append("\"tokenKeyName\":" + iot_json_str(u1))
+        if input.tokenSigningPublicKeys.is_some():
+            auto u2 = input.tokenSigningPublicKeys.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iot_json_str(k3) + ":" + iot_json_str(u2[k3]))
+            parts.append("\"tokenSigningPublicKeys\":" + iot_json_obj(m3))
+        if input.status.is_some():
+            auto u4 = input.status.unwrap()
+            parts.append("\"status\":" + u4.to_json())
+        if input.enableCachingForHttp.is_some():
+            auto u5 = input.enableCachingForHttp.unwrap()
+            parts.append("\"enableCachingForHttp\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # UpdateBillingGroup  PATCH /billing-groups/{billingGroupName}
@@ -8475,6 +10160,26 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/certificates/{certificateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
+    # UpdateCertificateProvider  PUT /certificate-providers/{certificateProviderName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def update_certificate_provider(self, UpdateCertificateProviderRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["certificateProviderName"] = input.certificateProviderName
+        auto b = binding.HttpBinding(method="PUT", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.lambdaFunctionArn.is_some():
+            auto u0 = input.lambdaFunctionArn.unwrap()
+            parts.append("\"lambdaFunctionArn\":" + iot_json_str(u0))
+        if input.accountDefaultForOperations.is_some():
+            auto u1 = input.accountDefaultForOperations.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(iot_json_str(x2))
+            parts.append("\"accountDefaultForOperations\":" + iot_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # UpdateCommand  PATCH /commands/{commandId}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_command(self, UpdateCommandRequest input) -> str:
@@ -8497,6 +10202,21 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # UpdateDimension  PATCH /dimensions/{name}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_dimension(self, UpdateDimensionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.stringValues:
+            e0.append(iot_json_str(x0))
+        parts.append("\"stringValues\":" + iot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # UpdateDomainConfiguration  PUT /domainConfigurations/{domainConfigurationName}
     # errors: CertificateValidationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def update_domain_configuration(self, UpdateDomainConfigurationRequest input) -> str:
@@ -8508,6 +10228,30 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # UpdateDynamicThingGroup  PATCH /dynamic-thing-groups/{thingGroupName}
+    # errors: InternalFailureException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, VersionConflictException
+    def update_dynamic_thing_group(self, UpdateDynamicThingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingGroupName"] = input.thingGroupName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"thingGroupProperties\":" + thing_group_properties_to_json(input.thingGroupProperties))
+        if input.expectedVersion.is_some():
+            auto u0 = input.expectedVersion.unwrap()
+            parts.append("\"expectedVersion\":" + str(u0))
+        if input.indexName.is_some():
+            auto u1 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + iot_json_str(u1))
+        if input.queryString.is_some():
+            auto u2 = input.queryString.unwrap()
+            parts.append("\"queryString\":" + iot_json_str(u2))
+        if input.queryVersion.is_some():
+            auto u3 = input.queryVersion.unwrap()
+            parts.append("\"queryVersion\":" + iot_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # UpdateEncryptionConfiguration  PATCH /encryption-configuration
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def update_encryption_configuration(self, UpdateEncryptionConfigurationRequest input) -> str:
@@ -8515,6 +10259,106 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/encryption-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEncryptionConfigurationDocument(encryptionType=input.encryptionType, kmsKeyArn=input.kmsKeyArn, kmsAccessRoleArn=input.kmsAccessRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateFleetMetric  PATCH /fleet-metric/{metricName}
+    # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, VersionConflictException
+    def update_fleet_metric(self, UpdateFleetMetricRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["metricName"] = input.metricName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.queryString.is_some():
+            auto u0 = input.queryString.unwrap()
+            parts.append("\"queryString\":" + iot_json_str(u0))
+        if input.aggregationType.is_some():
+            auto u1 = input.aggregationType.unwrap()
+            parts.append("\"aggregationType\":" + aggregation_type_to_json(u1))
+        if input.period.is_some():
+            auto u2 = input.period.unwrap()
+            parts.append("\"period\":" + str(u2))
+        if input.aggregationField.is_some():
+            auto u3 = input.aggregationField.unwrap()
+            parts.append("\"aggregationField\":" + iot_json_str(u3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u4))
+        if input.queryVersion.is_some():
+            auto u5 = input.queryVersion.unwrap()
+            parts.append("\"queryVersion\":" + iot_json_str(u5))
+        parts.append("\"indexName\":" + iot_json_str(input.indexName))
+        if input.unit.is_some():
+            auto u6 = input.unit.unwrap()
+            parts.append("\"unit\":" + u6.to_json())
+        if input.expectedVersion.is_some():
+            auto u7 = input.expectedVersion.unwrap()
+            parts.append("\"expectedVersion\":" + str(u7))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateIndexingConfiguration  POST /indexing/config
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def update_indexing_configuration(self, UpdateIndexingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/indexing/config", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingIndexingConfiguration.is_some():
+            auto u0 = input.thingIndexingConfiguration.unwrap()
+            parts.append("\"thingIndexingConfiguration\":" + thing_indexing_configuration_to_json(u0))
+        if input.thingGroupIndexingConfiguration.is_some():
+            auto u1 = input.thingGroupIndexingConfiguration.unwrap()
+            parts.append("\"thingGroupIndexingConfiguration\":" + thing_group_indexing_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateJob  PATCH /jobs/{jobId}
+    # errors: InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_job(self, UpdateJobRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.namespaceId.is_some():
+            query["namespaceId"] = input.namespaceId.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        if input.presignedUrlConfig.is_some():
+            auto u1 = input.presignedUrlConfig.unwrap()
+            parts.append("\"presignedUrlConfig\":" + u1.to_json())
+        if input.jobExecutionsRolloutConfig.is_some():
+            auto u2 = input.jobExecutionsRolloutConfig.unwrap()
+            parts.append("\"jobExecutionsRolloutConfig\":" + u2.to_json())
+        if input.abortConfig.is_some():
+            auto u3 = input.abortConfig.unwrap()
+            parts.append("\"abortConfig\":" + abort_config_to_json(u3))
+        if input.timeoutConfig.is_some():
+            auto u4 = input.timeoutConfig.unwrap()
+            parts.append("\"timeoutConfig\":" + u4.to_json())
+        if input.jobExecutionsRetryConfig.is_some():
+            auto u5 = input.jobExecutionsRetryConfig.unwrap()
+            parts.append("\"jobExecutionsRetryConfig\":" + job_executions_retry_config_to_json(u5))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateMitigationAction  PATCH /mitigationactions/actions/{actionName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_mitigation_action(self, UpdateMitigationActionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["actionName"] = input.actionName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + iot_json_str(u0))
+        if input.actionParams.is_some():
+            auto u1 = input.actionParams.unwrap()
+            parts.append("\"actionParams\":" + mitigation_action_params_to_json(u1))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # UpdatePackage  PATCH /packages/{packageName}
@@ -8543,6 +10387,39 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # UpdatePackageVersion  PATCH /packages/{packageName}/versions/{versionName}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_package_version(self, UpdatePackageVersionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["packageName"] = input.packageName
+        labels["versionName"] = input.versionName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        if input.attributes.is_some():
+            auto u1 = input.attributes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iot_json_str(k2) + ":" + iot_json_str(u1[k2]))
+            parts.append("\"attributes\":" + iot_json_obj(m2))
+        if input.artifact.is_some():
+            auto u3 = input.artifact.unwrap()
+            parts.append("\"artifact\":" + u3.to_json())
+        if input.action.is_some():
+            auto u4 = input.action.unwrap()
+            parts.append("\"action\":" + u4.to_json())
+        if input.recipe.is_some():
+            auto u5 = input.recipe.unwrap()
+            parts.append("\"recipe\":" + iot_json_str(u5))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # UpdateProvisioningTemplate  PATCH /provisioning-templates/{templateName}
     # errors: ConflictingResourceUpdateException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, UnauthorizedException
     def update_provisioning_template(self, UpdateProvisioningTemplateRequest input) -> str:
@@ -8565,6 +10442,190 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # UpdateScheduledAudit  PATCH /audit/scheduledaudits/{scheduledAuditName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_scheduled_audit(self, UpdateScheduledAuditRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["scheduledAuditName"] = input.scheduledAuditName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.frequency.is_some():
+            auto u0 = input.frequency.unwrap()
+            parts.append("\"frequency\":" + u0.to_json())
+        if input.dayOfMonth.is_some():
+            auto u1 = input.dayOfMonth.unwrap()
+            parts.append("\"dayOfMonth\":" + iot_json_str(u1))
+        if input.dayOfWeek.is_some():
+            auto u2 = input.dayOfWeek.unwrap()
+            parts.append("\"dayOfWeek\":" + u2.to_json())
+        if input.targetCheckNames.is_some():
+            auto u3 = input.targetCheckNames.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(iot_json_str(x4))
+            parts.append("\"targetCheckNames\":" + iot_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateSecurityProfile  PATCH /security-profiles/{securityProfileName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, VersionConflictException
+    def update_security_profile(self, UpdateSecurityProfileRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["securityProfileName"] = input.securityProfileName
+        dict[str, str] query = {}
+        if input.expectedVersion.is_some():
+            query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
+        auto b = binding.HttpBinding(method="PATCH", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.securityProfileDescription.is_some():
+            auto u0 = input.securityProfileDescription.unwrap()
+            parts.append("\"securityProfileDescription\":" + iot_json_str(u0))
+        if input.behaviors.is_some():
+            auto u1 = input.behaviors.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(behavior_to_json(x2))
+            parts.append("\"behaviors\":" + iot_json_arr(e2))
+        if input.alertTargets.is_some():
+            auto u3 = input.alertTargets.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iot_json_str(k4) + ":" + u3[k4].to_json())
+            parts.append("\"alertTargets\":" + iot_json_obj(m4))
+        if input.additionalMetricsToRetain.is_some():
+            auto u5 = input.additionalMetricsToRetain.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(iot_json_str(x6))
+            parts.append("\"additionalMetricsToRetain\":" + iot_json_arr(e6))
+        if input.additionalMetricsToRetainV2.is_some():
+            auto u7 = input.additionalMetricsToRetainV2.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"additionalMetricsToRetainV2\":" + iot_json_arr(e8))
+        if input.deleteBehaviors.is_some():
+            auto u9 = input.deleteBehaviors.unwrap()
+            parts.append("\"deleteBehaviors\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.deleteAlertTargets.is_some():
+            auto u10 = input.deleteAlertTargets.unwrap()
+            parts.append("\"deleteAlertTargets\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.deleteAdditionalMetricsToRetain.is_some():
+            auto u11 = input.deleteAdditionalMetricsToRetain.unwrap()
+            parts.append("\"deleteAdditionalMetricsToRetain\":" + json.dumps(JsonValue.Bool(u11)))
+        if input.metricsExportConfig.is_some():
+            auto u12 = input.metricsExportConfig.unwrap()
+            parts.append("\"metricsExportConfig\":" + u12.to_json())
+        if input.deleteMetricsExportConfig.is_some():
+            auto u13 = input.deleteMetricsExportConfig.unwrap()
+            parts.append("\"deleteMetricsExportConfig\":" + json.dumps(JsonValue.Bool(u13)))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateStream  PUT /streams/{streamId}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def update_stream(self, UpdateStreamRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["streamId"] = input.streamId
+        auto b = binding.HttpBinding(method="PUT", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iot_json_str(u0))
+        if input.files.is_some():
+            auto u1 = input.files.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"files\":" + iot_json_arr(e2))
+        if input.roleArn.is_some():
+            auto u3 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + iot_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateThing  PATCH /things/{thingName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, VersionConflictException
+    def update_thing(self, UpdateThingRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingName"] = input.thingName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingTypeName.is_some():
+            auto u0 = input.thingTypeName.unwrap()
+            parts.append("\"thingTypeName\":" + iot_json_str(u0))
+        if input.attributePayload.is_some():
+            auto u1 = input.attributePayload.unwrap()
+            parts.append("\"attributePayload\":" + attribute_payload_to_json(u1))
+        if input.expectedVersion.is_some():
+            auto u2 = input.expectedVersion.unwrap()
+            parts.append("\"expectedVersion\":" + str(u2))
+        if input.removeThingType.is_some():
+            auto u3 = input.removeThingType.unwrap()
+            parts.append("\"removeThingType\":" + json.dumps(JsonValue.Bool(u3)))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateThingGroup  PATCH /thing-groups/{thingGroupName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, VersionConflictException
+    def update_thing_group(self, UpdateThingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingGroupName"] = input.thingGroupName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"thingGroupProperties\":" + thing_group_properties_to_json(input.thingGroupProperties))
+        if input.expectedVersion.is_some():
+            auto u0 = input.expectedVersion.unwrap()
+            parts.append("\"expectedVersion\":" + str(u0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateThingGroupsForThing  PUT /thing-groups/updateThingGroupsForThing
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_thing_groups_for_thing(self, UpdateThingGroupsForThingRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/updateThingGroupsForThing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingName.is_some():
+            auto u0 = input.thingName.unwrap()
+            parts.append("\"thingName\":" + iot_json_str(u0))
+        if input.thingGroupsToAdd.is_some():
+            auto u1 = input.thingGroupsToAdd.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(iot_json_str(x2))
+            parts.append("\"thingGroupsToAdd\":" + iot_json_arr(e2))
+        if input.thingGroupsToRemove.is_some():
+            auto u3 = input.thingGroupsToRemove.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(iot_json_str(x4))
+            parts.append("\"thingGroupsToRemove\":" + iot_json_arr(e4))
+        if input.overrideDynamicGroups.is_some():
+            auto u5 = input.overrideDynamicGroups.unwrap()
+            parts.append("\"overrideDynamicGroups\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # UpdateThingType  PATCH /thing-types/{thingTypeName}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def update_thing_type(self, UpdateThingTypeRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingTypeName"] = input.thingTypeName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.thingTypeProperties.is_some():
+            auto u0 = input.thingTypeProperties.unwrap()
+            parts.append("\"thingTypeProperties\":" + thing_type_properties_to_json(u0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # UpdateTopicRuleDestination  PATCH /destinations
     # errors: ConflictingResourceUpdateException, InternalException, InvalidRequestException, ServiceUnavailableException, UnauthorizedException
     def update_topic_rule_destination(self, UpdateTopicRuleDestinationRequest input) -> str:
@@ -8572,6 +10633,19 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTopicRuleDestinationDocument(arn=input.arn, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # ValidateSecurityProfileBehaviors  POST /security-profile-behaviors/validate
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def validate_security_profile_behaviors(self, ValidateSecurityProfileBehaviorsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/security-profile-behaviors/validate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.behaviors:
+            e0.append(behavior_to_json(x0))
+        parts.append("\"behaviors\":" + iot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # Paginator for GetBehaviorModelTrainingSummaries — yields each Response page, threading the

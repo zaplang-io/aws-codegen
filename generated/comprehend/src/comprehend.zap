@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 85 operations — 58 with a generated method,
-#   27 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 85 operations — 85 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   291 structs (178 @derive(Json)), 34 enums, 16 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The Comprehend awsJson protocol: version 1.1, API id "Comprehend_20171127".
 def comprehend_protocol() -> awsjson.AwsJson:
@@ -400,8 +401,9 @@ enum ToxicContentType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) AttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AugmentedManifestsListItem:
     str S3Uri
     Optional[Split] Split
@@ -410,55 +412,64 @@ struct AugmentedManifestsListItem:
     Optional[str] SourceDocumentsS3Uri
     Optional[AugmentedManifestsDocumentTypeFormat] DocumentType
 
-# no @derive(Json): member(s) Languages: list[DominantLanguage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Languages: list[DominantLanguage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectDominantLanguageItemResult:
     Optional[int64] Index
     Optional[list[DominantLanguage]] Languages
 
-# no @derive(Json): member(s) TextList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectDominantLanguageRequest:
     list[str] TextList
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectDominantLanguageItemResult], ErrorList: list[BatchItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[BatchDetectDominantLanguageItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectDominantLanguageResponse:
     list[BatchDetectDominantLanguageItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) Entities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectEntitiesItemResult:
     Optional[int64] Index
     Optional[list[Entity]] Entities
 
-# no @derive(Json): member(s) TextList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectEntitiesRequest:
     list[str] TextList
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectEntitiesItemResult], ErrorList: list[BatchItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[BatchDetectEntitiesItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectEntitiesResponse:
     list[BatchDetectEntitiesItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) KeyPhrases: list[KeyPhrase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPhrases: list[KeyPhrase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectKeyPhrasesItemResult:
     Optional[int64] Index
     Optional[list[KeyPhrase]] KeyPhrases
 
-# no @derive(Json): member(s) TextList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectKeyPhrasesRequest:
     list[str] TextList
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectKeyPhrasesItemResult], ErrorList: list[BatchItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[BatchDetectKeyPhrasesItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectKeyPhrasesResponse:
     list[BatchDetectKeyPhrasesItemResult] ResultList
     list[BatchItemError] ErrorList
@@ -469,50 +480,58 @@ struct BatchDetectSentimentItemResult:
     Optional[SentimentType] Sentiment
     Optional[SentimentScore] SentimentScore
 
-# no @derive(Json): member(s) TextList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectSentimentRequest:
     list[str] TextList
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectSentimentItemResult], ErrorList: list[BatchItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[BatchDetectSentimentItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectSentimentResponse:
     list[BatchDetectSentimentItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) SyntaxTokens: list[SyntaxToken] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyntaxTokens: list[SyntaxToken] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectSyntaxItemResult:
     Optional[int64] Index
     Optional[list[SyntaxToken]] SyntaxTokens
 
-# no @derive(Json): member(s) TextList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectSyntaxRequest:
     list[str] TextList
     SyntaxLanguageCode LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectSyntaxItemResult], ErrorList: list[BatchItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[BatchDetectSyntaxItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectSyntaxResponse:
     list[BatchDetectSyntaxItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) Entities: list[TargetedSentimentEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[TargetedSentimentEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectTargetedSentimentItemResult:
     Optional[int64] Index
     Optional[list[TargetedSentimentEntity]] Entities
 
-# no @derive(Json): member(s) TextList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectTargetedSentimentRequest:
     list[str] TextList
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectTargetedSentimentItemResult], ErrorList: list[BatchItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[BatchDetectTargetedSentimentItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetectTargetedSentimentResponse:
     list[BatchDetectTargetedSentimentItemResult] ResultList
     list[BatchItemError] ErrorList
@@ -527,8 +546,9 @@ struct BatchItemError:
 struct BatchSizeLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Geometry: Geometry, Relationships: list[RelationshipsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry, Relationships: list[RelationshipsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Block:
     Optional[str] Id
     Optional[BlockType] BlockType
@@ -537,8 +557,9 @@ struct Block:
     Optional[Geometry] Geometry
     Optional[list[RelationshipsListItem]] Relationships
 
-# no @derive(Json): member(s) ChildBlocks: list[ChildBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChildBlocks: list[ChildBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BlockReference:
     Optional[str] BlockId
     Optional[int64] BeginOffset
@@ -576,16 +597,18 @@ struct ClassifierMetadata:
     Optional[int64] NumberOfTestDocuments
     Optional[ClassifierEvaluationMetrics] EvaluationMetrics
 
-# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClassifyDocumentRequest:
     Optional[str] Text
     str EndpointArn
     Optional[bytes] Bytes
     Optional[DocumentReaderConfig] DocumentReaderConfig
 
-# no @derive(Json): member(s) Classes: list[DocumentClass], Labels: list[DocumentLabel], DocumentMetadata: DocumentMetadata, DocumentType: list[DocumentTypeListItem], Errors: list[ErrorsListItem], Warnings: list[WarningsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Classes: list[DocumentClass], Labels: list[DocumentLabel], DocumentMetadata: DocumentMetadata, DocumentType: list[DocumentTypeListItem], Errors: list[ErrorsListItem], Warnings: list[WarningsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClassifyDocumentResponse:
     Optional[list[DocumentClass]] Classes
     Optional[list[DocumentLabel]] Labels
@@ -603,13 +626,15 @@ struct ContainsPiiEntitiesRequest:
     str Text
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) Labels: list[EntityLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[EntityLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainsPiiEntitiesResponse:
     Optional[list[EntityLabel]] Labels
 
-# no @derive(Json): member(s) InputDataConfig: DatasetInputDataConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: DatasetInputDataConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetRequest:
     str FlywheelArn
     str DatasetName
@@ -623,8 +648,9 @@ struct CreateDatasetRequest:
 struct CreateDatasetResponse:
     Optional[str] DatasetArn
 
-# no @derive(Json): member(s) Tags: list[Tag], InputDataConfig: DocumentClassifierInputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], InputDataConfig: DocumentClassifierInputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDocumentClassifierRequest:
     str DocumentClassifierName
     Optional[str] VersionName
@@ -644,8 +670,9 @@ struct CreateDocumentClassifierRequest:
 struct CreateDocumentClassifierResponse:
     Optional[str] DocumentClassifierArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointRequest:
     str EndpointName
     Optional[str] ModelArn
@@ -660,8 +687,9 @@ struct CreateEndpointResponse:
     Optional[str] EndpointArn
     Optional[str] ModelArn
 
-# no @derive(Json): member(s) Tags: list[Tag], InputDataConfig: EntityRecognizerInputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], InputDataConfig: EntityRecognizerInputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEntityRecognizerRequest:
     str RecognizerName
     Optional[str] VersionName
@@ -679,8 +707,9 @@ struct CreateEntityRecognizerRequest:
 struct CreateEntityRecognizerResponse:
     Optional[str] EntityRecognizerArn
 
-# no @derive(Json): member(s) TaskConfig: TaskConfig, DataSecurityConfig: DataSecurityConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskConfig: TaskConfig, DataSecurityConfig: DataSecurityConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFlywheelRequest:
     str FlywheelName
     Optional[str] ActiveModelArn
@@ -697,16 +726,18 @@ struct CreateFlywheelResponse:
     Optional[str] FlywheelArn
     Optional[str] ActiveModelArn
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSecurityConfig:
     Optional[str] ModelKmsKeyId
     Optional[str] VolumeKmsKeyId
     Optional[str] DataLakeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-# no @derive(Json): member(s) AttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetAugmentedManifestsListItem:
     list[str] AttributeNames
     str S3Uri
@@ -745,8 +776,9 @@ struct DatasetFilter:
     Optional[DateTime] CreationTimeAfter
     Optional[DateTime] CreationTimeBefore
 
-# no @derive(Json): member(s) AugmentedManifests: list[DatasetAugmentedManifestsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AugmentedManifests: list[DatasetAugmentedManifestsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetInputDataConfig:
     Optional[list[DatasetAugmentedManifestsListItem]] AugmentedManifests
     Optional[DatasetDataFormat] DataFormat
@@ -824,8 +856,9 @@ struct DescribeDatasetResponse:
 struct DescribeDocumentClassificationJobRequest:
     str JobId
 
-# no @derive(Json): member(s) DocumentClassificationJobProperties: DocumentClassificationJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentClassificationJobProperties: DocumentClassificationJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDocumentClassificationJobResponse:
     Optional[DocumentClassificationJobProperties] DocumentClassificationJobProperties
 
@@ -833,8 +866,9 @@ struct DescribeDocumentClassificationJobResponse:
 struct DescribeDocumentClassifierRequest:
     str DocumentClassifierArn
 
-# no @derive(Json): member(s) DocumentClassifierProperties: DocumentClassifierProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentClassifierProperties: DocumentClassifierProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDocumentClassifierResponse:
     Optional[DocumentClassifierProperties] DocumentClassifierProperties
 
@@ -842,8 +876,9 @@ struct DescribeDocumentClassifierResponse:
 struct DescribeDominantLanguageDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) DominantLanguageDetectionJobProperties: DominantLanguageDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DominantLanguageDetectionJobProperties: DominantLanguageDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDominantLanguageDetectionJobResponse:
     Optional[DominantLanguageDetectionJobProperties] DominantLanguageDetectionJobProperties
 
@@ -859,8 +894,9 @@ struct DescribeEndpointResponse:
 struct DescribeEntitiesDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) EntitiesDetectionJobProperties: EntitiesDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitiesDetectionJobProperties: EntitiesDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEntitiesDetectionJobResponse:
     Optional[EntitiesDetectionJobProperties] EntitiesDetectionJobProperties
 
@@ -868,8 +904,9 @@ struct DescribeEntitiesDetectionJobResponse:
 struct DescribeEntityRecognizerRequest:
     str EntityRecognizerArn
 
-# no @derive(Json): member(s) EntityRecognizerProperties: EntityRecognizerProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityRecognizerProperties: EntityRecognizerProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEntityRecognizerResponse:
     Optional[EntityRecognizerProperties] EntityRecognizerProperties
 
@@ -877,8 +914,9 @@ struct DescribeEntityRecognizerResponse:
 struct DescribeEventsDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) EventsDetectionJobProperties: EventsDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventsDetectionJobProperties: EventsDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventsDetectionJobResponse:
     Optional[EventsDetectionJobProperties] EventsDetectionJobProperties
 
@@ -895,8 +933,9 @@ struct DescribeFlywheelIterationResponse:
 struct DescribeFlywheelRequest:
     str FlywheelArn
 
-# no @derive(Json): member(s) FlywheelProperties: FlywheelProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlywheelProperties: FlywheelProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlywheelResponse:
     Optional[FlywheelProperties] FlywheelProperties
 
@@ -904,8 +943,9 @@ struct DescribeFlywheelResponse:
 struct DescribeKeyPhrasesDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) KeyPhrasesDetectionJobProperties: KeyPhrasesDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPhrasesDetectionJobProperties: KeyPhrasesDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeyPhrasesDetectionJobResponse:
     Optional[KeyPhrasesDetectionJobProperties] KeyPhrasesDetectionJobProperties
 
@@ -913,8 +953,9 @@ struct DescribeKeyPhrasesDetectionJobResponse:
 struct DescribePiiEntitiesDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) PiiEntitiesDetectionJobProperties: PiiEntitiesDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PiiEntitiesDetectionJobProperties: PiiEntitiesDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePiiEntitiesDetectionJobResponse:
     Optional[PiiEntitiesDetectionJobProperties] PiiEntitiesDetectionJobProperties
 
@@ -933,8 +974,9 @@ struct DescribeResourcePolicyResponse:
 struct DescribeSentimentDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) SentimentDetectionJobProperties: SentimentDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SentimentDetectionJobProperties: SentimentDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSentimentDetectionJobResponse:
     Optional[SentimentDetectionJobProperties] SentimentDetectionJobProperties
 
@@ -942,8 +984,9 @@ struct DescribeSentimentDetectionJobResponse:
 struct DescribeTargetedSentimentDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) TargetedSentimentDetectionJobProperties: TargetedSentimentDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetedSentimentDetectionJobProperties: TargetedSentimentDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTargetedSentimentDetectionJobResponse:
     Optional[TargetedSentimentDetectionJobProperties] TargetedSentimentDetectionJobProperties
 
@@ -951,8 +994,9 @@ struct DescribeTargetedSentimentDetectionJobResponse:
 struct DescribeTopicsDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) TopicsDetectionJobProperties: TopicsDetectionJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicsDetectionJobProperties: TopicsDetectionJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTopicsDetectionJobResponse:
     Optional[TopicsDetectionJobProperties] TopicsDetectionJobProperties
 
@@ -960,13 +1004,15 @@ struct DescribeTopicsDetectionJobResponse:
 struct DetectDominantLanguageRequest:
     str Text
 
-# no @derive(Json): member(s) Languages: list[DominantLanguage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Languages: list[DominantLanguage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectDominantLanguageResponse:
     Optional[list[DominantLanguage]] Languages
 
-# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectEntitiesRequest:
     Optional[str] Text
     Optional[LanguageCode] LanguageCode
@@ -974,8 +1020,9 @@ struct DetectEntitiesRequest:
     Optional[bytes] Bytes
     Optional[DocumentReaderConfig] DocumentReaderConfig
 
-# no @derive(Json): member(s) Entities: list[Entity], DocumentMetadata: DocumentMetadata, DocumentType: list[DocumentTypeListItem], Blocks: list[Block], Errors: list[ErrorsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[Entity], DocumentMetadata: DocumentMetadata, DocumentType: list[DocumentTypeListItem], Blocks: list[Block], Errors: list[ErrorsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectEntitiesResponse:
     Optional[list[Entity]] Entities
     Optional[DocumentMetadata] DocumentMetadata
@@ -988,8 +1035,9 @@ struct DetectKeyPhrasesRequest:
     str Text
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) KeyPhrases: list[KeyPhrase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPhrases: list[KeyPhrase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectKeyPhrasesResponse:
     Optional[list[KeyPhrase]] KeyPhrases
 
@@ -998,8 +1046,9 @@ struct DetectPiiEntitiesRequest:
     str Text
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) Entities: list[PiiEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[PiiEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectPiiEntitiesResponse:
     Optional[list[PiiEntity]] Entities
 
@@ -1018,8 +1067,9 @@ struct DetectSyntaxRequest:
     str Text
     SyntaxLanguageCode LanguageCode
 
-# no @derive(Json): member(s) SyntaxTokens: list[SyntaxToken] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyntaxTokens: list[SyntaxToken] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectSyntaxResponse:
     Optional[list[SyntaxToken]] SyntaxTokens
 
@@ -1028,19 +1078,22 @@ struct DetectTargetedSentimentRequest:
     str Text
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) Entities: list[TargetedSentimentEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[TargetedSentimentEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectTargetedSentimentResponse:
     Optional[list[TargetedSentimentEntity]] Entities
 
-# no @derive(Json): member(s) TextSegments: list[TextSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextSegments: list[TextSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectToxicContentRequest:
     list[TextSegment] TextSegments
     LanguageCode LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[ToxicLabels] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultList: list[ToxicLabels] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectToxicContentResponse:
     Optional[list[ToxicLabels]] ResultList
 
@@ -1050,8 +1103,9 @@ struct DocumentClass:
     Optional[float64] Score
     Optional[int64] Page
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentClassificationConfig:
     DocumentClassifierMode Mode
     Optional[list[str]] Labels
@@ -1063,8 +1117,9 @@ struct DocumentClassificationJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentClassificationJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1093,8 +1148,9 @@ struct DocumentClassifierFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) AugmentedManifests: list[AugmentedManifestsListItem], DocumentReaderConfig: DocumentReaderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AugmentedManifests: list[AugmentedManifestsListItem], DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentClassifierInputDataConfig:
     Optional[DocumentClassifierDataFormat] DataFormat
     Optional[str] S3Uri
@@ -1111,8 +1167,9 @@ struct DocumentClassifierOutputDataConfig:
     Optional[str] KmsKeyId
     Optional[str] FlywheelStatsS3Prefix
 
-# no @derive(Json): member(s) InputDataConfig: DocumentClassifierInputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: DocumentClassifierInputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentClassifierProperties:
     Optional[str] DocumentClassifierArn
     Optional[LanguageCode] LanguageCode
@@ -1148,14 +1205,16 @@ struct DocumentLabel:
     Optional[float64] Score
     Optional[int64] Page
 
-# no @derive(Json): member(s) ExtractedCharacters: list[ExtractedCharactersListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtractedCharacters: list[ExtractedCharactersListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentMetadata:
     Optional[int64] Pages
     Optional[list[ExtractedCharactersListItem]] ExtractedCharacters
 
-# no @derive(Json): member(s) FeatureTypes: list[DocumentReadFeatureTypes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[DocumentReadFeatureTypes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentReaderConfig:
     DocumentReadAction DocumentReadAction
     Optional[DocumentReadMode] DocumentReadMode
@@ -1178,8 +1237,9 @@ struct DominantLanguageDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DominantLanguageDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1223,8 +1283,9 @@ struct EntitiesDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntitiesDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1242,8 +1303,9 @@ struct EntitiesDetectionJobProperties:
     Optional[VpcConfig] VpcConfig
     Optional[str] FlywheelArn
 
-# no @derive(Json): member(s) BlockReferences: list[BlockReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockReferences: list[BlockReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Entity:
     Optional[float64] Score
     Optional[EntityType] Type
@@ -1257,8 +1319,9 @@ struct EntityLabel:
     Optional[PiiEntityType] Name
     Optional[float64] Score
 
-# no @derive(Json): member(s) EntityTypes: list[EntityTypesListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityTypes: list[EntityTypesListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityRecognitionConfig:
     list[EntityTypesListItem] EntityTypes
 
@@ -1290,8 +1353,9 @@ struct EntityRecognizerFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) EntityTypes: list[EntityTypesListItem], AugmentedManifests: list[AugmentedManifestsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityTypes: list[EntityTypesListItem], AugmentedManifests: list[AugmentedManifestsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityRecognizerInputDataConfig:
     Optional[EntityRecognizerDataFormat] DataFormat
     list[EntityTypesListItem] EntityTypes
@@ -1300,8 +1364,9 @@ struct EntityRecognizerInputDataConfig:
     Optional[EntityRecognizerEntityList] EntityList
     Optional[list[AugmentedManifestsListItem]] AugmentedManifests
 
-# no @derive(Json): member(s) EntityTypes: list[EntityRecognizerMetadataEntityTypesListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityTypes: list[EntityRecognizerMetadataEntityTypesListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityRecognizerMetadata:
     Optional[int64] NumberOfTrainedDocuments
     Optional[int64] NumberOfTestDocuments
@@ -1318,8 +1383,9 @@ struct EntityRecognizerMetadataEntityTypesListItem:
 struct EntityRecognizerOutputDataConfig:
     Optional[str] FlywheelStatsS3Prefix
 
-# no @derive(Json): member(s) InputDataConfig: EntityRecognizerInputDataConfig, RecognizerMetadata: EntityRecognizerMetadata, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: EntityRecognizerInputDataConfig, RecognizerMetadata: EntityRecognizerMetadata, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityRecognizerProperties:
     Optional[str] EntityRecognizerArn
     Optional[LanguageCode] LanguageCode
@@ -1371,8 +1437,9 @@ struct EventsDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, TargetEventTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, TargetEventTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventsDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1424,8 +1491,9 @@ struct FlywheelModelEvaluationMetrics:
     Optional[float64] AverageRecall
     Optional[float64] AverageAccuracy
 
-# no @derive(Json): member(s) TaskConfig: TaskConfig, DataSecurityConfig: DataSecurityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskConfig: TaskConfig, DataSecurityConfig: DataSecurityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlywheelProperties:
     Optional[str] FlywheelArn
     Optional[str] ActiveModelArn
@@ -1452,14 +1520,16 @@ struct FlywheelSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LatestFlywheelIteration
 
-# no @derive(Json): member(s) Polygon: list[Point] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[Point] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Geometry:
     Optional[BoundingBox] BoundingBox
     Optional[list[Point]] Polygon
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportModelRequest:
     str SourceModelArn
     Optional[str] ModelName
@@ -1472,8 +1542,9 @@ struct ImportModelRequest:
 struct ImportModelResponse:
     Optional[str] ModelArn
 
-# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDataConfig:
     str S3Uri
     Optional[InputFormat] InputFormat
@@ -1515,8 +1586,9 @@ struct KeyPhrasesDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyPhrasesDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1543,8 +1615,9 @@ struct ListDatasetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatasetPropertiesList: list[DatasetProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetPropertiesList: list[DatasetProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     Optional[list[DatasetProperties]] DatasetPropertiesList
     Optional[str] NextToken
@@ -1555,8 +1628,9 @@ struct ListDocumentClassificationJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentClassificationJobPropertiesList: list[DocumentClassificationJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentClassificationJobPropertiesList: list[DocumentClassificationJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentClassificationJobsResponse:
     Optional[list[DocumentClassificationJobProperties]] DocumentClassificationJobPropertiesList
     Optional[str] NextToken
@@ -1566,8 +1640,9 @@ struct ListDocumentClassifierSummariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentClassifierSummariesList: list[DocumentClassifierSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentClassifierSummariesList: list[DocumentClassifierSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentClassifierSummariesResponse:
     Optional[list[DocumentClassifierSummary]] DocumentClassifierSummariesList
     Optional[str] NextToken
@@ -1578,8 +1653,9 @@ struct ListDocumentClassifiersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentClassifierPropertiesList: list[DocumentClassifierProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentClassifierPropertiesList: list[DocumentClassifierProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentClassifiersResponse:
     Optional[list[DocumentClassifierProperties]] DocumentClassifierPropertiesList
     Optional[str] NextToken
@@ -1590,8 +1666,9 @@ struct ListDominantLanguageDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DominantLanguageDetectionJobPropertiesList: list[DominantLanguageDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DominantLanguageDetectionJobPropertiesList: list[DominantLanguageDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDominantLanguageDetectionJobsResponse:
     Optional[list[DominantLanguageDetectionJobProperties]] DominantLanguageDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1602,8 +1679,9 @@ struct ListEndpointsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EndpointPropertiesList: list[EndpointProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointPropertiesList: list[EndpointProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointsResponse:
     Optional[list[EndpointProperties]] EndpointPropertiesList
     Optional[str] NextToken
@@ -1614,8 +1692,9 @@ struct ListEntitiesDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EntitiesDetectionJobPropertiesList: list[EntitiesDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitiesDetectionJobPropertiesList: list[EntitiesDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntitiesDetectionJobsResponse:
     Optional[list[EntitiesDetectionJobProperties]] EntitiesDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1625,8 +1704,9 @@ struct ListEntityRecognizerSummariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EntityRecognizerSummariesList: list[EntityRecognizerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityRecognizerSummariesList: list[EntityRecognizerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntityRecognizerSummariesResponse:
     Optional[list[EntityRecognizerSummary]] EntityRecognizerSummariesList
     Optional[str] NextToken
@@ -1637,8 +1717,9 @@ struct ListEntityRecognizersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EntityRecognizerPropertiesList: list[EntityRecognizerProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityRecognizerPropertiesList: list[EntityRecognizerProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntityRecognizersResponse:
     Optional[list[EntityRecognizerProperties]] EntityRecognizerPropertiesList
     Optional[str] NextToken
@@ -1649,8 +1730,9 @@ struct ListEventsDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventsDetectionJobPropertiesList: list[EventsDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventsDetectionJobPropertiesList: list[EventsDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventsDetectionJobsResponse:
     Optional[list[EventsDetectionJobProperties]] EventsDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1662,8 +1744,9 @@ struct ListFlywheelIterationHistoryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlywheelIterationPropertiesList: list[FlywheelIterationProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlywheelIterationPropertiesList: list[FlywheelIterationProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlywheelIterationHistoryResponse:
     Optional[list[FlywheelIterationProperties]] FlywheelIterationPropertiesList
     Optional[str] NextToken
@@ -1674,8 +1757,9 @@ struct ListFlywheelsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlywheelSummaryList: list[FlywheelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlywheelSummaryList: list[FlywheelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlywheelsResponse:
     Optional[list[FlywheelSummary]] FlywheelSummaryList
     Optional[str] NextToken
@@ -1686,8 +1770,9 @@ struct ListKeyPhrasesDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) KeyPhrasesDetectionJobPropertiesList: list[KeyPhrasesDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPhrasesDetectionJobPropertiesList: list[KeyPhrasesDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeyPhrasesDetectionJobsResponse:
     Optional[list[KeyPhrasesDetectionJobProperties]] KeyPhrasesDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1698,8 +1783,9 @@ struct ListPiiEntitiesDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PiiEntitiesDetectionJobPropertiesList: list[PiiEntitiesDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PiiEntitiesDetectionJobPropertiesList: list[PiiEntitiesDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPiiEntitiesDetectionJobsResponse:
     Optional[list[PiiEntitiesDetectionJobProperties]] PiiEntitiesDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1710,8 +1796,9 @@ struct ListSentimentDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SentimentDetectionJobPropertiesList: list[SentimentDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SentimentDetectionJobPropertiesList: list[SentimentDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSentimentDetectionJobsResponse:
     Optional[list[SentimentDetectionJobProperties]] SentimentDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1720,8 +1807,9 @@ struct ListSentimentDetectionJobsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] ResourceArn
     Optional[list[Tag]] Tags
@@ -1732,8 +1820,9 @@ struct ListTargetedSentimentDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TargetedSentimentDetectionJobPropertiesList: list[TargetedSentimentDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetedSentimentDetectionJobPropertiesList: list[TargetedSentimentDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetedSentimentDetectionJobsResponse:
     Optional[list[TargetedSentimentDetectionJobProperties]] TargetedSentimentDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1744,8 +1833,9 @@ struct ListTopicsDetectionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TopicsDetectionJobPropertiesList: list[TopicsDetectionJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicsDetectionJobPropertiesList: list[TopicsDetectionJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicsDetectionJobsResponse:
     Optional[list[TopicsDetectionJobProperties]] TopicsDetectionJobPropertiesList
     Optional[str] NextToken
@@ -1772,8 +1862,9 @@ struct PiiEntitiesDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, RedactionConfig: RedactionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, RedactionConfig: RedactionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PiiEntitiesDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1816,15 +1907,17 @@ struct PutResourcePolicyRequest:
 struct PutResourcePolicyResponse:
     Optional[str] PolicyRevisionId
 
-# no @derive(Json): member(s) PiiEntityTypes: list[PiiEntityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PiiEntityTypes: list[PiiEntityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedactionConfig:
     Optional[list[PiiEntityType]] PiiEntityTypes
     Optional[PiiEntitiesDetectionMaskMode] MaskMode
     Optional[str] MaskCharacter
 
-# no @derive(Json): member(s) Ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelationshipsListItem:
     Optional[list[str]] Ids
     Optional[str] Type
@@ -1852,8 +1945,9 @@ struct SentimentDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SentimentDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -1876,8 +1970,9 @@ struct SentimentScore:
     Optional[float64] Neutral
     Optional[float64] Mixed
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDocumentClassificationJobRequest:
     Optional[str] JobName
     Optional[str] DocumentClassifierArn
@@ -1897,8 +1992,9 @@ struct StartDocumentClassificationJobResponse:
     Optional[JobStatus] JobStatus
     Optional[str] DocumentClassifierArn
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDominantLanguageDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -1915,8 +2011,9 @@ struct StartDominantLanguageDetectionJobResponse:
     Optional[str] JobArn
     Optional[JobStatus] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartEntitiesDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -1937,8 +2034,9 @@ struct StartEntitiesDetectionJobResponse:
     Optional[JobStatus] JobStatus
     Optional[str] EntityRecognizerArn
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, TargetEventTypes: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, TargetEventTypes: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartEventsDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -1965,8 +2063,9 @@ struct StartFlywheelIterationResponse:
     Optional[str] FlywheelArn
     Optional[str] FlywheelIterationId
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartKeyPhrasesDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -1984,8 +2083,9 @@ struct StartKeyPhrasesDetectionJobResponse:
     Optional[str] JobArn
     Optional[JobStatus] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, RedactionConfig: RedactionConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, RedactionConfig: RedactionConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartPiiEntitiesDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -2003,8 +2103,9 @@ struct StartPiiEntitiesDetectionJobResponse:
     Optional[str] JobArn
     Optional[JobStatus] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSentimentDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -2022,8 +2123,9 @@ struct StartSentimentDetectionJobResponse:
     Optional[str] JobArn
     Optional[JobStatus] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTargetedSentimentDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -2041,8 +2143,9 @@ struct StartTargetedSentimentDetectionJobResponse:
     Optional[str] JobArn
     Optional[JobStatus] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTopicsDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -2154,8 +2257,9 @@ struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -2172,8 +2276,9 @@ struct TargetedSentimentDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetedSentimentDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -2189,8 +2294,9 @@ struct TargetedSentimentDetectionJobProperties:
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-# no @derive(Json): member(s) DescriptiveMentionIndex: list[int64], Mentions: list[TargetedSentimentMention] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DescriptiveMentionIndex: list[int64], Mentions: list[TargetedSentimentMention] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetedSentimentEntity:
     Optional[list[int64]] DescriptiveMentionIndex
     Optional[list[TargetedSentimentMention]] Mentions
@@ -2205,8 +2311,9 @@ struct TargetedSentimentMention:
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
 
-# no @derive(Json): member(s) DocumentClassificationConfig: DocumentClassificationConfig, EntityRecognitionConfig: EntityRecognitionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentClassificationConfig: DocumentClassificationConfig, EntityRecognitionConfig: EntityRecognitionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskConfig:
     LanguageCode LanguageCode
     Optional[DocumentClassificationConfig] DocumentClassificationConfig
@@ -2239,8 +2346,9 @@ struct TopicsDetectionJobFilter:
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicsDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
@@ -2261,8 +2369,9 @@ struct ToxicContent:
     Optional[ToxicContentType] Name
     Optional[float64] Score
 
-# no @derive(Json): member(s) Labels: list[ToxicContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[ToxicContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToxicLabels:
     Optional[list[ToxicContent]] Labels
     Optional[float64] Toxicity
@@ -2271,8 +2380,9 @@ struct ToxicLabels:
 struct UnsupportedLanguageException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -2282,8 +2392,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataSecurityConfig:
     Optional[str] ModelKmsKeyId
     Optional[str] VolumeKmsKeyId
@@ -2301,21 +2412,24 @@ struct UpdateEndpointRequest:
 struct UpdateEndpointResponse:
     Optional[str] DesiredModelArn
 
-# no @derive(Json): member(s) DataSecurityConfig: UpdateDataSecurityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSecurityConfig: UpdateDataSecurityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlywheelRequest:
     str FlywheelArn
     Optional[str] ActiveModelArn
     Optional[str] DataAccessRoleArn
     Optional[UpdateDataSecurityConfig] DataSecurityConfig
 
-# no @derive(Json): member(s) FlywheelProperties: FlywheelProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlywheelProperties: FlywheelProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlywheelResponse:
     Optional[FlywheelProperties] FlywheelProperties
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] SecurityGroupIds
     list[str] Subnets
@@ -2387,46 +2501,922 @@ def comprehend_error_from_code(str code) -> ComprehendError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchDetectDominantLanguage (input BatchDetectDominantLanguageRequest)
-#   BatchDetectEntities (input BatchDetectEntitiesRequest)
-#   BatchDetectKeyPhrases (input BatchDetectKeyPhrasesRequest)
-#   BatchDetectSentiment (input BatchDetectSentimentRequest)
-#   BatchDetectSyntax (input BatchDetectSyntaxRequest)
-#   BatchDetectTargetedSentiment (input BatchDetectTargetedSentimentRequest)
-#   ClassifyDocument (input ClassifyDocumentRequest)
-#   CreateDataset (input CreateDatasetRequest)
-#   CreateDocumentClassifier (input CreateDocumentClassifierRequest)
-#   CreateEndpoint (input CreateEndpointRequest)
-#   CreateEntityRecognizer (input CreateEntityRecognizerRequest)
-#   CreateFlywheel (input CreateFlywheelRequest)
-#   DetectEntities (input DetectEntitiesRequest)
-#   DetectToxicContent (input DetectToxicContentRequest)
-#   ImportModel (input ImportModelRequest)
-#   StartDocumentClassificationJob (input StartDocumentClassificationJobRequest)
-#   StartDominantLanguageDetectionJob (input StartDominantLanguageDetectionJobRequest)
-#   StartEntitiesDetectionJob (input StartEntitiesDetectionJobRequest)
-#   StartEventsDetectionJob (input StartEventsDetectionJobRequest)
-#   StartKeyPhrasesDetectionJob (input StartKeyPhrasesDetectionJobRequest)
-#   StartPiiEntitiesDetectionJob (input StartPiiEntitiesDetectionJobRequest)
-#   StartSentimentDetectionJob (input StartSentimentDetectionJobRequest)
-#   StartTargetedSentimentDetectionJob (input StartTargetedSentimentDetectionJobRequest)
-#   StartTopicsDetectionJob (input StartTopicsDetectionJobRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateFlywheel (input UpdateFlywheelRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def comprehend_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def comprehend_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def comprehend_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AugmentedManifestsListItem to a compact JSON object (declaration order).
+def augmented_manifests_list_item_to_json(AugmentedManifestsListItem v) -> str:
+    list[str] parts = []
+    parts.append("\"S3Uri\":" + comprehend_json_str(v.S3Uri))
+    if v.Split.is_some():
+        auto u0 = v.Split.unwrap()
+        parts.append("\"Split\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.AttributeNames:
+        e1.append(comprehend_json_str(x1))
+    parts.append("\"AttributeNames\":" + comprehend_json_arr(e1))
+    if v.AnnotationDataS3Uri.is_some():
+        auto u2 = v.AnnotationDataS3Uri.unwrap()
+        parts.append("\"AnnotationDataS3Uri\":" + comprehend_json_str(u2))
+    if v.SourceDocumentsS3Uri.is_some():
+        auto u3 = v.SourceDocumentsS3Uri.unwrap()
+        parts.append("\"SourceDocumentsS3Uri\":" + comprehend_json_str(u3))
+    if v.DocumentType.is_some():
+        auto u4 = v.DocumentType.unwrap()
+        parts.append("\"DocumentType\":" + u4.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize BatchDetectDominantLanguageRequest to a compact JSON object (declaration order).
+def batch_detect_dominant_language_request_to_json(BatchDetectDominantLanguageRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextList:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TextList\":" + comprehend_json_arr(e0))
+    return comprehend_json_obj(parts)
+
+# Serialize BatchDetectEntitiesRequest to a compact JSON object (declaration order).
+def batch_detect_entities_request_to_json(BatchDetectEntitiesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextList:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TextList\":" + comprehend_json_arr(e0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize BatchDetectKeyPhrasesRequest to a compact JSON object (declaration order).
+def batch_detect_key_phrases_request_to_json(BatchDetectKeyPhrasesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextList:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TextList\":" + comprehend_json_arr(e0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize BatchDetectSentimentRequest to a compact JSON object (declaration order).
+def batch_detect_sentiment_request_to_json(BatchDetectSentimentRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextList:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TextList\":" + comprehend_json_arr(e0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize BatchDetectSyntaxRequest to a compact JSON object (declaration order).
+def batch_detect_syntax_request_to_json(BatchDetectSyntaxRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextList:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TextList\":" + comprehend_json_arr(e0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize BatchDetectTargetedSentimentRequest to a compact JSON object (declaration order).
+def batch_detect_targeted_sentiment_request_to_json(BatchDetectTargetedSentimentRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextList:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TextList\":" + comprehend_json_arr(e0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize ClassifyDocumentRequest to a compact JSON object (declaration order).
+def classify_document_request_to_json(ClassifyDocumentRequest v) -> str:
+    list[str] parts = []
+    if v.Text.is_some():
+        auto u0 = v.Text.unwrap()
+        parts.append("\"Text\":" + comprehend_json_str(u0))
+    parts.append("\"EndpointArn\":" + comprehend_json_str(v.EndpointArn))
+    if v.Bytes.is_some():
+        auto u1 = v.Bytes.unwrap()
+        parts.append("\"Bytes\":" + comprehend_json_str(base64.encode(u1)))
+    if v.DocumentReaderConfig.is_some():
+        auto u2 = v.DocumentReaderConfig.unwrap()
+        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u2))
+    return comprehend_json_obj(parts)
+
+# Serialize CreateDatasetRequest to a compact JSON object (declaration order).
+def create_dataset_request_to_json(CreateDatasetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FlywheelArn\":" + comprehend_json_str(v.FlywheelArn))
+    parts.append("\"DatasetName\":" + comprehend_json_str(v.DatasetName))
+    if v.DatasetType.is_some():
+        auto u0 = v.DatasetType.unwrap()
+        parts.append("\"DatasetType\":" + u0.to_json())
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + comprehend_json_str(u1))
+    parts.append("\"InputDataConfig\":" + dataset_input_data_config_to_json(v.InputDataConfig))
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e4))
+    return comprehend_json_obj(parts)
+
+# Serialize CreateDocumentClassifierRequest to a compact JSON object (declaration order).
+def create_document_classifier_request_to_json(CreateDocumentClassifierRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentClassifierName\":" + comprehend_json_str(v.DocumentClassifierName))
+    if v.VersionName.is_some():
+        auto u0 = v.VersionName.unwrap()
+        parts.append("\"VersionName\":" + comprehend_json_str(u0))
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e2))
+    parts.append("\"InputDataConfig\":" + document_classifier_input_data_config_to_json(v.InputDataConfig))
+    if v.OutputDataConfig.is_some():
+        auto u3 = v.OutputDataConfig.unwrap()
+        parts.append("\"OutputDataConfig\":" + u3.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u4 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u4))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.VolumeKmsKeyId.is_some():
+        auto u5 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u5))
+    if v.VpcConfig.is_some():
+        auto u6 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u6))
+    if v.Mode.is_some():
+        auto u7 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u7.to_json())
+    if v.ModelKmsKeyId.is_some():
+        auto u8 = v.ModelKmsKeyId.unwrap()
+        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u8))
+    if v.ModelPolicy.is_some():
+        auto u9 = v.ModelPolicy.unwrap()
+        parts.append("\"ModelPolicy\":" + comprehend_json_str(u9))
+    return comprehend_json_obj(parts)
+
+# Serialize CreateEndpointRequest to a compact JSON object (declaration order).
+def create_endpoint_request_to_json(CreateEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointName\":" + comprehend_json_str(v.EndpointName))
+    if v.ModelArn.is_some():
+        auto u0 = v.ModelArn.unwrap()
+        parts.append("\"ModelArn\":" + comprehend_json_str(u0))
+    parts.append("\"DesiredInferenceUnits\":" + str(v.DesiredInferenceUnits))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e3))
+    if v.DataAccessRoleArn.is_some():
+        auto u4 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(u4))
+    if v.FlywheelArn.is_some():
+        auto u5 = v.FlywheelArn.unwrap()
+        parts.append("\"FlywheelArn\":" + comprehend_json_str(u5))
+    return comprehend_json_obj(parts)
+
+# Serialize CreateEntityRecognizerRequest to a compact JSON object (declaration order).
+def create_entity_recognizer_request_to_json(CreateEntityRecognizerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RecognizerName\":" + comprehend_json_str(v.RecognizerName))
+    if v.VersionName.is_some():
+        auto u0 = v.VersionName.unwrap()
+        parts.append("\"VersionName\":" + comprehend_json_str(u0))
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e2))
+    parts.append("\"InputDataConfig\":" + entity_recognizer_input_data_config_to_json(v.InputDataConfig))
+    if v.ClientRequestToken.is_some():
+        auto u3 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u3))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.VolumeKmsKeyId.is_some():
+        auto u4 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u4))
+    if v.VpcConfig.is_some():
+        auto u5 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u5))
+    if v.ModelKmsKeyId.is_some():
+        auto u6 = v.ModelKmsKeyId.unwrap()
+        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u6))
+    if v.ModelPolicy.is_some():
+        auto u7 = v.ModelPolicy.unwrap()
+        parts.append("\"ModelPolicy\":" + comprehend_json_str(u7))
+    return comprehend_json_obj(parts)
+
+# Serialize CreateFlywheelRequest to a compact JSON object (declaration order).
+def create_flywheel_request_to_json(CreateFlywheelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FlywheelName\":" + comprehend_json_str(v.FlywheelName))
+    if v.ActiveModelArn.is_some():
+        auto u0 = v.ActiveModelArn.unwrap()
+        parts.append("\"ActiveModelArn\":" + comprehend_json_str(u0))
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.TaskConfig.is_some():
+        auto u1 = v.TaskConfig.unwrap()
+        parts.append("\"TaskConfig\":" + task_config_to_json(u1))
+    if v.ModelType.is_some():
+        auto u2 = v.ModelType.unwrap()
+        parts.append("\"ModelType\":" + u2.to_json())
+    parts.append("\"DataLakeS3Uri\":" + comprehend_json_str(v.DataLakeS3Uri))
+    if v.DataSecurityConfig.is_some():
+        auto u3 = v.DataSecurityConfig.unwrap()
+        parts.append("\"DataSecurityConfig\":" + data_security_config_to_json(u3))
+    if v.ClientRequestToken.is_some():
+        auto u4 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e6))
+    return comprehend_json_obj(parts)
+
+# Serialize DataSecurityConfig to a compact JSON object (declaration order).
+def data_security_config_to_json(DataSecurityConfig v) -> str:
+    list[str] parts = []
+    if v.ModelKmsKeyId.is_some():
+        auto u0 = v.ModelKmsKeyId.unwrap()
+        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u0))
+    if v.VolumeKmsKeyId.is_some():
+        auto u1 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u1))
+    if v.DataLakeKmsKeyId.is_some():
+        auto u2 = v.DataLakeKmsKeyId.unwrap()
+        parts.append("\"DataLakeKmsKeyId\":" + comprehend_json_str(u2))
+    if v.VpcConfig.is_some():
+        auto u3 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+    return comprehend_json_obj(parts)
+
+# Serialize DatasetAugmentedManifestsListItem to a compact JSON object (declaration order).
+def dataset_augmented_manifests_list_item_to_json(DatasetAugmentedManifestsListItem v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AttributeNames:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"AttributeNames\":" + comprehend_json_arr(e0))
+    parts.append("\"S3Uri\":" + comprehend_json_str(v.S3Uri))
+    if v.AnnotationDataS3Uri.is_some():
+        auto u1 = v.AnnotationDataS3Uri.unwrap()
+        parts.append("\"AnnotationDataS3Uri\":" + comprehend_json_str(u1))
+    if v.SourceDocumentsS3Uri.is_some():
+        auto u2 = v.SourceDocumentsS3Uri.unwrap()
+        parts.append("\"SourceDocumentsS3Uri\":" + comprehend_json_str(u2))
+    if v.DocumentType.is_some():
+        auto u3 = v.DocumentType.unwrap()
+        parts.append("\"DocumentType\":" + u3.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize DatasetInputDataConfig to a compact JSON object (declaration order).
+def dataset_input_data_config_to_json(DatasetInputDataConfig v) -> str:
+    list[str] parts = []
+    if v.AugmentedManifests.is_some():
+        auto u0 = v.AugmentedManifests.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dataset_augmented_manifests_list_item_to_json(x1))
+        parts.append("\"AugmentedManifests\":" + comprehend_json_arr(e1))
+    if v.DataFormat.is_some():
+        auto u2 = v.DataFormat.unwrap()
+        parts.append("\"DataFormat\":" + u2.to_json())
+    if v.DocumentClassifierInputDataConfig.is_some():
+        auto u3 = v.DocumentClassifierInputDataConfig.unwrap()
+        parts.append("\"DocumentClassifierInputDataConfig\":" + u3.to_json())
+    if v.EntityRecognizerInputDataConfig.is_some():
+        auto u4 = v.EntityRecognizerInputDataConfig.unwrap()
+        parts.append("\"EntityRecognizerInputDataConfig\":" + u4.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize DetectEntitiesRequest to a compact JSON object (declaration order).
+def detect_entities_request_to_json(DetectEntitiesRequest v) -> str:
+    list[str] parts = []
+    if v.Text.is_some():
+        auto u0 = v.Text.unwrap()
+        parts.append("\"Text\":" + comprehend_json_str(u0))
+    if v.LanguageCode.is_some():
+        auto u1 = v.LanguageCode.unwrap()
+        parts.append("\"LanguageCode\":" + u1.to_json())
+    if v.EndpointArn.is_some():
+        auto u2 = v.EndpointArn.unwrap()
+        parts.append("\"EndpointArn\":" + comprehend_json_str(u2))
+    if v.Bytes.is_some():
+        auto u3 = v.Bytes.unwrap()
+        parts.append("\"Bytes\":" + comprehend_json_str(base64.encode(u3)))
+    if v.DocumentReaderConfig.is_some():
+        auto u4 = v.DocumentReaderConfig.unwrap()
+        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u4))
+    return comprehend_json_obj(parts)
+
+# Serialize DetectToxicContentRequest to a compact JSON object (declaration order).
+def detect_toxic_content_request_to_json(DetectToxicContentRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextSegments:
+        e0.append(x0.to_json())
+    parts.append("\"TextSegments\":" + comprehend_json_arr(e0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    return comprehend_json_obj(parts)
+
+# Serialize DocumentClassificationConfig to a compact JSON object (declaration order).
+def document_classification_config_to_json(DocumentClassificationConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Mode\":" + v.Mode.to_json())
+    if v.Labels.is_some():
+        auto u0 = v.Labels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(comprehend_json_str(x1))
+        parts.append("\"Labels\":" + comprehend_json_arr(e1))
+    return comprehend_json_obj(parts)
+
+# Serialize DocumentClassifierInputDataConfig to a compact JSON object (declaration order).
+def document_classifier_input_data_config_to_json(DocumentClassifierInputDataConfig v) -> str:
+    list[str] parts = []
+    if v.DataFormat.is_some():
+        auto u0 = v.DataFormat.unwrap()
+        parts.append("\"DataFormat\":" + u0.to_json())
+    if v.S3Uri.is_some():
+        auto u1 = v.S3Uri.unwrap()
+        parts.append("\"S3Uri\":" + comprehend_json_str(u1))
+    if v.TestS3Uri.is_some():
+        auto u2 = v.TestS3Uri.unwrap()
+        parts.append("\"TestS3Uri\":" + comprehend_json_str(u2))
+    if v.LabelDelimiter.is_some():
+        auto u3 = v.LabelDelimiter.unwrap()
+        parts.append("\"LabelDelimiter\":" + comprehend_json_str(u3))
+    if v.AugmentedManifests.is_some():
+        auto u4 = v.AugmentedManifests.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(augmented_manifests_list_item_to_json(x5))
+        parts.append("\"AugmentedManifests\":" + comprehend_json_arr(e5))
+    if v.DocumentType.is_some():
+        auto u6 = v.DocumentType.unwrap()
+        parts.append("\"DocumentType\":" + u6.to_json())
+    if v.Documents.is_some():
+        auto u7 = v.Documents.unwrap()
+        parts.append("\"Documents\":" + u7.to_json())
+    if v.DocumentReaderConfig.is_some():
+        auto u8 = v.DocumentReaderConfig.unwrap()
+        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u8))
+    return comprehend_json_obj(parts)
+
+# Serialize DocumentReaderConfig to a compact JSON object (declaration order).
+def document_reader_config_to_json(DocumentReaderConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentReadAction\":" + v.DocumentReadAction.to_json())
+    if v.DocumentReadMode.is_some():
+        auto u0 = v.DocumentReadMode.unwrap()
+        parts.append("\"DocumentReadMode\":" + u0.to_json())
+    if v.FeatureTypes.is_some():
+        auto u1 = v.FeatureTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FeatureTypes\":" + comprehend_json_arr(e2))
+    return comprehend_json_obj(parts)
+
+# Serialize EntityRecognitionConfig to a compact JSON object (declaration order).
+def entity_recognition_config_to_json(EntityRecognitionConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EntityTypes:
+        e0.append(x0.to_json())
+    parts.append("\"EntityTypes\":" + comprehend_json_arr(e0))
+    return comprehend_json_obj(parts)
+
+# Serialize EntityRecognizerInputDataConfig to a compact JSON object (declaration order).
+def entity_recognizer_input_data_config_to_json(EntityRecognizerInputDataConfig v) -> str:
+    list[str] parts = []
+    if v.DataFormat.is_some():
+        auto u0 = v.DataFormat.unwrap()
+        parts.append("\"DataFormat\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.EntityTypes:
+        e1.append(x1.to_json())
+    parts.append("\"EntityTypes\":" + comprehend_json_arr(e1))
+    if v.Documents.is_some():
+        auto u2 = v.Documents.unwrap()
+        parts.append("\"Documents\":" + u2.to_json())
+    if v.Annotations.is_some():
+        auto u3 = v.Annotations.unwrap()
+        parts.append("\"Annotations\":" + u3.to_json())
+    if v.EntityList.is_some():
+        auto u4 = v.EntityList.unwrap()
+        parts.append("\"EntityList\":" + u4.to_json())
+    if v.AugmentedManifests.is_some():
+        auto u5 = v.AugmentedManifests.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(augmented_manifests_list_item_to_json(x6))
+        parts.append("\"AugmentedManifests\":" + comprehend_json_arr(e6))
+    return comprehend_json_obj(parts)
+
+# Serialize ImportModelRequest to a compact JSON object (declaration order).
+def import_model_request_to_json(ImportModelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceModelArn\":" + comprehend_json_str(v.SourceModelArn))
+    if v.ModelName.is_some():
+        auto u0 = v.ModelName.unwrap()
+        parts.append("\"ModelName\":" + comprehend_json_str(u0))
+    if v.VersionName.is_some():
+        auto u1 = v.VersionName.unwrap()
+        parts.append("\"VersionName\":" + comprehend_json_str(u1))
+    if v.ModelKmsKeyId.is_some():
+        auto u2 = v.ModelKmsKeyId.unwrap()
+        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u2))
+    if v.DataAccessRoleArn.is_some():
+        auto u3 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e5))
+    return comprehend_json_obj(parts)
+
+# Serialize InputDataConfig to a compact JSON object (declaration order).
+def input_data_config_to_json(InputDataConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"S3Uri\":" + comprehend_json_str(v.S3Uri))
+    if v.InputFormat.is_some():
+        auto u0 = v.InputFormat.unwrap()
+        parts.append("\"InputFormat\":" + u0.to_json())
+    if v.DocumentReaderConfig.is_some():
+        auto u1 = v.DocumentReaderConfig.unwrap()
+        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u1))
+    return comprehend_json_obj(parts)
+
+# Serialize RedactionConfig to a compact JSON object (declaration order).
+def redaction_config_to_json(RedactionConfig v) -> str:
+    list[str] parts = []
+    if v.PiiEntityTypes.is_some():
+        auto u0 = v.PiiEntityTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PiiEntityTypes\":" + comprehend_json_arr(e1))
+    if v.MaskMode.is_some():
+        auto u2 = v.MaskMode.unwrap()
+        parts.append("\"MaskMode\":" + u2.to_json())
+    if v.MaskCharacter.is_some():
+        auto u3 = v.MaskCharacter.unwrap()
+        parts.append("\"MaskCharacter\":" + comprehend_json_str(u3))
+    return comprehend_json_obj(parts)
+
+# Serialize StartDocumentClassificationJobRequest to a compact JSON object (declaration order).
+def start_document_classification_job_request_to_json(StartDocumentClassificationJobRequest v) -> str:
+    list[str] parts = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    if v.DocumentClassifierArn.is_some():
+        auto u1 = v.DocumentClassifierArn.unwrap()
+        parts.append("\"DocumentClassifierArn\":" + comprehend_json_str(u1))
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+    if v.VolumeKmsKeyId.is_some():
+        auto u3 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u3))
+    if v.VpcConfig.is_some():
+        auto u4 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e6))
+    if v.FlywheelArn.is_some():
+        auto u7 = v.FlywheelArn.unwrap()
+        parts.append("\"FlywheelArn\":" + comprehend_json_str(u7))
+    return comprehend_json_obj(parts)
+
+# Serialize StartDominantLanguageDetectionJobRequest to a compact JSON object (declaration order).
+def start_dominant_language_detection_job_request_to_json(StartDominantLanguageDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+    if v.VolumeKmsKeyId.is_some():
+        auto u2 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+    if v.VpcConfig.is_some():
+        auto u3 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e5))
+    return comprehend_json_obj(parts)
+
+# Serialize StartEntitiesDetectionJobRequest to a compact JSON object (declaration order).
+def start_entities_detection_job_request_to_json(StartEntitiesDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    if v.EntityRecognizerArn.is_some():
+        auto u1 = v.EntityRecognizerArn.unwrap()
+        parts.append("\"EntityRecognizerArn\":" + comprehend_json_str(u1))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+    if v.VolumeKmsKeyId.is_some():
+        auto u3 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u3))
+    if v.VpcConfig.is_some():
+        auto u4 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e6))
+    if v.FlywheelArn.is_some():
+        auto u7 = v.FlywheelArn.unwrap()
+        parts.append("\"FlywheelArn\":" + comprehend_json_str(u7))
+    return comprehend_json_obj(parts)
+
+# Serialize StartEventsDetectionJobRequest to a compact JSON object (declaration order).
+def start_events_detection_job_request_to_json(StartEventsDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.TargetEventTypes:
+        e2.append(comprehend_json_str(x2))
+    parts.append("\"TargetEventTypes\":" + comprehend_json_arr(e2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e4))
+    return comprehend_json_obj(parts)
+
+# Serialize StartKeyPhrasesDetectionJobRequest to a compact JSON object (declaration order).
+def start_key_phrases_detection_job_request_to_json(StartKeyPhrasesDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+    if v.VolumeKmsKeyId.is_some():
+        auto u2 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+    if v.VpcConfig.is_some():
+        auto u3 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e5))
+    return comprehend_json_obj(parts)
+
+# Serialize StartPiiEntitiesDetectionJobRequest to a compact JSON object (declaration order).
+def start_pii_entities_detection_job_request_to_json(StartPiiEntitiesDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"Mode\":" + v.Mode.to_json())
+    if v.RedactionConfig.is_some():
+        auto u0 = v.RedactionConfig.unwrap()
+        parts.append("\"RedactionConfig\":" + redaction_config_to_json(u0))
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u1 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u1))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e4))
+    return comprehend_json_obj(parts)
+
+# Serialize StartSentimentDetectionJobRequest to a compact JSON object (declaration order).
+def start_sentiment_detection_job_request_to_json(StartSentimentDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+    if v.VolumeKmsKeyId.is_some():
+        auto u2 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+    if v.VpcConfig.is_some():
+        auto u3 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e5))
+    return comprehend_json_obj(parts)
+
+# Serialize StartTargetedSentimentDetectionJobRequest to a compact JSON object (declaration order).
+def start_targeted_sentiment_detection_job_request_to_json(StartTargetedSentimentDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+    if v.VolumeKmsKeyId.is_some():
+        auto u2 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+    if v.VpcConfig.is_some():
+        auto u3 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e5))
+    return comprehend_json_obj(parts)
+
+# Serialize StartTopicsDetectionJobRequest to a compact JSON object (declaration order).
+def start_topics_detection_job_request_to_json(StartTopicsDetectionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + comprehend_json_str(u0))
+    if v.NumberOfTopics.is_some():
+        auto u1 = v.NumberOfTopics.unwrap()
+        parts.append("\"NumberOfTopics\":" + str(u1))
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+    if v.VolumeKmsKeyId.is_some():
+        auto u3 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u3))
+    if v.VpcConfig.is_some():
+        auto u4 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + comprehend_json_arr(e6))
+    return comprehend_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + comprehend_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + comprehend_json_arr(e0))
+    return comprehend_json_obj(parts)
+
+# Serialize TaskConfig to a compact JSON object (declaration order).
+def task_config_to_json(TaskConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.DocumentClassificationConfig.is_some():
+        auto u0 = v.DocumentClassificationConfig.unwrap()
+        parts.append("\"DocumentClassificationConfig\":" + document_classification_config_to_json(u0))
+    if v.EntityRecognitionConfig.is_some():
+        auto u1 = v.EntityRecognitionConfig.unwrap()
+        parts.append("\"EntityRecognitionConfig\":" + entity_recognition_config_to_json(u1))
+    return comprehend_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + comprehend_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"TagKeys\":" + comprehend_json_arr(e0))
+    return comprehend_json_obj(parts)
+
+# Serialize UpdateDataSecurityConfig to a compact JSON object (declaration order).
+def update_data_security_config_to_json(UpdateDataSecurityConfig v) -> str:
+    list[str] parts = []
+    if v.ModelKmsKeyId.is_some():
+        auto u0 = v.ModelKmsKeyId.unwrap()
+        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u0))
+    if v.VolumeKmsKeyId.is_some():
+        auto u1 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u1))
+    if v.VpcConfig.is_some():
+        auto u2 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u2))
+    return comprehend_json_obj(parts)
+
+# Serialize UpdateFlywheelRequest to a compact JSON object (declaration order).
+def update_flywheel_request_to_json(UpdateFlywheelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FlywheelArn\":" + comprehend_json_str(v.FlywheelArn))
+    if v.ActiveModelArn.is_some():
+        auto u0 = v.ActiveModelArn.unwrap()
+        parts.append("\"ActiveModelArn\":" + comprehend_json_str(u0))
+    if v.DataAccessRoleArn.is_some():
+        auto u1 = v.DataAccessRoleArn.unwrap()
+        parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(u1))
+    if v.DataSecurityConfig.is_some():
+        auto u2 = v.DataSecurityConfig.unwrap()
+        parts.append("\"DataSecurityConfig\":" + update_data_security_config_to_json(u2))
+    return comprehend_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(comprehend_json_str(x0))
+    parts.append("\"SecurityGroupIds\":" + comprehend_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Subnets:
+        e1.append(comprehend_json_str(x1))
+    parts.append("\"Subnets\":" + comprehend_json_arr(e1))
+    return comprehend_json_obj(parts)
 
 # A bound Comprehend client: credentials + region, threaded into every operation.
 struct ComprehendClient:
     core.Credentials creds
     str region
 
+    # BatchDetectDominantLanguage
+    # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException
+    def batch_detect_dominant_language(self, BatchDetectDominantLanguageRequest input) -> str:
+        auto body = batch_detect_dominant_language_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectDominantLanguage", body)
+
+    # BatchDetectEntities
+    # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def batch_detect_entities(self, BatchDetectEntitiesRequest input) -> str:
+        auto body = batch_detect_entities_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectEntities", body)
+
+    # BatchDetectKeyPhrases
+    # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def batch_detect_key_phrases(self, BatchDetectKeyPhrasesRequest input) -> str:
+        auto body = batch_detect_key_phrases_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectKeyPhrases", body)
+
+    # BatchDetectSentiment
+    # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def batch_detect_sentiment(self, BatchDetectSentimentRequest input) -> str:
+        auto body = batch_detect_sentiment_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectSentiment", body)
+
+    # BatchDetectSyntax
+    # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def batch_detect_syntax(self, BatchDetectSyntaxRequest input) -> str:
+        auto body = batch_detect_syntax_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectSyntax", body)
+
+    # BatchDetectTargetedSentiment
+    # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def batch_detect_targeted_sentiment(self, BatchDetectTargetedSentimentRequest input) -> str:
+        auto body = batch_detect_targeted_sentiment_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectTargetedSentiment", body)
+
+    # ClassifyDocument
+    # errors: InternalServerException, InvalidRequestException, ResourceUnavailableException, TextSizeLimitExceededException
+    def classify_document(self, ClassifyDocumentRequest input) -> str:
+        auto body = classify_document_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ClassifyDocument", body)
+
     # ContainsPiiEntities
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
     def contains_pii_entities(self, ContainsPiiEntitiesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ContainsPiiEntities", body)
+
+    # CreateDataset
+    # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, TooManyRequestsException, TooManyTagsException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto body = create_dataset_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateDataset", body)
+
+    # CreateDocumentClassifier
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, TooManyRequestsException, TooManyTagsException, UnsupportedLanguageException
+    def create_document_classifier(self, CreateDocumentClassifierRequest input) -> str:
+        auto body = create_document_classifier_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateDocumentClassifier", body)
+
+    # CreateEndpoint
+    # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
+    def create_endpoint(self, CreateEndpointRequest input) -> str:
+        auto body = create_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateEndpoint", body)
+
+    # CreateEntityRecognizer
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, TooManyRequestsException, TooManyTagsException, UnsupportedLanguageException
+    def create_entity_recognizer(self, CreateEntityRecognizerRequest input) -> str:
+        auto body = create_entity_recognizer_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateEntityRecognizer", body)
+
+    # CreateFlywheel
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException, UnsupportedLanguageException
+    def create_flywheel(self, CreateFlywheelRequest input) -> str:
+        auto body = create_flywheel_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateFlywheel", body)
 
     # DeleteDocumentClassifier
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException
@@ -2560,6 +3550,12 @@ struct ComprehendClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectDominantLanguage", body)
 
+    # DetectEntities
+    # errors: InternalServerException, InvalidRequestException, ResourceUnavailableException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def detect_entities(self, DetectEntitiesRequest input) -> str:
+        auto body = detect_entities_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectEntities", body)
+
     # DetectKeyPhrases
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
     def detect_key_phrases(self, DetectKeyPhrasesRequest input) -> str:
@@ -2589,6 +3585,18 @@ struct ComprehendClient:
     def detect_targeted_sentiment(self, DetectTargetedSentimentRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectTargetedSentiment", body)
+
+    # DetectToxicContent
+    # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
+    def detect_toxic_content(self, DetectToxicContentRequest input) -> str:
+        auto body = detect_toxic_content_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectToxicContent", body)
+
+    # ImportModel
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
+    def import_model(self, ImportModelRequest input) -> str:
+        auto body = import_model_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ImportModel", body)
 
     # ListDatasets
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
@@ -2704,11 +3712,65 @@ struct ComprehendClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "PutResourcePolicy", body)
 
+    # StartDocumentClassificationJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
+    def start_document_classification_job(self, StartDocumentClassificationJobRequest input) -> str:
+        auto body = start_document_classification_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartDocumentClassificationJob", body)
+
+    # StartDominantLanguageDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_dominant_language_detection_job(self, StartDominantLanguageDetectionJobRequest input) -> str:
+        auto body = start_dominant_language_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartDominantLanguageDetectionJob", body)
+
+    # StartEntitiesDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
+    def start_entities_detection_job(self, StartEntitiesDetectionJobRequest input) -> str:
+        auto body = start_entities_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartEntitiesDetectionJob", body)
+
+    # StartEventsDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_events_detection_job(self, StartEventsDetectionJobRequest input) -> str:
+        auto body = start_events_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartEventsDetectionJob", body)
+
     # StartFlywheelIteration
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, TooManyRequestsException
     def start_flywheel_iteration(self, StartFlywheelIterationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartFlywheelIteration", body)
+
+    # StartKeyPhrasesDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_key_phrases_detection_job(self, StartKeyPhrasesDetectionJobRequest input) -> str:
+        auto body = start_key_phrases_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartKeyPhrasesDetectionJob", body)
+
+    # StartPiiEntitiesDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_pii_entities_detection_job(self, StartPiiEntitiesDetectionJobRequest input) -> str:
+        auto body = start_pii_entities_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartPiiEntitiesDetectionJob", body)
+
+    # StartSentimentDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_sentiment_detection_job(self, StartSentimentDetectionJobRequest input) -> str:
+        auto body = start_sentiment_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartSentimentDetectionJob", body)
+
+    # StartTargetedSentimentDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_targeted_sentiment_detection_job(self, StartTargetedSentimentDetectionJobRequest input) -> str:
+        auto body = start_targeted_sentiment_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartTargetedSentimentDetectionJob", body)
+
+    # StartTopicsDetectionJob
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
+    def start_topics_detection_job(self, StartTopicsDetectionJobRequest input) -> str:
+        auto body = start_topics_detection_job_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartTopicsDetectionJob", body)
 
     # StopDominantLanguageDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
@@ -2764,11 +3826,29 @@ struct ComprehendClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopTrainingEntityRecognizer", body)
 
+    # TagResource
+    # errors: ConcurrentModificationException, InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ConcurrentModificationException, InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyTagKeysException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateEndpoint
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException
     def update_endpoint(self, UpdateEndpointRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "UpdateEndpoint", body)
+
+    # UpdateFlywheel
+    # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceNotFoundException, TooManyRequestsException
+    def update_flywheel(self, UpdateFlywheelRequest input) -> str:
+        auto body = update_flywheel_request_to_json(input)
+        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "UpdateFlywheel", body)
 
     # Paginator for ListDocumentClassificationJobs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: DocumentClassificationJobPropertiesList).

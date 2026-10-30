@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 12 operations — 7 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 12 operations — 12 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   45 structs (28 @derive(Json)), 8 enums, 6 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -114,8 +114,9 @@ struct Column:
     Optional[str] Type
     Optional[str] Description
 
-# no @derive(Json): member(s) Export: Export, ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Export: Export, ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExportRequest:
     Export Export
     Optional[list[ResourceTag]] ResourceTags
@@ -124,8 +125,9 @@ struct CreateExportRequest:
 struct CreateExportResponse:
     Optional[str] ExportArn
 
-# no @derive(Json): member(s) TableConfigurations: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableConfigurations: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQuery:
     str QueryStatement
     Optional[dict[str, dict[str, str]]] TableConfigurations
@@ -158,8 +160,9 @@ struct ExecutionStatus:
     @json(timestamp="iso8601")
     Optional[DateTime] LastUpdatedAt
 
-# no @derive(Json): member(s) DataQuery: DataQuery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataQuery: DataQuery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Export:
     Optional[str] ExportArn
     str Name
@@ -190,8 +193,9 @@ struct GetExecutionRequest:
     str ExportArn
     str ExecutionId
 
-# no @derive(Json): member(s) Export: Export not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Export: Export not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExecutionResponse:
     Optional[str] ExecutionId
     Optional[Export] Export
@@ -201,20 +205,23 @@ struct GetExecutionResponse:
 struct GetExportRequest:
     str ExportArn
 
-# no @derive(Json): member(s) Export: Export not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Export: Export not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExportResponse:
     Optional[Export] Export
     Optional[ExportStatus] ExportStatus
 
-# no @derive(Json): member(s) TableProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableRequest:
     str TableName
     Optional[dict[str, str]] TableProperties
 
-# no @derive(Json): member(s) TableProperties: dict[str, str], Schema: list[Column] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableProperties: dict[str, str], Schema: list[Column] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableResponse:
     Optional[str] TableName
     Optional[str] Description
@@ -231,8 +238,9 @@ struct ListExecutionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Executions: list[ExecutionReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Executions: list[ExecutionReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutionsResponse:
     Optional[list[ExecutionReference]] Executions
     Optional[str] NextToken
@@ -242,8 +250,9 @@ struct ListExportsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Exports: list[ExportReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Exports: list[ExportReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportsResponse:
     Optional[list[ExportReference]] Exports
     Optional[str] NextToken
@@ -253,8 +262,9 @@ struct ListTablesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tables: list[Table] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tables: list[Table] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTablesResponse:
     Optional[list[Table]] Tables
     Optional[str] NextToken
@@ -265,8 +275,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[ResourceTag]] ResourceTags
     Optional[str] NextToken
@@ -309,23 +320,26 @@ struct ServiceQuotaExceededException:
     str QuotaCode
     str ServiceCode
 
-# no @derive(Json): member(s) TableProperties: list[TablePropertyDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableProperties: list[TablePropertyDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Table:
     Optional[str] TableName
     Optional[str] Description
     Optional[list[TablePropertyDescription]] TableProperties
 
-# no @derive(Json): member(s) ValidValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TablePropertyDescription:
     Optional[str] Name
     Optional[list[str]] ValidValues
     Optional[str] DefaultValue
     Optional[str] Description
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[ResourceTag] ResourceTags
@@ -341,8 +355,9 @@ struct ThrottlingException:
     Optional[str] QuotaCode
     Optional[str] ServiceCode
 
-# no @derive(Json): member(s) ResourceTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] ResourceTagKeys
@@ -352,8 +367,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Export: Export not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Export: Export not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExportRequest:
     str ExportArn
     Export Export
@@ -362,8 +378,9 @@ struct UpdateExportRequest:
 struct UpdateExportResponse:
     Optional[str] ExportArn
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[ValidationExceptionReason] Reason
@@ -405,18 +422,127 @@ def bcm_data_exports_error_from_code(str code) -> BCM_Data_ExportsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateExport (input CreateExportRequest)
-#   GetTable (input GetTableRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateExport (input UpdateExportRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bcm_data_exports_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bcm_data_exports_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bcm_data_exports_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateExportRequest to a compact JSON object (declaration order).
+def create_export_request_to_json(CreateExportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Export\":" + export_to_json(v.Export))
+    if v.ResourceTags.is_some():
+        auto u0 = v.ResourceTags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ResourceTags\":" + bcm_data_exports_json_arr(e1))
+    return bcm_data_exports_json_obj(parts)
+
+# Serialize DataQuery to a compact JSON object (declaration order).
+def data_query_to_json(DataQuery v) -> str:
+    list[str] parts = []
+    parts.append("\"QueryStatement\":" + bcm_data_exports_json_str(v.QueryStatement))
+    if v.TableConfigurations.is_some():
+        auto u0 = v.TableConfigurations.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] m2 = []
+            for k2 in sorted(u0[k1].keys()):
+                m2.append(bcm_data_exports_json_str(k2) + ":" + bcm_data_exports_json_str(u0[k1][k2]))
+            m1.append(bcm_data_exports_json_str(k1) + ":" + bcm_data_exports_json_obj(m2))
+        parts.append("\"TableConfigurations\":" + bcm_data_exports_json_obj(m1))
+    return bcm_data_exports_json_obj(parts)
+
+# Serialize Export to a compact JSON object (declaration order).
+def export_to_json(Export v) -> str:
+    list[str] parts = []
+    if v.ExportArn.is_some():
+        auto u0 = v.ExportArn.unwrap()
+        parts.append("\"ExportArn\":" + bcm_data_exports_json_str(u0))
+    parts.append("\"Name\":" + bcm_data_exports_json_str(v.Name))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + bcm_data_exports_json_str(u1))
+    parts.append("\"DataQuery\":" + data_query_to_json(v.DataQuery))
+    parts.append("\"DestinationConfigurations\":" + v.DestinationConfigurations.to_json())
+    parts.append("\"RefreshCadence\":" + v.RefreshCadence.to_json())
+    return bcm_data_exports_json_obj(parts)
+
+# Serialize GetTableRequest to a compact JSON object (declaration order).
+def get_table_request_to_json(GetTableRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + bcm_data_exports_json_str(v.TableName))
+    if v.TableProperties.is_some():
+        auto u0 = v.TableProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bcm_data_exports_json_str(k1) + ":" + bcm_data_exports_json_str(u0[k1]))
+        parts.append("\"TableProperties\":" + bcm_data_exports_json_obj(m1))
+    return bcm_data_exports_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + bcm_data_exports_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTags:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTags\":" + bcm_data_exports_json_arr(e0))
+    return bcm_data_exports_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + bcm_data_exports_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTagKeys:
+        e0.append(bcm_data_exports_json_str(x0))
+    parts.append("\"ResourceTagKeys\":" + bcm_data_exports_json_arr(e0))
+    return bcm_data_exports_json_obj(parts)
+
+# Serialize UpdateExportRequest to a compact JSON object (declaration order).
+def update_export_request_to_json(UpdateExportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ExportArn\":" + bcm_data_exports_json_str(v.ExportArn))
+    parts.append("\"Export\":" + export_to_json(v.Export))
+    return bcm_data_exports_json_obj(parts)
 
 # A bound BCM_Data_Exports client: credentials + region, threaded into every operation.
 struct BCM_Data_ExportsClient:
     core.Credentials creds
     str region
+
+    # CreateExport
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_export(self, CreateExportRequest input) -> str:
+        auto body = create_export_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "CreateExport", body)
 
     # DeleteExport
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -435,6 +561,12 @@ struct BCM_Data_ExportsClient:
     def get_export(self, GetExportRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "GetExport", body)
+
+    # GetTable
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def get_table(self, GetTableRequest input) -> str:
+        auto body = get_table_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "GetTable", body)
 
     # ListExecutions
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -459,6 +591,24 @@ struct BCM_Data_ExportsClient:
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateExport
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_export(self, UpdateExportRequest input) -> str:
+        auto body = update_export_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_data_exports_protocol(), self.creds, self.region, "UpdateExport", body)
 
     # Paginator for ListExecutions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Executions).

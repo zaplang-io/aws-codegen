@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 35 operations — 27 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 35 operations — 35 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   95 structs (69 @derive(Json)), 9 enums, 7 error variants.
-#   6 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -156,8 +156,9 @@ struct CreateFlowTemplateRequest:
 struct CreateFlowTemplateResponse:
     Optional[FlowTemplateSummary] summary
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSystemInstanceRequest:
     Optional[list[Tag]] tags
     DefinitionDocument definition
@@ -284,8 +285,9 @@ struct EntityDescription:
     Optional[DateTime] createdAt
     Optional[DefinitionDocument] definition
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityFilter:
     Optional[EntityFilterName] name
     Optional[list[str]] value
@@ -312,8 +314,9 @@ struct FlowTemplateDescription:
     Optional[DefinitionDocument] definition
     Optional[int64] validatedNamespaceVersion
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowTemplateFilter:
     str name
     list[str] value
@@ -325,14 +328,16 @@ struct FlowTemplateSummary:
     Optional[int64] revisionNumber
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEntitiesRequest:
     list[str] ids
     Optional[int64] namespaceVersion
 
-# no @derive(Json): member(s) descriptions: list[EntityDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) descriptions: list[EntityDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEntitiesResponse:
     Optional[list[EntityDescription]] descriptions
 
@@ -351,8 +356,9 @@ struct GetFlowTemplateRevisionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[FlowTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[FlowTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFlowTemplateRevisionsResponse:
     Optional[list[FlowTemplateSummary]] summaries
     Optional[str] nextToken
@@ -374,8 +380,9 @@ struct GetNamespaceDeletionStatusResponse:
 struct GetSystemInstanceRequest:
     str id
 
-# no @derive(Json): member(s) description: SystemInstanceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) description: SystemInstanceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSystemInstanceResponse:
     Optional[SystemInstanceDescription] description
 
@@ -394,8 +401,9 @@ struct GetSystemTemplateRevisionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[SystemTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[SystemTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSystemTemplateRevisionsResponse:
     Optional[list[SystemTemplateSummary]] summaries
     Optional[str] nextToken
@@ -404,8 +412,9 @@ struct GetSystemTemplateRevisionsResponse:
 struct GetUploadStatusRequest:
     str uploadId
 
-# no @derive(Json): member(s) failureReason: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReason: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUploadStatusResponse:
     str uploadId
     UploadStatus uploadStatus
@@ -433,8 +442,9 @@ struct ListFlowExecutionMessagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) messages: list[FlowExecutionMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: list[FlowExecutionMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowExecutionMessagesResponse:
     Optional[list[FlowExecutionMessage]] messages
     Optional[str] nextToken
@@ -445,8 +455,9 @@ struct ListTagsForResourceRequest:
     str resourceArn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
     Optional[str] nextToken
@@ -468,8 +479,9 @@ struct ResourceInUseException:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) entityTypes: list[EntityType], filters: list[EntityFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityTypes: list[EntityType], filters: list[EntityFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchEntitiesRequest:
     list[EntityType] entityTypes
     Optional[list[EntityFilter]] filters
@@ -477,8 +489,9 @@ struct SearchEntitiesRequest:
     Optional[int64] maxResults
     Optional[int64] namespaceVersion
 
-# no @derive(Json): member(s) descriptions: list[EntityDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) descriptions: list[EntityDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchEntitiesResponse:
     Optional[list[EntityDescription]] descriptions
     Optional[str] nextToken
@@ -492,47 +505,54 @@ struct SearchFlowExecutionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[FlowExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[FlowExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFlowExecutionsResponse:
     Optional[list[FlowExecutionSummary]] summaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[FlowTemplateFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[FlowTemplateFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFlowTemplatesRequest:
     Optional[list[FlowTemplateFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[FlowTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[FlowTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFlowTemplatesResponse:
     Optional[list[FlowTemplateSummary]] summaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[SystemInstanceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[SystemInstanceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSystemInstancesRequest:
     Optional[list[SystemInstanceFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[SystemInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[SystemInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSystemInstancesResponse:
     Optional[list[SystemInstanceSummary]] summaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[SystemTemplateFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[SystemTemplateFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSystemTemplatesRequest:
     Optional[list[SystemTemplateFilter]] filters
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[SystemTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[SystemTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSystemTemplatesResponse:
     Optional[list[SystemTemplateSummary]] summaries
     Optional[str] nextToken
@@ -544,14 +564,16 @@ struct SearchThingsRequest:
     Optional[int64] maxResults
     Optional[int64] namespaceVersion
 
-# no @derive(Json): member(s) things: list[Thing] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) things: list[Thing] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchThingsResponse:
     Optional[list[Thing]] things
     Optional[str] nextToken
 
-# no @derive(Json): member(s) validatedDependencyRevisions: list[DependencyRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validatedDependencyRevisions: list[DependencyRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemInstanceDescription:
     Optional[SystemInstanceSummary] summary
     Optional[DefinitionDocument] definition
@@ -561,8 +583,9 @@ struct SystemInstanceDescription:
     Optional[list[DependencyRevision]] validatedDependencyRevisions
     Optional[str] flowActionsRoleArn
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemInstanceFilter:
     Optional[SystemInstanceFilterName] name
     Optional[list[str]] value
@@ -585,8 +608,9 @@ struct SystemTemplateDescription:
     Optional[DefinitionDocument] definition
     Optional[int64] validatedNamespaceVersion
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemTemplateFilter:
     str name
     list[str] value
@@ -603,8 +627,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -631,8 +656,9 @@ struct UndeploySystemInstanceRequest:
 struct UndeploySystemInstanceResponse:
     Optional[SystemInstanceSummary] summary
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -706,23 +732,215 @@ def iotthingsgraph_error_from_code(str code) -> IoTThingsGraphError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateSystemInstance (input CreateSystemInstanceRequest)
-#   GetEntities (input GetEntitiesRequest)
-#   SearchEntities (input SearchEntitiesRequest)
-#   SearchFlowTemplates (input SearchFlowTemplatesRequest)
-#   SearchSystemInstances (input SearchSystemInstancesRequest)
-#   SearchSystemTemplates (input SearchSystemTemplatesRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def iotthingsgraph_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   SearchEntities (input not derivable (no generated method))
-#   SearchFlowTemplates (input not derivable (no generated method))
-#   SearchSystemInstances (input not derivable (no generated method))
-#   SearchSystemTemplates (input not derivable (no generated method))
+def iotthingsgraph_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def iotthingsgraph_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateSystemInstanceRequest to a compact JSON object (declaration order).
+def create_system_instance_request_to_json(CreateSystemInstanceRequest v) -> str:
+    list[str] parts = []
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + iotthingsgraph_json_arr(e1))
+    parts.append("\"definition\":" + v.definition.to_json())
+    parts.append("\"target\":" + v.target.to_json())
+    if v.greengrassGroupName.is_some():
+        auto u2 = v.greengrassGroupName.unwrap()
+        parts.append("\"greengrassGroupName\":" + iotthingsgraph_json_str(u2))
+    if v.s3BucketName.is_some():
+        auto u3 = v.s3BucketName.unwrap()
+        parts.append("\"s3BucketName\":" + iotthingsgraph_json_str(u3))
+    if v.metricsConfiguration.is_some():
+        auto u4 = v.metricsConfiguration.unwrap()
+        parts.append("\"metricsConfiguration\":" + u4.to_json())
+    if v.flowActionsRoleArn.is_some():
+        auto u5 = v.flowActionsRoleArn.unwrap()
+        parts.append("\"flowActionsRoleArn\":" + iotthingsgraph_json_str(u5))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize EntityFilter to a compact JSON object (declaration order).
+def entity_filter_to_json(EntityFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotthingsgraph_json_str(x2))
+        parts.append("\"value\":" + iotthingsgraph_json_arr(e2))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize FlowTemplateFilter to a compact JSON object (declaration order).
+def flow_template_filter_to_json(FlowTemplateFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotthingsgraph_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.value:
+        e0.append(iotthingsgraph_json_str(x0))
+    parts.append("\"value\":" + iotthingsgraph_json_arr(e0))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize GetEntitiesRequest to a compact JSON object (declaration order).
+def get_entities_request_to_json(GetEntitiesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(iotthingsgraph_json_str(x0))
+    parts.append("\"ids\":" + iotthingsgraph_json_arr(e0))
+    if v.namespaceVersion.is_some():
+        auto u1 = v.namespaceVersion.unwrap()
+        parts.append("\"namespaceVersion\":" + str(u1))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize SearchEntitiesRequest to a compact JSON object (declaration order).
+def search_entities_request_to_json(SearchEntitiesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entityTypes:
+        e0.append(x0.to_json())
+    parts.append("\"entityTypes\":" + iotthingsgraph_json_arr(e0))
+    if v.filters.is_some():
+        auto u1 = v.filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(entity_filter_to_json(x2))
+        parts.append("\"filters\":" + iotthingsgraph_json_arr(e2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + iotthingsgraph_json_str(u3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    if v.namespaceVersion.is_some():
+        auto u5 = v.namespaceVersion.unwrap()
+        parts.append("\"namespaceVersion\":" + str(u5))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize SearchFlowTemplatesRequest to a compact JSON object (declaration order).
+def search_flow_templates_request_to_json(SearchFlowTemplatesRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(flow_template_filter_to_json(x1))
+        parts.append("\"filters\":" + iotthingsgraph_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + iotthingsgraph_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize SearchSystemInstancesRequest to a compact JSON object (declaration order).
+def search_system_instances_request_to_json(SearchSystemInstancesRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(system_instance_filter_to_json(x1))
+        parts.append("\"filters\":" + iotthingsgraph_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + iotthingsgraph_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize SearchSystemTemplatesRequest to a compact JSON object (declaration order).
+def search_system_templates_request_to_json(SearchSystemTemplatesRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(system_template_filter_to_json(x1))
+        parts.append("\"filters\":" + iotthingsgraph_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + iotthingsgraph_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize SystemInstanceFilter to a compact JSON object (declaration order).
+def system_instance_filter_to_json(SystemInstanceFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotthingsgraph_json_str(x2))
+        parts.append("\"value\":" + iotthingsgraph_json_arr(e2))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize SystemTemplateFilter to a compact JSON object (declaration order).
+def system_template_filter_to_json(SystemTemplateFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotthingsgraph_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.value:
+        e0.append(iotthingsgraph_json_str(x0))
+    parts.append("\"value\":" + iotthingsgraph_json_arr(e0))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + iotthingsgraph_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + iotthingsgraph_json_arr(e0))
+    return iotthingsgraph_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + iotthingsgraph_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(iotthingsgraph_json_str(x0))
+    parts.append("\"tagKeys\":" + iotthingsgraph_json_arr(e0))
+    return iotthingsgraph_json_obj(parts)
 
 # A bound IoTThingsGraph client: credentials + region, threaded into every operation.
 struct IoTThingsGraphClient:
@@ -740,6 +958,12 @@ struct IoTThingsGraphClient:
     def create_flow_template(self, CreateFlowTemplateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "CreateFlowTemplate", body)
+
+    # CreateSystemInstance
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_system_instance(self, CreateSystemInstanceRequest input) -> str:
+        auto body = create_system_instance_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "CreateSystemInstance", body)
 
     # CreateSystemTemplate
     # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ThrottlingException
@@ -801,6 +1025,12 @@ struct IoTThingsGraphClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "DissociateEntityFromThing", body)
 
+    # GetEntities
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_entities(self, GetEntitiesRequest input) -> str:
+        auto body = get_entities_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "GetEntities", body)
+
     # GetFlowTemplate
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def get_flow_template(self, GetFlowTemplateRequest input) -> str:
@@ -855,11 +1085,35 @@ struct IoTThingsGraphClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # SearchEntities
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def search_entities(self, SearchEntitiesRequest input) -> str:
+        auto body = search_entities_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchEntities", body)
+
     # SearchFlowExecutions
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_flow_executions(self, SearchFlowExecutionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchFlowExecutions", body)
+
+    # SearchFlowTemplates
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def search_flow_templates(self, SearchFlowTemplatesRequest input) -> str:
+        auto body = search_flow_templates_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchFlowTemplates", body)
+
+    # SearchSystemInstances
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def search_system_instances(self, SearchSystemInstancesRequest input) -> str:
+        auto body = search_system_instances_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchSystemInstances", body)
+
+    # SearchSystemTemplates
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def search_system_templates(self, SearchSystemTemplatesRequest input) -> str:
+        auto body = search_system_templates_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchSystemTemplates", body)
 
     # SearchThings
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -867,11 +1121,23 @@ struct IoTThingsGraphClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchThings", body)
 
+    # TagResource
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "TagResource", body)
+
     # UndeploySystemInstance
     # errors: InternalFailureException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
     def undeploy_system_instance(self, UndeploySystemInstanceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "UndeploySystemInstance", body)
+
+    # UntagResource
+    # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateFlowTemplate
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -947,6 +1213,20 @@ struct IoTThingsGraphClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for SearchEntities — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: descriptions).
+    def paginate_search_entities(self, SearchEntitiesRequest input):
+        auto host = endpoints.regional_host(iotthingsgraph_protocol().service, self.region)
+        while True:
+            auto body = search_entities_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchEntities", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for SearchFlowExecutions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: summaries).
     def paginate_search_flow_executions(self, SearchFlowExecutionsRequest input):
@@ -954,6 +1234,48 @@ struct IoTThingsGraphClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchFlowExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchFlowTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: summaries).
+    def paginate_search_flow_templates(self, SearchFlowTemplatesRequest input):
+        auto host = endpoints.regional_host(iotthingsgraph_protocol().service, self.region)
+        while True:
+            auto body = search_flow_templates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchFlowTemplates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchSystemInstances — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: summaries).
+    def paginate_search_system_instances(self, SearchSystemInstancesRequest input):
+        auto host = endpoints.regional_host(iotthingsgraph_protocol().service, self.region)
+        while True:
+            auto body = search_system_instances_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchSystemInstances", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchSystemTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: summaries).
+    def paginate_search_system_templates(self, SearchSystemTemplatesRequest input):
+        auto host = endpoints.regional_host(iotthingsgraph_protocol().service, self.region)
+        while True:
+            auto body = search_system_templates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(iotthingsgraph_protocol(), self.creds, self.region, "SearchSystemTemplates", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

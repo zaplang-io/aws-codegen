@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 25 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 30 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   97 structs (57 @derive(Json)), 3 enums, 10 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -83,8 +83,9 @@ struct ConflictException:
     str Code
     str Message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiscovererInput:
     Optional[str] Description
     str SourceArn
@@ -99,8 +100,9 @@ struct CreateDiscovererRequest:
     Optional[bool] CrossAccount
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiscovererResponse:
     Optional[str] Description
     Optional[str] DiscovererArn
@@ -110,8 +112,9 @@ struct CreateDiscovererResponse:
     Optional[bool] CrossAccount
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistryInput:
     Optional[str] Description
     Optional[dict[str, str]] Tags
@@ -123,16 +126,18 @@ struct CreateRegistryRequest:
     str RegistryName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistryResponse:
     Optional[str] Description
     Optional[str] RegistryArn
     Optional[str] RegistryName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSchemaInput:
     str Content
     Optional[str] Description
@@ -149,8 +154,9 @@ struct CreateSchemaRequest:
     Optional[dict[str, str]] Tags
     Type Type
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSchemaResponse:
     Optional[str] Description
     Optional[DateTime] LastModified
@@ -211,8 +217,9 @@ struct DescribeCodeBindingResponse:
 struct DescribeDiscovererRequest:
     str DiscovererId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDiscovererResponse:
     Optional[str] Description
     Optional[str] DiscovererArn
@@ -227,16 +234,18 @@ struct DescribeDiscovererResponse:
 struct DescribeRegistryRequest:
     str RegistryName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistryResponse:
     Optional[str] Description
     Optional[str] RegistryArn
     Optional[str] RegistryName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSchemaOutput:
     Optional[str] Content
     Optional[str] Description
@@ -255,8 +264,9 @@ struct DescribeSchemaRequest:
     str SchemaName
     Optional[str] SchemaVersion
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSchemaResponse:
     Optional[str] Content
     Optional[str] Description
@@ -268,8 +278,9 @@ struct DescribeSchemaResponse:
     Optional[str] Type
     Optional[DateTime] VersionCreatedDate
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscovererOutput:
     Optional[str] Description
     Optional[str] DiscovererArn
@@ -284,8 +295,9 @@ struct DiscovererStateOutput:
     Optional[str] DiscovererId
     Optional[DiscovererState] State
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscovererSummary:
     Optional[str] DiscovererArn
     Optional[str] DiscovererId
@@ -340,8 +352,9 @@ struct GetCodeBindingSourceRequest:
 struct GetCodeBindingSourceResponse:
     Optional[bytes] Body
 
-# no @derive(Json): member(s) Events: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDiscoveredSchemaInput:
     list[str] Events
     Type Type
@@ -385,8 +398,9 @@ struct InternalServerErrorException:
     str Code
     str Message
 
-# no @derive(Json): member(s) Discoverers: list[DiscovererSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Discoverers: list[DiscovererSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoverersOutput:
     Optional[list[DiscovererSummary]] Discoverers
     Optional[str] NextToken
@@ -399,14 +413,16 @@ struct ListDiscoverersRequest:
     Optional[str] NextToken
     Optional[str] SourceArnPrefix
 
-# no @derive(Json): member(s) Discoverers: list[DiscovererSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Discoverers: list[DiscovererSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoverersResponse:
     Optional[list[DiscovererSummary]] Discoverers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Registries: list[RegistrySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Registries: list[RegistrySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistriesOutput:
     Optional[str] NextToken
     Optional[list[RegistrySummary]] Registries
@@ -419,14 +435,16 @@ struct ListRegistriesRequest:
     Optional[str] RegistryNamePrefix
     Optional[str] Scope
 
-# no @derive(Json): member(s) Registries: list[RegistrySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Registries: list[RegistrySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistriesResponse:
     Optional[str] NextToken
     Optional[list[RegistrySummary]] Registries
 
-# no @derive(Json): member(s) SchemaVersions: list[SchemaVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaVersions: list[SchemaVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemaVersionsOutput:
     Optional[str] NextToken
     Optional[list[SchemaVersionSummary]] SchemaVersions
@@ -439,14 +457,16 @@ struct ListSchemaVersionsRequest:
     str RegistryName
     str SchemaName
 
-# no @derive(Json): member(s) SchemaVersions: list[SchemaVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaVersions: list[SchemaVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemaVersionsResponse:
     Optional[str] NextToken
     Optional[list[SchemaVersionSummary]] SchemaVersions
 
-# no @derive(Json): member(s) Schemas: list[SchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[SchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemasOutput:
     Optional[str] NextToken
     Optional[list[SchemaSummary]] Schemas
@@ -459,14 +479,16 @@ struct ListSchemasRequest:
     str RegistryName
     Optional[str] SchemaNamePrefix
 
-# no @derive(Json): member(s) Schemas: list[SchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[SchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemasResponse:
     Optional[str] NextToken
     Optional[list[SchemaSummary]] Schemas
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] Tags
 
@@ -475,8 +497,9 @@ struct ListTagsForResourceOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -529,23 +552,26 @@ struct PutResourcePolicyResponse:
     Optional[str] Policy
     Optional[str] RevisionId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryOutput:
     Optional[str] Description
     Optional[str] RegistryArn
     Optional[str] RegistryName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrySummary:
     Optional[str] RegistryArn
     Optional[str] RegistryName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaOutput:
     Optional[str] Description
     Optional[DateTime] LastModified
@@ -556,8 +582,9 @@ struct SchemaOutput:
     Optional[str] Type
     Optional[DateTime] VersionCreatedDate
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaSummary:
     Optional[DateTime] LastModified
     Optional[str] SchemaArn
@@ -572,8 +599,9 @@ struct SchemaVersionSummary:
     Optional[str] SchemaVersion
     Optional[Type] Type
 
-# no @derive(Json): member(s) SchemaVersions: list[SearchSchemaVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaVersions: list[SearchSchemaVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSchemaSummary:
     Optional[str] RegistryName
     Optional[str] SchemaArn
@@ -587,8 +615,9 @@ struct SearchSchemaVersionSummary:
     Optional[str] SchemaVersion
     Optional[Type] Type
 
-# no @derive(Json): member(s) Schemas: list[SearchSchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[SearchSchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSchemasOutput:
     Optional[str] NextToken
     Optional[list[SearchSchemaSummary]] Schemas
@@ -601,8 +630,9 @@ struct SearchSchemasRequest:
     Optional[str] NextToken
     str RegistryName
 
-# no @derive(Json): member(s) Schemas: list[SearchSchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[SearchSchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSchemasResponse:
     Optional[str] NextToken
     Optional[list[SearchSchemaSummary]] Schemas
@@ -632,8 +662,9 @@ struct StopDiscovererResponse:
     Optional[str] DiscovererId
     Optional[DiscovererState] State
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     dict[str, str] Tags
 
@@ -671,8 +702,9 @@ struct UpdateDiscovererRequest:
     str DiscovererId
     Optional[bool] CrossAccount
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDiscovererResponse:
     Optional[str] Description
     Optional[str] DiscovererArn
@@ -692,8 +724,9 @@ struct UpdateRegistryRequest:
     Optional[str] Description
     str RegistryName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegistryResponse:
     Optional[str] Description
     Optional[str] RegistryArn
@@ -717,8 +750,9 @@ struct UpdateSchemaRequest:
     str SchemaName
     Optional[Type] Type
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSchemaResponse:
     Optional[str] Description
     Optional[DateTime] LastModified
@@ -776,11 +810,6 @@ def schemas_error_from_code(str code) -> schemasError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateDiscoverer (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRegistry (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateSchema (document member `Tags: dict[str, str]` is not serializable by derive)
-#   GetDiscoveredSchema (document member `Events: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -815,6 +844,71 @@ struct UpdateSchemaDocument:
 struct schemasClient:
     core.Credentials creds
     str region
+
+    # CreateDiscoverer  POST /v1/discoverers
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
+    def create_discoverer(self, CreateDiscovererRequest input) -> str:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + schemas_json_str(u0))
+        parts.append("\"SourceArn\":" + schemas_json_str(input.SourceArn))
+        if input.CrossAccount.is_some():
+            auto u1 = input.CrossAccount.unwrap()
+            parts.append("\"CrossAccount\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(schemas_json_str(k3) + ":" + schemas_json_str(u2[k3]))
+            parts.append("\"tags\":" + schemas_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, schemas_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
+
+    # CreateRegistry  POST /v1/registries/name/{registryName}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
+    def create_registry(self, CreateRegistryRequest input) -> str:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryName"] = input.RegistryName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + schemas_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(schemas_json_str(k2) + ":" + schemas_json_str(u1[k2]))
+            parts.append("\"tags\":" + schemas_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, schemas_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
+
+    # CreateSchema  POST /v1/registries/name/{registryName}/schemas/name/{schemaName}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException
+    def create_schema(self, CreateSchemaRequest input) -> str:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryName"] = input.RegistryName
+        labels["schemaName"] = input.SchemaName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Content\":" + schemas_json_str(input.Content))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + schemas_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(schemas_json_str(k2) + ":" + schemas_json_str(u1[k2]))
+            parts.append("\"tags\":" + schemas_json_obj(m2))
+        parts.append("\"Type\":" + input.Type.to_json())
+        auto bp = restjson.rest_json_document(b, schemas_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
 
     # DeleteDiscoverer  DELETE /v1/discoverers/id/{discovererId}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, UnauthorizedException
@@ -937,6 +1031,20 @@ struct schemasClient:
             query["schemaVersion"] = input.SchemaVersion.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}/source", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
+
+    # GetDiscoveredSchema  POST /v1/discover
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
+    def get_discovered_schema(self, GetDiscoveredSchemaRequest input) -> str:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/discover", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Events:
+            e0.append(schemas_json_str(x0))
+        parts.append("\"Events\":" + schemas_json_arr(e0))
+        parts.append("\"Type\":" + input.Type.to_json())
+        auto bp = restjson.rest_json_document(b, schemas_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
 
     # GetResourcePolicy  GET /v1/policy
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, UnauthorizedException
@@ -1078,6 +1186,21 @@ struct schemasClient:
         labels["discovererId"] = input.DiscovererId
         auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers/id/{discovererId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
+
+    # TagResource  POST /tags/{resource-arn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(schemas_json_str(k0) + ":" + schemas_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + schemas_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, schemas_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
 
     # UpdateDiscoverer  PUT /v1/discoverers/id/{discovererId}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, UnauthorizedException

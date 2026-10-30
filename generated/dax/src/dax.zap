@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 21 operations — 9 with a generated method,
-#   12 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 21 operations — 21 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   86 structs (52 @derive(Json)), 7 enums, 28 error variants.
-#   4 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -91,8 +91,9 @@ enum SourceType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) NodeIdsToRemove: list[str], Nodes: list[Node], SecurityGroups: list[SecurityGroupMembership], ParameterGroup: ParameterGroupStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIdsToRemove: list[str], Nodes: list[Node], SecurityGroups: list[SecurityGroupMembership], ParameterGroup: ParameterGroupStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] ClusterName
     Optional[str] Description
@@ -129,8 +130,9 @@ struct ClusterQuotaForCustomerExceededFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], SecurityGroupIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], SecurityGroupIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     str ClusterName
     str NodeType
@@ -148,8 +150,9 @@ struct CreateClusterRequest:
     Optional[ClusterEndpointEncryptionType] ClusterEndpointEncryptionType
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] Cluster
 
@@ -162,28 +165,32 @@ struct CreateParameterGroupRequest:
 struct CreateParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubnetGroupRequest:
     str SubnetGroupName
     Optional[str] Description
     list[str] SubnetIds
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], NodeIdsToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], NodeIdsToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecreaseReplicationFactorRequest:
     str ClusterName
     int64 NewReplicationFactor
     Optional[list[str]] AvailabilityZones
     Optional[list[str]] NodeIdsToRemove
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecreaseReplicationFactorResponse:
     Optional[Cluster] Cluster
 
@@ -191,8 +198,9 @@ struct DecreaseReplicationFactorResponse:
 struct DeleteClusterRequest:
     str ClusterName
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] Cluster
 
@@ -212,15 +220,17 @@ struct DeleteSubnetGroupRequest:
 struct DeleteSubnetGroupResponse:
     Optional[str] DeletionMessage
 
-# no @derive(Json): member(s) ClusterNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersRequest:
     Optional[list[str]] ClusterNames
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Clusters: list[Cluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[Cluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersResponse:
     Optional[str] NextToken
     Optional[list[Cluster]] Clusters
@@ -230,8 +240,9 @@ struct DescribeDefaultParametersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: list[Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDefaultParametersResponse:
     Optional[str] NextToken
     Optional[list[Parameter]] Parameters
@@ -246,21 +257,24 @@ struct DescribeEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventsResponse:
     Optional[str] NextToken
     Optional[list[Event]] Events
 
-# no @derive(Json): member(s) ParameterGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParameterGroupsRequest:
     Optional[list[str]] ParameterGroupNames
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ParameterGroups: list[ParameterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterGroups: list[ParameterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParameterGroupsResponse:
     Optional[str] NextToken
     Optional[list[ParameterGroup]] ParameterGroups
@@ -272,21 +286,24 @@ struct DescribeParametersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: list[Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParametersResponse:
     Optional[str] NextToken
     Optional[list[Parameter]] Parameters
 
-# no @derive(Json): member(s) SubnetGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSubnetGroupsRequest:
     Optional[list[str]] SubnetGroupNames
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SubnetGroups: list[SubnetGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroups: list[SubnetGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSubnetGroupsResponse:
     Optional[str] NextToken
     Optional[list[SubnetGroup]] SubnetGroups
@@ -304,15 +321,17 @@ struct Event:
     Optional[str] Message
     Optional[DateTime] Date
 
-# no @derive(Json): member(s) AvailabilityZones: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IncreaseReplicationFactorRequest:
     str ClusterName
     int64 NewReplicationFactor
     Optional[list[str]] AvailabilityZones
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IncreaseReplicationFactorResponse:
     Optional[Cluster] Cluster
 
@@ -359,8 +378,9 @@ struct ListTagsRequest:
     str ResourceName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -399,8 +419,9 @@ struct NotificationConfiguration:
     Optional[str] TopicArn
     Optional[str] TopicStatus
 
-# no @derive(Json): member(s) NodeTypeSpecificValues: list[NodeTypeSpecificValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeTypeSpecificValues: list[NodeTypeSpecificValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Parameter:
     Optional[str] ParameterName
     Optional[ParameterType] ParameterType
@@ -433,8 +454,9 @@ struct ParameterGroupQuotaExceededFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) NodeIdsToReboot: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIdsToReboot: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterGroupStatus:
     Optional[str] ParameterGroupName
     Optional[str] ParameterApplyStatus
@@ -450,8 +472,9 @@ struct RebootNodeRequest:
     str ClusterName
     str NodeId
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootNodeResponse:
     Optional[Cluster] Cluster
 
@@ -478,15 +501,17 @@ struct ServiceQuotaExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SupportedNetworkTypes: list[NetworkType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedNetworkTypes: list[NetworkType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subnet:
     Optional[str] SubnetIdentifier
     Optional[str] SubnetAvailabilityZone
     Optional[list[NetworkType]] SupportedNetworkTypes
 
-# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[NetworkType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[NetworkType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubnetGroup:
     Optional[str] SubnetGroupName
     Optional[str] Description
@@ -544,30 +569,35 @@ struct TagQuotaPerResourceExceeded:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceName
     list[Tag] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceName
     list[str] TagKeys
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterRequest:
     str ClusterName
     Optional[str] Description
@@ -577,13 +607,15 @@ struct UpdateClusterRequest:
     Optional[str] ParameterGroupName
     Optional[list[str]] SecurityGroupIds
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[Cluster] Cluster
 
-# no @derive(Json): member(s) ParameterNameValues: list[ParameterNameValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterNameValues: list[ParameterNameValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateParameterGroupRequest:
     str ParameterGroupName
     list[ParameterNameValue] ParameterNameValues
@@ -592,15 +624,17 @@ struct UpdateParameterGroupRequest:
 struct UpdateParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubnetGroupRequest:
     str SubnetGroupName
     Optional[str] Description
     Optional[list[str]] SubnetIds
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
@@ -701,37 +735,283 @@ def dax_error_from_code(str code) -> DAXError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCluster (input CreateClusterRequest)
-#   CreateSubnetGroup (input CreateSubnetGroupRequest)
-#   DecreaseReplicationFactor (input DecreaseReplicationFactorRequest)
-#   DescribeClusters (input DescribeClustersRequest)
-#   DescribeParameterGroups (input DescribeParameterGroupsRequest)
-#   DescribeSubnetGroups (input DescribeSubnetGroupsRequest)
-#   IncreaseReplicationFactor (input IncreaseReplicationFactorRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCluster (input UpdateClusterRequest)
-#   UpdateParameterGroup (input UpdateParameterGroupRequest)
-#   UpdateSubnetGroup (input UpdateSubnetGroupRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def dax_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeClusters (input not derivable (no generated method))
-#   DescribeParameterGroups (input not derivable (no generated method))
-#   DescribeSubnetGroups (input not derivable (no generated method))
+def dax_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def dax_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateClusterRequest to a compact JSON object (declaration order).
+def create_cluster_request_to_json(CreateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + dax_json_str(v.ClusterName))
+    parts.append("\"NodeType\":" + dax_json_str(v.NodeType))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + dax_json_str(u0))
+    parts.append("\"ReplicationFactor\":" + str(v.ReplicationFactor))
+    if v.AvailabilityZones.is_some():
+        auto u1 = v.AvailabilityZones.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dax_json_str(x2))
+        parts.append("\"AvailabilityZones\":" + dax_json_arr(e2))
+    if v.SubnetGroupName.is_some():
+        auto u3 = v.SubnetGroupName.unwrap()
+        parts.append("\"SubnetGroupName\":" + dax_json_str(u3))
+    if v.SecurityGroupIds.is_some():
+        auto u4 = v.SecurityGroupIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(dax_json_str(x5))
+        parts.append("\"SecurityGroupIds\":" + dax_json_arr(e5))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u6 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + dax_json_str(u6))
+    if v.NotificationTopicArn.is_some():
+        auto u7 = v.NotificationTopicArn.unwrap()
+        parts.append("\"NotificationTopicArn\":" + dax_json_str(u7))
+    parts.append("\"IamRoleArn\":" + dax_json_str(v.IamRoleArn))
+    if v.ParameterGroupName.is_some():
+        auto u8 = v.ParameterGroupName.unwrap()
+        parts.append("\"ParameterGroupName\":" + dax_json_str(u8))
+    if v.Tags.is_some():
+        auto u9 = v.Tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Tags\":" + dax_json_arr(e10))
+    if v.SSESpecification.is_some():
+        auto u11 = v.SSESpecification.unwrap()
+        parts.append("\"SSESpecification\":" + u11.to_json())
+    if v.ClusterEndpointEncryptionType.is_some():
+        auto u12 = v.ClusterEndpointEncryptionType.unwrap()
+        parts.append("\"ClusterEndpointEncryptionType\":" + u12.to_json())
+    if v.NetworkType.is_some():
+        auto u13 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u13.to_json())
+    return dax_json_obj(parts)
+
+# Serialize CreateSubnetGroupRequest to a compact JSON object (declaration order).
+def create_subnet_group_request_to_json(CreateSubnetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SubnetGroupName\":" + dax_json_str(v.SubnetGroupName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + dax_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SubnetIds:
+        e1.append(dax_json_str(x1))
+    parts.append("\"SubnetIds\":" + dax_json_arr(e1))
+    return dax_json_obj(parts)
+
+# Serialize DecreaseReplicationFactorRequest to a compact JSON object (declaration order).
+def decrease_replication_factor_request_to_json(DecreaseReplicationFactorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + dax_json_str(v.ClusterName))
+    parts.append("\"NewReplicationFactor\":" + str(v.NewReplicationFactor))
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dax_json_str(x1))
+        parts.append("\"AvailabilityZones\":" + dax_json_arr(e1))
+    if v.NodeIdsToRemove.is_some():
+        auto u2 = v.NodeIdsToRemove.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(dax_json_str(x3))
+        parts.append("\"NodeIdsToRemove\":" + dax_json_arr(e3))
+    return dax_json_obj(parts)
+
+# Serialize DescribeClustersRequest to a compact JSON object (declaration order).
+def describe_clusters_request_to_json(DescribeClustersRequest v) -> str:
+    list[str] parts = []
+    if v.ClusterNames.is_some():
+        auto u0 = v.ClusterNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dax_json_str(x1))
+        parts.append("\"ClusterNames\":" + dax_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dax_json_str(u3))
+    return dax_json_obj(parts)
+
+# Serialize DescribeParameterGroupsRequest to a compact JSON object (declaration order).
+def describe_parameter_groups_request_to_json(DescribeParameterGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.ParameterGroupNames.is_some():
+        auto u0 = v.ParameterGroupNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dax_json_str(x1))
+        parts.append("\"ParameterGroupNames\":" + dax_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dax_json_str(u3))
+    return dax_json_obj(parts)
+
+# Serialize DescribeSubnetGroupsRequest to a compact JSON object (declaration order).
+def describe_subnet_groups_request_to_json(DescribeSubnetGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.SubnetGroupNames.is_some():
+        auto u0 = v.SubnetGroupNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dax_json_str(x1))
+        parts.append("\"SubnetGroupNames\":" + dax_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dax_json_str(u3))
+    return dax_json_obj(parts)
+
+# Serialize IncreaseReplicationFactorRequest to a compact JSON object (declaration order).
+def increase_replication_factor_request_to_json(IncreaseReplicationFactorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + dax_json_str(v.ClusterName))
+    parts.append("\"NewReplicationFactor\":" + str(v.NewReplicationFactor))
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dax_json_str(x1))
+        parts.append("\"AvailabilityZones\":" + dax_json_arr(e1))
+    return dax_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceName\":" + dax_json_str(v.ResourceName))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + dax_json_arr(e0))
+    return dax_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceName\":" + dax_json_str(v.ResourceName))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(dax_json_str(x0))
+    parts.append("\"TagKeys\":" + dax_json_arr(e0))
+    return dax_json_obj(parts)
+
+# Serialize UpdateClusterRequest to a compact JSON object (declaration order).
+def update_cluster_request_to_json(UpdateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + dax_json_str(v.ClusterName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + dax_json_str(u0))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u1 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + dax_json_str(u1))
+    if v.NotificationTopicArn.is_some():
+        auto u2 = v.NotificationTopicArn.unwrap()
+        parts.append("\"NotificationTopicArn\":" + dax_json_str(u2))
+    if v.NotificationTopicStatus.is_some():
+        auto u3 = v.NotificationTopicStatus.unwrap()
+        parts.append("\"NotificationTopicStatus\":" + dax_json_str(u3))
+    if v.ParameterGroupName.is_some():
+        auto u4 = v.ParameterGroupName.unwrap()
+        parts.append("\"ParameterGroupName\":" + dax_json_str(u4))
+    if v.SecurityGroupIds.is_some():
+        auto u5 = v.SecurityGroupIds.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(dax_json_str(x6))
+        parts.append("\"SecurityGroupIds\":" + dax_json_arr(e6))
+    return dax_json_obj(parts)
+
+# Serialize UpdateParameterGroupRequest to a compact JSON object (declaration order).
+def update_parameter_group_request_to_json(UpdateParameterGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterGroupName\":" + dax_json_str(v.ParameterGroupName))
+    list[str] e0 = []
+    for x0 in v.ParameterNameValues:
+        e0.append(x0.to_json())
+    parts.append("\"ParameterNameValues\":" + dax_json_arr(e0))
+    return dax_json_obj(parts)
+
+# Serialize UpdateSubnetGroupRequest to a compact JSON object (declaration order).
+def update_subnet_group_request_to_json(UpdateSubnetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SubnetGroupName\":" + dax_json_str(v.SubnetGroupName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + dax_json_str(u0))
+    if v.SubnetIds.is_some():
+        auto u1 = v.SubnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dax_json_str(x2))
+        parts.append("\"SubnetIds\":" + dax_json_arr(e2))
+    return dax_json_obj(parts)
 
 # A bound DAX client: credentials + region, threaded into every operation.
 struct DAXClient:
     core.Credentials creds
     str region
 
+    # CreateCluster
+    # errors: ClusterAlreadyExistsFault, ClusterQuotaForCustomerExceededFault, InsufficientClusterCapacityFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, InvalidVPCNetworkStateFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, ServiceQuotaExceededException, SubnetGroupNotFoundFault, TagQuotaPerResourceExceeded
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto body = create_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "CreateCluster", body)
+
     # CreateParameterGroup
     # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupAlreadyExistsFault, ParameterGroupQuotaExceededFault, ServiceLinkedRoleNotFoundFault
     def create_parameter_group(self, CreateParameterGroupRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "CreateParameterGroup", body)
+
+    # CreateSubnetGroup
+    # errors: InvalidSubnet, ServiceLinkedRoleNotFoundFault, SubnetGroupAlreadyExistsFault, SubnetGroupQuotaExceededFault, SubnetNotAllowedFault, SubnetQuotaExceededFault
+    def create_subnet_group(self, CreateSubnetGroupRequest input) -> str:
+        auto body = create_subnet_group_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "CreateSubnetGroup", body)
+
+    # DecreaseReplicationFactor
+    # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, NodeNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def decrease_replication_factor(self, DecreaseReplicationFactorRequest input) -> str:
+        auto body = decrease_replication_factor_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DecreaseReplicationFactor", body)
 
     # DeleteCluster
     # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
@@ -751,6 +1031,12 @@ struct DAXClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DeleteSubnetGroup", body)
 
+    # DescribeClusters
+    # errors: ClusterNotFoundFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
+    def describe_clusters(self, DescribeClustersRequest input) -> str:
+        auto body = describe_clusters_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeClusters", body)
+
     # DescribeDefaultParameters
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
     def describe_default_parameters(self, DescribeDefaultParametersRequest input) -> str:
@@ -763,11 +1049,29 @@ struct DAXClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeEvents", body)
 
+    # DescribeParameterGroups
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def describe_parameter_groups(self, DescribeParameterGroupsRequest input) -> str:
+        auto body = describe_parameter_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeParameterGroups", body)
+
     # DescribeParameters
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
     def describe_parameters(self, DescribeParametersRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeParameters", body)
+
+    # DescribeSubnetGroups
+    # errors: ServiceLinkedRoleNotFoundFault, SubnetGroupNotFoundFault
+    def describe_subnet_groups(self, DescribeSubnetGroupsRequest input) -> str:
+        auto body = describe_subnet_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeSubnetGroups", body)
+
+    # IncreaseReplicationFactor
+    # errors: ClusterNotFoundFault, InsufficientClusterCapacityFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidVPCNetworkStateFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ServiceLinkedRoleNotFoundFault
+    def increase_replication_factor(self, IncreaseReplicationFactorRequest input) -> str:
+        auto body = increase_replication_factor_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "IncreaseReplicationFactor", body)
 
     # ListTags
     # errors: ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
@@ -780,6 +1084,50 @@ struct DAXClient:
     def reboot_node(self, RebootNodeRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "RebootNode", body)
+
+    # TagResource
+    # errors: ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, TagNotFoundFault
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateCluster
+    # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def update_cluster(self, UpdateClusterRequest input) -> str:
+        auto body = update_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "UpdateCluster", body)
+
+    # UpdateParameterGroup
+    # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def update_parameter_group(self, UpdateParameterGroupRequest input) -> str:
+        auto body = update_parameter_group_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "UpdateParameterGroup", body)
+
+    # UpdateSubnetGroup
+    # errors: InvalidSubnet, ServiceLinkedRoleNotFoundFault, SubnetGroupNotFoundFault, SubnetInUse, SubnetNotAllowedFault, SubnetQuotaExceededFault
+    def update_subnet_group(self, UpdateSubnetGroupRequest input) -> str:
+        auto body = update_subnet_group_request_to_json(input)
+        return awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "UpdateSubnetGroup", body)
+
+    # Paginator for DescribeClusters — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Clusters).
+    def paginate_describe_clusters(self, DescribeClustersRequest input):
+        auto host = endpoints.regional_host(dax_protocol().service, self.region)
+        while True:
+            auto body = describe_clusters_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeClusters", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for DescribeDefaultParameters — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Parameters).
@@ -809,6 +1157,20 @@ struct DAXClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeParameterGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ParameterGroups).
+    def paginate_describe_parameter_groups(self, DescribeParameterGroupsRequest input):
+        auto host = endpoints.regional_host(dax_protocol().service, self.region)
+        while True:
+            auto body = describe_parameter_groups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeParameterGroups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for DescribeParameters — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Parameters).
     def paginate_describe_parameters(self, DescribeParametersRequest input):
@@ -816,6 +1178,20 @@ struct DAXClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeParameters", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSubnetGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SubnetGroups).
+    def paginate_describe_subnet_groups(self, DescribeSubnetGroupsRequest input):
+        auto host = endpoints.regional_host(dax_protocol().service, self.region)
+        while True:
+            auto body = describe_subnet_groups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dax_protocol(), self.creds, self.region, "DescribeSubnetGroups", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

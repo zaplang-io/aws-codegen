@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 97 operations — 66 with a generated method,
-#   31 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 97 operations — 87 with a generated method,
+#   10 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   284 structs (130 @derive(Json)), 39 enums, 8 error variants.
-#   14 paginators generated (12 paginated ops skipped) from paginators-1.json.
+#   17 paginators generated (9 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -435,8 +435,9 @@ struct AWSLocation:
 struct AcceptAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptAttachmentResponse:
     Optional[Attachment] Attachment
 
@@ -496,8 +497,9 @@ struct AssociateTransitGatewayConnectPeerRequest:
 struct AssociateTransitGatewayConnectPeerResponse:
     Optional[TransitGatewayConnectPeerAssociation] TransitGatewayConnectPeerAssociation
 
-# no @derive(Json): member(s) EdgeLocations: list[str], Tags: list[Tag], ProposedSegmentChange: ProposedSegmentChange, ProposedNetworkFunctionGroupChange: ProposedNetworkFunctionGroupChange, LastModificationErrors: list[AttachmentError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeLocations: list[str], Tags: list[Tag], ProposedSegmentChange: ProposedSegmentChange, ProposedNetworkFunctionGroupChange: ProposedNetworkFunctionGroupChange, LastModificationErrors: list[AttachmentError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Attachment:
     Optional[str] CoreNetworkId
     Optional[str] CoreNetworkArn
@@ -527,16 +529,18 @@ struct AttachmentError:
     Optional[str] ResourceArn
     Optional[str] RequestId
 
-# no @derive(Json): member(s) NatGatewayRules: list[NatRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NatGatewayRules: list[NatRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachmentNatConfiguration:
     Optional[str] AttachmentId
     Optional[NatGatewaySupportState] NatGatewaySupport
     Optional[bool] NatSystemRouteSupport
     Optional[list[NatRule]] NatGatewayRules
 
-# no @derive(Json): member(s) PendingRoutingPolicies: list[str], AssociatedRoutingPolicies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingRoutingPolicies: list[str], AssociatedRoutingPolicies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachmentRoutingPolicyAssociationSummary:
     Optional[str] AttachmentId
     Optional[list[str]] PendingRoutingPolicies
@@ -558,8 +562,9 @@ struct ConflictException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectAttachment:
     Optional[Attachment] Attachment
     Optional[str] TransportAttachmentId
@@ -569,8 +574,9 @@ struct ConnectAttachment:
 struct ConnectAttachmentOptions:
     Optional[TunnelProtocol] Protocol
 
-# no @derive(Json): member(s) Configuration: ConnectPeerConfiguration, Tags: list[Tag], LastModificationErrors: list[ConnectPeerError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ConnectPeerConfiguration, Tags: list[Tag], LastModificationErrors: list[ConnectPeerError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectPeer:
     Optional[str] CoreNetworkId
     Optional[str] ConnectAttachmentId
@@ -598,8 +604,9 @@ struct ConnectPeerBgpConfiguration:
     Optional[str] CoreNetworkAddress
     Optional[str] PeerAddress
 
-# no @derive(Json): member(s) InsideCidrBlocks: list[str], BgpConfigurations: list[ConnectPeerBgpConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsideCidrBlocks: list[str], BgpConfigurations: list[ConnectPeerBgpConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectPeerConfiguration:
     Optional[str] CoreNetworkAddress
     Optional[str] PeerAddress
@@ -614,8 +621,9 @@ struct ConnectPeerError:
     Optional[str] ResourceArn
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectPeerSummary:
     Optional[str] CoreNetworkId
     Optional[str] ConnectAttachmentId
@@ -626,8 +634,9 @@ struct ConnectPeerSummary:
     Optional[list[Tag]] Tags
     Optional[str] SubnetArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connection:
     Optional[str] ConnectionId
     Optional[str] ConnectionArn
@@ -647,8 +656,9 @@ struct ConnectionHealth:
     Optional[ConnectionStatus] Status
     Optional[DateTime] Timestamp
 
-# no @derive(Json): member(s) Segments: list[CoreNetworkSegment], NetworkFunctionGroups: list[CoreNetworkNetworkFunctionGroup], Edges: list[CoreNetworkEdge], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segments: list[CoreNetworkSegment], NetworkFunctionGroups: list[CoreNetworkNetworkFunctionGroup], Edges: list[CoreNetworkEdge], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetwork:
     Optional[str] GlobalNetworkId
     Optional[str] CoreNetworkId
@@ -661,8 +671,9 @@ struct CoreNetwork:
     Optional[list[CoreNetworkEdge]] Edges
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) PreviousValues: CoreNetworkChangeValues, NewValues: CoreNetworkChangeValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreviousValues: CoreNetworkChangeValues, NewValues: CoreNetworkChangeValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkChange:
     Optional[ChangeType] Type
     Optional[ChangeAction] Action
@@ -671,8 +682,9 @@ struct CoreNetworkChange:
     Optional[CoreNetworkChangeValues] NewValues
     Optional[str] IdentifierPath
 
-# no @derive(Json): member(s) Values: CoreNetworkChangeEventValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: CoreNetworkChangeEventValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkChangeEvent:
     Optional[ChangeType] Type
     Optional[ChangeAction] Action
@@ -681,8 +693,9 @@ struct CoreNetworkChangeEvent:
     Optional[ChangeStatus] Status
     Optional[CoreNetworkChangeEventValues] Values
 
-# no @derive(Json): member(s) RoutingPolicyAssociationDetails: list[RoutingPolicyAssociationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingPolicyAssociationDetails: list[RoutingPolicyAssociationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkChangeEventValues:
     Optional[str] EdgeLocation
     Optional[str] PeerEdgeLocation
@@ -693,8 +706,9 @@ struct CoreNetworkChangeEventValues:
     Optional[str] Cidr
     Optional[list[RoutingPolicyAssociationDetail]] RoutingPolicyAssociationDetails
 
-# no @derive(Json): member(s) EdgeLocations: list[str], InsideCidrBlocks: list[str], SharedSegments: list[str], ServiceInsertionActions: list[ServiceInsertionAction], PeerEdgeLocations: list[str], RoutingPolicyAssociationDetails: list[RoutingPolicyAssociationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeLocations: list[str], InsideCidrBlocks: list[str], SharedSegments: list[str], ServiceInsertionActions: list[ServiceInsertionAction], PeerEdgeLocations: list[str], RoutingPolicyAssociationDetails: list[RoutingPolicyAssociationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkChangeValues:
     Optional[str] SegmentName
     Optional[str] NetworkFunctionGroupName
@@ -714,15 +728,17 @@ struct CoreNetworkChangeValues:
     Optional[str] AttachmentId
     Optional[list[RoutingPolicyAssociationDetail]] RoutingPolicyAssociationDetails
 
-# no @derive(Json): member(s) InsideCidrBlocks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsideCidrBlocks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkEdge:
     Optional[str] EdgeLocation
     Optional[int64] Asn
     Optional[list[str]] InsideCidrBlocks
 
-# no @derive(Json): member(s) EdgeLocations: list[str], Segments: ServiceInsertionSegments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeLocations: list[str], Segments: ServiceInsertionSegments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkNetworkFunctionGroup:
     Optional[str] Name
     Optional[list[str]] EdgeLocations
@@ -734,8 +750,9 @@ struct CoreNetworkNetworkFunctionGroupIdentifier:
     Optional[str] NetworkFunctionGroupName
     Optional[str] EdgeLocation
 
-# no @derive(Json): member(s) PolicyErrors: list[CoreNetworkPolicyError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyErrors: list[CoreNetworkPolicyError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkPolicy:
     Optional[str] CoreNetworkId
     Optional[int64] PolicyVersionId
@@ -752,8 +769,9 @@ struct CoreNetworkPolicyError:
     str Message
     Optional[str] Path
 
-# no @derive(Json): member(s) Errors: list[CoreNetworkPolicyError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[CoreNetworkPolicyError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkPolicyException:
     str Message
     Optional[list[CoreNetworkPolicyError]] Errors
@@ -767,8 +785,9 @@ struct CoreNetworkPolicyVersion:
     Optional[DateTime] CreatedAt
     Optional[ChangeSetState] ChangeSetState
 
-# no @derive(Json): member(s) AsPath: list[str], Communities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AsPath: list[str], Communities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkRoutingInformation:
     Optional[str] Prefix
     Optional[RoutingInformationNextHop] NextHop
@@ -777,8 +796,9 @@ struct CoreNetworkRoutingInformation:
     Optional[list[str]] AsPath
     Optional[list[str]] Communities
 
-# no @derive(Json): member(s) EdgeLocations: list[str], SharedSegments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeLocations: list[str], SharedSegments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkSegment:
     Optional[str] Name
     Optional[list[str]] EdgeLocations
@@ -790,8 +810,9 @@ struct CoreNetworkSegmentEdgeIdentifier:
     Optional[str] SegmentName
     Optional[str] EdgeLocation
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreNetworkSummary:
     Optional[str] CoreNetworkId
     Optional[str] CoreNetworkArn
@@ -814,8 +835,9 @@ struct CreateConnectAttachmentRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) ConnectAttachment: ConnectAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectAttachment: ConnectAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectAttachmentResponse:
     Optional[ConnectAttachment] ConnectAttachment
 
@@ -831,8 +853,9 @@ struct CreateConnectPeerRequest:
     Optional[str] ClientToken
     Optional[str] SubnetArn
 
-# no @derive(Json): member(s) ConnectPeer: ConnectPeer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectPeer: ConnectPeer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectPeerResponse:
     Optional[ConnectPeer] ConnectPeer
 
@@ -847,8 +870,9 @@ struct CreateConnectionRequest:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Connection: Connection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connection: Connection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionResponse:
     Optional[Connection] Connection
 
@@ -875,8 +899,9 @@ struct CreateCoreNetworkRequest:
     Optional[str] PolicyDocument
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) CoreNetwork: CoreNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetwork: CoreNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCoreNetworkResponse:
     Optional[CoreNetwork] CoreNetwork
 
@@ -894,8 +919,9 @@ struct CreateDeviceRequest:
     Optional[str] SiteId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Device: Device not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Device: Device not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeviceResponse:
     Optional[Device] Device
 
@@ -912,8 +938,9 @@ struct CreateDirectConnectGatewayAttachmentRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) DirectConnectGatewayAttachment: DirectConnectGatewayAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectConnectGatewayAttachment: DirectConnectGatewayAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAttachmentResponse:
     Optional[DirectConnectGatewayAttachment] DirectConnectGatewayAttachment
 
@@ -923,8 +950,9 @@ struct CreateGlobalNetworkRequest:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) GlobalNetwork: GlobalNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalNetwork: GlobalNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlobalNetworkResponse:
     Optional[GlobalNetwork] GlobalNetwork
 
@@ -939,8 +967,9 @@ struct CreateLinkRequest:
     str SiteId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Link: Link not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Link: Link not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLinkResponse:
     Optional[Link] Link
 
@@ -952,8 +981,9 @@ struct CreateSiteRequest:
     Optional[Location] Location
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSiteResponse:
     Optional[Site] Site
 
@@ -969,8 +999,9 @@ struct CreateSiteToSiteVpnAttachmentRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) SiteToSiteVpnAttachment: SiteToSiteVpnAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SiteToSiteVpnAttachment: SiteToSiteVpnAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSiteToSiteVpnAttachmentResponse:
     Optional[SiteToSiteVpnAttachment] SiteToSiteVpnAttachment
 
@@ -982,8 +1013,9 @@ struct CreateTransitGatewayPeeringRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) TransitGatewayPeering: TransitGatewayPeering not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayPeering: TransitGatewayPeering not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransitGatewayPeeringResponse:
     Optional[TransitGatewayPeering] TransitGatewayPeering
 
@@ -996,8 +1028,9 @@ struct CreateTransitGatewayRouteTableAttachmentRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) TransitGatewayRouteTableAttachment: TransitGatewayRouteTableAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayRouteTableAttachment: TransitGatewayRouteTableAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransitGatewayRouteTableAttachmentResponse:
     Optional[TransitGatewayRouteTableAttachment] TransitGatewayRouteTableAttachment
 
@@ -1014,8 +1047,9 @@ struct CreateVpcAttachmentRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) VpcAttachment: VpcAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcAttachment: VpcAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcAttachmentResponse:
     Optional[VpcAttachment] VpcAttachment
 
@@ -1032,8 +1066,9 @@ struct CustomerGatewayAssociation:
 struct DeleteAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAttachmentResponse:
     Optional[Attachment] Attachment
 
@@ -1042,8 +1077,9 @@ struct DeleteAttachmentResponse:
 struct DeleteConnectPeerRequest:
     str ConnectPeerId
 
-# no @derive(Json): member(s) ConnectPeer: ConnectPeer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectPeer: ConnectPeer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteConnectPeerResponse:
     Optional[ConnectPeer] ConnectPeer
 
@@ -1053,8 +1089,9 @@ struct DeleteConnectionRequest:
     str GlobalNetworkId
     str ConnectionId
 
-# no @derive(Json): member(s) Connection: Connection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connection: Connection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteConnectionResponse:
     Optional[Connection] Connection
 
@@ -1064,8 +1101,9 @@ struct DeleteCoreNetworkPolicyVersionRequest:
     str CoreNetworkId
     int64 PolicyVersionId
 
-# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCoreNetworkPolicyVersionResponse:
     Optional[CoreNetworkPolicy] CoreNetworkPolicy
 
@@ -1085,8 +1123,9 @@ struct DeleteCoreNetworkPrefixListAssociationResponse:
 struct DeleteCoreNetworkRequest:
     str CoreNetworkId
 
-# no @derive(Json): member(s) CoreNetwork: CoreNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetwork: CoreNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCoreNetworkResponse:
     Optional[CoreNetwork] CoreNetwork
 
@@ -1096,8 +1135,9 @@ struct DeleteDeviceRequest:
     str GlobalNetworkId
     str DeviceId
 
-# no @derive(Json): member(s) Device: Device not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Device: Device not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDeviceResponse:
     Optional[Device] Device
 
@@ -1106,8 +1146,9 @@ struct DeleteDeviceResponse:
 struct DeleteGlobalNetworkRequest:
     str GlobalNetworkId
 
-# no @derive(Json): member(s) GlobalNetwork: GlobalNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalNetwork: GlobalNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteGlobalNetworkResponse:
     Optional[GlobalNetwork] GlobalNetwork
 
@@ -1117,8 +1158,9 @@ struct DeleteLinkRequest:
     str GlobalNetworkId
     str LinkId
 
-# no @derive(Json): member(s) Link: Link not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Link: Link not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteLinkResponse:
     Optional[Link] Link
 
@@ -1127,8 +1169,9 @@ struct DeleteLinkResponse:
 struct DeletePeeringRequest:
     str PeeringId
 
-# no @derive(Json): member(s) Peering: Peering not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Peering: Peering not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePeeringResponse:
     Optional[Peering] Peering
 
@@ -1148,8 +1191,9 @@ struct DeleteSiteRequest:
     str GlobalNetworkId
     str SiteId
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSiteResponse:
     Optional[Site] Site
 
@@ -1170,14 +1214,16 @@ struct DescribeGlobalNetworksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GlobalNetworks: list[GlobalNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalNetworks: list[GlobalNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGlobalNetworksResponse:
     Optional[list[GlobalNetwork]] GlobalNetworks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Device:
     Optional[str] DeviceId
     Optional[str] DeviceArn
@@ -1194,8 +1240,9 @@ struct Device:
     Optional[DeviceState] State
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectConnectGatewayAttachment:
     Optional[Attachment] Attachment
     Optional[str] DirectConnectGatewayArn
@@ -1241,8 +1288,9 @@ struct DisassociateTransitGatewayConnectPeerRequest:
 struct DisassociateTransitGatewayConnectPeerResponse:
     Optional[TransitGatewayConnectPeerAssociation] TransitGatewayConnectPeerAssociation
 
-# no @derive(Json): member(s) EdgeSets: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeSets: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EdgeOverride:
     Optional[list[list[str]]] EdgeSets
     Optional[str] UseEdge
@@ -1263,8 +1311,9 @@ struct ExecuteCoreNetworkChangeSetResponse:
 struct GetConnectAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) ConnectAttachment: ConnectAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectAttachment: ConnectAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectAttachmentResponse:
     Optional[ConnectAttachment] ConnectAttachment
 
@@ -1276,8 +1325,9 @@ struct GetConnectPeerAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectPeerAssociations: list[ConnectPeerAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectPeerAssociations: list[ConnectPeerAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectPeerAssociationsResponse:
     Optional[list[ConnectPeerAssociation]] ConnectPeerAssociations
     Optional[str] NextToken
@@ -1287,8 +1337,9 @@ struct GetConnectPeerAssociationsResponse:
 struct GetConnectPeerRequest:
     str ConnectPeerId
 
-# no @derive(Json): member(s) ConnectPeer: ConnectPeer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectPeer: ConnectPeer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectPeerResponse:
     Optional[ConnectPeer] ConnectPeer
 
@@ -1301,8 +1352,9 @@ struct GetConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Connections: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionsResponse:
     Optional[list[Connection]] Connections
     Optional[str] NextToken
@@ -1315,8 +1367,9 @@ struct GetCoreNetworkChangeEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CoreNetworkChangeEvents: list[CoreNetworkChangeEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkChangeEvents: list[CoreNetworkChangeEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoreNetworkChangeEventsResponse:
     Optional[list[CoreNetworkChangeEvent]] CoreNetworkChangeEvents
     Optional[str] NextToken
@@ -1329,8 +1382,9 @@ struct GetCoreNetworkChangeSetRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CoreNetworkChanges: list[CoreNetworkChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkChanges: list[CoreNetworkChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoreNetworkChangeSetResponse:
     Optional[list[CoreNetworkChange]] CoreNetworkChanges
     Optional[str] NextToken
@@ -1343,8 +1397,9 @@ struct GetCoreNetworkPolicyRequest:
     # wire string of the CoreNetworkPolicyAlias enum (querystring binding)
     Optional[str] Alias
 
-# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoreNetworkPolicyResponse:
     Optional[CoreNetworkPolicy] CoreNetworkPolicy
 
@@ -1353,8 +1408,9 @@ struct GetCoreNetworkPolicyResponse:
 struct GetCoreNetworkRequest:
     str CoreNetworkId
 
-# no @derive(Json): member(s) CoreNetwork: CoreNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetwork: CoreNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoreNetworkResponse:
     Optional[CoreNetwork] CoreNetwork
 
@@ -1366,8 +1422,9 @@ struct GetCustomerGatewayAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CustomerGatewayAssociations: list[CustomerGatewayAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerGatewayAssociations: list[CustomerGatewayAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomerGatewayAssociationsResponse:
     Optional[list[CustomerGatewayAssociation]] CustomerGatewayAssociations
     Optional[str] NextToken
@@ -1381,8 +1438,9 @@ struct GetDevicesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Devices: list[Device] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Devices: list[Device] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevicesResponse:
     Optional[list[Device]] Devices
     Optional[str] NextToken
@@ -1392,8 +1450,9 @@ struct GetDevicesResponse:
 struct GetDirectConnectGatewayAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) DirectConnectGatewayAttachment: DirectConnectGatewayAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectConnectGatewayAttachment: DirectConnectGatewayAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDirectConnectGatewayAttachmentResponse:
     Optional[DirectConnectGatewayAttachment] DirectConnectGatewayAttachment
 
@@ -1406,8 +1465,9 @@ struct GetLinkAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LinkAssociations: list[LinkAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkAssociations: list[LinkAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkAssociationsResponse:
     Optional[list[LinkAssociation]] LinkAssociations
     Optional[str] NextToken
@@ -1423,8 +1483,9 @@ struct GetLinksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Links: list[Link] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Links: list[Link] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinksResponse:
     Optional[list[Link]] Links
     Optional[str] NextToken
@@ -1437,8 +1498,9 @@ struct GetNetworkResourceCountsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NetworkResourceCounts: list[NetworkResourceCount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkResourceCounts: list[NetworkResourceCount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkResourceCountsResponse:
     Optional[list[NetworkResourceCount]] NetworkResourceCounts
     Optional[str] NextToken
@@ -1456,8 +1518,9 @@ struct GetNetworkResourceRelationshipsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Relationships: list[Relationship] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Relationships: list[Relationship] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkResourceRelationshipsResponse:
     Optional[list[Relationship]] Relationships
     Optional[str] NextToken
@@ -1475,8 +1538,9 @@ struct GetNetworkResourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NetworkResources: list[NetworkResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkResources: list[NetworkResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkResourcesResponse:
     Optional[list[NetworkResource]] NetworkResources
     Optional[str] NextToken
@@ -1497,8 +1561,9 @@ struct GetNetworkRoutesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NetworkRoutes: list[NetworkRoute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkRoutes: list[NetworkRoute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkRoutesResponse:
     Optional[str] RouteTableArn
     Optional[CoreNetworkSegmentEdgeIdentifier] CoreNetworkSegmentEdge
@@ -1521,8 +1586,9 @@ struct GetNetworkTelemetryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NetworkTelemetry: list[NetworkTelemetry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkTelemetry: list[NetworkTelemetry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkTelemetryResponse:
     Optional[list[NetworkTelemetry]] NetworkTelemetry
     Optional[str] NextToken
@@ -1542,8 +1608,9 @@ struct GetRouteAnalysisRequest:
     str GlobalNetworkId
     str RouteAnalysisId
 
-# no @derive(Json): member(s) RouteAnalysis: RouteAnalysis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteAnalysis: RouteAnalysis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouteAnalysisResponse:
     Optional[RouteAnalysis] RouteAnalysis
 
@@ -1552,8 +1619,9 @@ struct GetRouteAnalysisResponse:
 struct GetSiteToSiteVpnAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) SiteToSiteVpnAttachment: SiteToSiteVpnAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SiteToSiteVpnAttachment: SiteToSiteVpnAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSiteToSiteVpnAttachmentResponse:
     Optional[SiteToSiteVpnAttachment] SiteToSiteVpnAttachment
 
@@ -1565,8 +1633,9 @@ struct GetSitesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Sites: list[Site] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sites: list[Site] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSitesResponse:
     Optional[list[Site]] Sites
     Optional[str] NextToken
@@ -1579,8 +1648,9 @@ struct GetTransitGatewayConnectPeerAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TransitGatewayConnectPeerAssociations: list[TransitGatewayConnectPeerAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayConnectPeerAssociations: list[TransitGatewayConnectPeerAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransitGatewayConnectPeerAssociationsResponse:
     Optional[list[TransitGatewayConnectPeerAssociation]] TransitGatewayConnectPeerAssociations
     Optional[str] NextToken
@@ -1590,8 +1660,9 @@ struct GetTransitGatewayConnectPeerAssociationsResponse:
 struct GetTransitGatewayPeeringRequest:
     str PeeringId
 
-# no @derive(Json): member(s) TransitGatewayPeering: TransitGatewayPeering not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayPeering: TransitGatewayPeering not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransitGatewayPeeringResponse:
     Optional[TransitGatewayPeering] TransitGatewayPeering
 
@@ -1603,8 +1674,9 @@ struct GetTransitGatewayRegistrationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TransitGatewayRegistrations: list[TransitGatewayRegistration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayRegistrations: list[TransitGatewayRegistration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransitGatewayRegistrationsResponse:
     Optional[list[TransitGatewayRegistration]] TransitGatewayRegistrations
     Optional[str] NextToken
@@ -1614,8 +1686,9 @@ struct GetTransitGatewayRegistrationsResponse:
 struct GetTransitGatewayRouteTableAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) TransitGatewayRouteTableAttachment: TransitGatewayRouteTableAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayRouteTableAttachment: TransitGatewayRouteTableAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransitGatewayRouteTableAttachmentResponse:
     Optional[TransitGatewayRouteTableAttachment] TransitGatewayRouteTableAttachment
 
@@ -1624,13 +1697,15 @@ struct GetTransitGatewayRouteTableAttachmentResponse:
 struct GetVpcAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) VpcAttachment: VpcAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcAttachment: VpcAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVpcAttachmentResponse:
     Optional[VpcAttachment] VpcAttachment
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalNetwork:
     Optional[str] GlobalNetworkId
     Optional[str] GlobalNetworkArn
@@ -1644,8 +1719,9 @@ struct InternalServerException:
     str Message
     Optional[int64] RetryAfterSeconds
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Link:
     Optional[str] LinkId
     Optional[str] LinkArn
@@ -1675,8 +1751,9 @@ struct ListAttachmentNatConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AttachmentNatConfigurations: list[AttachmentNatConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachmentNatConfigurations: list[AttachmentNatConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachmentNatConfigurationsResponse:
     list[AttachmentNatConfiguration] AttachmentNatConfigurations
     Optional[str] NextToken
@@ -1689,8 +1766,9 @@ struct ListAttachmentRoutingPolicyAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AttachmentRoutingPolicyAssociations: list[AttachmentRoutingPolicyAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachmentRoutingPolicyAssociations: list[AttachmentRoutingPolicyAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachmentRoutingPolicyAssociationsResponse:
     Optional[list[AttachmentRoutingPolicyAssociationSummary]] AttachmentRoutingPolicyAssociations
     Optional[str] NextToken
@@ -1707,8 +1785,9 @@ struct ListAttachmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Attachments: list[Attachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachments: list[Attachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachmentsResponse:
     Optional[list[Attachment]] Attachments
     Optional[str] NextToken
@@ -1721,8 +1800,9 @@ struct ListConnectPeersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectPeers: list[ConnectPeerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectPeers: list[ConnectPeerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectPeersResponse:
     Optional[list[ConnectPeerSummary]] ConnectPeers
     Optional[str] NextToken
@@ -1734,8 +1814,9 @@ struct ListCoreNetworkPolicyVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CoreNetworkPolicyVersions: list[CoreNetworkPolicyVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkPolicyVersions: list[CoreNetworkPolicyVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoreNetworkPolicyVersionsResponse:
     Optional[list[CoreNetworkPolicyVersion]] CoreNetworkPolicyVersions
     Optional[str] NextToken
@@ -1748,8 +1829,9 @@ struct ListCoreNetworkPrefixListAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PrefixListAssociations: list[PrefixListAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrefixListAssociations: list[PrefixListAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoreNetworkPrefixListAssociationsResponse:
     Optional[list[PrefixListAssociation]] PrefixListAssociations
     Optional[str] NextToken
@@ -1772,8 +1854,9 @@ struct ListCoreNetworkRoutingInformationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CoreNetworkRoutingInformation: list[CoreNetworkRoutingInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkRoutingInformation: list[CoreNetworkRoutingInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoreNetworkRoutingInformationResponse:
     Optional[list[CoreNetworkRoutingInformation]] CoreNetworkRoutingInformation
     Optional[str] NextToken
@@ -1784,8 +1867,9 @@ struct ListCoreNetworksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CoreNetworks: list[CoreNetworkSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworks: list[CoreNetworkSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoreNetworksResponse:
     Optional[list[CoreNetworkSummary]] CoreNetworks
     Optional[str] NextToken
@@ -1796,8 +1880,9 @@ struct ListOrganizationServiceAccessStatusRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationStatus: OrganizationStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationStatus: OrganizationStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationServiceAccessStatusResponse:
     Optional[OrganizationStatus] OrganizationStatus
     Optional[str] NextToken
@@ -1813,8 +1898,9 @@ struct ListPeeringsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Peerings: list[Peering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Peerings: list[Peering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPeeringsResponse:
     Optional[list[Peering]] Peerings
     Optional[str] NextToken
@@ -1824,8 +1910,9 @@ struct ListPeeringsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] TagList
 
@@ -1852,8 +1939,9 @@ struct NatRuleRequest:
 struct NetworkFunctionGroup:
     Optional[str] Name
 
-# no @derive(Json): member(s) Tags: list[Tag], Metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkResource:
     Optional[str] RegisteredGatewayArn
     Optional[str] CoreNetworkId
@@ -1881,8 +1969,9 @@ struct NetworkResourceSummary:
     Optional[str] NameTag
     Optional[bool] IsMiddlebox
 
-# no @derive(Json): member(s) Destinations: list[NetworkRouteDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[NetworkRouteDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkRoute:
     Optional[str] DestinationCidrBlock
     Optional[list[NetworkRouteDestination]] Destinations
@@ -1912,8 +2001,9 @@ struct NetworkTelemetry:
     Optional[str] Address
     Optional[ConnectionHealth] Health
 
-# no @derive(Json): member(s) AccountStatusList: list[AccountStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountStatusList: list[AccountStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationStatus:
     Optional[str] OrganizationId
     Optional[str] OrganizationAwsServiceAccessStatus
@@ -1926,8 +2016,9 @@ struct PathComponent:
     Optional[NetworkResourceSummary] Resource
     Optional[str] DestinationCidrBlock
 
-# no @derive(Json): member(s) Tags: list[Tag], LastModificationErrors: list[PeeringError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], LastModificationErrors: list[PeeringError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Peering:
     Optional[str] CoreNetworkId
     Optional[str] CoreNetworkArn
@@ -1959,15 +2050,17 @@ struct PrefixListAssociation:
     Optional[str] PrefixListArn
     Optional[str] PrefixListAlias
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProposedNetworkFunctionGroupChange:
     Optional[list[Tag]] Tags
     Optional[int64] AttachmentPolicyRuleNumber
     Optional[str] NetworkFunctionGroupName
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProposedSegmentChange:
     Optional[list[Tag]] Tags
     Optional[int64] AttachmentPolicyRuleNumber
@@ -1996,8 +2089,9 @@ struct PutCoreNetworkPolicyRequest:
     Optional[int64] LatestVersionId
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutCoreNetworkPolicyResponse:
     Optional[CoreNetworkPolicy] CoreNetworkPolicy
 
@@ -2027,8 +2121,9 @@ struct RegisterTransitGatewayResponse:
 struct RejectAttachmentRequest:
     str AttachmentId
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectAttachmentResponse:
     Optional[Attachment] Attachment
 
@@ -2049,8 +2144,9 @@ struct RemoveAttachmentRoutingPolicyLabelResponse:
     Optional[str] AttachmentId
     Optional[str] RoutingPolicyLabel
 
-# no @derive(Json): member(s) Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceNotFoundException:
     str Message
     str ResourceId
@@ -2063,13 +2159,15 @@ struct RestoreCoreNetworkPolicyVersionRequest:
     str CoreNetworkId
     int64 PolicyVersionId
 
-# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetworkPolicy: CoreNetworkPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreCoreNetworkPolicyVersionResponse:
     Optional[CoreNetworkPolicy] CoreNetworkPolicy
 
-# no @derive(Json): member(s) ForwardPath: RouteAnalysisPath, ReturnPath: RouteAnalysisPath not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForwardPath: RouteAnalysisPath, ReturnPath: RouteAnalysisPath not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteAnalysis:
     Optional[str] GlobalNetworkId
     Optional[str] OwnerAccountId
@@ -2083,8 +2181,9 @@ struct RouteAnalysis:
     Optional[RouteAnalysisPath] ForwardPath
     Optional[RouteAnalysisPath] ReturnPath
 
-# no @derive(Json): member(s) ReasonContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReasonContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteAnalysisCompletion:
     Optional[RouteAnalysisCompletionResultCode] ResultCode
     Optional[RouteAnalysisCompletionReasonCode] ReasonCode
@@ -2101,8 +2200,9 @@ struct RouteAnalysisEndpointOptionsSpecification:
     Optional[str] TransitGatewayAttachmentArn
     Optional[str] IpAddress
 
-# no @derive(Json): member(s) CompletionStatus: RouteAnalysisCompletion, Path: list[PathComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompletionStatus: RouteAnalysisCompletion, Path: list[PathComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteAnalysisPath:
     Optional[RouteAnalysisCompletion] CompletionStatus
     Optional[list[PathComponent]] Path
@@ -2122,22 +2222,25 @@ struct RoutingInformationNextHop:
     Optional[str] SegmentName
     Optional[str] EdgeLocation
 
-# no @derive(Json): member(s) RoutingPolicyNames: list[str], SharedSegments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingPolicyNames: list[str], SharedSegments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingPolicyAssociationDetail:
     Optional[list[str]] RoutingPolicyNames
     Optional[list[str]] SharedSegments
 
-# no @derive(Json): member(s) WhenSentTo: WhenSentTo, Via: Via not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhenSentTo: WhenSentTo, Via: Via not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceInsertionAction:
     Optional[SegmentActionServiceInsertion] Action
     Optional[SendViaMode] Mode
     Optional[WhenSentTo] WhenSentTo
     Optional[Via] Via
 
-# no @derive(Json): member(s) SendVia: list[str], SendTo: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SendVia: list[str], SendTo: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceInsertionSegments:
     Optional[list[str]] SendVia
     Optional[list[str]] SendTo
@@ -2150,8 +2253,9 @@ struct ServiceQuotaExceededException:
     str LimitCode
     str ServiceCode
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Site:
     Optional[str] SiteId
     Optional[str] SiteArn
@@ -2162,8 +2266,9 @@ struct Site:
     Optional[SiteState] State
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SiteToSiteVpnAttachment:
     Optional[Attachment] Attachment
     Optional[str] VpnConnectionArn
@@ -2173,8 +2278,9 @@ struct SiteToSiteVpnAttachment:
 struct StartOrganizationServiceAccessUpdateRequest:
     str Action
 
-# no @derive(Json): member(s) OrganizationStatus: OrganizationStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationStatus: OrganizationStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartOrganizationServiceAccessUpdateResponse:
     Optional[OrganizationStatus] OrganizationStatus
 
@@ -2187,8 +2293,9 @@ struct StartRouteAnalysisRequest:
     Optional[bool] IncludeReturnPath
     Optional[bool] UseMiddleboxes
 
-# no @derive(Json): member(s) RouteAnalysis: RouteAnalysis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteAnalysis: RouteAnalysis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRouteAnalysisResponse:
     Optional[RouteAnalysis] RouteAnalysis
 
@@ -2221,8 +2328,9 @@ struct TransitGatewayConnectPeerAssociation:
     Optional[str] LinkId
     Optional[TransitGatewayConnectPeerAssociationState] State
 
-# no @derive(Json): member(s) Peering: Peering not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Peering: Peering not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransitGatewayPeering:
     Optional[Peering] Peering
     Optional[str] TransitGatewayArn
@@ -2239,8 +2347,9 @@ struct TransitGatewayRegistrationStateReason:
     Optional[TransitGatewayRegistrationState] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) Attachment: Attachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransitGatewayRouteTableAttachment:
     Optional[Attachment] Attachment
     Optional[str] PeeringId
@@ -2266,8 +2375,9 @@ struct UpdateAttachmentNatConfigurationRequest:
     Optional[list[NatRuleRequest]] NatGatewayRules
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) NatGatewayRules: list[NatRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NatGatewayRules: list[NatRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAttachmentNatConfigurationResponse:
     Optional[str] AttachmentId
     Optional[NatGatewaySupportState] NatGatewaySupport
@@ -2283,8 +2393,9 @@ struct UpdateConnectionRequest:
     Optional[str] ConnectedLinkId
     Optional[str] Description
 
-# no @derive(Json): member(s) Connection: Connection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connection: Connection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionResponse:
     Optional[Connection] Connection
 
@@ -2294,8 +2405,9 @@ struct UpdateCoreNetworkRequest:
     str CoreNetworkId
     Optional[str] Description
 
-# no @derive(Json): member(s) CoreNetwork: CoreNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoreNetwork: CoreNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCoreNetworkResponse:
     Optional[CoreNetwork] CoreNetwork
 
@@ -2313,8 +2425,9 @@ struct UpdateDeviceRequest:
     Optional[Location] Location
     Optional[str] SiteId
 
-# no @derive(Json): member(s) Device: Device not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Device: Device not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeviceResponse:
     Optional[Device] Device
 
@@ -2324,8 +2437,9 @@ struct UpdateDirectConnectGatewayAttachmentRequest:
     str AttachmentId
     Optional[list[str]] EdgeLocations
 
-# no @derive(Json): member(s) DirectConnectGatewayAttachment: DirectConnectGatewayAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectConnectGatewayAttachment: DirectConnectGatewayAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayAttachmentResponse:
     Optional[DirectConnectGatewayAttachment] DirectConnectGatewayAttachment
 
@@ -2335,8 +2449,9 @@ struct UpdateGlobalNetworkRequest:
     str GlobalNetworkId
     Optional[str] Description
 
-# no @derive(Json): member(s) GlobalNetwork: GlobalNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalNetwork: GlobalNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlobalNetworkResponse:
     Optional[GlobalNetwork] GlobalNetwork
 
@@ -2350,8 +2465,9 @@ struct UpdateLinkRequest:
     Optional[Bandwidth] Bandwidth
     Optional[str] Provider
 
-# no @derive(Json): member(s) Link: Link not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Link: Link not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLinkResponse:
     Optional[Link] Link
 
@@ -2362,8 +2478,9 @@ struct UpdateNetworkResourceMetadataRequest:
     str ResourceArn
     dict[str, str] Metadata
 
-# no @derive(Json): member(s) Metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkResourceMetadataResponse:
     Optional[str] ResourceArn
     Optional[dict[str, str]] Metadata
@@ -2376,8 +2493,9 @@ struct UpdateSiteRequest:
     Optional[str] Description
     Optional[Location] Location
 
-# no @derive(Json): member(s) Site: Site not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Site: Site not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSiteResponse:
     Optional[Site] Site
 
@@ -2389,13 +2507,15 @@ struct UpdateVpcAttachmentRequest:
     Optional[list[str]] RemoveSubnetArns
     Optional[VpcOptions] Options
 
-# no @derive(Json): member(s) VpcAttachment: VpcAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcAttachment: VpcAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVpcAttachmentResponse:
     Optional[VpcAttachment] VpcAttachment
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[ValidationExceptionReason] Reason
@@ -2406,14 +2526,16 @@ struct ValidationExceptionField:
     str Name
     str Message
 
-# no @derive(Json): member(s) NetworkFunctionGroups: list[NetworkFunctionGroup], WithEdgeOverrides: list[EdgeOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkFunctionGroups: list[NetworkFunctionGroup], WithEdgeOverrides: list[EdgeOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Via:
     Optional[list[NetworkFunctionGroup]] NetworkFunctionGroups
     Optional[list[EdgeOverride]] WithEdgeOverrides
 
-# no @derive(Json): member(s) Attachment: Attachment, SubnetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachment: Attachment, SubnetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcAttachment:
     Optional[Attachment] Attachment
     Optional[list[str]] SubnetArns
@@ -2426,8 +2548,9 @@ struct VpcOptions:
     Optional[bool] DnsSupport
     Optional[bool] SecurityGroupReferencingSupport
 
-# no @derive(Json): member(s) WhenSentToSegmentsList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhenSentToSegmentsList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhenSentTo:
     Optional[list[str]] WhenSentToSegmentsList
 
@@ -2472,37 +2595,16 @@ def networkmanager_error_from_code(str code) -> NetworkManagerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConnectAttachment (document member `NatGatewayRules: list[NatRuleRequest]` is not serializable by derive)
-#   CreateConnectPeer (document member `InsideCidrBlocks: list[str]` is not serializable by derive)
-#   CreateConnection (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateCoreNetwork (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateDevice (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateDirectConnectGatewayAttachment (document member `EdgeLocations: list[str]` is not serializable by derive)
-#   CreateGlobalNetwork (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateLink (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateSite (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateSiteToSiteVpnAttachment (document member `NatGatewayRules: list[NatRuleRequest]` is not serializable by derive)
-#   CreateTransitGatewayPeering (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateTransitGatewayRouteTableAttachment (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateVpcAttachment (document member `SubnetArns: list[str]` is not serializable by derive)
 #   DescribeGlobalNetworks (httpQuery `GlobalNetworkIds` has unsupported type list[str])
 #   GetConnectPeerAssociations (httpQuery `ConnectPeerIds` has unsupported type list[str])
 #   GetConnections (httpQuery `ConnectionIds` has unsupported type list[str])
 #   GetCustomerGatewayAssociations (httpQuery `CustomerGatewayArns` has unsupported type list[str])
 #   GetDevices (httpQuery `DeviceIds` has unsupported type list[str])
 #   GetLinks (httpQuery `LinkIds` has unsupported type list[str])
-#   GetNetworkRoutes (document member `ExactCidrMatches: list[str]` is not serializable by derive)
 #   GetSites (httpQuery `SiteIds` has unsupported type list[str])
 #   GetTransitGatewayConnectPeerAssociations (httpQuery `TransitGatewayConnectPeerArns` has unsupported type list[str])
 #   GetTransitGatewayRegistrations (httpQuery `TransitGatewayArns` has unsupported type list[str])
-#   ListAttachmentNatConfigurations (document member `Filters: dict[str, list[str]]` is not serializable by derive)
-#   ListCoreNetworkRoutingInformation (document member `NextHopFilters: dict[str, list[str]]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateAttachmentNatConfiguration (document member `NatGatewayRules: list[NatRuleRequest]` is not serializable by derive)
-#   UpdateDirectConnectGatewayAttachment (document member `EdgeLocations: list[str]` is not serializable by derive)
-#   UpdateNetworkResourceMetadata (document member `Metadata: dict[str, str]` is not serializable by derive)
-#   UpdateVpcAttachment (document member `AddSubnetArns: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -2512,12 +2614,9 @@ def networkmanager_error_from_code(str code) -> NetworkManagerError:
 #   GetCustomerGatewayAssociations (operation not generated)
 #   GetDevices (operation not generated)
 #   GetLinks (operation not generated)
-#   GetNetworkRoutes (operation not generated)
 #   GetSites (operation not generated)
 #   GetTransitGatewayConnectPeerAssociations (operation not generated)
 #   GetTransitGatewayRegistrations (operation not generated)
-#   ListAttachmentNatConfigurations (operation not generated)
-#   ListCoreNetworkRoutingInformation (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2697,6 +2796,128 @@ struct NetworkManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
+    # CreateConnectAttachment  POST /connect-attachments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_connect_attachment(self, CreateConnectAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connect-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
+        parts.append("\"EdgeLocation\":" + networkmanager_json_str(input.EdgeLocation))
+        parts.append("\"TransportAttachmentId\":" + networkmanager_json_str(input.TransportAttachmentId))
+        if input.RoutingPolicyLabel.is_some():
+            auto u0 = input.RoutingPolicyLabel.unwrap()
+            parts.append("\"RoutingPolicyLabel\":" + networkmanager_json_str(u0))
+        if input.NatGatewaySupport.is_some():
+            auto u1 = input.NatGatewaySupport.unwrap()
+            parts.append("\"NatGatewaySupport\":" + u1.to_json())
+        if input.NatGatewayRules.is_some():
+            auto u2 = input.NatGatewayRules.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"NatGatewayRules\":" + networkmanager_json_arr(e3))
+        parts.append("\"Options\":" + input.Options.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e5))
+        if input.ClientToken.is_some():
+            auto u6 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u6))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateConnectPeer  POST /connect-peers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_connect_peer(self, CreateConnectPeerRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connect-peers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ConnectAttachmentId\":" + networkmanager_json_str(input.ConnectAttachmentId))
+        if input.CoreNetworkAddress.is_some():
+            auto u0 = input.CoreNetworkAddress.unwrap()
+            parts.append("\"CoreNetworkAddress\":" + networkmanager_json_str(u0))
+        parts.append("\"PeerAddress\":" + networkmanager_json_str(input.PeerAddress))
+        if input.BgpOptions.is_some():
+            auto u1 = input.BgpOptions.unwrap()
+            parts.append("\"BgpOptions\":" + u1.to_json())
+        if input.InsideCidrBlocks.is_some():
+            auto u2 = input.InsideCidrBlocks.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(networkmanager_json_str(x3))
+            parts.append("\"InsideCidrBlocks\":" + networkmanager_json_arr(e3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e5))
+        if input.ClientToken.is_some():
+            auto u6 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u6))
+        if input.SubnetArn.is_some():
+            auto u7 = input.SubnetArn.unwrap()
+            parts.append("\"SubnetArn\":" + networkmanager_json_str(u7))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateConnection  POST /global-networks/{globalNetworkId}/connections
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_connection(self, CreateConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DeviceId\":" + networkmanager_json_str(input.DeviceId))
+        parts.append("\"ConnectedDeviceId\":" + networkmanager_json_str(input.ConnectedDeviceId))
+        if input.LinkId.is_some():
+            auto u0 = input.LinkId.unwrap()
+            parts.append("\"LinkId\":" + networkmanager_json_str(u0))
+        if input.ConnectedLinkId.is_some():
+            auto u1 = input.ConnectedLinkId.unwrap()
+            parts.append("\"ConnectedLinkId\":" + networkmanager_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + networkmanager_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateCoreNetwork  POST /core-networks
+    # errors: AccessDeniedException, ConflictException, CoreNetworkPolicyException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_core_network(self, CreateCoreNetworkRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GlobalNetworkId\":" + networkmanager_json_str(input.GlobalNetworkId))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + networkmanager_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e2))
+        if input.PolicyDocument.is_some():
+            auto u3 = input.PolicyDocument.unwrap()
+            parts.append("\"PolicyDocument\":" + networkmanager_json_str(u3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u4))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
     # CreateCoreNetworkPrefixListAssociation  POST /prefix-list
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_core_network_prefix_list_association(self, CreateCoreNetworkPrefixListAssociationRequest input) -> str:
@@ -2704,6 +2925,272 @@ struct NetworkManagerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/prefix-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCoreNetworkPrefixListAssociationDocument(CoreNetworkId=input.CoreNetworkId, PrefixListArn=input.PrefixListArn, PrefixListAlias=input.PrefixListAlias, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateDevice  POST /global-networks/{globalNetworkId}/devices
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_device(self, CreateDeviceRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/devices", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AWSLocation.is_some():
+            auto u0 = input.AWSLocation.unwrap()
+            parts.append("\"AWSLocation\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + networkmanager_json_str(u1))
+        if input.Type.is_some():
+            auto u2 = input.Type.unwrap()
+            parts.append("\"Type\":" + networkmanager_json_str(u2))
+        if input.Vendor.is_some():
+            auto u3 = input.Vendor.unwrap()
+            parts.append("\"Vendor\":" + networkmanager_json_str(u3))
+        if input.Model.is_some():
+            auto u4 = input.Model.unwrap()
+            parts.append("\"Model\":" + networkmanager_json_str(u4))
+        if input.SerialNumber.is_some():
+            auto u5 = input.SerialNumber.unwrap()
+            parts.append("\"SerialNumber\":" + networkmanager_json_str(u5))
+        if input.Location.is_some():
+            auto u6 = input.Location.unwrap()
+            parts.append("\"Location\":" + u6.to_json())
+        if input.SiteId.is_some():
+            auto u7 = input.SiteId.unwrap()
+            parts.append("\"SiteId\":" + networkmanager_json_str(u7))
+        if input.Tags.is_some():
+            auto u8 = input.Tags.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateDirectConnectGatewayAttachment  POST /direct-connect-gateway-attachments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_direct_connect_gateway_attachment(self, CreateDirectConnectGatewayAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/direct-connect-gateway-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
+        parts.append("\"DirectConnectGatewayArn\":" + networkmanager_json_str(input.DirectConnectGatewayArn))
+        if input.RoutingPolicyLabel.is_some():
+            auto u0 = input.RoutingPolicyLabel.unwrap()
+            parts.append("\"RoutingPolicyLabel\":" + networkmanager_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.EdgeLocations:
+            e1.append(networkmanager_json_str(x1))
+        parts.append("\"EdgeLocations\":" + networkmanager_json_arr(e1))
+        if input.NatGatewaySupport.is_some():
+            auto u2 = input.NatGatewaySupport.unwrap()
+            parts.append("\"NatGatewaySupport\":" + u2.to_json())
+        if input.NatSystemRouteSupport.is_some():
+            auto u3 = input.NatSystemRouteSupport.unwrap()
+            parts.append("\"NatSystemRouteSupport\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.NatGatewayRules.is_some():
+            auto u4 = input.NatGatewayRules.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"NatGatewayRules\":" + networkmanager_json_arr(e5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e7))
+        if input.ClientToken.is_some():
+            auto u8 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u8))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateGlobalNetwork  POST /global-networks
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_global_network(self, CreateGlobalNetworkRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + networkmanager_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateLink  POST /global-networks/{globalNetworkId}/links
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_link(self, CreateLinkRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/links", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + networkmanager_json_str(u0))
+        if input.Type.is_some():
+            auto u1 = input.Type.unwrap()
+            parts.append("\"Type\":" + networkmanager_json_str(u1))
+        parts.append("\"Bandwidth\":" + input.Bandwidth.to_json())
+        if input.Provider.is_some():
+            auto u2 = input.Provider.unwrap()
+            parts.append("\"Provider\":" + networkmanager_json_str(u2))
+        parts.append("\"SiteId\":" + networkmanager_json_str(input.SiteId))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateSite  POST /global-networks/{globalNetworkId}/sites
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_site(self, CreateSiteRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/sites", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + networkmanager_json_str(u0))
+        if input.Location.is_some():
+            auto u1 = input.Location.unwrap()
+            parts.append("\"Location\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateSiteToSiteVpnAttachment  POST /site-to-site-vpn-attachments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_site_to_site_vpn_attachment(self, CreateSiteToSiteVpnAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/site-to-site-vpn-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
+        parts.append("\"VpnConnectionArn\":" + networkmanager_json_str(input.VpnConnectionArn))
+        if input.RoutingPolicyLabel.is_some():
+            auto u0 = input.RoutingPolicyLabel.unwrap()
+            parts.append("\"RoutingPolicyLabel\":" + networkmanager_json_str(u0))
+        if input.NatGatewaySupport.is_some():
+            auto u1 = input.NatGatewaySupport.unwrap()
+            parts.append("\"NatGatewaySupport\":" + u1.to_json())
+        if input.NatSystemRouteSupport.is_some():
+            auto u2 = input.NatSystemRouteSupport.unwrap()
+            parts.append("\"NatSystemRouteSupport\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.NatGatewayRules.is_some():
+            auto u3 = input.NatGatewayRules.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"NatGatewayRules\":" + networkmanager_json_arr(e4))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e6))
+        if input.ClientToken.is_some():
+            auto u7 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u7))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateTransitGatewayPeering  POST /transit-gateway-peerings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_transit_gateway_peering(self, CreateTransitGatewayPeeringRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/transit-gateway-peerings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
+        parts.append("\"TransitGatewayArn\":" + networkmanager_json_str(input.TransitGatewayArn))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u2))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateTransitGatewayRouteTableAttachment  POST /transit-gateway-route-table-attachments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_transit_gateway_route_table_attachment(self, CreateTransitGatewayRouteTableAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/transit-gateway-route-table-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PeeringId\":" + networkmanager_json_str(input.PeeringId))
+        parts.append("\"TransitGatewayRouteTableArn\":" + networkmanager_json_str(input.TransitGatewayRouteTableArn))
+        if input.RoutingPolicyLabel.is_some():
+            auto u0 = input.RoutingPolicyLabel.unwrap()
+            parts.append("\"RoutingPolicyLabel\":" + networkmanager_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u3))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # CreateVpcAttachment  POST /vpc-attachments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_vpc_attachment(self, CreateVpcAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/vpc-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
+        parts.append("\"VpcArn\":" + networkmanager_json_str(input.VpcArn))
+        list[str] e0 = []
+        for x0 in input.SubnetArns:
+            e0.append(networkmanager_json_str(x0))
+        parts.append("\"SubnetArns\":" + networkmanager_json_arr(e0))
+        if input.Options.is_some():
+            auto u1 = input.Options.unwrap()
+            parts.append("\"Options\":" + u1.to_json())
+        if input.RoutingPolicyLabel.is_some():
+            auto u2 = input.RoutingPolicyLabel.unwrap()
+            parts.append("\"RoutingPolicyLabel\":" + networkmanager_json_str(u2))
+        if input.NatGatewaySupport.is_some():
+            auto u3 = input.NatGatewaySupport.unwrap()
+            parts.append("\"NatGatewaySupport\":" + u3.to_json())
+        if input.NatGatewayRules.is_some():
+            auto u4 = input.NatGatewayRules.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"NatGatewayRules\":" + networkmanager_json_arr(e5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Tags\":" + networkmanager_json_arr(e7))
+        if input.ClientToken.is_some():
+            auto u8 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u8))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
     # DeleteAttachment  DELETE /attachments/{attachmentId}
@@ -3048,6 +3535,75 @@ struct NetworkManagerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
+    # GetNetworkRoutes  POST /global-networks/{globalNetworkId}/network-routes
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_network_routes(self, GetNetworkRoutesRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/network-routes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RouteTableIdentifier\":" + input.RouteTableIdentifier.to_json())
+        if input.ExactCidrMatches.is_some():
+            auto u0 = input.ExactCidrMatches.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(networkmanager_json_str(x1))
+            parts.append("\"ExactCidrMatches\":" + networkmanager_json_arr(e1))
+        if input.LongestPrefixMatches.is_some():
+            auto u2 = input.LongestPrefixMatches.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(networkmanager_json_str(x3))
+            parts.append("\"LongestPrefixMatches\":" + networkmanager_json_arr(e3))
+        if input.SubnetOfMatches.is_some():
+            auto u4 = input.SubnetOfMatches.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(networkmanager_json_str(x5))
+            parts.append("\"SubnetOfMatches\":" + networkmanager_json_arr(e5))
+        if input.SupernetOfMatches.is_some():
+            auto u6 = input.SupernetOfMatches.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(networkmanager_json_str(x7))
+            parts.append("\"SupernetOfMatches\":" + networkmanager_json_arr(e7))
+        if input.PrefixListIds.is_some():
+            auto u8 = input.PrefixListIds.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(networkmanager_json_str(x9))
+            parts.append("\"PrefixListIds\":" + networkmanager_json_arr(e9))
+        if input.States.is_some():
+            auto u10 = input.States.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"States\":" + networkmanager_json_arr(e11))
+        if input.Types.is_some():
+            auto u12 = input.Types.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"Types\":" + networkmanager_json_arr(e13))
+        if input.DestinationFilters.is_some():
+            auto u14 = input.DestinationFilters.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                list[str] e16 = []
+                for x16 in u14[k15]:
+                    e16.append(networkmanager_json_str(x16))
+                m15.append(networkmanager_json_str(k15) + ":" + networkmanager_json_arr(e16))
+            parts.append("\"DestinationFilters\":" + networkmanager_json_obj(m15))
+        if input.MaxResults.is_some():
+            auto u17 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u17))
+        if input.NextToken.is_some():
+            auto u18 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + networkmanager_json_str(u18))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
     # GetNetworkTelemetry  GET /global-networks/{globalNetworkId}/network-telemetry
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_network_telemetry(self, GetNetworkTelemetryRequest input) -> str:
@@ -3128,6 +3684,36 @@ struct NetworkManagerClient:
         labels["attachmentId"] = input.AttachmentId
         auto b = binding.HttpBinding(method="GET", path_template="/vpc-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # ListAttachmentNatConfigurations  POST /nat-configurations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_attachment_nat_configurations(self, ListAttachmentNatConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/nat-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CoreNetworkId.is_some():
+            auto u0 = input.CoreNetworkId.unwrap()
+            parts.append("\"CoreNetworkId\":" + networkmanager_json_str(u0))
+        if input.AttachmentId.is_some():
+            auto u1 = input.AttachmentId.unwrap()
+            parts.append("\"AttachmentId\":" + networkmanager_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                list[str] e4 = []
+                for x4 in u2[k3]:
+                    e4.append(networkmanager_json_str(x4))
+                m3.append(networkmanager_json_str(k3) + ":" + networkmanager_json_arr(e4))
+            parts.append("\"Filters\":" + networkmanager_json_obj(m3))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        if input.NextToken.is_some():
+            auto u6 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + networkmanager_json_str(u6))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
     # ListAttachmentRoutingPolicyAssociations  GET /routing-policy-label/core-network/{coreNetworkId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3210,6 +3796,81 @@ struct NetworkManagerClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/prefix-list/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # ListCoreNetworkRoutingInformation  POST /core-networks/{coreNetworkId}/core-network-routing-information
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_core_network_routing_information(self, ListCoreNetworkRoutingInformationRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["coreNetworkId"] = input.CoreNetworkId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-routing-information", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SegmentName\":" + networkmanager_json_str(input.SegmentName))
+        parts.append("\"EdgeLocation\":" + networkmanager_json_str(input.EdgeLocation))
+        if input.NextHopFilters.is_some():
+            auto u0 = input.NextHopFilters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                list[str] e2 = []
+                for x2 in u0[k1]:
+                    e2.append(networkmanager_json_str(x2))
+                m1.append(networkmanager_json_str(k1) + ":" + networkmanager_json_arr(e2))
+            parts.append("\"NextHopFilters\":" + networkmanager_json_obj(m1))
+        if input.ExactPrefixMatches.is_some():
+            auto u3 = input.ExactPrefixMatches.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(networkmanager_json_str(x4))
+            parts.append("\"ExactPrefixMatches\":" + networkmanager_json_arr(e4))
+        if input.LongestPrefixMatches.is_some():
+            auto u5 = input.LongestPrefixMatches.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(networkmanager_json_str(x6))
+            parts.append("\"LongestPrefixMatches\":" + networkmanager_json_arr(e6))
+        if input.SubnetOfMatches.is_some():
+            auto u7 = input.SubnetOfMatches.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(networkmanager_json_str(x8))
+            parts.append("\"SubnetOfMatches\":" + networkmanager_json_arr(e8))
+        if input.SupernetOfMatches.is_some():
+            auto u9 = input.SupernetOfMatches.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(networkmanager_json_str(x10))
+            parts.append("\"SupernetOfMatches\":" + networkmanager_json_arr(e10))
+        if input.LocalPreferenceMatches.is_some():
+            auto u11 = input.LocalPreferenceMatches.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(networkmanager_json_str(x12))
+            parts.append("\"LocalPreferenceMatches\":" + networkmanager_json_arr(e12))
+        if input.ExactAsPathMatches.is_some():
+            auto u13 = input.ExactAsPathMatches.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(networkmanager_json_str(x14))
+            parts.append("\"ExactAsPathMatches\":" + networkmanager_json_arr(e14))
+        if input.MedMatches.is_some():
+            auto u15 = input.MedMatches.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(networkmanager_json_str(x16))
+            parts.append("\"MedMatches\":" + networkmanager_json_arr(e16))
+        if input.CommunityMatches.is_some():
+            auto u17 = input.CommunityMatches.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(networkmanager_json_str(x18))
+            parts.append("\"CommunityMatches\":" + networkmanager_json_arr(e18))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
     # ListCoreNetworks  GET /core-networks
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -3354,6 +4015,47 @@ struct NetworkManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + networkmanager_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # UpdateAttachmentNatConfiguration  PATCH /attachments/{attachmentId}/nat-configuration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_attachment_nat_configuration(self, UpdateAttachmentNatConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["attachmentId"] = input.AttachmentId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/attachments/{attachmentId}/nat-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NatGatewaySupport.is_some():
+            auto u0 = input.NatGatewaySupport.unwrap()
+            parts.append("\"NatGatewaySupport\":" + u0.to_json())
+        if input.NatSystemRouteSupport.is_some():
+            auto u1 = input.NatSystemRouteSupport.unwrap()
+            parts.append("\"NatSystemRouteSupport\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.NatGatewayRules.is_some():
+            auto u2 = input.NatGatewayRules.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"NatGatewayRules\":" + networkmanager_json_arr(e3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + networkmanager_json_str(u4))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
     # UpdateConnection  PATCH /global-networks/{globalNetworkId}/connections/{connectionId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_connection(self, UpdateConnectionRequest input) -> str:
@@ -3389,6 +4091,23 @@ struct NetworkManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
+    # UpdateDirectConnectGatewayAttachment  PATCH /direct-connect-gateway-attachments/{attachmentId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_direct_connect_gateway_attachment(self, UpdateDirectConnectGatewayAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["attachmentId"] = input.AttachmentId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/direct-connect-gateway-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.EdgeLocations.is_some():
+            auto u0 = input.EdgeLocations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(networkmanager_json_str(x1))
+            parts.append("\"EdgeLocations\":" + networkmanager_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
     # UpdateGlobalNetwork  PATCH /global-networks/{globalNetworkId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_global_network(self, UpdateGlobalNetworkRequest input) -> str:
@@ -3412,6 +4131,22 @@ struct NetworkManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
+    # UpdateNetworkResourceMetadata  PATCH /global-networks/{globalNetworkId}/network-resources/{resourceArn}/metadata
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_network_resource_metadata(self, UpdateNetworkResourceMetadataRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/network-resources/{resourceArn}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Metadata.keys()):
+            m0.append(networkmanager_json_str(k0) + ":" + networkmanager_json_str(input.Metadata[k0]))
+        parts.append("\"Metadata\":" + networkmanager_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
     # UpdateSite  PATCH /global-networks/{globalNetworkId}/sites/{siteId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_site(self, UpdateSiteRequest input) -> str:
@@ -3422,6 +4157,32 @@ struct NetworkManagerClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/sites/{siteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSiteDocument(Description=input.Description, Location=input.Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # UpdateVpcAttachment  PATCH /vpc-attachments/{attachmentId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_vpc_attachment(self, UpdateVpcAttachmentRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["attachmentId"] = input.AttachmentId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/vpc-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AddSubnetArns.is_some():
+            auto u0 = input.AddSubnetArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(networkmanager_json_str(x1))
+            parts.append("\"AddSubnetArns\":" + networkmanager_json_arr(e1))
+        if input.RemoveSubnetArns.is_some():
+            auto u2 = input.RemoveSubnetArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(networkmanager_json_str(x3))
+            parts.append("\"RemoveSubnetArns\":" + networkmanager_json_arr(e3))
+        if input.Options.is_some():
+            auto u4 = input.Options.unwrap()
+            parts.append("\"Options\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
     # Paginator for GetCoreNetworkChangeEvents — yields each Response page, threading the
@@ -3502,12 +4263,38 @@ struct NetworkManagerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetNetworkRoutes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: NetworkRoutes).
+    def paginate_get_network_routes(self, GetNetworkRoutesRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_network_routes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetNetworkTelemetry — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: NetworkTelemetry).
     def paginate_get_network_telemetry(self, GetNetworkTelemetryRequest input):
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         while True:
             auto raw = self.get_network_telemetry(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListAttachmentNatConfigurations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: AttachmentNatConfigurations).
+    def paginate_list_attachment_nat_configurations(self, ListAttachmentNatConfigurationsRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.list_attachment_nat_configurations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -3573,6 +4360,19 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         while True:
             auto raw = self.list_core_network_prefix_list_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCoreNetworkRoutingInformation — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: CoreNetworkRoutingInformation).
+    def paginate_list_core_network_routing_information(self, ListCoreNetworkRoutingInformationRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.list_core_network_routing_information(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

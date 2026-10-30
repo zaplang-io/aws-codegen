@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 96 operations — 52 with a generated method,
-#   44 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 96 operations — 95 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   334 structs (194 @derive(Json)), 46 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -456,8 +456,9 @@ enum WebhookAction:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) vpcs: list[VpcConfig], logGroups: list[str], s3Buckets: list[str], secretArns: list[str], lambdaFunctionArns: list[str], iamRoles: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcs: list[VpcConfig], logGroups: list[str], s3Buckets: list[str], secretArns: list[str], lambdaFunctionArns: list[str], iamRoles: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AWSResources:
     Optional[list[VpcConfig]] vpcs
     Optional[list[str]] logGroups
@@ -470,8 +471,9 @@ struct AWSResources:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) uris: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) uris: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Actor:
     Optional[str] identifier
     Optional[list[str]] uris
@@ -500,8 +502,9 @@ struct AddArtifactInput:
 struct AddArtifactOutput:
     str artifactId
 
-# no @derive(Json): member(s) awsResources: AWSResources, targetDomainIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsResources: AWSResources, targetDomainIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentSpace:
     str agentSpaceId
     str name
@@ -548,8 +551,9 @@ struct ArtifactSummary:
     str fileName
     ArtifactType artifactType
 
-# no @derive(Json): member(s) endpoints: list[Endpoint], actors: list[Actor], documents: list[DocumentInfo], sourceCode: list[SourceCodeRepository], integratedRepositories: list[IntegratedRepository], trustedCaCertificates: list[TrustedCaCertificate], clientCertificates: list[ClientCertificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[Endpoint], actors: list[Actor], documents: list[DocumentInfo], sourceCode: list[SourceCodeRepository], integratedRepositories: list[IntegratedRepository], trustedCaCertificates: list[TrustedCaCertificate], clientCertificates: list[ClientCertificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Assets:
     Optional[list[Endpoint]] endpoints
     Optional[list[Actor]] actors
@@ -585,8 +589,9 @@ struct AzureDevOpsRepositoryResource:
     str organization
     Optional[str] project
 
-# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureDevOpsResourceCapabilities:
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
     Optional[bool] leaveComments
@@ -611,8 +616,9 @@ struct BatchCreateSecurityRequirementsInput:
     str packId
     list[CreateSecurityRequirementEntry] securityRequirements
 
-# no @derive(Json): member(s) securityRequirements: list[BatchCreateSecurityRequirementResult], errors: list[BatchSecurityRequirementError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityRequirements: list[BatchCreateSecurityRequirementResult], errors: list[BatchSecurityRequirementError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateSecurityRequirementsOutput:
     list[BatchCreateSecurityRequirementResult] securityRequirements
     list[BatchSecurityRequirementError] errors
@@ -623,8 +629,9 @@ struct BatchDeleteCodeReviewsInput:
     list[str] codeReviewIds
     str agentSpaceId
 
-# no @derive(Json): member(s) deleted: list[str], failed: list[DeleteCodeReviewFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deleted: list[str], failed: list[DeleteCodeReviewFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteCodeReviewsOutput:
     Optional[list[str]] deleted
     Optional[list[DeleteCodeReviewFailure]] failed
@@ -635,8 +642,9 @@ struct BatchDeletePentestsInput:
     list[str] pentestIds
     str agentSpaceId
 
-# no @derive(Json): member(s) deleted: list[Pentest], failed: list[DeletePentestFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deleted: list[Pentest], failed: list[DeletePentestFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeletePentestsOutput:
     Optional[list[Pentest]] deleted
     Optional[list[DeletePentestFailure]] failed
@@ -647,8 +655,9 @@ struct BatchDeleteSecurityRequirementsInput:
     str packId
     list[str] securityRequirementNames
 
-# no @derive(Json): member(s) deletedSecurityRequirementNames: list[str], errors: list[BatchSecurityRequirementError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deletedSecurityRequirementNames: list[str], errors: list[BatchSecurityRequirementError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteSecurityRequirementsOutput:
     list[str] deletedSecurityRequirementNames
     list[BatchSecurityRequirementError] errors
@@ -659,8 +668,9 @@ struct BatchDeleteThreatModelsInput:
     list[str] threatModelIds
     str agentSpaceId
 
-# no @derive(Json): member(s) deleted: list[str], failed: list[DeleteThreatModelFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deleted: list[str], failed: list[DeleteThreatModelFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteThreatModelsOutput:
     Optional[list[str]] deleted
     Optional[list[DeleteThreatModelFailure]] failed
@@ -679,8 +689,9 @@ struct BatchDisassociateFindingIssueInput:
     Optional[str] codeReviewJobId
     list[str] findingIds
 
-# no @derive(Json): member(s) errors: list[BatchDisassociateFindingIssueError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDisassociateFindingIssueError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateFindingIssueOutput:
     list[BatchDisassociateFindingIssueError] errors
 
@@ -704,8 +715,9 @@ struct BatchExportFindingsInput:
     IssueDestination issueDestination
     list[str] findingIds
 
-# no @derive(Json): member(s) results: list[BatchExportFindingResult], errors: list[BatchExportFindingError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[BatchExportFindingResult], errors: list[BatchExportFindingError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchExportFindingsOutput:
     list[BatchExportFindingResult] results
     list[BatchExportFindingError] errors
@@ -715,8 +727,9 @@ struct BatchExportFindingsOutput:
 struct BatchGetAgentSpacesInput:
     list[str] agentSpaceIds
 
-# no @derive(Json): member(s) agentSpaces: list[AgentSpace], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentSpaces: list[AgentSpace], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAgentSpacesOutput:
     Optional[list[AgentSpace]] agentSpaces
     Optional[list[str]] notFound
@@ -727,8 +740,9 @@ struct BatchGetArtifactMetadataInput:
     str agentSpaceId
     list[str] artifactIds
 
-# no @derive(Json): member(s) artifactMetadataList: list[ArtifactMetadataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifactMetadataList: list[ArtifactMetadataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetArtifactMetadataOutput:
     list[ArtifactMetadataItem] artifactMetadataList
 
@@ -738,8 +752,9 @@ struct BatchGetCodeReviewJobTasksInput:
     str agentSpaceId
     list[str] codeReviewJobTaskIds
 
-# no @derive(Json): member(s) codeReviewJobTasks: list[CodeReviewJobTask], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeReviewJobTasks: list[CodeReviewJobTask], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCodeReviewJobTasksOutput:
     Optional[list[CodeReviewJobTask]] codeReviewJobTasks
     Optional[list[str]] notFound
@@ -750,8 +765,9 @@ struct BatchGetCodeReviewJobsInput:
     list[str] codeReviewJobIds
     str agentSpaceId
 
-# no @derive(Json): member(s) codeReviewJobs: list[CodeReviewJob], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeReviewJobs: list[CodeReviewJob], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCodeReviewJobsOutput:
     Optional[list[CodeReviewJob]] codeReviewJobs
     Optional[list[str]] notFound
@@ -762,8 +778,9 @@ struct BatchGetCodeReviewsInput:
     list[str] codeReviewIds
     str agentSpaceId
 
-# no @derive(Json): member(s) codeReviews: list[CodeReview], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeReviews: list[CodeReview], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCodeReviewsOutput:
     Optional[list[CodeReview]] codeReviews
     Optional[list[str]] notFound
@@ -774,8 +791,9 @@ struct BatchGetFindingsInput:
     list[str] findingIds
     str agentSpaceId
 
-# no @derive(Json): member(s) findings: list[Finding], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFindingsOutput:
     Optional[list[Finding]] findings
     Optional[list[str]] notFound
@@ -786,8 +804,9 @@ struct BatchGetPentestJobTasksInput:
     str agentSpaceId
     list[str] taskIds
 
-# no @derive(Json): member(s) tasks: list[Task], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[Task], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPentestJobTasksOutput:
     Optional[list[Task]] tasks
     Optional[list[str]] notFound
@@ -798,8 +817,9 @@ struct BatchGetPentestJobsInput:
     list[str] pentestJobIds
     str agentSpaceId
 
-# no @derive(Json): member(s) pentestJobs: list[PentestJob], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pentestJobs: list[PentestJob], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPentestJobsOutput:
     Optional[list[PentestJob]] pentestJobs
     Optional[list[str]] notFound
@@ -810,8 +830,9 @@ struct BatchGetPentestsInput:
     list[str] pentestIds
     str agentSpaceId
 
-# no @derive(Json): member(s) pentests: list[Pentest], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pentests: list[Pentest], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPentestsOutput:
     Optional[list[Pentest]] pentests
     Optional[list[str]] notFound
@@ -835,8 +856,9 @@ struct BatchGetSecurityRequirementsInput:
     str packId
     list[str] securityRequirementNames
 
-# no @derive(Json): member(s) securityRequirements: list[BatchGetSecurityRequirementResult], errors: list[BatchSecurityRequirementError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityRequirements: list[BatchGetSecurityRequirementResult], errors: list[BatchSecurityRequirementError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSecurityRequirementsOutput:
     list[BatchGetSecurityRequirementResult] securityRequirements
     list[BatchSecurityRequirementError] errors
@@ -846,8 +868,9 @@ struct BatchGetSecurityRequirementsOutput:
 struct BatchGetTargetDomainsInput:
     list[str] targetDomainIds
 
-# no @derive(Json): member(s) targetDomains: list[TargetDomain], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDomains: list[TargetDomain], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTargetDomainsOutput:
     Optional[list[TargetDomain]] targetDomains
     Optional[list[str]] notFound
@@ -858,8 +881,9 @@ struct BatchGetThreatModelJobTasksInput:
     str agentSpaceId
     list[str] threatModelJobTaskIds
 
-# no @derive(Json): member(s) threatModelJobTasks: list[ThreatModelJobTask], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threatModelJobTasks: list[ThreatModelJobTask], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetThreatModelJobTasksOutput:
     Optional[list[ThreatModelJobTask]] threatModelJobTasks
     Optional[list[str]] notFound
@@ -870,8 +894,9 @@ struct BatchGetThreatModelJobsInput:
     list[str] threatModelJobIds
     str agentSpaceId
 
-# no @derive(Json): member(s) threatModelJobs: list[ThreatModelJob], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threatModelJobs: list[ThreatModelJob], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetThreatModelJobsOutput:
     Optional[list[ThreatModelJob]] threatModelJobs
     Optional[list[str]] notFound
@@ -882,8 +907,9 @@ struct BatchGetThreatModelsInput:
     list[str] threatModelIds
     str agentSpaceId
 
-# no @derive(Json): member(s) threatModels: list[ThreatModel], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threatModels: list[ThreatModel], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetThreatModelsOutput:
     Optional[list[ThreatModel]] threatModels
     Optional[list[str]] notFound
@@ -894,8 +920,9 @@ struct BatchGetThreatsInput:
     list[str] threatIds
     str agentSpaceId
 
-# no @derive(Json): member(s) threats: list[Threat], notFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threats: list[Threat], notFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetThreatsOutput:
     Optional[list[Threat]] threats
     Optional[list[str]] notFound
@@ -912,8 +939,9 @@ struct BatchUpdateSecurityRequirementsInput:
     str packId
     list[UpdateSecurityRequirementEntry] securityRequirements
 
-# no @derive(Json): member(s) updatedSecurityRequirementNames: list[str], errors: list[BatchSecurityRequirementError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) updatedSecurityRequirementNames: list[str], errors: list[BatchSecurityRequirementError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateSecurityRequirementsOutput:
     list[str] updatedSecurityRequirementNames
     list[BatchSecurityRequirementError] errors
@@ -943,8 +971,9 @@ struct BitbucketRepositoryResource:
     str name
     str workspace
 
-# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BitbucketResourceCapabilities:
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
     Optional[bool] leaveComments
@@ -965,8 +994,9 @@ struct Category:
 struct CiCdConfiguration:
     Optional[bool] enabled
 
-# no @derive(Json): member(s) origins: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) origins: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientCertificate:
     str name
     str secretArn
@@ -984,8 +1014,9 @@ struct CodeLocation:
     Optional[int64] lineEnd
     Optional[str] label
 
-# no @derive(Json): member(s) taskDetails: list[CodeRemediationTaskDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDetails: list[CodeRemediationTaskDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeRemediationTask:
     CodeRemediationTaskStatus status
     Optional[str] statusReason
@@ -997,8 +1028,9 @@ struct CodeRemediationTaskDetails:
     Optional[str] codeDiffLink
     Optional[str] pullRequestLink
 
-# no @derive(Json): member(s) assets: Assets, reportFilters: ReportFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, reportFilters: ReportFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeReview:
     str codeReviewId
     str agentSpaceId
@@ -1014,8 +1046,9 @@ struct CodeReview:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) documents: list[DocumentInfo], sourceCode: list[SourceCodeRepository], steps: list[Step], executionContext: list[ExecutionContext], integratedRepositories: list[IntegratedRepository] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documents: list[DocumentInfo], sourceCode: list[SourceCodeRepository], steps: list[Step], executionContext: list[ExecutionContext], integratedRepositories: list[IntegratedRepository] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeReviewJob:
     Optional[str] codeReviewJobId
     Optional[str] codeReviewId
@@ -1047,8 +1080,9 @@ struct CodeReviewJobSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeReviewJobTask:
     str taskId
     Optional[str] codeReviewId
@@ -1137,8 +1171,9 @@ struct CreateAgentSpaceInput:
     Optional[str] kmsKeyId
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) awsResources: AWSResources, targetDomainIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsResources: AWSResources, targetDomainIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgentSpaceOutput:
     str agentSpaceId
     str name
@@ -1176,8 +1211,9 @@ struct CreateCodeReviewInput:
     Optional[ReportDestination] reportDestination
     Optional[ReportFilters] reportFilters
 
-# no @derive(Json): member(s) assets: Assets, reportFilters: ReportFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, reportFilters: ReportFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCodeReviewOutput:
     str codeReviewId
     Optional[str] title
@@ -1240,8 +1276,9 @@ struct CreatePentestInput:
     Optional[CiCdConfiguration] cicdConfiguration
     Optional[TestScope] testScope
 
-# no @derive(Json): member(s) assets: Assets, excludeRiskTypes: list[RiskType], reportFilters: ReportFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, excludeRiskTypes: list[RiskType], reportFilters: ReportFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePentestOutput:
     Optional[str] pentestId
     Optional[str] title
@@ -1264,8 +1301,9 @@ struct CreatePrivateConnectionInput:
     PrivateConnectionMode mode
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivateConnectionOutput:
     str name
     PrivateConnectionType type
@@ -1353,8 +1391,9 @@ struct CreateThreatModelInput:
     Optional[CloudWatchLog] logConfig
     Optional[ReportDestination] reportDestination
 
-# no @derive(Json): member(s) assets: Assets, scopeDocs: list[DocumentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, scopeDocs: list[DocumentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateThreatModelOutput:
     str threatModelId
     Optional[str] title
@@ -1368,8 +1407,9 @@ struct CreateThreatModelOutput:
     Optional[DateTime] updatedAt
     Optional[ReportDestination] reportDestination
 
-# no @derive(Json): member(s) stride: list[StrideCategory], impactedGoal: list[str], impactedAssets: list[str], evidence: list[ThreatEvidenceShape] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stride: list[StrideCategory], impactedGoal: list[str], impactedAssets: list[str], evidence: list[ThreatEvidenceShape] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateThreatOutput:
     str threatId
     str threatJobId
@@ -1461,8 +1501,9 @@ struct DeletePentestFailure:
 struct DeletePrivateConnectionInput:
     str privateConnectionName
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePrivateConnectionOutput:
     str name
     PrivateConnectionType type
@@ -1505,8 +1546,9 @@ struct DeleteThreatModelFailure:
 struct DescribePrivateConnectionInput:
     str privateConnectionName
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePrivateConnectionOutput:
     str name
     PrivateConnectionType type
@@ -1562,8 +1604,9 @@ struct ExecutionContext:
     @json(timestamp="iso8601")
     Optional[DateTime] timestamp
 
-# no @derive(Json): member(s) codeRemediationTask: CodeRemediationTask, codeLocations: list[CodeLocation], verificationScript: VerificationScript, revalidationJobIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeRemediationTask: CodeRemediationTask, codeLocations: list[CodeLocation], verificationScript: VerificationScript, revalidationJobIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     str findingId
     str agentSpaceId
@@ -1701,8 +1744,9 @@ struct GitHubRepositoryResource:
     str name
     str owner
 
-# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitHubResourceCapabilities:
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
     Optional[bool] leaveComments
@@ -1727,8 +1771,9 @@ struct GitLabRepositoryResource:
     str name
     str namespace
 
-# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GitLabResourceCapabilities:
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
     Optional[bool] leaveComments
@@ -1755,8 +1800,9 @@ struct ImportSecurityRequirementsOutput:
     str packId
     SecurityRequirementPackImportStatus importStatus
 
-# no @derive(Json): member(s) documents: list[SecurityRequirementArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documents: list[SecurityRequirementArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportSource:
     Optional[list[SecurityRequirementArtifact]] documents
 
@@ -1794,8 +1840,9 @@ struct IntegratedResource:
     Optional[AzureDevOpsRepositoryResource] azureDevOpsRepository
     Optional[JiraProjectResource] jiraProject
 
-# no @derive(Json): member(s) capabilities: ProviderResourceCapabilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: ProviderResourceCapabilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegratedResourceInputItem:
     IntegratedResource resource
     Optional[ProviderResourceCapabilities] capabilities
@@ -1809,8 +1856,9 @@ struct IntegratedResourceMetadata:
     Optional[AzureDevOpsRepositoryMetadata] azureDevOpsRepository
     Optional[JiraProjectMetadata] jiraProject
 
-# no @derive(Json): member(s) capabilities: ProviderResourceCapabilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: ProviderResourceCapabilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegratedResourceSummary:
     str integrationId
     IntegratedResourceMetadata resource
@@ -1887,8 +1935,9 @@ struct ListActorMessagesInput:
     str pentestId
     str actorIdentifier
 
-# no @derive(Json): member(s) messages: list[ActorMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: list[ActorMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActorMessagesOutput:
     Optional[list[ActorMessage]] messages
     Optional[str] nextToken
@@ -1899,8 +1948,9 @@ struct ListAgentSpacesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) agentSpaceSummaries: list[AgentSpaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentSpaceSummaries: list[AgentSpaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentSpacesOutput:
     Optional[list[AgentSpaceSummary]] agentSpaceSummaries
     Optional[str] nextToken
@@ -1911,8 +1961,9 @@ struct ListApplicationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) applicationSummaries: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationSummaries: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     list[ApplicationSummary] applicationSummaries
     Optional[str] nextToken
@@ -1924,8 +1975,9 @@ struct ListArtifactsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) artifactSummaries: list[ArtifactSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifactSummaries: list[ArtifactSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListArtifactsOutput:
     list[ArtifactSummary] artifactSummaries
     Optional[str] nextToken
@@ -1940,8 +1992,9 @@ struct ListCodeReviewJobTasksInput:
     Optional[str] categoryName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) codeReviewJobTaskSummaries: list[CodeReviewJobTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeReviewJobTaskSummaries: list[CodeReviewJobTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeReviewJobTasksOutput:
     Optional[list[CodeReviewJobTaskSummary]] codeReviewJobTaskSummaries
     Optional[str] nextToken
@@ -1954,8 +2007,9 @@ struct ListCodeReviewJobsForCodeReviewInput:
     str agentSpaceId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) codeReviewJobSummaries: list[CodeReviewJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeReviewJobSummaries: list[CodeReviewJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeReviewJobsForCodeReviewOutput:
     Optional[list[CodeReviewJobSummary]] codeReviewJobSummaries
     Optional[str] nextToken
@@ -1967,8 +2021,9 @@ struct ListCodeReviewsInput:
     Optional[str] nextToken
     str agentSpaceId
 
-# no @derive(Json): member(s) codeReviewSummaries: list[CodeReviewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeReviewSummaries: list[CodeReviewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeReviewsOutput:
     Optional[list[CodeReviewSummary]] codeReviewSummaries
     Optional[str] nextToken
@@ -1982,8 +2037,9 @@ struct ListDiscoveredEndpointsInput:
     Optional[str] prefix
     Optional[str] nextToken
 
-# no @derive(Json): member(s) discoveredEndpoints: list[DiscoveredEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) discoveredEndpoints: list[DiscoveredEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoveredEndpointsOutput:
     Optional[list[DiscoveredEndpoint]] discoveredEndpoints
     Optional[str] nextToken
@@ -2002,8 +2058,9 @@ struct ListFindingsInput:
     Optional[ConfidenceLevel] confidence
     Optional[str] name
 
-# no @derive(Json): member(s) findingsSummaries: list[FindingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingsSummaries: list[FindingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsOutput:
     Optional[list[FindingSummary]] findingsSummaries
     Optional[str] nextToken
@@ -2017,8 +2074,9 @@ struct ListIntegratedResourcesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) integratedResourceSummaries: list[IntegratedResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integratedResourceSummaries: list[IntegratedResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegratedResourcesOutput:
     list[IntegratedResourceSummary] integratedResourceSummaries
     Optional[str] nextToken
@@ -2030,8 +2088,9 @@ struct ListIntegrationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) integrationSummaries: list[IntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integrationSummaries: list[IntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationsOutput:
     list[IntegrationSummary] integrationSummaries
     Optional[str] nextToken
@@ -2045,8 +2104,9 @@ struct ListMembershipsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) membershipSummaries: list[MembershipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) membershipSummaries: list[MembershipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembershipsResponse:
     list[MembershipSummary] membershipSummaries
     Optional[str] nextToken
@@ -2061,8 +2121,9 @@ struct ListPentestJobTasksInput:
     Optional[str] categoryName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) taskSummaries: list[TaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSummaries: list[TaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPentestJobTasksOutput:
     Optional[list[TaskSummary]] taskSummaries
     Optional[str] nextToken
@@ -2076,8 +2137,9 @@ struct ListPentestJobsForPentestInput:
     Optional[str] nextToken
     Optional[JobType] jobType
 
-# no @derive(Json): member(s) pentestJobSummaries: list[PentestJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pentestJobSummaries: list[PentestJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPentestJobsForPentestOutput:
     Optional[list[PentestJobSummary]] pentestJobSummaries
     Optional[str] nextToken
@@ -2089,8 +2151,9 @@ struct ListPentestsInput:
     Optional[str] nextToken
     str agentSpaceId
 
-# no @derive(Json): member(s) pentestSummaries: list[PentestSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pentestSummaries: list[PentestSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPentestsOutput:
     Optional[list[PentestSummary]] pentestSummaries
     Optional[str] nextToken
@@ -2101,8 +2164,9 @@ struct ListPrivateConnectionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) privateConnections: list[PrivateConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateConnections: list[PrivateConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrivateConnectionsOutput:
     list[PrivateConnectionSummary] privateConnections
     Optional[str] nextToken
@@ -2119,8 +2183,9 @@ struct ListSecurityRequirementPacksInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) securityRequirementPackSummaries: list[SecurityRequirementPackSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityRequirementPackSummaries: list[SecurityRequirementPackSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityRequirementPacksOutput:
     list[SecurityRequirementPackSummary] securityRequirementPackSummaries
     Optional[str] nextToken
@@ -2132,8 +2197,9 @@ struct ListSecurityRequirementsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) securityRequirementSummaries: list[SecurityRequirementSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityRequirementSummaries: list[SecurityRequirementSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityRequirementsOutput:
     list[SecurityRequirementSummary] securityRequirementSummaries
     Optional[str] nextToken
@@ -2143,8 +2209,9 @@ struct ListSecurityRequirementsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -2154,8 +2221,9 @@ struct ListTargetDomainsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) targetDomainSummaries: list[TargetDomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDomainSummaries: list[TargetDomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetDomainsOutput:
     Optional[list[TargetDomainSummary]] targetDomainSummaries
     Optional[str] nextToken
@@ -2168,8 +2236,9 @@ struct ListThreatModelJobTasksInput:
     str threatModelJobId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) threatModelJobTaskSummaries: list[ThreatModelJobTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threatModelJobTaskSummaries: list[ThreatModelJobTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThreatModelJobTasksOutput:
     Optional[list[ThreatModelJobTaskSummary]] threatModelJobTaskSummaries
     Optional[str] nextToken
@@ -2182,8 +2251,9 @@ struct ListThreatModelJobsInput:
     str agentSpaceId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) threatModelJobSummaries: list[ThreatModelJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threatModelJobSummaries: list[ThreatModelJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThreatModelJobsOutput:
     Optional[list[ThreatModelJobSummary]] threatModelJobSummaries
     Optional[str] nextToken
@@ -2195,8 +2265,9 @@ struct ListThreatModelsInput:
     Optional[str] nextToken
     str agentSpaceId
 
-# no @derive(Json): member(s) threatModelSummaries: list[ThreatModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threatModelSummaries: list[ThreatModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThreatModelsOutput:
     Optional[list[ThreatModelSummary]] threatModelSummaries
     Optional[str] nextToken
@@ -2209,8 +2280,9 @@ struct ListThreatsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) threats: list[ThreatSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) threats: list[ThreatSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThreatsOutput:
     Optional[list[ThreatSummary]] threats
     Optional[str] nextToken
@@ -2243,8 +2315,9 @@ struct MembershipSummary:
     str createdBy
     str updatedBy
 
-# no @derive(Json): member(s) rules: list[NetworkTrafficRule], customHeaders: list[CustomHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[NetworkTrafficRule], customHeaders: list[CustomHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkTrafficConfig:
     Optional[list[NetworkTrafficRule]] rules
     Optional[list[CustomHeader]] customHeaders
@@ -2255,8 +2328,9 @@ struct NetworkTrafficRule:
     Optional[str] pattern
     Optional[str] networkTrafficRuleType
 
-# no @derive(Json): member(s) assets: Assets, excludeRiskTypes: list[RiskType], vpcConfig: VpcConfig, networkTrafficConfig: NetworkTrafficConfig, disableManagedSkills: list[SkillType], reportFilters: ReportFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, excludeRiskTypes: list[RiskType], vpcConfig: VpcConfig, networkTrafficConfig: NetworkTrafficConfig, disableManagedSkills: list[SkillType], reportFilters: ReportFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Pentest:
     str pentestId
     str agentSpaceId
@@ -2278,8 +2352,9 @@ struct Pentest:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) endpoints: list[Endpoint], actors: list[Actor], documents: list[DocumentInfo], sourceCode: list[SourceCodeRepository], excludePaths: list[Endpoint], allowedDomains: list[Endpoint], excludeRiskTypes: list[RiskType], steps: list[Step], executionContext: list[ExecutionContext], vpcConfig: VpcConfig, networkTrafficConfig: NetworkTrafficConfig, integratedRepositories: list[IntegratedRepository], trustedCaCertificates: list[TrustedCaCertificate], clientCertificates: list[ClientCertificate], disableManagedSkills: list[SkillType], selectedFindingIds: list[str], scopeChanges: list[ScopeChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[Endpoint], actors: list[Actor], documents: list[DocumentInfo], sourceCode: list[SourceCodeRepository], excludePaths: list[Endpoint], allowedDomains: list[Endpoint], excludeRiskTypes: list[RiskType], steps: list[Step], executionContext: list[ExecutionContext], vpcConfig: VpcConfig, networkTrafficConfig: NetworkTrafficConfig, integratedRepositories: list[IntegratedRepository], trustedCaCertificates: list[TrustedCaCertificate], clientCertificates: list[ClientCertificate], disableManagedSkills: list[SkillType], selectedFindingIds: list[str], scopeChanges: list[ScopeChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PentestJob:
     Optional[str] pentestJobId
     Optional[str] pentestId
@@ -2341,14 +2416,16 @@ struct PentestSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) serviceManaged: ServiceManagedInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceManaged: ServiceManagedInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateConnectionMode:
     Optional[ServiceManagedInput] serviceManaged
     Optional[SelfManagedInput] selfManaged
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateConnectionSummary:
     str name
     PrivateConnectionType type
@@ -2372,8 +2449,9 @@ struct ProviderInput:
     Optional[BitbucketDataCenterIntegrationInput] bitbucketDataCenter
     Optional[JiraIntegrationInput] jira
 
-# no @derive(Json): member(s) github: GitHubResourceCapabilities, gitlab: GitLabResourceCapabilities, bitbucket: BitbucketResourceCapabilities, azureDevOps: AzureDevOpsResourceCapabilities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) github: GitHubResourceCapabilities, gitlab: GitLabResourceCapabilities, bitbucket: BitbucketResourceCapabilities, azureDevOps: AzureDevOpsResourceCapabilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderResourceCapabilities:
     Optional[GitHubResourceCapabilities] github
     Optional[GitLabResourceCapabilities] gitlab
@@ -2389,8 +2467,9 @@ struct ReportDestination:
     Optional[str] parentId
     Optional[str] documentId
 
-# no @derive(Json): member(s) riskLevels: list[RiskLevel], confidenceLevels: list[ConfidenceLevel], statuses: list[FindingStatus], riskTypes: list[RiskType], findingTypes: list[str], taskStatuses: list[TaskExecutionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) riskLevels: list[RiskLevel], confidenceLevels: list[ConfidenceLevel], statuses: list[FindingStatus], riskTypes: list[RiskType], findingTypes: list[str], taskStatuses: list[TaskExecutionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportFilters:
     Optional[list[RiskLevel]] riskLevels
     Optional[list[ConfidenceLevel]] confidenceLevels
@@ -2452,8 +2531,9 @@ struct SelfManagedInput:
     str resourceConfigurationId
     Optional[str] certificate
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], portRanges: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], portRanges: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceManagedInput:
     str hostAddress
     str vpcId
@@ -2615,8 +2695,9 @@ struct TargetDomainSummary:
     str domainName
     Optional[TargetDomainStatus] verificationStatus
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Task:
     str taskId
     Optional[str] pentestId
@@ -2652,8 +2733,9 @@ struct TaskSummary:
 struct TestScope:
     TestScopeType type
 
-# no @derive(Json): member(s) impactedGoal: list[str], impactedAssets: list[str], evidence: list[ThreatEvidenceShape], stride: list[StrideCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) impactedGoal: list[str], impactedAssets: list[str], evidence: list[ThreatEvidenceShape], stride: list[StrideCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Threat:
     Optional[str] threatId
     Optional[str] threatJobId
@@ -2688,8 +2770,9 @@ struct ThreatEvidenceShape:
     Optional[str] packageId
     Optional[str] path
 
-# no @derive(Json): member(s) assets: Assets, scopeDocs: list[DocumentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, scopeDocs: list[DocumentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThreatModel:
     str threatModelId
     str agentSpaceId
@@ -2703,8 +2786,9 @@ struct ThreatModel:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) sourceCode: list[SourceCodeRepository], integratedRepositories: list[IntegratedRepository], documents: list[DocumentInfo], scopeDocs: list[DocumentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceCode: list[SourceCodeRepository], integratedRepositories: list[IntegratedRepository], documents: list[DocumentInfo], scopeDocs: list[DocumentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThreatModelJob:
     Optional[str] threatModelJobId
     Optional[str] threatModelId
@@ -2773,8 +2857,9 @@ struct ThreatModelSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) stride: list[StrideCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stride: list[StrideCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThreatSummary:
     Optional[str] threatId
     Optional[str] threatJobId
@@ -2794,15 +2879,17 @@ struct ThrottlingException:
     Optional[str] serviceCode
     Optional[str] quotaCode
 
-# no @derive(Json): member(s) patterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) patterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerFilter:
     TriggerFilterType type
     list[str] patterns
     Optional[TriggerFilterMatchMode] matchMode
 
-# no @derive(Json): member(s) events: list[TriggerEvent], filters: list[TriggerFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[TriggerEvent], filters: list[TriggerFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerFilterGroup:
     Optional[list[TriggerEvent]] events
     Optional[list[TriggerFilter]] filters
@@ -2832,8 +2919,9 @@ struct UpdateAgentSpaceInput:
     Optional[list[str]] targetDomainIds
     Optional[CodeReviewSettings] codeReviewSettings
 
-# no @derive(Json): member(s) awsResources: AWSResources, targetDomainIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsResources: AWSResources, targetDomainIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentSpaceOutput:
     str agentSpaceId
     str name
@@ -2870,8 +2958,9 @@ struct UpdateCodeReviewInput:
     Optional[ReportDestination] reportDestination
     Optional[ReportFilters] reportFilters
 
-# no @derive(Json): member(s) assets: Assets, reportFilters: ReportFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, reportFilters: ReportFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCodeReviewOutput:
     str codeReviewId
     Optional[str] title
@@ -2951,8 +3040,9 @@ struct UpdatePentestInput:
     Optional[CiCdConfiguration] cicdConfiguration
     Optional[TestScope] testScope
 
-# no @derive(Json): member(s) assets: Assets, excludeRiskTypes: list[RiskType], reportFilters: ReportFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, excludeRiskTypes: list[RiskType], reportFilters: ReportFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePentestOutput:
     Optional[str] pentestId
     Optional[str] title
@@ -2974,8 +3064,9 @@ struct UpdatePrivateConnectionCertificateInput:
     str privateConnectionName
     str certificate
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePrivateConnectionCertificateOutput:
     str name
     PrivateConnectionType type
@@ -3063,8 +3154,9 @@ struct UpdateThreatModelInput:
     Optional[CloudWatchLog] logConfig
     Optional[ReportDestination] reportDestination
 
-# no @derive(Json): member(s) assets: Assets, scopeDocs: list[DocumentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: Assets, scopeDocs: list[DocumentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateThreatModelOutput:
     str threatModelId
     Optional[str] title
@@ -3078,8 +3170,9 @@ struct UpdateThreatModelOutput:
     Optional[DateTime] updatedAt
     Optional[ReportDestination] reportDestination
 
-# no @derive(Json): member(s) stride: list[StrideCategory], impactedGoal: list[str], impactedAssets: list[str], evidence: list[ThreatEvidenceShape] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stride: list[StrideCategory], impactedGoal: list[str], impactedAssets: list[str], evidence: list[ThreatEvidenceShape] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateThreatOutput:
     str threatId
     str threatJobId
@@ -3112,8 +3205,9 @@ struct UserMetadata:
     str username
     str email
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -3129,8 +3223,9 @@ struct VerificationDetails:
     Optional[DnsVerification] dnsTxt
     Optional[HttpVerification] httpRoute
 
-# no @derive(Json): member(s) envVars: list[VerificationScriptEnvVar] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) envVars: list[VerificationScriptEnvVar] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VerificationScript:
     Optional[str] scriptType
     Optional[str] scriptUrl
@@ -3160,8 +3255,9 @@ struct VerifyTargetDomainOutput:
     Optional[TargetDomainStatus] status
     Optional[str] verificationStatusReason
 
-# no @derive(Json): member(s) securityGroupArns: list[str], subnetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupArns: list[str], subnetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     Optional[str] vpcArn
     Optional[list[str]] securityGroupArns
@@ -3205,50 +3301,7 @@ def securityagent_error_from_code(str code) -> SecurityAgentError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateSecurityRequirements (document member `securityRequirements: list[CreateSecurityRequirementEntry]` is not serializable by derive)
-#   BatchDeleteCodeReviews (document member `codeReviewIds: list[str]` is not serializable by derive)
-#   BatchDeletePentests (document member `pentestIds: list[str]` is not serializable by derive)
-#   BatchDeleteSecurityRequirements (document member `securityRequirementNames: list[str]` is not serializable by derive)
-#   BatchDeleteThreatModels (document member `threatModelIds: list[str]` is not serializable by derive)
-#   BatchDisassociateFindingIssue (document member `findingIds: list[str]` is not serializable by derive)
-#   BatchExportFindings (document member `findingIds: list[str]` is not serializable by derive)
-#   BatchGetAgentSpaces (document member `agentSpaceIds: list[str]` is not serializable by derive)
-#   BatchGetArtifactMetadata (document member `artifactIds: list[str]` is not serializable by derive)
-#   BatchGetCodeReviewJobTasks (document member `codeReviewJobTaskIds: list[str]` is not serializable by derive)
-#   BatchGetCodeReviewJobs (document member `codeReviewJobIds: list[str]` is not serializable by derive)
-#   BatchGetCodeReviews (document member `codeReviewIds: list[str]` is not serializable by derive)
-#   BatchGetFindings (document member `findingIds: list[str]` is not serializable by derive)
-#   BatchGetPentestJobTasks (document member `taskIds: list[str]` is not serializable by derive)
-#   BatchGetPentestJobs (document member `pentestJobIds: list[str]` is not serializable by derive)
-#   BatchGetPentests (document member `pentestIds: list[str]` is not serializable by derive)
-#   BatchGetSecurityRequirements (document member `securityRequirementNames: list[str]` is not serializable by derive)
-#   BatchGetTargetDomains (document member `targetDomainIds: list[str]` is not serializable by derive)
-#   BatchGetThreatModelJobTasks (document member `threatModelJobTaskIds: list[str]` is not serializable by derive)
-#   BatchGetThreatModelJobs (document member `threatModelJobIds: list[str]` is not serializable by derive)
-#   BatchGetThreatModels (document member `threatModelIds: list[str]` is not serializable by derive)
-#   BatchGetThreats (document member `threatIds: list[str]` is not serializable by derive)
-#   BatchUpdateSecurityRequirements (document member `securityRequirements: list[UpdateSecurityRequirementEntry]` is not serializable by derive)
-#   CreateAgentSpace (document member `awsResources: AWSResources` is not serializable by derive)
-#   CreateApplication (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateCodeReview (document member `assets: Assets` is not serializable by derive)
-#   CreateIntegration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePentest (document member `assets: Assets` is not serializable by derive)
-#   CreatePrivateConnection (document member `mode: PrivateConnectionMode` is not serializable by derive)
-#   CreateSecurityRequirementPack (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateTargetDomain (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateThreat (document member `stride: list[StrideCategory]` is not serializable by derive)
-#   CreateThreatModel (document member `assets: Assets` is not serializable by derive)
-#   ImportSecurityRequirements (document member `input: ImportSource` is not serializable by derive)
-#   StartCodeRemediation (document member `findingIds: list[str]` is not serializable by derive)
-#   StartPentestJob (document member `selectedFindingIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAgentSpace (document member `awsResources: AWSResources` is not serializable by derive)
-#   UpdateCodeReview (document member `assets: Assets` is not serializable by derive)
-#   UpdateIntegratedResources (document member `items: list[IntegratedResourceInputItem]` is not serializable by derive)
-#   UpdatePentest (document member `assets: Assets` is not serializable by derive)
-#   UpdateThreat (document member `impactedGoal: list[str]` is not serializable by derive)
-#   UpdateThreatModel (document member `assets: Assets` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3617,6 +3670,432 @@ struct VerifyTargetDomainDocument:
     # document members of VerifyTargetDomain
     str targetDomainId
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def securityagent_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def securityagent_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def securityagent_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AWSResources to a compact JSON object (declaration order).
+def aws_resources_to_json(AWSResources v) -> str:
+    list[str] parts = []
+    if v.vpcs.is_some():
+        auto u0 = v.vpcs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(vpc_config_to_json(x1))
+        parts.append("\"vpcs\":" + securityagent_json_arr(e1))
+    if v.logGroups.is_some():
+        auto u2 = v.logGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityagent_json_str(x3))
+        parts.append("\"logGroups\":" + securityagent_json_arr(e3))
+    if v.s3Buckets.is_some():
+        auto u4 = v.s3Buckets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityagent_json_str(x5))
+        parts.append("\"s3Buckets\":" + securityagent_json_arr(e5))
+    if v.secretArns.is_some():
+        auto u6 = v.secretArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityagent_json_str(x7))
+        parts.append("\"secretArns\":" + securityagent_json_arr(e7))
+    if v.lambdaFunctionArns.is_some():
+        auto u8 = v.lambdaFunctionArns.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityagent_json_str(x9))
+        parts.append("\"lambdaFunctionArns\":" + securityagent_json_arr(e9))
+    if v.iamRoles.is_some():
+        auto u10 = v.iamRoles.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(securityagent_json_str(x11))
+        parts.append("\"iamRoles\":" + securityagent_json_arr(e11))
+    return securityagent_json_obj(parts)
+
+# Serialize Actor to a compact JSON object (declaration order).
+def actor_to_json(Actor v) -> str:
+    list[str] parts = []
+    if v.identifier.is_some():
+        auto u0 = v.identifier.unwrap()
+        parts.append("\"identifier\":" + securityagent_json_str(u0))
+    if v.uris.is_some():
+        auto u1 = v.uris.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityagent_json_str(x2))
+        parts.append("\"uris\":" + securityagent_json_arr(e2))
+    if v.authentication.is_some():
+        auto u3 = v.authentication.unwrap()
+        parts.append("\"authentication\":" + u3.to_json())
+    if v.description.is_some():
+        auto u4 = v.description.unwrap()
+        parts.append("\"description\":" + securityagent_json_str(u4))
+    if v.enableEmailMfa.is_some():
+        auto u5 = v.enableEmailMfa.unwrap()
+        parts.append("\"enableEmailMfa\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.mfaForwardingAddress.is_some():
+        auto u6 = v.mfaForwardingAddress.unwrap()
+        parts.append("\"mfaForwardingAddress\":" + securityagent_json_str(u6))
+    return securityagent_json_obj(parts)
+
+# Serialize Assets to a compact JSON object (declaration order).
+def assets_to_json(Assets v) -> str:
+    list[str] parts = []
+    if v.endpoints.is_some():
+        auto u0 = v.endpoints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"endpoints\":" + securityagent_json_arr(e1))
+    if v.actors.is_some():
+        auto u2 = v.actors.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(actor_to_json(x3))
+        parts.append("\"actors\":" + securityagent_json_arr(e3))
+    if v.documents.is_some():
+        auto u4 = v.documents.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"documents\":" + securityagent_json_arr(e5))
+    if v.sourceCode.is_some():
+        auto u6 = v.sourceCode.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"sourceCode\":" + securityagent_json_arr(e7))
+    if v.integratedRepositories.is_some():
+        auto u8 = v.integratedRepositories.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"integratedRepositories\":" + securityagent_json_arr(e9))
+    if v.trustedCaCertificates.is_some():
+        auto u10 = v.trustedCaCertificates.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"trustedCaCertificates\":" + securityagent_json_arr(e11))
+    if v.clientCertificates.is_some():
+        auto u12 = v.clientCertificates.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(client_certificate_to_json(x13))
+        parts.append("\"clientCertificates\":" + securityagent_json_arr(e13))
+    return securityagent_json_obj(parts)
+
+# Serialize AzureDevOpsResourceCapabilities to a compact JSON object (declaration order).
+def azure_dev_ops_resource_capabilities_to_json(AzureDevOpsResourceCapabilities v) -> str:
+    list[str] parts = []
+    if v.triggerFilterGroups.is_some():
+        auto u0 = v.triggerFilterGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(trigger_filter_group_to_json(x1))
+        parts.append("\"triggerFilterGroups\":" + securityagent_json_arr(e1))
+    if v.leaveComments.is_some():
+        auto u2 = v.leaveComments.unwrap()
+        parts.append("\"leaveComments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.remediateCode.is_some():
+        auto u3 = v.remediateCode.unwrap()
+        parts.append("\"remediateCode\":" + json.dumps(JsonValue.Bool(u3)))
+    return securityagent_json_obj(parts)
+
+# Serialize BitbucketResourceCapabilities to a compact JSON object (declaration order).
+def bitbucket_resource_capabilities_to_json(BitbucketResourceCapabilities v) -> str:
+    list[str] parts = []
+    if v.triggerFilterGroups.is_some():
+        auto u0 = v.triggerFilterGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(trigger_filter_group_to_json(x1))
+        parts.append("\"triggerFilterGroups\":" + securityagent_json_arr(e1))
+    if v.leaveComments.is_some():
+        auto u2 = v.leaveComments.unwrap()
+        parts.append("\"leaveComments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.remediateCode.is_some():
+        auto u3 = v.remediateCode.unwrap()
+        parts.append("\"remediateCode\":" + json.dumps(JsonValue.Bool(u3)))
+    return securityagent_json_obj(parts)
+
+# Serialize ClientCertificate to a compact JSON object (declaration order).
+def client_certificate_to_json(ClientCertificate v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + securityagent_json_str(v.name))
+    parts.append("\"secretArn\":" + securityagent_json_str(v.secretArn))
+    list[str] e0 = []
+    for x0 in v.origins:
+        e0.append(securityagent_json_str(x0))
+    parts.append("\"origins\":" + securityagent_json_arr(e0))
+    return securityagent_json_obj(parts)
+
+# Serialize GitHubResourceCapabilities to a compact JSON object (declaration order).
+def git_hub_resource_capabilities_to_json(GitHubResourceCapabilities v) -> str:
+    list[str] parts = []
+    if v.triggerFilterGroups.is_some():
+        auto u0 = v.triggerFilterGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(trigger_filter_group_to_json(x1))
+        parts.append("\"triggerFilterGroups\":" + securityagent_json_arr(e1))
+    if v.leaveComments.is_some():
+        auto u2 = v.leaveComments.unwrap()
+        parts.append("\"leaveComments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.remediateCode.is_some():
+        auto u3 = v.remediateCode.unwrap()
+        parts.append("\"remediateCode\":" + json.dumps(JsonValue.Bool(u3)))
+    return securityagent_json_obj(parts)
+
+# Serialize GitLabResourceCapabilities to a compact JSON object (declaration order).
+def git_lab_resource_capabilities_to_json(GitLabResourceCapabilities v) -> str:
+    list[str] parts = []
+    if v.triggerFilterGroups.is_some():
+        auto u0 = v.triggerFilterGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(trigger_filter_group_to_json(x1))
+        parts.append("\"triggerFilterGroups\":" + securityagent_json_arr(e1))
+    if v.leaveComments.is_some():
+        auto u2 = v.leaveComments.unwrap()
+        parts.append("\"leaveComments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.remediateCode.is_some():
+        auto u3 = v.remediateCode.unwrap()
+        parts.append("\"remediateCode\":" + json.dumps(JsonValue.Bool(u3)))
+    return securityagent_json_obj(parts)
+
+# Serialize ImportSource to a compact JSON object (declaration order).
+def import_source_to_json(ImportSource v) -> str:
+    list[str] parts = []
+    if v.documents.is_some():
+        auto u0 = v.documents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"documents\":" + securityagent_json_arr(e1))
+    return securityagent_json_obj(parts)
+
+# Serialize IntegratedResourceInputItem to a compact JSON object (declaration order).
+def integrated_resource_input_item_to_json(IntegratedResourceInputItem v) -> str:
+    list[str] parts = []
+    parts.append("\"resource\":" + v.resource.to_json())
+    if v.capabilities.is_some():
+        auto u0 = v.capabilities.unwrap()
+        parts.append("\"capabilities\":" + provider_resource_capabilities_to_json(u0))
+    return securityagent_json_obj(parts)
+
+# Serialize NetworkTrafficConfig to a compact JSON object (declaration order).
+def network_traffic_config_to_json(NetworkTrafficConfig v) -> str:
+    list[str] parts = []
+    if v.rules.is_some():
+        auto u0 = v.rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"rules\":" + securityagent_json_arr(e1))
+    if v.customHeaders.is_some():
+        auto u2 = v.customHeaders.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"customHeaders\":" + securityagent_json_arr(e3))
+    return securityagent_json_obj(parts)
+
+# Serialize PrivateConnectionMode to a compact JSON object (declaration order).
+def private_connection_mode_to_json(PrivateConnectionMode v) -> str:
+    list[str] parts = []
+    if v.serviceManaged.is_some():
+        auto u0 = v.serviceManaged.unwrap()
+        parts.append("\"serviceManaged\":" + service_managed_input_to_json(u0))
+    if v.selfManaged.is_some():
+        auto u1 = v.selfManaged.unwrap()
+        parts.append("\"selfManaged\":" + u1.to_json())
+    return securityagent_json_obj(parts)
+
+# Serialize ProviderResourceCapabilities to a compact JSON object (declaration order).
+def provider_resource_capabilities_to_json(ProviderResourceCapabilities v) -> str:
+    list[str] parts = []
+    if v.github.is_some():
+        auto u0 = v.github.unwrap()
+        parts.append("\"github\":" + git_hub_resource_capabilities_to_json(u0))
+    if v.gitlab.is_some():
+        auto u1 = v.gitlab.unwrap()
+        parts.append("\"gitlab\":" + git_lab_resource_capabilities_to_json(u1))
+    if v.bitbucket.is_some():
+        auto u2 = v.bitbucket.unwrap()
+        parts.append("\"bitbucket\":" + bitbucket_resource_capabilities_to_json(u2))
+    if v.confluence.is_some():
+        auto u3 = v.confluence.unwrap()
+        parts.append("\"confluence\":" + u3.to_json())
+    if v.azureDevOps.is_some():
+        auto u4 = v.azureDevOps.unwrap()
+        parts.append("\"azureDevOps\":" + azure_dev_ops_resource_capabilities_to_json(u4))
+    if v.jira.is_some():
+        auto u5 = v.jira.unwrap()
+        parts.append("\"jira\":" + u5.to_json())
+    return securityagent_json_obj(parts)
+
+# Serialize ReportFilters to a compact JSON object (declaration order).
+def report_filters_to_json(ReportFilters v) -> str:
+    list[str] parts = []
+    if v.riskLevels.is_some():
+        auto u0 = v.riskLevels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"riskLevels\":" + securityagent_json_arr(e1))
+    if v.confidenceLevels.is_some():
+        auto u2 = v.confidenceLevels.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"confidenceLevels\":" + securityagent_json_arr(e3))
+    if v.statuses.is_some():
+        auto u4 = v.statuses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"statuses\":" + securityagent_json_arr(e5))
+    if v.riskTypes.is_some():
+        auto u6 = v.riskTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"riskTypes\":" + securityagent_json_arr(e7))
+    if v.findingTypes.is_some():
+        auto u8 = v.findingTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityagent_json_str(x9))
+        parts.append("\"findingTypes\":" + securityagent_json_arr(e9))
+    if v.taskStatuses.is_some():
+        auto u10 = v.taskStatuses.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"taskStatuses\":" + securityagent_json_arr(e11))
+    if v.annotationNotes.is_some():
+        auto u12 = v.annotationNotes.unwrap()
+        parts.append("\"annotationNotes\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.complianceReport.is_some():
+        auto u13 = v.complianceReport.unwrap()
+        parts.append("\"complianceReport\":" + json.dumps(JsonValue.Bool(u13)))
+    return securityagent_json_obj(parts)
+
+# Serialize ServiceManagedInput to a compact JSON object (declaration order).
+def service_managed_input_to_json(ServiceManagedInput v) -> str:
+    list[str] parts = []
+    parts.append("\"hostAddress\":" + securityagent_json_str(v.hostAddress))
+    parts.append("\"vpcId\":" + securityagent_json_str(v.vpcId))
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(securityagent_json_str(x0))
+    parts.append("\"subnetIds\":" + securityagent_json_arr(e0))
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityagent_json_str(x2))
+        parts.append("\"securityGroupIds\":" + securityagent_json_arr(e2))
+    if v.ipAddressType.is_some():
+        auto u3 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u3.to_json())
+    if v.ipv4AddressesPerEni.is_some():
+        auto u4 = v.ipv4AddressesPerEni.unwrap()
+        parts.append("\"ipv4AddressesPerEni\":" + str(u4))
+    if v.portRanges.is_some():
+        auto u5 = v.portRanges.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityagent_json_str(x6))
+        parts.append("\"portRanges\":" + securityagent_json_arr(e6))
+    if v.certificate.is_some():
+        auto u7 = v.certificate.unwrap()
+        parts.append("\"certificate\":" + securityagent_json_str(u7))
+    if v.dnsResolution.is_some():
+        auto u8 = v.dnsResolution.unwrap()
+        parts.append("\"dnsResolution\":" + u8.to_json())
+    return securityagent_json_obj(parts)
+
+# Serialize TriggerFilter to a compact JSON object (declaration order).
+def trigger_filter_to_json(TriggerFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    list[str] e0 = []
+    for x0 in v.patterns:
+        e0.append(securityagent_json_str(x0))
+    parts.append("\"patterns\":" + securityagent_json_arr(e0))
+    if v.matchMode.is_some():
+        auto u1 = v.matchMode.unwrap()
+        parts.append("\"matchMode\":" + u1.to_json())
+    return securityagent_json_obj(parts)
+
+# Serialize TriggerFilterGroup to a compact JSON object (declaration order).
+def trigger_filter_group_to_json(TriggerFilterGroup v) -> str:
+    list[str] parts = []
+    if v.events.is_some():
+        auto u0 = v.events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"events\":" + securityagent_json_arr(e1))
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(trigger_filter_to_json(x3))
+        parts.append("\"filters\":" + securityagent_json_arr(e3))
+    return securityagent_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    if v.vpcArn.is_some():
+        auto u0 = v.vpcArn.unwrap()
+        parts.append("\"vpcArn\":" + securityagent_json_str(u0))
+    if v.securityGroupArns.is_some():
+        auto u1 = v.securityGroupArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityagent_json_str(x2))
+        parts.append("\"securityGroupArns\":" + securityagent_json_arr(e2))
+    if v.subnetArns.is_some():
+        auto u3 = v.subnetArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityagent_json_str(x4))
+        parts.append("\"subnetArns\":" + securityagent_json_arr(e4))
+    return securityagent_json_obj(parts)
+
 # A bound SecurityAgent client: credentials + region, threaded into every operation.
 struct SecurityAgentClient:
     core.Credentials creds
@@ -3631,12 +4110,647 @@ struct SecurityAgentClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
+    # BatchCreateSecurityRequirements  POST /BatchCreateSecurityRequirements
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_security_requirements(self, BatchCreateSecurityRequirementsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchCreateSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"packId\":" + securityagent_json_str(input.packId))
+        list[str] e0 = []
+        for x0 in input.securityRequirements:
+            e0.append(x0.to_json())
+        parts.append("\"securityRequirements\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchDeleteCodeReviews  POST /BatchDeleteCodeReviews
+    def batch_delete_code_reviews(self, BatchDeleteCodeReviewsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteCodeReviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.codeReviewIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"codeReviewIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchDeletePentests  POST /BatchDeletePentests
+    def batch_delete_pentests(self, BatchDeletePentestsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeletePentests", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.pentestIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"pentestIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchDeleteSecurityRequirements  POST /BatchDeleteSecurityRequirements
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_security_requirements(self, BatchDeleteSecurityRequirementsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"packId\":" + securityagent_json_str(input.packId))
+        list[str] e0 = []
+        for x0 in input.securityRequirementNames:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"securityRequirementNames\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchDeleteThreatModels  POST /BatchDeleteThreatModels
+    def batch_delete_threat_models(self, BatchDeleteThreatModelsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteThreatModels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.threatModelIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"threatModelIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchDisassociateFindingIssue  POST /BatchDisassociateFindingIssue
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_disassociate_finding_issue(self, BatchDisassociateFindingIssueInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDisassociateFindingIssue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.pentestJobId.is_some():
+            auto u0 = input.pentestJobId.unwrap()
+            parts.append("\"pentestJobId\":" + securityagent_json_str(u0))
+        if input.codeReviewJobId.is_some():
+            auto u1 = input.codeReviewJobId.unwrap()
+            parts.append("\"codeReviewJobId\":" + securityagent_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.findingIds:
+            e2.append(securityagent_json_str(x2))
+        parts.append("\"findingIds\":" + securityagent_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchExportFindings  POST /BatchExportFindings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_export_findings(self, BatchExportFindingsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchExportFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.pentestJobId.is_some():
+            auto u0 = input.pentestJobId.unwrap()
+            parts.append("\"pentestJobId\":" + securityagent_json_str(u0))
+        if input.codeReviewJobId.is_some():
+            auto u1 = input.codeReviewJobId.unwrap()
+            parts.append("\"codeReviewJobId\":" + securityagent_json_str(u1))
+        parts.append("\"issueDestination\":" + input.issueDestination.to_json())
+        list[str] e2 = []
+        for x2 in input.findingIds:
+            e2.append(securityagent_json_str(x2))
+        parts.append("\"findingIds\":" + securityagent_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetAgentSpaces  POST /BatchGetAgentSpaces
+    def batch_get_agent_spaces(self, BatchGetAgentSpacesInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetAgentSpaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.agentSpaceIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"agentSpaceIds\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetArtifactMetadata  POST /BatchGetArtifactMetadata
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_artifact_metadata(self, BatchGetArtifactMetadataInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetArtifactMetadata", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        list[str] e0 = []
+        for x0 in input.artifactIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"artifactIds\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetCodeReviewJobTasks  POST /BatchGetCodeReviewJobTasks
+    def batch_get_code_review_job_tasks(self, BatchGetCodeReviewJobTasksInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviewJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        list[str] e0 = []
+        for x0 in input.codeReviewJobTaskIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"codeReviewJobTaskIds\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetCodeReviewJobs  POST /BatchGetCodeReviewJobs
+    def batch_get_code_review_jobs(self, BatchGetCodeReviewJobsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviewJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.codeReviewJobIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"codeReviewJobIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetCodeReviews  POST /BatchGetCodeReviews
+    def batch_get_code_reviews(self, BatchGetCodeReviewsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.codeReviewIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"codeReviewIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetFindings  POST /BatchGetFindings
+    def batch_get_findings(self, BatchGetFindingsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.findingIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"findingIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetPentestJobTasks  POST /BatchGetPentestJobTasks
+    def batch_get_pentest_job_tasks(self, BatchGetPentestJobTasksInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentestJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        list[str] e0 = []
+        for x0 in input.taskIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"taskIds\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetPentestJobs  POST /BatchGetPentestJobs
+    def batch_get_pentest_jobs(self, BatchGetPentestJobsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentestJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.pentestJobIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"pentestJobIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetPentests  POST /BatchGetPentests
+    def batch_get_pentests(self, BatchGetPentestsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentests", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.pentestIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"pentestIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetSecurityRequirements  POST /BatchGetSecurityRequirements
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_security_requirements(self, BatchGetSecurityRequirementsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"packId\":" + securityagent_json_str(input.packId))
+        list[str] e0 = []
+        for x0 in input.securityRequirementNames:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"securityRequirementNames\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetTargetDomains  POST /BatchGetTargetDomains
+    def batch_get_target_domains(self, BatchGetTargetDomainsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetTargetDomains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targetDomainIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"targetDomainIds\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetThreatModelJobTasks  POST /BatchGetThreatModelJobTasks
+    def batch_get_threat_model_job_tasks(self, BatchGetThreatModelJobTasksInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModelJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        list[str] e0 = []
+        for x0 in input.threatModelJobTaskIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"threatModelJobTaskIds\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetThreatModelJobs  POST /BatchGetThreatModelJobs
+    def batch_get_threat_model_jobs(self, BatchGetThreatModelJobsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModelJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.threatModelJobIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"threatModelJobIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetThreatModels  POST /BatchGetThreatModels
+    def batch_get_threat_models(self, BatchGetThreatModelsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.threatModelIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"threatModelIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchGetThreats  POST /BatchGetThreats
+    def batch_get_threats(self, BatchGetThreatsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreats", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.threatIds:
+            e0.append(securityagent_json_str(x0))
+        parts.append("\"threatIds\":" + securityagent_json_arr(e0))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # BatchUpdateSecurityRequirements  POST /BatchUpdateSecurityRequirements
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_security_requirements(self, BatchUpdateSecurityRequirementsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchUpdateSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"packId\":" + securityagent_json_str(input.packId))
+        list[str] e0 = []
+        for x0 in input.securityRequirements:
+            e0.append(x0.to_json())
+        parts.append("\"securityRequirements\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateAgentSpace  POST /CreateAgentSpace
+    def create_agent_space(self, CreateAgentSpaceInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateAgentSpace", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + securityagent_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + securityagent_json_str(u0))
+        if input.awsResources.is_some():
+            auto u1 = input.awsResources.unwrap()
+            parts.append("\"awsResources\":" + aws_resources_to_json(u1))
+        if input.targetDomainIds.is_some():
+            auto u2 = input.targetDomainIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(securityagent_json_str(x3))
+            parts.append("\"targetDomainIds\":" + securityagent_json_arr(e3))
+        if input.codeReviewSettings.is_some():
+            auto u4 = input.codeReviewSettings.unwrap()
+            parts.append("\"codeReviewSettings\":" + u4.to_json())
+        if input.kmsKeyId.is_some():
+            auto u5 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + securityagent_json_str(u5))
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(securityagent_json_str(k7) + ":" + securityagent_json_str(u6[k7]))
+            parts.append("\"tags\":" + securityagent_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateApplication  POST /CreateApplication
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.idcInstanceArn.is_some():
+            auto u0 = input.idcInstanceArn.unwrap()
+            parts.append("\"idcInstanceArn\":" + securityagent_json_str(u0))
+        if input.roleArn.is_some():
+            auto u1 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + securityagent_json_str(u1))
+        if input.defaultKmsKeyId.is_some():
+            auto u2 = input.defaultKmsKeyId.unwrap()
+            parts.append("\"defaultKmsKeyId\":" + securityagent_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(securityagent_json_str(k4) + ":" + securityagent_json_str(u3[k4]))
+            parts.append("\"tags\":" + securityagent_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateCodeReview  POST /CreateCodeReview
+    def create_code_review(self, CreateCodeReviewInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateCodeReview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"title\":" + securityagent_json_str(input.title))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        parts.append("\"assets\":" + assets_to_json(input.assets))
+        if input.serviceRole.is_some():
+            auto u0 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + securityagent_json_str(u0))
+        if input.logConfig.is_some():
+            auto u1 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u1.to_json())
+        if input.codeRemediationStrategy.is_some():
+            auto u2 = input.codeRemediationStrategy.unwrap()
+            parts.append("\"codeRemediationStrategy\":" + u2.to_json())
+        if input.validationMode.is_some():
+            auto u3 = input.validationMode.unwrap()
+            parts.append("\"validationMode\":" + u3.to_json())
+        if input.maxTaskHours.is_some():
+            auto u4 = input.maxTaskHours.unwrap()
+            parts.append("\"maxTaskHours\":" + str(u4))
+        if input.reportDestination.is_some():
+            auto u5 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u5.to_json())
+        if input.reportFilters.is_some():
+            auto u6 = input.reportFilters.unwrap()
+            parts.append("\"reportFilters\":" + report_filters_to_json(u6))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateIntegration  POST /CreateIntegration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_integration(self, CreateIntegrationInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"provider\":" + input.provider.to_json())
+        parts.append("\"input\":" + input.input.to_json())
+        parts.append("\"integrationDisplayName\":" + securityagent_json_str(input.integrationDisplayName))
+        if input.kmsKeyId.is_some():
+            auto u0 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + securityagent_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(securityagent_json_str(k2) + ":" + securityagent_json_str(u1[k2]))
+            parts.append("\"tags\":" + securityagent_json_obj(m2))
+        if input.privateConnectionName.is_some():
+            auto u3 = input.privateConnectionName.unwrap()
+            parts.append("\"privateConnectionName\":" + securityagent_json_str(u3))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
     # CreateMembership  POST /CreateMembership
     def create_membership(self, CreateMembershipRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/CreateMembership", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMembershipDocument(applicationId=input.applicationId, agentSpaceId=input.agentSpaceId, membershipId=input.membershipId, memberType=input.memberType, config=input.config)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreatePentest  POST /CreatePentest
+    def create_pentest(self, CreatePentestInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreatePentest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"title\":" + securityagent_json_str(input.title))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.assets.is_some():
+            auto u0 = input.assets.unwrap()
+            parts.append("\"assets\":" + assets_to_json(u0))
+        if input.excludeRiskTypes.is_some():
+            auto u1 = input.excludeRiskTypes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"excludeRiskTypes\":" + securityagent_json_arr(e2))
+        if input.serviceRole.is_some():
+            auto u3 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + securityagent_json_str(u3))
+        if input.logConfig.is_some():
+            auto u4 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u4.to_json())
+        if input.vpcConfig.is_some():
+            auto u5 = input.vpcConfig.unwrap()
+            parts.append("\"vpcConfig\":" + vpc_config_to_json(u5))
+        if input.networkTrafficConfig.is_some():
+            auto u6 = input.networkTrafficConfig.unwrap()
+            parts.append("\"networkTrafficConfig\":" + network_traffic_config_to_json(u6))
+        if input.codeRemediationStrategy.is_some():
+            auto u7 = input.codeRemediationStrategy.unwrap()
+            parts.append("\"codeRemediationStrategy\":" + u7.to_json())
+        if input.disableManagedSkills.is_some():
+            auto u8 = input.disableManagedSkills.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"disableManagedSkills\":" + securityagent_json_arr(e9))
+        if input.maxTaskHours.is_some():
+            auto u10 = input.maxTaskHours.unwrap()
+            parts.append("\"maxTaskHours\":" + str(u10))
+        if input.reportDestination.is_some():
+            auto u11 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u11.to_json())
+        if input.reportFilters.is_some():
+            auto u12 = input.reportFilters.unwrap()
+            parts.append("\"reportFilters\":" + report_filters_to_json(u12))
+        if input.cicdConfiguration.is_some():
+            auto u13 = input.cicdConfiguration.unwrap()
+            parts.append("\"cicdConfiguration\":" + u13.to_json())
+        if input.testScope.is_some():
+            auto u14 = input.testScope.unwrap()
+            parts.append("\"testScope\":" + u14.to_json())
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreatePrivateConnection  POST /CreatePrivateConnection
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_private_connection(self, CreatePrivateConnectionInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreatePrivateConnection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"privateConnectionName\":" + securityagent_json_str(input.privateConnectionName))
+        parts.append("\"mode\":" + private_connection_mode_to_json(input.mode))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(securityagent_json_str(k1) + ":" + securityagent_json_str(u0[k1]))
+            parts.append("\"tags\":" + securityagent_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateSecurityRequirementPack  POST /CreateSecurityRequirementPack
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_security_requirement_pack(self, CreateSecurityRequirementPackInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSecurityRequirementPack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + securityagent_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + securityagent_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        if input.kmsKeyId.is_some():
+            auto u2 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + securityagent_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(securityagent_json_str(k4) + ":" + securityagent_json_str(u3[k4]))
+            parts.append("\"tags\":" + securityagent_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateTargetDomain  POST /CreateTargetDomain
+    def create_target_domain(self, CreateTargetDomainInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTargetDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"targetDomainName\":" + securityagent_json_str(input.targetDomainName))
+        parts.append("\"verificationMethod\":" + input.verificationMethod.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(securityagent_json_str(k1) + ":" + securityagent_json_str(u0[k1]))
+            parts.append("\"tags\":" + securityagent_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateThreat  POST /CreateThreat
+    def create_threat(self, CreateThreatInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateThreat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        parts.append("\"threatJobId\":" + securityagent_json_str(input.threatJobId))
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + securityagent_json_str(u0))
+        if input.statement.is_some():
+            auto u1 = input.statement.unwrap()
+            parts.append("\"statement\":" + securityagent_json_str(u1))
+        if input.severity.is_some():
+            auto u2 = input.severity.unwrap()
+            parts.append("\"severity\":" + u2.to_json())
+        if input.comments.is_some():
+            auto u3 = input.comments.unwrap()
+            parts.append("\"comments\":" + securityagent_json_str(u3))
+        if input.stride.is_some():
+            auto u4 = input.stride.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"stride\":" + securityagent_json_arr(e5))
+        if input.threatSource.is_some():
+            auto u6 = input.threatSource.unwrap()
+            parts.append("\"threatSource\":" + securityagent_json_str(u6))
+        if input.prerequisites.is_some():
+            auto u7 = input.prerequisites.unwrap()
+            parts.append("\"prerequisites\":" + securityagent_json_str(u7))
+        if input.threatAction.is_some():
+            auto u8 = input.threatAction.unwrap()
+            parts.append("\"threatAction\":" + securityagent_json_str(u8))
+        if input.threatImpact.is_some():
+            auto u9 = input.threatImpact.unwrap()
+            parts.append("\"threatImpact\":" + securityagent_json_str(u9))
+        if input.impactedGoal.is_some():
+            auto u10 = input.impactedGoal.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(securityagent_json_str(x11))
+            parts.append("\"impactedGoal\":" + securityagent_json_arr(e11))
+        if input.impactedAssets.is_some():
+            auto u12 = input.impactedAssets.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(securityagent_json_str(x13))
+            parts.append("\"impactedAssets\":" + securityagent_json_arr(e13))
+        if input.anchor.is_some():
+            auto u14 = input.anchor.unwrap()
+            parts.append("\"anchor\":" + u14.to_json())
+        if input.evidence.is_some():
+            auto u15 = input.evidence.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"evidence\":" + securityagent_json_arr(e16))
+        if input.recommendation.is_some():
+            auto u17 = input.recommendation.unwrap()
+            parts.append("\"recommendation\":" + securityagent_json_str(u17))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # CreateThreatModel  POST /CreateThreatModel
+    def create_threat_model(self, CreateThreatModelInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateThreatModel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"title\":" + securityagent_json_str(input.title))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + securityagent_json_str(u0))
+        if input.assets.is_some():
+            auto u1 = input.assets.unwrap()
+            parts.append("\"assets\":" + assets_to_json(u1))
+        if input.scopeDocs.is_some():
+            auto u2 = input.scopeDocs.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"scopeDocs\":" + securityagent_json_arr(e3))
+        parts.append("\"serviceRole\":" + securityagent_json_str(input.serviceRole))
+        if input.logConfig.is_some():
+            auto u4 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u4.to_json())
+        if input.reportDestination.is_some():
+            auto u5 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
     # DeleteAgentSpace  POST /DeleteAgentSpace
@@ -3749,6 +4863,17 @@ struct SecurityAgentClient:
         auto b = binding.HttpBinding(method="POST", path_template="/GetSecurityRequirementPack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSecurityRequirementPackDocument(packId=input.packId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # ImportSecurityRequirements  POST /ImportSecurityRequirements
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def import_security_requirements(self, ImportSecurityRequirementsInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ImportSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"packId\":" + securityagent_json_str(input.packId))
+        parts.append("\"input\":" + import_source_to_json(input.input))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
     # InitiateProviderRegistration  POST /oauth2/provider/register
@@ -3958,12 +5083,56 @@ struct SecurityAgentClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
+    # StartCodeRemediation  POST /StartCodeRemediation
+    def start_code_remediation(self, StartCodeRemediationInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartCodeRemediation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.pentestJobId.is_some():
+            auto u0 = input.pentestJobId.unwrap()
+            parts.append("\"pentestJobId\":" + securityagent_json_str(u0))
+        if input.codeReviewJobId.is_some():
+            auto u1 = input.codeReviewJobId.unwrap()
+            parts.append("\"codeReviewJobId\":" + securityagent_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.findingIds:
+            e2.append(securityagent_json_str(x2))
+        parts.append("\"findingIds\":" + securityagent_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
     # StartCodeReviewJob  POST /StartCodeReviewJob
     def start_code_review_job(self, StartCodeReviewJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/StartCodeReviewJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartCodeReviewJobDocument(agentSpaceId=input.agentSpaceId, codeReviewId=input.codeReviewId, diffSource=input.diffSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # StartPentestJob  POST /StartPentestJob
+    def start_pentest_job(self, StartPentestJobInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartPentestJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        parts.append("\"pentestId\":" + securityagent_json_str(input.pentestId))
+        if input.jobType.is_some():
+            auto u0 = input.jobType.unwrap()
+            parts.append("\"jobType\":" + u0.to_json())
+        if input.selectedFindingIds.is_some():
+            auto u1 = input.selectedFindingIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(securityagent_json_str(x2))
+            parts.append("\"selectedFindingIds\":" + securityagent_json_arr(e2))
+        if input.scopeChanges.is_some():
+            auto u3 = input.scopeChanges.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"scopeChanges\":" + securityagent_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
     # StartThreatModelJob  POST /StartThreatModelJob
@@ -3998,12 +5167,90 @@ struct SecurityAgentClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(securityagent_json_str(k0) + ":" + securityagent_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + securityagent_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # UpdateAgentSpace  POST /UpdateAgentSpace
+    def update_agent_space(self, UpdateAgentSpaceInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateAgentSpace", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + securityagent_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + securityagent_json_str(u1))
+        if input.awsResources.is_some():
+            auto u2 = input.awsResources.unwrap()
+            parts.append("\"awsResources\":" + aws_resources_to_json(u2))
+        if input.targetDomainIds.is_some():
+            auto u3 = input.targetDomainIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(securityagent_json_str(x4))
+            parts.append("\"targetDomainIds\":" + securityagent_json_arr(e4))
+        if input.codeReviewSettings.is_some():
+            auto u5 = input.codeReviewSettings.unwrap()
+            parts.append("\"codeReviewSettings\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
     # UpdateApplication  POST /UpdateApplication
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(applicationId=input.applicationId, roleArn=input.roleArn, defaultKmsKeyId=input.defaultKmsKeyId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # UpdateCodeReview  POST /UpdateCodeReview
+    def update_code_review(self, UpdateCodeReviewInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateCodeReview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"codeReviewId\":" + securityagent_json_str(input.codeReviewId))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + securityagent_json_str(u0))
+        if input.assets.is_some():
+            auto u1 = input.assets.unwrap()
+            parts.append("\"assets\":" + assets_to_json(u1))
+        if input.serviceRole.is_some():
+            auto u2 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + securityagent_json_str(u2))
+        if input.logConfig.is_some():
+            auto u3 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u3.to_json())
+        if input.codeRemediationStrategy.is_some():
+            auto u4 = input.codeRemediationStrategy.unwrap()
+            parts.append("\"codeRemediationStrategy\":" + u4.to_json())
+        if input.validationMode.is_some():
+            auto u5 = input.validationMode.unwrap()
+            parts.append("\"validationMode\":" + u5.to_json())
+        if input.maxTaskHours.is_some():
+            auto u6 = input.maxTaskHours.unwrap()
+            parts.append("\"maxTaskHours\":" + str(u6))
+        if input.reportDestination.is_some():
+            auto u7 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u7.to_json())
+        if input.reportFilters.is_some():
+            auto u8 = input.reportFilters.unwrap()
+            parts.append("\"reportFilters\":" + report_filters_to_json(u8))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
     # UpdateFinding  POST /UpdateFinding
@@ -4014,6 +5261,21 @@ struct SecurityAgentClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
+    # UpdateIntegratedResources  POST /UpdateIntegratedResources
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_integrated_resources(self, UpdateIntegratedResourcesInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIntegratedResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        parts.append("\"integrationId\":" + securityagent_json_str(input.integrationId))
+        list[str] e0 = []
+        for x0 in input.items:
+            e0.append(integrated_resource_input_item_to_json(x0))
+        parts.append("\"items\":" + securityagent_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
     # UpdateIntegration  POST /UpdateIntegration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_integration(self, UpdateIntegrationInput input) -> str:
@@ -4021,6 +5283,64 @@ struct SecurityAgentClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIntegrationDocument(integrationId=input.integrationId, webhookAction=input.webhookAction)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # UpdatePentest  POST /UpdatePentest
+    def update_pentest(self, UpdatePentestInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePentest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"pentestId\":" + securityagent_json_str(input.pentestId))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + securityagent_json_str(u0))
+        if input.assets.is_some():
+            auto u1 = input.assets.unwrap()
+            parts.append("\"assets\":" + assets_to_json(u1))
+        if input.excludeRiskTypes.is_some():
+            auto u2 = input.excludeRiskTypes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"excludeRiskTypes\":" + securityagent_json_arr(e3))
+        if input.serviceRole.is_some():
+            auto u4 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + securityagent_json_str(u4))
+        if input.logConfig.is_some():
+            auto u5 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u5.to_json())
+        if input.vpcConfig.is_some():
+            auto u6 = input.vpcConfig.unwrap()
+            parts.append("\"vpcConfig\":" + vpc_config_to_json(u6))
+        if input.networkTrafficConfig.is_some():
+            auto u7 = input.networkTrafficConfig.unwrap()
+            parts.append("\"networkTrafficConfig\":" + network_traffic_config_to_json(u7))
+        if input.codeRemediationStrategy.is_some():
+            auto u8 = input.codeRemediationStrategy.unwrap()
+            parts.append("\"codeRemediationStrategy\":" + u8.to_json())
+        if input.disableManagedSkills.is_some():
+            auto u9 = input.disableManagedSkills.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"disableManagedSkills\":" + securityagent_json_arr(e10))
+        if input.maxTaskHours.is_some():
+            auto u11 = input.maxTaskHours.unwrap()
+            parts.append("\"maxTaskHours\":" + str(u11))
+        if input.reportDestination.is_some():
+            auto u12 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u12.to_json())
+        if input.reportFilters.is_some():
+            auto u13 = input.reportFilters.unwrap()
+            parts.append("\"reportFilters\":" + report_filters_to_json(u13))
+        if input.cicdConfiguration.is_some():
+            auto u14 = input.cicdConfiguration.unwrap()
+            parts.append("\"cicdConfiguration\":" + u14.to_json())
+        if input.testScope.is_some():
+            auto u15 = input.testScope.unwrap()
+            parts.append("\"testScope\":" + u15.to_json())
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
     # UpdatePrivateConnectionCertificate  POST /UpdatePrivateConnectionCertificate
@@ -4047,6 +5367,101 @@ struct SecurityAgentClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateTargetDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTargetDomainDocument(targetDomainId=input.targetDomainId, verificationMethod=input.verificationMethod)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # UpdateThreat  POST /UpdateThreat
+    def update_threat(self, UpdateThreatInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateThreat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"threatId\":" + securityagent_json_str(input.threatId))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + securityagent_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        if input.comments.is_some():
+            auto u2 = input.comments.unwrap()
+            parts.append("\"comments\":" + securityagent_json_str(u2))
+        if input.statement.is_some():
+            auto u3 = input.statement.unwrap()
+            parts.append("\"statement\":" + securityagent_json_str(u3))
+        if input.severity.is_some():
+            auto u4 = input.severity.unwrap()
+            parts.append("\"severity\":" + u4.to_json())
+        if input.threatSource.is_some():
+            auto u5 = input.threatSource.unwrap()
+            parts.append("\"threatSource\":" + securityagent_json_str(u5))
+        if input.prerequisites.is_some():
+            auto u6 = input.prerequisites.unwrap()
+            parts.append("\"prerequisites\":" + securityagent_json_str(u6))
+        if input.threatAction.is_some():
+            auto u7 = input.threatAction.unwrap()
+            parts.append("\"threatAction\":" + securityagent_json_str(u7))
+        if input.threatImpact.is_some():
+            auto u8 = input.threatImpact.unwrap()
+            parts.append("\"threatImpact\":" + securityagent_json_str(u8))
+        if input.impactedGoal.is_some():
+            auto u9 = input.impactedGoal.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(securityagent_json_str(x10))
+            parts.append("\"impactedGoal\":" + securityagent_json_arr(e10))
+        if input.impactedAssets.is_some():
+            auto u11 = input.impactedAssets.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(securityagent_json_str(x12))
+            parts.append("\"impactedAssets\":" + securityagent_json_arr(e12))
+        if input.anchor.is_some():
+            auto u13 = input.anchor.unwrap()
+            parts.append("\"anchor\":" + u13.to_json())
+        if input.evidence.is_some():
+            auto u14 = input.evidence.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"evidence\":" + securityagent_json_arr(e15))
+        if input.recommendation.is_some():
+            auto u16 = input.recommendation.unwrap()
+            parts.append("\"recommendation\":" + securityagent_json_str(u16))
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
+
+    # UpdateThreatModel  POST /UpdateThreatModel
+    def update_threat_model(self, UpdateThreatModelInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateThreatModel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"threatModelId\":" + securityagent_json_str(input.threatModelId))
+        parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + securityagent_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + securityagent_json_str(u1))
+        if input.assets.is_some():
+            auto u2 = input.assets.unwrap()
+            parts.append("\"assets\":" + assets_to_json(u2))
+        if input.scopeDocs.is_some():
+            auto u3 = input.scopeDocs.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"scopeDocs\":" + securityagent_json_arr(e4))
+        if input.serviceRole.is_some():
+            auto u5 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + securityagent_json_str(u5))
+        if input.logConfig.is_some():
+            auto u6 = input.logConfig.unwrap()
+            parts.append("\"logConfig\":" + u6.to_json())
+        if input.reportDestination.is_some():
+            auto u7 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
     # VerifyTargetDomain  POST /VerifyTargetDomain

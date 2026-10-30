@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 12 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 16 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   68 structs (31 @derive(Json)), 9 enums, 6 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -119,8 +119,9 @@ enum StreamOrder:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) EgressEndpoints: list[EgressEndpoint], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EgressEndpoints: list[EgressEndpoint], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Asset:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -132,8 +133,9 @@ struct Asset:
     Optional[str] SourceRoleArn
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetCreateParameters:
     str Id
     str PackagingGroupId
@@ -142,14 +144,16 @@ struct AssetCreateParameters:
     str SourceRoleArn
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Assets: list[AssetShallow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetShallow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetList:
     Optional[list[AssetShallow]] Assets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetShallow:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -165,14 +169,16 @@ struct Authorization:
     str CdnIdentifierSecret
     str SecretsRoleArn
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafEncryption:
     Optional[str] ConstantInitializationVector
     SpekeKeyProvider SpekeKeyProvider
 
-# no @derive(Json): member(s) Encryption: CmafEncryption, HlsManifests: list[HlsManifest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Encryption: CmafEncryption, HlsManifests: list[HlsManifest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafPackage:
     Optional[CmafEncryption] Encryption
     list[HlsManifest] HlsManifests
@@ -189,8 +195,9 @@ struct ConfigureLogsRequest:
     Optional[EgressAccessLogs] EgressAccessLogs
     str Id
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigureLogsResponse:
     Optional[str] Arn
     Optional[Authorization] Authorization
@@ -210,8 +217,9 @@ struct CreateAssetRequest:
     str SourceRoleArn
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EgressEndpoints: list[EgressEndpoint], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EgressEndpoints: list[EgressEndpoint], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -234,8 +242,9 @@ struct CreatePackagingConfigurationRequest:
     str PackagingGroupId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePackagingConfigurationResponse:
     Optional[str] Arn
     Optional[CmafPackage] CmafPackage
@@ -255,8 +264,9 @@ struct CreatePackagingGroupRequest:
     str Id
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePackagingGroupResponse:
     Optional[str] Arn
     Optional[Authorization] Authorization
@@ -266,8 +276,9 @@ struct CreatePackagingGroupResponse:
     Optional[str] Id
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashEncryption:
     SpekeKeyProvider SpekeKeyProvider
 
@@ -280,8 +291,9 @@ struct DashManifest:
     Optional[ScteMarkersSource] ScteMarkersSource
     Optional[StreamSelection] StreamSelection
 
-# no @derive(Json): member(s) DashManifests: list[DashManifest], Encryption: DashEncryption, PeriodTriggers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashManifests: list[DashManifest], Encryption: DashEncryption, PeriodTriggers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashPackage:
     list[DashManifest] DashManifests
     Optional[DashEncryption] Encryption
@@ -326,8 +338,9 @@ struct DeletePackagingGroupResponse:
 struct DescribeAssetRequest:
     str Id
 
-# no @derive(Json): member(s) EgressEndpoints: list[EgressEndpoint], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EgressEndpoints: list[EgressEndpoint], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetResponse:
     Optional[str] Arn
     Optional[str] CreatedAt
@@ -344,8 +357,9 @@ struct DescribeAssetResponse:
 struct DescribePackagingConfigurationRequest:
     str Id
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePackagingConfigurationResponse:
     Optional[str] Arn
     Optional[CmafPackage] CmafPackage
@@ -362,8 +376,9 @@ struct DescribePackagingConfigurationResponse:
 struct DescribePackagingGroupRequest:
     str Id
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePackagingGroupResponse:
     Optional[int64] ApproximateAssetCount
     Optional[str] Arn
@@ -393,8 +408,9 @@ struct EncryptionContractConfiguration:
 struct ForbiddenException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsEncryption:
     Optional[str] ConstantInitializationVector
     Optional[EncryptionMethod] EncryptionMethod
@@ -409,8 +425,9 @@ struct HlsManifest:
     Optional[bool] RepeatExtXKey
     Optional[StreamSelection] StreamSelection
 
-# no @derive(Json): member(s) Encryption: HlsEncryption, HlsManifests: list[HlsManifest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Encryption: HlsEncryption, HlsManifests: list[HlsManifest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsPackage:
     Optional[HlsEncryption] Encryption
     list[HlsManifest] HlsManifests
@@ -429,8 +446,9 @@ struct ListAssetsRequest:
     Optional[str] NextToken
     Optional[str] PackagingGroupId
 
-# no @derive(Json): member(s) Assets: list[AssetShallow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetShallow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetsResponse:
     Optional[list[AssetShallow]] Assets
     Optional[str] NextToken
@@ -442,8 +460,9 @@ struct ListPackagingConfigurationsRequest:
     Optional[str] NextToken
     Optional[str] PackagingGroupId
 
-# no @derive(Json): member(s) PackagingConfigurations: list[PackagingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PackagingConfigurations: list[PackagingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackagingConfigurationsResponse:
     Optional[str] NextToken
     Optional[list[PackagingConfiguration]] PackagingConfigurations
@@ -454,8 +473,9 @@ struct ListPackagingGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PackagingGroups: list[PackagingGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PackagingGroups: list[PackagingGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackagingGroupsResponse:
     Optional[str] NextToken
     Optional[list[PackagingGroup]] PackagingGroups
@@ -465,13 +485,15 @@ struct ListPackagingGroupsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MssEncryption:
     SpekeKeyProvider SpekeKeyProvider
 
@@ -480,8 +502,9 @@ struct MssManifest:
     Optional[str] ManifestName
     Optional[StreamSelection] StreamSelection
 
-# no @derive(Json): member(s) Encryption: MssEncryption, MssManifests: list[MssManifest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Encryption: MssEncryption, MssManifests: list[MssManifest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MssPackage:
     Optional[MssEncryption] Encryption
     list[MssManifest] MssManifests
@@ -491,8 +514,9 @@ struct MssPackage:
 struct NotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackagingConfiguration:
     Optional[str] Arn
     Optional[CmafPackage] CmafPackage
@@ -504,8 +528,9 @@ struct PackagingConfiguration:
     Optional[str] PackagingGroupId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafPackage: CmafPackage, DashPackage: DashPackage, HlsPackage: HlsPackage, MssPackage: MssPackage, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackagingConfigurationCreateParameters:
     Optional[CmafPackage] CmafPackage
     Optional[DashPackage] DashPackage
@@ -515,14 +540,16 @@ struct PackagingConfigurationCreateParameters:
     str PackagingGroupId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) PackagingConfigurations: list[PackagingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PackagingConfigurations: list[PackagingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackagingConfigurationList:
     Optional[str] NextToken
     Optional[list[PackagingConfiguration]] PackagingConfigurations
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackagingGroup:
     Optional[int64] ApproximateAssetCount
     Optional[str] Arn
@@ -533,16 +560,18 @@ struct PackagingGroup:
     Optional[str] Id
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackagingGroupCreateParameters:
     Optional[Authorization] Authorization
     Optional[EgressAccessLogs] EgressAccessLogs
     str Id
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) PackagingGroups: list[PackagingGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PackagingGroups: list[PackagingGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackagingGroupList:
     Optional[str] NextToken
     Optional[list[PackagingGroup]] PackagingGroups
@@ -555,8 +584,9 @@ struct PackagingGroupUpdateParameters:
 struct ServiceUnavailableException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SystemIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SystemIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpekeKeyProvider:
     Optional[EncryptionContractConfiguration] EncryptionContractConfiguration
     str RoleArn
@@ -575,8 +605,9 @@ struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagsModel:
     dict[str, str] Tags
 
@@ -600,8 +631,9 @@ struct UpdatePackagingGroupRequest:
     Optional[Authorization] Authorization
     str Id
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePackagingGroupResponse:
     Optional[int64] ApproximateAssetCount
     Optional[str] Arn
@@ -647,10 +679,6 @@ def mediapackage_vod_error_from_code(str code) -> MediaPackage_VodError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAsset (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreatePackagingConfiguration (document member `CmafPackage: CmafPackage` is not serializable by derive)
-#   CreatePackagingGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -666,6 +694,167 @@ struct UpdatePackagingGroupDocument:
     # document members of UpdatePackagingGroup
     Optional[Authorization] Authorization
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mediapackage_vod_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mediapackage_vod_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mediapackage_vod_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CmafEncryption to a compact JSON object (declaration order).
+def cmaf_encryption_to_json(CmafEncryption v) -> str:
+    list[str] parts = []
+    if v.ConstantInitializationVector.is_some():
+        auto u0 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"constantInitializationVector\":" + mediapackage_vod_json_str(u0))
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize CmafPackage to a compact JSON object (declaration order).
+def cmaf_package_to_json(CmafPackage v) -> str:
+    list[str] parts = []
+    if v.Encryption.is_some():
+        auto u0 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + cmaf_encryption_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.HlsManifests:
+        e1.append(x1.to_json())
+    parts.append("\"hlsManifests\":" + mediapackage_vod_json_arr(e1))
+    if v.IncludeEncoderConfigurationInSegments.is_some():
+        auto u2 = v.IncludeEncoderConfigurationInSegments.unwrap()
+        parts.append("\"includeEncoderConfigurationInSegments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.SegmentDurationSeconds.is_some():
+        auto u3 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u3))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize DashEncryption to a compact JSON object (declaration order).
+def dash_encryption_to_json(DashEncryption v) -> str:
+    list[str] parts = []
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize DashPackage to a compact JSON object (declaration order).
+def dash_package_to_json(DashPackage v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DashManifests:
+        e0.append(x0.to_json())
+    parts.append("\"dashManifests\":" + mediapackage_vod_json_arr(e0))
+    if v.Encryption.is_some():
+        auto u1 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + dash_encryption_to_json(u1))
+    if v.IncludeEncoderConfigurationInSegments.is_some():
+        auto u2 = v.IncludeEncoderConfigurationInSegments.unwrap()
+        parts.append("\"includeEncoderConfigurationInSegments\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.IncludeIframeOnlyStream.is_some():
+        auto u3 = v.IncludeIframeOnlyStream.unwrap()
+        parts.append("\"includeIframeOnlyStream\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.PeriodTriggers.is_some():
+        auto u4 = v.PeriodTriggers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediapackage_vod_json_str(x5))
+        parts.append("\"periodTriggers\":" + mediapackage_vod_json_arr(e5))
+    if v.SegmentDurationSeconds.is_some():
+        auto u6 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u6))
+    if v.SegmentTemplateFormat.is_some():
+        auto u7 = v.SegmentTemplateFormat.unwrap()
+        parts.append("\"segmentTemplateFormat\":" + u7.to_json())
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize HlsEncryption to a compact JSON object (declaration order).
+def hls_encryption_to_json(HlsEncryption v) -> str:
+    list[str] parts = []
+    if v.ConstantInitializationVector.is_some():
+        auto u0 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"constantInitializationVector\":" + mediapackage_vod_json_str(u0))
+    if v.EncryptionMethod.is_some():
+        auto u1 = v.EncryptionMethod.unwrap()
+        parts.append("\"encryptionMethod\":" + u1.to_json())
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize HlsPackage to a compact JSON object (declaration order).
+def hls_package_to_json(HlsPackage v) -> str:
+    list[str] parts = []
+    if v.Encryption.is_some():
+        auto u0 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + hls_encryption_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.HlsManifests:
+        e1.append(x1.to_json())
+    parts.append("\"hlsManifests\":" + mediapackage_vod_json_arr(e1))
+    if v.IncludeDvbSubtitles.is_some():
+        auto u2 = v.IncludeDvbSubtitles.unwrap()
+        parts.append("\"includeDvbSubtitles\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.SegmentDurationSeconds.is_some():
+        auto u3 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u3))
+    if v.UseAudioRenditionGroup.is_some():
+        auto u4 = v.UseAudioRenditionGroup.unwrap()
+        parts.append("\"useAudioRenditionGroup\":" + json.dumps(JsonValue.Bool(u4)))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize MssEncryption to a compact JSON object (declaration order).
+def mss_encryption_to_json(MssEncryption v) -> str:
+    list[str] parts = []
+    parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize MssPackage to a compact JSON object (declaration order).
+def mss_package_to_json(MssPackage v) -> str:
+    list[str] parts = []
+    if v.Encryption.is_some():
+        auto u0 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + mss_encryption_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.MssManifests:
+        e1.append(x1.to_json())
+    parts.append("\"mssManifests\":" + mediapackage_vod_json_arr(e1))
+    if v.SegmentDurationSeconds.is_some():
+        auto u2 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"segmentDurationSeconds\":" + str(u2))
+    return mediapackage_vod_json_obj(parts)
+
+# Serialize SpekeKeyProvider to a compact JSON object (declaration order).
+def speke_key_provider_to_json(SpekeKeyProvider v) -> str:
+    list[str] parts = []
+    if v.EncryptionContractConfiguration.is_some():
+        auto u0 = v.EncryptionContractConfiguration.unwrap()
+        parts.append("\"encryptionContractConfiguration\":" + u0.to_json())
+    parts.append("\"roleArn\":" + mediapackage_vod_json_str(v.RoleArn))
+    list[str] e1 = []
+    for x1 in v.SystemIds:
+        e1.append(mediapackage_vod_json_str(x1))
+    parts.append("\"systemIds\":" + mediapackage_vod_json_arr(e1))
+    parts.append("\"url\":" + mediapackage_vod_json_str(v.Url))
+    return mediapackage_vod_json_obj(parts)
+
 # A bound MediaPackage_Vod client: credentials + region, threaded into every operation.
 struct MediaPackage_VodClient:
     core.Credentials creds
@@ -680,6 +869,79 @@ struct MediaPackage_VodClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/packaging_groups/{id}/configure_logs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ConfigureLogsDocument(EgressAccessLogs=input.EgressAccessLogs)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
+
+    # CreateAsset  POST /assets
+    # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
+    def create_asset(self, CreateAssetRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/assets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"id\":" + mediapackage_vod_json_str(input.Id))
+        parts.append("\"packagingGroupId\":" + mediapackage_vod_json_str(input.PackagingGroupId))
+        if input.ResourceId.is_some():
+            auto u0 = input.ResourceId.unwrap()
+            parts.append("\"resourceId\":" + mediapackage_vod_json_str(u0))
+        parts.append("\"sourceArn\":" + mediapackage_vod_json_str(input.SourceArn))
+        parts.append("\"sourceRoleArn\":" + mediapackage_vod_json_str(input.SourceRoleArn))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mediapackage_vod_json_str(k2) + ":" + mediapackage_vod_json_str(u1[k2]))
+            parts.append("\"tags\":" + mediapackage_vod_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, mediapackage_vod_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
+
+    # CreatePackagingConfiguration  POST /packaging_configurations
+    # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
+    def create_packaging_configuration(self, CreatePackagingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/packaging_configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CmafPackage.is_some():
+            auto u0 = input.CmafPackage.unwrap()
+            parts.append("\"cmafPackage\":" + cmaf_package_to_json(u0))
+        if input.DashPackage.is_some():
+            auto u1 = input.DashPackage.unwrap()
+            parts.append("\"dashPackage\":" + dash_package_to_json(u1))
+        if input.HlsPackage.is_some():
+            auto u2 = input.HlsPackage.unwrap()
+            parts.append("\"hlsPackage\":" + hls_package_to_json(u2))
+        parts.append("\"id\":" + mediapackage_vod_json_str(input.Id))
+        if input.MssPackage.is_some():
+            auto u3 = input.MssPackage.unwrap()
+            parts.append("\"mssPackage\":" + mss_package_to_json(u3))
+        parts.append("\"packagingGroupId\":" + mediapackage_vod_json_str(input.PackagingGroupId))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(mediapackage_vod_json_str(k5) + ":" + mediapackage_vod_json_str(u4[k5]))
+            parts.append("\"tags\":" + mediapackage_vod_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, mediapackage_vod_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
+
+    # CreatePackagingGroup  POST /packaging_groups
+    # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
+    def create_packaging_group(self, CreatePackagingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/packaging_groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Authorization.is_some():
+            auto u0 = input.Authorization.unwrap()
+            parts.append("\"authorization\":" + u0.to_json())
+        if input.EgressAccessLogs.is_some():
+            auto u1 = input.EgressAccessLogs.unwrap()
+            parts.append("\"egressAccessLogs\":" + u1.to_json())
+        parts.append("\"id\":" + mediapackage_vod_json_str(input.Id))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(mediapackage_vod_json_str(k3) + ":" + mediapackage_vod_json_str(u2[k3]))
+            parts.append("\"tags\":" + mediapackage_vod_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, mediapackage_vod_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
 
     # DeleteAsset  DELETE /assets/{id}
@@ -783,6 +1045,20 @@ struct MediaPackage_VodClient:
         labels["resource-arn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
+
+    # TagResource  POST /tags/{resource-arn}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mediapackage_vod_json_str(k0) + ":" + mediapackage_vod_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + mediapackage_vod_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mediapackage_vod_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
 
     # UpdatePackagingGroup  PUT /packaging_groups/{id}
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException

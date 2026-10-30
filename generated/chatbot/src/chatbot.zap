@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 34 operations — 24 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 34 operations — 34 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   114 structs (81 @derive(Json)), 1 enums, 32 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -69,8 +69,9 @@ struct AssociateToConfigurationResult:
 struct AssociationListing:
     str Resource
 
-# no @derive(Json): member(s) SnsTopicArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnsTopicArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChimeWebhookConfiguration:
     str WebhookDescription
     str ChatConfigurationArn
@@ -109,8 +110,9 @@ struct CreateChimeWebhookConfigurationRequest:
     Optional[str] LoggingLevel
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) WebhookConfiguration: ChimeWebhookConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebhookConfiguration: ChimeWebhookConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChimeWebhookConfigurationResult:
     Optional[ChimeWebhookConfiguration] WebhookConfiguration
 
@@ -146,8 +148,9 @@ struct CreateSlackChannelConfigurationRequest:
     Optional[bool] UserAuthorizationRequired
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ChannelConfiguration: SlackChannelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelConfiguration: SlackChannelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSlackChannelConfigurationResult:
     Optional[SlackChannelConfiguration] ChannelConfiguration
 
@@ -171,13 +174,15 @@ struct CreateTeamsChannelConfigurationRequest:
     Optional[bool] UserAuthorizationRequired
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ChannelConfiguration: TeamsChannelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelConfiguration: TeamsChannelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTeamsChannelConfigurationResult:
     Optional[TeamsChannelConfiguration] ChannelConfiguration
 
-# no @derive(Json): member(s) Attachments: list[CustomActionAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachments: list[CustomActionAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomAction:
     str CustomActionArn
     CustomActionDefinition Definition
@@ -185,8 +190,9 @@ struct CustomAction:
     Optional[list[CustomActionAttachment]] Attachments
     Optional[str] ActionName
 
-# no @derive(Json): member(s) Criteria: list[CustomActionAttachmentCriteria], Variables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: list[CustomActionAttachmentCriteria], Variables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomActionAttachment:
     Optional[str] NotificationType
     Optional[str] ButtonText
@@ -325,8 +331,9 @@ struct DescribeChimeWebhookConfigurationsRequest:
     Optional[str] NextToken
     Optional[str] ChatConfigurationArn
 
-# no @derive(Json): member(s) WebhookConfigurations: list[ChimeWebhookConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebhookConfigurations: list[ChimeWebhookConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChimeWebhookConfigurationsResult:
     Optional[str] NextToken
     Optional[list[ChimeWebhookConfiguration]] WebhookConfigurations
@@ -342,8 +349,9 @@ struct DescribeSlackChannelConfigurationsRequest:
     Optional[str] NextToken
     Optional[str] ChatConfigurationArn
 
-# no @derive(Json): member(s) SlackChannelConfigurations: list[SlackChannelConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SlackChannelConfigurations: list[SlackChannelConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSlackChannelConfigurationsResult:
     Optional[str] NextToken
     Optional[list[SlackChannelConfiguration]] SlackChannelConfigurations
@@ -359,8 +367,9 @@ struct DescribeSlackUserIdentitiesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SlackUserIdentities: list[SlackUserIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SlackUserIdentities: list[SlackUserIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSlackUserIdentitiesResult:
     Optional[list[SlackUserIdentity]] SlackUserIdentities
     Optional[str] NextToken
@@ -375,8 +384,9 @@ struct DescribeSlackWorkspacesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SlackWorkspaces: list[SlackWorkspace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SlackWorkspaces: list[SlackWorkspace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSlackWorkspacesResult:
     Optional[list[SlackWorkspace]] SlackWorkspaces
     Optional[str] NextToken
@@ -411,8 +421,9 @@ struct GetAccountPreferencesResult:
 struct GetCustomActionRequest:
     str CustomActionArn
 
-# no @derive(Json): member(s) CustomAction: CustomAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomAction: CustomAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomActionResult:
     Optional[CustomAction] CustomAction
 
@@ -425,8 +436,9 @@ struct GetTeamsChannelConfigurationException:
 struct GetTeamsChannelConfigurationRequest:
     str ChatConfigurationArn
 
-# no @derive(Json): member(s) ChannelConfiguration: TeamsChannelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelConfiguration: TeamsChannelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTeamsChannelConfigurationResult:
     Optional[TeamsChannelConfiguration] ChannelConfiguration
 
@@ -453,8 +465,9 @@ struct ListAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Associations: list[AssociationListing] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[AssociationListing] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationsResult:
     list[AssociationListing] Associations
     Optional[str] NextToken
@@ -465,8 +478,9 @@ struct ListCustomActionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CustomActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomActionsResult:
     list[str] CustomActions
     Optional[str] NextToken
@@ -481,8 +495,9 @@ struct ListMicrosoftTeamsConfiguredTeamsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfiguredTeams: list[ConfiguredTeam] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfiguredTeams: list[ConfiguredTeam] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMicrosoftTeamsConfiguredTeamsResult:
     Optional[list[ConfiguredTeam]] ConfiguredTeams
     Optional[str] NextToken
@@ -498,8 +513,9 @@ struct ListMicrosoftTeamsUserIdentitiesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TeamsUserIdentities: list[TeamsUserIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TeamsUserIdentities: list[TeamsUserIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMicrosoftTeamsUserIdentitiesResult:
     Optional[list[TeamsUserIdentity]] TeamsUserIdentities
     Optional[str] NextToken
@@ -509,8 +525,9 @@ struct ListMicrosoftTeamsUserIdentitiesResult:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -525,8 +542,9 @@ struct ListTeamsChannelConfigurationsRequest:
     Optional[str] NextToken
     Optional[str] TeamId
 
-# no @derive(Json): member(s) TeamChannelConfigurations: list[TeamsChannelConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TeamChannelConfigurations: list[TeamsChannelConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTeamsChannelConfigurationsResult:
     Optional[str] NextToken
     Optional[list[TeamsChannelConfiguration]] TeamChannelConfigurations
@@ -539,8 +557,9 @@ struct ResourceNotFoundException:
 struct ServiceUnavailableException:
     Optional[str] message
 
-# no @derive(Json): member(s) SnsTopicArns: list[str], GuardrailPolicyArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnsTopicArns: list[str], GuardrailPolicyArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlackChannelConfiguration:
     str SlackTeamName
     str SlackTeamId
@@ -588,8 +607,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SnsTopicArns: list[str], GuardrailPolicyArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnsTopicArns: list[str], GuardrailPolicyArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TeamsChannelConfiguration:
     str ChannelId
     Optional[str] ChannelName
@@ -664,8 +684,9 @@ struct UpdateChimeWebhookConfigurationRequest:
     Optional[str] IamRoleArn
     Optional[str] LoggingLevel
 
-# no @derive(Json): member(s) WebhookConfiguration: ChimeWebhookConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebhookConfiguration: ChimeWebhookConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChimeWebhookConfigurationResult:
     Optional[ChimeWebhookConfiguration] WebhookConfiguration
 
@@ -697,8 +718,9 @@ struct UpdateSlackChannelConfigurationRequest:
     Optional[list[str]] GuardrailPolicyArns
     Optional[bool] UserAuthorizationRequired
 
-# no @derive(Json): member(s) ChannelConfiguration: SlackChannelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelConfiguration: SlackChannelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSlackChannelConfigurationResult:
     Optional[SlackChannelConfiguration] ChannelConfiguration
 
@@ -718,8 +740,9 @@ struct UpdateTeamsChannelConfigurationRequest:
     Optional[list[str]] GuardrailPolicyArns
     Optional[bool] UserAuthorizationRequired
 
-# no @derive(Json): member(s) ChannelConfiguration: TeamsChannelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelConfiguration: TeamsChannelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTeamsChannelConfigurationResult:
     Optional[TeamsChannelConfiguration] ChannelConfiguration
 
@@ -832,20 +855,6 @@ def chatbot_error_from_code(str code) -> chatbotError:
     return chatbotError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateChimeWebhookConfiguration (document member `SnsTopicArns: list[str]` is not serializable by derive)
-#   CreateCustomAction (document member `Attachments: list[CustomActionAttachment]` is not serializable by derive)
-#   CreateMicrosoftTeamsChannelConfiguration (document member `SnsTopicArns: list[str]` is not serializable by derive)
-#   CreateSlackChannelConfiguration (document member `SnsTopicArns: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateChimeWebhookConfiguration (document member `SnsTopicArns: list[str]` is not serializable by derive)
-#   UpdateCustomAction (document member `Attachments: list[CustomActionAttachment]` is not serializable by derive)
-#   UpdateMicrosoftTeamsChannelConfiguration (document member `SnsTopicArns: list[str]` is not serializable by derive)
-#   UpdateSlackChannelConfiguration (document member `SnsTopicArns: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -986,6 +995,59 @@ struct UpdateAccountPreferencesDocument:
     Optional[bool] UserAuthorizationRequired
     Optional[bool] TrainingDataCollectionEnabled
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def chatbot_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def chatbot_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def chatbot_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CustomActionAttachment to a compact JSON object (declaration order).
+def custom_action_attachment_to_json(CustomActionAttachment v) -> str:
+    list[str] parts = []
+    if v.NotificationType.is_some():
+        auto u0 = v.NotificationType.unwrap()
+        parts.append("\"NotificationType\":" + chatbot_json_str(u0))
+    if v.ButtonText.is_some():
+        auto u1 = v.ButtonText.unwrap()
+        parts.append("\"ButtonText\":" + chatbot_json_str(u1))
+    if v.Criteria.is_some():
+        auto u2 = v.Criteria.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Criteria\":" + chatbot_json_arr(e3))
+    if v.Variables.is_some():
+        auto u4 = v.Variables.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(chatbot_json_str(k5) + ":" + chatbot_json_str(u4[k5]))
+        parts.append("\"Variables\":" + chatbot_json_obj(m5))
+    return chatbot_json_obj(parts)
+
 # A bound chatbot client: credentials + region, threaded into every operation.
 struct chatbotClient:
     core.Credentials creds
@@ -998,6 +1060,145 @@ struct chatbotClient:
         auto b = binding.HttpBinding(method="POST", path_template="/associate-to-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateToConfigurationDocument(Resource=input.Resource, ChatConfiguration=input.ChatConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # CreateChimeWebhookConfiguration  POST /create-chime-webhook-configuration
+    # errors: ConflictException, CreateChimeWebhookConfigurationException, InvalidParameterException, InvalidRequestException, LimitExceededException
+    def create_chime_webhook_configuration(self, CreateChimeWebhookConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"WebhookDescription\":" + chatbot_json_str(input.WebhookDescription))
+        parts.append("\"WebhookUrl\":" + chatbot_json_str(input.WebhookUrl))
+        list[str] e0 = []
+        for x0 in input.SnsTopicArns:
+            e0.append(chatbot_json_str(x0))
+        parts.append("\"SnsTopicArns\":" + chatbot_json_arr(e0))
+        parts.append("\"IamRoleArn\":" + chatbot_json_str(input.IamRoleArn))
+        parts.append("\"ConfigurationName\":" + chatbot_json_str(input.ConfigurationName))
+        if input.LoggingLevel.is_some():
+            auto u1 = input.LoggingLevel.unwrap()
+            parts.append("\"LoggingLevel\":" + chatbot_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + chatbot_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # CreateCustomAction  POST /create-custom-action
+    # errors: ConflictException, InternalServiceError, InvalidRequestException, LimitExceededException, UnauthorizedException
+    def create_custom_action(self, CreateCustomActionRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-custom-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Definition\":" + input.Definition.to_json())
+        if input.AliasName.is_some():
+            auto u0 = input.AliasName.unwrap()
+            parts.append("\"AliasName\":" + chatbot_json_str(u0))
+        if input.Attachments.is_some():
+            auto u1 = input.Attachments.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(custom_action_attachment_to_json(x2))
+            parts.append("\"Attachments\":" + chatbot_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + chatbot_json_arr(e4))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + chatbot_json_str(u5))
+        parts.append("\"ActionName\":" + chatbot_json_str(input.ActionName))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # CreateMicrosoftTeamsChannelConfiguration  POST /create-ms-teams-channel-configuration
+    # errors: ConflictException, CreateTeamsChannelConfigurationException, InvalidParameterException, InvalidRequestException, LimitExceededException
+    def create_microsoft_teams_channel_configuration(self, CreateTeamsChannelConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChannelId\":" + chatbot_json_str(input.ChannelId))
+        if input.ChannelName.is_some():
+            auto u0 = input.ChannelName.unwrap()
+            parts.append("\"ChannelName\":" + chatbot_json_str(u0))
+        parts.append("\"TeamId\":" + chatbot_json_str(input.TeamId))
+        if input.TeamName.is_some():
+            auto u1 = input.TeamName.unwrap()
+            parts.append("\"TeamName\":" + chatbot_json_str(u1))
+        parts.append("\"TenantId\":" + chatbot_json_str(input.TenantId))
+        if input.SnsTopicArns.is_some():
+            auto u2 = input.SnsTopicArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(chatbot_json_str(x3))
+            parts.append("\"SnsTopicArns\":" + chatbot_json_arr(e3))
+        parts.append("\"IamRoleArn\":" + chatbot_json_str(input.IamRoleArn))
+        parts.append("\"ConfigurationName\":" + chatbot_json_str(input.ConfigurationName))
+        if input.LoggingLevel.is_some():
+            auto u4 = input.LoggingLevel.unwrap()
+            parts.append("\"LoggingLevel\":" + chatbot_json_str(u4))
+        if input.GuardrailPolicyArns.is_some():
+            auto u5 = input.GuardrailPolicyArns.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(chatbot_json_str(x6))
+            parts.append("\"GuardrailPolicyArns\":" + chatbot_json_arr(e6))
+        if input.UserAuthorizationRequired.is_some():
+            auto u7 = input.UserAuthorizationRequired.unwrap()
+            parts.append("\"UserAuthorizationRequired\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.Tags.is_some():
+            auto u8 = input.Tags.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"Tags\":" + chatbot_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # CreateSlackChannelConfiguration  POST /create-slack-channel-configuration
+    # errors: ConflictException, CreateSlackChannelConfigurationException, InvalidParameterException, InvalidRequestException, LimitExceededException
+    def create_slack_channel_configuration(self, CreateSlackChannelConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SlackTeamId\":" + chatbot_json_str(input.SlackTeamId))
+        parts.append("\"SlackChannelId\":" + chatbot_json_str(input.SlackChannelId))
+        if input.SlackChannelName.is_some():
+            auto u0 = input.SlackChannelName.unwrap()
+            parts.append("\"SlackChannelName\":" + chatbot_json_str(u0))
+        if input.SnsTopicArns.is_some():
+            auto u1 = input.SnsTopicArns.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(chatbot_json_str(x2))
+            parts.append("\"SnsTopicArns\":" + chatbot_json_arr(e2))
+        parts.append("\"IamRoleArn\":" + chatbot_json_str(input.IamRoleArn))
+        parts.append("\"ConfigurationName\":" + chatbot_json_str(input.ConfigurationName))
+        if input.LoggingLevel.is_some():
+            auto u3 = input.LoggingLevel.unwrap()
+            parts.append("\"LoggingLevel\":" + chatbot_json_str(u3))
+        if input.GuardrailPolicyArns.is_some():
+            auto u4 = input.GuardrailPolicyArns.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(chatbot_json_str(x5))
+            parts.append("\"GuardrailPolicyArns\":" + chatbot_json_arr(e5))
+        if input.UserAuthorizationRequired.is_some():
+            auto u6 = input.UserAuthorizationRequired.unwrap()
+            parts.append("\"UserAuthorizationRequired\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.Tags.is_some():
+            auto u7 = input.Tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"Tags\":" + chatbot_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
 
     # DeleteChimeWebhookConfiguration  POST /delete-chime-webhook-configuration
@@ -1195,6 +1396,34 @@ struct chatbotClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
 
+    # TagResource  POST /tag-resource
+    # errors: InternalServiceError, ResourceNotFoundException, ServiceUnavailableException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + chatbot_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + chatbot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # UntagResource  POST /untag-resource
+    # errors: InternalServiceError, ResourceNotFoundException, ServiceUnavailableException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + chatbot_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(chatbot_json_str(x0))
+        parts.append("\"TagKeys\":" + chatbot_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
     # UpdateAccountPreferences  POST /update-account-preferences
     # errors: InvalidParameterException, InvalidRequestException, UpdateAccountPreferencesException
     def update_account_preferences(self, UpdateAccountPreferencesRequest input) -> str:
@@ -1202,6 +1431,124 @@ struct chatbotClient:
         auto b = binding.HttpBinding(method="POST", path_template="/update-account-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountPreferencesDocument(UserAuthorizationRequired=input.UserAuthorizationRequired, TrainingDataCollectionEnabled=input.TrainingDataCollectionEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # UpdateChimeWebhookConfiguration  POST /update-chime-webhook-configuration
+    # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, UpdateChimeWebhookConfigurationException
+    def update_chime_webhook_configuration(self, UpdateChimeWebhookConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChatConfigurationArn\":" + chatbot_json_str(input.ChatConfigurationArn))
+        if input.WebhookDescription.is_some():
+            auto u0 = input.WebhookDescription.unwrap()
+            parts.append("\"WebhookDescription\":" + chatbot_json_str(u0))
+        if input.WebhookUrl.is_some():
+            auto u1 = input.WebhookUrl.unwrap()
+            parts.append("\"WebhookUrl\":" + chatbot_json_str(u1))
+        if input.SnsTopicArns.is_some():
+            auto u2 = input.SnsTopicArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(chatbot_json_str(x3))
+            parts.append("\"SnsTopicArns\":" + chatbot_json_arr(e3))
+        if input.IamRoleArn.is_some():
+            auto u4 = input.IamRoleArn.unwrap()
+            parts.append("\"IamRoleArn\":" + chatbot_json_str(u4))
+        if input.LoggingLevel.is_some():
+            auto u5 = input.LoggingLevel.unwrap()
+            parts.append("\"LoggingLevel\":" + chatbot_json_str(u5))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # UpdateCustomAction  POST /update-custom-action
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, UnauthorizedException
+    def update_custom_action(self, UpdateCustomActionRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-custom-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CustomActionArn\":" + chatbot_json_str(input.CustomActionArn))
+        parts.append("\"Definition\":" + input.Definition.to_json())
+        if input.AliasName.is_some():
+            auto u0 = input.AliasName.unwrap()
+            parts.append("\"AliasName\":" + chatbot_json_str(u0))
+        if input.Attachments.is_some():
+            auto u1 = input.Attachments.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(custom_action_attachment_to_json(x2))
+            parts.append("\"Attachments\":" + chatbot_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # UpdateMicrosoftTeamsChannelConfiguration  POST /update-ms-teams-channel-configuration
+    # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, UpdateTeamsChannelConfigurationException
+    def update_microsoft_teams_channel_configuration(self, UpdateTeamsChannelConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChatConfigurationArn\":" + chatbot_json_str(input.ChatConfigurationArn))
+        parts.append("\"ChannelId\":" + chatbot_json_str(input.ChannelId))
+        if input.ChannelName.is_some():
+            auto u0 = input.ChannelName.unwrap()
+            parts.append("\"ChannelName\":" + chatbot_json_str(u0))
+        if input.SnsTopicArns.is_some():
+            auto u1 = input.SnsTopicArns.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(chatbot_json_str(x2))
+            parts.append("\"SnsTopicArns\":" + chatbot_json_arr(e2))
+        if input.IamRoleArn.is_some():
+            auto u3 = input.IamRoleArn.unwrap()
+            parts.append("\"IamRoleArn\":" + chatbot_json_str(u3))
+        if input.LoggingLevel.is_some():
+            auto u4 = input.LoggingLevel.unwrap()
+            parts.append("\"LoggingLevel\":" + chatbot_json_str(u4))
+        if input.GuardrailPolicyArns.is_some():
+            auto u5 = input.GuardrailPolicyArns.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(chatbot_json_str(x6))
+            parts.append("\"GuardrailPolicyArns\":" + chatbot_json_arr(e6))
+        if input.UserAuthorizationRequired.is_some():
+            auto u7 = input.UserAuthorizationRequired.unwrap()
+            parts.append("\"UserAuthorizationRequired\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
+
+    # UpdateSlackChannelConfiguration  POST /update-slack-channel-configuration
+    # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, UpdateSlackChannelConfigurationException
+    def update_slack_channel_configuration(self, UpdateSlackChannelConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(chatbot_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChatConfigurationArn\":" + chatbot_json_str(input.ChatConfigurationArn))
+        parts.append("\"SlackChannelId\":" + chatbot_json_str(input.SlackChannelId))
+        if input.SlackChannelName.is_some():
+            auto u0 = input.SlackChannelName.unwrap()
+            parts.append("\"SlackChannelName\":" + chatbot_json_str(u0))
+        if input.SnsTopicArns.is_some():
+            auto u1 = input.SnsTopicArns.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(chatbot_json_str(x2))
+            parts.append("\"SnsTopicArns\":" + chatbot_json_arr(e2))
+        if input.IamRoleArn.is_some():
+            auto u3 = input.IamRoleArn.unwrap()
+            parts.append("\"IamRoleArn\":" + chatbot_json_str(u3))
+        if input.LoggingLevel.is_some():
+            auto u4 = input.LoggingLevel.unwrap()
+            parts.append("\"LoggingLevel\":" + chatbot_json_str(u4))
+        if input.GuardrailPolicyArns.is_some():
+            auto u5 = input.GuardrailPolicyArns.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(chatbot_json_str(x6))
+            parts.append("\"GuardrailPolicyArns\":" + chatbot_json_arr(e6))
+        if input.UserAuthorizationRequired.is_some():
+            auto u7 = input.UserAuthorizationRequired.unwrap()
+            parts.append("\"UserAuthorizationRequired\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, chatbot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
 
     # Paginator for DescribeChimeWebhookConfigurations — yields each Response page, threading the

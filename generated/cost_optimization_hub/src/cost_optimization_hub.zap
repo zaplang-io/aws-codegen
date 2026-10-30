@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 8 operations — 6 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 8 operations — 8 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   92 structs (63 @derive(Json)), 14 enums, 5 error variants.
-#   2 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -179,8 +179,9 @@ struct AccountEnrollmentStatus:
     Optional[DateTime] lastUpdatedTimestamp
     Optional[DateTime] createdTimestamp
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuroraDbClusterStorage:
     Optional[AuroraDbClusterStorageConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -217,8 +218,9 @@ struct ComputeSavingsPlansConfiguration:
 struct DbInstanceConfiguration:
     Optional[str] dbInstanceClass
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentDbCluster:
     Optional[ResourceCostCalculation] costCalculation
 
@@ -239,13 +241,15 @@ struct DynamoDbReservedCapacityConfiguration:
     Optional[str] numberOfCapacityUnitsToPurchase
     Optional[str] capacityUnits
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynamoDbTable:
     Optional[ResourceCostCalculation] costCalculation
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EbsVolume:
     Optional[EbsVolumeConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -256,22 +260,25 @@ struct EbsVolumeConfiguration:
     Optional[BlockStoragePerformanceConfiguration] performance
     Optional[str] attachmentState
 
-# no @derive(Json): member(s) configuration: Ec2AutoScalingGroupConfiguration, costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: Ec2AutoScalingGroupConfiguration, costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2AutoScalingGroup:
     Optional[Ec2AutoScalingGroupConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
 
-# no @derive(Json): member(s) mixedInstances: list[MixedInstanceConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mixedInstances: list[MixedInstanceConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2AutoScalingGroupConfiguration:
     Optional[InstanceConfiguration] instance
     Optional[list[MixedInstanceConfiguration]] mixedInstances
     Optional[Ec2AutoScalingGroupType] type
     Optional[AllocationStrategy] allocationStrategy
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Instance:
     Optional[Ec2InstanceConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -318,8 +325,9 @@ struct Ec2ReservedInstancesConfiguration:
     Optional[str] tenancy
     Optional[bool] sizeFlexEligible
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsService:
     Optional[EcsServiceConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -328,15 +336,17 @@ struct EcsService:
 struct EcsServiceConfiguration:
     Optional[ComputeConfiguration] compute
 
-# no @derive(Json): member(s) metricsByTime: list[MetricsByTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricsByTime: list[MetricsByTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EfficiencyMetricsByGroup:
     Optional[list[MetricsByTime]] metricsByTime
     Optional[str] group
     Optional[str] message
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElastiCacheCluster:
     Optional[ResourceCostCalculation] costCalculation
 
@@ -367,8 +377,9 @@ struct EstimatedDiscounts:
     Optional[float64] reservedInstancesDiscount
     Optional[float64] otherDiscount
 
-# no @derive(Json): member(s) implementationEfforts: list[ImplementationEffort], accountIds: list[str], regions: list[str], resourceTypes: list[ResourceType], actionTypes: list[ActionType], tags: list[Tag], resourceIds: list[str], resourceArns: list[str], recommendationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) implementationEfforts: list[ImplementationEffort], accountIds: list[str], regions: list[str], resourceTypes: list[ResourceType], actionTypes: list[ActionType], tags: list[Tag], resourceIds: list[str], resourceArns: list[str], recommendationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[bool] restartNeeded
     Optional[bool] rollbackPossible
@@ -397,8 +408,9 @@ struct GetPreferencesResponse:
 struct GetRecommendationRequest:
     str recommendationId
 
-# no @derive(Json): member(s) currentResourceDetails: ResourceDetails, recommendedResourceDetails: ResourceDetails, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) currentResourceDetails: ResourceDetails, recommendedResourceDetails: ResourceDetails, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationResponse:
     Optional[str] recommendationId
     Optional[str] resourceId
@@ -432,8 +444,9 @@ struct InstanceConfiguration:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaFunction:
     Optional[LambdaFunctionConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -451,8 +464,9 @@ struct ListEfficiencyMetricsRequest:
     Optional[OrderBy] orderBy
     Optional[str] nextToken
 
-# no @derive(Json): member(s) efficiencyMetricsByGroup: list[EfficiencyMetricsByGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) efficiencyMetricsByGroup: list[EfficiencyMetricsByGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEfficiencyMetricsResponse:
     Optional[list[EfficiencyMetricsByGroup]] efficiencyMetricsByGroup
     Optional[str] nextToken
@@ -464,15 +478,17 @@ struct ListEnrollmentStatusesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AccountEnrollmentStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AccountEnrollmentStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnrollmentStatusesResponse:
     Optional[list[AccountEnrollmentStatus]] items
     Optional[bool] includeMemberAccounts
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filter: Filter, metrics: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: Filter, metrics: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationSummariesRequest:
     Optional[Filter] filter
     str groupBy
@@ -480,8 +496,9 @@ struct ListRecommendationSummariesRequest:
     Optional[list[str]] metrics
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[RecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationSummariesResponse:
     Optional[float64] estimatedTotalDedupedSavings
     Optional[list[RecommendationSummary]] items
@@ -490,8 +507,9 @@ struct ListRecommendationSummariesResponse:
     Optional[SummaryMetricsResult] metrics
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filter: Filter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: Filter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsRequest:
     Optional[Filter] filter
     Optional[OrderBy] orderBy
@@ -499,14 +517,16 @@ struct ListRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsResponse:
     Optional[list[Recommendation]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryDbCluster:
     Optional[ResourceCostCalculation] costCalculation
 
@@ -542,8 +562,9 @@ struct MetricsByTime:
 struct MixedInstanceConfiguration:
     Optional[str] type
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NatGateway:
     Optional[NatGatewayConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -584,8 +605,9 @@ struct PreferredCommitment:
     Optional[Term] term
     Optional[PaymentOption] paymentOption
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbInstance:
     Optional[RdsDbInstanceConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -594,8 +616,9 @@ struct RdsDbInstance:
 struct RdsDbInstanceConfiguration:
     Optional[DbInstanceConfiguration] instance
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbInstanceStorage:
     Optional[RdsDbInstanceStorageConfiguration] configuration
     Optional[ResourceCostCalculation] costCalculation
@@ -632,8 +655,9 @@ struct RdsReservedInstancesConfiguration:
     Optional[str] databaseEngine
     Optional[str] deploymentOption
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommendation:
     Optional[str] recommendationId
     Optional[str] accountId
@@ -695,14 +719,16 @@ struct ReservedInstancesPricing:
     Optional[float64] savingsPercentage
     Optional[float64] estimatedMonthlyAmortizedReservationCost
 
-# no @derive(Json): member(s) usages: list[Usage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usages: list[Usage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceCostCalculation:
     Optional[list[Usage]] usages
     Optional[ResourcePricing] pricing
 
-# no @derive(Json): member(s) lambdaFunction: LambdaFunction, ecsService: EcsService, ec2Instance: Ec2Instance, ebsVolume: EbsVolume, ec2AutoScalingGroup: Ec2AutoScalingGroup, rdsDbInstance: RdsDbInstance, rdsDbInstanceStorage: RdsDbInstanceStorage, auroraDbClusterStorage: AuroraDbClusterStorage, natGateway: NatGateway, dynamoDbTable: DynamoDbTable, elastiCacheCluster: ElastiCacheCluster, memoryDbCluster: MemoryDbCluster, documentDbCluster: DocumentDbCluster, workSpaces: WorkSpaces, sageMakerEndpoint: SageMakerEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lambdaFunction: LambdaFunction, ecsService: EcsService, ec2Instance: Ec2Instance, ebsVolume: EbsVolume, ec2AutoScalingGroup: Ec2AutoScalingGroup, rdsDbInstance: RdsDbInstance, rdsDbInstanceStorage: RdsDbInstanceStorage, auroraDbClusterStorage: AuroraDbClusterStorage, natGateway: NatGateway, dynamoDbTable: DynamoDbTable, elastiCacheCluster: ElastiCacheCluster, memoryDbCluster: MemoryDbCluster, documentDbCluster: DocumentDbCluster, workSpaces: WorkSpaces, sageMakerEndpoint: SageMakerEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDetails:
     Optional[LambdaFunction] lambdaFunction
     Optional[EcsService] ecsService
@@ -742,8 +768,9 @@ struct ResourcePricing:
     Optional[EstimatedDiscounts] estimatedDiscounts
     Optional[float64] estimatedCostAfterDiscounts
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerEndpoint:
     Optional[ResourceCostCalculation] costCalculation
 
@@ -822,8 +849,9 @@ struct Usage:
     Optional[str] productCode
     Optional[str] unit
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -834,8 +862,9 @@ struct ValidationExceptionDetail:
     str fieldName
     str message
 
-# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costCalculation: ResourceCostCalculation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkSpaces:
     Optional[ResourceCostCalculation] costCalculation
 
@@ -867,15 +896,141 @@ def cost_optimization_hub_error_from_code(str code) -> Cost_Optimization_HubErro
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ListRecommendationSummaries (input ListRecommendationSummariesRequest)
-#   ListRecommendations (input ListRecommendationsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cost_optimization_hub_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListRecommendationSummaries (input not derivable (no generated method))
-#   ListRecommendations (input not derivable (no generated method))
+def cost_optimization_hub_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cost_optimization_hub_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.restartNeeded.is_some():
+        auto u0 = v.restartNeeded.unwrap()
+        parts.append("\"restartNeeded\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.rollbackPossible.is_some():
+        auto u1 = v.rollbackPossible.unwrap()
+        parts.append("\"rollbackPossible\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.implementationEfforts.is_some():
+        auto u2 = v.implementationEfforts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"implementationEfforts\":" + cost_optimization_hub_json_arr(e3))
+    if v.accountIds.is_some():
+        auto u4 = v.accountIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cost_optimization_hub_json_str(x5))
+        parts.append("\"accountIds\":" + cost_optimization_hub_json_arr(e5))
+    if v.regions.is_some():
+        auto u6 = v.regions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(cost_optimization_hub_json_str(x7))
+        parts.append("\"regions\":" + cost_optimization_hub_json_arr(e7))
+    if v.resourceTypes.is_some():
+        auto u8 = v.resourceTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"resourceTypes\":" + cost_optimization_hub_json_arr(e9))
+    if v.actionTypes.is_some():
+        auto u10 = v.actionTypes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"actionTypes\":" + cost_optimization_hub_json_arr(e11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"tags\":" + cost_optimization_hub_json_arr(e13))
+    if v.resourceIds.is_some():
+        auto u14 = v.resourceIds.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(cost_optimization_hub_json_str(x15))
+        parts.append("\"resourceIds\":" + cost_optimization_hub_json_arr(e15))
+    if v.resourceArns.is_some():
+        auto u16 = v.resourceArns.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(cost_optimization_hub_json_str(x17))
+        parts.append("\"resourceArns\":" + cost_optimization_hub_json_arr(e17))
+    if v.recommendationIds.is_some():
+        auto u18 = v.recommendationIds.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(cost_optimization_hub_json_str(x19))
+        parts.append("\"recommendationIds\":" + cost_optimization_hub_json_arr(e19))
+    return cost_optimization_hub_json_obj(parts)
+
+# Serialize ListRecommendationSummariesRequest to a compact JSON object (declaration order).
+def list_recommendation_summaries_request_to_json(ListRecommendationSummariesRequest v) -> str:
+    list[str] parts = []
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        parts.append("\"filter\":" + filter_to_json(u0))
+    parts.append("\"groupBy\":" + cost_optimization_hub_json_str(v.groupBy))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    if v.metrics.is_some():
+        auto u2 = v.metrics.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cost_optimization_hub_json_str(x3))
+        parts.append("\"metrics\":" + cost_optimization_hub_json_arr(e3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + cost_optimization_hub_json_str(u4))
+    return cost_optimization_hub_json_obj(parts)
+
+# Serialize ListRecommendationsRequest to a compact JSON object (declaration order).
+def list_recommendations_request_to_json(ListRecommendationsRequest v) -> str:
+    list[str] parts = []
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        parts.append("\"filter\":" + filter_to_json(u0))
+    if v.orderBy.is_some():
+        auto u1 = v.orderBy.unwrap()
+        parts.append("\"orderBy\":" + u1.to_json())
+    if v.includeAllRecommendations.is_some():
+        auto u2 = v.includeAllRecommendations.unwrap()
+        parts.append("\"includeAllRecommendations\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + cost_optimization_hub_json_str(u4))
+    return cost_optimization_hub_json_obj(parts)
 
 # A bound Cost_Optimization_Hub client: credentials + region, threaded into every operation.
 struct Cost_Optimization_HubClient:
@@ -905,6 +1060,18 @@ struct Cost_Optimization_HubClient:
     def list_enrollment_statuses(self, ListEnrollmentStatusesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cost_optimization_hub_protocol(), self.creds, self.region, "ListEnrollmentStatuses", body)
+
+    # ListRecommendationSummaries
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_recommendation_summaries(self, ListRecommendationSummariesRequest input) -> str:
+        auto body = list_recommendation_summaries_request_to_json(input)
+        return awsjson.awsjson_request_now(cost_optimization_hub_protocol(), self.creds, self.region, "ListRecommendationSummaries", body)
+
+    # ListRecommendations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_recommendations(self, ListRecommendationsRequest input) -> str:
+        auto body = list_recommendations_request_to_json(input)
+        return awsjson.awsjson_request_now(cost_optimization_hub_protocol(), self.creds, self.region, "ListRecommendations", body)
 
     # UpdateEnrollmentStatus
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -939,6 +1106,34 @@ struct Cost_Optimization_HubClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(cost_optimization_hub_protocol(), self.creds, self.region, "ListEnrollmentStatuses", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListRecommendationSummaries — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_recommendation_summaries(self, ListRecommendationSummariesRequest input):
+        auto host = endpoints.regional_host(cost_optimization_hub_protocol().service, self.region)
+        while True:
+            auto body = list_recommendation_summaries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cost_optimization_hub_protocol(), self.creds, self.region, "ListRecommendationSummaries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListRecommendations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_recommendations(self, ListRecommendationsRequest input):
+        auto host = endpoints.regional_host(cost_optimization_hub_protocol().service, self.region)
+        while True:
+            auto body = list_recommendations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cost_optimization_hub_protocol(), self.creds, self.region, "ListRecommendations", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

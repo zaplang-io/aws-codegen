@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 10 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 14 operations — 14 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   54 structs (28 @derive(Json)), 2 enums, 6 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -59,8 +59,9 @@ enum Status:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Labels: list[str], Version: Version not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str], Version: Version not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     str ApplicationId
     str Author
@@ -76,8 +77,9 @@ struct Application:
     Optional[str] VerifiedAuthorUrl
     Optional[Version] Version
 
-# no @derive(Json): member(s) Dependencies: list[ApplicationDependencySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dependencies: list[ApplicationDependencySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationDependencyPage:
     list[ApplicationDependencySummary] Dependencies
     Optional[str] NextToken
@@ -87,27 +89,31 @@ struct ApplicationDependencySummary:
     str ApplicationId
     str SemanticVersion
 
-# no @derive(Json): member(s) Applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationPage:
     list[ApplicationSummary] Applications
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Statements: list[ApplicationPolicyStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[ApplicationPolicyStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationPolicy:
     list[ApplicationPolicyStatement] Statements
 
-# no @derive(Json): member(s) Actions: list[str], PrincipalOrgIDs: list[str], Principals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str], PrincipalOrgIDs: list[str], Principals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationPolicyStatement:
     list[str] Actions
     Optional[list[str]] PrincipalOrgIDs
     list[str] Principals
     Optional[str] StatementId
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationSummary:
     str ApplicationId
     str Author
@@ -118,8 +124,9 @@ struct ApplicationSummary:
     str Name
     Optional[str] SpdxLicenseId
 
-# no @derive(Json): member(s) Versions: list[VersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationVersionPage:
     Optional[str] NextToken
     list[VersionSummary] Versions
@@ -141,8 +148,9 @@ struct ConflictException:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationInput:
     str Author
     str Description
@@ -179,8 +187,9 @@ struct CreateApplicationRequest:
     Optional[str] TemplateBody
     Optional[str] TemplateUrl
 
-# no @derive(Json): member(s) Labels: list[str], Version: Version not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str], Version: Version not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationResponse:
     Optional[str] ApplicationId
     Optional[str] Author
@@ -213,8 +222,9 @@ struct CreateApplicationVersionRequest:
     Optional[str] TemplateBody
     Optional[str] TemplateUrl
 
-# no @derive(Json): member(s) ParameterDefinitions: list[ParameterDefinition], RequiredCapabilities: list[Capability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterDefinitions: list[ParameterDefinition], RequiredCapabilities: list[Capability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationVersionResponse:
     Optional[str] ApplicationId
     Optional[str] CreationTime
@@ -226,8 +236,9 @@ struct CreateApplicationVersionResponse:
     Optional[str] SourceCodeUrl
     Optional[str] TemplateUrl
 
-# no @derive(Json): member(s) Capabilities: list[str], NotificationArns: list[str], ParameterOverrides: list[ParameterValue], ResourceTypes: list[str], RollbackConfiguration: RollbackConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Capabilities: list[str], NotificationArns: list[str], ParameterOverrides: list[ParameterValue], ResourceTypes: list[str], RollbackConfiguration: RollbackConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudFormationChangeSetInput:
     Optional[list[str]] Capabilities
     Optional[str] ChangeSetName
@@ -297,8 +308,9 @@ struct ForbiddenException:
 struct GetApplicationPolicyRequest:
     str ApplicationId
 
-# no @derive(Json): member(s) Statements: list[ApplicationPolicyStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[ApplicationPolicyStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationPolicyResponse:
     Optional[list[ApplicationPolicyStatement]] Statements
 
@@ -308,8 +320,9 @@ struct GetApplicationRequest:
     str ApplicationId
     Optional[str] SemanticVersion
 
-# no @derive(Json): member(s) Labels: list[str], Version: Version not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str], Version: Version not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     Optional[str] ApplicationId
     Optional[str] Author
@@ -354,8 +367,9 @@ struct ListApplicationDependenciesRequest:
     Optional[str] NextToken
     Optional[str] SemanticVersion
 
-# no @derive(Json): member(s) Dependencies: list[ApplicationDependencySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dependencies: list[ApplicationDependencySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationDependenciesResponse:
     Optional[list[ApplicationDependencySummary]] Dependencies
     Optional[str] NextToken
@@ -367,8 +381,9 @@ struct ListApplicationVersionsRequest:
     Optional[int64] MaxItems
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionSummary]] Versions
@@ -379,8 +394,9 @@ struct ListApplicationsRequest:
     Optional[int64] MaxItems
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[list[ApplicationSummary]] Applications
     Optional[str] NextToken
@@ -390,8 +406,9 @@ struct NotFoundException:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) AllowedValues: list[str], ReferencedByResources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedValues: list[str], ReferencedByResources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterDefinition:
     Optional[str] AllowedPattern
     Optional[list[str]] AllowedValues
@@ -418,13 +435,15 @@ struct PutApplicationPolicyRequest:
     str ApplicationId
     list[ApplicationPolicyStatement] Statements
 
-# no @derive(Json): member(s) Statements: list[ApplicationPolicyStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[ApplicationPolicyStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutApplicationPolicyResponse:
     Optional[list[ApplicationPolicyStatement]] Statements
 
-# no @derive(Json): member(s) RollbackTriggers: list[RollbackTrigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RollbackTriggers: list[RollbackTrigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RollbackConfiguration:
     Optional[int64] MonitoringTimeInMinutes
     Optional[list[RollbackTrigger]] RollbackTriggers
@@ -464,8 +483,9 @@ struct UnshareApplicationRequest:
     str ApplicationId
     str OrganizationId
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationInput:
     Optional[str] Author
     Optional[str] Description
@@ -485,8 +505,9 @@ struct UpdateApplicationRequest:
     Optional[str] ReadmeBody
     Optional[str] ReadmeUrl
 
-# no @derive(Json): member(s) Labels: list[str], Version: Version not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str], Version: Version not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationResponse:
     Optional[str] ApplicationId
     Optional[str] Author
@@ -502,8 +523,9 @@ struct UpdateApplicationResponse:
     Optional[str] VerifiedAuthorUrl
     Optional[Version] Version
 
-# no @derive(Json): member(s) ParameterDefinitions: list[ParameterDefinition], RequiredCapabilities: list[Capability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterDefinitions: list[ParameterDefinition], RequiredCapabilities: list[Capability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Version:
     str ApplicationId
     str CreationTime
@@ -554,14 +576,6 @@ def serverlessrepo_error_from_code(str code) -> ServerlessApplicationRepositoryE
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateApplication (document member `Labels: list[str]` is not serializable by derive)
-#   CreateCloudFormationChangeSet (document member `Capabilities: list[str]` is not serializable by derive)
-#   PutApplicationPolicy (document member `Statements: list[ApplicationPolicyStatement]` is not serializable by derive)
-#   UpdateApplication (document member `Labels: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -583,10 +597,127 @@ struct UnshareApplicationDocument:
     # document members of UnshareApplication
     str OrganizationId
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def serverlessrepo_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def serverlessrepo_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def serverlessrepo_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApplicationPolicyStatement to a compact JSON object (declaration order).
+def application_policy_statement_to_json(ApplicationPolicyStatement v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Actions:
+        e0.append(serverlessrepo_json_str(x0))
+    parts.append("\"actions\":" + serverlessrepo_json_arr(e0))
+    if v.PrincipalOrgIDs.is_some():
+        auto u1 = v.PrincipalOrgIDs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(serverlessrepo_json_str(x2))
+        parts.append("\"principalOrgIDs\":" + serverlessrepo_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.Principals:
+        e3.append(serverlessrepo_json_str(x3))
+    parts.append("\"principals\":" + serverlessrepo_json_arr(e3))
+    if v.StatementId.is_some():
+        auto u4 = v.StatementId.unwrap()
+        parts.append("\"statementId\":" + serverlessrepo_json_str(u4))
+    return serverlessrepo_json_obj(parts)
+
+# Serialize RollbackConfiguration to a compact JSON object (declaration order).
+def rollback_configuration_to_json(RollbackConfiguration v) -> str:
+    list[str] parts = []
+    if v.MonitoringTimeInMinutes.is_some():
+        auto u0 = v.MonitoringTimeInMinutes.unwrap()
+        parts.append("\"monitoringTimeInMinutes\":" + str(u0))
+    if v.RollbackTriggers.is_some():
+        auto u1 = v.RollbackTriggers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"rollbackTriggers\":" + serverlessrepo_json_arr(e2))
+    return serverlessrepo_json_obj(parts)
+
 # A bound ServerlessApplicationRepository client: credentials + region, threaded into every operation.
 struct ServerlessApplicationRepositoryClient:
     core.Credentials creds
     str region
+
+    # CreateApplication  POST /applications
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, TooManyRequestsException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"author\":" + serverlessrepo_json_str(input.Author))
+        parts.append("\"description\":" + serverlessrepo_json_str(input.Description))
+        if input.HomePageUrl.is_some():
+            auto u0 = input.HomePageUrl.unwrap()
+            parts.append("\"homePageUrl\":" + serverlessrepo_json_str(u0))
+        if input.Labels.is_some():
+            auto u1 = input.Labels.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(serverlessrepo_json_str(x2))
+            parts.append("\"labels\":" + serverlessrepo_json_arr(e2))
+        if input.LicenseBody.is_some():
+            auto u3 = input.LicenseBody.unwrap()
+            parts.append("\"licenseBody\":" + serverlessrepo_json_str(u3))
+        if input.LicenseUrl.is_some():
+            auto u4 = input.LicenseUrl.unwrap()
+            parts.append("\"licenseUrl\":" + serverlessrepo_json_str(u4))
+        parts.append("\"name\":" + serverlessrepo_json_str(input.Name))
+        if input.ReadmeBody.is_some():
+            auto u5 = input.ReadmeBody.unwrap()
+            parts.append("\"readmeBody\":" + serverlessrepo_json_str(u5))
+        if input.ReadmeUrl.is_some():
+            auto u6 = input.ReadmeUrl.unwrap()
+            parts.append("\"readmeUrl\":" + serverlessrepo_json_str(u6))
+        if input.SemanticVersion.is_some():
+            auto u7 = input.SemanticVersion.unwrap()
+            parts.append("\"semanticVersion\":" + serverlessrepo_json_str(u7))
+        if input.SourceCodeArchiveUrl.is_some():
+            auto u8 = input.SourceCodeArchiveUrl.unwrap()
+            parts.append("\"sourceCodeArchiveUrl\":" + serverlessrepo_json_str(u8))
+        if input.SourceCodeUrl.is_some():
+            auto u9 = input.SourceCodeUrl.unwrap()
+            parts.append("\"sourceCodeUrl\":" + serverlessrepo_json_str(u9))
+        if input.SpdxLicenseId.is_some():
+            auto u10 = input.SpdxLicenseId.unwrap()
+            parts.append("\"spdxLicenseId\":" + serverlessrepo_json_str(u10))
+        if input.TemplateBody.is_some():
+            auto u11 = input.TemplateBody.unwrap()
+            parts.append("\"templateBody\":" + serverlessrepo_json_str(u11))
+        if input.TemplateUrl.is_some():
+            auto u12 = input.TemplateUrl.unwrap()
+            parts.append("\"templateUrl\":" + serverlessrepo_json_str(u12))
+        auto bp = restjson.rest_json_document(b, serverlessrepo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
 
     # CreateApplicationVersion  PUT /applications/{applicationId}/versions/{semanticVersion}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, TooManyRequestsException
@@ -598,6 +729,66 @@ struct ServerlessApplicationRepositoryClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/versions/{semanticVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateApplicationVersionDocument(SourceCodeArchiveUrl=input.SourceCodeArchiveUrl, SourceCodeUrl=input.SourceCodeUrl, TemplateBody=input.TemplateBody, TemplateUrl=input.TemplateUrl)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
+
+    # CreateCloudFormationChangeSet  POST /applications/{applicationId}/changesets
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, TooManyRequestsException
+    def create_cloud_formation_change_set(self, CreateCloudFormationChangeSetRequest input) -> str:
+        auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/changesets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Capabilities.is_some():
+            auto u0 = input.Capabilities.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(serverlessrepo_json_str(x1))
+            parts.append("\"capabilities\":" + serverlessrepo_json_arr(e1))
+        if input.ChangeSetName.is_some():
+            auto u2 = input.ChangeSetName.unwrap()
+            parts.append("\"changeSetName\":" + serverlessrepo_json_str(u2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + serverlessrepo_json_str(u3))
+        if input.Description.is_some():
+            auto u4 = input.Description.unwrap()
+            parts.append("\"description\":" + serverlessrepo_json_str(u4))
+        if input.NotificationArns.is_some():
+            auto u5 = input.NotificationArns.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(serverlessrepo_json_str(x6))
+            parts.append("\"notificationArns\":" + serverlessrepo_json_arr(e6))
+        if input.ParameterOverrides.is_some():
+            auto u7 = input.ParameterOverrides.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"parameterOverrides\":" + serverlessrepo_json_arr(e8))
+        if input.ResourceTypes.is_some():
+            auto u9 = input.ResourceTypes.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(serverlessrepo_json_str(x10))
+            parts.append("\"resourceTypes\":" + serverlessrepo_json_arr(e10))
+        if input.RollbackConfiguration.is_some():
+            auto u11 = input.RollbackConfiguration.unwrap()
+            parts.append("\"rollbackConfiguration\":" + rollback_configuration_to_json(u11))
+        if input.SemanticVersion.is_some():
+            auto u12 = input.SemanticVersion.unwrap()
+            parts.append("\"semanticVersion\":" + serverlessrepo_json_str(u12))
+        parts.append("\"stackName\":" + serverlessrepo_json_str(input.StackName))
+        if input.Tags.is_some():
+            auto u13 = input.Tags.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(x14.to_json())
+            parts.append("\"tags\":" + serverlessrepo_json_arr(e14))
+        if input.TemplateId.is_some():
+            auto u15 = input.TemplateId.unwrap()
+            parts.append("\"templateId\":" + serverlessrepo_json_str(u15))
+        auto bp = restjson.rest_json_document(b, serverlessrepo_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
 
     # CreateCloudFormationTemplate  POST /applications/{applicationId}/templates
@@ -693,6 +884,21 @@ struct ServerlessApplicationRepositoryClient:
         auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
+    # PutApplicationPolicy  PUT /applications/{applicationId}/policy
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def put_application_policy(self, PutApplicationPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Statements:
+            e0.append(application_policy_statement_to_json(x0))
+        parts.append("\"statements\":" + serverlessrepo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, serverlessrepo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
+
     # UnshareApplication  POST /applications/{applicationId}/unshare
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def unshare_application(self, UnshareApplicationRequest input) -> str:
@@ -702,6 +908,38 @@ struct ServerlessApplicationRepositoryClient:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/unshare", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnshareApplicationDocument(OrganizationId=input.OrganizationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
+
+    # UpdateApplication  PATCH /applications/{applicationId}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def update_application(self, UpdateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Author.is_some():
+            auto u0 = input.Author.unwrap()
+            parts.append("\"author\":" + serverlessrepo_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + serverlessrepo_json_str(u1))
+        if input.HomePageUrl.is_some():
+            auto u2 = input.HomePageUrl.unwrap()
+            parts.append("\"homePageUrl\":" + serverlessrepo_json_str(u2))
+        if input.Labels.is_some():
+            auto u3 = input.Labels.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(serverlessrepo_json_str(x4))
+            parts.append("\"labels\":" + serverlessrepo_json_arr(e4))
+        if input.ReadmeBody.is_some():
+            auto u5 = input.ReadmeBody.unwrap()
+            parts.append("\"readmeBody\":" + serverlessrepo_json_str(u5))
+        if input.ReadmeUrl.is_some():
+            auto u6 = input.ReadmeUrl.unwrap()
+            parts.append("\"readmeUrl\":" + serverlessrepo_json_str(u6))
+        auto bp = restjson.rest_json_document(b, serverlessrepo_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
 
     # Paginator for ListApplicationDependencies — yields each Response page, threading the

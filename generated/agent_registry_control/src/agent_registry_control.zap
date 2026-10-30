@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 7 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 15 operations — 14 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   116 structs (47 @derive(Json)), 15 enums, 7 error variants.
-#   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -169,8 +169,9 @@ enum ValidationExceptionReason:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) source: DescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: DescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct A2aAgentCardDescriptor:
     Optional[str] data
     Optional[str] dataSchemaVersion
@@ -180,13 +181,15 @@ struct A2aAgentCardDescriptor:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) source: DescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: DescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgUiDescriptor:
     Optional[DescriptorSource] source
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentCoreGatewaySourceDetails:
     Optional[str] protocolType
     Optional[str] authorizerType
@@ -197,44 +200,51 @@ struct AgentCoreGatewaySourceDetails:
 struct AgentCoreRuntimeProtocolConfiguration:
     Optional[AgentCoreRuntimeServerProtocol] serverProtocol
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentCoreRuntimeSourceDetails:
     Optional[AgentCoreRuntimeProtocolConfiguration] protocolConfiguration
     Optional[AuthorizerConfiguration] authorizerConfiguration
     Optional[WorkloadIdentityDetails] workloadIdentityDetails
 
-# no @derive(Json): member(s) skillMd: AgentSkillsMdDescriptor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) skillMd: AgentSkillsMdDescriptor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentSkillsAdditionalData:
     Optional[AgentSkillsMdDescriptor] skillMd
 
-# no @derive(Json): member(s) additionalData: AgentSkillsAdditionalData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalData: AgentSkillsAdditionalData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentSkillsDefinitionDescriptor:
     Optional[str] data
     Optional[str] dataSchemaVersion
     Optional[AgentSkillsAdditionalData] additionalData
 
-# no @derive(Json): member(s) source: DescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: DescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentSkillsMdDescriptor:
     Optional[str] data
     Optional[str] dataSchemaVersion
     Optional[DescriptorSource] source
 
-# no @derive(Json): member(s) autoApprovalRules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoApprovalRules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApprovalConfiguration:
     Optional[list[str]] autoApprovalRules
 
-# no @derive(Json): member(s) customJWTAuthorizer: CustomJWTAuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customJWTAuthorizer: CustomJWTAuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizerConfiguration:
     Optional[CustomJWTAuthorizerConfiguration] customJWTAuthorizer
 
-# no @derive(Json): member(s) claimMatchValue: ClaimMatchValueType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) claimMatchValue: ClaimMatchValueType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizingClaimMatchValueType:
     ClaimMatchValueType claimMatchValue
     ClaimMatchOperatorType claimMatchOperator
@@ -251,8 +261,9 @@ struct AutoDetectionConfiguration:
     str scope_
     bool enabled
 
-# no @derive(Json): member(s) matchValueStringList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchValueStringList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClaimMatchValueType:
     Optional[str] matchValueString
     Optional[list[str]] matchValueStringList
@@ -298,8 +309,9 @@ struct CreateRegistryRequest:
 struct CreateRegistryResponse:
     str registryArn
 
-# no @derive(Json): member(s) authorizingClaimMatchValue: AuthorizingClaimMatchValueType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizingClaimMatchValue: AuthorizingClaimMatchValueType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomClaimValidationType:
     str inboundTokenClaimName
     InboundTokenClaimValueType inboundTokenClaimValueType
@@ -309,8 +321,9 @@ struct CustomClaimValidationType:
 struct CustomDescriptor:
     Optional[str] data
 
-# no @derive(Json): member(s) allowedAudience: list[str], allowedClients: list[str], allowedScopes: list[str], customClaims: list[CustomClaimValidationType], privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAudience: list[str], allowedClients: list[str], allowedScopes: list[str], customClaims: list[CustomClaimValidationType], privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomJWTAuthorizerConfiguration:
     str discoveryUrl
     Optional[list[str]] allowedAudience
@@ -325,8 +338,9 @@ struct CustomMetadataDocument:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) recordTypeSchemaOverrides: list[RecordTypeSchemaOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordTypeSchemaOverrides: list[RecordTypeSchemaOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomMetadataSchemaConfiguration:
     Optional[str] defaultSchema
     Optional[list[RecordTypeSchemaOverride]] recordTypeSchemaOverrides
@@ -351,19 +365,22 @@ struct DeleteRegistryRequest:
 struct DeleteRegistryResponse:
     RegistryStatus status
 
-# no @derive(Json): member(s) fromUrl: DescriptorSourceFromUrl not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fromUrl: DescriptorSourceFromUrl not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescriptorSource:
     Optional[DescriptorSourceFromUrl] fromUrl
 
-# no @derive(Json): member(s) credentialProviderConfigurations: list[RegistryRecordCredentialProviderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviderConfigurations: list[RegistryRecordCredentialProviderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescriptorSourceFromUrl:
     str url
     Optional[list[RegistryRecordCredentialProviderConfiguration]] credentialProviderConfigurations
 
-# no @derive(Json): member(s) mcpServer: McpServerDescriptor, a2aAgentCard: A2aAgentCardDescriptor, agentSkillsDefinition: AgentSkillsDefinitionDescriptor, http: HttpDescriptor, agui: AgUiDescriptor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mcpServer: McpServerDescriptor, a2aAgentCard: A2aAgentCardDescriptor, agentSkillsDefinition: AgentSkillsDefinitionDescriptor, http: HttpDescriptor, agui: AgUiDescriptor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Descriptors:
     Optional[McpServerDescriptor] mcpServer
     Optional[A2aAgentCardDescriptor] a2aAgentCard
@@ -372,8 +389,9 @@ struct Descriptors:
     Optional[HttpDescriptor] http
     Optional[AgUiDescriptor] agui
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoveryConfiguration:
     Optional[AuthorizerConfiguration] authorizerConfiguration
     Optional[RegistryAuthorizerType] authorizerType
@@ -388,8 +406,9 @@ struct GetRegistryRecordRequest:
     str registryId
     str recordId
 
-# no @derive(Json): member(s) descriptors: Descriptors, provenance: list[Provenance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) descriptors: Descriptors, provenance: list[Provenance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRegistryRecordResponse:
     str registryArn
     str recordArn
@@ -415,8 +434,9 @@ struct GetRegistryRecordResponse:
 struct GetRegistryRequest:
     str registryId
 
-# no @derive(Json): member(s) discoveryConfiguration: DiscoveryConfiguration, approvalConfiguration: ApprovalConfiguration, customMetadataSchemaConfiguration: CustomMetadataSchemaConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) discoveryConfiguration: DiscoveryConfiguration, approvalConfiguration: ApprovalConfiguration, customMetadataSchemaConfiguration: CustomMetadataSchemaConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRegistryResponse:
     str name
     Optional[str] description
@@ -432,8 +452,9 @@ struct GetRegistryResponse:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) source: DescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: DescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpDescriptor:
     Optional[DescriptorSource] source
 
@@ -448,8 +469,9 @@ struct ListRegistriesRequest:
     Optional[str] nextToken
     Optional[list[RegistryFilter]] filters
 
-# no @derive(Json): member(s) registries: list[RegistrySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registries: list[RegistrySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistriesResponse:
     list[RegistrySummary] registries
     Optional[str] nextToken
@@ -462,8 +484,9 @@ struct ListRegistryRecordsRequest:
     Optional[str] nextToken
     Optional[list[RegistryRecordFilter]] filters
 
-# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistryRecordsResponse:
     list[RegistryRecordSummary] registryRecords
     Optional[str] nextToken
@@ -473,13 +496,15 @@ struct ListRegistryRecordsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedVpcResource:
     str vpcIdentifier
     list[str] subnetIds
@@ -492,8 +517,9 @@ struct ManagedVpcResource:
 struct McpServerAdditionalData:
     Optional[McpToolsDescriptor] tools
 
-# no @derive(Json): member(s) source: DescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: DescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct McpServerDescriptor:
     Optional[str] data
     Optional[str] dataSchemaVersion
@@ -505,20 +531,23 @@ struct McpToolsDescriptor:
     Optional[str] data
     Optional[str] dataSchemaVersion
 
-# no @derive(Json): member(s) managedVpcResource: ManagedVpcResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedVpcResource: ManagedVpcResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateEndpoint:
     Optional[SelfManagedLatticeResource] selfManagedLatticeResource
     Optional[ManagedVpcResource] managedVpcResource
 
-# no @derive(Json): member(s) privateEndpoint: PrivateEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateEndpoint: PrivateEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateEndpointOverride:
     str domain
     PrivateEndpoint privateEndpoint
 
-# no @derive(Json): member(s) sourceDetails: SourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceDetails: SourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Provenance:
     str relation
     str sourceId
@@ -536,26 +565,30 @@ struct RecordTypeSchemaOverride:
     RecordType recordType
     str schema
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryFilter:
     RegistryFilterName name
     list[str] values
 
-# no @derive(Json): member(s) credentialProvider: RegistryRecordCredentialProviderUnion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProvider: RegistryRecordCredentialProviderUnion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordCredentialProviderConfiguration:
     RegistryRecordCredentialProviderType credentialProviderType
     RegistryRecordCredentialProviderUnion credentialProvider
 
-# no @derive(Json): member(s) oauthCredentialProvider: RegistryRecordOAuthCredentialProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthCredentialProvider: RegistryRecordOAuthCredentialProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordCredentialProviderUnion:
     Optional[RegistryRecordOAuthCredentialProvider] oauthCredentialProvider
     Optional[RegistryRecordIamCredentialProvider] iamCredentialProvider
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordFilter:
     RegistryRecordFilterName name
     list[str] values
@@ -566,16 +599,18 @@ struct RegistryRecordIamCredentialProvider:
     Optional[str] service
     Optional[str] region
 
-# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordOAuthCredentialProvider:
     str providerArn
     Optional[str] grantType
     Optional[list[str]] scopes
     Optional[dict[str, str]] customParameters
 
-# no @derive(Json): member(s) provenanceSummaryList: list[ProvenanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provenanceSummaryList: list[ProvenanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordSummary:
     str registryArn
     str recordArn
@@ -593,8 +628,9 @@ struct RegistryRecordSummary:
     Optional[list[ProvenanceSummary]] provenanceSummaryList
     Optional[CustomMetadataSchemaComplianceStatus] customMetadataSchemaComplianceStatus
 
-# no @derive(Json): member(s) discoveryConfiguration: DiscoveryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) discoveryConfiguration: DiscoveryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrySummary:
     str name
     Optional[str] description
@@ -619,8 +655,9 @@ struct SelfManagedLatticeResource:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) agentcoreRuntime: AgentCoreRuntimeSourceDetails, agentcoreGateway: AgentCoreGatewaySourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentcoreRuntime: AgentCoreRuntimeSourceDetails, agentcoreGateway: AgentCoreGatewaySourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceDetails:
     Optional[AgentCoreRuntimeSourceDetails] agentcoreRuntime
     Optional[AgentCoreGatewaySourceDetails] agentcoreGateway
@@ -681,8 +718,9 @@ struct UpdateRegistryRecordRequest:
     Optional[bool] triggerSynchronization
     Optional[list[Provenance]] provenance
 
-# no @derive(Json): member(s) descriptors: Descriptors, provenance: list[Provenance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) descriptors: Descriptors, provenance: list[Provenance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegistryRecordResponse:
     str registryArn
     str recordArn
@@ -732,8 +770,9 @@ struct UpdateRegistryRequest:
     Optional[UpdatedCustomMetadataSchemaConfiguration] customMetadataSchemaConfiguration
     Optional[UpdatedAutoDetectionConfiguration] autoDetectionConfiguration
 
-# no @derive(Json): member(s) discoveryConfiguration: DiscoveryConfiguration, approvalConfiguration: ApprovalConfiguration, customMetadataSchemaConfiguration: CustomMetadataSchemaConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) discoveryConfiguration: DiscoveryConfiguration, approvalConfiguration: ApprovalConfiguration, customMetadataSchemaConfiguration: CustomMetadataSchemaConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegistryResponse:
     str name
     Optional[str] description
@@ -749,69 +788,81 @@ struct UpdateRegistryResponse:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) optionalValue: UpdatedA2aAgentCardDescriptorFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedA2aAgentCardDescriptorFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedA2aAgentCardDescriptor:
     Optional[UpdatedA2aAgentCardDescriptorFields] optionalValue
 
-# no @derive(Json): member(s) source: UpdatedDescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: UpdatedDescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedA2aAgentCardDescriptorFields:
     Optional[UpdatedDescriptorData] data
     Optional[UpdatedDataSchemaVersion] dataSchemaVersion
     Optional[UpdatedDescriptorSource] source
 
-# no @derive(Json): member(s) optionalValue: UpdatedAgUiDescriptorFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedAgUiDescriptorFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgUiDescriptor:
     Optional[UpdatedAgUiDescriptorFields] optionalValue
 
-# no @derive(Json): member(s) source: UpdatedDescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: UpdatedDescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgUiDescriptorFields:
     Optional[UpdatedDescriptorSource] source
 
-# no @derive(Json): member(s) optionalValue: UpdatedAgentSkillsAdditionalDataFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedAgentSkillsAdditionalDataFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgentSkillsAdditionalData:
     Optional[UpdatedAgentSkillsAdditionalDataFields] optionalValue
 
-# no @derive(Json): member(s) skillMd: UpdatedAgentSkillsMdDescriptor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) skillMd: UpdatedAgentSkillsMdDescriptor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgentSkillsAdditionalDataFields:
     Optional[UpdatedAgentSkillsMdDescriptor] skillMd
 
-# no @derive(Json): member(s) optionalValue: UpdatedAgentSkillsDefinitionDescriptorFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedAgentSkillsDefinitionDescriptorFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgentSkillsDefinitionDescriptor:
     Optional[UpdatedAgentSkillsDefinitionDescriptorFields] optionalValue
 
-# no @derive(Json): member(s) additionalData: UpdatedAgentSkillsAdditionalData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalData: UpdatedAgentSkillsAdditionalData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgentSkillsDefinitionDescriptorFields:
     Optional[UpdatedDescriptorData] data
     Optional[UpdatedDataSchemaVersion] dataSchemaVersion
     Optional[UpdatedAgentSkillsAdditionalData] additionalData
 
-# no @derive(Json): member(s) optionalValue: UpdatedAgentSkillsMdDescriptorFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedAgentSkillsMdDescriptorFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgentSkillsMdDescriptor:
     Optional[UpdatedAgentSkillsMdDescriptorFields] optionalValue
 
-# no @derive(Json): member(s) source: UpdatedDescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: UpdatedDescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAgentSkillsMdDescriptorFields:
     Optional[UpdatedDescriptorData] data
     Optional[UpdatedDataSchemaVersion] dataSchemaVersion
     Optional[UpdatedDescriptorSource] source
 
-# no @derive(Json): member(s) optionalValue: ApprovalConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: ApprovalConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedApprovalConfiguration:
     Optional[ApprovalConfiguration] optionalValue
 
-# no @derive(Json): member(s) optionalValue: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAuthorizerConfiguration:
     Optional[AuthorizerConfiguration] optionalValue
 
@@ -831,8 +882,9 @@ struct UpdatedCustomDescriptorFields:
 struct UpdatedCustomMetadataMap:
     Optional[CustomMetadataDocument] optionalValue
 
-# no @derive(Json): member(s) optionalValue: CustomMetadataSchemaConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: CustomMetadataSchemaConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedCustomMetadataSchemaConfiguration:
     Optional[CustomMetadataSchemaConfiguration] optionalValue
 
@@ -848,18 +900,21 @@ struct UpdatedDescription:
 struct UpdatedDescriptorData:
     Optional[str] optionalValue
 
-# no @derive(Json): member(s) optionalValue: DescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: DescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedDescriptorSource:
     Optional[DescriptorSource] optionalValue
 
-# no @derive(Json): member(s) optionalValue: UpdatedDescriptorsFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedDescriptorsFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedDescriptors:
     Optional[UpdatedDescriptorsFields] optionalValue
 
-# no @derive(Json): member(s) mcpServer: UpdatedMcpServerDescriptor, a2aAgentCard: UpdatedA2aAgentCardDescriptor, agentSkillsDefinition: UpdatedAgentSkillsDefinitionDescriptor, http: UpdatedHttpDescriptor, agui: UpdatedAgUiDescriptor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mcpServer: UpdatedMcpServerDescriptor, a2aAgentCard: UpdatedA2aAgentCardDescriptor, agentSkillsDefinition: UpdatedAgentSkillsDefinitionDescriptor, http: UpdatedHttpDescriptor, agui: UpdatedAgUiDescriptor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedDescriptorsFields:
     Optional[UpdatedMcpServerDescriptor] mcpServer
     Optional[UpdatedA2aAgentCardDescriptor] a2aAgentCard
@@ -868,8 +923,9 @@ struct UpdatedDescriptorsFields:
     Optional[UpdatedHttpDescriptor] http
     Optional[UpdatedAgUiDescriptor] agui
 
-# no @derive(Json): member(s) authorizerConfiguration: UpdatedAuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: UpdatedAuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedDiscoveryConfiguration:
     Optional[UpdatedAuthorizerConfiguration] authorizerConfiguration
 
@@ -877,13 +933,15 @@ struct UpdatedDiscoveryConfiguration:
 struct UpdatedDisplayName:
     Optional[str] optionalValue
 
-# no @derive(Json): member(s) optionalValue: UpdatedHttpDescriptorFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedHttpDescriptorFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedHttpDescriptor:
     Optional[UpdatedHttpDescriptorFields] optionalValue
 
-# no @derive(Json): member(s) source: UpdatedDescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: UpdatedDescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedHttpDescriptorFields:
     Optional[UpdatedDescriptorSource] source
 
@@ -895,13 +953,15 @@ struct UpdatedMcpServerAdditionalData:
 struct UpdatedMcpServerAdditionalDataFields:
     Optional[UpdatedMcpToolsDescriptor] tools
 
-# no @derive(Json): member(s) optionalValue: UpdatedMcpServerDescriptorFields not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: UpdatedMcpServerDescriptorFields not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedMcpServerDescriptor:
     Optional[UpdatedMcpServerDescriptorFields] optionalValue
 
-# no @derive(Json): member(s) source: UpdatedDescriptorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: UpdatedDescriptorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedMcpServerDescriptorFields:
     Optional[UpdatedDescriptorData] data
     Optional[UpdatedDataSchemaVersion] dataSchemaVersion
@@ -917,8 +977,9 @@ struct UpdatedMcpToolsDescriptorFields:
     Optional[UpdatedDescriptorData] data
     Optional[UpdatedDataSchemaVersion] dataSchemaVersion
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -971,19 +1032,7 @@ def agent_registry_control_error_from_code(str code) -> Agent_Registry_ControlEr
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateRegistry (document member `discoveryConfiguration: DiscoveryConfiguration` is not serializable by derive)
-#   CreateRegistryRecord (document member `descriptors: Descriptors` is not serializable by derive)
-#   ListRegistries (document member `filters: list[RegistryFilter]` is not serializable by derive)
-#   ListRegistryRecords (document member `filters: list[RegistryRecordFilter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateRegistry (document member `discoveryConfiguration: UpdatedDiscoveryConfiguration` is not serializable by derive)
-#   UpdateRegistryRecord (document member `descriptors: UpdatedDescriptors` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListRegistries (operation not generated)
-#   ListRegistryRecords (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -994,10 +1043,724 @@ struct UpdateRegistryRecordStatusDocument:
     RegistryRecordStatus status
     str statusReason
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def agent_registry_control_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def agent_registry_control_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def agent_registry_control_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize A2aAgentCardDescriptor to a compact JSON object (declaration order).
+def a2a_agent_card_descriptor_to_json(A2aAgentCardDescriptor v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + agent_registry_control_json_str(u0))
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + agent_registry_control_json_str(u1))
+    if v.source.is_some():
+        auto u2 = v.source.unwrap()
+        parts.append("\"source\":" + descriptor_source_to_json(u2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AgUiDescriptor to a compact JSON object (declaration order).
+def ag_ui_descriptor_to_json(AgUiDescriptor v) -> str:
+    list[str] parts = []
+    if v.source.is_some():
+        auto u0 = v.source.unwrap()
+        parts.append("\"source\":" + descriptor_source_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AgentCoreGatewaySourceDetails to a compact JSON object (declaration order).
+def agent_core_gateway_source_details_to_json(AgentCoreGatewaySourceDetails v) -> str:
+    list[str] parts = []
+    if v.protocolType.is_some():
+        auto u0 = v.protocolType.unwrap()
+        parts.append("\"protocolType\":" + agent_registry_control_json_str(u0))
+    if v.authorizerType.is_some():
+        auto u1 = v.authorizerType.unwrap()
+        parts.append("\"authorizerType\":" + agent_registry_control_json_str(u1))
+    if v.authorizerConfiguration.is_some():
+        auto u2 = v.authorizerConfiguration.unwrap()
+        parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u2))
+    if v.workloadIdentityDetails.is_some():
+        auto u3 = v.workloadIdentityDetails.unwrap()
+        parts.append("\"workloadIdentityDetails\":" + u3.to_json())
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AgentCoreRuntimeSourceDetails to a compact JSON object (declaration order).
+def agent_core_runtime_source_details_to_json(AgentCoreRuntimeSourceDetails v) -> str:
+    list[str] parts = []
+    if v.protocolConfiguration.is_some():
+        auto u0 = v.protocolConfiguration.unwrap()
+        parts.append("\"protocolConfiguration\":" + u0.to_json())
+    if v.authorizerConfiguration.is_some():
+        auto u1 = v.authorizerConfiguration.unwrap()
+        parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u1))
+    if v.workloadIdentityDetails.is_some():
+        auto u2 = v.workloadIdentityDetails.unwrap()
+        parts.append("\"workloadIdentityDetails\":" + u2.to_json())
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AgentSkillsAdditionalData to a compact JSON object (declaration order).
+def agent_skills_additional_data_to_json(AgentSkillsAdditionalData v) -> str:
+    list[str] parts = []
+    if v.skillMd.is_some():
+        auto u0 = v.skillMd.unwrap()
+        parts.append("\"skillMd\":" + agent_skills_md_descriptor_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AgentSkillsDefinitionDescriptor to a compact JSON object (declaration order).
+def agent_skills_definition_descriptor_to_json(AgentSkillsDefinitionDescriptor v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + agent_registry_control_json_str(u0))
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + agent_registry_control_json_str(u1))
+    if v.additionalData.is_some():
+        auto u2 = v.additionalData.unwrap()
+        parts.append("\"additionalData\":" + agent_skills_additional_data_to_json(u2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AgentSkillsMdDescriptor to a compact JSON object (declaration order).
+def agent_skills_md_descriptor_to_json(AgentSkillsMdDescriptor v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + agent_registry_control_json_str(u0))
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + agent_registry_control_json_str(u1))
+    if v.source.is_some():
+        auto u2 = v.source.unwrap()
+        parts.append("\"source\":" + descriptor_source_to_json(u2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize ApprovalConfiguration to a compact JSON object (declaration order).
+def approval_configuration_to_json(ApprovalConfiguration v) -> str:
+    list[str] parts = []
+    if v.autoApprovalRules.is_some():
+        auto u0 = v.autoApprovalRules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(agent_registry_control_json_str(x1))
+        parts.append("\"autoApprovalRules\":" + agent_registry_control_json_arr(e1))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AuthorizerConfiguration to a compact JSON object (declaration order).
+def authorizer_configuration_to_json(AuthorizerConfiguration v) -> str:
+    list[str] parts = []
+    if v.customJWTAuthorizer.is_some():
+        auto u0 = v.customJWTAuthorizer.unwrap()
+        parts.append("\"customJWTAuthorizer\":" + custom_jwt_authorizer_configuration_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize AuthorizingClaimMatchValueType to a compact JSON object (declaration order).
+def authorizing_claim_match_value_type_to_json(AuthorizingClaimMatchValueType v) -> str:
+    list[str] parts = []
+    parts.append("\"claimMatchValue\":" + claim_match_value_type_to_json(v.claimMatchValue))
+    parts.append("\"claimMatchOperator\":" + v.claimMatchOperator.to_json())
+    return agent_registry_control_json_obj(parts)
+
+# Serialize ClaimMatchValueType to a compact JSON object (declaration order).
+def claim_match_value_type_to_json(ClaimMatchValueType v) -> str:
+    list[str] parts = []
+    if v.matchValueString.is_some():
+        auto u0 = v.matchValueString.unwrap()
+        parts.append("\"matchValueString\":" + agent_registry_control_json_str(u0))
+    if v.matchValueStringList.is_some():
+        auto u1 = v.matchValueStringList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(agent_registry_control_json_str(x2))
+        parts.append("\"matchValueStringList\":" + agent_registry_control_json_arr(e2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize CustomClaimValidationType to a compact JSON object (declaration order).
+def custom_claim_validation_type_to_json(CustomClaimValidationType v) -> str:
+    list[str] parts = []
+    parts.append("\"inboundTokenClaimName\":" + agent_registry_control_json_str(v.inboundTokenClaimName))
+    parts.append("\"inboundTokenClaimValueType\":" + v.inboundTokenClaimValueType.to_json())
+    parts.append("\"authorizingClaimMatchValue\":" + authorizing_claim_match_value_type_to_json(v.authorizingClaimMatchValue))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize CustomJWTAuthorizerConfiguration to a compact JSON object (declaration order).
+def custom_jwt_authorizer_configuration_to_json(CustomJWTAuthorizerConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"discoveryUrl\":" + agent_registry_control_json_str(v.discoveryUrl))
+    if v.allowedAudience.is_some():
+        auto u0 = v.allowedAudience.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(agent_registry_control_json_str(x1))
+        parts.append("\"allowedAudience\":" + agent_registry_control_json_arr(e1))
+    if v.allowedClients.is_some():
+        auto u2 = v.allowedClients.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(agent_registry_control_json_str(x3))
+        parts.append("\"allowedClients\":" + agent_registry_control_json_arr(e3))
+    if v.allowedScopes.is_some():
+        auto u4 = v.allowedScopes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(agent_registry_control_json_str(x5))
+        parts.append("\"allowedScopes\":" + agent_registry_control_json_arr(e5))
+    if v.customClaims.is_some():
+        auto u6 = v.customClaims.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(custom_claim_validation_type_to_json(x7))
+        parts.append("\"customClaims\":" + agent_registry_control_json_arr(e7))
+    if v.privateEndpoint.is_some():
+        auto u8 = v.privateEndpoint.unwrap()
+        parts.append("\"privateEndpoint\":" + private_endpoint_to_json(u8))
+    if v.privateEndpointOverrides.is_some():
+        auto u9 = v.privateEndpointOverrides.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(private_endpoint_override_to_json(x10))
+        parts.append("\"privateEndpointOverrides\":" + agent_registry_control_json_arr(e10))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize CustomMetadataSchemaConfiguration to a compact JSON object (declaration order).
+def custom_metadata_schema_configuration_to_json(CustomMetadataSchemaConfiguration v) -> str:
+    list[str] parts = []
+    if v.defaultSchema.is_some():
+        auto u0 = v.defaultSchema.unwrap()
+        parts.append("\"defaultSchema\":" + agent_registry_control_json_str(u0))
+    if v.recordTypeSchemaOverrides.is_some():
+        auto u1 = v.recordTypeSchemaOverrides.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"recordTypeSchemaOverrides\":" + agent_registry_control_json_arr(e2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize DescriptorSource to a compact JSON object (declaration order).
+def descriptor_source_to_json(DescriptorSource v) -> str:
+    list[str] parts = []
+    if v.fromUrl.is_some():
+        auto u0 = v.fromUrl.unwrap()
+        parts.append("\"fromUrl\":" + descriptor_source_from_url_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize DescriptorSourceFromUrl to a compact JSON object (declaration order).
+def descriptor_source_from_url_to_json(DescriptorSourceFromUrl v) -> str:
+    list[str] parts = []
+    parts.append("\"url\":" + agent_registry_control_json_str(v.url))
+    if v.credentialProviderConfigurations.is_some():
+        auto u0 = v.credentialProviderConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(registry_record_credential_provider_configuration_to_json(x1))
+        parts.append("\"credentialProviderConfigurations\":" + agent_registry_control_json_arr(e1))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize Descriptors to a compact JSON object (declaration order).
+def descriptors_to_json(Descriptors v) -> str:
+    list[str] parts = []
+    if v.mcpServer.is_some():
+        auto u0 = v.mcpServer.unwrap()
+        parts.append("\"mcpServer\":" + mcp_server_descriptor_to_json(u0))
+    if v.a2aAgentCard.is_some():
+        auto u1 = v.a2aAgentCard.unwrap()
+        parts.append("\"a2aAgentCard\":" + a2a_agent_card_descriptor_to_json(u1))
+    if v.agentSkillsDefinition.is_some():
+        auto u2 = v.agentSkillsDefinition.unwrap()
+        parts.append("\"agentSkillsDefinition\":" + agent_skills_definition_descriptor_to_json(u2))
+    if v.custom.is_some():
+        auto u3 = v.custom.unwrap()
+        parts.append("\"custom\":" + u3.to_json())
+    if v.http.is_some():
+        auto u4 = v.http.unwrap()
+        parts.append("\"http\":" + http_descriptor_to_json(u4))
+    if v.agui.is_some():
+        auto u5 = v.agui.unwrap()
+        parts.append("\"agui\":" + ag_ui_descriptor_to_json(u5))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize DiscoveryConfiguration to a compact JSON object (declaration order).
+def discovery_configuration_to_json(DiscoveryConfiguration v) -> str:
+    list[str] parts = []
+    if v.authorizerConfiguration.is_some():
+        auto u0 = v.authorizerConfiguration.unwrap()
+        parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u0))
+    if v.authorizerType.is_some():
+        auto u1 = v.authorizerType.unwrap()
+        parts.append("\"authorizerType\":" + u1.to_json())
+    return agent_registry_control_json_obj(parts)
+
+# Serialize HttpDescriptor to a compact JSON object (declaration order).
+def http_descriptor_to_json(HttpDescriptor v) -> str:
+    list[str] parts = []
+    if v.source.is_some():
+        auto u0 = v.source.unwrap()
+        parts.append("\"source\":" + descriptor_source_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize ManagedVpcResource to a compact JSON object (declaration order).
+def managed_vpc_resource_to_json(ManagedVpcResource v) -> str:
+    list[str] parts = []
+    parts.append("\"vpcIdentifier\":" + agent_registry_control_json_str(v.vpcIdentifier))
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(agent_registry_control_json_str(x0))
+    parts.append("\"subnetIds\":" + agent_registry_control_json_arr(e0))
+    parts.append("\"endpointIpAddressType\":" + v.endpointIpAddressType.to_json())
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(agent_registry_control_json_str(x2))
+        parts.append("\"securityGroupIds\":" + agent_registry_control_json_arr(e2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(agent_registry_control_json_str(k4) + ":" + agent_registry_control_json_str(u3[k4]))
+        parts.append("\"tags\":" + agent_registry_control_json_obj(m4))
+    if v.routingDomain.is_some():
+        auto u5 = v.routingDomain.unwrap()
+        parts.append("\"routingDomain\":" + agent_registry_control_json_str(u5))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize McpServerDescriptor to a compact JSON object (declaration order).
+def mcp_server_descriptor_to_json(McpServerDescriptor v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + agent_registry_control_json_str(u0))
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + agent_registry_control_json_str(u1))
+    if v.additionalData.is_some():
+        auto u2 = v.additionalData.unwrap()
+        parts.append("\"additionalData\":" + u2.to_json())
+    if v.source.is_some():
+        auto u3 = v.source.unwrap()
+        parts.append("\"source\":" + descriptor_source_to_json(u3))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize PrivateEndpoint to a compact JSON object (declaration order).
+def private_endpoint_to_json(PrivateEndpoint v) -> str:
+    list[str] parts = []
+    if v.selfManagedLatticeResource.is_some():
+        auto u0 = v.selfManagedLatticeResource.unwrap()
+        parts.append("\"selfManagedLatticeResource\":" + u0.to_json())
+    if v.managedVpcResource.is_some():
+        auto u1 = v.managedVpcResource.unwrap()
+        parts.append("\"managedVpcResource\":" + managed_vpc_resource_to_json(u1))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize PrivateEndpointOverride to a compact JSON object (declaration order).
+def private_endpoint_override_to_json(PrivateEndpointOverride v) -> str:
+    list[str] parts = []
+    parts.append("\"domain\":" + agent_registry_control_json_str(v.domain))
+    parts.append("\"privateEndpoint\":" + private_endpoint_to_json(v.privateEndpoint))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize Provenance to a compact JSON object (declaration order).
+def provenance_to_json(Provenance v) -> str:
+    list[str] parts = []
+    parts.append("\"relation\":" + agent_registry_control_json_str(v.relation))
+    parts.append("\"sourceId\":" + agent_registry_control_json_str(v.sourceId))
+    if v.sourceType.is_some():
+        auto u0 = v.sourceType.unwrap()
+        parts.append("\"sourceType\":" + u0.to_json())
+    if v.sourceDetails.is_some():
+        auto u1 = v.sourceDetails.unwrap()
+        parts.append("\"sourceDetails\":" + source_details_to_json(u1))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize RegistryFilter to a compact JSON object (declaration order).
+def registry_filter_to_json(RegistryFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(agent_registry_control_json_str(x0))
+    parts.append("\"values\":" + agent_registry_control_json_arr(e0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize RegistryRecordCredentialProviderConfiguration to a compact JSON object (declaration order).
+def registry_record_credential_provider_configuration_to_json(RegistryRecordCredentialProviderConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"credentialProviderType\":" + v.credentialProviderType.to_json())
+    parts.append("\"credentialProvider\":" + registry_record_credential_provider_union_to_json(v.credentialProvider))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize RegistryRecordCredentialProviderUnion to a compact JSON object (declaration order).
+def registry_record_credential_provider_union_to_json(RegistryRecordCredentialProviderUnion v) -> str:
+    list[str] parts = []
+    if v.oauthCredentialProvider.is_some():
+        auto u0 = v.oauthCredentialProvider.unwrap()
+        parts.append("\"oauthCredentialProvider\":" + registry_record_o_auth_credential_provider_to_json(u0))
+    if v.iamCredentialProvider.is_some():
+        auto u1 = v.iamCredentialProvider.unwrap()
+        parts.append("\"iamCredentialProvider\":" + u1.to_json())
+    return agent_registry_control_json_obj(parts)
+
+# Serialize RegistryRecordFilter to a compact JSON object (declaration order).
+def registry_record_filter_to_json(RegistryRecordFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.name.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(agent_registry_control_json_str(x0))
+    parts.append("\"values\":" + agent_registry_control_json_arr(e0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize RegistryRecordOAuthCredentialProvider to a compact JSON object (declaration order).
+def registry_record_o_auth_credential_provider_to_json(RegistryRecordOAuthCredentialProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"providerArn\":" + agent_registry_control_json_str(v.providerArn))
+    if v.grantType.is_some():
+        auto u0 = v.grantType.unwrap()
+        parts.append("\"grantType\":" + agent_registry_control_json_str(u0))
+    if v.scopes.is_some():
+        auto u1 = v.scopes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(agent_registry_control_json_str(x2))
+        parts.append("\"scopes\":" + agent_registry_control_json_arr(e2))
+    if v.customParameters.is_some():
+        auto u3 = v.customParameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(agent_registry_control_json_str(k4) + ":" + agent_registry_control_json_str(u3[k4]))
+        parts.append("\"customParameters\":" + agent_registry_control_json_obj(m4))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize SourceDetails to a compact JSON object (declaration order).
+def source_details_to_json(SourceDetails v) -> str:
+    list[str] parts = []
+    if v.agentcoreRuntime.is_some():
+        auto u0 = v.agentcoreRuntime.unwrap()
+        parts.append("\"agentcoreRuntime\":" + agent_core_runtime_source_details_to_json(u0))
+    if v.agentcoreGateway.is_some():
+        auto u1 = v.agentcoreGateway.unwrap()
+        parts.append("\"agentcoreGateway\":" + agent_core_gateway_source_details_to_json(u1))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedA2aAgentCardDescriptor to a compact JSON object (declaration order).
+def updated_a2a_agent_card_descriptor_to_json(UpdatedA2aAgentCardDescriptor v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_a2a_agent_card_descriptor_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedA2aAgentCardDescriptorFields to a compact JSON object (declaration order).
+def updated_a2a_agent_card_descriptor_fields_to_json(UpdatedA2aAgentCardDescriptorFields v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + u0.to_json())
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + u1.to_json())
+    if v.source.is_some():
+        auto u2 = v.source.unwrap()
+        parts.append("\"source\":" + updated_descriptor_source_to_json(u2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgUiDescriptor to a compact JSON object (declaration order).
+def updated_ag_ui_descriptor_to_json(UpdatedAgUiDescriptor v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_ag_ui_descriptor_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgUiDescriptorFields to a compact JSON object (declaration order).
+def updated_ag_ui_descriptor_fields_to_json(UpdatedAgUiDescriptorFields v) -> str:
+    list[str] parts = []
+    if v.source.is_some():
+        auto u0 = v.source.unwrap()
+        parts.append("\"source\":" + updated_descriptor_source_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgentSkillsAdditionalData to a compact JSON object (declaration order).
+def updated_agent_skills_additional_data_to_json(UpdatedAgentSkillsAdditionalData v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_agent_skills_additional_data_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgentSkillsAdditionalDataFields to a compact JSON object (declaration order).
+def updated_agent_skills_additional_data_fields_to_json(UpdatedAgentSkillsAdditionalDataFields v) -> str:
+    list[str] parts = []
+    if v.skillMd.is_some():
+        auto u0 = v.skillMd.unwrap()
+        parts.append("\"skillMd\":" + updated_agent_skills_md_descriptor_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgentSkillsDefinitionDescriptor to a compact JSON object (declaration order).
+def updated_agent_skills_definition_descriptor_to_json(UpdatedAgentSkillsDefinitionDescriptor v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_agent_skills_definition_descriptor_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgentSkillsDefinitionDescriptorFields to a compact JSON object (declaration order).
+def updated_agent_skills_definition_descriptor_fields_to_json(UpdatedAgentSkillsDefinitionDescriptorFields v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + u0.to_json())
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + u1.to_json())
+    if v.additionalData.is_some():
+        auto u2 = v.additionalData.unwrap()
+        parts.append("\"additionalData\":" + updated_agent_skills_additional_data_to_json(u2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgentSkillsMdDescriptor to a compact JSON object (declaration order).
+def updated_agent_skills_md_descriptor_to_json(UpdatedAgentSkillsMdDescriptor v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_agent_skills_md_descriptor_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAgentSkillsMdDescriptorFields to a compact JSON object (declaration order).
+def updated_agent_skills_md_descriptor_fields_to_json(UpdatedAgentSkillsMdDescriptorFields v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + u0.to_json())
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + u1.to_json())
+    if v.source.is_some():
+        auto u2 = v.source.unwrap()
+        parts.append("\"source\":" + updated_descriptor_source_to_json(u2))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedApprovalConfiguration to a compact JSON object (declaration order).
+def updated_approval_configuration_to_json(UpdatedApprovalConfiguration v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + approval_configuration_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedAuthorizerConfiguration to a compact JSON object (declaration order).
+def updated_authorizer_configuration_to_json(UpdatedAuthorizerConfiguration v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + authorizer_configuration_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedCustomMetadataSchemaConfiguration to a compact JSON object (declaration order).
+def updated_custom_metadata_schema_configuration_to_json(UpdatedCustomMetadataSchemaConfiguration v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + custom_metadata_schema_configuration_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedDescriptorSource to a compact JSON object (declaration order).
+def updated_descriptor_source_to_json(UpdatedDescriptorSource v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + descriptor_source_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedDescriptors to a compact JSON object (declaration order).
+def updated_descriptors_to_json(UpdatedDescriptors v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_descriptors_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedDescriptorsFields to a compact JSON object (declaration order).
+def updated_descriptors_fields_to_json(UpdatedDescriptorsFields v) -> str:
+    list[str] parts = []
+    if v.mcpServer.is_some():
+        auto u0 = v.mcpServer.unwrap()
+        parts.append("\"mcpServer\":" + updated_mcp_server_descriptor_to_json(u0))
+    if v.a2aAgentCard.is_some():
+        auto u1 = v.a2aAgentCard.unwrap()
+        parts.append("\"a2aAgentCard\":" + updated_a2a_agent_card_descriptor_to_json(u1))
+    if v.agentSkillsDefinition.is_some():
+        auto u2 = v.agentSkillsDefinition.unwrap()
+        parts.append("\"agentSkillsDefinition\":" + updated_agent_skills_definition_descriptor_to_json(u2))
+    if v.custom.is_some():
+        auto u3 = v.custom.unwrap()
+        parts.append("\"custom\":" + u3.to_json())
+    if v.http.is_some():
+        auto u4 = v.http.unwrap()
+        parts.append("\"http\":" + updated_http_descriptor_to_json(u4))
+    if v.agui.is_some():
+        auto u5 = v.agui.unwrap()
+        parts.append("\"agui\":" + updated_ag_ui_descriptor_to_json(u5))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedDiscoveryConfiguration to a compact JSON object (declaration order).
+def updated_discovery_configuration_to_json(UpdatedDiscoveryConfiguration v) -> str:
+    list[str] parts = []
+    if v.authorizerConfiguration.is_some():
+        auto u0 = v.authorizerConfiguration.unwrap()
+        parts.append("\"authorizerConfiguration\":" + updated_authorizer_configuration_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedHttpDescriptor to a compact JSON object (declaration order).
+def updated_http_descriptor_to_json(UpdatedHttpDescriptor v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_http_descriptor_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedHttpDescriptorFields to a compact JSON object (declaration order).
+def updated_http_descriptor_fields_to_json(UpdatedHttpDescriptorFields v) -> str:
+    list[str] parts = []
+    if v.source.is_some():
+        auto u0 = v.source.unwrap()
+        parts.append("\"source\":" + updated_descriptor_source_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedMcpServerDescriptor to a compact JSON object (declaration order).
+def updated_mcp_server_descriptor_to_json(UpdatedMcpServerDescriptor v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + updated_mcp_server_descriptor_fields_to_json(u0))
+    return agent_registry_control_json_obj(parts)
+
+# Serialize UpdatedMcpServerDescriptorFields to a compact JSON object (declaration order).
+def updated_mcp_server_descriptor_fields_to_json(UpdatedMcpServerDescriptorFields v) -> str:
+    list[str] parts = []
+    if v.data.is_some():
+        auto u0 = v.data.unwrap()
+        parts.append("\"data\":" + u0.to_json())
+    if v.dataSchemaVersion.is_some():
+        auto u1 = v.dataSchemaVersion.unwrap()
+        parts.append("\"dataSchemaVersion\":" + u1.to_json())
+    if v.source.is_some():
+        auto u2 = v.source.unwrap()
+        parts.append("\"source\":" + updated_descriptor_source_to_json(u2))
+    if v.additionalData.is_some():
+        auto u3 = v.additionalData.unwrap()
+        parts.append("\"additionalData\":" + u3.to_json())
+    return agent_registry_control_json_obj(parts)
+
 # A bound Agent_Registry_Control client: credentials + region, threaded into every operation.
 struct Agent_Registry_ControlClient:
     core.Credentials creds
     str region
+
+    # CreateRegistry  POST /registries
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_registry(self, CreateRegistryRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/registries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + agent_registry_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + agent_registry_control_json_str(u0))
+        if input.encryptionConfiguration.is_some():
+            auto u1 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u1.to_json())
+        if input.discoveryConfiguration.is_some():
+            auto u2 = input.discoveryConfiguration.unwrap()
+            parts.append("\"discoveryConfiguration\":" + discovery_configuration_to_json(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + agent_registry_control_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(agent_registry_control_json_str(k5) + ":" + agent_registry_control_json_str(u4[k5]))
+            parts.append("\"tags\":" + agent_registry_control_json_obj(m5))
+        if input.approvalConfiguration.is_some():
+            auto u6 = input.approvalConfiguration.unwrap()
+            parts.append("\"approvalConfiguration\":" + approval_configuration_to_json(u6))
+        if input.customMetadataSchemaConfiguration.is_some():
+            auto u7 = input.customMetadataSchemaConfiguration.unwrap()
+            parts.append("\"customMetadataSchemaConfiguration\":" + custom_metadata_schema_configuration_to_json(u7))
+        if input.autoDetectionConfiguration.is_some():
+            auto u8 = input.autoDetectionConfiguration.unwrap()
+            parts.append("\"autoDetectionConfiguration\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
+    # CreateRegistryRecord  POST /registries/{registryId}/records
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_registry_record(self, CreateRegistryRecordRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + agent_registry_control_json_str(input.name))
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + agent_registry_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + agent_registry_control_json_str(u1))
+        parts.append("\"recordType\":" + input.recordType.to_json())
+        parts.append("\"descriptors\":" + descriptors_to_json(input.descriptors))
+        if input.recordVersion.is_some():
+            auto u2 = input.recordVersion.unwrap()
+            parts.append("\"recordVersion\":" + agent_registry_control_json_str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + agent_registry_control_json_str(u3))
+        if input.provenance.is_some():
+            auto u4 = input.provenance.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(provenance_to_json(x5))
+            parts.append("\"provenance\":" + agent_registry_control_json_arr(e5))
+        if input.customMetadata.is_some():
+            auto u6 = input.customMetadata.unwrap()
+            parts.append("\"customMetadata\":" + u6.to_json())
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(agent_registry_control_json_str(k8) + ":" + agent_registry_control_json_str(u7[k8]))
+            parts.append("\"tags\":" + agent_registry_control_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
 
     # DeleteRegistry  DELETE /registries/{registryId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1037,6 +1800,50 @@ struct Agent_Registry_ControlClient:
         auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
+    # ListRegistries  POST /registries-list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_registries(self, ListRegistriesRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/registries-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + agent_registry_control_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(registry_filter_to_json(x3))
+            parts.append("\"filters\":" + agent_registry_control_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
+    # ListRegistryRecords  POST /registries/{registryId}/records-list
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_registry_records(self, ListRegistryRecordsRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + agent_registry_control_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(registry_record_filter_to_json(x3))
+            parts.append("\"filters\":" + agent_registry_control_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{resourceArn+}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -1056,6 +1863,92 @@ struct Agent_Registry_ControlClient:
         auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records/{recordId}/submit-for-approval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(agent_registry_control_json_str(k0) + ":" + agent_registry_control_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + agent_registry_control_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
+    # UpdateRegistry  PATCH /registries/{registryId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_registry(self, UpdateRegistryRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + agent_registry_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + u1.to_json())
+        if input.discoveryConfiguration.is_some():
+            auto u2 = input.discoveryConfiguration.unwrap()
+            parts.append("\"discoveryConfiguration\":" + updated_discovery_configuration_to_json(u2))
+        if input.approvalConfiguration.is_some():
+            auto u3 = input.approvalConfiguration.unwrap()
+            parts.append("\"approvalConfiguration\":" + updated_approval_configuration_to_json(u3))
+        if input.customMetadataSchemaConfiguration.is_some():
+            auto u4 = input.customMetadataSchemaConfiguration.unwrap()
+            parts.append("\"customMetadataSchemaConfiguration\":" + updated_custom_metadata_schema_configuration_to_json(u4))
+        if input.autoDetectionConfiguration.is_some():
+            auto u5 = input.autoDetectionConfiguration.unwrap()
+            parts.append("\"autoDetectionConfiguration\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
+    # UpdateRegistryRecord  PATCH /registries/{registryId}/records/{recordId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_registry_record(self, UpdateRegistryRecordRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        labels["recordId"] = input.recordId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + agent_registry_control_json_str(u0))
+        if input.displayName.is_some():
+            auto u1 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + u1.to_json())
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + u2.to_json())
+        if input.recordType.is_some():
+            auto u3 = input.recordType.unwrap()
+            parts.append("\"recordType\":" + u3.to_json())
+        if input.descriptors.is_some():
+            auto u4 = input.descriptors.unwrap()
+            parts.append("\"descriptors\":" + updated_descriptors_to_json(u4))
+        if input.recordVersion.is_some():
+            auto u5 = input.recordVersion.unwrap()
+            parts.append("\"recordVersion\":" + agent_registry_control_json_str(u5))
+        if input.customMetadata.is_some():
+            auto u6 = input.customMetadata.unwrap()
+            parts.append("\"customMetadata\":" + u6.to_json())
+        if input.triggerSynchronization.is_some():
+            auto u7 = input.triggerSynchronization.unwrap()
+            parts.append("\"triggerSynchronization\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.provenance.is_some():
+            auto u8 = input.provenance.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(provenance_to_json(x9))
+            parts.append("\"provenance\":" + agent_registry_control_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
     # UpdateRegistryRecordStatus  PATCH /registries/{registryId}/records/{recordId}/status
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_registry_record_status(self, UpdateRegistryRecordStatusRequest input) -> str:
@@ -1067,6 +1960,32 @@ struct Agent_Registry_ControlClient:
         auto doc = UpdateRegistryRecordStatusDocument(status=input.status, statusReason=input.statusReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
+
+    # Paginator for ListRegistries — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: registries).
+    def paginate_list_registries(self, ListRegistriesRequest input):
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        while True:
+            auto raw = self.list_registries(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListRegistryRecords — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: registryRecords).
+    def paginate_list_registry_records(self, ListRegistryRecordsRequest input):
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        while True:
+            auto raw = self.list_registry_records(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a Agent_Registry_ControlClient bound to credentials + region.
 def agent_registry_control_client(core.Credentials creds, str region) -> Agent_Registry_ControlClient:

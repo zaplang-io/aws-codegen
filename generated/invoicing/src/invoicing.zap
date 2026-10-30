@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 21 operations — 13 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 21 operations — 21 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   86 structs (50 @derive(Json)), 17 enums, 7 error variants.
-#   4 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Invoicing awsJson protocol: version 1.0, API id "Invoicing".
 def invoicing_protocol() -> awsjson.AwsJson:
@@ -186,21 +187,24 @@ struct AccessDeniedException:
     Optional[str] message
     Optional[str] resourceName
 
-# no @derive(Json): member(s) Discounts: DiscountsBreakdown, Taxes: TaxesBreakdown, Fees: FeesBreakdown not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Discounts: DiscountsBreakdown, Taxes: TaxesBreakdown, Fees: FeesBreakdown not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmountBreakdown:
     Optional[str] SubTotalAmount
     Optional[DiscountsBreakdown] Discounts
     Optional[TaxesBreakdown] Taxes
     Optional[FeesBreakdown] Fees
 
-# no @derive(Json): member(s) AccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetInvoiceProfileRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) Profiles: list[InvoiceProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profiles: list[InvoiceProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetInvoiceProfileResponse:
     Optional[list[InvoiceProfile]] Profiles
 
@@ -220,8 +224,9 @@ struct Contact:
     Optional[str] Name
     Optional[str] Email
 
-# no @derive(Json): member(s) Rule: InvoiceUnitRule, ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: InvoiceUnitRule, ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInvoiceUnitRequest:
     str Name
     str InvoiceReceiver
@@ -235,8 +240,9 @@ struct CreateInvoiceUnitRequest:
 struct CreateInvoiceUnitResponse:
     Optional[str] InvoiceUnitArn
 
-# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector, EinvoiceDeliveryPreference: EinvoiceDeliveryPreference, Contacts: list[Contact], ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector, EinvoiceDeliveryPreference: EinvoiceDeliveryPreference, Contacts: list[Contact], ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProcurementPortalPreferenceRequest:
     ProcurementPortalName ProcurementPortalName
     str BuyerDomain
@@ -289,8 +295,9 @@ struct DeleteProcurementPortalPreferenceRequest:
 struct DeleteProcurementPortalPreferenceResponse:
     str ProcurementPortalPreferenceArn
 
-# no @derive(Json): member(s) Breakdown: list[DiscountsBreakdownAmount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Breakdown: list[DiscountsBreakdownAmount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscountsBreakdown:
     Optional[list[DiscountsBreakdownAmount]] Breakdown
     Optional[str] TotalAmount
@@ -301,8 +308,9 @@ struct DiscountsBreakdownAmount:
     Optional[str] Amount
     Optional[str] Rate
 
-# no @derive(Json): member(s) EinvoiceDeliveryDocumentTypes: list[EinvoiceDeliveryDocumentType], EinvoiceDeliveryAttachmentTypes: list[EinvoiceDeliveryAttachmentType], PurchaseOrderDataSources: list[PurchaseOrderDataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EinvoiceDeliveryDocumentTypes: list[EinvoiceDeliveryDocumentType], EinvoiceDeliveryAttachmentTypes: list[EinvoiceDeliveryAttachmentType], PurchaseOrderDataSources: list[PurchaseOrderDataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EinvoiceDeliveryPreference:
     list[EinvoiceDeliveryDocumentType] EinvoiceDeliveryDocumentTypes
     Optional[list[EinvoiceDeliveryAttachmentType]] EinvoiceDeliveryAttachmentTypes
@@ -316,13 +324,15 @@ struct Entity:
     Optional[str] InvoicingEntity
     Optional[BillingEntity] BillingEntity
 
-# no @derive(Json): member(s) InvoiceConfiguration: InvoiceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvoiceConfiguration: InvoiceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeatureConfigurations:
     Optional[InvoiceConfiguration] InvoiceConfiguration
 
-# no @derive(Json): member(s) Breakdown: list[FeesBreakdownAmount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Breakdown: list[FeesBreakdownAmount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeesBreakdown:
     Optional[list[FeesBreakdownAmount]] Breakdown
     Optional[str] TotalAmount
@@ -333,8 +343,9 @@ struct FeesBreakdownAmount:
     Optional[str] Amount
     Optional[str] Rate
 
-# no @derive(Json): member(s) Names: list[str], InvoiceReceivers: list[str], Accounts: list[str], BillSourceAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], InvoiceReceivers: list[str], Accounts: list[str], BillSourceAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filters:
     Optional[list[str]] Names
     Optional[list[str]] InvoiceReceivers
@@ -345,8 +356,9 @@ struct Filters:
 struct GetInvoicePDFRequest:
     str InvoiceId
 
-# no @derive(Json): member(s) InvoicePDF: InvoicePDF not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvoicePDF: InvoicePDF not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInvoicePDFResponse:
     Optional[InvoicePDF] InvoicePDF
 
@@ -355,8 +367,9 @@ struct GetInvoiceUnitRequest:
     str InvoiceUnitArn
     Optional[DateTime] AsOf
 
-# no @derive(Json): member(s) Rule: InvoiceUnitRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: InvoiceUnitRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInvoiceUnitResponse:
     Optional[str] InvoiceUnitArn
     Optional[str] InvoiceReceiver
@@ -370,8 +383,9 @@ struct GetInvoiceUnitResponse:
 struct GetProcurementPortalPreferenceRequest:
     str ProcurementPortalPreferenceArn
 
-# no @derive(Json): member(s) ProcurementPortalPreference: ProcurementPortalPreference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcurementPortalPreference: ProcurementPortalPreference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProcurementPortalPreferenceResponse:
     ProcurementPortalPreference ProcurementPortalPreference
 
@@ -380,14 +394,16 @@ struct InternalServerException:
     Optional[int64] retryAfterSeconds
     Optional[str] message
 
-# no @derive(Json): member(s) DocumentTypes: list[EinvoiceDeliveryDocumentType], AttachmentTypes: list[EinvoiceDeliveryAttachmentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentTypes: list[EinvoiceDeliveryDocumentType], AttachmentTypes: list[EinvoiceDeliveryAttachmentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvoiceConfiguration:
     Optional[list[EinvoiceDeliveryDocumentType]] DocumentTypes
     Optional[list[EinvoiceDeliveryAttachmentType]] AttachmentTypes
 
-# no @derive(Json): member(s) AmountBreakdown: AmountBreakdown not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AmountBreakdown: AmountBreakdown not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvoiceCurrencyAmount:
     Optional[str] TotalAmount
     Optional[str] TotalAmountBeforeTax
@@ -395,8 +411,9 @@ struct InvoiceCurrencyAmount:
     Optional[AmountBreakdown] AmountBreakdown
     Optional[CurrencyExchangeDetails] CurrencyExchangeDetails
 
-# no @derive(Json): member(s) SupplementalDocuments: list[SupplementalDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupplementalDocuments: list[SupplementalDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvoicePDF:
     Optional[str] InvoiceId
     Optional[str] DocumentUrl
@@ -424,8 +441,9 @@ struct InvoiceSummariesSelector:
     ListInvoiceSummariesResourceType ResourceType
     str Value
 
-# no @derive(Json): member(s) BillSourceAccounts: list[str], BaseCurrencyAmount: InvoiceCurrencyAmount, TaxCurrencyAmount: InvoiceCurrencyAmount, PaymentCurrencyAmount: InvoiceCurrencyAmount not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BillSourceAccounts: list[str], BaseCurrencyAmount: InvoiceCurrencyAmount, TaxCurrencyAmount: InvoiceCurrencyAmount, PaymentCurrencyAmount: InvoiceCurrencyAmount not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvoiceSummary:
     Optional[str] AccountId
     Optional[str] InvoiceId
@@ -448,8 +466,9 @@ struct InvoiceSummary:
     Optional[InvoiceCurrencyAmount] TaxCurrencyAmount
     Optional[InvoiceCurrencyAmount] PaymentCurrencyAmount
 
-# no @derive(Json): member(s) Rule: InvoiceUnitRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: InvoiceUnitRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvoiceUnit:
     Optional[str] InvoiceUnitArn
     Optional[str] InvoiceReceiver
@@ -459,8 +478,9 @@ struct InvoiceUnit:
     Optional[InvoiceUnitRule] Rule
     Optional[DateTime] LastModified
 
-# no @derive(Json): member(s) LinkedAccounts: list[str], BillSourceAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedAccounts: list[str], BillSourceAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvoiceUnitRule:
     Optional[list[str]] LinkedAccounts
     Optional[list[str]] BillSourceAccounts
@@ -472,22 +492,25 @@ struct ListInvoiceSummariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InvoiceSummaries: list[InvoiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvoiceSummaries: list[InvoiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvoiceSummariesResponse:
     list[InvoiceSummary] InvoiceSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: Filters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: Filters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvoiceUnitsRequest:
     Optional[Filters] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[DateTime] AsOf
 
-# no @derive(Json): member(s) InvoiceUnits: list[InvoiceUnit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvoiceUnits: list[InvoiceUnit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvoiceUnitsResponse:
     Optional[list[InvoiceUnit]] InvoiceUnits
     Optional[str] NextToken
@@ -497,8 +520,9 @@ struct ListProcurementPortalPreferencesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProcurementPortalPreferences: list[ProcurementPortalPreferenceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcurementPortalPreferences: list[ProcurementPortalPreferenceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProcurementPortalPreferencesResponse:
     Optional[list[ProcurementPortalPreferenceSummary]] ProcurementPortalPreferences
     Optional[str] NextToken
@@ -509,8 +533,9 @@ struct ListProcurementPortalSuppliersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProcurementPortalSuppliers: list[ProcurementPortalSupplier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcurementPortalSuppliers: list[ProcurementPortalSupplier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProcurementPortalSuppliersResponse:
     list[ProcurementPortalSupplier] ProcurementPortalSuppliers
     Optional[str] NextToken
@@ -520,8 +545,9 @@ struct ListProcurementPortalsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProcurementPortals: list[ProcurementPortal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcurementPortals: list[ProcurementPortal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProcurementPortalsResponse:
     list[ProcurementPortal] ProcurementPortals
     Optional[str] NextToken
@@ -530,8 +556,9 @@ struct ListProcurementPortalsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[ResourceTag]] ResourceTags
 
@@ -539,16 +566,18 @@ struct ListTagsForResourceResponse:
 struct MarketplacePunchOutPreference:
     Optional[str] ApprovalRequestRedirectUrl
 
-# no @derive(Json): member(s) DefaultFeatureConfigurations: FeatureConfigurations not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFeatureConfigurations: FeatureConfigurations not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcurementPortal:
     str PortalIdentifier
     ProcurementPortalName PortalName
     Optional[str] PortalDisplayName
     Optional[FeatureConfigurations] DefaultFeatureConfigurations
 
-# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector, EinvoiceDeliveryPreference: EinvoiceDeliveryPreference, Contacts: list[Contact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector, EinvoiceDeliveryPreference: EinvoiceDeliveryPreference, Contacts: list[Contact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcurementPortalPreference:
     str AwsAccountId
     str ProcurementPortalPreferenceArn
@@ -576,14 +605,16 @@ struct ProcurementPortalPreference:
     DateTime CreateDate
     DateTime LastUpdateDate
 
-# no @derive(Json): member(s) InvoiceUnitArns: list[str], SellerOfRecords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvoiceUnitArns: list[str], SellerOfRecords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcurementPortalPreferenceSelector:
     Optional[list[str]] InvoiceUnitArns
     Optional[list[str]] SellerOfRecords
 
-# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcurementPortalPreferenceSummary:
     str AwsAccountId
     str ProcurementPortalPreferenceArn
@@ -616,8 +647,9 @@ struct PurchaseOrderDataSource:
     Optional[EinvoiceDeliveryDocumentType] EinvoiceDeliveryDocumentType
     Optional[PurchaseOrderDataSourceType] PurchaseOrderDataSourceType
 
-# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector, EinvoiceDeliveryPreference: EinvoiceDeliveryPreference, Contacts: list[Contact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Selector: ProcurementPortalPreferenceSelector, EinvoiceDeliveryPreference: EinvoiceDeliveryPreference, Contacts: list[Contact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutProcurementPortalPreferenceRequest:
     str ProcurementPortalPreferenceArn
     Optional[ProcurementPortalPreferenceSelector] Selector
@@ -678,8 +710,9 @@ struct SupplementalDocument:
     Optional[str] DocumentUrl
     Optional[DateTime] DocumentUrlExpirationDate
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[ResourceTag] ResourceTags
@@ -689,8 +722,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Breakdown: list[TaxesBreakdownAmount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Breakdown: list[TaxesBreakdownAmount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxesBreakdown:
     Optional[list[TaxesBreakdownAmount]] Breakdown
     Optional[str] TotalAmount
@@ -724,8 +758,9 @@ struct TestEnvPreferenceInput:
 struct ThrottlingException:
     Optional[str] message
 
-# no @derive(Json): member(s) ResourceTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] ResourceTagKeys
@@ -735,8 +770,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Rule: InvoiceUnitRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: InvoiceUnitRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInvoiceUnitRequest:
     str InvoiceUnitArn
     Optional[str] Description
@@ -761,8 +797,9 @@ struct UpdateProcurementPortalPreferenceStatusRequest:
 struct UpdateProcurementPortalPreferenceStatusResponse:
     str ProcurementPortalPreferenceArn
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[str] resourceName
@@ -818,25 +855,312 @@ def invoicing_error_from_code(str code) -> InvoicingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchGetInvoiceProfile (input BatchGetInvoiceProfileRequest)
-#   CreateInvoiceUnit (input CreateInvoiceUnitRequest)
-#   CreateProcurementPortalPreference (input CreateProcurementPortalPreferenceRequest)
-#   ListInvoiceUnits (input ListInvoiceUnitsRequest)
-#   PutProcurementPortalPreference (input PutProcurementPortalPreferenceRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateInvoiceUnit (input UpdateInvoiceUnitRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def invoicing_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListInvoiceUnits (input not derivable (no generated method))
+def invoicing_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def invoicing_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchGetInvoiceProfileRequest to a compact JSON object (declaration order).
+def batch_get_invoice_profile_request_to_json(BatchGetInvoiceProfileRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AccountIds:
+        e0.append(invoicing_json_str(x0))
+    parts.append("\"AccountIds\":" + invoicing_json_arr(e0))
+    return invoicing_json_obj(parts)
+
+# Serialize CreateInvoiceUnitRequest to a compact JSON object (declaration order).
+def create_invoice_unit_request_to_json(CreateInvoiceUnitRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + invoicing_json_str(v.Name))
+    parts.append("\"InvoiceReceiver\":" + invoicing_json_str(v.InvoiceReceiver))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + invoicing_json_str(u0))
+    if v.TaxInheritanceDisabled.is_some():
+        auto u1 = v.TaxInheritanceDisabled.unwrap()
+        parts.append("\"TaxInheritanceDisabled\":" + json.dumps(JsonValue.Bool(u1)))
+    parts.append("\"Rule\":" + invoice_unit_rule_to_json(v.Rule))
+    if v.ResourceTags.is_some():
+        auto u2 = v.ResourceTags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ResourceTags\":" + invoicing_json_arr(e3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + invoicing_json_str(u4))
+    return invoicing_json_obj(parts)
+
+# Serialize CreateProcurementPortalPreferenceRequest to a compact JSON object (declaration order).
+def create_procurement_portal_preference_request_to_json(CreateProcurementPortalPreferenceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProcurementPortalName\":" + v.ProcurementPortalName.to_json())
+    parts.append("\"BuyerDomain\":" + invoicing_json_str(v.BuyerDomain))
+    parts.append("\"BuyerIdentifier\":" + invoicing_json_str(v.BuyerIdentifier))
+    parts.append("\"SupplierDomain\":" + invoicing_json_str(v.SupplierDomain))
+    parts.append("\"SupplierIdentifier\":" + invoicing_json_str(v.SupplierIdentifier))
+    if v.Selector.is_some():
+        auto u0 = v.Selector.unwrap()
+        parts.append("\"Selector\":" + procurement_portal_preference_selector_to_json(u0))
+    if v.ProcurementPortalSharedSecret.is_some():
+        auto u1 = v.ProcurementPortalSharedSecret.unwrap()
+        parts.append("\"ProcurementPortalSharedSecret\":" + invoicing_json_str(u1))
+    if v.ProcurementPortalInstanceEndpoint.is_some():
+        auto u2 = v.ProcurementPortalInstanceEndpoint.unwrap()
+        parts.append("\"ProcurementPortalInstanceEndpoint\":" + invoicing_json_str(u2))
+    if v.TestEnvPreference.is_some():
+        auto u3 = v.TestEnvPreference.unwrap()
+        parts.append("\"TestEnvPreference\":" + u3.to_json())
+    parts.append("\"EinvoiceDeliveryEnabled\":" + json.dumps(JsonValue.Bool(v.EinvoiceDeliveryEnabled)))
+    if v.EinvoiceDeliveryPreference.is_some():
+        auto u4 = v.EinvoiceDeliveryPreference.unwrap()
+        parts.append("\"EinvoiceDeliveryPreference\":" + einvoice_delivery_preference_to_json(u4))
+    parts.append("\"PurchaseOrderRetrievalEnabled\":" + json.dumps(JsonValue.Bool(v.PurchaseOrderRetrievalEnabled)))
+    if v.MarketplacePunchOutEnabled.is_some():
+        auto u5 = v.MarketplacePunchOutEnabled.unwrap()
+        parts.append("\"MarketplacePunchOutEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.MarketplacePunchOutPreference.is_some():
+        auto u6 = v.MarketplacePunchOutPreference.unwrap()
+        parts.append("\"MarketplacePunchOutPreference\":" + u6.to_json())
+    list[str] e7 = []
+    for x7 in v.Contacts:
+        e7.append(x7.to_json())
+    parts.append("\"Contacts\":" + invoicing_json_arr(e7))
+    if v.ResourceTags.is_some():
+        auto u8 = v.ResourceTags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"ResourceTags\":" + invoicing_json_arr(e9))
+    if v.ClientToken.is_some():
+        auto u10 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + invoicing_json_str(u10))
+    return invoicing_json_obj(parts)
+
+# Serialize EinvoiceDeliveryPreference to a compact JSON object (declaration order).
+def einvoice_delivery_preference_to_json(EinvoiceDeliveryPreference v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EinvoiceDeliveryDocumentTypes:
+        e0.append(x0.to_json())
+    parts.append("\"EinvoiceDeliveryDocumentTypes\":" + invoicing_json_arr(e0))
+    if v.EinvoiceDeliveryAttachmentTypes.is_some():
+        auto u1 = v.EinvoiceDeliveryAttachmentTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"EinvoiceDeliveryAttachmentTypes\":" + invoicing_json_arr(e2))
+    parts.append("\"Protocol\":" + invoicing_json_str(v.Protocol))
+    list[str] e3 = []
+    for x3 in v.PurchaseOrderDataSources:
+        e3.append(x3.to_json())
+    parts.append("\"PurchaseOrderDataSources\":" + invoicing_json_arr(e3))
+    parts.append("\"ConnectionTestingMethod\":" + v.ConnectionTestingMethod.to_json())
+    parts.append("\"EinvoiceDeliveryActivationDate\":" + str(datetime.to_timestamp(v.EinvoiceDeliveryActivationDate)))
+    return invoicing_json_obj(parts)
+
+# Serialize Filters to a compact JSON object (declaration order).
+def filters_to_json(Filters v) -> str:
+    list[str] parts = []
+    if v.Names.is_some():
+        auto u0 = v.Names.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(invoicing_json_str(x1))
+        parts.append("\"Names\":" + invoicing_json_arr(e1))
+    if v.InvoiceReceivers.is_some():
+        auto u2 = v.InvoiceReceivers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(invoicing_json_str(x3))
+        parts.append("\"InvoiceReceivers\":" + invoicing_json_arr(e3))
+    if v.Accounts.is_some():
+        auto u4 = v.Accounts.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(invoicing_json_str(x5))
+        parts.append("\"Accounts\":" + invoicing_json_arr(e5))
+    if v.BillSourceAccounts.is_some():
+        auto u6 = v.BillSourceAccounts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(invoicing_json_str(x7))
+        parts.append("\"BillSourceAccounts\":" + invoicing_json_arr(e7))
+    return invoicing_json_obj(parts)
+
+# Serialize InvoiceUnitRule to a compact JSON object (declaration order).
+def invoice_unit_rule_to_json(InvoiceUnitRule v) -> str:
+    list[str] parts = []
+    if v.LinkedAccounts.is_some():
+        auto u0 = v.LinkedAccounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(invoicing_json_str(x1))
+        parts.append("\"LinkedAccounts\":" + invoicing_json_arr(e1))
+    if v.BillSourceAccounts.is_some():
+        auto u2 = v.BillSourceAccounts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(invoicing_json_str(x3))
+        parts.append("\"BillSourceAccounts\":" + invoicing_json_arr(e3))
+    return invoicing_json_obj(parts)
+
+# Serialize ListInvoiceUnitsRequest to a compact JSON object (declaration order).
+def list_invoice_units_request_to_json(ListInvoiceUnitsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + filters_to_json(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + invoicing_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.AsOf.is_some():
+        auto u3 = v.AsOf.unwrap()
+        parts.append("\"AsOf\":" + str(datetime.to_timestamp(u3)))
+    return invoicing_json_obj(parts)
+
+# Serialize ProcurementPortalPreferenceSelector to a compact JSON object (declaration order).
+def procurement_portal_preference_selector_to_json(ProcurementPortalPreferenceSelector v) -> str:
+    list[str] parts = []
+    if v.InvoiceUnitArns.is_some():
+        auto u0 = v.InvoiceUnitArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(invoicing_json_str(x1))
+        parts.append("\"InvoiceUnitArns\":" + invoicing_json_arr(e1))
+    if v.SellerOfRecords.is_some():
+        auto u2 = v.SellerOfRecords.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(invoicing_json_str(x3))
+        parts.append("\"SellerOfRecords\":" + invoicing_json_arr(e3))
+    return invoicing_json_obj(parts)
+
+# Serialize PutProcurementPortalPreferenceRequest to a compact JSON object (declaration order).
+def put_procurement_portal_preference_request_to_json(PutProcurementPortalPreferenceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProcurementPortalPreferenceArn\":" + invoicing_json_str(v.ProcurementPortalPreferenceArn))
+    if v.Selector.is_some():
+        auto u0 = v.Selector.unwrap()
+        parts.append("\"Selector\":" + procurement_portal_preference_selector_to_json(u0))
+    if v.ProcurementPortalSharedSecret.is_some():
+        auto u1 = v.ProcurementPortalSharedSecret.unwrap()
+        parts.append("\"ProcurementPortalSharedSecret\":" + invoicing_json_str(u1))
+    if v.ProcurementPortalInstanceEndpoint.is_some():
+        auto u2 = v.ProcurementPortalInstanceEndpoint.unwrap()
+        parts.append("\"ProcurementPortalInstanceEndpoint\":" + invoicing_json_str(u2))
+    if v.TestEnvPreference.is_some():
+        auto u3 = v.TestEnvPreference.unwrap()
+        parts.append("\"TestEnvPreference\":" + u3.to_json())
+    parts.append("\"EinvoiceDeliveryEnabled\":" + json.dumps(JsonValue.Bool(v.EinvoiceDeliveryEnabled)))
+    if v.EinvoiceDeliveryPreference.is_some():
+        auto u4 = v.EinvoiceDeliveryPreference.unwrap()
+        parts.append("\"EinvoiceDeliveryPreference\":" + einvoice_delivery_preference_to_json(u4))
+    parts.append("\"PurchaseOrderRetrievalEnabled\":" + json.dumps(JsonValue.Bool(v.PurchaseOrderRetrievalEnabled)))
+    if v.MarketplacePunchOutEnabled.is_some():
+        auto u5 = v.MarketplacePunchOutEnabled.unwrap()
+        parts.append("\"MarketplacePunchOutEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.MarketplacePunchOutPreference.is_some():
+        auto u6 = v.MarketplacePunchOutPreference.unwrap()
+        parts.append("\"MarketplacePunchOutPreference\":" + u6.to_json())
+    list[str] e7 = []
+    for x7 in v.Contacts:
+        e7.append(x7.to_json())
+    parts.append("\"Contacts\":" + invoicing_json_arr(e7))
+    if v.ClientToken.is_some():
+        auto u8 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + invoicing_json_str(u8))
+    return invoicing_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + invoicing_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTags:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTags\":" + invoicing_json_arr(e0))
+    return invoicing_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + invoicing_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTagKeys:
+        e0.append(invoicing_json_str(x0))
+    parts.append("\"ResourceTagKeys\":" + invoicing_json_arr(e0))
+    return invoicing_json_obj(parts)
+
+# Serialize UpdateInvoiceUnitRequest to a compact JSON object (declaration order).
+def update_invoice_unit_request_to_json(UpdateInvoiceUnitRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InvoiceUnitArn\":" + invoicing_json_str(v.InvoiceUnitArn))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + invoicing_json_str(u0))
+    if v.TaxInheritanceDisabled.is_some():
+        auto u1 = v.TaxInheritanceDisabled.unwrap()
+        parts.append("\"TaxInheritanceDisabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Rule.is_some():
+        auto u2 = v.Rule.unwrap()
+        parts.append("\"Rule\":" + invoice_unit_rule_to_json(u2))
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + invoicing_json_str(u3))
+    return invoicing_json_obj(parts)
 
 # A bound Invoicing client: credentials + region, threaded into every operation.
 struct InvoicingClient:
     core.Credentials creds
     str region
+
+    # BatchGetInvoiceProfile
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_invoice_profile(self, BatchGetInvoiceProfileRequest input) -> str:
+        auto body = batch_get_invoice_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "BatchGetInvoiceProfile", body)
+
+    # CreateInvoiceUnit
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_invoice_unit(self, CreateInvoiceUnitRequest input) -> str:
+        auto body = create_invoice_unit_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "CreateInvoiceUnit", body)
+
+    # CreateProcurementPortalPreference
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_procurement_portal_preference(self, CreateProcurementPortalPreferenceRequest input) -> str:
+        auto body = create_procurement_portal_preference_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "CreateProcurementPortalPreference", body)
 
     # DeleteInvoiceUnit
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -874,6 +1198,12 @@ struct InvoicingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "ListInvoiceSummaries", body)
 
+    # ListInvoiceUnits
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_invoice_units(self, ListInvoiceUnitsRequest input) -> str:
+        auto body = list_invoice_units_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "ListInvoiceUnits", body)
+
     # ListProcurementPortalPreferences
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_procurement_portal_preferences(self, ListProcurementPortalPreferencesRequest input) -> str:
@@ -898,11 +1228,35 @@ struct InvoicingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # PutProcurementPortalPreference
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def put_procurement_portal_preference(self, PutProcurementPortalPreferenceRequest input) -> str:
+        auto body = put_procurement_portal_preference_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "PutProcurementPortalPreference", body)
+
     # SendProcurementPortalValidation
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def send_procurement_portal_validation(self, SendProcurementPortalValidationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "SendProcurementPortalValidation", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateInvoiceUnit
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_invoice_unit(self, UpdateInvoiceUnitRequest input) -> str:
+        auto body = update_invoice_unit_request_to_json(input)
+        return awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "UpdateInvoiceUnit", body)
 
     # UpdateProcurementPortalPreferenceStatus
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -923,6 +1277,20 @@ struct InvoicingClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "ListInvoiceSummaries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListInvoiceUnits — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: InvoiceUnits).
+    def paginate_list_invoice_units(self, ListInvoiceUnitsRequest input):
+        auto host = endpoints.regional_host(invoicing_protocol().service, self.region)
+        while True:
+            auto body = list_invoice_units_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(invoicing_protocol(), self.creds, self.region, "ListInvoiceUnits", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

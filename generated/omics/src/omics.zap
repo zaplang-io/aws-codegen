@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 107 operations — 72 with a generated method,
-#   35 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 107 operations — 98 with a generated method,
+#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   307 structs (193 @derive(Json)), 46 enums, 10 error variants.
-#   20 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   25 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The Omics rest-json protocol: SigV4 service "omics" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -536,8 +537,9 @@ struct AnnotationImportItemDetail:
 struct AnnotationImportItemSource:
     str source
 
-# no @derive(Json): member(s) annotationFields: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotationFields: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnnotationImportJobItem:
     str id
     str destinationName
@@ -589,8 +591,9 @@ struct BatchDeleteReadSetRequest:
     list[str] ids
     str sequenceStoreId
 
-# no @derive(Json): member(s) errors: list[ReadSetBatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[ReadSetBatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteReadSetResponse:
     Optional[list[ReadSetBatchError]] errors
 
@@ -604,8 +607,9 @@ struct BatchListItem:
     Optional[int64] totalRuns
     Optional[str] workflowId
 
-# no @derive(Json): member(s) inlineSettings: list[InlineSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlineSettings: list[InlineSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRunSettings:
     Optional[list[InlineSetting]] inlineSettings
     Optional[str] s3UriSettings
@@ -681,8 +685,9 @@ struct ConfigurationListItem:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) registryMappings: list[RegistryMapping], imageMappings: list[ImageMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryMappings: list[RegistryMapping], imageMappings: list[ImageMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerRegistryMap:
     Optional[list[RegistryMapping]] registryMappings
     Optional[list[ImageMapping]] imageMappings
@@ -699,8 +704,9 @@ struct CreateAnnotationStoreRequest:
     StoreFormat storeFormat
     Optional[StoreOptions] storeOptions
 
-# no @derive(Json): member(s) storeOptions: StoreOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storeOptions: StoreOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAnnotationStoreResponse:
     str id
     Optional[ReferenceItem] reference
@@ -720,8 +726,9 @@ struct CreateAnnotationStoreVersionRequest:
     Optional[VersionOptions] versionOptions
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) versionOptions: VersionOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versionOptions: VersionOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAnnotationStoreVersionResponse:
     str id
     str versionName
@@ -740,8 +747,9 @@ struct CreateConfigurationRequest:
     Optional[dict[str, str]] tags
     str requestId
 
-# no @derive(Json): member(s) runConfigurations: RunConfigurationsResponse, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runConfigurations: RunConfigurationsResponse, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfigurationResponse:
     Optional[str] arn
     Optional[str] uuid
@@ -766,8 +774,9 @@ struct CreateMultipartReadSetUploadRequest:
     Optional[str] description
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultipartReadSetUploadResponse:
     str sequenceStoreId
     str uploadId
@@ -811,8 +820,9 @@ struct CreateRunCacheRequest:
     Optional[dict[str, str]] tags
     Optional[str] cacheBucketOwnerId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRunCacheResponse:
     Optional[str] arn
     Optional[str] id
@@ -830,8 +840,9 @@ struct CreateRunGroupRequest:
     str requestId
     Optional[int64] maxGpus
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRunGroupResponse:
     Optional[str] arn
     Optional[str] id
@@ -850,8 +861,9 @@ struct CreateSequenceStoreRequest:
     Optional[list[str]] propagatedSetLevelTags
     Optional[S3AccessConfig] s3AccessConfig
 
-# no @derive(Json): member(s) propagatedSetLevelTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propagatedSetLevelTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSequenceStoreResponse:
     str id
     str arn
@@ -921,8 +933,9 @@ struct CreateWorkflowRequest:
     Optional[str] workflowBucketOwnerId
     Optional[str] readmeUri
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowResponse:
     Optional[str] arn
     Optional[str] id
@@ -955,8 +968,9 @@ struct CreateWorkflowVersionRequest:
     Optional[DefinitionRepository] definitionRepository
     Optional[str] readmeUri
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowVersionResponse:
     Optional[str] arn
     Optional[str] workflowId
@@ -965,8 +979,9 @@ struct CreateWorkflowVersionResponse:
     Optional[dict[str, str]] tags
     Optional[str] uuid
 
-# no @derive(Json): member(s) runTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultRunSetting:
     str workflowId
     Optional[WorkflowType] workflowType
@@ -992,8 +1007,9 @@ struct DefaultRunSetting:
     Optional[EngineSettings] engineSettings
     Optional[ScratchStorageMode] scratchStorageMode
 
-# no @derive(Json): member(s) excludeFilePatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludeFilePatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefinitionRepository:
     str connectionArn
     str fullRepositoryId
@@ -1025,8 +1041,9 @@ struct DeleteAnnotationStoreVersionsRequest:
     list[str] versions
     Optional[bool] force
 
-# no @derive(Json): member(s) errors: list[VersionDeleteError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[VersionDeleteError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAnnotationStoreVersionsResponse:
     Optional[list[VersionDeleteError]] errors
 
@@ -1183,8 +1200,9 @@ struct FileInformation:
     Optional[int64] contentLength
     Optional[ReadSetS3Access] s3Access
 
-# no @derive(Json): member(s) resourceArns: list[str], status: list[ShareStatus], type: list[ShareResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str], status: list[ShareStatus], type: list[ShareResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[list[str]] resourceArns
     Optional[list[ShareStatus]] status
@@ -1200,8 +1218,9 @@ struct FormatOptions:
 struct GetAnnotationImportRequest:
     str jobId
 
-# no @derive(Json): member(s) items: list[AnnotationImportItemDetail], annotationFields: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AnnotationImportItemDetail], annotationFields: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnnotationImportResponse:
     str id
     str destinationName
@@ -1222,8 +1241,9 @@ struct GetAnnotationImportResponse:
 struct GetAnnotationStoreRequest:
     str name
 
-# no @derive(Json): member(s) tags: dict[str, str], storeOptions: StoreOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], storeOptions: StoreOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnnotationStoreResponse:
     str id
     ReferenceItem reference
@@ -1247,8 +1267,9 @@ struct GetAnnotationStoreVersionRequest:
     str name
     str versionName
 
-# no @derive(Json): member(s) tags: dict[str, str], versionOptions: VersionOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], versionOptions: VersionOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnnotationStoreVersionResponse:
     str storeId
     str id
@@ -1269,8 +1290,9 @@ struct GetAnnotationStoreVersionResponse:
 struct GetBatchRequest:
     str batchId
 
-# no @derive(Json): member(s) tags: dict[str, str], defaultRunSetting: DefaultRunSetting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], defaultRunSetting: DefaultRunSetting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBatchResponse:
     Optional[str] id
     Optional[str] arn
@@ -1293,8 +1315,9 @@ struct GetBatchResponse:
 struct GetConfigurationRequest:
     str name
 
-# no @derive(Json): member(s) runConfigurations: RunConfigurationsResponse, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runConfigurations: RunConfigurationsResponse, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationResponse:
     Optional[str] arn
     Optional[str] uuid
@@ -1311,8 +1334,9 @@ struct GetReadSetActivationJobRequest:
     str id
     str sequenceStoreId
 
-# no @derive(Json): member(s) sources: list[ActivateReadSetSourceItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ActivateReadSetSourceItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReadSetActivationJobResponse:
     str id
     str sequenceStoreId
@@ -1328,8 +1352,9 @@ struct GetReadSetExportJobRequest:
     str sequenceStoreId
     str id
 
-# no @derive(Json): member(s) readSets: list[ExportReadSetDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) readSets: list[ExportReadSetDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReadSetExportJobResponse:
     str id
     str sequenceStoreId
@@ -1346,8 +1371,9 @@ struct GetReadSetImportJobRequest:
     str id
     str sequenceStoreId
 
-# no @derive(Json): member(s) sources: list[ImportReadSetSourceItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ImportReadSetSourceItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReadSetImportJobResponse:
     str id
     str sequenceStoreId
@@ -1404,8 +1430,9 @@ struct GetReferenceImportJobRequest:
     str id
     str referenceStoreId
 
-# no @derive(Json): member(s) sources: list[ImportReferenceSourceItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ImportReferenceSourceItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReferenceImportJobResponse:
     str id
     str referenceStoreId
@@ -1474,8 +1501,9 @@ struct GetReferenceStoreResponse:
 struct GetRunCacheRequest:
     str id
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRunCacheResponse:
     Optional[str] arn
     Optional[CacheBehavior] cacheBehavior
@@ -1493,8 +1521,9 @@ struct GetRunCacheResponse:
 struct GetRunGroupRequest:
     str id
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRunGroupResponse:
     Optional[str] arn
     Optional[str] id
@@ -1512,8 +1541,9 @@ struct GetRunRequest:
     str id
     Optional[list[str]] export
 
-# no @derive(Json): member(s) resourceDigests: dict[str, str], tags: dict[str, str], vpcConfig: VpcConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceDigests: dict[str, str], tags: dict[str, str], vpcConfig: VpcConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRunResponse:
     Optional[str] arn
     Optional[str] id
@@ -1607,8 +1637,9 @@ struct GetS3AccessPolicyResponse:
 struct GetSequenceStoreRequest:
     str id
 
-# no @derive(Json): member(s) propagatedSetLevelTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propagatedSetLevelTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSequenceStoreResponse:
     str id
     str arn
@@ -1638,8 +1669,9 @@ struct GetShareResponse:
 struct GetVariantImportRequest:
     str jobId
 
-# no @derive(Json): member(s) items: list[VariantImportItemDetail], annotationFields: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[VariantImportItemDetail], annotationFields: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVariantImportResponse:
     str id
     str destinationName
@@ -1658,8 +1690,9 @@ struct GetVariantImportResponse:
 struct GetVariantStoreRequest:
     str name
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVariantStoreResponse:
     str id
     ReferenceItem reference
@@ -1683,8 +1716,9 @@ struct GetWorkflowRequest:
     Optional[list[WorkflowExport]] export
     Optional[str] workflowOwnerId
 
-# no @derive(Json): member(s) parameterTemplate: dict[str, WorkflowParameter], tags: dict[str, str], metadata: dict[str, str], containerRegistryMap: ContainerRegistryMap, profiles: list[str], profileParameterTemplates: dict[str, dict[str, WorkflowParameter]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameterTemplate: dict[str, WorkflowParameter], tags: dict[str, str], metadata: dict[str, str], containerRegistryMap: ContainerRegistryMap, profiles: list[str], profileParameterTemplates: dict[str, dict[str, WorkflowParameter]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowResponse:
     Optional[str] arn
     Optional[str] id
@@ -1722,8 +1756,9 @@ struct GetWorkflowVersionRequest:
     Optional[list[WorkflowExport]] export
     Optional[str] workflowOwnerId
 
-# no @derive(Json): member(s) metadata: dict[str, str], parameterTemplate: dict[str, WorkflowParameter], tags: dict[str, str], containerRegistryMap: ContainerRegistryMap, profiles: list[str], profileParameterTemplates: dict[str, dict[str, WorkflowParameter]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str], parameterTemplate: dict[str, WorkflowParameter], tags: dict[str, str], containerRegistryMap: ContainerRegistryMap, profiles: list[str], profileParameterTemplates: dict[str, dict[str, WorkflowParameter]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowVersionResponse:
     Optional[str] arn
     Optional[str] workflowId
@@ -1782,8 +1817,9 @@ struct ImportReadSetJobItem:
     @json(timestamp="iso8601")
     Optional[DateTime] completionTime
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportReadSetSourceItem:
     SourceFiles sourceFiles
     FileType sourceFileType
@@ -1817,8 +1853,9 @@ struct ImportReferenceJobItem:
     @json(timestamp="iso8601")
     Optional[DateTime] completionTime
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportReferenceSourceItem:
     Optional[str] sourceFile
     ReferenceImportJobItemStatus status
@@ -1828,8 +1865,9 @@ struct ImportReferenceSourceItem:
     Optional[dict[str, str]] tags
     Optional[str] referenceId
 
-# no @derive(Json): member(s) runTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineSetting:
     str runSettingId
     Optional[str] name
@@ -1857,8 +1895,9 @@ struct ListAnnotationImportJobsRequest:
     Optional[str] nextToken
     Optional[ListAnnotationImportJobsFilter] filter
 
-# no @derive(Json): member(s) annotationImportJobs: list[AnnotationImportJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotationImportJobs: list[AnnotationImportJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnnotationImportJobsResponse:
     Optional[list[AnnotationImportJobItem]] annotationImportJobs
     Optional[str] nextToken
@@ -1875,8 +1914,9 @@ struct ListAnnotationStoreVersionsRequest:
     Optional[str] nextToken
     Optional[ListAnnotationStoreVersionsFilter] filter
 
-# no @derive(Json): member(s) annotationStoreVersions: list[AnnotationStoreVersionItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotationStoreVersions: list[AnnotationStoreVersionItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnnotationStoreVersionsResponse:
     Optional[list[AnnotationStoreVersionItem]] annotationStoreVersions
     Optional[str] nextToken
@@ -1893,8 +1933,9 @@ struct ListAnnotationStoresRequest:
     Optional[str] nextToken
     Optional[ListAnnotationStoresFilter] filter
 
-# no @derive(Json): member(s) annotationStores: list[AnnotationStoreItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotationStores: list[AnnotationStoreItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnnotationStoresResponse:
     Optional[list[AnnotationStoreItem]] annotationStores
     Optional[str] nextToken
@@ -1909,8 +1950,9 @@ struct ListBatchRequest:
     Optional[str] name
     Optional[str] runGroupId
 
-# no @derive(Json): member(s) items: list[BatchListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BatchListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchResponse:
     Optional[list[BatchListItem]] items
     Optional[str] nextToken
@@ -1921,8 +1963,9 @@ struct ListConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] startingToken
 
-# no @derive(Json): member(s) items: list[ConfigurationListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ConfigurationListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsResponse:
     Optional[list[ConfigurationListItem]] items
     Optional[str] nextToken
@@ -1934,8 +1977,9 @@ struct ListMultipartReadSetUploadsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) uploads: list[MultipartReadSetUploadListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) uploads: list[MultipartReadSetUploadListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultipartReadSetUploadsResponse:
     Optional[str] nextToken
     Optional[list[MultipartReadSetUploadListItem]] uploads
@@ -1948,8 +1992,9 @@ struct ListReadSetActivationJobsRequest:
     Optional[str] nextToken
     Optional[ActivateReadSetFilter] filter
 
-# no @derive(Json): member(s) activationJobs: list[ActivateReadSetJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) activationJobs: list[ActivateReadSetJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReadSetActivationJobsResponse:
     Optional[str] nextToken
     Optional[list[ActivateReadSetJobItem]] activationJobs
@@ -1962,8 +2007,9 @@ struct ListReadSetExportJobsRequest:
     Optional[str] nextToken
     Optional[ExportReadSetFilter] filter
 
-# no @derive(Json): member(s) exportJobs: list[ExportReadSetJobDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportJobs: list[ExportReadSetJobDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReadSetExportJobsResponse:
     Optional[str] nextToken
     Optional[list[ExportReadSetJobDetail]] exportJobs
@@ -1976,8 +2022,9 @@ struct ListReadSetImportJobsRequest:
     str sequenceStoreId
     Optional[ImportReadSetFilter] filter
 
-# no @derive(Json): member(s) importJobs: list[ImportReadSetJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importJobs: list[ImportReadSetJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReadSetImportJobsResponse:
     Optional[str] nextToken
     Optional[list[ImportReadSetJobItem]] importJobs
@@ -1992,8 +2039,9 @@ struct ListReadSetUploadPartsRequest:
     Optional[str] nextToken
     Optional[ReadSetUploadPartListFilter] filter
 
-# no @derive(Json): member(s) parts: list[ReadSetUploadPartListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parts: list[ReadSetUploadPartListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReadSetUploadPartsResponse:
     Optional[str] nextToken
     Optional[list[ReadSetUploadPartListItem]] parts
@@ -2006,8 +2054,9 @@ struct ListReadSetsRequest:
     Optional[str] nextToken
     Optional[ReadSetFilter] filter
 
-# no @derive(Json): member(s) readSets: list[ReadSetListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) readSets: list[ReadSetListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReadSetsResponse:
     Optional[str] nextToken
     list[ReadSetListItem] readSets
@@ -2020,8 +2069,9 @@ struct ListReferenceImportJobsRequest:
     str referenceStoreId
     Optional[ImportReferenceFilter] filter
 
-# no @derive(Json): member(s) importJobs: list[ImportReferenceJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importJobs: list[ImportReferenceJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReferenceImportJobsResponse:
     Optional[str] nextToken
     Optional[list[ImportReferenceJobItem]] importJobs
@@ -2033,8 +2083,9 @@ struct ListReferenceStoresRequest:
     Optional[str] nextToken
     Optional[ReferenceStoreFilter] filter
 
-# no @derive(Json): member(s) referenceStores: list[ReferenceStoreDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) referenceStores: list[ReferenceStoreDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReferenceStoresResponse:
     Optional[str] nextToken
     list[ReferenceStoreDetail] referenceStores
@@ -2047,8 +2098,9 @@ struct ListReferencesRequest:
     Optional[str] nextToken
     Optional[ReferenceFilter] filter
 
-# no @derive(Json): member(s) references: list[ReferenceListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) references: list[ReferenceListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReferencesResponse:
     Optional[str] nextToken
     list[ReferenceListItem] references
@@ -2059,8 +2111,9 @@ struct ListRunCachesRequest:
     Optional[int64] maxResults
     Optional[str] startingToken
 
-# no @derive(Json): member(s) items: list[RunCacheListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RunCacheListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRunCachesResponse:
     Optional[list[RunCacheListItem]] items
     Optional[str] nextToken
@@ -2072,8 +2125,9 @@ struct ListRunGroupsRequest:
     Optional[str] startingToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[RunGroupListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RunGroupListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRunGroupsResponse:
     Optional[list[RunGroupListItem]] items
     Optional[str] nextToken
@@ -2087,8 +2141,9 @@ struct ListRunTasksRequest:
     Optional[str] startingToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[TaskListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[TaskListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRunTasksResponse:
     Optional[list[TaskListItem]] items
     Optional[str] nextToken
@@ -2104,8 +2159,9 @@ struct ListRunsInBatchRequest:
     Optional[str] runSettingId
     Optional[str] runId
 
-# no @derive(Json): member(s) runs: list[RunBatchListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runs: list[RunBatchListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRunsInBatchResponse:
     Optional[list[RunBatchListItem]] runs
     Optional[str] nextToken
@@ -2121,8 +2177,9 @@ struct ListRunsRequest:
     # wire string of the RunStatus enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) items: list[RunListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RunListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRunsResponse:
     Optional[list[RunListItem]] items
     Optional[str] nextToken
@@ -2134,8 +2191,9 @@ struct ListSequenceStoresRequest:
     Optional[str] nextToken
     Optional[SequenceStoreFilter] filter
 
-# no @derive(Json): member(s) sequenceStores: list[SequenceStoreDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sequenceStores: list[SequenceStoreDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSequenceStoresResponse:
     Optional[str] nextToken
     list[SequenceStoreDetail] sequenceStores
@@ -2148,8 +2206,9 @@ struct ListSharesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) shares: list[ShareDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) shares: list[ShareDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSharesResponse:
     list[ShareDetails] shares
     Optional[str] nextToken
@@ -2159,8 +2218,9 @@ struct ListSharesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -2177,8 +2237,9 @@ struct ListVariantImportJobsRequest:
     Optional[str] nextToken
     Optional[ListVariantImportJobsFilter] filter
 
-# no @derive(Json): member(s) variantImportJobs: list[VariantImportJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variantImportJobs: list[VariantImportJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVariantImportJobsResponse:
     Optional[list[VariantImportJobItem]] variantImportJobs
     Optional[str] nextToken
@@ -2195,8 +2256,9 @@ struct ListVariantStoresRequest:
     Optional[str] nextToken
     Optional[ListVariantStoresFilter] filter
 
-# no @derive(Json): member(s) variantStores: list[VariantStoreItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variantStores: list[VariantStoreItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVariantStoresResponse:
     Optional[list[VariantStoreItem]] variantStores
     Optional[str] nextToken
@@ -2211,8 +2273,9 @@ struct ListWorkflowVersionsRequest:
     Optional[str] startingToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[WorkflowVersionListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkflowVersionListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowVersionsResponse:
     Optional[list[WorkflowVersionListItem]] items
     Optional[str] nextToken
@@ -2226,14 +2289,16 @@ struct ListWorkflowsRequest:
     Optional[str] startingToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[WorkflowListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkflowListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     Optional[list[WorkflowListItem]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultipartReadSetUploadListItem:
     str sequenceStoreId
     str uploadId
@@ -2433,13 +2498,15 @@ struct RunCacheListItem:
     Optional[str] name
     Optional[RunCacheStatus] status
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunConfigurations:
     Optional[VpcConfig] vpcConfig
 
-# no @derive(Json): member(s) vpcConfig: VpcConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunConfigurationsResponse:
     Optional[VpcConfigResponse] vpcConfig
 
@@ -2645,8 +2712,9 @@ struct StartReadSetImportJobResponse:
     @json(timestamp="iso8601")
     DateTime creationTime
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartReadSetImportJobSourceItem:
     SourceFiles sourceFiles
     FileType sourceFileType
@@ -2675,8 +2743,9 @@ struct StartReferenceImportJobResponse:
     @json(timestamp="iso8601")
     DateTime creationTime
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartReferenceImportJobSourceItem:
     str sourceFile
     str name
@@ -2692,8 +2761,9 @@ struct StartRunBatchRequest:
     DefaultRunSetting defaultRunSetting
     BatchRunSettings batchRunSettings
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRunBatchResponse:
     Optional[str] id
     Optional[str] arn
@@ -2729,8 +2799,9 @@ struct StartRunRequest:
     Optional[str] sessionPolicy
     Optional[EngineSettings] engineSettings
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRunResponse:
     Optional[str] arn
     Optional[str] id
@@ -2754,8 +2825,9 @@ struct StartVariantImportRequest:
 struct StartVariantImportResponse:
     str jobId
 
-# no @derive(Json): member(s) tsvStoreOptions: TsvStoreOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tsvStoreOptions: TsvStoreOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StoreOptions:
     Optional[TsvStoreOptions] tsvStoreOptions
 
@@ -2807,15 +2879,17 @@ struct ThrottlingException:
 struct TsvOptions:
     Optional[ReadOptions] readOptions
 
-# no @derive(Json): member(s) formatToHeader: dict[FormatToHeaderKey, str], schema: list[dict[str, SchemaValueType]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formatToHeader: dict[FormatToHeaderKey, str], schema: list[dict[str, SchemaValueType]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TsvStoreOptions:
     Optional[AnnotationType] annotationType
     Optional[dict[FormatToHeaderKey, str]] formatToHeader
     Optional[list[dict[str, SchemaValueType]]] schema
 
-# no @derive(Json): member(s) formatToHeader: dict[FormatToHeaderKey, str], schema: list[dict[str, SchemaValueType]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formatToHeader: dict[FormatToHeaderKey, str], schema: list[dict[str, SchemaValueType]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TsvVersionOptions:
     Optional[AnnotationType] annotationType
     Optional[dict[FormatToHeaderKey, str]] formatToHeader
@@ -2838,8 +2912,9 @@ struct UpdateAnnotationStoreRequest:
     str name
     Optional[str] description
 
-# no @derive(Json): member(s) storeOptions: StoreOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storeOptions: StoreOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAnnotationStoreResponse:
     str id
     ReferenceItem reference
@@ -2900,8 +2975,9 @@ struct UpdateSequenceStoreRequest:
     Optional[list[str]] propagatedSetLevelTags
     Optional[S3AccessConfig] s3AccessConfig
 
-# no @derive(Json): member(s) propagatedSetLevelTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propagatedSetLevelTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSequenceStoreResponse:
     str id
     str arn
@@ -2983,8 +3059,9 @@ struct VariantImportItemDetail:
 struct VariantImportItemSource:
     str source
 
-# no @derive(Json): member(s) annotationFields: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotationFields: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VariantImportJobItem:
     str id
     str destinationName
@@ -3022,28 +3099,32 @@ struct VersionDeleteError:
     str versionName
     str message
 
-# no @derive(Json): member(s) tsvVersionOptions: TsvVersionOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tsvVersionOptions: TsvVersionOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VersionOptions:
     Optional[TsvVersionOptions] tsvVersionOptions
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     Optional[list[str]] securityGroupIds
     Optional[list[str]] subnetIds
     Optional[str] vpcOwnerAccountId
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigResponse:
     Optional[list[str]] securityGroupIds
     Optional[list[str]] subnetIds
     Optional[str] vpcId
     Optional[str] vpcOwnerAccountId
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowListItem:
     Optional[str] arn
     Optional[str] id
@@ -3059,8 +3140,9 @@ struct WorkflowParameter:
     Optional[str] description
     Optional[bool] optional
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowVersionListItem:
     Optional[str] arn
     Optional[str] workflowId
@@ -3119,49 +3201,15 @@ def omics_error_from_code(str code) -> OmicsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDeleteReadSet (document member `ids: list[str]` is not serializable by derive)
-#   CompleteMultipartReadSetUpload (document member `parts: list[CompleteReadSetUploadPartListItem]` is not serializable by derive)
-#   CreateAnnotationStore (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateAnnotationStoreVersion (document member `versionOptions: VersionOptions` is not serializable by derive)
-#   CreateConfiguration (document member `runConfigurations: RunConfigurations` is not serializable by derive)
-#   CreateMultipartReadSetUpload (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateReferenceStore (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRunCache (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRunGroup (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateSequenceStore (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateVariantStore (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateWorkflow (document member `parameterTemplate: dict[str, WorkflowParameter]` is not serializable by derive)
-#   CreateWorkflowVersion (document member `parameterTemplate: dict[str, WorkflowParameter]` is not serializable by derive)
+#   CreateAnnotationStore (document member `storeOptions: StoreOptions` is not serializable)
+#   CreateAnnotationStoreVersion (document member `versionOptions: VersionOptions` is not serializable)
 #   DeleteAnnotationStore (httpQuery `force` has unsupported type bool)
-#   DeleteAnnotationStoreVersions (document member `versions: list[str]` is not serializable by derive)
+#   DeleteAnnotationStoreVersions (httpQuery `force` has unsupported type bool)
 #   DeleteVariantStore (httpQuery `force` has unsupported type bool)
 #   GetRun (httpQuery `export` has unsupported type list[str])
 #   GetWorkflow (httpQuery `export` has unsupported type list[WorkflowExport])
 #   GetWorkflowVersion (httpQuery `export` has unsupported type list[WorkflowExport])
-#   ListAnnotationImportJobs (document member `ids: list[str]` is not serializable by derive)
-#   ListAnnotationStores (document member `ids: list[str]` is not serializable by derive)
-#   ListShares (document member `filter: Filter` is not serializable by derive)
-#   ListVariantImportJobs (document member `ids: list[str]` is not serializable by derive)
-#   ListVariantStores (document member `ids: list[str]` is not serializable by derive)
-#   StartAnnotationImportJob (document member `items: list[AnnotationImportItemSource]` is not serializable by derive)
-#   StartReadSetActivationJob (document member `sources: list[StartReadSetActivationJobSourceItem]` is not serializable by derive)
-#   StartReadSetExportJob (document member `sources: list[ExportReadSet]` is not serializable by derive)
-#   StartReadSetImportJob (document member `sources: list[StartReadSetImportJobSourceItem]` is not serializable by derive)
-#   StartReferenceImportJob (document member `sources: list[StartReferenceImportJobSourceItem]` is not serializable by derive)
-#   StartRun (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartRunBatch (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartVariantImportJob (document member `items: list[VariantImportItemSource]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateSequenceStore (document member `propagatedSetLevelTags: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAnnotationImportJobs (operation not generated)
-#   ListAnnotationStores (operation not generated)
-#   ListShares (operation not generated)
-#   ListVariantImportJobs (operation not generated)
-#   ListVariantStores (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3287,6 +3335,280 @@ struct UpdateWorkflowVersionDocument:
     Optional[int64] storageCapacity
     Optional[str] readmeMarkdown
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def omics_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def omics_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def omics_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchRunSettings to a compact JSON object (declaration order).
+def batch_run_settings_to_json(BatchRunSettings v) -> str:
+    list[str] parts = []
+    if v.inlineSettings.is_some():
+        auto u0 = v.inlineSettings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inline_setting_to_json(x1))
+        parts.append("\"inlineSettings\":" + omics_json_arr(e1))
+    if v.s3UriSettings.is_some():
+        auto u2 = v.s3UriSettings.unwrap()
+        parts.append("\"s3UriSettings\":" + omics_json_str(u2))
+    return omics_json_obj(parts)
+
+# Serialize ContainerRegistryMap to a compact JSON object (declaration order).
+def container_registry_map_to_json(ContainerRegistryMap v) -> str:
+    list[str] parts = []
+    if v.registryMappings.is_some():
+        auto u0 = v.registryMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"registryMappings\":" + omics_json_arr(e1))
+    if v.imageMappings.is_some():
+        auto u2 = v.imageMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"imageMappings\":" + omics_json_arr(e3))
+    return omics_json_obj(parts)
+
+# Serialize DefaultRunSetting to a compact JSON object (declaration order).
+def default_run_setting_to_json(DefaultRunSetting v) -> str:
+    list[str] parts = []
+    parts.append("\"workflowId\":" + omics_json_str(v.workflowId))
+    if v.workflowType.is_some():
+        auto u0 = v.workflowType.unwrap()
+        parts.append("\"workflowType\":" + u0.to_json())
+    parts.append("\"roleArn\":" + omics_json_str(v.roleArn))
+    if v.name.is_some():
+        auto u1 = v.name.unwrap()
+        parts.append("\"name\":" + omics_json_str(u1))
+    if v.cacheId.is_some():
+        auto u2 = v.cacheId.unwrap()
+        parts.append("\"cacheId\":" + omics_json_str(u2))
+    if v.cacheBehavior.is_some():
+        auto u3 = v.cacheBehavior.unwrap()
+        parts.append("\"cacheBehavior\":" + u3.to_json())
+    if v.runGroupId.is_some():
+        auto u4 = v.runGroupId.unwrap()
+        parts.append("\"runGroupId\":" + omics_json_str(u4))
+    if v.priority.is_some():
+        auto u5 = v.priority.unwrap()
+        parts.append("\"priority\":" + str(u5))
+    if v.parameters.is_some():
+        auto u6 = v.parameters.unwrap()
+        parts.append("\"parameters\":" + u6.to_json())
+    if v.storageCapacity.is_some():
+        auto u7 = v.storageCapacity.unwrap()
+        parts.append("\"storageCapacity\":" + str(u7))
+    if v.outputUri.is_some():
+        auto u8 = v.outputUri.unwrap()
+        parts.append("\"outputUri\":" + omics_json_str(u8))
+    if v.logLevel.is_some():
+        auto u9 = v.logLevel.unwrap()
+        parts.append("\"logLevel\":" + u9.to_json())
+    if v.runTags.is_some():
+        auto u10 = v.runTags.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(omics_json_str(k11) + ":" + omics_json_str(u10[k11]))
+        parts.append("\"runTags\":" + omics_json_obj(m11))
+    if v.retentionMode.is_some():
+        auto u12 = v.retentionMode.unwrap()
+        parts.append("\"retentionMode\":" + u12.to_json())
+    if v.storageType.is_some():
+        auto u13 = v.storageType.unwrap()
+        parts.append("\"storageType\":" + u13.to_json())
+    if v.workflowOwnerId.is_some():
+        auto u14 = v.workflowOwnerId.unwrap()
+        parts.append("\"workflowOwnerId\":" + omics_json_str(u14))
+    if v.outputBucketOwnerId.is_some():
+        auto u15 = v.outputBucketOwnerId.unwrap()
+        parts.append("\"outputBucketOwnerId\":" + omics_json_str(u15))
+    if v.workflowVersionName.is_some():
+        auto u16 = v.workflowVersionName.unwrap()
+        parts.append("\"workflowVersionName\":" + omics_json_str(u16))
+    if v.networkingMode.is_some():
+        auto u17 = v.networkingMode.unwrap()
+        parts.append("\"networkingMode\":" + u17.to_json())
+    if v.configurationName.is_some():
+        auto u18 = v.configurationName.unwrap()
+        parts.append("\"configurationName\":" + omics_json_str(u18))
+    if v.sessionPolicy.is_some():
+        auto u19 = v.sessionPolicy.unwrap()
+        parts.append("\"sessionPolicy\":" + omics_json_str(u19))
+    if v.engineSettings.is_some():
+        auto u20 = v.engineSettings.unwrap()
+        parts.append("\"engineSettings\":" + u20.to_json())
+    if v.scratchStorageMode.is_some():
+        auto u21 = v.scratchStorageMode.unwrap()
+        parts.append("\"scratchStorageMode\":" + u21.to_json())
+    return omics_json_obj(parts)
+
+# Serialize DefinitionRepository to a compact JSON object (declaration order).
+def definition_repository_to_json(DefinitionRepository v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionArn\":" + omics_json_str(v.connectionArn))
+    parts.append("\"fullRepositoryId\":" + omics_json_str(v.fullRepositoryId))
+    if v.sourceReference.is_some():
+        auto u0 = v.sourceReference.unwrap()
+        parts.append("\"sourceReference\":" + u0.to_json())
+    if v.excludeFilePatterns.is_some():
+        auto u1 = v.excludeFilePatterns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(omics_json_str(x2))
+        parts.append("\"excludeFilePatterns\":" + omics_json_arr(e2))
+    return omics_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.resourceArns.is_some():
+        auto u0 = v.resourceArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(omics_json_str(x1))
+        parts.append("\"resourceArns\":" + omics_json_arr(e1))
+    if v.status.is_some():
+        auto u2 = v.status.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"status\":" + omics_json_arr(e3))
+    if v.type.is_some():
+        auto u4 = v.type.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"type\":" + omics_json_arr(e5))
+    return omics_json_obj(parts)
+
+# Serialize InlineSetting to a compact JSON object (declaration order).
+def inline_setting_to_json(InlineSetting v) -> str:
+    list[str] parts = []
+    parts.append("\"runSettingId\":" + omics_json_str(v.runSettingId))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + omics_json_str(u0))
+    if v.outputUri.is_some():
+        auto u1 = v.outputUri.unwrap()
+        parts.append("\"outputUri\":" + omics_json_str(u1))
+    if v.priority.is_some():
+        auto u2 = v.priority.unwrap()
+        parts.append("\"priority\":" + str(u2))
+    if v.parameters.is_some():
+        auto u3 = v.parameters.unwrap()
+        parts.append("\"parameters\":" + u3.to_json())
+    if v.outputBucketOwnerId.is_some():
+        auto u4 = v.outputBucketOwnerId.unwrap()
+        parts.append("\"outputBucketOwnerId\":" + omics_json_str(u4))
+    if v.runTags.is_some():
+        auto u5 = v.runTags.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(omics_json_str(k6) + ":" + omics_json_str(u5[k6]))
+        parts.append("\"runTags\":" + omics_json_obj(m6))
+    if v.engineSettings.is_some():
+        auto u7 = v.engineSettings.unwrap()
+        parts.append("\"engineSettings\":" + u7.to_json())
+    return omics_json_obj(parts)
+
+# Serialize RunConfigurations to a compact JSON object (declaration order).
+def run_configurations_to_json(RunConfigurations v) -> str:
+    list[str] parts = []
+    if v.vpcConfig.is_some():
+        auto u0 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u0))
+    return omics_json_obj(parts)
+
+# Serialize StartReadSetImportJobSourceItem to a compact JSON object (declaration order).
+def start_read_set_import_job_source_item_to_json(StartReadSetImportJobSourceItem v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceFiles\":" + v.sourceFiles.to_json())
+    parts.append("\"sourceFileType\":" + v.sourceFileType.to_json())
+    parts.append("\"subjectId\":" + omics_json_str(v.subjectId))
+    parts.append("\"sampleId\":" + omics_json_str(v.sampleId))
+    if v.generatedFrom.is_some():
+        auto u0 = v.generatedFrom.unwrap()
+        parts.append("\"generatedFrom\":" + omics_json_str(u0))
+    if v.referenceArn.is_some():
+        auto u1 = v.referenceArn.unwrap()
+        parts.append("\"referenceArn\":" + omics_json_str(u1))
+    if v.name.is_some():
+        auto u2 = v.name.unwrap()
+        parts.append("\"name\":" + omics_json_str(u2))
+    if v.description.is_some():
+        auto u3 = v.description.unwrap()
+        parts.append("\"description\":" + omics_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(omics_json_str(k5) + ":" + omics_json_str(u4[k5]))
+        parts.append("\"tags\":" + omics_json_obj(m5))
+    return omics_json_obj(parts)
+
+# Serialize StartReferenceImportJobSourceItem to a compact JSON object (declaration order).
+def start_reference_import_job_source_item_to_json(StartReferenceImportJobSourceItem v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceFile\":" + omics_json_str(v.sourceFile))
+    parts.append("\"name\":" + omics_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + omics_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(omics_json_str(k2) + ":" + omics_json_str(u1[k2]))
+        parts.append("\"tags\":" + omics_json_obj(m2))
+    return omics_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    if v.securityGroupIds.is_some():
+        auto u0 = v.securityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(omics_json_str(x1))
+        parts.append("\"securityGroupIds\":" + omics_json_arr(e1))
+    if v.subnetIds.is_some():
+        auto u2 = v.subnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(omics_json_str(x3))
+        parts.append("\"subnetIds\":" + omics_json_arr(e3))
+    if v.vpcOwnerAccountId.is_some():
+        auto u4 = v.vpcOwnerAccountId.unwrap()
+        parts.append("\"vpcOwnerAccountId\":" + omics_json_str(u4))
+    return omics_json_obj(parts)
+
 # A bound Omics client: credentials + region, threaded into every operation.
 struct OmicsClient:
     core.Credentials creds
@@ -3310,6 +3632,21 @@ struct OmicsClient:
         labels["shareId"] = input.shareId
         auto b = binding.HttpBinding(method="POST", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
+
+    # BatchDeleteReadSet  POST /sequencestore/{sequenceStoreId}/readset/batch/delete
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_read_set(self, BatchDeleteReadSetRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sequenceStoreId"] = input.sequenceStoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/readset/batch/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ids:
+            e0.append(omics_json_str(x0))
+        parts.append("\"ids\":" + omics_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
     # CancelAnnotationImportJob  DELETE /import/annotation/{jobId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3347,6 +3684,201 @@ struct OmicsClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/import/variant/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
+    # CompleteMultipartReadSetUpload  POST /sequencestore/{sequenceStoreId}/upload/{uploadId}/complete
+    # errors: AccessDeniedException, InternalServerException, NotSupportedOperationException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def complete_multipart_read_set_upload(self, CompleteMultipartReadSetUploadRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sequenceStoreId"] = input.sequenceStoreId
+        labels["uploadId"] = input.uploadId
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/complete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.parts:
+            e0.append(x0.to_json())
+        parts.append("\"parts\":" + omics_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateConfiguration  POST /configuration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configuration(self, CreateConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + omics_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u0))
+        parts.append("\"runConfigurations\":" + run_configurations_to_json(input.runConfigurations))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(omics_json_str(k2) + ":" + omics_json_str(u1[k2]))
+            parts.append("\"tags\":" + omics_json_obj(m2))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateMultipartReadSetUpload  POST /sequencestore/{sequenceStoreId}/upload
+    # errors: AccessDeniedException, InternalServerException, NotSupportedOperationException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_multipart_read_set_upload(self, CreateMultipartReadSetUploadRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sequenceStoreId"] = input.sequenceStoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u0))
+        parts.append("\"sourceFileType\":" + input.sourceFileType.to_json())
+        parts.append("\"subjectId\":" + omics_json_str(input.subjectId))
+        parts.append("\"sampleId\":" + omics_json_str(input.sampleId))
+        if input.generatedFrom.is_some():
+            auto u1 = input.generatedFrom.unwrap()
+            parts.append("\"generatedFrom\":" + omics_json_str(u1))
+        if input.referenceArn.is_some():
+            auto u2 = input.referenceArn.unwrap()
+            parts.append("\"referenceArn\":" + omics_json_str(u2))
+        parts.append("\"name\":" + omics_json_str(input.name))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(omics_json_str(k5) + ":" + omics_json_str(u4[k5]))
+            parts.append("\"tags\":" + omics_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateReferenceStore  POST /referencestore
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_reference_store(self, CreateReferenceStoreRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + omics_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u0))
+        if input.sseConfig.is_some():
+            auto u1 = input.sseConfig.unwrap()
+            parts.append("\"sseConfig\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(omics_json_str(k3) + ":" + omics_json_str(u2[k3]))
+            parts.append("\"tags\":" + omics_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u4))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateRunCache  POST /runCache
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_run_cache(self, CreateRunCacheRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/runCache", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.cacheBehavior.is_some():
+            auto u0 = input.cacheBehavior.unwrap()
+            parts.append("\"cacheBehavior\":" + u0.to_json())
+        parts.append("\"cacheS3Location\":" + omics_json_str(input.cacheS3Location))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u1))
+        if input.name.is_some():
+            auto u2 = input.name.unwrap()
+            parts.append("\"name\":" + omics_json_str(u2))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(omics_json_str(k4) + ":" + omics_json_str(u3[k4]))
+            parts.append("\"tags\":" + omics_json_obj(m4))
+        if input.cacheBucketOwnerId.is_some():
+            auto u5 = input.cacheBucketOwnerId.unwrap()
+            parts.append("\"cacheBucketOwnerId\":" + omics_json_str(u5))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateRunGroup  POST /runGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_run_group(self, CreateRunGroupRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/runGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + omics_json_str(u0))
+        if input.maxCpus.is_some():
+            auto u1 = input.maxCpus.unwrap()
+            parts.append("\"maxCpus\":" + str(u1))
+        if input.maxRuns.is_some():
+            auto u2 = input.maxRuns.unwrap()
+            parts.append("\"maxRuns\":" + str(u2))
+        if input.maxDuration.is_some():
+            auto u3 = input.maxDuration.unwrap()
+            parts.append("\"maxDuration\":" + str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(omics_json_str(k5) + ":" + omics_json_str(u4[k5]))
+            parts.append("\"tags\":" + omics_json_obj(m5))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        if input.maxGpus.is_some():
+            auto u6 = input.maxGpus.unwrap()
+            parts.append("\"maxGpus\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateSequenceStore  POST /sequencestore
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_sequence_store(self, CreateSequenceStoreRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + omics_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u0))
+        if input.sseConfig.is_some():
+            auto u1 = input.sseConfig.unwrap()
+            parts.append("\"sseConfig\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(omics_json_str(k3) + ":" + omics_json_str(u2[k3]))
+            parts.append("\"tags\":" + omics_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u4))
+        if input.fallbackLocation.is_some():
+            auto u5 = input.fallbackLocation.unwrap()
+            parts.append("\"fallbackLocation\":" + omics_json_str(u5))
+        if input.eTagAlgorithmFamily.is_some():
+            auto u6 = input.eTagAlgorithmFamily.unwrap()
+            parts.append("\"eTagAlgorithmFamily\":" + u6.to_json())
+        if input.propagatedSetLevelTags.is_some():
+            auto u7 = input.propagatedSetLevelTags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(omics_json_str(x8))
+            parts.append("\"propagatedSetLevelTags\":" + omics_json_arr(e8))
+        if input.s3AccessConfig.is_some():
+            auto u9 = input.s3AccessConfig.unwrap()
+            parts.append("\"s3AccessConfig\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
     # CreateShare  POST /share
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_share(self, CreateShareRequest input) -> str:
@@ -3354,6 +3886,177 @@ struct OmicsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/share", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateShareDocument(resourceArn=input.resourceArn, principalSubscriber=input.principalSubscriber, shareName=input.shareName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateVariantStore  POST /variantStore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_variant_store(self, CreateVariantStoreRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/variantStore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"reference\":" + input.reference.to_json())
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + omics_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(omics_json_str(k3) + ":" + omics_json_str(u2[k3]))
+            parts.append("\"tags\":" + omics_json_obj(m3))
+        if input.sseConfig.is_some():
+            auto u4 = input.sseConfig.unwrap()
+            parts.append("\"sseConfig\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateWorkflow  POST /workflow
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workflow(self, CreateWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + omics_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u1))
+        if input.engine.is_some():
+            auto u2 = input.engine.unwrap()
+            parts.append("\"engine\":" + u2.to_json())
+        if input.definitionZip.is_some():
+            auto u3 = input.definitionZip.unwrap()
+            parts.append("\"definitionZip\":" + omics_json_str(base64.encode(u3)))
+        if input.definitionUri.is_some():
+            auto u4 = input.definitionUri.unwrap()
+            parts.append("\"definitionUri\":" + omics_json_str(u4))
+        if input.main.is_some():
+            auto u5 = input.main.unwrap()
+            parts.append("\"main\":" + omics_json_str(u5))
+        if input.parameterTemplate.is_some():
+            auto u6 = input.parameterTemplate.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(omics_json_str(k7) + ":" + u6[k7].to_json())
+            parts.append("\"parameterTemplate\":" + omics_json_obj(m7))
+        if input.storageCapacity.is_some():
+            auto u8 = input.storageCapacity.unwrap()
+            parts.append("\"storageCapacity\":" + str(u8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(omics_json_str(k10) + ":" + omics_json_str(u9[k10]))
+            parts.append("\"tags\":" + omics_json_obj(m10))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        if input.accelerators.is_some():
+            auto u11 = input.accelerators.unwrap()
+            parts.append("\"accelerators\":" + omics_json_str(u11))
+        if input.storageType.is_some():
+            auto u12 = input.storageType.unwrap()
+            parts.append("\"storageType\":" + u12.to_json())
+        if input.containerRegistryMap.is_some():
+            auto u13 = input.containerRegistryMap.unwrap()
+            parts.append("\"containerRegistryMap\":" + container_registry_map_to_json(u13))
+        if input.containerRegistryMapUri.is_some():
+            auto u14 = input.containerRegistryMapUri.unwrap()
+            parts.append("\"containerRegistryMapUri\":" + omics_json_str(u14))
+        if input.readmeMarkdown.is_some():
+            auto u15 = input.readmeMarkdown.unwrap()
+            parts.append("\"readmeMarkdown\":" + omics_json_str(u15))
+        if input.parameterTemplatePath.is_some():
+            auto u16 = input.parameterTemplatePath.unwrap()
+            parts.append("\"parameterTemplatePath\":" + omics_json_str(u16))
+        if input.readmePath.is_some():
+            auto u17 = input.readmePath.unwrap()
+            parts.append("\"readmePath\":" + omics_json_str(u17))
+        if input.definitionRepository.is_some():
+            auto u18 = input.definitionRepository.unwrap()
+            parts.append("\"definitionRepository\":" + definition_repository_to_json(u18))
+        if input.workflowBucketOwnerId.is_some():
+            auto u19 = input.workflowBucketOwnerId.unwrap()
+            parts.append("\"workflowBucketOwnerId\":" + omics_json_str(u19))
+        if input.readmeUri.is_some():
+            auto u20 = input.readmeUri.unwrap()
+            parts.append("\"readmeUri\":" + omics_json_str(u20))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # CreateWorkflowVersion  POST /workflow/{workflowId}/version
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workflow_version(self, CreateWorkflowVersionRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowId"] = input.workflowId
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{workflowId}/version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"versionName\":" + omics_json_str(input.versionName))
+        if input.definitionZip.is_some():
+            auto u0 = input.definitionZip.unwrap()
+            parts.append("\"definitionZip\":" + omics_json_str(base64.encode(u0)))
+        if input.definitionUri.is_some():
+            auto u1 = input.definitionUri.unwrap()
+            parts.append("\"definitionUri\":" + omics_json_str(u1))
+        if input.accelerators.is_some():
+            auto u2 = input.accelerators.unwrap()
+            parts.append("\"accelerators\":" + omics_json_str(u2))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u3))
+        if input.engine.is_some():
+            auto u4 = input.engine.unwrap()
+            parts.append("\"engine\":" + u4.to_json())
+        if input.main.is_some():
+            auto u5 = input.main.unwrap()
+            parts.append("\"main\":" + omics_json_str(u5))
+        if input.parameterTemplate.is_some():
+            auto u6 = input.parameterTemplate.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(omics_json_str(k7) + ":" + u6[k7].to_json())
+            parts.append("\"parameterTemplate\":" + omics_json_obj(m7))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        if input.storageType.is_some():
+            auto u8 = input.storageType.unwrap()
+            parts.append("\"storageType\":" + u8.to_json())
+        if input.storageCapacity.is_some():
+            auto u9 = input.storageCapacity.unwrap()
+            parts.append("\"storageCapacity\":" + str(u9))
+        if input.tags.is_some():
+            auto u10 = input.tags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(omics_json_str(k11) + ":" + omics_json_str(u10[k11]))
+            parts.append("\"tags\":" + omics_json_obj(m11))
+        if input.workflowBucketOwnerId.is_some():
+            auto u12 = input.workflowBucketOwnerId.unwrap()
+            parts.append("\"workflowBucketOwnerId\":" + omics_json_str(u12))
+        if input.containerRegistryMap.is_some():
+            auto u13 = input.containerRegistryMap.unwrap()
+            parts.append("\"containerRegistryMap\":" + container_registry_map_to_json(u13))
+        if input.containerRegistryMapUri.is_some():
+            auto u14 = input.containerRegistryMapUri.unwrap()
+            parts.append("\"containerRegistryMapUri\":" + omics_json_str(u14))
+        if input.readmeMarkdown.is_some():
+            auto u15 = input.readmeMarkdown.unwrap()
+            parts.append("\"readmeMarkdown\":" + omics_json_str(u15))
+        if input.parameterTemplatePath.is_some():
+            auto u16 = input.parameterTemplatePath.unwrap()
+            parts.append("\"parameterTemplatePath\":" + omics_json_str(u16))
+        if input.readmePath.is_some():
+            auto u17 = input.readmePath.unwrap()
+            parts.append("\"readmePath\":" + omics_json_str(u17))
+        if input.definitionRepository.is_some():
+            auto u18 = input.definitionRepository.unwrap()
+            parts.append("\"definitionRepository\":" + definition_repository_to_json(u18))
+        if input.readmeUri.is_some():
+            auto u19 = input.readmeUri.unwrap()
+            parts.append("\"readmeUri\":" + omics_json_str(u19))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
     # DeleteBatch  DELETE /runBatch/{batchId}
@@ -3694,6 +4397,29 @@ struct OmicsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/variantStore/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
+    # ListAnnotationImportJobs  POST /import/annotations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_annotation_import_jobs(self, ListAnnotationImportJobsRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/import/annotations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ids.is_some():
+            auto u0 = input.ids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(omics_json_str(x1))
+            parts.append("\"ids\":" + omics_json_arr(e1))
+        if input.filter.is_some():
+            auto u2 = input.filter.unwrap()
+            parts.append("\"filter\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
     # ListAnnotationStoreVersions  POST /annotationStore/{name}/versions
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_annotation_store_versions(self, ListAnnotationStoreVersionsRequest input) -> str:
@@ -3708,6 +4434,29 @@ struct OmicsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAnnotationStoreVersionsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # ListAnnotationStores  POST /annotationStores
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_annotation_stores(self, ListAnnotationStoresRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/annotationStores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ids.is_some():
+            auto u0 = input.ids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(omics_json_str(x1))
+            parts.append("\"ids\":" + omics_json_arr(e1))
+        if input.filter.is_some():
+            auto u2 = input.filter.unwrap()
+            parts.append("\"filter\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
     # ListBatch  GET /runBatch
@@ -3977,6 +4726,24 @@ struct OmicsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
+    # ListShares  POST /shares
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_shares(self, ListSharesRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/shares", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + filter_to_json(u0))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{resourceArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -3985,6 +4752,52 @@ struct OmicsClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
+
+    # ListVariantImportJobs  POST /import/variants
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_variant_import_jobs(self, ListVariantImportJobsRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/import/variants", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ids.is_some():
+            auto u0 = input.ids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(omics_json_str(x1))
+            parts.append("\"ids\":" + omics_json_arr(e1))
+        if input.filter.is_some():
+            auto u2 = input.filter.unwrap()
+            parts.append("\"filter\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # ListVariantStores  POST /variantStores
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_variant_stores(self, ListVariantStoresRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/variantStores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ids.is_some():
+            auto u0 = input.ids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(omics_json_str(x1))
+            parts.append("\"ids\":" + omics_json_arr(e1))
+        if input.filter.is_some():
+            auto u2 = input.filter.unwrap()
+            parts.append("\"filter\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
     # ListWorkflowVersions  GET /workflow/{workflowId}/version
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -4031,6 +4844,250 @@ struct OmicsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
+    # StartAnnotationImportJob  POST /import/annotation
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_annotation_import_job(self, StartAnnotationImportRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/import/annotation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"destinationName\":" + omics_json_str(input.destinationName))
+        parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
+        list[str] e0 = []
+        for x0 in input.items:
+            e0.append(x0.to_json())
+        parts.append("\"items\":" + omics_json_arr(e0))
+        if input.versionName.is_some():
+            auto u1 = input.versionName.unwrap()
+            parts.append("\"versionName\":" + omics_json_str(u1))
+        if input.formatOptions.is_some():
+            auto u2 = input.formatOptions.unwrap()
+            parts.append("\"formatOptions\":" + u2.to_json())
+        if input.runLeftNormalization.is_some():
+            auto u3 = input.runLeftNormalization.unwrap()
+            parts.append("\"runLeftNormalization\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.annotationFields.is_some():
+            auto u4 = input.annotationFields.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(omics_json_str(k5) + ":" + omics_json_str(u4[k5]))
+            parts.append("\"annotationFields\":" + omics_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartReadSetActivationJob  POST /sequencestore/{sequenceStoreId}/activationjob
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_read_set_activation_job(self, StartReadSetActivationJobRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sequenceStoreId"] = input.sequenceStoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/activationjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.sources:
+            e1.append(x1.to_json())
+        parts.append("\"sources\":" + omics_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartReadSetExportJob  POST /sequencestore/{sequenceStoreId}/exportjob
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_read_set_export_job(self, StartReadSetExportJobRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sequenceStoreId"] = input.sequenceStoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/exportjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"destination\":" + omics_json_str(input.destination))
+        parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.sources:
+            e1.append(x1.to_json())
+        parts.append("\"sources\":" + omics_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartReadSetImportJob  POST /sequencestore/{sequenceStoreId}/importjob
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_read_set_import_job(self, StartReadSetImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sequenceStoreId"] = input.sequenceStoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/importjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.sources:
+            e1.append(start_read_set_import_job_source_item_to_json(x1))
+        parts.append("\"sources\":" + omics_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartReferenceImportJob  POST /referencestore/{referenceStoreId}/importjob
+    # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_reference_import_job(self, StartReferenceImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["referenceStoreId"] = input.referenceStoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/importjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.sources:
+            e1.append(start_reference_import_job_source_item_to_json(x1))
+        parts.append("\"sources\":" + omics_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartRun  POST /run
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_run(self, StartRunRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/run", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.workflowId.is_some():
+            auto u0 = input.workflowId.unwrap()
+            parts.append("\"workflowId\":" + omics_json_str(u0))
+        if input.workflowType.is_some():
+            auto u1 = input.workflowType.unwrap()
+            parts.append("\"workflowType\":" + u1.to_json())
+        if input.runId.is_some():
+            auto u2 = input.runId.unwrap()
+            parts.append("\"runId\":" + omics_json_str(u2))
+        parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
+        if input.name.is_some():
+            auto u3 = input.name.unwrap()
+            parts.append("\"name\":" + omics_json_str(u3))
+        if input.cacheId.is_some():
+            auto u4 = input.cacheId.unwrap()
+            parts.append("\"cacheId\":" + omics_json_str(u4))
+        if input.cacheBehavior.is_some():
+            auto u5 = input.cacheBehavior.unwrap()
+            parts.append("\"cacheBehavior\":" + u5.to_json())
+        if input.runGroupId.is_some():
+            auto u6 = input.runGroupId.unwrap()
+            parts.append("\"runGroupId\":" + omics_json_str(u6))
+        if input.priority.is_some():
+            auto u7 = input.priority.unwrap()
+            parts.append("\"priority\":" + str(u7))
+        if input.parameters.is_some():
+            auto u8 = input.parameters.unwrap()
+            parts.append("\"parameters\":" + u8.to_json())
+        if input.storageCapacity.is_some():
+            auto u9 = input.storageCapacity.unwrap()
+            parts.append("\"storageCapacity\":" + str(u9))
+        parts.append("\"outputUri\":" + omics_json_str(input.outputUri))
+        if input.logLevel.is_some():
+            auto u10 = input.logLevel.unwrap()
+            parts.append("\"logLevel\":" + u10.to_json())
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(omics_json_str(k12) + ":" + omics_json_str(u11[k12]))
+            parts.append("\"tags\":" + omics_json_obj(m12))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        if input.retentionMode.is_some():
+            auto u13 = input.retentionMode.unwrap()
+            parts.append("\"retentionMode\":" + u13.to_json())
+        if input.storageType.is_some():
+            auto u14 = input.storageType.unwrap()
+            parts.append("\"storageType\":" + u14.to_json())
+        if input.workflowOwnerId.is_some():
+            auto u15 = input.workflowOwnerId.unwrap()
+            parts.append("\"workflowOwnerId\":" + omics_json_str(u15))
+        if input.workflowVersionName.is_some():
+            auto u16 = input.workflowVersionName.unwrap()
+            parts.append("\"workflowVersionName\":" + omics_json_str(u16))
+        if input.networkingMode.is_some():
+            auto u17 = input.networkingMode.unwrap()
+            parts.append("\"networkingMode\":" + u17.to_json())
+        if input.scratchStorageMode.is_some():
+            auto u18 = input.scratchStorageMode.unwrap()
+            parts.append("\"scratchStorageMode\":" + u18.to_json())
+        if input.configurationName.is_some():
+            auto u19 = input.configurationName.unwrap()
+            parts.append("\"configurationName\":" + omics_json_str(u19))
+        if input.sessionPolicy.is_some():
+            auto u20 = input.sessionPolicy.unwrap()
+            parts.append("\"sessionPolicy\":" + omics_json_str(u20))
+        if input.engineSettings.is_some():
+            auto u21 = input.engineSettings.unwrap()
+            parts.append("\"engineSettings\":" + u21.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartRunBatch  POST /runBatch
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_run_batch(self, StartRunBatchRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/runBatch", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.batchName.is_some():
+            auto u0 = input.batchName.unwrap()
+            parts.append("\"batchName\":" + omics_json_str(u0))
+        parts.append("\"requestId\":" + omics_json_str(input.requestId))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(omics_json_str(k2) + ":" + omics_json_str(u1[k2]))
+            parts.append("\"tags\":" + omics_json_obj(m2))
+        parts.append("\"defaultRunSetting\":" + default_run_setting_to_json(input.defaultRunSetting))
+        parts.append("\"batchRunSettings\":" + batch_run_settings_to_json(input.batchRunSettings))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # StartVariantImportJob  POST /import/variant
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_variant_import_job(self, StartVariantImportRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/import/variant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"destinationName\":" + omics_json_str(input.destinationName))
+        parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
+        list[str] e0 = []
+        for x0 in input.items:
+            e0.append(x0.to_json())
+        parts.append("\"items\":" + omics_json_arr(e0))
+        if input.runLeftNormalization.is_some():
+            auto u1 = input.runLeftNormalization.unwrap()
+            parts.append("\"runLeftNormalization\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.annotationFields.is_some():
+            auto u2 = input.annotationFields.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(omics_json_str(k3) + ":" + omics_json_str(u2[k3]))
+            parts.append("\"annotationFields\":" + omics_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(omics_json_str(k0) + ":" + omics_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + omics_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
     # UpdateAnnotationStore  POST /annotationStore/{name}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_annotation_store(self, UpdateAnnotationStoreRequest input) -> str:
@@ -4074,6 +5131,38 @@ struct OmicsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRunGroupDocument(name=input.name, maxCpus=input.maxCpus, maxRuns=input.maxRuns, maxDuration=input.maxDuration, maxGpus=input.maxGpus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
+    # UpdateSequenceStore  PATCH /sequencestore/{id}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_sequence_store(self, UpdateSequenceStoreRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + omics_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + omics_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + omics_json_str(u2))
+        if input.fallbackLocation.is_some():
+            auto u3 = input.fallbackLocation.unwrap()
+            parts.append("\"fallbackLocation\":" + omics_json_str(u3))
+        if input.propagatedSetLevelTags.is_some():
+            auto u4 = input.propagatedSetLevelTags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(omics_json_str(x5))
+            parts.append("\"propagatedSetLevelTags\":" + omics_json_arr(e5))
+        if input.s3AccessConfig.is_some():
+            auto u6 = input.s3AccessConfig.unwrap()
+            parts.append("\"s3AccessConfig\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
     # UpdateVariantStore  POST /variantStore/{name}
@@ -4124,12 +5213,38 @@ struct OmicsClient:
         auto bp = restjson.rest_json_raw_payload(b, str(input.payload), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
+    # Paginator for ListAnnotationImportJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: annotationImportJobs).
+    def paginate_list_annotation_import_jobs(self, ListAnnotationImportJobsRequest input):
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        while True:
+            auto raw = self.list_annotation_import_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListAnnotationStoreVersions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: annotationStoreVersions).
     def paginate_list_annotation_store_versions(self, ListAnnotationStoreVersionsRequest input):
         auto host = endpoints.regional_host(omics_service(), self.region)
         while True:
             auto raw = self.list_annotation_store_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAnnotationStores — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: annotationStores).
+    def paginate_list_annotation_stores(self, ListAnnotationStoresRequest input):
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        while True:
+            auto raw = self.list_annotation_stores(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -4351,6 +5466,45 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         while True:
             auto raw = self.list_sequence_stores(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListShares — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: shares).
+    def paginate_list_shares(self, ListSharesRequest input):
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        while True:
+            auto raw = self.list_shares(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListVariantImportJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: variantImportJobs).
+    def paginate_list_variant_import_jobs(self, ListVariantImportJobsRequest input):
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        while True:
+            auto raw = self.list_variant_import_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListVariantStores — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: variantStores).
+    def paginate_list_variant_stores(self, ListVariantStoresRequest input):
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        while True:
+            auto raw = self.list_variant_stores(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 28 operations — 16 with a generated method,
-#   12 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 28 operations — 27 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   96 structs (67 @derive(Json)), 11 enums, 7 error variants.
-#   2 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -171,8 +171,9 @@ struct ControlOperation:
     Optional[str] targetIdentifier
     Optional[str] enabledControlIdentifier
 
-# no @derive(Json): member(s) controlIdentifiers: list[str], targetIdentifiers: list[str], enabledControlIdentifiers: list[str], statuses: list[ControlOperationStatus], controlOperationTypes: list[ControlOperationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlIdentifiers: list[str], targetIdentifiers: list[str], enabledControlIdentifiers: list[str], statuses: list[ControlOperationStatus], controlOperationTypes: list[ControlOperationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlOperationFilter:
     Optional[list[str]] controlIdentifiers
     Optional[list[str]] targetIdentifiers
@@ -273,8 +274,9 @@ struct EnableControlOutput:
     str operationIdentifier
     Optional[str] arn
 
-# no @derive(Json): member(s) parameters: list[EnabledBaselineParameterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: list[EnabledBaselineParameterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnabledBaselineDetails:
     str arn
     str baselineIdentifier
@@ -293,8 +295,9 @@ struct EnabledBaselineDriftStatusSummary:
 struct EnabledBaselineDriftTypes:
     Optional[EnabledBaselineInheritanceDrift] inheritance
 
-# no @derive(Json): member(s) targetIdentifiers: list[str], baselineIdentifiers: list[str], parentIdentifiers: list[str], statuses: list[EnablementStatus], inheritanceDriftStatuses: list[EnabledBaselineDriftStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetIdentifiers: list[str], baselineIdentifiers: list[str], parentIdentifiers: list[str], statuses: list[EnablementStatus], inheritanceDriftStatuses: list[EnabledBaselineDriftStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnabledBaselineFilter:
     Optional[list[str]] targetIdentifiers
     Optional[list[str]] baselineIdentifiers
@@ -331,8 +334,9 @@ struct EnabledBaselineSummary:
     Optional[str] parentIdentifier
     EnablementStatusSummary statusSummary
 
-# no @derive(Json): member(s) targetRegions: list[Region], parameters: list[EnabledControlParameterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetRegions: list[Region], parameters: list[EnabledControlParameterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnabledControlDetails:
     Optional[str] arn
     Optional[str] controlIdentifier
@@ -348,8 +352,9 @@ struct EnabledControlDriftTypes:
     Optional[EnabledControlInheritanceDrift] inheritance
     Optional[EnabledControlResourceDrift] resource
 
-# no @derive(Json): member(s) controlIdentifiers: list[str], statuses: list[EnablementStatus], driftStatuses: list[DriftStatus], parentIdentifiers: list[str], inheritanceDriftStatuses: list[DriftStatus], resourceDriftStatuses: list[DriftStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlIdentifiers: list[str], statuses: list[EnablementStatus], driftStatuses: list[DriftStatus], parentIdentifiers: list[str], inheritanceDriftStatuses: list[DriftStatus], resourceDriftStatuses: list[DriftStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnabledControlFilter:
     Optional[list[str]] controlIdentifiers
     Optional[list[EnablementStatus]] statuses
@@ -424,8 +429,9 @@ struct GetControlOperationOutput:
 struct GetEnabledBaselineInput:
     str enabledBaselineIdentifier
 
-# no @derive(Json): member(s) enabledBaselineDetails: EnabledBaselineDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledBaselineDetails: EnabledBaselineDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnabledBaselineOutput:
     Optional[EnabledBaselineDetails] enabledBaselineDetails
 
@@ -434,8 +440,9 @@ struct GetEnabledBaselineOutput:
 struct GetEnabledControlInput:
     str enabledControlIdentifier
 
-# no @derive(Json): member(s) enabledControlDetails: EnabledControlDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledControlDetails: EnabledControlDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnabledControlOutput:
     EnabledControlDetails enabledControlDetails
 
@@ -453,8 +460,9 @@ struct GetLandingZoneOperationInput:
 struct GetLandingZoneOperationOutput:
     LandingZoneOperationDetail operationDetails
 
-# no @derive(Json): member(s) landingZone: LandingZoneDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) landingZone: LandingZoneDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLandingZoneOutput:
     LandingZoneDetail landingZone
 
@@ -462,8 +470,9 @@ struct GetLandingZoneOutput:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) remediationTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remediationTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LandingZoneDetail:
     str version
     Optional[list[str]] remediationTypes
@@ -488,8 +497,9 @@ struct LandingZoneOperationDetail:
     Optional[DateTime] endTime
     Optional[str] statusMessage
 
-# no @derive(Json): member(s) types: list[LandingZoneOperationType], statuses: list[LandingZoneOperationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[LandingZoneOperationType], statuses: list[LandingZoneOperationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LandingZoneOperationFilter:
     Optional[list[LandingZoneOperationType]] types
     Optional[list[LandingZoneOperationStatus]] statuses
@@ -510,8 +520,9 @@ struct ListBaselinesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) baselines: list[BaselineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) baselines: list[BaselineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBaselinesOutput:
     list[BaselineSummary] baselines
     Optional[str] nextToken
@@ -523,8 +534,9 @@ struct ListControlOperationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) controlOperations: list[ControlOperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlOperations: list[ControlOperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlOperationsOutput:
     list[ControlOperationSummary] controlOperations
     Optional[str] nextToken
@@ -537,8 +549,9 @@ struct ListEnabledBaselinesInput:
     Optional[int64] maxResults
     Optional[bool] includeChildren
 
-# no @derive(Json): member(s) enabledBaselines: list[EnabledBaselineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledBaselines: list[EnabledBaselineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnabledBaselinesOutput:
     list[EnabledBaselineSummary] enabledBaselines
     Optional[str] nextToken
@@ -552,8 +565,9 @@ struct ListEnabledControlsInput:
     Optional[EnabledControlFilter] filter
     Optional[bool] includeChildren
 
-# no @derive(Json): member(s) enabledControls: list[EnabledControlSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledControls: list[EnabledControlSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnabledControlsOutput:
     list[EnabledControlSummary] enabledControls
     Optional[str] nextToken
@@ -565,8 +579,9 @@ struct ListLandingZoneOperationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) landingZoneOperations: list[LandingZoneOperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) landingZoneOperations: list[LandingZoneOperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLandingZoneOperationsOutput:
     list[LandingZoneOperationSummary] landingZoneOperations
     Optional[str] nextToken
@@ -577,8 +592,9 @@ struct ListLandingZonesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) landingZones: list[LandingZoneSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) landingZones: list[LandingZoneSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLandingZonesOutput:
     list[LandingZoneSummary] landingZones
     Optional[str] nextToken
@@ -588,8 +604,9 @@ struct ListLandingZonesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     dict[str, str] tags
 
@@ -741,25 +758,7 @@ def controltower_error_from_code(str code) -> ControlTowerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateLandingZone (document member `remediationTypes: list[str]` is not serializable by derive)
-#   EnableBaseline (document member `parameters: list[EnabledBaselineParameter]` is not serializable by derive)
-#   EnableControl (document member `tags: dict[str, str]` is not serializable by derive)
-#   ListControlOperations (document member `filter: ControlOperationFilter` is not serializable by derive)
-#   ListEnabledBaselines (document member `filter: EnabledBaselineFilter` is not serializable by derive)
-#   ListEnabledControls (document member `filter: EnabledControlFilter` is not serializable by derive)
-#   ListLandingZoneOperations (document member `filter: LandingZoneOperationFilter` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateEnabledBaseline (document member `parameters: list[EnabledBaselineParameter]` is not serializable by derive)
-#   UpdateEnabledControl (document member `parameters: list[EnabledControlParameter]` is not serializable by derive)
-#   UpdateLandingZone (document member `remediationTypes: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListControlOperations (operation not generated)
-#   ListEnabledBaselines (operation not generated)
-#   ListEnabledControls (operation not generated)
-#   ListLandingZoneOperations (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -843,10 +842,193 @@ struct ResetLandingZoneDocument:
     # document members of ResetLandingZone
     str landingZoneIdentifier
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def controltower_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def controltower_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def controltower_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ControlOperationFilter to a compact JSON object (declaration order).
+def control_operation_filter_to_json(ControlOperationFilter v) -> str:
+    list[str] parts = []
+    if v.controlIdentifiers.is_some():
+        auto u0 = v.controlIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(controltower_json_str(x1))
+        parts.append("\"controlIdentifiers\":" + controltower_json_arr(e1))
+    if v.targetIdentifiers.is_some():
+        auto u2 = v.targetIdentifiers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(controltower_json_str(x3))
+        parts.append("\"targetIdentifiers\":" + controltower_json_arr(e3))
+    if v.enabledControlIdentifiers.is_some():
+        auto u4 = v.enabledControlIdentifiers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(controltower_json_str(x5))
+        parts.append("\"enabledControlIdentifiers\":" + controltower_json_arr(e5))
+    if v.statuses.is_some():
+        auto u6 = v.statuses.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"statuses\":" + controltower_json_arr(e7))
+    if v.controlOperationTypes.is_some():
+        auto u8 = v.controlOperationTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"controlOperationTypes\":" + controltower_json_arr(e9))
+    return controltower_json_obj(parts)
+
+# Serialize EnabledBaselineFilter to a compact JSON object (declaration order).
+def enabled_baseline_filter_to_json(EnabledBaselineFilter v) -> str:
+    list[str] parts = []
+    if v.targetIdentifiers.is_some():
+        auto u0 = v.targetIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(controltower_json_str(x1))
+        parts.append("\"targetIdentifiers\":" + controltower_json_arr(e1))
+    if v.baselineIdentifiers.is_some():
+        auto u2 = v.baselineIdentifiers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(controltower_json_str(x3))
+        parts.append("\"baselineIdentifiers\":" + controltower_json_arr(e3))
+    if v.parentIdentifiers.is_some():
+        auto u4 = v.parentIdentifiers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(controltower_json_str(x5))
+        parts.append("\"parentIdentifiers\":" + controltower_json_arr(e5))
+    if v.statuses.is_some():
+        auto u6 = v.statuses.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"statuses\":" + controltower_json_arr(e7))
+    if v.inheritanceDriftStatuses.is_some():
+        auto u8 = v.inheritanceDriftStatuses.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"inheritanceDriftStatuses\":" + controltower_json_arr(e9))
+    return controltower_json_obj(parts)
+
+# Serialize EnabledControlFilter to a compact JSON object (declaration order).
+def enabled_control_filter_to_json(EnabledControlFilter v) -> str:
+    list[str] parts = []
+    if v.controlIdentifiers.is_some():
+        auto u0 = v.controlIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(controltower_json_str(x1))
+        parts.append("\"controlIdentifiers\":" + controltower_json_arr(e1))
+    if v.statuses.is_some():
+        auto u2 = v.statuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"statuses\":" + controltower_json_arr(e3))
+    if v.driftStatuses.is_some():
+        auto u4 = v.driftStatuses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"driftStatuses\":" + controltower_json_arr(e5))
+    if v.parentIdentifiers.is_some():
+        auto u6 = v.parentIdentifiers.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(controltower_json_str(x7))
+        parts.append("\"parentIdentifiers\":" + controltower_json_arr(e7))
+    if v.inheritanceDriftStatuses.is_some():
+        auto u8 = v.inheritanceDriftStatuses.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"inheritanceDriftStatuses\":" + controltower_json_arr(e9))
+    if v.resourceDriftStatuses.is_some():
+        auto u10 = v.resourceDriftStatuses.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"resourceDriftStatuses\":" + controltower_json_arr(e11))
+    return controltower_json_obj(parts)
+
+# Serialize LandingZoneOperationFilter to a compact JSON object (declaration order).
+def landing_zone_operation_filter_to_json(LandingZoneOperationFilter v) -> str:
+    list[str] parts = []
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + controltower_json_arr(e1))
+    if v.statuses.is_some():
+        auto u2 = v.statuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"statuses\":" + controltower_json_arr(e3))
+    return controltower_json_obj(parts)
+
 # A bound ControlTower client: credentials + region, threaded into every operation.
 struct ControlTowerClient:
     core.Credentials creds
     str region
+
+    # CreateLandingZone  POST /create-landingzone
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_landing_zone(self, CreateLandingZoneInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"version\":" + controltower_json_str(input.version))
+        if input.remediationTypes.is_some():
+            auto u0 = input.remediationTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(controltower_json_str(x1))
+            parts.append("\"remediationTypes\":" + controltower_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(controltower_json_str(k3) + ":" + controltower_json_str(u2[k3]))
+            parts.append("\"tags\":" + controltower_json_obj(m3))
+        if input.manifest.is_some():
+            auto u4 = input.manifest.unwrap()
+            parts.append("\"manifest\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
 
     # DeleteLandingZone  POST /delete-landingzone
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -873,6 +1055,53 @@ struct ControlTowerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/disable-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableControlDocument(controlIdentifier=input.controlIdentifier, targetIdentifier=input.targetIdentifier, enabledControlIdentifier=input.enabledControlIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # EnableBaseline  POST /enable-baseline
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def enable_baseline(self, EnableBaselineInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/enable-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"baselineVersion\":" + controltower_json_str(input.baselineVersion))
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"parameters\":" + controltower_json_arr(e1))
+        parts.append("\"baselineIdentifier\":" + controltower_json_str(input.baselineIdentifier))
+        parts.append("\"targetIdentifier\":" + controltower_json_str(input.targetIdentifier))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(controltower_json_str(k3) + ":" + controltower_json_str(u2[k3]))
+            parts.append("\"tags\":" + controltower_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # EnableControl  POST /enable-control
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def enable_control(self, EnableControlInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/enable-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"controlIdentifier\":" + controltower_json_str(input.controlIdentifier))
+        parts.append("\"targetIdentifier\":" + controltower_json_str(input.targetIdentifier))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(controltower_json_str(k1) + ":" + controltower_json_str(u0[k1]))
+            parts.append("\"tags\":" + controltower_json_obj(m1))
+        if input.parameters.is_some():
+            auto u2 = input.parameters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"parameters\":" + controltower_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
 
     # GetBaseline  POST /get-baseline
@@ -947,6 +1176,87 @@ struct ControlTowerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
 
+    # ListControlOperations  POST /list-control-operations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_control_operations(self, ListControlOperationsInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-control-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + control_operation_filter_to_json(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + controltower_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # ListEnabledBaselines  POST /list-enabled-baselines
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_enabled_baselines(self, ListEnabledBaselinesInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-enabled-baselines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + enabled_baseline_filter_to_json(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + controltower_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.includeChildren.is_some():
+            auto u3 = input.includeChildren.unwrap()
+            parts.append("\"includeChildren\":" + json.dumps(JsonValue.Bool(u3)))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # ListEnabledControls  POST /list-enabled-controls
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_enabled_controls(self, ListEnabledControlsInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-enabled-controls", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.targetIdentifier.is_some():
+            auto u0 = input.targetIdentifier.unwrap()
+            parts.append("\"targetIdentifier\":" + controltower_json_str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + controltower_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.filter.is_some():
+            auto u3 = input.filter.unwrap()
+            parts.append("\"filter\":" + enabled_control_filter_to_json(u3))
+        if input.includeChildren.is_some():
+            auto u4 = input.includeChildren.unwrap()
+            parts.append("\"includeChildren\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # ListLandingZoneOperations  POST /list-landingzone-operations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_landing_zone_operations(self, ListLandingZoneOperationsInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-landingzone-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + landing_zone_operation_filter_to_json(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + controltower_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
     # ListLandingZones  POST /list-landingzones
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_landing_zones(self, ListLandingZonesInput input) -> str:
@@ -992,12 +1302,130 @@ struct ControlTowerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(controltower_json_str(k0) + ":" + controltower_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + controltower_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # UpdateEnabledBaseline  POST /update-enabled-baseline
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_enabled_baseline(self, UpdateEnabledBaselineInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-enabled-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"baselineVersion\":" + controltower_json_str(input.baselineVersion))
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"parameters\":" + controltower_json_arr(e1))
+        parts.append("\"enabledBaselineIdentifier\":" + controltower_json_str(input.enabledBaselineIdentifier))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # UpdateEnabledControl  POST /update-enabled-control
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_enabled_control(self, UpdateEnabledControlInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-enabled-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.parameters:
+            e0.append(x0.to_json())
+        parts.append("\"parameters\":" + controltower_json_arr(e0))
+        parts.append("\"enabledControlIdentifier\":" + controltower_json_str(input.enabledControlIdentifier))
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
+    # UpdateLandingZone  POST /update-landingzone
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_landing_zone(self, UpdateLandingZoneInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"version\":" + controltower_json_str(input.version))
+        if input.remediationTypes.is_some():
+            auto u0 = input.remediationTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(controltower_json_str(x1))
+            parts.append("\"remediationTypes\":" + controltower_json_arr(e1))
+        parts.append("\"landingZoneIdentifier\":" + controltower_json_str(input.landingZoneIdentifier))
+        if input.manifest.is_some():
+            auto u2 = input.manifest.unwrap()
+            parts.append("\"manifest\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
+
     # Paginator for ListBaselines — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: baselines).
     def paginate_list_baselines(self, ListBaselinesInput input):
         auto host = endpoints.regional_host(controltower_service(), self.region)
         while True:
             auto raw = self.list_baselines(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListControlOperations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: controlOperations).
+    def paginate_list_control_operations(self, ListControlOperationsInput input):
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        while True:
+            auto raw = self.list_control_operations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListEnabledBaselines — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: enabledBaselines).
+    def paginate_list_enabled_baselines(self, ListEnabledBaselinesInput input):
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        while True:
+            auto raw = self.list_enabled_baselines(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListEnabledControls — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: enabledControls).
+    def paginate_list_enabled_controls(self, ListEnabledControlsInput input):
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        while True:
+            auto raw = self.list_enabled_controls(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListLandingZoneOperations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: landingZoneOperations).
+    def paginate_list_landing_zone_operations(self, ListLandingZoneOperationsInput input):
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        while True:
+            auto raw = self.list_landing_zone_operations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

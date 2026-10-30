@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 21 operations — 14 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 21 operations — 19 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   109 structs (88 @derive(Json)), 11 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -155,14 +155,16 @@ enum WorkerConfigurationState:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) vpc: Vpc not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpc: Vpc not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApacheKafkaCluster:
     str bootstrapServers
     Vpc vpc
 
-# no @derive(Json): member(s) vpc: VpcDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpc: VpcDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApacheKafkaClusterDescription:
     Optional[str] bootstrapServers
     Optional[VpcDescription] vpc
@@ -242,8 +244,9 @@ struct ConnectorOperationSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) kafkaCluster: KafkaClusterDescription, plugins: list[PluginDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kafkaCluster: KafkaClusterDescription, plugins: list[PluginDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorSummary:
     Optional[CapacityDescription] capacity
     Optional[str] connectorArn
@@ -403,8 +406,9 @@ struct DeleteWorkerConfigurationResponse:
 struct DescribeConnectorOperationRequest:
     str connectorOperationArn
 
-# no @derive(Json): member(s) operationSteps: list[ConnectorOperationStep], originWorkerSetting: WorkerSetting, originConnectorConfiguration: dict[str, str], targetWorkerSetting: WorkerSetting, targetConnectorConfiguration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operationSteps: list[ConnectorOperationStep], originWorkerSetting: WorkerSetting, originConnectorConfiguration: dict[str, str], targetWorkerSetting: WorkerSetting, targetConnectorConfiguration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorOperationResponse:
     Optional[str] connectorArn
     Optional[str] connectorOperationArn
@@ -424,8 +428,9 @@ struct DescribeConnectorOperationResponse:
 struct DescribeConnectorRequest:
     str connectorArn
 
-# no @derive(Json): member(s) connectorConfiguration: dict[str, str], kafkaCluster: KafkaClusterDescription, plugins: list[PluginDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorConfiguration: dict[str, str], kafkaCluster: KafkaClusterDescription, plugins: list[PluginDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorResponse:
     Optional[CapacityDescription] capacity
     Optional[str] connectorArn
@@ -495,8 +500,9 @@ struct ForbiddenException:
 struct InternalServerErrorException:
     Optional[str] message
 
-# no @derive(Json): member(s) apacheKafkaCluster: ApacheKafkaCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apacheKafkaCluster: ApacheKafkaCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaCluster:
     ApacheKafkaCluster apacheKafkaCluster
 
@@ -508,8 +514,9 @@ struct KafkaClusterClientAuthentication:
 struct KafkaClusterClientAuthenticationDescription:
     Optional[KafkaClusterClientAuthenticationType] authenticationType
 
-# no @derive(Json): member(s) apacheKafkaCluster: ApacheKafkaClusterDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apacheKafkaCluster: ApacheKafkaClusterDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaClusterDescription:
     Optional[ApacheKafkaClusterDescription] apacheKafkaCluster
 
@@ -528,8 +535,9 @@ struct ListConnectorOperationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectorOperations: list[ConnectorOperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorOperations: list[ConnectorOperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorOperationsResponse:
     Optional[list[ConnectorOperationSummary]] connectorOperations
     Optional[str] nextToken
@@ -541,8 +549,9 @@ struct ListConnectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectors: list[ConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectors: list[ConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[list[ConnectorSummary]] connectors
     Optional[str] nextToken
@@ -554,8 +563,9 @@ struct ListCustomPluginsRequest:
     Optional[str] nextToken
     Optional[str] namePrefix
 
-# no @derive(Json): member(s) customPlugins: list[CustomPluginSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customPlugins: list[CustomPluginSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomPluginsResponse:
     Optional[list[CustomPluginSummary]] customPlugins
     Optional[str] nextToken
@@ -565,8 +575,9 @@ struct ListCustomPluginsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -577,8 +588,9 @@ struct ListWorkerConfigurationsRequest:
     Optional[str] nextToken
     Optional[str] namePrefix
 
-# no @derive(Json): member(s) workerConfigurations: list[WorkerConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workerConfigurations: list[WorkerConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkerConfigurationsResponse:
     Optional[str] nextToken
     Optional[list[WorkerConfigurationSummary]] workerConfigurations
@@ -758,14 +770,16 @@ struct UpdateConnectorResponse:
     Optional[ConnectorState] connectorState
     Optional[str] connectorOperationArn
 
-# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vpc:
     Optional[list[str]] securityGroups
     list[str] subnets
 
-# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcDescription:
     Optional[list[str]] securityGroups
     Optional[list[str]] subnets
@@ -822,8 +836,9 @@ struct WorkerLogDeliveryDescription:
     Optional[FirehoseLogDeliveryDescription] firehose
     Optional[S3LogDeliveryDescription] s3
 
-# no @derive(Json): member(s) plugins: list[PluginDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) plugins: list[PluginDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkerSetting:
     Optional[CapacityDescription] capacity
     Optional[list[PluginDescription]] plugins
@@ -871,18 +886,154 @@ def kafkaconnect_error_from_code(str code) -> KafkaConnectError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConnector (document member `connectorConfiguration: dict[str, str]` is not serializable by derive)
-#   CreateCustomPlugin (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateWorkerConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
 #   RestartConnector (httpQuery `onlyFailedTasks` has unsupported type bool)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateConnector (document member `connectorConfiguration: dict[str, str]` is not serializable by derive)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kafkaconnect_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kafkaconnect_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kafkaconnect_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApacheKafkaCluster to a compact JSON object (declaration order).
+def apache_kafka_cluster_to_json(ApacheKafkaCluster v) -> str:
+    list[str] parts = []
+    parts.append("\"bootstrapServers\":" + kafkaconnect_json_str(v.bootstrapServers))
+    parts.append("\"vpc\":" + vpc_to_json(v.vpc))
+    return kafkaconnect_json_obj(parts)
+
+# Serialize KafkaCluster to a compact JSON object (declaration order).
+def kafka_cluster_to_json(KafkaCluster v) -> str:
+    list[str] parts = []
+    parts.append("\"apacheKafkaCluster\":" + apache_kafka_cluster_to_json(v.apacheKafkaCluster))
+    return kafkaconnect_json_obj(parts)
+
+# Serialize Vpc to a compact JSON object (declaration order).
+def vpc_to_json(Vpc v) -> str:
+    list[str] parts = []
+    if v.securityGroups.is_some():
+        auto u0 = v.securityGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kafkaconnect_json_str(x1))
+        parts.append("\"securityGroups\":" + kafkaconnect_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.subnets:
+        e2.append(kafkaconnect_json_str(x2))
+    parts.append("\"subnets\":" + kafkaconnect_json_arr(e2))
+    return kafkaconnect_json_obj(parts)
 
 # A bound KafkaConnect client: credentials + region, threaded into every operation.
 struct KafkaConnectClient:
     core.Credentials creds
     str region
+
+    # CreateConnector  POST /v1/connectors
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"capacity\":" + input.capacity.to_json())
+        list[str] m0 = []
+        for k0 in sorted(input.connectorConfiguration.keys()):
+            m0.append(kafkaconnect_json_str(k0) + ":" + kafkaconnect_json_str(input.connectorConfiguration[k0]))
+        parts.append("\"connectorConfiguration\":" + kafkaconnect_json_obj(m0))
+        if input.connectorDescription.is_some():
+            auto u1 = input.connectorDescription.unwrap()
+            parts.append("\"connectorDescription\":" + kafkaconnect_json_str(u1))
+        parts.append("\"connectorName\":" + kafkaconnect_json_str(input.connectorName))
+        parts.append("\"kafkaCluster\":" + kafka_cluster_to_json(input.kafkaCluster))
+        parts.append("\"kafkaClusterClientAuthentication\":" + input.kafkaClusterClientAuthentication.to_json())
+        parts.append("\"kafkaClusterEncryptionInTransit\":" + input.kafkaClusterEncryptionInTransit.to_json())
+        parts.append("\"kafkaConnectVersion\":" + kafkaconnect_json_str(input.kafkaConnectVersion))
+        if input.logDelivery.is_some():
+            auto u2 = input.logDelivery.unwrap()
+            parts.append("\"logDelivery\":" + u2.to_json())
+        if input.networkType.is_some():
+            auto u3 = input.networkType.unwrap()
+            parts.append("\"networkType\":" + u3.to_json())
+        list[str] e4 = []
+        for x4 in input.plugins:
+            e4.append(x4.to_json())
+        parts.append("\"plugins\":" + kafkaconnect_json_arr(e4))
+        parts.append("\"serviceExecutionRoleArn\":" + kafkaconnect_json_str(input.serviceExecutionRoleArn))
+        if input.workerConfiguration.is_some():
+            auto u5 = input.workerConfiguration.unwrap()
+            parts.append("\"workerConfiguration\":" + u5.to_json())
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(kafkaconnect_json_str(k7) + ":" + kafkaconnect_json_str(u6[k7]))
+            parts.append("\"tags\":" + kafkaconnect_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, kafkaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafkaconnect_service(), self.region, host)
+
+    # CreateCustomPlugin  POST /v1/custom-plugins
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_custom_plugin(self, CreateCustomPluginRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/custom-plugins", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"contentType\":" + input.contentType.to_json())
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + kafkaconnect_json_str(u0))
+        parts.append("\"location\":" + input.location.to_json())
+        parts.append("\"name\":" + kafkaconnect_json_str(input.name))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(kafkaconnect_json_str(k2) + ":" + kafkaconnect_json_str(u1[k2]))
+            parts.append("\"tags\":" + kafkaconnect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, kafkaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafkaconnect_service(), self.region, host)
+
+    # CreateWorkerConfiguration  POST /v1/worker-configurations
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_worker_configuration(self, CreateWorkerConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/worker-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + kafkaconnect_json_str(u0))
+        parts.append("\"name\":" + kafkaconnect_json_str(input.name))
+        parts.append("\"propertiesFileContent\":" + kafkaconnect_json_str(input.propertiesFileContent))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(kafkaconnect_json_str(k2) + ":" + kafkaconnect_json_str(u1[k2]))
+            parts.append("\"tags\":" + kafkaconnect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, kafkaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafkaconnect_service(), self.region, host)
 
     # DeleteConnector  DELETE /v1/connectors/{connectorArn}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
@@ -1032,6 +1183,58 @@ struct KafkaConnectClient:
         labels["connectorArn"] = input.connectorArn
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}/resume", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
+
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(kafkaconnect_json_str(k0) + ":" + kafkaconnect_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + kafkaconnect_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, kafkaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafkaconnect_service(), self.region, host)
+
+    # UpdateConnector  PUT /v1/connectors/{connectorArn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def update_connector(self, UpdateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["connectorArn"] = input.connectorArn
+        dict[str, str] query = {}
+        query["currentVersion"] = input.currentVersion
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.capacity.is_some():
+            auto u0 = input.capacity.unwrap()
+            parts.append("\"capacity\":" + u0.to_json())
+        if input.connectorConfiguration.is_some():
+            auto u1 = input.connectorConfiguration.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(kafkaconnect_json_str(k2) + ":" + kafkaconnect_json_str(u1[k2]))
+            parts.append("\"connectorConfiguration\":" + kafkaconnect_json_obj(m2))
+        if input.skipHealthValidation.is_some():
+            auto u3 = input.skipHealthValidation.unwrap()
+            parts.append("\"skipHealthValidation\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.plugins.is_some():
+            auto u4 = input.plugins.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"plugins\":" + kafkaconnect_json_arr(e5))
+        if input.workerConfiguration.is_some():
+            auto u6 = input.workerConfiguration.unwrap()
+            parts.append("\"workerConfiguration\":" + u6.to_json())
+        if input.useDefaultWorkerConfiguration.is_some():
+            auto u7 = input.useDefaultWorkerConfiguration.unwrap()
+            parts.append("\"useDefaultWorkerConfiguration\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, kafkaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafkaconnect_service(), self.region, host)
 
     # Paginator for ListConnectorOperations — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: connectorOperations).

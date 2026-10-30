@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 34 operations — 13 with a generated method,
-#   21 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 34 operations — 33 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   124 structs (67 @derive(Json)), 14 enums, 7 error variants.
-#   4 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -226,8 +226,9 @@ struct AccountAssociationsListElement:
     Optional[str] AccountName
     Optional[str] AccountEmail
 
-# no @derive(Json): member(s) LinkedAccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedAccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountGrouping:
     Optional[list[str]] LinkedAccountIds
     Optional[bool] AutoAssociate
@@ -280,8 +281,9 @@ struct BatchAssociateResourcesToCustomLineItemInput:
     list[str] ResourceArns
     Optional[CustomLineItemBillingPeriodRange] BillingPeriodRange
 
-# no @derive(Json): member(s) SuccessfullyAssociatedResources: list[AssociateResourceResponseElement], FailedAssociatedResources: list[AssociateResourceResponseElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfullyAssociatedResources: list[AssociateResourceResponseElement], FailedAssociatedResources: list[AssociateResourceResponseElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateResourcesToCustomLineItemOutput:
     Optional[list[AssociateResourceResponseElement]] SuccessfullyAssociatedResources
     Optional[list[AssociateResourceResponseElement]] FailedAssociatedResources
@@ -293,8 +295,9 @@ struct BatchDisassociateResourcesFromCustomLineItemInput:
     list[str] ResourceArns
     Optional[CustomLineItemBillingPeriodRange] BillingPeriodRange
 
-# no @derive(Json): member(s) SuccessfullyDisassociatedResources: list[DisassociateResourceResponseElement], FailedDisassociatedResources: list[DisassociateResourceResponseElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfullyDisassociatedResources: list[DisassociateResourceResponseElement], FailedDisassociatedResources: list[DisassociateResourceResponseElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateResourcesFromCustomLineItemOutput:
     Optional[list[DisassociateResourceResponseElement]] SuccessfullyDisassociatedResources
     Optional[list[DisassociateResourceResponseElement]] FailedDisassociatedResources
@@ -308,8 +311,9 @@ struct BillingGroupCostReportElement:
     Optional[str] MarginPercentage
     Optional[str] Currency
 
-# no @derive(Json): member(s) Attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillingGroupCostReportResultElement:
     Optional[str] Arn
     Optional[str] AWSCost
@@ -420,8 +424,9 @@ struct CreatePricingRuleInput:
 struct CreatePricingRuleOutput:
     Optional[str] Arn
 
-# no @derive(Json): member(s) CustomTiers: list[CustomTier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomTiers: list[CustomTier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTieringInput:
     Optional[CreateFreeTierConfig] FreeTier
     Optional[list[CustomTier]] CustomTiers
@@ -431,8 +436,9 @@ struct CustomLineItemBillingPeriodRange:
     str InclusiveStartBillingPeriod
     Optional[str] ExclusiveEndBillingPeriod
 
-# no @derive(Json): member(s) Percentage: CustomLineItemPercentageChargeDetails, LineItemFilters: list[LineItemFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Percentage: CustomLineItemPercentageChargeDetails, LineItemFilters: list[LineItemFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomLineItemChargeDetails:
     Optional[CustomLineItemFlatChargeDetails] Flat
     Optional[CustomLineItemPercentageChargeDetails] Percentage
@@ -443,8 +449,9 @@ struct CustomLineItemChargeDetails:
 struct CustomLineItemFlatChargeDetails:
     float64 ChargeValue
 
-# no @derive(Json): member(s) ChargeDetails: ListCustomLineItemChargeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChargeDetails: ListCustomLineItemChargeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomLineItemListElement:
     Optional[str] Arn
     Optional[str] Name
@@ -460,14 +467,16 @@ struct CustomLineItemListElement:
     Optional[ComputationRuleEnum] ComputationRule
     Optional[PresentationObject] PresentationDetails
 
-# no @derive(Json): member(s) AssociatedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomLineItemPercentageChargeDetails:
     float64 PercentageValue
     Optional[list[str]] AssociatedValues
 
-# no @derive(Json): member(s) ChargeDetails: ListCustomLineItemChargeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChargeDetails: ListCustomLineItemChargeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomLineItemVersionListElement:
     Optional[str] Name
     Optional[ListCustomLineItemChargeDetails] ChargeDetails
@@ -567,8 +576,9 @@ struct GetBillingGroupCostReportInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BillingGroupCostReportResults: list[BillingGroupCostReportResultElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BillingGroupCostReportResults: list[BillingGroupCostReportResultElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBillingGroupCostReportOutput:
     Optional[list[BillingGroupCostReportResultElement]] BillingGroupCostReportResults
     Optional[str] NextToken
@@ -589,16 +599,18 @@ struct InternalServerException:
     str Message
     Optional[int64] RetryAfterSeconds
 
-# no @derive(Json): member(s) Values: list[str], AttributeValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], AttributeValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineItemFilter:
     LineItemFilterAttributeName Attribute
     MatchOption MatchOption
     Optional[list[str]] Values
     Optional[list[str]] AttributeValues
 
-# no @derive(Json): member(s) AccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssociationsFilter:
     Optional[str] Association
     Optional[str] AccountId
@@ -611,8 +623,9 @@ struct ListAccountAssociationsInput:
     Optional[ListAccountAssociationsFilter] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LinkedAccounts: list[AccountAssociationsListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedAccounts: list[AccountAssociationsListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssociationsOutput:
     Optional[list[AccountAssociationsListElement]] LinkedAccounts
     Optional[str] NextToken
@@ -622,8 +635,9 @@ struct ListBillingGroupAccountGrouping:
     Optional[bool] AutoAssociate
     Optional[str] ResponsibilityTransferArn
 
-# no @derive(Json): member(s) BillingGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BillingGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingGroupCostReportsFilter:
     Optional[list[str]] BillingGroupArns
 
@@ -635,14 +649,16 @@ struct ListBillingGroupCostReportsInput:
     Optional[str] NextToken
     Optional[ListBillingGroupCostReportsFilter] Filters
 
-# no @derive(Json): member(s) BillingGroupCostReports: list[BillingGroupCostReportElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BillingGroupCostReports: list[BillingGroupCostReportElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingGroupCostReportsOutput:
     Optional[list[BillingGroupCostReportElement]] BillingGroupCostReports
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Arns: list[str], Statuses: list[BillingGroupStatus], PrimaryAccountIds: list[str], BillingGroupTypes: list[BillingGroupType], Names: list[StringSearch], ResponsibilityTransferArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Arns: list[str], Statuses: list[BillingGroupStatus], PrimaryAccountIds: list[str], BillingGroupTypes: list[BillingGroupType], Names: list[StringSearch], ResponsibilityTransferArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingGroupsFilter:
     Optional[list[str]] Arns
     Optional[str] PricingPlan
@@ -661,14 +677,16 @@ struct ListBillingGroupsInput:
     Optional[str] NextToken
     Optional[ListBillingGroupsFilter] Filters
 
-# no @derive(Json): member(s) BillingGroups: list[BillingGroupListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BillingGroups: list[BillingGroupListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingGroupsOutput:
     Optional[list[BillingGroupListElement]] BillingGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LineItemFilters: list[LineItemFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineItemFilters: list[LineItemFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomLineItemChargeDetails:
     Optional[ListCustomLineItemFlatChargeDetails] Flat
     Optional[ListCustomLineItemPercentageChargeDetails] Percentage
@@ -700,14 +718,16 @@ struct ListCustomLineItemVersionsInput:
     Optional[str] NextToken
     Optional[ListCustomLineItemVersionsFilter] Filters
 
-# no @derive(Json): member(s) CustomLineItemVersions: list[CustomLineItemVersionListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomLineItemVersions: list[CustomLineItemVersionListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomLineItemVersionsOutput:
     Optional[list[CustomLineItemVersionListElement]] CustomLineItemVersions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Names: list[str], BillingGroups: list[str], Arns: list[str], AccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], BillingGroups: list[str], Arns: list[str], AccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomLineItemsFilter:
     Optional[list[str]] Names
     Optional[list[str]] BillingGroups
@@ -722,8 +742,9 @@ struct ListCustomLineItemsInput:
     Optional[str] NextToken
     Optional[ListCustomLineItemsFilter] Filters
 
-# no @derive(Json): member(s) CustomLineItems: list[CustomLineItemListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomLineItems: list[CustomLineItemListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomLineItemsOutput:
     Optional[list[CustomLineItemListElement]] CustomLineItems
     Optional[str] NextToken
@@ -736,16 +757,18 @@ struct ListPricingPlansAssociatedWithPricingRuleInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PricingPlanArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PricingPlanArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricingPlansAssociatedWithPricingRuleOutput:
     Optional[str] BillingPeriod
     Optional[str] PricingRuleArn
     Optional[list[str]] PricingPlanArns
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Arns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Arns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricingPlansFilter:
     Optional[list[str]] Arns
 
@@ -757,8 +780,9 @@ struct ListPricingPlansInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PricingPlans: list[PricingPlanListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PricingPlans: list[PricingPlanListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricingPlansOutput:
     Optional[str] BillingPeriod
     Optional[list[PricingPlanListElement]] PricingPlans
@@ -772,16 +796,18 @@ struct ListPricingRulesAssociatedToPricingPlanInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PricingRuleArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PricingRuleArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricingRulesAssociatedToPricingPlanOutput:
     Optional[str] BillingPeriod
     Optional[str] PricingPlanArn
     Optional[list[str]] PricingRuleArns
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Arns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Arns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricingRulesFilter:
     Optional[list[str]] Arns
 
@@ -793,8 +819,9 @@ struct ListPricingRulesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PricingRules: list[PricingRuleListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PricingRules: list[PricingRuleListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricingRulesOutput:
     Optional[str] BillingPeriod
     Optional[list[PricingRuleListElement]] PricingRules
@@ -813,8 +840,9 @@ struct ListResourcesAssociatedToCustomLineItemInput:
     Optional[str] NextToken
     Optional[ListResourcesAssociatedToCustomLineItemFilter] Filters
 
-# no @derive(Json): member(s) AssociatedResources: list[ListResourcesAssociatedToCustomLineItemResponseElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedResources: list[ListResourcesAssociatedToCustomLineItemResponseElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesAssociatedToCustomLineItemOutput:
     Optional[str] Arn
     Optional[list[ListResourcesAssociatedToCustomLineItemResponseElement]] AssociatedResources
@@ -831,8 +859,9 @@ struct ListResourcesAssociatedToCustomLineItemResponseElement:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -849,8 +878,9 @@ struct PricingPlanListElement:
     Optional[int64] CreationTime
     Optional[int64] LastModifiedTime
 
-# no @derive(Json): member(s) Tiering: Tiering not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tiering: Tiering not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PricingRuleListElement:
     Optional[str] Name
     Optional[str] Arn
@@ -902,8 +932,9 @@ struct ThrottlingException:
     str Message
     Optional[int64] RetryAfterSeconds
 
-# no @derive(Json): member(s) CustomTiers: list[CustomTier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomTiers: list[CustomTier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tiering:
     Optional[FreeTierConfig] FreeTier
     Optional[list[CustomTier]] CustomTiers
@@ -960,8 +991,9 @@ struct UpdateBillingTransferPreferenceOutput:
     AutoTransferBillingGroupCreationPreference AutoBillingTransferBillingGroupCreation
     int64 LastModifiedTime
 
-# no @derive(Json): member(s) LineItemFilters: list[LineItemFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineItemFilters: list[LineItemFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCustomLineItemChargeDetails:
     Optional[UpdateCustomLineItemFlatChargeDetails] Flat
     Optional[UpdateCustomLineItemPercentageChargeDetails] Percentage
@@ -980,8 +1012,9 @@ struct UpdateCustomLineItemInput:
     Optional[UpdateCustomLineItemChargeDetails] ChargeDetails
     Optional[CustomLineItemBillingPeriodRange] BillingPeriodRange
 
-# no @derive(Json): member(s) ChargeDetails: ListCustomLineItemChargeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChargeDetails: ListCustomLineItemChargeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCustomLineItemOutput:
     Optional[str] Arn
     Optional[str] BillingGroupArn
@@ -1024,8 +1057,9 @@ struct UpdatePricingRuleInput:
     Optional[float64] ModifierPercentage
     Optional[UpdateTieringInput] Tiering
 
-# no @derive(Json): member(s) Tiering: UpdateTieringInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tiering: UpdateTieringInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePricingRuleOutput:
     Optional[str] Arn
     Optional[str] Name
@@ -1041,14 +1075,16 @@ struct UpdatePricingRuleOutput:
     Optional[str] UsageType
     Optional[str] Operation
 
-# no @derive(Json): member(s) CustomTiers: list[CustomTier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomTiers: list[CustomTier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTieringInput:
     Optional[UpdateFreeTierConfig] FreeTier
     Optional[list[CustomTier]] CustomTiers
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[ValidationExceptionReason] Reason
@@ -1097,36 +1133,7 @@ def billingconductor_error_from_code(str code) -> billingconductorError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateAccounts (document member `AccountIds: list[str]` is not serializable by derive)
-#   AssociatePricingRules (document member `PricingRuleArns: list[str]` is not serializable by derive)
-#   BatchAssociateResourcesToCustomLineItem (document member `ResourceArns: list[str]` is not serializable by derive)
-#   BatchDisassociateResourcesFromCustomLineItem (document member `ResourceArns: list[str]` is not serializable by derive)
-#   CreateBillingGroup (document member `AccountGrouping: AccountGrouping` is not serializable by derive)
-#   CreateCustomLineItem (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreatePricingPlan (document member `PricingRuleArns: list[str]` is not serializable by derive)
-#   CreatePricingRule (document member `Tags: dict[str, str]` is not serializable by derive)
-#   DisassociateAccounts (document member `AccountIds: list[str]` is not serializable by derive)
-#   DisassociatePricingRules (document member `PricingRuleArns: list[str]` is not serializable by derive)
-#   GetBillingGroupCostReport (document member `GroupBy: list[GroupByAttributeName]` is not serializable by derive)
-#   ListAccountAssociations (document member `Filters: ListAccountAssociationsFilter` is not serializable by derive)
-#   ListBillingGroupCostReports (document member `Filters: ListBillingGroupCostReportsFilter` is not serializable by derive)
-#   ListBillingGroups (document member `Filters: ListBillingGroupsFilter` is not serializable by derive)
-#   ListCustomLineItems (document member `Filters: ListCustomLineItemsFilter` is not serializable by derive)
-#   ListPricingPlans (document member `Filters: ListPricingPlansFilter` is not serializable by derive)
-#   ListPricingRules (document member `Filters: ListPricingRulesFilter` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateCustomLineItem (document member `ChargeDetails: UpdateCustomLineItemChargeDetails` is not serializable by derive)
-#   UpdatePricingRule (document member `Tiering: UpdateTieringInput` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAccountAssociations (operation not generated)
-#   ListBillingGroupCostReports (operation not generated)
-#   ListBillingGroups (operation not generated)
-#   ListCustomLineItems (operation not generated)
-#   ListPricingPlans (operation not generated)
-#   ListPricingRules (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1213,10 +1220,470 @@ struct UpdatePricingPlanDocument:
     Optional[str] Name
     Optional[str] Description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def billingconductor_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def billingconductor_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def billingconductor_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccountGrouping to a compact JSON object (declaration order).
+def account_grouping_to_json(AccountGrouping v) -> str:
+    list[str] parts = []
+    if v.LinkedAccountIds.is_some():
+        auto u0 = v.LinkedAccountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"LinkedAccountIds\":" + billingconductor_json_arr(e1))
+    if v.AutoAssociate.is_some():
+        auto u2 = v.AutoAssociate.unwrap()
+        parts.append("\"AutoAssociate\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ResponsibilityTransferArn.is_some():
+        auto u3 = v.ResponsibilityTransferArn.unwrap()
+        parts.append("\"ResponsibilityTransferArn\":" + billingconductor_json_str(u3))
+    return billingconductor_json_obj(parts)
+
+# Serialize CreateTieringInput to a compact JSON object (declaration order).
+def create_tiering_input_to_json(CreateTieringInput v) -> str:
+    list[str] parts = []
+    if v.FreeTier.is_some():
+        auto u0 = v.FreeTier.unwrap()
+        parts.append("\"FreeTier\":" + u0.to_json())
+    if v.CustomTiers.is_some():
+        auto u1 = v.CustomTiers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomTiers\":" + billingconductor_json_arr(e2))
+    return billingconductor_json_obj(parts)
+
+# Serialize CustomLineItemChargeDetails to a compact JSON object (declaration order).
+def custom_line_item_charge_details_to_json(CustomLineItemChargeDetails v) -> str:
+    list[str] parts = []
+    if v.Flat.is_some():
+        auto u0 = v.Flat.unwrap()
+        parts.append("\"Flat\":" + u0.to_json())
+    if v.Percentage.is_some():
+        auto u1 = v.Percentage.unwrap()
+        parts.append("\"Percentage\":" + custom_line_item_percentage_charge_details_to_json(u1))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.LineItemFilters.is_some():
+        auto u2 = v.LineItemFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(line_item_filter_to_json(x3))
+        parts.append("\"LineItemFilters\":" + billingconductor_json_arr(e3))
+    return billingconductor_json_obj(parts)
+
+# Serialize CustomLineItemPercentageChargeDetails to a compact JSON object (declaration order).
+def custom_line_item_percentage_charge_details_to_json(CustomLineItemPercentageChargeDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"PercentageValue\":" + str(v.PercentageValue))
+    if v.AssociatedValues.is_some():
+        auto u0 = v.AssociatedValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"AssociatedValues\":" + billingconductor_json_arr(e1))
+    return billingconductor_json_obj(parts)
+
+# Serialize LineItemFilter to a compact JSON object (declaration order).
+def line_item_filter_to_json(LineItemFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Attribute\":" + v.Attribute.to_json())
+    parts.append("\"MatchOption\":" + v.MatchOption.to_json())
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"Values\":" + billingconductor_json_arr(e1))
+    if v.AttributeValues.is_some():
+        auto u2 = v.AttributeValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(billingconductor_json_str(x3))
+        parts.append("\"AttributeValues\":" + billingconductor_json_arr(e3))
+    return billingconductor_json_obj(parts)
+
+# Serialize ListAccountAssociationsFilter to a compact JSON object (declaration order).
+def list_account_associations_filter_to_json(ListAccountAssociationsFilter v) -> str:
+    list[str] parts = []
+    if v.Association.is_some():
+        auto u0 = v.Association.unwrap()
+        parts.append("\"Association\":" + billingconductor_json_str(u0))
+    if v.AccountId.is_some():
+        auto u1 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + billingconductor_json_str(u1))
+    if v.AccountIds.is_some():
+        auto u2 = v.AccountIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(billingconductor_json_str(x3))
+        parts.append("\"AccountIds\":" + billingconductor_json_arr(e3))
+    return billingconductor_json_obj(parts)
+
+# Serialize ListBillingGroupCostReportsFilter to a compact JSON object (declaration order).
+def list_billing_group_cost_reports_filter_to_json(ListBillingGroupCostReportsFilter v) -> str:
+    list[str] parts = []
+    if v.BillingGroupArns.is_some():
+        auto u0 = v.BillingGroupArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"BillingGroupArns\":" + billingconductor_json_arr(e1))
+    return billingconductor_json_obj(parts)
+
+# Serialize ListBillingGroupsFilter to a compact JSON object (declaration order).
+def list_billing_groups_filter_to_json(ListBillingGroupsFilter v) -> str:
+    list[str] parts = []
+    if v.Arns.is_some():
+        auto u0 = v.Arns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"Arns\":" + billingconductor_json_arr(e1))
+    if v.PricingPlan.is_some():
+        auto u2 = v.PricingPlan.unwrap()
+        parts.append("\"PricingPlan\":" + billingconductor_json_str(u2))
+    if v.Statuses.is_some():
+        auto u3 = v.Statuses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Statuses\":" + billingconductor_json_arr(e4))
+    if v.AutoAssociate.is_some():
+        auto u5 = v.AutoAssociate.unwrap()
+        parts.append("\"AutoAssociate\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.PrimaryAccountIds.is_some():
+        auto u6 = v.PrimaryAccountIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(billingconductor_json_str(x7))
+        parts.append("\"PrimaryAccountIds\":" + billingconductor_json_arr(e7))
+    if v.BillingGroupTypes.is_some():
+        auto u8 = v.BillingGroupTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"BillingGroupTypes\":" + billingconductor_json_arr(e9))
+    if v.Names.is_some():
+        auto u10 = v.Names.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Names\":" + billingconductor_json_arr(e11))
+    if v.ResponsibilityTransferArns.is_some():
+        auto u12 = v.ResponsibilityTransferArns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(billingconductor_json_str(x13))
+        parts.append("\"ResponsibilityTransferArns\":" + billingconductor_json_arr(e13))
+    return billingconductor_json_obj(parts)
+
+# Serialize ListCustomLineItemsFilter to a compact JSON object (declaration order).
+def list_custom_line_items_filter_to_json(ListCustomLineItemsFilter v) -> str:
+    list[str] parts = []
+    if v.Names.is_some():
+        auto u0 = v.Names.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"Names\":" + billingconductor_json_arr(e1))
+    if v.BillingGroups.is_some():
+        auto u2 = v.BillingGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(billingconductor_json_str(x3))
+        parts.append("\"BillingGroups\":" + billingconductor_json_arr(e3))
+    if v.Arns.is_some():
+        auto u4 = v.Arns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(billingconductor_json_str(x5))
+        parts.append("\"Arns\":" + billingconductor_json_arr(e5))
+    if v.AccountIds.is_some():
+        auto u6 = v.AccountIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(billingconductor_json_str(x7))
+        parts.append("\"AccountIds\":" + billingconductor_json_arr(e7))
+    return billingconductor_json_obj(parts)
+
+# Serialize ListPricingPlansFilter to a compact JSON object (declaration order).
+def list_pricing_plans_filter_to_json(ListPricingPlansFilter v) -> str:
+    list[str] parts = []
+    if v.Arns.is_some():
+        auto u0 = v.Arns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"Arns\":" + billingconductor_json_arr(e1))
+    return billingconductor_json_obj(parts)
+
+# Serialize ListPricingRulesFilter to a compact JSON object (declaration order).
+def list_pricing_rules_filter_to_json(ListPricingRulesFilter v) -> str:
+    list[str] parts = []
+    if v.Arns.is_some():
+        auto u0 = v.Arns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(billingconductor_json_str(x1))
+        parts.append("\"Arns\":" + billingconductor_json_arr(e1))
+    return billingconductor_json_obj(parts)
+
+# Serialize UpdateCustomLineItemChargeDetails to a compact JSON object (declaration order).
+def update_custom_line_item_charge_details_to_json(UpdateCustomLineItemChargeDetails v) -> str:
+    list[str] parts = []
+    if v.Flat.is_some():
+        auto u0 = v.Flat.unwrap()
+        parts.append("\"Flat\":" + u0.to_json())
+    if v.Percentage.is_some():
+        auto u1 = v.Percentage.unwrap()
+        parts.append("\"Percentage\":" + u1.to_json())
+    if v.LineItemFilters.is_some():
+        auto u2 = v.LineItemFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(line_item_filter_to_json(x3))
+        parts.append("\"LineItemFilters\":" + billingconductor_json_arr(e3))
+    return billingconductor_json_obj(parts)
+
+# Serialize UpdateTieringInput to a compact JSON object (declaration order).
+def update_tiering_input_to_json(UpdateTieringInput v) -> str:
+    list[str] parts = []
+    if v.FreeTier.is_some():
+        auto u0 = v.FreeTier.unwrap()
+        parts.append("\"FreeTier\":" + u0.to_json())
+    if v.CustomTiers.is_some():
+        auto u1 = v.CustomTiers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomTiers\":" + billingconductor_json_arr(e2))
+    return billingconductor_json_obj(parts)
+
 # A bound billingconductor client: credentials + region, threaded into every operation.
 struct billingconductorClient:
     core.Credentials creds
     str region
+
+    # AssociateAccounts  POST /associate-accounts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def associate_accounts(self, AssociateAccountsInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/associate-accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(billingconductor_json_str(x0))
+        parts.append("\"AccountIds\":" + billingconductor_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # AssociatePricingRules  PUT /associate-pricing-rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def associate_pricing_rules(self, AssociatePricingRulesInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/associate-pricing-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        list[str] e0 = []
+        for x0 in input.PricingRuleArns:
+            e0.append(billingconductor_json_str(x0))
+        parts.append("\"PricingRuleArns\":" + billingconductor_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # BatchAssociateResourcesToCustomLineItem  PUT /batch-associate-resources-to-custom-line-item
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def batch_associate_resources_to_custom_line_item(self, BatchAssociateResourcesToCustomLineItemInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/batch-associate-resources-to-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TargetArn\":" + billingconductor_json_str(input.TargetArn))
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(billingconductor_json_str(x0))
+        parts.append("\"ResourceArns\":" + billingconductor_json_arr(e0))
+        if input.BillingPeriodRange.is_some():
+            auto u1 = input.BillingPeriodRange.unwrap()
+            parts.append("\"BillingPeriodRange\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # BatchDisassociateResourcesFromCustomLineItem  PUT /batch-disassociate-resources-from-custom-line-item
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_disassociate_resources_from_custom_line_item(self, BatchDisassociateResourcesFromCustomLineItemInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/batch-disassociate-resources-from-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TargetArn\":" + billingconductor_json_str(input.TargetArn))
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(billingconductor_json_str(x0))
+        parts.append("\"ResourceArns\":" + billingconductor_json_arr(e0))
+        if input.BillingPeriodRange.is_some():
+            auto u1 = input.BillingPeriodRange.unwrap()
+            parts.append("\"BillingPeriodRange\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # CreateBillingGroup  POST /create-billing-group
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_billing_group(self, CreateBillingGroupInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-billing-group", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + billingconductor_json_str(input.Name))
+        parts.append("\"AccountGrouping\":" + account_grouping_to_json(input.AccountGrouping))
+        parts.append("\"ComputationPreference\":" + input.ComputationPreference.to_json())
+        if input.PrimaryAccountId.is_some():
+            auto u0 = input.PrimaryAccountId.unwrap()
+            parts.append("\"PrimaryAccountId\":" + billingconductor_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + billingconductor_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(billingconductor_json_str(k3) + ":" + billingconductor_json_str(u2[k3]))
+            parts.append("\"Tags\":" + billingconductor_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # CreateCustomLineItem  POST /create-custom-line-item
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_custom_line_item(self, CreateCustomLineItemInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-custom-line-item", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + billingconductor_json_str(input.Name))
+        parts.append("\"Description\":" + billingconductor_json_str(input.Description))
+        parts.append("\"BillingGroupArn\":" + billingconductor_json_str(input.BillingGroupArn))
+        if input.BillingPeriodRange.is_some():
+            auto u0 = input.BillingPeriodRange.unwrap()
+            parts.append("\"BillingPeriodRange\":" + u0.to_json())
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(billingconductor_json_str(k2) + ":" + billingconductor_json_str(u1[k2]))
+            parts.append("\"Tags\":" + billingconductor_json_obj(m2))
+        parts.append("\"ChargeDetails\":" + custom_line_item_charge_details_to_json(input.ChargeDetails))
+        if input.AccountId.is_some():
+            auto u3 = input.AccountId.unwrap()
+            parts.append("\"AccountId\":" + billingconductor_json_str(u3))
+        if input.ComputationRule.is_some():
+            auto u4 = input.ComputationRule.unwrap()
+            parts.append("\"ComputationRule\":" + u4.to_json())
+        if input.PresentationDetails.is_some():
+            auto u5 = input.PresentationDetails.unwrap()
+            parts.append("\"PresentationDetails\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # CreatePricingPlan  POST /create-pricing-plan
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_pricing_plan(self, CreatePricingPlanInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-pricing-plan", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + billingconductor_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + billingconductor_json_str(u0))
+        if input.PricingRuleArns.is_some():
+            auto u1 = input.PricingRuleArns.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(billingconductor_json_str(x2))
+            parts.append("\"PricingRuleArns\":" + billingconductor_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(billingconductor_json_str(k4) + ":" + billingconductor_json_str(u3[k4]))
+            parts.append("\"Tags\":" + billingconductor_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # CreatePricingRule  POST /create-pricing-rule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_pricing_rule(self, CreatePricingRuleInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-pricing-rule", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + billingconductor_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + billingconductor_json_str(u0))
+        parts.append("\"Scope\":" + input.Scope.to_json())
+        parts.append("\"Type\":" + input.Type.to_json())
+        if input.ModifierPercentage.is_some():
+            auto u1 = input.ModifierPercentage.unwrap()
+            parts.append("\"ModifierPercentage\":" + str(u1))
+        if input.Service.is_some():
+            auto u2 = input.Service.unwrap()
+            parts.append("\"Service\":" + billingconductor_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(billingconductor_json_str(k4) + ":" + billingconductor_json_str(u3[k4]))
+            parts.append("\"Tags\":" + billingconductor_json_obj(m4))
+        if input.BillingEntity.is_some():
+            auto u5 = input.BillingEntity.unwrap()
+            parts.append("\"BillingEntity\":" + billingconductor_json_str(u5))
+        if input.Tiering.is_some():
+            auto u6 = input.Tiering.unwrap()
+            parts.append("\"Tiering\":" + create_tiering_input_to_json(u6))
+        if input.UsageType.is_some():
+            auto u7 = input.UsageType.unwrap()
+            parts.append("\"UsageType\":" + billingconductor_json_str(u7))
+        if input.Operation.is_some():
+            auto u8 = input.Operation.unwrap()
+            parts.append("\"Operation\":" + billingconductor_json_str(u8))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
     # DeleteBillingGroup  POST /delete-billing-group
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -1254,6 +1721,59 @@ struct billingconductorClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
+    # DisassociateAccounts  POST /disassociate-accounts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_accounts(self, DisassociateAccountsInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(billingconductor_json_str(x0))
+        parts.append("\"AccountIds\":" + billingconductor_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # DisassociatePricingRules  PUT /disassociate-pricing-rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_pricing_rules(self, DisassociatePricingRulesInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/disassociate-pricing-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        list[str] e0 = []
+        for x0 in input.PricingRuleArns:
+            e0.append(billingconductor_json_str(x0))
+        parts.append("\"PricingRuleArns\":" + billingconductor_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # GetBillingGroupCostReport  POST /get-billing-group-cost-report
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_billing_group_cost_report(self, GetBillingGroupCostReportInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/get-billing-group-cost-report", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        if input.BillingPeriodRange.is_some():
+            auto u0 = input.BillingPeriodRange.unwrap()
+            parts.append("\"BillingPeriodRange\":" + u0.to_json())
+        if input.GroupBy.is_some():
+            auto u1 = input.GroupBy.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"GroupBy\":" + billingconductor_json_arr(e2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u4))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
     # GetBillingTransferPreference  POST /get-billing-transfer-preference
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_billing_transfer_preference(self, GetBillingTransferPreferenceInput input) -> str:
@@ -1261,6 +1781,66 @@ struct billingconductorClient:
         auto b = binding.HttpBinding(method="POST", path_template="/get-billing-transfer-preference", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBillingTransferPreferenceDocument(ResponsibilityTransferArn=input.ResponsibilityTransferArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # ListAccountAssociations  POST /list-account-associations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_account_associations(self, ListAccountAssociationsInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-account-associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BillingPeriod.is_some():
+            auto u0 = input.BillingPeriod.unwrap()
+            parts.append("\"BillingPeriod\":" + billingconductor_json_str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_account_associations_filter_to_json(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u2))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # ListBillingGroupCostReports  POST /list-billing-group-cost-reports
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_billing_group_cost_reports(self, ListBillingGroupCostReportsInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-billing-group-cost-reports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BillingPeriod.is_some():
+            auto u0 = input.BillingPeriod.unwrap()
+            parts.append("\"BillingPeriod\":" + billingconductor_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u2))
+        if input.Filters.is_some():
+            auto u3 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_billing_group_cost_reports_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # ListBillingGroups  POST /list-billing-groups
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_billing_groups(self, ListBillingGroupsInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-billing-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BillingPeriod.is_some():
+            auto u0 = input.BillingPeriod.unwrap()
+            parts.append("\"BillingPeriod\":" + billingconductor_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u2))
+        if input.Filters.is_some():
+            auto u3 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_billing_groups_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
     # ListCustomLineItemVersions  POST /list-custom-line-item-versions
@@ -1272,6 +1852,48 @@ struct billingconductorClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
+    # ListCustomLineItems  POST /list-custom-line-items
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_custom_line_items(self, ListCustomLineItemsInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-line-items", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BillingPeriod.is_some():
+            auto u0 = input.BillingPeriod.unwrap()
+            parts.append("\"BillingPeriod\":" + billingconductor_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u2))
+        if input.Filters.is_some():
+            auto u3 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_custom_line_items_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # ListPricingPlans  POST /list-pricing-plans
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_pricing_plans(self, ListPricingPlansInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-plans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BillingPeriod.is_some():
+            auto u0 = input.BillingPeriod.unwrap()
+            parts.append("\"BillingPeriod\":" + billingconductor_json_str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_pricing_plans_filter_to_json(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u3))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
     # ListPricingPlansAssociatedWithPricingRule  POST /list-pricing-plans-associated-with-pricing-rule
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_pricing_plans_associated_with_pricing_rule(self, ListPricingPlansAssociatedWithPricingRuleInput input) -> str:
@@ -1279,6 +1901,27 @@ struct billingconductorClient:
         auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-plans-associated-with-pricing-rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPricingPlansAssociatedWithPricingRuleDocument(BillingPeriod=input.BillingPeriod, PricingRuleArn=input.PricingRuleArn, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # ListPricingRules  POST /list-pricing-rules
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_pricing_rules(self, ListPricingRulesInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BillingPeriod.is_some():
+            auto u0 = input.BillingPeriod.unwrap()
+            parts.append("\"BillingPeriod\":" + billingconductor_json_str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_pricing_rules_filter_to_json(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + billingconductor_json_str(u3))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
     # ListPricingRulesAssociatedToPricingPlan  POST /list-pricing-rules-associated-to-pricing-plan
@@ -1308,6 +1951,21 @@ struct billingconductorClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, billingconductor_service(), self.region, host)
 
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(billingconductor_json_str(k0) + ":" + billingconductor_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + billingconductor_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
     # UpdateBillingGroup  POST /update-billing-group
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_billing_group(self, UpdateBillingGroupInput input) -> str:
@@ -1329,6 +1987,28 @@ struct billingconductorClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
+    # UpdateCustomLineItem  POST /update-custom-line-item
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_custom_line_item(self, UpdateCustomLineItemInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + billingconductor_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + billingconductor_json_str(u1))
+        if input.ChargeDetails.is_some():
+            auto u2 = input.ChargeDetails.unwrap()
+            parts.append("\"ChargeDetails\":" + update_custom_line_item_charge_details_to_json(u2))
+        if input.BillingPeriodRange.is_some():
+            auto u3 = input.BillingPeriodRange.unwrap()
+            parts.append("\"BillingPeriodRange\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
     # UpdatePricingPlan  PUT /update-pricing-plan
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_pricing_plan(self, UpdatePricingPlanInput input) -> str:
@@ -1337,6 +2017,70 @@ struct billingconductorClient:
         auto doc = UpdatePricingPlanDocument(Arn=input.Arn, Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # UpdatePricingRule  PUT /update-pricing-rule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_pricing_rule(self, UpdatePricingRuleInput input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/update-pricing-rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + billingconductor_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + billingconductor_json_str(u1))
+        if input.Type.is_some():
+            auto u2 = input.Type.unwrap()
+            parts.append("\"Type\":" + u2.to_json())
+        if input.ModifierPercentage.is_some():
+            auto u3 = input.ModifierPercentage.unwrap()
+            parts.append("\"ModifierPercentage\":" + str(u3))
+        if input.Tiering.is_some():
+            auto u4 = input.Tiering.unwrap()
+            parts.append("\"Tiering\":" + update_tiering_input_to_json(u4))
+        auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
+
+    # Paginator for ListAccountAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: LinkedAccounts).
+    def paginate_list_account_associations(self, ListAccountAssociationsInput input):
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        while True:
+            auto raw = self.list_account_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillingGroupCostReports — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: BillingGroupCostReports).
+    def paginate_list_billing_group_cost_reports(self, ListBillingGroupCostReportsInput input):
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        while True:
+            auto raw = self.list_billing_group_cost_reports(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillingGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: BillingGroups).
+    def paginate_list_billing_groups(self, ListBillingGroupsInput input):
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        while True:
+            auto raw = self.list_billing_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListCustomLineItemVersions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: CustomLineItemVersions).
@@ -1351,12 +2095,51 @@ struct billingconductorClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListCustomLineItems — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: CustomLineItems).
+    def paginate_list_custom_line_items(self, ListCustomLineItemsInput input):
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        while True:
+            auto raw = self.list_custom_line_items(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListPricingPlans — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: PricingPlans).
+    def paginate_list_pricing_plans(self, ListPricingPlansInput input):
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        while True:
+            auto raw = self.list_pricing_plans(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListPricingPlansAssociatedWithPricingRule — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: PricingPlanArns).
     def paginate_list_pricing_plans_associated_with_pricing_rule(self, ListPricingPlansAssociatedWithPricingRuleInput input):
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
         while True:
             auto raw = self.list_pricing_plans_associated_with_pricing_rule(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListPricingRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: PricingRules).
+    def paginate_list_pricing_rules(self, ListPricingRulesInput input):
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        while True:
+            auto raw = self.list_pricing_rules(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 404 operations — 255 with a generated method,
-#   149 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 404 operations — 388 with a generated method,
+#   16 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   1362 structs (780 @derive(Json)), 174 enums, 29 error variants.
-#   56 paginators generated (33 paginated ops skipped) from paginators-1.json.
+#   83 paginators generated (6 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Connect rest-json protocol: SigV4 service "connect" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1940,8 +1941,9 @@ struct ActivateEvaluationFormResponse:
     str EvaluationFormArn
     int64 EvaluationFormVersion
 
-# no @derive(Json): member(s) ToList: list[EmailRecipient], CcList: list[EmailRecipient] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ToList: list[EmailRecipient], CcList: list[EmailRecipient] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalEmailRecipients:
     Optional[list[EmailRecipient]] ToList
     Optional[list[EmailRecipient]] CcList
@@ -1956,8 +1958,9 @@ struct AfterContactWorkConfigPerChannel:
     AfterContactWorkConfig AfterContactWorkConfig
     Optional[AfterContactWorkConfig] AgentFirstCallbackAfterContactWorkConfig
 
-# no @derive(Json): member(s) Distributions: list[Distribution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Distributions: list[Distribution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentConfig:
     list[Distribution] Distributions
 
@@ -1971,8 +1974,9 @@ struct AgentContactReference:
     Optional[DateTime] ConnectedToAgentTimestamp
     Optional[QueueReference] Queue
 
-# no @derive(Json): member(s) Preview: Preview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Preview: Preview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentFirst:
     Optional[Preview] Preview
 
@@ -1980,8 +1984,9 @@ struct AgentFirst:
 struct AgentHierarchyGroup:
     Optional[str] Arn
 
-# no @derive(Json): member(s) L1Ids: list[str], L2Ids: list[str], L3Ids: list[str], L4Ids: list[str], L5Ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) L1Ids: list[str], L2Ids: list[str], L3Ids: list[str], L4Ids: list[str], L5Ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentHierarchyGroups:
     Optional[list[str]] L1Ids
     Optional[list[str]] L2Ids
@@ -1989,8 +1994,9 @@ struct AgentHierarchyGroups:
     Optional[list[str]] L4Ids
     Optional[list[str]] L5Ids
 
-# no @derive(Json): member(s) StateTransitions: list[StateTransition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StateTransitions: list[StateTransition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentInfo:
     Optional[str] Id
     Optional[DateTime] AcceptedByAgentTimestamp
@@ -2008,13 +2014,15 @@ struct AgentInfo:
     Optional[VoiceEnhancementMode] VoiceEnhancementMode
     Optional[str] ActiveRegion
 
-# no @derive(Json): member(s) Audio: AudioQualityMetricsInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Audio: AudioQualityMetricsInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentQualityMetrics:
     Optional[AudioQualityMetricsInfo] Audio
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentStatus:
     Optional[str] AgentStatusARN
     Optional[str] AgentStatusId
@@ -2038,15 +2046,17 @@ struct AgentStatusReference:
     Optional[str] StatusArn
     Optional[str] StatusName
 
-# no @derive(Json): member(s) OrConditions: list[AgentStatusSearchCriteria], AndConditions: list[AgentStatusSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[AgentStatusSearchCriteria], AndConditions: list[AgentStatusSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentStatusSearchCriteria:
     Optional[list[AgentStatusSearchCriteria]] OrConditions
     Optional[list[AgentStatusSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentStatusSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
@@ -2059,8 +2069,9 @@ struct AgentStatusSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) AgentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentsCriteria:
     Optional[list[str]] AgentIds
 
@@ -2081,8 +2092,9 @@ struct AiAgentSearchCriteria:
     Optional[bool] AiAgentEscalated
     Optional[AiUseCase] AiUseCase
 
-# no @derive(Json): member(s) Criteria: list[AiAgentSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: list[AiAgentSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AiAgentsCriteria:
     Optional[list[AiAgentSearchCriteria]] Criteria
 
@@ -2099,8 +2111,9 @@ struct AllowedCapabilities:
 struct AllowedExtension:
     str Extension
 
-# no @derive(Json): member(s) RedactionConfiguration: RedactionConfiguration, SummaryConfiguration: SummaryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RedactionConfiguration: RedactionConfiguration, SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyticsConfiguration:
     LanguageConfiguration LanguageConfiguration
     RedactionConfiguration RedactionConfiguration
@@ -2126,8 +2139,9 @@ struct AnswerMachineDetectionConfig:
     Optional[bool] EnableAnswerMachineDetection
     Optional[bool] AwaitAnswerMachinePrompt
 
-# no @derive(Json): member(s) ApplicationPermissions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationPermissions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     Optional[str] Namespace
     Optional[list[str]] ApplicationPermissions
@@ -2144,8 +2158,9 @@ struct AssignContactCategoryActionDefinition:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CaseSlaConfiguration: CaseSlaConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CaseSlaConfiguration: CaseSlaConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssignSlaActionDefinition:
     str SlaAssignmentType
     Optional[CaseSlaConfiguration] CaseSlaConfiguration
@@ -2338,8 +2353,9 @@ struct AssociateWorkspaceRequest:
     str WorkspaceId
     list[str] ResourceArns
 
-# no @derive(Json): member(s) SuccessfulList: list[SuccessfulBatchAssociationSummary], FailedList: list[FailedBatchAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulList: list[SuccessfulBatchAssociationSummary], FailedList: list[FailedBatchAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateWorkspaceResponse:
     Optional[list[SuccessfulBatchAssociationSummary]] SuccessfulList
     Optional[list[FailedBatchAssociationSummary]] FailedList
@@ -2356,8 +2372,9 @@ struct AssociatedContactSummary:
     Optional[ContactInitiationMethod] InitiationMethod
     Optional[Channel] Channel
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachedFile:
     str CreationTime
     str FileArn
@@ -2376,8 +2393,9 @@ struct AttachedFileError:
     Optional[str] ErrorMessage
     Optional[str] FileId
 
-# no @derive(Json): member(s) ExtensionConfiguration: ExtensionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtensionConfiguration: ExtensionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachedFilesConfiguration:
     str InstanceId
     AttachmentScope AttachmentScope
@@ -2385,8 +2403,9 @@ struct AttachedFilesConfiguration:
     Optional[ExtensionConfiguration] ExtensionConfiguration
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) ExtensionConfiguration: ExtensionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtensionConfiguration: ExtensionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachedFilesConfigurationSummary:
     str InstanceId
     AttachmentScope AttachmentScope
@@ -2410,14 +2429,16 @@ struct Attribute:
     Optional[InstanceAttributeType] AttributeType
     Optional[str] Value
 
-# no @derive(Json): member(s) TagConditions: list[TagCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeAndCondition:
     Optional[list[TagCondition]] TagConditions
     Optional[HierarchyGroupCondition] HierarchyGroupCondition
 
-# no @derive(Json): member(s) MatchCriteria: MatchCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchCriteria: MatchCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeCondition:
     Optional[str] Name
     Optional[str] Value
@@ -2430,22 +2451,25 @@ struct AttributeCondition:
 struct AudioFeatures:
     Optional[MeetingFeatureStatus] EchoReduction
 
-# no @derive(Json): member(s) PotentialQualityIssues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PotentialQualityIssues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioQualityMetricsInfo:
     Optional[float64] QualityScore
     Optional[list[str]] PotentialQualityIssues
 
-# no @derive(Json): member(s) SecurityProfileIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfileIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthScope:
     Optional[list[str]] SecurityProfileIds
     str EntityType
     Optional[str] EntityId
     Optional[str] DomainName
 
-# no @derive(Json): member(s) AllowedIps: list[str], BlockedIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedIps: list[str], BlockedIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationProfile:
     Optional[str] Id
     Optional[str] Arn
@@ -2508,14 +2532,16 @@ struct BatchAssociateAnalyticsDataSetRequest:
     list[str] DataSetIds
     Optional[str] TargetAccountId
 
-# no @derive(Json): member(s) Created: list[AnalyticsDataAssociationResult], Errors: list[ErrorResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Created: list[AnalyticsDataAssociationResult], Errors: list[ErrorResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateAnalyticsDataSetResponse:
     Optional[list[AnalyticsDataAssociationResult]] Created
     Optional[list[ErrorResult]] Errors
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateDataTableValueFailureResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
@@ -2528,22 +2554,25 @@ struct BatchCreateDataTableValueRequest:
     str DataTableId
     list[DataTableValue] Values
 
-# no @derive(Json): member(s) Successful: list[BatchCreateDataTableValueSuccessResult], Failed: list[BatchCreateDataTableValueFailureResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[BatchCreateDataTableValueSuccessResult], Failed: list[BatchCreateDataTableValueFailureResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateDataTableValueResponse:
     list[BatchCreateDataTableValueSuccessResult] Successful
     list[BatchCreateDataTableValueFailureResult] Failed
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateDataTableValueSuccessResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
     str RecordId
     DataTableLockVersion LockVersion
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDataTableValueFailureResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
@@ -2556,21 +2585,24 @@ struct BatchDeleteDataTableValueRequest:
     str DataTableId
     list[DataTableDeleteValueIdentifier] Values
 
-# no @derive(Json): member(s) Successful: list[BatchDeleteDataTableValueSuccessResult], Failed: list[BatchDeleteDataTableValueFailureResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[BatchDeleteDataTableValueSuccessResult], Failed: list[BatchDeleteDataTableValueFailureResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDataTableValueResponse:
     list[BatchDeleteDataTableValueSuccessResult] Successful
     list[BatchDeleteDataTableValueFailureResult] Failed
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDataTableValueSuccessResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
     DataTableLockVersion LockVersion
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeDataTableValueFailureResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
@@ -2583,14 +2615,16 @@ struct BatchDescribeDataTableValueRequest:
     str DataTableId
     list[DataTableValueIdentifier] Values
 
-# no @derive(Json): member(s) Successful: list[BatchDescribeDataTableValueSuccessResult], Failed: list[BatchDescribeDataTableValueFailureResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[BatchDescribeDataTableValueSuccessResult], Failed: list[BatchDescribeDataTableValueFailureResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeDataTableValueResponse:
     list[BatchDescribeDataTableValueSuccessResult] Successful
     list[BatchDescribeDataTableValueFailureResult] Failed
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValueResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValueResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeDataTableValueSuccessResult:
     str RecordId
     str AttributeId
@@ -2608,8 +2642,9 @@ struct BatchDisassociateAnalyticsDataSetRequest:
     list[str] DataSetIds
     Optional[str] TargetAccountId
 
-# no @derive(Json): member(s) Deleted: list[str], Errors: list[ErrorResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deleted: list[str], Errors: list[ErrorResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateAnalyticsDataSetResponse:
     Optional[list[str]] Deleted
     Optional[list[ErrorResult]] Errors
@@ -2621,8 +2656,9 @@ struct BatchGetAttachedFileMetadataRequest:
     str InstanceId
     str AssociatedResourceArn
 
-# no @derive(Json): member(s) Files: list[AttachedFile], Errors: list[AttachedFileError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Files: list[AttachedFile], Errors: list[AttachedFileError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAttachedFileMetadataResponse:
     Optional[list[AttachedFile]] Files
     Optional[list[AttachedFileError]] Errors
@@ -2634,8 +2670,9 @@ struct BatchGetFlowAssociationRequest:
     list[str] ResourceIds
     Optional[ListFlowAssociationResourceType] ResourceType
 
-# no @derive(Json): member(s) FlowAssociationSummaryList: list[FlowAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowAssociationSummaryList: list[FlowAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFlowAssociationResponse:
     Optional[list[FlowAssociationSummary]] FlowAssociationSummaryList
 
@@ -2646,14 +2683,16 @@ struct BatchPutContactRequest:
     str InstanceId
     list[ContactDataRequest] ContactDataRequestList
 
-# no @derive(Json): member(s) SuccessfulRequestList: list[SuccessfulRequest], FailedRequestList: list[FailedRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulRequestList: list[SuccessfulRequest], FailedRequestList: list[FailedRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutContactResponse:
     Optional[list[SuccessfulRequest]] SuccessfulRequestList
     Optional[list[FailedRequest]] FailedRequestList
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateDataTableValueFailureResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
@@ -2666,14 +2705,16 @@ struct BatchUpdateDataTableValueRequest:
     str DataTableId
     list[DataTableValue] Values
 
-# no @derive(Json): member(s) Successful: list[BatchUpdateDataTableValueSuccessResult], Failed: list[BatchUpdateDataTableValueFailureResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[BatchUpdateDataTableValueSuccessResult], Failed: list[BatchUpdateDataTableValueFailureResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateDataTableValueResponse:
     list[BatchUpdateDataTableValueSuccessResult] Successful
     list[BatchUpdateDataTableValueFailureResult] Failed
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateDataTableValueSuccessResult:
     list[PrimaryValue] PrimaryValues
     str AttributeName
@@ -2684,8 +2725,9 @@ struct BooleanCondition:
     Optional[str] FieldName
     Optional[BooleanComparisonType] ComparisonType
 
-# no @derive(Json): member(s) MetricFilters: list[MetricFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricFilters: list[MetricFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculationComponent:
     str Alias
     Optional[str] MetricName
@@ -2696,8 +2738,9 @@ struct CalculationComponent:
 struct Campaign:
     Optional[str] CampaignId
 
-# no @derive(Json): member(s) TargetFieldValues: list[FieldValueUnion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetFieldValues: list[FieldValueUnion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaseSlaConfiguration:
     str Name
     str Type
@@ -2737,8 +2780,9 @@ struct ChatMetrics:
     Optional[ParticipantMetrics] AgentMetrics
     Optional[ParticipantMetrics] CustomerMetrics
 
-# no @derive(Json): member(s) ParticipantTimerConfigList: list[ParticipantTimerConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParticipantTimerConfigList: list[ParticipantTimerConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatParticipantRoleConfig:
     list[ParticipantTimerConfiguration] ParticipantTimerConfigList
 
@@ -2761,8 +2805,9 @@ struct ClaimPhoneNumberResponse:
     Optional[str] PhoneNumberId
     Optional[str] PhoneNumberArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClaimedPhoneNumberSummary:
     Optional[str] PhoneNumberId
     Optional[str] PhoneNumberArn
@@ -2776,8 +2821,9 @@ struct ClaimedPhoneNumberSummary:
     Optional[PhoneNumberStatus] PhoneNumberStatus
     Optional[str] SourcePhoneNumberArn
 
-# no @derive(Json): member(s) TagConditions: list[TagCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommonAttributeAndCondition:
     Optional[list[TagCondition]] TagConditions
 
@@ -2816,8 +2862,9 @@ struct ConnectionData:
     Optional[Attendee] Attendee
     Optional[Meeting] Meeting
 
-# no @derive(Json): member(s) AgentInfo: AgentInfo, WisdomInfo: WisdomInfo, Tags: dict[str, str], RoutingCriteria: RoutingCriteria, QualityMetrics: QualityMetrics, AdditionalEmailRecipients: AdditionalEmailRecipients, SegmentAttributes: dict[str, SegmentAttributeValue], Recordings: list[RecordingInfo], ContactEvaluations: dict[str, ContactEvaluation], OutboundStrategy: OutboundStrategy, Attributes: dict[str, str], NextContacts: list[NextContactEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentInfo: AgentInfo, WisdomInfo: WisdomInfo, Tags: dict[str, str], RoutingCriteria: RoutingCriteria, QualityMetrics: QualityMetrics, AdditionalEmailRecipients: AdditionalEmailRecipients, SegmentAttributes: dict[str, SegmentAttributeValue], Recordings: list[RecordingInfo], ContactEvaluations: dict[str, ContactEvaluation], OutboundStrategy: OutboundStrategy, Attributes: dict[str, str], NextContacts: list[NextContactEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Contact:
     Optional[str] Arn
     Optional[str] Id
@@ -2868,8 +2915,9 @@ struct Contact:
     Optional[list[NextContactEntry]] NextContacts
     Optional[GlobalResiliencyMetadata] GlobalResiliencyMetadata
 
-# no @derive(Json): member(s) Transcript: Transcript not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transcript: Transcript not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactAnalysis:
     Optional[Transcript] Transcript
 
@@ -2888,8 +2936,9 @@ struct ContactConfiguration:
     Optional[ParticipantRole] ParticipantRole
     Optional[bool] IncludeRawMessage
 
-# no @derive(Json): member(s) Attributes: dict[str, str], OutboundStrategy: OutboundStrategy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str], OutboundStrategy: OutboundStrategy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactDataRequest:
     Optional[Endpoint] SystemEndpoint
     Optional[Endpoint] CustomerEndpoint
@@ -2914,8 +2963,9 @@ struct ContactEvaluation:
     Optional[DateTime] DeleteTimestamp
     Optional[str] ExportLocation
 
-# no @derive(Json): member(s) TagConditions: list[TagCondition], AttributeConditions: list[ContactEvaluationAttributeCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagConditions: list[TagCondition], AttributeConditions: list[ContactEvaluationAttributeCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactEvaluationAttributeAndCondition:
     Optional[list[TagCondition]] TagConditions
     Optional[list[ContactEvaluationAttributeCondition]] AttributeConditions
@@ -2926,8 +2976,9 @@ struct ContactEvaluationAttributeCondition:
     Optional[ContactEvaluationAttributeValue] AttributeValue
     Optional[str] ComparisonType
 
-# no @derive(Json): member(s) OrConditions: list[ContactEvaluationAttributeAndCondition], AndCondition: ContactEvaluationAttributeAndCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[ContactEvaluationAttributeAndCondition], AndCondition: ContactEvaluationAttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactEvaluationAttributeFilter:
     Optional[list[ContactEvaluationAttributeAndCondition]] OrConditions
     Optional[ContactEvaluationAttributeAndCondition] AndCondition
@@ -2938,13 +2989,15 @@ struct ContactEvaluationAttributeFilter:
 struct ContactEvaluationAttributeValue:
     Optional[str] StringValue
 
-# no @derive(Json): member(s) ContactStates: list[ContactState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactStates: list[ContactState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFilter:
     Optional[list[ContactState]] ContactStates
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlow:
     Optional[str] Arn
     Optional[str] Id
@@ -2982,22 +3035,25 @@ struct ContactFlowAliasSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) TagConditions: list[TagCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowAttributeAndCondition:
     Optional[list[TagCondition]] TagConditions
     Optional[ContactFlowTypeCondition] ContactFlowTypeCondition
 
-# no @derive(Json): member(s) OrConditions: list[ContactFlowAttributeAndCondition], AndCondition: ContactFlowAttributeAndCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[ContactFlowAttributeAndCondition], AndCondition: ContactFlowAttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowAttributeFilter:
     Optional[list[ContactFlowAttributeAndCondition]] OrConditions
     Optional[ContactFlowAttributeAndCondition] AndCondition
     Optional[TagCondition] TagCondition
     Optional[ContactFlowTypeCondition] ContactFlowTypeCondition
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowModule:
     Optional[str] Arn
     Optional[str] Id
@@ -3033,8 +3089,9 @@ struct ContactFlowModuleAliasSummary:
     Optional[str] AliasDescription
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) OrConditions: list[ContactFlowModuleSearchCriteria], AndConditions: list[ContactFlowModuleSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[ContactFlowModuleSearchCriteria], AndConditions: list[ContactFlowModuleSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowModuleSearchCriteria:
     Optional[list[ContactFlowModuleSearchCriteria]] OrConditions
     Optional[list[ContactFlowModuleSearchCriteria]] AndConditions
@@ -3042,8 +3099,9 @@ struct ContactFlowModuleSearchCriteria:
     Optional[ContactFlowModuleState] StateCondition
     Optional[ContactFlowModuleStatus] StatusCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowModuleSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -3064,8 +3122,9 @@ struct ContactFlowModuleVersionSummary:
 struct ContactFlowNotPublishedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) OrConditions: list[ContactFlowSearchCriteria], AndConditions: list[ContactFlowSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[ContactFlowSearchCriteria], AndConditions: list[ContactFlowSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowSearchCriteria:
     Optional[list[ContactFlowSearchCriteria]] OrConditions
     Optional[list[ContactFlowSearchCriteria]] AndConditions
@@ -3074,8 +3133,9 @@ struct ContactFlowSearchCriteria:
     Optional[ContactFlowState] StateCondition
     Optional[ContactFlowStatus] StatusCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter, FlowAttributeFilter: ContactFlowAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter, FlowAttributeFilter: ContactFlowAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactFlowSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
     Optional[ContactFlowAttributeFilter] FlowAttributeFilter
@@ -3122,8 +3182,9 @@ struct ContactNotFoundException:
 struct ContactNotTerminatedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SegmentAttributes: dict[str, ContactSearchSummarySegmentAttributeValue], RoutingCriteria: RoutingCriteria, Tags: dict[str, str], AiAgentInfo: list[ContactSearchSummaryAiAgentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentAttributes: dict[str, ContactSearchSummarySegmentAttributeValue], RoutingCriteria: RoutingCriteria, Tags: dict[str, str], AiAgentInfo: list[ContactSearchSummaryAiAgentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactSearchSummary:
     Optional[str] Arn
     Optional[str] Id
@@ -3159,33 +3220,38 @@ struct ContactSearchSummaryQueueInfo:
     Optional[str] Id
     Optional[DateTime] EnqueueTimestamp
 
-# no @derive(Json): member(s) ValueMap: dict[str, SegmentAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueMap: dict[str, SegmentAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactSearchSummarySegmentAttributeValue:
     Optional[str] ValueString
     Optional[dict[str, SegmentAttributeValue]] ValueMap
 
-# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentAttributes:
     Optional[RecommenderConfig] RecommenderConfig
 
-# no @derive(Json): member(s) OrConditions: list[CommonAttributeAndCondition], AndCondition: CommonAttributeAndCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[CommonAttributeAndCondition], AndCondition: CommonAttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlPlaneAttributeFilter:
     Optional[list[CommonAttributeAndCondition]] OrConditions
     Optional[CommonAttributeAndCondition] AndCondition
     Optional[TagCondition] TagCondition
 
-# no @derive(Json): member(s) OrConditions: list[list[TagCondition]], AndConditions: list[TagCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[list[TagCondition]], AndConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlPlaneTagFilter:
     Optional[list[list[TagCondition]]] OrConditions
     Optional[list[TagCondition]] AndConditions
     Optional[TagCondition] TagCondition
 
-# no @derive(Json): member(s) OrConditions: list[AttributeAndCondition], AndCondition: AttributeAndCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[AttributeAndCondition], AndCondition: AttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlPlaneUserAttributeFilter:
     Optional[list[AttributeAndCondition]] OrConditions
     Optional[AttributeAndCondition] AndCondition
@@ -3239,8 +3305,9 @@ struct CreateAuthCodeResponse:
     Optional[str] EntityType
     Optional[str] EntityId
 
-# no @derive(Json): member(s) Fields: list[FieldValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[FieldValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCaseActionDefinition:
     list[FieldValue] Fields
     str TemplateId
@@ -3814,8 +3881,9 @@ struct CreateViewRequest:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateViewResponse:
     Optional[View] View
 
@@ -3827,8 +3895,9 @@ struct CreateViewVersionRequest:
     Optional[str] VersionDescription
     Optional[str] ViewContentSha256
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateViewVersionResponse:
     Optional[View] View
 
@@ -3909,8 +3978,9 @@ struct CurrentMetricData:
     Optional[CurrentMetric] Metric
     Optional[float64] Value
 
-# no @derive(Json): member(s) Collections: list[CurrentMetricData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Collections: list[CurrentMetricData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CurrentMetricResult:
     Optional[Dimensions] Dimensions
     Optional[list[CurrentMetricData]] Collections
@@ -3925,8 +3995,9 @@ struct Customer:
     Optional[DeviceInfo] DeviceInfo
     Optional[ParticipantCapabilities] Capabilities
 
-# no @derive(Json): member(s) Audio: AudioQualityMetricsInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Audio: AudioQualityMetricsInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomerQualityMetrics:
     Optional[AudioQualityMetricsInfo] Audio
 
@@ -3935,8 +4006,9 @@ struct CustomerVoiceActivity:
     Optional[DateTime] GreetingStartTimestamp
     Optional[DateTime] GreetingEndTimestamp
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTable:
     str Name
     str Id
@@ -3953,13 +4025,15 @@ struct DataTable:
     Optional[str] LastModifiedRegion
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) PrimaryAttributeAccessControlConfiguration: PrimaryAttributeAccessControlConfigurationItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryAttributeAccessControlConfiguration: PrimaryAttributeAccessControlConfigurationItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableAccessControlConfiguration:
     Optional[PrimaryAttributeAccessControlConfigurationItem] PrimaryAttributeAccessControlConfiguration
 
-# no @derive(Json): member(s) Validation: Validation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Validation: Validation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableAttribute:
     Optional[str] AttributeId
     str Name
@@ -3974,15 +4048,17 @@ struct DataTableAttribute:
     Optional[str] LastModifiedRegion
     Optional[Validation] Validation
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableDeleteValueIdentifier:
     Optional[list[PrimaryValue]] PrimaryValues
     str AttributeName
     DataTableLockVersion LockVersion
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableEvaluatedValue:
     str RecordId
     list[PrimaryValue] PrimaryValues
@@ -3999,15 +4075,17 @@ struct DataTableLockVersion:
     Optional[str] PrimaryValues
     Optional[str] Value
 
-# no @derive(Json): member(s) OrConditions: list[DataTableSearchCriteria], AndConditions: list[DataTableSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[DataTableSearchCriteria], AndConditions: list[DataTableSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableSearchCriteria:
     Optional[list[DataTableSearchCriteria]] OrConditions
     Optional[list[DataTableSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
@@ -4019,8 +4097,9 @@ struct DataTableSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableValue:
     Optional[list[PrimaryValue]] PrimaryValues
     str AttributeName
@@ -4029,20 +4108,23 @@ struct DataTableValue:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue], AttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue], AttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableValueEvaluationSet:
     Optional[list[PrimaryValue]] PrimaryValues
     list[str] AttributeNames
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableValueIdentifier:
     Optional[list[PrimaryValue]] PrimaryValues
     str AttributeName
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValueResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValueResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataTableValueSummary:
     Optional[str] RecordId
     Optional[str] AttributeId
@@ -4490,8 +4572,9 @@ struct DescribeAgentStatusRequest:
     str InstanceId
     str AgentStatusId
 
-# no @derive(Json): member(s) AgentStatus: AgentStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentStatus: AgentStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgentStatusResponse:
     Optional[AgentStatus] AgentStatus
 
@@ -4502,8 +4585,9 @@ struct DescribeAttachedFilesConfigurationRequest:
     # wire string of the AttachmentScope enum (uri binding)
     str AttachmentScope
 
-# no @derive(Json): member(s) AttachedFilesConfiguration: AttachedFilesConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedFilesConfiguration: AttachedFilesConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAttachedFilesConfigurationResponse:
     AttachedFilesConfiguration AttachedFilesConfiguration
 
@@ -4513,8 +4597,9 @@ struct DescribeAuthenticationProfileRequest:
     str AuthenticationProfileId
     str InstanceId
 
-# no @derive(Json): member(s) AuthenticationProfile: AuthenticationProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationProfile: AuthenticationProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAuthenticationProfileResponse:
     Optional[AuthenticationProfile] AuthenticationProfile
 
@@ -4524,8 +4609,9 @@ struct DescribeContactEvaluationRequest:
     str InstanceId
     str EvaluationId
 
-# no @derive(Json): member(s) Evaluation: Evaluation, EvaluationForm: EvaluationFormContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Evaluation: Evaluation, EvaluationForm: EvaluationFormContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContactEvaluationResponse:
     Evaluation Evaluation
     EvaluationFormContent EvaluationForm
@@ -4558,8 +4644,9 @@ struct DescribeContactFlowModuleRequest:
     str InstanceId
     str ContactFlowModuleId
 
-# no @derive(Json): member(s) ContactFlowModule: ContactFlowModule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowModule: ContactFlowModule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContactFlowModuleResponse:
     Optional[ContactFlowModule] ContactFlowModule
 
@@ -4569,8 +4656,9 @@ struct DescribeContactFlowRequest:
     str InstanceId
     str ContactFlowId
 
-# no @derive(Json): member(s) ContactFlow: ContactFlow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlow: ContactFlow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContactFlowResponse:
     Optional[ContactFlow] ContactFlow
 
@@ -4580,8 +4668,9 @@ struct DescribeContactRequest:
     str InstanceId
     str ContactId
 
-# no @derive(Json): member(s) Contact: Contact not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contact: Contact not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContactResponse:
     Optional[Contact] Contact
 
@@ -4592,8 +4681,9 @@ struct DescribeDataTableAttributeRequest:
     str DataTableId
     str AttributeName
 
-# no @derive(Json): member(s) Attribute: DataTableAttribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attribute: DataTableAttribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataTableAttributeResponse:
     DataTableAttribute Attribute
 
@@ -4603,8 +4693,9 @@ struct DescribeDataTableRequest:
     str InstanceId
     str DataTableId
 
-# no @derive(Json): member(s) DataTable: DataTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataTable: DataTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataTableResponse:
     DataTable DataTable
 
@@ -4614,8 +4705,9 @@ struct DescribeEmailAddressRequest:
     str InstanceId
     str EmailAddressId
 
-# no @derive(Json): member(s) AliasConfigurations: list[AliasConfiguration], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AliasConfigurations: list[AliasConfiguration], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEmailAddressResponse:
     Optional[str] EmailAddressId
     Optional[str] EmailAddressArn
@@ -4634,8 +4726,9 @@ struct DescribeEvaluationFormRequest:
     str EvaluationFormId
     Optional[int64] EvaluationFormVersion
 
-# no @derive(Json): member(s) EvaluationForm: EvaluationForm not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationForm: EvaluationForm not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEvaluationFormResponse:
     EvaluationForm EvaluationForm
 
@@ -4645,8 +4738,9 @@ struct DescribeExtractionDefinitionRequest:
     str InstanceId
     str ExtractionDefinitionId
 
-# no @derive(Json): member(s) ExtractionDefinition: ExtractionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtractionDefinition: ExtractionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExtractionDefinitionResponse:
     ExtractionDefinition ExtractionDefinition
 
@@ -4657,8 +4751,9 @@ struct DescribeHoursOfOperationOverrideRequest:
     str HoursOfOperationId
     str HoursOfOperationOverrideId
 
-# no @derive(Json): member(s) HoursOfOperationOverride: HoursOfOperationOverride not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HoursOfOperationOverride: HoursOfOperationOverride not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHoursOfOperationOverrideResponse:
     Optional[HoursOfOperationOverride] HoursOfOperationOverride
 
@@ -4668,8 +4763,9 @@ struct DescribeHoursOfOperationRequest:
     str InstanceId
     str HoursOfOperationId
 
-# no @derive(Json): member(s) HoursOfOperation: HoursOfOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HoursOfOperation: HoursOfOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHoursOfOperationResponse:
     Optional[HoursOfOperation] HoursOfOperation
 
@@ -4689,8 +4785,9 @@ struct DescribeInstanceAttributeResponse:
 struct DescribeInstanceRequest:
     str InstanceId
 
-# no @derive(Json): member(s) Instance: Instance, ReplicationConfiguration: ReplicationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instance: Instance, ReplicationConfiguration: ReplicationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceResponse:
     Optional[Instance] Instance
     Optional[ReplicationConfiguration] ReplicationConfiguration
@@ -4713,8 +4810,9 @@ struct DescribeMetricRequest:
     str InstanceId
     str MetricId
 
-# no @derive(Json): member(s) Metric: MetricDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metric: MetricDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetricResponse:
     MetricDefinition Metric
 
@@ -4724,8 +4822,9 @@ struct DescribeNotificationRequest:
     str InstanceId
     str NotificationId
 
-# no @derive(Json): member(s) Notification: Notification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notification: Notification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotificationResponse:
     Notification Notification
 
@@ -4734,8 +4833,9 @@ struct DescribeNotificationResponse:
 struct DescribePhoneNumberRequest:
     str PhoneNumberId
 
-# no @derive(Json): member(s) ClaimedPhoneNumberSummary: ClaimedPhoneNumberSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClaimedPhoneNumberSummary: ClaimedPhoneNumberSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePhoneNumberResponse:
     Optional[ClaimedPhoneNumberSummary] ClaimedPhoneNumberSummary
 
@@ -4745,8 +4845,9 @@ struct DescribePredefinedAttributeRequest:
     str InstanceId
     str Name
 
-# no @derive(Json): member(s) PredefinedAttribute: PredefinedAttribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredefinedAttribute: PredefinedAttribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePredefinedAttributeResponse:
     Optional[PredefinedAttribute] PredefinedAttribute
 
@@ -4756,8 +4857,9 @@ struct DescribePromptRequest:
     str InstanceId
     str PromptId
 
-# no @derive(Json): member(s) Prompt: Prompt not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Prompt: Prompt not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePromptResponse:
     Optional[Prompt] Prompt
 
@@ -4767,8 +4869,9 @@ struct DescribeQueueRequest:
     str InstanceId
     str QueueId
 
-# no @derive(Json): member(s) Queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQueueResponse:
     Optional[Queue] Queue
 
@@ -4778,8 +4881,9 @@ struct DescribeQuickConnectRequest:
     str InstanceId
     str QuickConnectId
 
-# no @derive(Json): member(s) QuickConnect: QuickConnect not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuickConnect: QuickConnect not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQuickConnectResponse:
     Optional[QuickConnect] QuickConnect
 
@@ -4789,8 +4893,9 @@ struct DescribeRoutingProfileRequest:
     str InstanceId
     str RoutingProfileId
 
-# no @derive(Json): member(s) RoutingProfile: RoutingProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingProfile: RoutingProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRoutingProfileResponse:
     Optional[RoutingProfile] RoutingProfile
 
@@ -4800,8 +4905,9 @@ struct DescribeRuleRequest:
     str InstanceId
     str RuleId
 
-# no @derive(Json): member(s) Rule: Rule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: Rule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRuleResponse:
     Rule Rule
 
@@ -4811,8 +4917,9 @@ struct DescribeSecurityProfileRequest:
     str SecurityProfileId
     str InstanceId
 
-# no @derive(Json): member(s) SecurityProfile: SecurityProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfile: SecurityProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSecurityProfileResponse:
     Optional[SecurityProfile] SecurityProfile
 
@@ -4824,8 +4931,9 @@ struct DescribeTestCaseRequest:
     # wire string of the TestCaseStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) TestCase: TestCase not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestCase: TestCase not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTestCaseResponse:
     Optional[TestCase] TestCase
 
@@ -4834,8 +4942,9 @@ struct DescribeTestCaseResponse:
 struct DescribeTrafficDistributionGroupRequest:
     str TrafficDistributionGroupId
 
-# no @derive(Json): member(s) TrafficDistributionGroup: TrafficDistributionGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrafficDistributionGroup: TrafficDistributionGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrafficDistributionGroupResponse:
     Optional[TrafficDistributionGroup] TrafficDistributionGroup
 
@@ -4845,8 +4954,9 @@ struct DescribeUserHierarchyGroupRequest:
     str HierarchyGroupId
     str InstanceId
 
-# no @derive(Json): member(s) HierarchyGroup: HierarchyGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HierarchyGroup: HierarchyGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserHierarchyGroupResponse:
     Optional[HierarchyGroup] HierarchyGroup
 
@@ -4865,8 +4975,9 @@ struct DescribeUserRequest:
     str UserId
     str InstanceId
 
-# no @derive(Json): member(s) User: User not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) User: User not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserResponse:
     Optional[User] User
 
@@ -4876,8 +4987,9 @@ struct DescribeViewRequest:
     str InstanceId
     str ViewId
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeViewResponse:
     Optional[View] View
 
@@ -4887,8 +4999,9 @@ struct DescribeVocabularyRequest:
     str InstanceId
     str VocabularyId
 
-# no @derive(Json): member(s) Vocabulary: Vocabulary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vocabulary: Vocabulary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVocabularyResponse:
     Vocabulary Vocabulary
 
@@ -4898,8 +5011,9 @@ struct DescribeWorkspaceRequest:
     str InstanceId
     str WorkspaceId
 
-# no @derive(Json): member(s) Workspace: Workspace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workspace: Workspace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceResponse:
     Workspace Workspace
 
@@ -5072,8 +5186,9 @@ struct DisassociateWorkspaceRequest:
     str WorkspaceId
     list[str] ResourceArns
 
-# no @derive(Json): member(s) SuccessfulList: list[SuccessfulBatchAssociationSummary], FailedList: list[FailedBatchAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulList: list[SuccessfulBatchAssociationSummary], FailedList: list[FailedBatchAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateWorkspaceResponse:
     Optional[list[SuccessfulBatchAssociationSummary]] SuccessfulList
     Optional[list[FailedBatchAssociationSummary]] FailedList
@@ -5112,14 +5227,16 @@ struct DownloadUrlMetadata:
 struct DuplicateResourceException:
     Optional[str] Message
 
-# no @derive(Json): member(s) OperationalHours: list[OperationalHour] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationalHours: list[OperationalHour] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EffectiveHoursOfOperations:
     Optional[str] Date
     Optional[list[OperationalHour]] OperationalHours
 
-# no @derive(Json): member(s) OverrideHours: list[OverrideHour] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideHours: list[OverrideHour] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EffectiveOverrideHours:
     Optional[str] Date
     Optional[list[OverrideHour]] OverrideHours
@@ -5133,8 +5250,9 @@ struct EmailAddressInfo:
     str EmailAddress
     Optional[str] DisplayName
 
-# no @derive(Json): member(s) AliasConfigurations: list[AliasConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AliasConfigurations: list[AliasConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailAddressMetadata:
     Optional[str] EmailAddressId
     Optional[str] EmailAddressArn
@@ -5143,15 +5261,17 @@ struct EmailAddressMetadata:
     Optional[str] DisplayName
     Optional[list[AliasConfiguration]] AliasConfigurations
 
-# no @derive(Json): member(s) OrConditions: list[EmailAddressSearchCriteria], AndConditions: list[EmailAddressSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[EmailAddressSearchCriteria], AndConditions: list[EmailAddressSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailAddressSearchCriteria:
     Optional[list[EmailAddressSearchCriteria]] OrConditions
     Optional[list[EmailAddressSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailAddressSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -5222,14 +5342,16 @@ struct EvaluateDataTableValuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Values: list[DataTableEvaluatedValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[DataTableEvaluatedValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateDataTableValuesResponse:
     list[DataTableEvaluatedValue] Values
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Metadata: EvaluationMetadata, Answers: dict[str, EvaluationAnswerOutput], Notes: dict[str, EvaluationNote], Scores: dict[str, EvaluationScore], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: EvaluationMetadata, Answers: dict[str, EvaluationAnswerOutput], Notes: dict[str, EvaluationNote], Scores: dict[str, EvaluationScore], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Evaluation:
     str EvaluationId
     str EvaluationArn
@@ -5255,8 +5377,9 @@ struct EvaluationAcknowledgementSummary:
     Optional[str] AcknowledgedBy
     Optional[str] AcknowledgerComment
 
-# no @derive(Json): member(s) StringValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationAnswerData:
     Optional[str] StringValue
     Optional[float64] NumericValue
@@ -5264,27 +5387,31 @@ struct EvaluationAnswerData:
     Optional[str] DateTimeValue
     Optional[bool] NotApplicable
 
-# no @derive(Json): member(s) Value: EvaluationAnswerData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: EvaluationAnswerData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationAnswerInput:
     Optional[EvaluationAnswerData] Value
 
-# no @derive(Json): member(s) Value: EvaluationAnswerData, SystemSuggestedValue: EvaluationAnswerData, SuggestedAnswers: list[EvaluationSuggestedAnswer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: EvaluationAnswerData, SystemSuggestedValue: EvaluationAnswerData, SuggestedAnswers: list[EvaluationSuggestedAnswer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationAnswerOutput:
     Optional[EvaluationAnswerData] Value
     Optional[EvaluationAnswerData] SystemSuggestedValue
     Optional[list[EvaluationSuggestedAnswer]] SuggestedAnswers
 
-# no @derive(Json): member(s) PointsOfInterest: list[EvaluationTranscriptPointOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointsOfInterest: list[EvaluationTranscriptPointOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationAutomationRuleCategory:
     str Category
     QuestionRuleCategoryAutomationCondition Condition
     Optional[list[EvaluationTranscriptPointOfInterest]] PointsOfInterest
 
-# no @derive(Json): member(s) MatchedRuleCategories: list[EvaluationAutomationRuleCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchedRuleCategories: list[EvaluationAutomationRuleCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationContactLensAnswerAnalysisDetails:
     Optional[list[EvaluationAutomationRuleCategory]] MatchedRuleCategories
 
@@ -5293,8 +5420,9 @@ struct EvaluationContactParticipant:
     Optional[ContactParticipantRole] ContactParticipantRole
     Optional[str] ContactParticipantId
 
-# no @derive(Json): member(s) Items: list[EvaluationFormItem], ScoringStrategy: EvaluationFormScoringStrategy, ReviewConfiguration: EvaluationReviewConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[EvaluationFormItem], ScoringStrategy: EvaluationFormScoringStrategy, ReviewConfiguration: EvaluationReviewConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationForm:
     str EvaluationFormId
     int64 EvaluationFormVersion
@@ -5333,8 +5461,9 @@ struct EvaluationFormAIVersionSummary:
 struct EvaluationFormAutoEvaluationConfiguration:
     bool Enabled
 
-# no @derive(Json): member(s) Items: list[EvaluationFormItem], ScoringStrategy: EvaluationFormScoringStrategy, ReviewConfiguration: EvaluationReviewConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[EvaluationFormItem], ScoringStrategy: EvaluationFormScoringStrategy, ReviewConfiguration: EvaluationReviewConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormContent:
     int64 EvaluationFormVersion
     str EvaluationFormId
@@ -5349,33 +5478,38 @@ struct EvaluationFormContent:
     Optional[EvaluationReviewConfiguration] ReviewConfiguration
     Optional[str] AIVersion
 
-# no @derive(Json): member(s) Section: EvaluationFormSection, Question: EvaluationFormQuestion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Section: EvaluationFormSection, Question: EvaluationFormQuestion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormItem:
     Optional[EvaluationFormSection] Section
     Optional[EvaluationFormQuestion] Question
 
-# no @derive(Json): member(s) Operands: list[EvaluationFormItemEnablementConditionOperand] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operands: list[EvaluationFormItemEnablementConditionOperand] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormItemEnablementCondition:
     list[EvaluationFormItemEnablementConditionOperand] Operands
     Optional[EvaluationFormItemEnablementOperator] Operator
 
-# no @derive(Json): member(s) Expression: EvaluationFormItemEnablementExpression, Condition: EvaluationFormItemEnablementCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: EvaluationFormItemEnablementExpression, Condition: EvaluationFormItemEnablementCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormItemEnablementConditionOperand:
     Optional[EvaluationFormItemEnablementExpression] Expression
     Optional[EvaluationFormItemEnablementCondition] Condition
 
-# no @derive(Json): member(s) Condition: EvaluationFormItemEnablementCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Condition: EvaluationFormItemEnablementCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormItemEnablementConfiguration:
     EvaluationFormItemEnablementCondition Condition
     EvaluationFormItemEnablementAction Action
     Optional[EvaluationFormItemEnablementAction] DefaultAction
 
-# no @derive(Json): member(s) Values: list[EvaluationFormItemEnablementSourceValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[EvaluationFormItemEnablementSourceValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormItemEnablementExpression:
     EvaluationFormItemEnablementSource Source
     list[EvaluationFormItemEnablementSourceValue] Values
@@ -5400,15 +5534,17 @@ struct EvaluationFormMetricConfiguration:
     str MetricType
     str MetricName
 
-# no @derive(Json): member(s) Options: list[EvaluationFormMultiSelectQuestionAutomationOption], DefaultOptionRefIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[EvaluationFormMultiSelectQuestionAutomationOption], DefaultOptionRefIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormMultiSelectQuestionAutomation:
     Optional[list[EvaluationFormMultiSelectQuestionAutomationOption]] Options
     Optional[list[str]] DefaultOptionRefIds
     Optional[EvaluationFormQuestionAutomationAnswerSource] AnswerSource
 
-# no @derive(Json): member(s) RuleCategory: MultiSelectQuestionRuleCategoryAutomation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleCategory: MultiSelectQuestionRuleCategoryAutomation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormMultiSelectQuestionAutomationOption:
     Optional[MultiSelectQuestionRuleCategoryAutomation] RuleCategory
 
@@ -5421,8 +5557,9 @@ struct EvaluationFormMultiSelectQuestionOption:
     Optional[AutomaticFailConfiguration] AutomaticFailConfiguration
     Optional[QuestionOptionPointsConfiguration] PointsConfiguration
 
-# no @derive(Json): member(s) Options: list[EvaluationFormMultiSelectQuestionOption], Automation: EvaluationFormMultiSelectQuestionAutomation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[EvaluationFormMultiSelectQuestionOption], Automation: EvaluationFormMultiSelectQuestionAutomation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormMultiSelectQuestionProperties:
     list[EvaluationFormMultiSelectQuestionOption] Options
     Optional[EvaluationFormMultiSelectQuestionDisplayMode] DisplayAs
@@ -5442,16 +5579,18 @@ struct EvaluationFormNumericQuestionOption:
     Optional[AutomaticFailConfiguration] AutomaticFailConfiguration
     Optional[QuestionOptionPointsConfiguration] PointsConfiguration
 
-# no @derive(Json): member(s) Options: list[EvaluationFormNumericQuestionOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[EvaluationFormNumericQuestionOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormNumericQuestionProperties:
     int64 MinValue
     int64 MaxValue
     Optional[list[EvaluationFormNumericQuestionOption]] Options
     Optional[EvaluationFormNumericQuestionAutomation] Automation
 
-# no @derive(Json): member(s) QuestionTypeProperties: EvaluationFormQuestionTypeProperties, Enablement: EvaluationFormItemEnablementConfiguration, ScoringConfiguration: EvaluationFormQuestionScoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuestionTypeProperties: EvaluationFormQuestionTypeProperties, Enablement: EvaluationFormItemEnablementConfiguration, ScoringConfiguration: EvaluationFormQuestionScoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormQuestion:
     str Title
     Optional[str] Instructions
@@ -5468,15 +5607,17 @@ struct EvaluationFormQuestion:
 struct EvaluationFormQuestionAutomationAnswerSource:
     EvaluationFormQuestionAutomationAnswerSourceType SourceType
 
-# no @derive(Json): member(s) ScoreThresholds: list[EvaluationFormScoreThreshold] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScoreThresholds: list[EvaluationFormScoreThreshold] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormQuestionScoringConfiguration:
     Optional[QuestionPointsConfiguration] PointsConfiguration
     Optional[bool] IsExcludedFromScoring
     Optional[list[EvaluationFormScoreThreshold]] ScoreThresholds
 
-# no @derive(Json): member(s) Numeric: EvaluationFormNumericQuestionProperties, SingleSelect: EvaluationFormSingleSelectQuestionProperties, MultiSelect: EvaluationFormMultiSelectQuestionProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Numeric: EvaluationFormNumericQuestionProperties, SingleSelect: EvaluationFormSingleSelectQuestionProperties, MultiSelect: EvaluationFormMultiSelectQuestionProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormQuestionTypeProperties:
     Optional[EvaluationFormNumericQuestionProperties] Numeric
     Optional[EvaluationFormSingleSelectQuestionProperties] SingleSelect
@@ -5489,15 +5630,17 @@ struct EvaluationFormScoreThreshold:
     Optional[float64] MinScorePercentage
     Optional[float64] MaxScorePercentage
 
-# no @derive(Json): member(s) ScoreThresholds: list[EvaluationFormScoreThreshold] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScoreThresholds: list[EvaluationFormScoreThreshold] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormScoringStrategy:
     EvaluationFormScoringMode Mode
     EvaluationFormScoringStatus Status
     Optional[list[EvaluationFormScoreThreshold]] ScoreThresholds
 
-# no @derive(Json): member(s) OrConditions: list[EvaluationFormSearchCriteria], AndConditions: list[EvaluationFormSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[EvaluationFormSearchCriteria], AndConditions: list[EvaluationFormSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormSearchCriteria:
     Optional[list[EvaluationFormSearchCriteria]] OrConditions
     Optional[list[EvaluationFormSearchCriteria]] AndConditions
@@ -5506,13 +5649,15 @@ struct EvaluationFormSearchCriteria:
     Optional[BooleanCondition] BooleanCondition
     Optional[DateTimeCondition] DateTimeCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormSearchSummary:
     str EvaluationFormId
     str EvaluationFormArn
@@ -5533,8 +5678,9 @@ struct EvaluationFormSearchSummary:
     Optional[dict[str, str]] Tags
     Optional[str] AIVersion
 
-# no @derive(Json): member(s) Items: list[EvaluationFormItem], ScoreThresholds: list[EvaluationFormScoreThreshold] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[EvaluationFormItem], ScoreThresholds: list[EvaluationFormScoreThreshold] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormSection:
     str Title
     str RefId
@@ -5544,8 +5690,9 @@ struct EvaluationFormSection:
     Optional[bool] IsExcludedFromScoring
     Optional[list[EvaluationFormScoreThreshold]] ScoreThresholds
 
-# no @derive(Json): member(s) Options: list[EvaluationFormSingleSelectQuestionAutomationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[EvaluationFormSingleSelectQuestionAutomationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormSingleSelectQuestionAutomation:
     Optional[list[EvaluationFormSingleSelectQuestionAutomationOption]] Options
     Optional[str] DefaultOptionRefId
@@ -5564,8 +5711,9 @@ struct EvaluationFormSingleSelectQuestionOption:
     Optional[AutomaticFailConfiguration] AutomaticFailConfiguration
     Optional[QuestionOptionPointsConfiguration] PointsConfiguration
 
-# no @derive(Json): member(s) Options: list[EvaluationFormSingleSelectQuestionOption], Automation: EvaluationFormSingleSelectQuestionAutomation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[EvaluationFormSingleSelectQuestionOption], Automation: EvaluationFormSingleSelectQuestionAutomation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormSingleSelectQuestionProperties:
     list[EvaluationFormSingleSelectQuestionOption] Options
     Optional[EvaluationFormSingleSelectQuestionDisplayMode] DisplayAs
@@ -5597,8 +5745,9 @@ struct EvaluationFormTextQuestionAutomation:
 struct EvaluationFormTextQuestionProperties:
     Optional[EvaluationFormTextQuestionAutomation] Automation
 
-# no @derive(Json): member(s) Items: list[EvaluationFormValidationFindingItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[EvaluationFormValidationFindingItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationFormValidationFinding:
     str IssueCode
     Optional[list[EvaluationFormValidationFindingItem]] Items
@@ -5623,14 +5772,16 @@ struct EvaluationFormVersionSummary:
     DateTime LastModifiedTime
     str LastModifiedBy
 
-# no @derive(Json): member(s) PointsOfInterest: list[EvaluationTranscriptPointOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointsOfInterest: list[EvaluationTranscriptPointOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationGenAIAnswerAnalysisDetails:
     Optional[str] Justification
     Optional[list[EvaluationTranscriptPointOfInterest]] PointsOfInterest
 
-# no @derive(Json): member(s) Review: EvaluationReviewMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Review: EvaluationReviewMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationMetadata:
     str ContactId
     str EvaluatorArn
@@ -5647,8 +5798,9 @@ struct EvaluationMetadata:
 struct EvaluationNote:
     Optional[str] Value
 
-# no @derive(Json): member(s) GenAI: EvaluationGenAIAnswerAnalysisDetails, ContactLens: EvaluationContactLensAnswerAnalysisDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GenAI: EvaluationGenAIAnswerAnalysisDetails, ContactLens: EvaluationContactLensAnswerAnalysisDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationQuestionAnswerAnalysisDetails:
     Optional[EvaluationGenAIAnswerAnalysisDetails] GenAI
     Optional[EvaluationContactLensAnswerAnalysisDetails] ContactLens
@@ -5657,14 +5809,16 @@ struct EvaluationQuestionAnswerAnalysisDetails:
 struct EvaluationQuestionInputDetails:
     Optional[EvaluationTranscriptType] TranscriptType
 
-# no @derive(Json): member(s) ReviewNotificationRecipients: list[EvaluationReviewNotificationRecipient] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewNotificationRecipients: list[EvaluationReviewNotificationRecipient] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationReviewConfiguration:
     list[EvaluationReviewNotificationRecipient] ReviewNotificationRecipients
     Optional[int64] EligibilityDays
 
-# no @derive(Json): member(s) ReviewRequestComments: list[EvaluationReviewRequestComment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewRequestComments: list[EvaluationReviewRequestComment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationReviewMetadata:
     Optional[str] ReviewId
     Optional[DateTime] RequestedTime
@@ -5698,8 +5852,9 @@ struct EvaluationScore:
     Optional[int64] MaxBasePoint
     Optional[PerformanceCategoryName] PerformanceCategory
 
-# no @derive(Json): member(s) OrConditions: list[EvaluationSearchCriteria], AndConditions: list[EvaluationSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[EvaluationSearchCriteria], AndConditions: list[EvaluationSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationSearchCriteria:
     Optional[list[EvaluationSearchCriteria]] OrConditions
     Optional[list[EvaluationSearchCriteria]] AndConditions
@@ -5709,8 +5864,9 @@ struct EvaluationSearchCriteria:
     Optional[DateTimeCondition] DateTimeCondition
     Optional[DecimalCondition] DecimalCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter, ContactEvaluationAttributeFilter: ContactEvaluationAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter, ContactEvaluationAttributeFilter: ContactEvaluationAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
     Optional[ContactEvaluationAttributeFilter] ContactEvaluationAttributeFilter
@@ -5737,8 +5893,9 @@ struct EvaluationSearchMetadata:
     Optional[int64] MaxBasePoint
     Optional[PerformanceCategoryName] PerformanceCategory
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationSearchSummary:
     str EvaluationId
     str EvaluationArn
@@ -5752,8 +5909,9 @@ struct EvaluationSearchSummary:
     DateTime LastModifiedTime
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Value: EvaluationAnswerData, AnalysisDetails: EvaluationQuestionAnswerAnalysisDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: EvaluationAnswerData, AnalysisDetails: EvaluationQuestionAnswerAnalysisDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationSuggestedAnswer:
     Optional[EvaluationAnswerData] Value
     EvaluationSuggestedAnswerStatus Status
@@ -5808,16 +5966,18 @@ struct Expiry:
     Optional[int64] DurationInSeconds
     Optional[DateTime] ExpiryTimestamp
 
-# no @derive(Json): member(s) AttributeCondition: AttributeCondition, AndExpression: list[Expression], OrExpression: list[Expression], NotAttributeCondition: AttributeCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeCondition: AttributeCondition, AndExpression: list[Expression], OrExpression: list[Expression], NotAttributeCondition: AttributeCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     Optional[AttributeCondition] AttributeCondition
     Optional[list[Expression]] AndExpression
     Optional[list[Expression]] OrExpression
     Optional[AttributeCondition] NotAttributeCondition
 
-# no @derive(Json): member(s) AllowedExtensions: list[AllowedExtension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedExtensions: list[AllowedExtension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtensionConfiguration:
     list[AllowedExtension] AllowedExtensions
 
@@ -5825,8 +5985,9 @@ struct ExtensionConfiguration:
 struct ExternalInvocationConfiguration:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) RulesExtractionDefinitions: list[RulesExtractionDefinitionIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RulesExtractionDefinitions: list[RulesExtractionDefinitionIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractInformationActionDefinition:
     list[RulesExtractionDefinitionIdentifier] RulesExtractionDefinitions
 
@@ -5835,8 +5996,9 @@ struct ExtractionConfiguration:
     str PromptHint
     Optional[ExtractionDefinitionNotFoundBehavior] NotFoundBehavior
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractionDefinition:
     str Name
     str ExtractionDefinitionId
@@ -5890,8 +6052,9 @@ struct FieldValueUnion:
     Optional[EmptyFieldValue] EmptyValue
     Optional[str] StringValue
 
-# no @derive(Json): member(s) FilterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterV2:
     Optional[str] FilterKey
     Optional[list[str]] FilterValues
@@ -5901,8 +6064,9 @@ struct FilterV2:
 struct FilterV2StringCondition:
     Optional[str] Comparison
 
-# no @derive(Json): member(s) Queues: list[str], Channels: list[Channel], RoutingProfiles: list[str], RoutingStepExpressions: list[str], AgentStatuses: list[str], Subtypes: list[str], ValidationTestTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queues: list[str], Channels: list[Channel], RoutingProfiles: list[str], RoutingStepExpressions: list[str], AgentStatuses: list[str], Subtypes: list[str], ValidationTestTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filters:
     Optional[list[str]] Queues
     Optional[list[Channel]] Channels
@@ -5941,8 +6105,9 @@ struct GetAttachedFileRequest:
     # wire string of the ContentDisposition enum (querystring binding)
     Optional[str] UrlContentDisposition
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAttachedFileResponse:
     Optional[str] FileArn
     Optional[str] FileId
@@ -5962,8 +6127,9 @@ struct GetContactAttributesRequest:
     str InstanceId
     str InitialContactId
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContactAttributesResponse:
     Optional[dict[str, str]] Attributes
 
@@ -5974,8 +6140,9 @@ struct GetContactMetricsRequest:
     str ContactId
     list[ContactMetricInfo] Metrics
 
-# no @derive(Json): member(s) MetricResults: list[ContactMetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricResults: list[ContactMetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContactMetricsResponse:
     Optional[list[ContactMetricResult]] MetricResults
     Optional[str] Id
@@ -5986,8 +6153,9 @@ struct GetContactMetricsResponse:
 struct GetCrossRegionRoutingRequest:
     str InstanceId
 
-# no @derive(Json): member(s) IsolatedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IsolatedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCrossRegionRoutingResponse:
     Optional[list[str]] IsolatedRegions
 
@@ -6002,8 +6170,9 @@ struct GetCurrentMetricDataRequest:
     Optional[int64] MaxResults
     Optional[list[CurrentMetricSortCriteria]] SortCriteria
 
-# no @derive(Json): member(s) MetricResults: list[CurrentMetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricResults: list[CurrentMetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCurrentMetricDataResponse:
     Optional[str] NextToken
     Optional[list[CurrentMetricResult]] MetricResults
@@ -6018,8 +6187,9 @@ struct GetCurrentUserDataRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UserDataList: list[UserData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserDataList: list[UserData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCurrentUserDataResponse:
     Optional[str] NextToken
     Optional[list[UserData]] UserDataList
@@ -6033,8 +6203,9 @@ struct GetEffectiveHoursOfOperationsRequest:
     str FromDate
     str ToDate
 
-# no @derive(Json): member(s) EffectiveHoursOfOperationList: list[EffectiveHoursOfOperations], EffectiveOverrideHoursList: list[EffectiveOverrideHours] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EffectiveHoursOfOperationList: list[EffectiveHoursOfOperations], EffectiveOverrideHoursList: list[EffectiveOverrideHours] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEffectiveHoursOfOperationsResponse:
     Optional[list[EffectiveHoursOfOperations]] EffectiveHoursOfOperationList
     Optional[list[EffectiveOverrideHours]] EffectiveOverrideHoursList
@@ -6047,8 +6218,9 @@ struct GetEvaluationFormValidationRequest:
     str EvaluationFormId
     Optional[int64] EvaluationFormVersion
 
-# no @derive(Json): member(s) Findings: list[EvaluationFormValidationFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: list[EvaluationFormValidationFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvaluationFormValidationResponse:
     EvaluationFormValidationStatus Status
     Optional[str] FailureReason
@@ -6095,8 +6267,9 @@ struct GetMetricDataRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MetricResults: list[HistoricalMetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricResults: list[HistoricalMetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetricDataResponse:
     Optional[str] NextToken
     Optional[list[HistoricalMetricResult]] MetricResults
@@ -6114,8 +6287,9 @@ struct GetMetricDataV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MetricResults: list[MetricResultV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricResults: list[MetricResultV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetricDataV2Response:
     Optional[str] NextToken
     Optional[list[MetricResultV2]] MetricResults
@@ -6139,8 +6313,9 @@ struct GetTaskTemplateRequest:
     str TaskTemplateId
     Optional[str] SnapshotVersion
 
-# no @derive(Json): member(s) Constraints: TaskTemplateConstraints, Defaults: TaskTemplateDefaults, Fields: list[TaskTemplateField], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Constraints: TaskTemplateConstraints, Defaults: TaskTemplateDefaults, Fields: list[TaskTemplateField], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTaskTemplateResponse:
     Optional[str] InstanceId
     str Id
@@ -6177,8 +6352,9 @@ struct GetTestCaseExecutionSummaryResponse:
 struct GetTrafficDistributionRequest:
     str Id
 
-# no @derive(Json): member(s) TelephonyConfig: TelephonyConfig, SignInConfig: SignInConfig, AgentConfig: AgentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelephonyConfig: TelephonyConfig, SignInConfig: SignInConfig, AgentConfig: AgentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrafficDistributionResponse:
     Optional[TelephonyConfig] TelephonyConfig
     Optional[str] Id
@@ -6193,13 +6369,15 @@ struct GlobalResiliencyMetadata:
     Optional[str] OriginRegion
     Optional[str] TrafficDistributionGroupId
 
-# no @derive(Json): member(s) DataTableAccessControlConfiguration: DataTableAccessControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataTableAccessControlConfiguration: DataTableAccessControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GranularAccessControlConfiguration:
     Optional[DataTableAccessControlConfiguration] DataTableAccessControlConfiguration
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HierarchyGroup:
     Optional[str] Id
     Optional[str] Arn
@@ -6292,14 +6470,16 @@ struct HistoricalMetricData:
     Optional[HistoricalMetric] Metric
     Optional[float64] Value
 
-# no @derive(Json): member(s) Collections: list[HistoricalMetricData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Collections: list[HistoricalMetricData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistoricalMetricResult:
     Optional[Dimensions] Dimensions
     Optional[list[HistoricalMetricData]] Collections
 
-# no @derive(Json): member(s) Config: list[HoursOfOperationConfig], ParentHoursOfOperations: list[HoursOfOperationsIdentifier], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: list[HoursOfOperationConfig], ParentHoursOfOperations: list[HoursOfOperationsIdentifier], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HoursOfOperation:
     Optional[str] HoursOfOperationId
     Optional[str] HoursOfOperationArn
@@ -6318,8 +6498,9 @@ struct HoursOfOperationConfig:
     HoursOfOperationTimeSlice StartTime
     HoursOfOperationTimeSlice EndTime
 
-# no @derive(Json): member(s) Config: list[HoursOfOperationOverrideConfig], RecurrenceConfig: RecurrenceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: list[HoursOfOperationOverrideConfig], RecurrenceConfig: RecurrenceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HoursOfOperationOverride:
     Optional[str] HoursOfOperationOverrideId
     Optional[str] HoursOfOperationId
@@ -6338,23 +6519,26 @@ struct HoursOfOperationOverrideConfig:
     Optional[OverrideTimeSlice] StartTime
     Optional[OverrideTimeSlice] EndTime
 
-# no @derive(Json): member(s) OrConditions: list[HoursOfOperationOverrideSearchCriteria], AndConditions: list[HoursOfOperationOverrideSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[HoursOfOperationOverrideSearchCriteria], AndConditions: list[HoursOfOperationOverrideSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HoursOfOperationOverrideSearchCriteria:
     Optional[list[HoursOfOperationOverrideSearchCriteria]] OrConditions
     Optional[list[HoursOfOperationOverrideSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
     Optional[DateCondition] DateCondition
 
-# no @derive(Json): member(s) OrConditions: list[HoursOfOperationSearchCriteria], AndConditions: list[HoursOfOperationSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[HoursOfOperationSearchCriteria], AndConditions: list[HoursOfOperationSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HoursOfOperationSearchCriteria:
     Optional[list[HoursOfOperationSearchCriteria]] OrConditions
     Optional[list[HoursOfOperationSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HoursOfOperationSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -6413,20 +6597,23 @@ struct ImportWorkspaceMediaResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ToAddresses: list[EmailAddressInfo], CcAddresses: list[EmailAddressInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ToAddresses: list[EmailAddressInfo], CcAddresses: list[EmailAddressInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InboundAdditionalRecipients:
     Optional[list[EmailAddressInfo]] ToAddresses
     Optional[list[EmailAddressInfo]] CcAddresses
 
-# no @derive(Json): member(s) RawMessage: InboundRawMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RawMessage: InboundRawMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InboundEmailContent:
     str MessageSourceType
     Optional[InboundRawMessage] RawMessage
 
-# no @derive(Json): member(s) Headers: dict[EmailHeaderType, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Headers: dict[EmailHeaderType, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InboundRawMessage:
     str Subject
     str Body
@@ -6437,8 +6624,9 @@ struct InboundRawMessage:
 struct InputPredefinedAttributeConfiguration:
     Optional[bool] EnableValueValidationOnAssociation
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     Optional[str] Id
     Optional[str] Arn
@@ -6503,13 +6691,15 @@ struct IntervalDetails:
 struct InvalidActiveRegionException:
     Optional[str] Message
 
-# no @derive(Json): member(s) problems: list[ProblemDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) problems: list[ProblemDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidContactFlowException:
     Optional[list[ProblemDetail]] problems
 
-# no @derive(Json): member(s) Problems: list[ProblemDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Problems: list[ProblemDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidContactFlowModuleException:
     Optional[list[ProblemDetail]] Problems
 
@@ -6526,8 +6716,9 @@ struct InvalidRequestException:
 struct InvalidRequestExceptionReason:
     Optional[AttachedFileInvalidRequestExceptionReason] AttachedFileInvalidRequestExceptionReason
 
-# no @derive(Json): member(s) Problems: list[ProblemDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Problems: list[ProblemDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidTestCaseException:
     Optional[list[ProblemDetail]] Problems
 
@@ -6579,8 +6770,9 @@ struct ListAgentStatusRequest:
     Optional[int64] MaxResults
     Optional[list[AgentStatusType]] AgentStatusTypes
 
-# no @derive(Json): member(s) AgentStatusSummaryList: list[AgentStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentStatusSummaryList: list[AgentStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentStatusResponse:
     Optional[str] NextToken
     Optional[list[AgentStatusSummary]] AgentStatusSummaryList
@@ -6593,8 +6785,9 @@ struct ListAnalyticsDataAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[AnalyticsDataAssociationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[AnalyticsDataAssociationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalyticsDataAssociationsResponse:
     Optional[list[AnalyticsDataAssociationResult]] Results
     Optional[str] NextToken
@@ -6606,8 +6799,9 @@ struct ListAnalyticsDataLakeDataSetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[AnalyticsDataSetsResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[AnalyticsDataSetsResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalyticsDataLakeDataSetsResponse:
     Optional[list[AnalyticsDataSetsResult]] Results
     Optional[str] NextToken
@@ -6619,8 +6813,9 @@ struct ListApprovedOriginsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Origins: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Origins: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApprovedOriginsResponse:
     Optional[list[str]] Origins
     Optional[str] NextToken
@@ -6633,8 +6828,9 @@ struct ListAssociatedContactsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ContactSummaryList: list[AssociatedContactSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactSummaryList: list[AssociatedContactSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedContactsResponse:
     Optional[list[AssociatedContactSummary]] ContactSummaryList
     Optional[str] NextToken
@@ -6646,8 +6842,9 @@ struct ListAttachedFilesConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AttachedFilesConfigurations: list[AttachedFilesConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedFilesConfigurations: list[AttachedFilesConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachedFilesConfigurationsResponse:
     Optional[list[AttachedFilesConfigurationSummary]] AttachedFilesConfigurations
     Optional[str] NextToken
@@ -6659,8 +6856,9 @@ struct ListAuthenticationProfilesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuthenticationProfileSummaryList: list[AuthenticationProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationProfileSummaryList: list[AuthenticationProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuthenticationProfilesResponse:
     Optional[list[AuthenticationProfileSummary]] AuthenticationProfileSummaryList
     Optional[str] NextToken
@@ -6674,8 +6872,9 @@ struct ListBotsRequest:
     # wire string of the LexVersion enum (querystring binding)
     str LexVersion
 
-# no @derive(Json): member(s) LexBots: list[LexBotConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LexBots: list[LexBotConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotsResponse:
     Optional[list[LexBotConfig]] LexBots
     Optional[str] NextToken
@@ -6688,16 +6887,18 @@ struct ListChildHoursOfOperationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ChildHoursOfOperationsSummaryList: list[HoursOfOperationsIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChildHoursOfOperationsSummaryList: list[HoursOfOperationsIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChildHoursOfOperationsResponse:
     Optional[str] NextToken
     Optional[list[HoursOfOperationsIdentifier]] ChildHoursOfOperationsSummaryList
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) Conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCondition:
     Optional[str] TargetListType
     Optional[list[Condition]] Conditions
@@ -6709,8 +6910,9 @@ struct ListContactEvaluationsRequest:
     str ContactId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EvaluationSummaryList: list[EvaluationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationSummaryList: list[EvaluationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactEvaluationsResponse:
     list[EvaluationSummary] EvaluationSummaryList
     Optional[str] NextToken
@@ -6723,8 +6925,9 @@ struct ListContactFlowAliasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContactFlowAliasSummaryList: list[ContactFlowAliasSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowAliasSummaryList: list[ContactFlowAliasSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactFlowAliasesResponse:
     Optional[list[ContactFlowAliasSummary]] ContactFlowAliasSummaryList
     Optional[str] NextToken
@@ -6737,8 +6940,9 @@ struct ListContactFlowModuleAliasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContactFlowModuleAliasSummaryList: list[ContactFlowModuleAliasSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowModuleAliasSummaryList: list[ContactFlowModuleAliasSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactFlowModuleAliasesResponse:
     Optional[list[ContactFlowModuleAliasSummary]] ContactFlowModuleAliasSummaryList
     Optional[str] NextToken
@@ -6751,8 +6955,9 @@ struct ListContactFlowModuleVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContactFlowModuleVersionSummaryList: list[ContactFlowModuleVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowModuleVersionSummaryList: list[ContactFlowModuleVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactFlowModuleVersionsResponse:
     Optional[list[ContactFlowModuleVersionSummary]] ContactFlowModuleVersionSummaryList
     Optional[str] NextToken
@@ -6766,8 +6971,9 @@ struct ListContactFlowModulesRequest:
     # wire string of the ContactFlowModuleState enum (querystring binding)
     Optional[str] ContactFlowModuleState
 
-# no @derive(Json): member(s) ContactFlowModulesSummaryList: list[ContactFlowModuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowModulesSummaryList: list[ContactFlowModuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactFlowModulesResponse:
     Optional[list[ContactFlowModuleSummary]] ContactFlowModulesSummaryList
     Optional[str] NextToken
@@ -6780,8 +6986,9 @@ struct ListContactFlowVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContactFlowVersionSummaryList: list[ContactFlowVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowVersionSummaryList: list[ContactFlowVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactFlowVersionsResponse:
     Optional[list[ContactFlowVersionSummary]] ContactFlowVersionSummaryList
     Optional[str] NextToken
@@ -6794,8 +7001,9 @@ struct ListContactFlowsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContactFlowSummaryList: list[ContactFlowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowSummaryList: list[ContactFlowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactFlowsResponse:
     Optional[list[ContactFlowSummary]] ContactFlowSummaryList
     Optional[str] NextToken
@@ -6808,8 +7016,9 @@ struct ListContactReferencesRequest:
     list[ReferenceType] ReferenceTypes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReferenceSummaryList: list[ReferenceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceSummaryList: list[ReferenceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactReferencesResponse:
     Optional[list[ReferenceSummary]] ReferenceSummaryList
     Optional[str] NextToken
@@ -6823,8 +7032,9 @@ struct ListDataTableAttributesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Attributes: list[DataTableAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[DataTableAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTableAttributesResponse:
     Optional[str] NextToken
     list[DataTableAttribute] Attributes
@@ -6839,8 +7049,9 @@ struct ListDataTablePrimaryValuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PrimaryValuesList: list[RecordPrimaryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValuesList: list[RecordPrimaryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTablePrimaryValuesResponse:
     Optional[str] NextToken
     list[RecordPrimaryValue] PrimaryValuesList
@@ -6855,8 +7066,9 @@ struct ListDataTableValuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Values: list[DataTableValueSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[DataTableValueSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTableValuesResponse:
     Optional[str] NextToken
     list[DataTableValueSummary] Values
@@ -6868,8 +7080,9 @@ struct ListDataTablesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataTableSummaryList: list[DataTableSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataTableSummaryList: list[DataTableSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTablesResponse:
     Optional[str] NextToken
     list[DataTableSummary] DataTableSummaryList
@@ -6882,8 +7095,9 @@ struct ListDefaultVocabulariesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DefaultVocabularyList: list[DefaultVocabulary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultVocabularyList: list[DefaultVocabulary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDefaultVocabulariesResponse:
     list[DefaultVocabulary] DefaultVocabularyList
     Optional[str] NextToken
@@ -6897,8 +7111,9 @@ struct ListEntitySecurityProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SecurityProfiles: list[SecurityProfileItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfiles: list[SecurityProfileItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntitySecurityProfilesResponse:
     Optional[list[SecurityProfileItem]] SecurityProfiles
     Optional[str] NextToken
@@ -6912,8 +7127,9 @@ struct ListEvaluationFormAIVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AIVersionSummaries: list[EvaluationFormAIVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AIVersionSummaries: list[EvaluationFormAIVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEvaluationFormAIVersionsResponse:
     list[EvaluationFormAIVersionSummary] AIVersionSummaries
     Optional[str] NextToken
@@ -6926,8 +7142,9 @@ struct ListEvaluationFormVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EvaluationFormVersionSummaryList: list[EvaluationFormVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationFormVersionSummaryList: list[EvaluationFormVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEvaluationFormVersionsResponse:
     list[EvaluationFormVersionSummary] EvaluationFormVersionSummaryList
     Optional[str] NextToken
@@ -6939,8 +7156,9 @@ struct ListEvaluationFormsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EvaluationFormSummaryList: list[EvaluationFormSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationFormSummaryList: list[EvaluationFormSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEvaluationFormsResponse:
     list[EvaluationFormSummary] EvaluationFormSummaryList
     Optional[str] NextToken
@@ -6952,8 +7170,9 @@ struct ListExtractionDefinitionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ExtractionDefinitionSummaryList: list[ExtractionDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtractionDefinitionSummaryList: list[ExtractionDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExtractionDefinitionsResponse:
     list[ExtractionDefinitionSummary] ExtractionDefinitionSummaryList
     Optional[str] NextToken
@@ -6967,8 +7186,9 @@ struct ListFlowAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlowAssociationSummaryList: list[FlowAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowAssociationSummaryList: list[FlowAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowAssociationsResponse:
     Optional[list[FlowAssociationSummary]] FlowAssociationSummaryList
     Optional[str] NextToken
@@ -6981,8 +7201,9 @@ struct ListHoursOfOperationOverridesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HoursOfOperationOverrideList: list[HoursOfOperationOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HoursOfOperationOverrideList: list[HoursOfOperationOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHoursOfOperationOverridesResponse:
     Optional[str] NextToken
     Optional[list[HoursOfOperationOverride]] HoursOfOperationOverrideList
@@ -6996,8 +7217,9 @@ struct ListHoursOfOperationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HoursOfOperationSummaryList: list[HoursOfOperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HoursOfOperationSummaryList: list[HoursOfOperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHoursOfOperationsResponse:
     Optional[list[HoursOfOperationSummary]] HoursOfOperationSummaryList
     Optional[str] NextToken
@@ -7009,8 +7231,9 @@ struct ListInstanceAttributesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstanceAttributesResponse:
     Optional[list[Attribute]] Attributes
     Optional[str] NextToken
@@ -7024,8 +7247,9 @@ struct ListInstanceStorageConfigsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) StorageConfigs: list[InstanceStorageConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageConfigs: list[InstanceStorageConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstanceStorageConfigsResponse:
     Optional[list[InstanceStorageConfig]] StorageConfigs
     Optional[str] NextToken
@@ -7036,8 +7260,9 @@ struct ListInstancesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InstanceSummaryList: list[InstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceSummaryList: list[InstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesResponse:
     Optional[list[InstanceSummary]] InstanceSummaryList
     Optional[str] NextToken
@@ -7052,8 +7277,9 @@ struct ListIntegrationAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] IntegrationArn
 
-# no @derive(Json): member(s) IntegrationAssociationSummaryList: list[IntegrationAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegrationAssociationSummaryList: list[IntegrationAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationAssociationsResponse:
     Optional[list[IntegrationAssociationSummary]] IntegrationAssociationSummaryList
     Optional[str] NextToken
@@ -7065,8 +7291,9 @@ struct ListLambdaFunctionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LambdaFunctions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LambdaFunctions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLambdaFunctionsResponse:
     Optional[list[str]] LambdaFunctions
     Optional[str] NextToken
@@ -7078,8 +7305,9 @@ struct ListLexBotsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LexBots: list[LexBot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LexBots: list[LexBot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLexBotsResponse:
     Optional[list[LexBot]] LexBots
     Optional[str] NextToken
@@ -7093,8 +7321,9 @@ struct ListMetricsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MetricSummaryList: list[MetricSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricSummaryList: list[MetricSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetricsResponse:
     list[MetricSummary] MetricSummaryList
     Optional[str] NextToken
@@ -7106,8 +7335,9 @@ struct ListNotificationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) NotificationSummaryList: list[Notification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationSummaryList: list[Notification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationsResponse:
     Optional[str] NextToken
     list[Notification] NotificationSummaryList
@@ -7121,8 +7351,9 @@ struct ListPhoneNumbersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PhoneNumberSummaryList: list[PhoneNumberSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberSummaryList: list[PhoneNumberSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPhoneNumbersResponse:
     Optional[list[PhoneNumberSummary]] PhoneNumberSummaryList
     Optional[str] NextToken
@@ -7150,8 +7381,9 @@ struct ListPhoneNumbersV2Request:
     Optional[list[PhoneNumberType]] PhoneNumberTypes
     Optional[str] PhoneNumberPrefix
 
-# no @derive(Json): member(s) ListPhoneNumbersSummaryList: list[ListPhoneNumbersSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListPhoneNumbersSummaryList: list[ListPhoneNumbersSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPhoneNumbersV2Response:
     Optional[str] NextToken
     Optional[list[ListPhoneNumbersSummary]] ListPhoneNumbersSummaryList
@@ -7163,8 +7395,9 @@ struct ListPredefinedAttributesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PredefinedAttributeSummaryList: list[PredefinedAttributeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredefinedAttributeSummaryList: list[PredefinedAttributeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPredefinedAttributesResponse:
     Optional[str] NextToken
     Optional[list[PredefinedAttributeSummary]] PredefinedAttributeSummaryList
@@ -7176,8 +7409,9 @@ struct ListPromptsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PromptSummaryList: list[PromptSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PromptSummaryList: list[PromptSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPromptsResponse:
     Optional[list[PromptSummary]] PromptSummaryList
     Optional[str] NextToken
@@ -7190,8 +7424,9 @@ struct ListQueueEmailAddressesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EmailAddressMetadataList: list[EmailAddressSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmailAddressMetadataList: list[EmailAddressSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueueEmailAddressesResponse:
     Optional[str] NextToken
     Optional[list[EmailAddressSummary]] EmailAddressMetadataList
@@ -7206,8 +7441,9 @@ struct ListQueueQuickConnectsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) QuickConnectSummaryList: list[QuickConnectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuickConnectSummaryList: list[QuickConnectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueueQuickConnectsResponse:
     Optional[str] NextToken
     Optional[list[QuickConnectSummary]] QuickConnectSummaryList
@@ -7222,8 +7458,9 @@ struct ListQueuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) QueueSummaryList: list[QueueSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueueSummaryList: list[QueueSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueuesResponse:
     Optional[list[QueueSummary]] QueueSummaryList
     Optional[str] NextToken
@@ -7236,8 +7473,9 @@ struct ListQuickConnectsRequest:
     Optional[int64] MaxResults
     Optional[list[QuickConnectType]] QuickConnectTypes
 
-# no @derive(Json): member(s) QuickConnectSummaryList: list[QuickConnectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuickConnectSummaryList: list[QuickConnectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQuickConnectsResponse:
     Optional[list[QuickConnectSummary]] QuickConnectSummaryList
     Optional[str] NextToken
@@ -7252,8 +7490,9 @@ struct ListRealtimeContactAnalysisSegmentsV2Request:
     RealTimeContactAnalysisOutputType OutputType
     list[RealTimeContactAnalysisSegmentType] SegmentTypes
 
-# no @derive(Json): member(s) Segments: list[RealtimeContactAnalysisSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segments: list[RealtimeContactAnalysisSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRealtimeContactAnalysisSegmentsV2Response:
     RealTimeContactAnalysisSupportedChannel Channel
     RealTimeContactAnalysisStatus Status
@@ -7268,8 +7507,9 @@ struct ListReplicationFindingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReplicationFindingsList: list[ReplicationFinding], ApproximateDriftedResourceCounts: list[ApproximateDriftedResourceCount], ResourceReplicationStatuses: list[ResourceReplicationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationFindingsList: list[ReplicationFinding], ApproximateDriftedResourceCounts: list[ApproximateDriftedResourceCount], ResourceReplicationStatuses: list[ResourceReplicationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReplicationFindingsResponse:
     list[ReplicationFinding] ReplicationFindingsList
     Optional[list[ApproximateDriftedResourceCount]] ApproximateDriftedResourceCounts
@@ -7284,8 +7524,9 @@ struct ListRoutingProfileManualAssignmentQueuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RoutingProfileManualAssignmentQueueConfigSummaryList: list[RoutingProfileManualAssignmentQueueConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingProfileManualAssignmentQueueConfigSummaryList: list[RoutingProfileManualAssignmentQueueConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutingProfileManualAssignmentQueuesResponse:
     Optional[str] NextToken
     Optional[list[RoutingProfileManualAssignmentQueueConfigSummary]] RoutingProfileManualAssignmentQueueConfigSummaryList
@@ -7300,8 +7541,9 @@ struct ListRoutingProfileQueuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RoutingProfileQueueConfigSummaryList: list[RoutingProfileQueueConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingProfileQueueConfigSummaryList: list[RoutingProfileQueueConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutingProfileQueuesResponse:
     Optional[str] NextToken
     Optional[list[RoutingProfileQueueConfigSummary]] RoutingProfileQueueConfigSummaryList
@@ -7315,8 +7557,9 @@ struct ListRoutingProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RoutingProfileSummaryList: list[RoutingProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingProfileSummaryList: list[RoutingProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutingProfilesResponse:
     Optional[list[RoutingProfileSummary]] RoutingProfileSummaryList
     Optional[str] NextToken
@@ -7332,8 +7575,9 @@ struct ListRulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RuleSummaryList: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleSummaryList: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesResponse:
     list[RuleSummary] RuleSummaryList
     Optional[str] NextToken
@@ -7345,8 +7589,9 @@ struct ListSecurityKeysRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SecurityKeys: list[SecurityKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityKeys: list[SecurityKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityKeysResponse:
     Optional[list[SecurityKey]] SecurityKeys
     Optional[str] NextToken
@@ -7359,8 +7604,9 @@ struct ListSecurityProfileAIAgentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AllowedAIAgents: list[AIAgent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedAIAgents: list[AIAgent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfileAIAgentsResponse:
     Optional[list[AIAgent]] AllowedAIAgents
     Optional[str] NextToken
@@ -7375,8 +7621,9 @@ struct ListSecurityProfileApplicationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Applications: list[Application] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[Application] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfileApplicationsResponse:
     Optional[list[Application]] Applications
     Optional[str] NextToken
@@ -7391,8 +7638,9 @@ struct ListSecurityProfileFlowModulesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AllowedFlowModules: list[FlowModule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedFlowModules: list[FlowModule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfileFlowModulesResponse:
     Optional[list[FlowModule]] AllowedFlowModules
     Optional[str] NextToken
@@ -7407,8 +7655,9 @@ struct ListSecurityProfilePermissionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Permissions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfilePermissionsResponse:
     Optional[list[str]] Permissions
     Optional[str] NextToken
@@ -7422,8 +7671,9 @@ struct ListSecurityProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SecurityProfileSummaryList: list[SecurityProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfileSummaryList: list[SecurityProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityProfilesResponse:
     Optional[list[SecurityProfileSummary]] SecurityProfileSummaryList
     Optional[str] NextToken
@@ -7433,8 +7683,9 @@ struct ListSecurityProfilesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -7448,8 +7699,9 @@ struct ListTaskTemplatesRequest:
     Optional[str] Status
     Optional[str] Name
 
-# no @derive(Json): member(s) TaskTemplates: list[TaskTemplateMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskTemplates: list[TaskTemplateMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaskTemplatesResponse:
     Optional[list[TaskTemplateMetadata]] TaskTemplates
     Optional[str] NextToken
@@ -7465,8 +7717,9 @@ struct ListTestCaseExecutionRecordsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ExecutionRecords: list[ExecutionRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionRecords: list[ExecutionRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestCaseExecutionRecordsResponse:
     Optional[list[ExecutionRecord]] ExecutionRecords
     Optional[str] NextToken
@@ -7484,8 +7737,9 @@ struct ListTestCaseExecutionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TestCaseExecutions: list[TestCaseExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestCaseExecutions: list[TestCaseExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestCaseExecutionsResponse:
     Optional[list[TestCaseExecution]] TestCaseExecutions
     Optional[str] NextToken
@@ -7497,8 +7751,9 @@ struct ListTestCasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TestCaseSummaryList: list[TestCaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestCaseSummaryList: list[TestCaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestCasesResponse:
     Optional[list[TestCaseSummary]] TestCaseSummaryList
     Optional[str] NextToken
@@ -7510,8 +7765,9 @@ struct ListTrafficDistributionGroupUsersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrafficDistributionGroupUserSummaryList: list[TrafficDistributionGroupUserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrafficDistributionGroupUserSummaryList: list[TrafficDistributionGroupUserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrafficDistributionGroupUsersResponse:
     Optional[str] NextToken
     Optional[list[TrafficDistributionGroupUserSummary]] TrafficDistributionGroupUserSummaryList
@@ -7523,8 +7779,9 @@ struct ListTrafficDistributionGroupsRequest:
     Optional[str] NextToken
     Optional[str] InstanceId
 
-# no @derive(Json): member(s) TrafficDistributionGroupSummaryList: list[TrafficDistributionGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrafficDistributionGroupSummaryList: list[TrafficDistributionGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrafficDistributionGroupsResponse:
     Optional[str] NextToken
     Optional[list[TrafficDistributionGroupSummary]] TrafficDistributionGroupSummaryList
@@ -7537,8 +7794,9 @@ struct ListUseCasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UseCaseSummaryList: list[UseCase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UseCaseSummaryList: list[UseCase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUseCasesResponse:
     Optional[list[UseCase]] UseCaseSummaryList
     Optional[str] NextToken
@@ -7550,8 +7808,9 @@ struct ListUserHierarchyGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UserHierarchyGroupSummaryList: list[HierarchyGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserHierarchyGroupSummaryList: list[HierarchyGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserHierarchyGroupsResponse:
     Optional[list[HierarchyGroupSummary]] UserHierarchyGroupSummaryList
     Optional[str] NextToken
@@ -7564,8 +7823,9 @@ struct ListUserNotificationsRequest:
     Optional[int64] MaxResults
     str UserId
 
-# no @derive(Json): member(s) UserNotifications: list[UserNotificationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserNotifications: list[UserNotificationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserNotificationsResponse:
     Optional[list[UserNotificationSummary]] UserNotifications
     Optional[str] NextToken
@@ -7578,8 +7838,9 @@ struct ListUserProficienciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UserProficiencyList: list[UserProficiency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserProficiencyList: list[UserProficiency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserProficienciesResponse:
     Optional[str] NextToken
     Optional[list[UserProficiency]] UserProficiencyList
@@ -7593,8 +7854,9 @@ struct ListUsersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UserSummaryList: list[UserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserSummaryList: list[UserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[list[UserSummary]] UserSummaryList
     Optional[str] NextToken
@@ -7607,8 +7869,9 @@ struct ListViewVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ViewVersionSummaryList: list[ViewVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ViewVersionSummaryList: list[ViewVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListViewVersionsResponse:
     Optional[list[ViewVersionSummary]] ViewVersionSummaryList
     Optional[str] NextToken
@@ -7622,8 +7885,9 @@ struct ListViewsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ViewsSummaryList: list[ViewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ViewsSummaryList: list[ViewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListViewsResponse:
     Optional[list[ViewSummary]] ViewsSummaryList
     Optional[str] NextToken
@@ -7634,8 +7898,9 @@ struct ListWorkspaceMediaRequest:
     str InstanceId
     str WorkspaceId
 
-# no @derive(Json): member(s) Media: list[MediaItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Media: list[MediaItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspaceMediaResponse:
     Optional[list[MediaItem]] Media
 
@@ -7647,8 +7912,9 @@ struct ListWorkspacePagesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) WorkspacePageList: list[WorkspacePage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspacePageList: list[WorkspacePage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspacePagesResponse:
     Optional[str] NextToken
     list[WorkspacePage] WorkspacePageList
@@ -7660,14 +7926,16 @@ struct ListWorkspacesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) WorkspaceSummaryList: list[WorkspaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceSummaryList: list[WorkspaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspacesResponse:
     Optional[str] NextToken
     list[WorkspaceSummary] WorkspaceSummaryList
 
-# no @derive(Json): member(s) AgentsCriteria: AgentsCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentsCriteria: AgentsCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchCriteria:
     Optional[AgentsCriteria] AgentsCriteria
 
@@ -7675,8 +7943,9 @@ struct MatchCriteria:
 struct MaximumResultReturnedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) WorkloadTypeConcurrencies: list[WorkloadTypeConcurrency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkloadTypeConcurrencies: list[WorkloadTypeConcurrency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaConcurrency:
     Channel Channel
     Optional[int64] Concurrency
@@ -7707,20 +7976,23 @@ struct Meeting:
 struct MeetingFeaturesConfiguration:
     Optional[AudioFeatures] Audio
 
-# no @derive(Json): member(s) CalculationComponents: list[CalculationComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CalculationComponents: list[CalculationComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricCalculation:
     list[CalculationComponent] CalculationComponents
     str Calculation
 
-# no @derive(Json): member(s) Metric: MetricV2 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metric: MetricV2 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDataV2:
     Optional[MetricV2] Metric
     Optional[float64] Value
 
-# no @derive(Json): member(s) MetricCalculation: MetricCalculation, Groupings: list[str], Filters: list[AvailableFilter], SupportedStats: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricCalculation: MetricCalculation, Groupings: list[str], Filters: list[AvailableFilter], SupportedStats: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDefinition:
     str Arn
     str Id
@@ -7750,8 +8022,9 @@ struct MetricDefinition:
     Optional[CreatedByInfo] LastModifiedUser
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) NumberCondition: MetricFilterNumberCondition, StringCondition: MetricFilterStringCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCondition: MetricFilterNumberCondition, StringCondition: MetricFilterStringCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricFilter:
     str MetricFilterKey
     Optional[bool] Negate
@@ -7763,20 +8036,23 @@ struct MetricFilter:
 struct MetricFilterBooleanCondition:
     MetricFilterBooleanConditionComparison Comparison
 
-# no @derive(Json): member(s) Values: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricFilterNumberCondition:
     MetricFilterNumberConditionComparison Comparison
     list[float64] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricFilterStringCondition:
     MetricFilterStringConditionComparison Comparison
     list[str] Values
 
-# no @derive(Json): member(s) MetricFilterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricFilterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricFilterV2:
     Optional[str] MetricFilterKey
     Optional[list[str]] MetricFilterValues
@@ -7788,23 +8064,26 @@ struct MetricInterval:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) Dimensions: dict[str, str], Collections: list[MetricDataV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: dict[str, str], Collections: list[MetricDataV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricResultV2:
     Optional[dict[str, str]] Dimensions
     Optional[MetricInterval] MetricInterval
     Optional[list[MetricDataV2]] Collections
 
-# no @derive(Json): member(s) OrConditions: list[MetricSearchCriteria], AndConditions: list[MetricSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[MetricSearchCriteria], AndConditions: list[MetricSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricSearchCriteria:
     Optional[list[MetricSearchCriteria]] OrConditions
     Optional[list[MetricSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
     Optional[BooleanCondition] BooleanCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -7818,8 +8097,9 @@ struct MetricSummary:
     Optional[str] LastModifiedRegion
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) Threshold: list[ThresholdV2], MetricFilters: list[MetricFilterV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Threshold: list[ThresholdV2], MetricFilters: list[MetricFilterV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricV2:
     Optional[str] Name
     Optional[list[ThresholdV2]] Threshold
@@ -7840,21 +8120,24 @@ struct MonitorContactResponse:
     Optional[str] ContactId
     Optional[str] ContactArn
 
-# no @derive(Json): member(s) OptionRefIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptionRefIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiSelectQuestionRuleCategoryAutomation:
     str Category
     MultiSelectQuestionRuleCategoryAutomationCondition Condition
     list[str] OptionRefIds
 
-# no @derive(Json): member(s) SearchText: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchText: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NameCriteria:
     list[str] SearchText
     SearchContactsMatchType MatchType
 
-# no @derive(Json): member(s) SupportedMessagingContentTypes: list[str], Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedMessagingContentTypes: list[str], Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewSessionDetails:
     Optional[list[str]] SupportedMessagingContentTypes
     Optional[ParticipantDetails] ParticipantDetails
@@ -7870,8 +8153,9 @@ struct NextContactEntry:
 struct NextContactMetadata:
     Optional[QuickConnectContactData] QuickConnectContactData
 
-# no @derive(Json): member(s) Content: dict[LocaleCode, str], Recipients: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: dict[LocaleCode, str], Recipients: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Notification:
     Optional[dict[LocaleCode, str]] Content
     str Id
@@ -7884,26 +8168,30 @@ struct Notification:
     Optional[str] LastModifiedRegion
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) UserTags: dict[str, str], UserIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserTags: dict[str, str], UserIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationRecipientType:
     Optional[dict[str, str]] UserTags
     Optional[list[str]] UserIds
 
-# no @derive(Json): member(s) OrConditions: list[NotificationSearchCriteria], AndConditions: list[NotificationSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[NotificationSearchCriteria], AndConditions: list[NotificationSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationSearchCriteria:
     Optional[list[NotificationSearchCriteria]] OrConditions
     Optional[list[NotificationSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
-# no @derive(Json): member(s) Content: dict[LocaleCode, str], Recipients: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: dict[LocaleCode, str], Recipients: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationSearchSummary:
     Optional[str] Id
     Optional[str] Arn
@@ -7917,8 +8205,9 @@ struct NotificationSearchSummary:
     Optional[DateTime] LastModifiedTime
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CcEmailAddresses: list[EmailAddressInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CcEmailAddresses: list[EmailAddressInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NullableAdditionalRecipients:
     Optional[list[EmailAddressInfo]] CcEmailAddresses
 
@@ -7949,8 +8238,9 @@ struct OperationalHour:
     Optional[OverrideTimeSlice] Start
     Optional[OverrideTimeSlice] End
 
-# no @derive(Json): member(s) CcEmailAddresses: list[EmailAddressInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CcEmailAddresses: list[EmailAddressInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutboundAdditionalRecipients:
     Optional[list[EmailAddressInfo]] CcEmailAddresses
 
@@ -7968,8 +8258,9 @@ struct OutboundContactNotPermittedException:
 struct OutboundEmailConfig:
     Optional[str] OutboundEmailAddressId
 
-# no @derive(Json): member(s) TemplatedMessageConfig: TemplatedMessageConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplatedMessageConfig: TemplatedMessageConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutboundEmailContent:
     OutboundMessageSourceType MessageSourceType
     Optional[TemplatedMessageConfig] TemplatedMessageConfig
@@ -7981,14 +8272,16 @@ struct OutboundRawMessage:
     str Body
     str ContentType
 
-# no @derive(Json): member(s) Config: OutboundStrategyConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: OutboundStrategyConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutboundStrategy:
     str Type
     Optional[OutboundStrategyConfig] Config
 
-# no @derive(Json): member(s) AgentFirst: AgentFirst not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentFirst: AgentFirst not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutboundStrategyConfig:
     Optional[AgentFirst] AgentFirst
 
@@ -8145,13 +8438,15 @@ struct PreEvaluationFilter:
     str FilterValue
     str Operator
 
-# no @derive(Json): member(s) AndConditions: list[PreEvaluationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AndConditions: list[PreEvaluationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PreEvaluationFilters:
     Optional[list[PreEvaluationFilter]] AndConditions
 
-# no @derive(Json): member(s) Values: PredefinedAttributeValues, Purposes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: PredefinedAttributeValues, Purposes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredefinedAttribute:
     Optional[str] Name
     Optional[PredefinedAttributeValues] Values
@@ -8165,8 +8460,9 @@ struct PredefinedAttributeConfiguration:
     Optional[bool] EnableValueValidationOnAssociation
     Optional[bool] IsReadOnly
 
-# no @derive(Json): member(s) OrConditions: list[PredefinedAttributeSearchCriteria], AndConditions: list[PredefinedAttributeSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[PredefinedAttributeSearchCriteria], AndConditions: list[PredefinedAttributeSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredefinedAttributeSearchCriteria:
     Optional[list[PredefinedAttributeSearchCriteria]] OrConditions
     Optional[list[PredefinedAttributeSearchCriteria]] AndConditions
@@ -8178,31 +8474,36 @@ struct PredefinedAttributeSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) StringList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredefinedAttributeValues:
     Optional[list[str]] StringList
 
-# no @derive(Json): member(s) AllowedUserActions: list[AllowedUserAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedUserActions: list[AllowedUserAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Preview:
     PostAcceptTimeoutConfig PostAcceptTimeoutConfig
     list[AllowedUserAction] AllowedUserActions
 
-# no @derive(Json): member(s) PrimaryAttributeValues: list[PrimaryAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryAttributeValues: list[PrimaryAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrimaryAttributeAccessControlConfigurationItem:
     Optional[list[PrimaryAttributeValue]] PrimaryAttributeValues
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrimaryAttributeValue:
     Optional[str] AccessType
     Optional[str] AttributeName
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrimaryAttributeValueFilter:
     str AttributeName
     list[str] Values
@@ -8222,8 +8523,9 @@ struct PrimaryValueResponse:
 struct ProblemDetail:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Prompt:
     Optional[str] PromptARN
     Optional[str] PromptId
@@ -8233,15 +8535,17 @@ struct Prompt:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) OrConditions: list[PromptSearchCriteria], AndConditions: list[PromptSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[PromptSearchCriteria], AndConditions: list[PromptSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PromptSearchCriteria:
     Optional[list[PromptSearchCriteria]] OrConditions
     Optional[list[PromptSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PromptSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -8253,8 +8557,9 @@ struct PromptSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) PropertyList: list[PropertyValidationExceptionProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyList: list[PropertyValidationExceptionProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyValidationException:
     str Message
     Optional[list[PropertyValidationExceptionProperty]] PropertyList
@@ -8277,8 +8582,9 @@ struct PutUserStatusResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Agent: AgentQualityMetrics, Customer: CustomerQualityMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Agent: AgentQualityMetrics, Customer: CustomerQualityMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QualityMetrics:
     Optional[AgentQualityMetrics] Agent
     Optional[CustomerQualityMetrics] Customer
@@ -8294,8 +8600,9 @@ struct QuestionPointsConfiguration:
     Optional[int64] MinPointValue
     Optional[bool] IsBonus
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Queue:
     Optional[str] Name
     Optional[str] QueueArn
@@ -8329,16 +8636,18 @@ struct QueueReference:
     Optional[str] Id
     Optional[str] Arn
 
-# no @derive(Json): member(s) OrConditions: list[QueueSearchCriteria], AndConditions: list[QueueSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[QueueSearchCriteria], AndConditions: list[QueueSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueueSearchCriteria:
     Optional[list[QueueSearchCriteria]] OrConditions
     Optional[list[QueueSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
     Optional[str] QueueTypeCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueueSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -8351,8 +8660,9 @@ struct QueueSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickConnect:
     Optional[str] QuickConnectARN
     Optional[str] QuickConnectId
@@ -8379,15 +8689,17 @@ struct QuickConnectContactData:
     Optional[str] QuickConnectName
     Optional[QuickConnectType] QuickConnectType
 
-# no @derive(Json): member(s) OrConditions: list[QuickConnectSearchCriteria], AndConditions: list[QuickConnectSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[QuickConnectSearchCriteria], AndConditions: list[QuickConnectSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickConnectSearchCriteria:
     Optional[list[QuickConnectSearchCriteria]] OrConditions
     Optional[list[QuickConnectSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickConnectSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -8416,8 +8728,9 @@ struct RealTimeContactAnalysisAttachment:
     str AttachmentId
     Optional[ArtifactStatus] Status
 
-# no @derive(Json): member(s) PointsOfInterest: list[RealTimeContactAnalysisPointOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointsOfInterest: list[RealTimeContactAnalysisPointOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisCategoryDetails:
     list[RealTimeContactAnalysisPointOfInterest] PointsOfInterest
 
@@ -8426,24 +8739,28 @@ struct RealTimeContactAnalysisCharacterInterval:
     int64 BeginOffsetChar
     int64 EndOffsetChar
 
-# no @derive(Json): member(s) PointsOfInterest: list[RealTimeContactAnalysisTranscriptItemWithCharacterOffsets] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointsOfInterest: list[RealTimeContactAnalysisTranscriptItemWithCharacterOffsets] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisExtractedInformationValue:
     str Content
     list[RealTimeContactAnalysisTranscriptItemWithCharacterOffsets] PointsOfInterest
 
-# no @derive(Json): member(s) TranscriptItems: list[RealTimeContactAnalysisTranscriptItemWithContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TranscriptItems: list[RealTimeContactAnalysisTranscriptItemWithContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisIssueDetected:
     list[RealTimeContactAnalysisTranscriptItemWithContent] TranscriptItems
 
-# no @derive(Json): member(s) TranscriptItems: list[RealTimeContactAnalysisTranscriptItemWithCharacterOffsets] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TranscriptItems: list[RealTimeContactAnalysisTranscriptItemWithCharacterOffsets] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisPointOfInterest:
     Optional[list[RealTimeContactAnalysisTranscriptItemWithCharacterOffsets]] TranscriptItems
 
-# no @derive(Json): member(s) Attachments: list[RealTimeContactAnalysisAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachments: list[RealTimeContactAnalysisAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisSegmentAttachments:
     str Id
     str ParticipantId
@@ -8452,8 +8769,9 @@ struct RealTimeContactAnalysisSegmentAttachments:
     list[RealTimeContactAnalysisAttachment] Attachments
     RealTimeContactAnalysisTimeData Time
 
-# no @derive(Json): member(s) MatchedDetails: dict[str, RealTimeContactAnalysisCategoryDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchedDetails: dict[str, RealTimeContactAnalysisCategoryDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisSegmentCategories:
     dict[str, RealTimeContactAnalysisCategoryDetails] MatchedDetails
 
@@ -8466,8 +8784,9 @@ struct RealTimeContactAnalysisSegmentEvent:
     str EventType
     RealTimeContactAnalysisTimeData Time
 
-# no @derive(Json): member(s) ExtractedValues: list[RealTimeContactAnalysisExtractedInformationValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtractedValues: list[RealTimeContactAnalysisExtractedInformationValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisSegmentExtractedInformation:
     str ExtractionDefinitionId
     str ExtractionDefinitionName
@@ -8475,8 +8794,9 @@ struct RealTimeContactAnalysisSegmentExtractedInformation:
     Optional[list[RealTimeContactAnalysisExtractedInformationValue]] ExtractedValues
     Optional[RealTimeContactAnalysisExtractedInformationFailureCode] FailureCode
 
-# no @derive(Json): member(s) IssuesDetected: list[RealTimeContactAnalysisIssueDetected] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IssuesDetected: list[RealTimeContactAnalysisIssueDetected] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisSegmentIssues:
     list[RealTimeContactAnalysisIssueDetected] IssuesDetected
 
@@ -8486,8 +8806,9 @@ struct RealTimeContactAnalysisSegmentPostContactSummary:
     RealTimeContactAnalysisPostContactSummaryStatus Status
     Optional[RealTimeContactAnalysisPostContactSummaryFailureCode] FailureCode
 
-# no @derive(Json): member(s) Redaction: RealTimeContactAnalysisTranscriptItemRedaction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Redaction: RealTimeContactAnalysisTranscriptItemRedaction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisSegmentTranscript:
     str Id
     str ParticipantId
@@ -8504,8 +8825,9 @@ struct RealTimeContactAnalysisTimeData:
     @json(timestamp="iso8601")
     Optional[DateTime] AbsoluteTime
 
-# no @derive(Json): member(s) CharacterOffsets: list[RealTimeContactAnalysisCharacterInterval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CharacterOffsets: list[RealTimeContactAnalysisCharacterInterval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeContactAnalysisTranscriptItemRedaction:
     Optional[list[RealTimeContactAnalysisCharacterInterval]] CharacterOffsets
 
@@ -8520,8 +8842,9 @@ struct RealTimeContactAnalysisTranscriptItemWithContent:
     str Id
     Optional[RealTimeContactAnalysisCharacterInterval] CharacterOffsets
 
-# no @derive(Json): member(s) Transcript: RealTimeContactAnalysisSegmentTranscript, Categories: RealTimeContactAnalysisSegmentCategories, Issues: RealTimeContactAnalysisSegmentIssues, Attachments: RealTimeContactAnalysisSegmentAttachments, ExtractedInformation: RealTimeContactAnalysisSegmentExtractedInformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transcript: RealTimeContactAnalysisSegmentTranscript, Categories: RealTimeContactAnalysisSegmentCategories, Issues: RealTimeContactAnalysisSegmentIssues, Attachments: RealTimeContactAnalysisSegmentAttachments, ExtractedInformation: RealTimeContactAnalysisSegmentExtractedInformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealtimeContactAnalysisSegment:
     Optional[RealTimeContactAnalysisSegmentTranscript] Transcript
     Optional[RealTimeContactAnalysisSegmentCategories] Categories
@@ -8531,15 +8854,17 @@ struct RealtimeContactAnalysisSegment:
     Optional[RealTimeContactAnalysisSegmentPostContactSummary] PostContactSummary
     Optional[RealTimeContactAnalysisSegmentExtractedInformation] ExtractedInformation
 
-# no @derive(Json): member(s) Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderConfig:
     str DomainName
     str RecommenderName
     Optional[dict[str, str]] Context
 
-# no @derive(Json): member(s) PrimaryValues: list[PrimaryValueResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValues: list[PrimaryValueResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordPrimaryValue:
     Optional[str] RecordId
     Optional[list[PrimaryValueResponse]] PrimaryValues
@@ -8560,13 +8885,15 @@ struct RecordingInfo:
     Optional[str] DeletionReason
     Optional[str] UnprocessedTranscriptLocation
 
-# no @derive(Json): member(s) RecurrencePattern: RecurrencePattern not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecurrencePattern: RecurrencePattern not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecurrenceConfig:
     RecurrencePattern RecurrencePattern
 
-# no @derive(Json): member(s) ByMonth: list[int64], ByMonthDay: list[int64], ByWeekdayOccurrence: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByMonth: list[int64], ByMonthDay: list[int64], ByWeekdayOccurrence: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecurrencePattern:
     RecurrenceFrequency Frequency
     int64 Interval
@@ -8574,8 +8901,9 @@ struct RecurrencePattern:
     Optional[list[int64]] ByMonthDay
     Optional[list[int64]] ByWeekdayOccurrence
 
-# no @derive(Json): member(s) Entities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedactionConfiguration:
     Behavior Behavior
     Policy Policy
@@ -8623,8 +8951,9 @@ struct ReplicateInstanceResponse:
     Optional[str] Id
     Optional[str] Arn
 
-# no @derive(Json): member(s) ReplicationStatusSummaryList: list[ReplicationStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationStatusSummaryList: list[ReplicationStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfiguration:
     Optional[list[ReplicationStatusSummary]] ReplicationStatusSummaryList
     Optional[str] SourceRegion
@@ -8703,20 +9032,23 @@ struct ResumeContactResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Steps: list[Step] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[Step] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingCriteria:
     Optional[list[Step]] Steps
     Optional[DateTime] ActivationTimestamp
     Optional[int64] Index
 
-# no @derive(Json): member(s) Steps: list[RoutingCriteriaInputStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[RoutingCriteriaInputStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingCriteriaInput:
     Optional[list[RoutingCriteriaInputStep]] Steps
 
-# no @derive(Json): member(s) Expression: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingCriteriaInputStep:
     Optional[RoutingCriteriaInputStepExpiry] Expiry
     Optional[Expression] Expression
@@ -8725,8 +9057,9 @@ struct RoutingCriteriaInputStep:
 struct RoutingCriteriaInputStepExpiry:
     Optional[int64] DurationInSeconds
 
-# no @derive(Json): member(s) MediaConcurrencies: list[MediaConcurrency], Tags: dict[str, str], AssociatedQueueIds: list[str], AssociatedManualAssignmentQueueIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaConcurrencies: list[MediaConcurrency], Tags: dict[str, str], AssociatedQueueIds: list[str], AssociatedManualAssignmentQueueIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingProfile:
     Optional[str] InstanceId
     Optional[str] Name
@@ -8782,15 +9115,17 @@ struct RoutingProfileReference:
     Optional[str] Id
     Optional[str] Arn
 
-# no @derive(Json): member(s) OrConditions: list[RoutingProfileSearchCriteria], AndConditions: list[RoutingProfileSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[RoutingProfileSearchCriteria], AndConditions: list[RoutingProfileSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingProfileSearchCriteria:
     Optional[list[RoutingProfileSearchCriteria]] OrConditions
     Optional[list[RoutingProfileSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingProfileSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -8802,8 +9137,9 @@ struct RoutingProfileSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) RuleCapabilityTiers: list[str], Actions: list[RuleAction], PreEvaluationFilters: PreEvaluationFilters, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleCapabilityTiers: list[str], Actions: list[RuleAction], PreEvaluationFilters: PreEvaluationFilters, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     str Name
     str RuleId
@@ -8819,8 +9155,9 @@ struct Rule:
     str LastUpdatedBy
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) TaskAction: TaskActionDefinition, SendNotificationAction: SendNotificationActionDefinition, CreateCaseAction: CreateCaseActionDefinition, UpdateCaseAction: UpdateCaseActionDefinition, AssignSlaAction: AssignSlaActionDefinition, ExtractInformationAction: ExtractInformationActionDefinition, SendInAppNotificationAction: SendInAppNotificationActionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskAction: TaskActionDefinition, SendNotificationAction: SendNotificationActionDefinition, CreateCaseAction: CreateCaseActionDefinition, UpdateCaseAction: UpdateCaseActionDefinition, AssignSlaAction: AssignSlaActionDefinition, ExtractInformationAction: ExtractInformationActionDefinition, SendInAppNotificationAction: SendInAppNotificationActionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleAction:
     ActionType ActionType
     Optional[TaskActionDefinition] TaskAction
@@ -8835,20 +9172,23 @@ struct RuleAction:
     Optional[ExtractInformationActionDefinition] ExtractInformationAction
     Optional[SendInAppNotificationActionDefinition] SendInAppNotificationAction
 
-# no @derive(Json): member(s) TagConditions: list[TagCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleAttributeAndCondition:
     Optional[list[TagCondition]] TagConditions
 
-# no @derive(Json): member(s) OrConditions: list[RuleAttributeAndCondition], AndCondition: RuleAttributeAndCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[RuleAttributeAndCondition], AndCondition: RuleAttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleAttributeFilter:
     Optional[list[RuleAttributeAndCondition]] OrConditions
     Optional[RuleAttributeAndCondition] AndCondition
     Optional[TagCondition] TagCondition
 
-# no @derive(Json): member(s) ActionSummaries: list[ActionSummary], RuleCapabilityTiers: list[str], PreEvaluationFilters: PreEvaluationFilters, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionSummaries: list[ActionSummary], RuleCapabilityTiers: list[str], PreEvaluationFilters: PreEvaluationFilters, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleSearchSummary:
     str Name
     str RuleId
@@ -8863,8 +9203,9 @@ struct RuleSearchSummary:
     str LastUpdatedBy
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) RuleCapabilityTiers: list[str], ActionSummaries: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleCapabilityTiers: list[str], ActionSummaries: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleSummary:
     str Name
     str RuleId
@@ -8889,15 +9230,17 @@ struct RulesConfiguration:
 struct RulesExtractionDefinitionIdentifier:
     str Identifier
 
-# no @derive(Json): member(s) OrConditions: list[RulesSearchCriteria], AndConditions: list[RulesSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[RulesSearchCriteria], AndConditions: list[RulesSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RulesSearchCriteria:
     Optional[list[RulesSearchCriteria]] OrConditions
     Optional[list[RulesSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: RuleAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: RuleAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RulesSearchFilter:
     Optional[RuleAttributeFilter] AttributeFilter
 
@@ -8916,8 +9259,9 @@ struct SearchAgentStatusesRequest:
     Optional[AgentStatusSearchFilter] SearchFilter
     Optional[AgentStatusSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) AgentStatuses: list[AgentStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentStatuses: list[AgentStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAgentStatusesResponse:
     Optional[list[AgentStatus]] AgentStatuses
     Optional[str] NextToken
@@ -8934,8 +9278,9 @@ struct SearchAvailablePhoneNumbersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AvailableNumbersList: list[AvailableNumberSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailableNumbersList: list[AvailableNumberSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAvailablePhoneNumbersResponse:
     Optional[str] NextToken
     Optional[list[AvailableNumberSummary]] AvailableNumbersList
@@ -8949,8 +9294,9 @@ struct SearchContactEvaluationsRequest:
     Optional[EvaluationSearchCriteria] SearchCriteria
     Optional[EvaluationSearchFilter] SearchFilter
 
-# no @derive(Json): member(s) EvaluationSearchSummaryList: list[EvaluationSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationSearchSummaryList: list[EvaluationSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchContactEvaluationsResponse:
     Optional[list[EvaluationSearchSummary]] EvaluationSearchSummaryList
     Optional[str] NextToken
@@ -8965,8 +9311,9 @@ struct SearchContactFlowModulesRequest:
     Optional[ContactFlowModuleSearchFilter] SearchFilter
     Optional[ContactFlowModuleSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) ContactFlowModules: list[ContactFlowModule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlowModules: list[ContactFlowModule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchContactFlowModulesResponse:
     Optional[list[ContactFlowModule]] ContactFlowModules
     Optional[str] NextToken
@@ -8981,15 +9328,17 @@ struct SearchContactFlowsRequest:
     Optional[ContactFlowSearchFilter] SearchFilter
     Optional[ContactFlowSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) ContactFlows: list[ContactFlow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactFlows: list[ContactFlow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchContactFlowsResponse:
     Optional[list[ContactFlow]] ContactFlows
     Optional[str] NextToken
     Optional[int64] ApproximateTotalCount
 
-# no @derive(Json): member(s) Criteria: list[SearchContactsAdditionalTimeRangeCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: list[SearchContactsAdditionalTimeRangeCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchContactsAdditionalTimeRange:
     list[SearchContactsAdditionalTimeRangeCriteria] Criteria
     SearchContactsMatchType MatchType
@@ -9009,8 +9358,9 @@ struct SearchContactsRequest:
     Optional[str] NextToken
     Optional[Sort] Sort
 
-# no @derive(Json): member(s) Contacts: list[ContactSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contacts: list[ContactSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchContactsResponse:
     list[ContactSearchSummary] Contacts
     Optional[str] NextToken
@@ -9027,8 +9377,9 @@ struct SearchContactsTimestampCondition:
     SearchContactsTimeRangeType Type
     str ConditionType
 
-# no @derive(Json): member(s) Name: NameCriteria, AgentIds: list[str], AgentHierarchyGroups: AgentHierarchyGroups, Channels: list[Channel], ContactAnalysis: ContactAnalysis, InitiationMethods: list[ContactInitiationMethod], QueueIds: list[str], RoutingCriteria: SearchableRoutingCriteria, AdditionalTimeRange: SearchContactsAdditionalTimeRange, SearchableContactAttributes: SearchableContactAttributes, SearchableSegmentAttributes: SearchableSegmentAttributes, ActiveRegions: list[str], ContactTags: ControlPlaneTagFilter, AiAgents: AiAgentsCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Name: NameCriteria, AgentIds: list[str], AgentHierarchyGroups: AgentHierarchyGroups, Channels: list[Channel], ContactAnalysis: ContactAnalysis, InitiationMethods: list[ContactInitiationMethod], QueueIds: list[str], RoutingCriteria: SearchableRoutingCriteria, AdditionalTimeRange: SearchContactsAdditionalTimeRange, SearchableContactAttributes: SearchableContactAttributes, SearchableSegmentAttributes: SearchableSegmentAttributes, ActiveRegions: list[str], ContactTags: ControlPlaneTagFilter, AiAgents: AiAgentsCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCriteria:
     Optional[NameCriteria] Name
     Optional[list[str]] AgentIds
@@ -9054,8 +9405,9 @@ struct SearchDataTablesRequest:
     Optional[DataTableSearchFilter] SearchFilter
     Optional[DataTableSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) DataTables: list[DataTable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataTables: list[DataTable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDataTablesResponse:
     Optional[list[DataTable]] DataTables
     Optional[str] NextToken
@@ -9070,8 +9422,9 @@ struct SearchEmailAddressesRequest:
     Optional[EmailAddressSearchCriteria] SearchCriteria
     Optional[EmailAddressSearchFilter] SearchFilter
 
-# no @derive(Json): member(s) EmailAddresses: list[EmailAddressMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmailAddresses: list[EmailAddressMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchEmailAddressesResponse:
     Optional[str] NextToken
     Optional[list[EmailAddressMetadata]] EmailAddresses
@@ -9086,8 +9439,9 @@ struct SearchEvaluationFormsRequest:
     Optional[EvaluationFormSearchCriteria] SearchCriteria
     Optional[EvaluationFormSearchFilter] SearchFilter
 
-# no @derive(Json): member(s) EvaluationFormSearchSummaryList: list[EvaluationFormSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationFormSearchSummaryList: list[EvaluationFormSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchEvaluationFormsResponse:
     Optional[list[EvaluationFormSearchSummary]] EvaluationFormSearchSummaryList
     Optional[str] NextToken
@@ -9102,8 +9456,9 @@ struct SearchHoursOfOperationOverridesRequest:
     Optional[HoursOfOperationSearchFilter] SearchFilter
     Optional[HoursOfOperationOverrideSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) HoursOfOperationOverrides: list[HoursOfOperationOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HoursOfOperationOverrides: list[HoursOfOperationOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchHoursOfOperationOverridesResponse:
     Optional[list[HoursOfOperationOverride]] HoursOfOperationOverrides
     Optional[str] NextToken
@@ -9118,8 +9473,9 @@ struct SearchHoursOfOperationsRequest:
     Optional[HoursOfOperationSearchFilter] SearchFilter
     Optional[HoursOfOperationSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) HoursOfOperations: list[HoursOfOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HoursOfOperations: list[HoursOfOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchHoursOfOperationsResponse:
     Optional[list[HoursOfOperation]] HoursOfOperations
     Optional[str] NextToken
@@ -9134,8 +9490,9 @@ struct SearchMetricsRequest:
     Optional[MetricSearchFilter] SearchFilter
     Optional[MetricSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Metrics: list[MetricDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: list[MetricDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchMetricsResponse:
     Optional[list[MetricDefinition]] Metrics
     Optional[str] NextToken
@@ -9150,8 +9507,9 @@ struct SearchNotificationsRequest:
     Optional[NotificationSearchFilter] SearchFilter
     Optional[NotificationSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Notifications: list[NotificationSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notifications: list[NotificationSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchNotificationsResponse:
     Optional[list[NotificationSearchSummary]] Notifications
     Optional[str] NextToken
@@ -9165,8 +9523,9 @@ struct SearchPredefinedAttributesRequest:
     Optional[int64] MaxResults
     Optional[PredefinedAttributeSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) PredefinedAttributes: list[PredefinedAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredefinedAttributes: list[PredefinedAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPredefinedAttributesResponse:
     Optional[list[PredefinedAttribute]] PredefinedAttributes
     Optional[str] NextToken
@@ -9181,8 +9540,9 @@ struct SearchPromptsRequest:
     Optional[PromptSearchFilter] SearchFilter
     Optional[PromptSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Prompts: list[Prompt] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Prompts: list[Prompt] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPromptsResponse:
     Optional[list[Prompt]] Prompts
     Optional[str] NextToken
@@ -9197,8 +9557,9 @@ struct SearchQueuesRequest:
     Optional[QueueSearchFilter] SearchFilter
     Optional[QueueSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Queues: list[Queue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queues: list[Queue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchQueuesResponse:
     Optional[list[Queue]] Queues
     Optional[str] NextToken
@@ -9213,8 +9574,9 @@ struct SearchQuickConnectsRequest:
     Optional[QuickConnectSearchFilter] SearchFilter
     Optional[QuickConnectSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) QuickConnects: list[QuickConnect] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuickConnects: list[QuickConnect] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchQuickConnectsResponse:
     Optional[list[QuickConnect]] QuickConnects
     Optional[str] NextToken
@@ -9229,8 +9591,9 @@ struct SearchResourceTagsRequest:
     Optional[int64] MaxResults
     Optional[ResourceTagsSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Tags: list[TagSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[TagSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourceTagsResponse:
     Optional[list[TagSet]] Tags
     Optional[str] NextToken
@@ -9244,8 +9607,9 @@ struct SearchRoutingProfilesRequest:
     Optional[RoutingProfileSearchFilter] SearchFilter
     Optional[RoutingProfileSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) RoutingProfiles: list[RoutingProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingProfiles: list[RoutingProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRoutingProfilesResponse:
     Optional[list[RoutingProfile]] RoutingProfiles
     Optional[str] NextToken
@@ -9260,8 +9624,9 @@ struct SearchRulesRequest:
     Optional[RulesSearchCriteria] SearchCriteria
     Optional[RulesSearchFilter] SearchFilter
 
-# no @derive(Json): member(s) Rules: list[RuleSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[RuleSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRulesResponse:
     list[RuleSearchSummary] Rules
     Optional[int64] ApproximateTotalCount
@@ -9276,8 +9641,9 @@ struct SearchSecurityProfilesRequest:
     Optional[SecurityProfileSearchCriteria] SearchCriteria
     Optional[SecurityProfilesSearchFilter] SearchFilter
 
-# no @derive(Json): member(s) SecurityProfiles: list[SecurityProfileSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfiles: list[SecurityProfileSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSecurityProfilesResponse:
     Optional[list[SecurityProfileSearchSummary]] SecurityProfiles
     Optional[str] NextToken
@@ -9292,8 +9658,9 @@ struct SearchTestCasesRequest:
     Optional[TestCaseSearchFilter] SearchFilter
     Optional[TestCaseSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) TestCases: list[TestCase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestCases: list[TestCase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTestCasesResponse:
     Optional[list[TestCase]] TestCases
     Optional[str] NextToken
@@ -9308,8 +9675,9 @@ struct SearchUserHierarchyGroupsRequest:
     Optional[UserHierarchyGroupSearchFilter] SearchFilter
     Optional[UserHierarchyGroupSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) UserHierarchyGroups: list[HierarchyGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserHierarchyGroups: list[HierarchyGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchUserHierarchyGroupsResponse:
     Optional[list[HierarchyGroup]] UserHierarchyGroups
     Optional[str] NextToken
@@ -9324,8 +9692,9 @@ struct SearchUsersRequest:
     Optional[UserSearchFilter] SearchFilter
     Optional[UserSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Users: list[UserSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchUsersResponse:
     Optional[list[UserSearchSummary]] Users
     Optional[str] NextToken
@@ -9340,8 +9709,9 @@ struct SearchViewsRequest:
     Optional[ViewSearchFilter] SearchFilter
     Optional[ViewSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Views: list[View] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Views: list[View] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchViewsResponse:
     Optional[list[View]] Views
     Optional[str] NextToken
@@ -9357,8 +9727,9 @@ struct SearchVocabulariesRequest:
     Optional[str] NameStartsWith
     Optional[VocabularyLanguageCode] LanguageCode
 
-# no @derive(Json): member(s) VocabularySummaryList: list[VocabularySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VocabularySummaryList: list[VocabularySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchVocabulariesResponse:
     Optional[list[VocabularySummary]] VocabularySummaryList
     Optional[str] NextToken
@@ -9372,8 +9743,9 @@ struct SearchWorkspaceAssociationsRequest:
     Optional[WorkspaceAssociationSearchFilter] SearchFilter
     Optional[WorkspaceAssociationSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) WorkspaceAssociations: list[WorkspaceAssociationSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkspaceAssociations: list[WorkspaceAssociationSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchWorkspaceAssociationsResponse:
     Optional[str] NextToken
     Optional[list[WorkspaceAssociationSearchSummary]] WorkspaceAssociations
@@ -9388,49 +9760,57 @@ struct SearchWorkspacesRequest:
     Optional[WorkspaceSearchFilter] SearchFilter
     Optional[WorkspaceSearchCriteria] SearchCriteria
 
-# no @derive(Json): member(s) Workspaces: list[WorkspaceSearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workspaces: list[WorkspaceSearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchWorkspacesResponse:
     Optional[str] NextToken
     Optional[list[WorkspaceSearchSummary]] Workspaces
     Optional[int64] ApproximateTotalCount
 
-# no @derive(Json): member(s) AgentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableAgentCriteriaStep:
     Optional[list[str]] AgentIds
     Optional[SearchContactsMatchType] MatchType
 
-# no @derive(Json): member(s) Criteria: list[SearchableContactAttributesCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: list[SearchableContactAttributesCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableContactAttributes:
     list[SearchableContactAttributesCriteria] Criteria
     Optional[SearchContactsMatchType] MatchType
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableContactAttributesCriteria:
     str Key
     list[str] Values
 
-# no @derive(Json): member(s) Steps: list[SearchableRoutingCriteriaStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[SearchableRoutingCriteriaStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableRoutingCriteria:
     Optional[list[SearchableRoutingCriteriaStep]] Steps
 
-# no @derive(Json): member(s) AgentCriteria: SearchableAgentCriteriaStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentCriteria: SearchableAgentCriteriaStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableRoutingCriteriaStep:
     Optional[SearchableAgentCriteriaStep] AgentCriteria
 
-# no @derive(Json): member(s) Criteria: list[SearchableSegmentAttributesCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: list[SearchableSegmentAttributesCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableSegmentAttributes:
     list[SearchableSegmentAttributesCriteria] Criteria
     Optional[SearchContactsMatchType] MatchType
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchableSegmentAttributesCriteria:
     str Key
     list[str] Values
@@ -9441,8 +9821,9 @@ struct SecurityKey:
     Optional[str] Key
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) Tags: dict[str, str], AllowedAccessControlTags: dict[str, str], TagRestrictedResources: list[str], HierarchyRestrictedResources: list[str], GranularAccessControlConfiguration: GranularAccessControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], AllowedAccessControlTags: dict[str, str], TagRestrictedResources: list[str], HierarchyRestrictedResources: list[str], GranularAccessControlConfiguration: GranularAccessControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityProfile:
     Optional[str] Id
     Optional[str] OrganizationResourceId
@@ -9463,15 +9844,17 @@ struct SecurityProfile:
 struct SecurityProfileItem:
     Optional[str] Id
 
-# no @derive(Json): member(s) OrConditions: list[SecurityProfileSearchCriteria], AndConditions: list[SecurityProfileSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[SecurityProfileSearchCriteria], AndConditions: list[SecurityProfileSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityProfileSearchCriteria:
     Optional[list[SecurityProfileSearchCriteria]] OrConditions
     Optional[list[SecurityProfileSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityProfileSearchSummary:
     Optional[str] Id
     Optional[str] OrganizationResourceId
@@ -9490,13 +9873,15 @@ struct SecurityProfileSummary:
     Optional[str] LastModifiedRegion
     Optional[SecurityProfileType] Type
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityProfilesSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
-# no @derive(Json): member(s) ValueMap: dict[str, SegmentAttributeValue], ValueList: list[SegmentAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueMap: dict[str, SegmentAttributeValue], ValueList: list[SegmentAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentAttributeValue:
     Optional[str] ValueString
     Optional[dict[str, SegmentAttributeValue]] ValueMap
@@ -9518,16 +9903,18 @@ struct SendChatIntegrationEventResponse:
     Optional[str] InitialContactId
     Optional[bool] NewChatCreated
 
-# no @derive(Json): member(s) Content: dict[LocaleCode, str], Recipient: NotificationRecipientType, Exclusion: NotificationRecipientType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: dict[LocaleCode, str], Recipient: NotificationRecipientType, Exclusion: NotificationRecipientType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendInAppNotificationActionDefinition:
     dict[LocaleCode, str] Content
     NotificationRecipientType Recipient
     Optional[NotificationRecipientType] Exclusion
     Optional[ConfigurableNotificationPriority] Priority
 
-# no @derive(Json): member(s) Recipient: NotificationRecipientType, Exclusion: NotificationRecipientType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recipient: NotificationRecipientType, Exclusion: NotificationRecipientType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendNotificationActionDefinition:
     str DeliveryMethod
     Optional[str] Subject
@@ -9583,8 +9970,9 @@ struct ServiceQuotaExceededException:
 struct ServiceQuotaExceededExceptionReason:
     Optional[AttachedFileServiceQuotaExceededExceptionReason] AttachedFileServiceQuotaExceededExceptionReason
 
-# no @derive(Json): member(s) Distributions: list[SignInDistribution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Distributions: list[SignInDistribution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignInConfig:
     list[SignInDistribution] Distributions
 
@@ -9641,8 +10029,9 @@ struct StartAttachedFileUploadRequest:
     Optional[CreatedByInfo] CreatedBy
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) UploadUrlMetadata: UploadUrlMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UploadUrlMetadata: UploadUrlMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAttachedFileUploadResponse:
     Optional[str] FileArn
     Optional[str] FileId
@@ -9917,8 +10306,9 @@ struct StateTransition:
     Optional[DateTime] StateStartTimestamp
     Optional[DateTime] StateEndTimestamp
 
-# no @derive(Json): member(s) Expression: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Step:
     Optional[Expiry] Expiry
     Optional[Expression] Expression
@@ -10023,8 +10413,9 @@ struct SuccessfulRequest:
     Optional[str] RequestIdentifier
     Optional[str] ContactId
 
-# no @derive(Json): member(s) SummaryModes: list[SummaryMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryModes: list[SummaryMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummaryConfiguration:
     list[SummaryMode] SummaryModes
 
@@ -10076,8 +10467,9 @@ struct TagSet:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) References: dict[str, Reference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) References: dict[str, Reference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskActionDefinition:
     str Name
     Optional[str] Description
@@ -10089,8 +10481,9 @@ struct TaskAttachment:
     str FileName
     str S3Url
 
-# no @derive(Json): member(s) RequiredFields: list[RequiredFieldInfo], ReadOnlyFields: list[ReadOnlyFieldInfo], InvisibleFields: list[InvisibleFieldInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequiredFields: list[RequiredFieldInfo], ReadOnlyFields: list[ReadOnlyFieldInfo], InvisibleFields: list[InvisibleFieldInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskTemplateConstraints:
     Optional[list[RequiredFieldInfo]] RequiredFields
     Optional[list[ReadOnlyFieldInfo]] ReadOnlyFields
@@ -10105,13 +10498,15 @@ struct TaskTemplateDefaultFieldValue:
     Optional[TaskTemplateFieldIdentifier] Id
     Optional[str] DefaultValue
 
-# no @derive(Json): member(s) DefaultFieldValues: list[TaskTemplateDefaultFieldValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFieldValues: list[TaskTemplateDefaultFieldValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskTemplateDefaults:
     Optional[list[TaskTemplateDefaultFieldValue]] DefaultFieldValues
 
-# no @derive(Json): member(s) SingleSelectOptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SingleSelectOptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskTemplateField:
     TaskTemplateFieldIdentifier Id
     Optional[str] Description
@@ -10137,26 +10532,30 @@ struct TaskTemplateMetadata:
     Optional[DateTime] LastModifiedTime
     Optional[DateTime] CreatedTime
 
-# no @derive(Json): member(s) Distributions: list[Distribution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Distributions: list[Distribution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelephonyConfig:
     list[Distribution] Distributions
 
-# no @derive(Json): member(s) CustomAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateAttributes:
     Optional[dict[str, str]] CustomAttributes
     Optional[str] CustomerProfileAttributes
 
-# no @derive(Json): member(s) TemplateAttributes: TemplateAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateAttributes: TemplateAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplatedMessageConfig:
     str KnowledgeBaseId
     str MessageTemplateId
     TemplateAttributes TemplateAttributes
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestCase:
     Optional[str] Arn
     Optional[str] Id
@@ -10177,8 +10576,9 @@ struct TestCaseEntryPoint:
     Optional[VoiceCallEntryPointParameters] VoiceCallEntryPointParameters
     Optional[ChatEntryPointParameters] ChatEntryPointParameters
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestCaseExecution:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
@@ -10187,16 +10587,18 @@ struct TestCaseExecution:
     Optional[TestCaseExecutionStatus] TestCaseExecutionStatus
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) OrConditions: list[TestCaseSearchCriteria], AndConditions: list[TestCaseSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[TestCaseSearchCriteria], AndConditions: list[TestCaseSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestCaseSearchCriteria:
     Optional[list[TestCaseSearchCriteria]] OrConditions
     Optional[list[TestCaseSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
     Optional[TestCaseStatus] StatusCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestCaseSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
 
@@ -10227,8 +10629,9 @@ struct ThrottlingException:
 struct TooManyRequestsException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrafficDistributionGroup:
     Optional[str] Id
     Optional[str] Arn
@@ -10252,14 +10655,16 @@ struct TrafficDistributionGroupSummary:
 struct TrafficDistributionGroupUserSummary:
     Optional[str] UserId
 
-# no @derive(Json): member(s) Criteria: list[TranscriptCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: list[TranscriptCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Transcript:
     list[TranscriptCriteria] Criteria
     Optional[SearchContactsMatchType] MatchType
 
-# no @derive(Json): member(s) SearchText: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchText: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TranscriptCriteria:
     ParticipantRole ParticipantRole
     list[str] SearchText
@@ -10318,8 +10723,9 @@ struct UpdateAttachedFilesConfigurationRequest:
     Optional[int64] MaximumSizeLimitInBytes
     Optional[ExtensionConfiguration] ExtensionConfiguration
 
-# no @derive(Json): member(s) ExtensionConfiguration: ExtensionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtensionConfiguration: ExtensionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAttachedFilesConfigurationResponse:
     str InstanceId
     AttachmentScope AttachmentScope
@@ -10340,8 +10746,9 @@ struct UpdateAuthenticationProfileRequest:
     Optional[int64] SessionInactivityDuration
     Optional[bool] SessionInactivityHandlingEnabled
 
-# no @derive(Json): member(s) Fields: list[FieldValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[FieldValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCaseActionDefinition:
     list[FieldValue] Fields
 
@@ -10751,8 +11158,9 @@ struct UpdateParticipantAuthenticationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Chat: ChatParticipantRoleConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Chat: ChatParticipantRoleConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateParticipantRoleConfigChannelInfo:
     Optional[ChatParticipantRoleConfig] Chat
 
@@ -10947,8 +11355,9 @@ struct UpdateTaskTemplateRequest:
     Optional[TaskTemplateStatus] Status
     Optional[list[TaskTemplateField]] Fields
 
-# no @derive(Json): member(s) Constraints: TaskTemplateConstraints, Defaults: TaskTemplateDefaults, Fields: list[TaskTemplateField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Constraints: TaskTemplateConstraints, Defaults: TaskTemplateDefaults, Fields: list[TaskTemplateField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTaskTemplateResponse:
     Optional[str] InstanceId
     Optional[str] Id
@@ -11086,8 +11495,9 @@ struct UpdateViewContentRequest:
     ViewStatus Status
     ViewInputContent Content
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateViewContentResponse:
     Optional[View] View
 
@@ -11158,8 +11568,9 @@ struct UpdateWorkspaceVisibilityResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) HeadersToInclude: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeadersToInclude: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UploadUrlMetadata:
     Optional[str] Url
     Optional[str] UrlExpiry
@@ -11176,8 +11587,9 @@ struct UseCase:
     Optional[str] UseCaseArn
     Optional[UseCaseType] UseCaseType
 
-# no @derive(Json): member(s) SecurityProfileIds: list[str], Tags: dict[str, str], AutoAcceptConfigs: list[AutoAcceptConfig], AfterContactWorkConfigs: list[AfterContactWorkConfigPerChannel], PhoneNumberConfigs: list[PhoneNumberConfig], PersistentConnectionConfigs: list[PersistentConnectionConfig], VoiceEnhancementConfigs: list[VoiceEnhancementConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfileIds: list[str], Tags: dict[str, str], AutoAcceptConfigs: list[AutoAcceptConfig], AfterContactWorkConfigs: list[AfterContactWorkConfigPerChannel], PhoneNumberConfigs: list[PhoneNumberConfig], PersistentConnectionConfigs: list[PersistentConnectionConfig], VoiceEnhancementConfigs: list[VoiceEnhancementConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct User:
     Optional[str] Id
     Optional[str] Arn
@@ -11197,8 +11609,9 @@ struct User:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) AvailableSlotsByChannel: dict[Channel, int64], MaxSlotsByChannel: dict[Channel, int64], ActiveSlotsByChannel: dict[Channel, int64], Contacts: list[AgentContactReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailableSlotsByChannel: dict[Channel, int64], MaxSlotsByChannel: dict[Channel, int64], ActiveSlotsByChannel: dict[Channel, int64], Contacts: list[AgentContactReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserData:
     Optional[UserReference] User
     Optional[RoutingProfileReference] RoutingProfile
@@ -11210,8 +11623,9 @@ struct UserData:
     Optional[list[AgentContactReference]] Contacts
     Optional[str] NextStatus
 
-# no @derive(Json): member(s) Queues: list[str], ContactFilter: ContactFilter, RoutingProfiles: list[str], Agents: list[str], UserHierarchyGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queues: list[str], ContactFilter: ContactFilter, RoutingProfiles: list[str], Agents: list[str], UserHierarchyGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserDataFilters:
     Optional[list[str]] Queues
     Optional[ContactFilter] ContactFilter
@@ -11219,15 +11633,17 @@ struct UserDataFilters:
     Optional[list[str]] Agents
     Optional[list[str]] UserHierarchyGroups
 
-# no @derive(Json): member(s) OrConditions: list[UserHierarchyGroupSearchCriteria], AndConditions: list[UserHierarchyGroupSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[UserHierarchyGroupSearchCriteria], AndConditions: list[UserHierarchyGroupSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserHierarchyGroupSearchCriteria:
     Optional[list[UserHierarchyGroupSearchCriteria]] OrConditions
     Optional[list[UserHierarchyGroupSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserHierarchyGroupSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
@@ -11252,8 +11668,9 @@ struct UserInfo:
 struct UserNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Content: dict[LocaleCode, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: dict[LocaleCode, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserNotificationSummary:
     Optional[str] NotificationId
     Optional[NotificationStatus] NotificationStatus
@@ -11294,8 +11711,9 @@ struct UserReference:
     Optional[str] Id
     Optional[str] Arn
 
-# no @derive(Json): member(s) OrConditions: list[UserSearchCriteria], AndConditions: list[UserSearchCriteria], ListCondition: ListCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[UserSearchCriteria], AndConditions: list[UserSearchCriteria], ListCondition: ListCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserSearchCriteria:
     Optional[list[UserSearchCriteria]] OrConditions
     Optional[list[UserSearchCriteria]] AndConditions
@@ -11303,14 +11721,16 @@ struct UserSearchCriteria:
     Optional[ListCondition] ListCondition
     Optional[HierarchyGroupCondition] HierarchyGroupCondition
 
-# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter, UserAttributeFilter: ControlPlaneUserAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilter: ControlPlaneTagFilter, UserAttributeFilter: ControlPlaneUserAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserSearchFilter:
     Optional[ControlPlaneTagFilter] TagFilter
     Optional[ControlPlaneUserAttributeFilter] UserAttributeFilter
 
-# no @derive(Json): member(s) SecurityProfileIds: list[str], Tags: dict[str, str], AutoAcceptConfigs: list[AutoAcceptConfig], AfterContactWorkConfigs: list[AfterContactWorkConfigPerChannel], PhoneNumberConfigs: list[PhoneNumberConfig], PersistentConnectionConfigs: list[PersistentConnectionConfig], VoiceEnhancementConfigs: list[VoiceEnhancementConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityProfileIds: list[str], Tags: dict[str, str], AutoAcceptConfigs: list[AutoAcceptConfig], AfterContactWorkConfigs: list[AfterContactWorkConfigPerChannel], PhoneNumberConfigs: list[PhoneNumberConfig], PersistentConnectionConfigs: list[PersistentConnectionConfig], VoiceEnhancementConfigs: list[VoiceEnhancementConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserSearchSummary:
     Optional[str] Arn
     Optional[str] DirectoryUserId
@@ -11336,8 +11756,9 @@ struct UserSummary:
     Optional[DateTime] LastModifiedTime
     Optional[str] LastModifiedRegion
 
-# no @derive(Json): member(s) Enum: ValidationEnum not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Enum: ValidationEnum not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Validation:
     Optional[int64] MinLength
     Optional[int64] MaxLength
@@ -11351,14 +11772,16 @@ struct Validation:
     Optional[float64] MultipleOf
     Optional[ValidationEnum] Enum
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationEnum:
     Optional[bool] Strict
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) Content: ViewContent, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: ViewContent, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct View:
     Optional[str] Id
     Optional[str] Arn
@@ -11374,21 +11797,24 @@ struct View:
     Optional[DateTime] LastModifiedTime
     Optional[str] ViewContentSha256
 
-# no @derive(Json): member(s) Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewContent:
     Optional[str] InputSchema
     Optional[str] Template
     Optional[list[str]] Actions
 
-# no @derive(Json): member(s) Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewInputContent:
     Optional[str] Template
     Optional[list[str]] Actions
 
-# no @derive(Json): member(s) OrConditions: list[ViewSearchCriteria], AndConditions: list[ViewSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[ViewSearchCriteria], AndConditions: list[ViewSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewSearchCriteria:
     Optional[list[ViewSearchCriteria]] OrConditions
     Optional[list[ViewSearchCriteria]] AndConditions
@@ -11396,8 +11822,9 @@ struct ViewSearchCriteria:
     Optional[ViewType] ViewTypeCondition
     Optional[ViewStatus] ViewStatusCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
@@ -11420,8 +11847,9 @@ struct ViewVersionSummary:
     Optional[int64] Version
     Optional[str] VersionDescription
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vocabulary:
     str Name
     str Id
@@ -11459,8 +11887,9 @@ struct VoiceRecordingConfiguration:
     Optional[VoiceRecordingTrack] VoiceRecordingTrack
     Optional[str] IvrRecordingTrack
 
-# no @derive(Json): member(s) Attributes: ContentAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: ContentAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebNotificationContent:
     NotificationType Type
     Optional[str] ViewArn
@@ -11480,8 +11909,9 @@ struct WidgetDestination:
     str WidgetId
     str ProfileId
 
-# no @derive(Json): member(s) AiAgents: list[AiAgentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AiAgents: list[AiAgentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WisdomInfo:
     Optional[str] SessionArn
     Optional[list[AiAgentInfo]] AiAgents
@@ -11492,8 +11922,9 @@ struct WorkloadTypeConcurrency:
     int64 Concurrency
     Optional[CrossChannelWorkloadBehavior] CrossChannelWorkloadBehavior
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workspace:
     Optional[Visibility] Visibility
     str Id
@@ -11506,15 +11937,17 @@ struct Workspace:
     Optional[str] LastModifiedRegion
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) OrConditions: list[WorkspaceAssociationSearchCriteria], AndConditions: list[WorkspaceAssociationSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[WorkspaceAssociationSearchCriteria], AndConditions: list[WorkspaceAssociationSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceAssociationSearchCriteria:
     Optional[list[WorkspaceAssociationSearchCriteria]] OrConditions
     Optional[list[WorkspaceAssociationSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceAssociationSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
@@ -11534,20 +11967,23 @@ struct WorkspacePage:
     Optional[str] Slug
     Optional[str] InputData
 
-# no @derive(Json): member(s) OrConditions: list[WorkspaceSearchCriteria], AndConditions: list[WorkspaceSearchCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrConditions: list[WorkspaceSearchCriteria], AndConditions: list[WorkspaceSearchCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceSearchCriteria:
     Optional[list[WorkspaceSearchCriteria]] OrConditions
     Optional[list[WorkspaceSearchCriteria]] AndConditions
     Optional[StringCondition] StringCondition
 
-# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilter: ControlPlaneAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceSearchFilter:
     Optional[ControlPlaneAttributeFilter] AttributeFilter
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceSearchSummary:
     Optional[str] Id
     Optional[str] Name
@@ -11696,191 +12132,31 @@ def connect_error_from_code(str code) -> ConnectError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateHoursOfOperations (document member `ParentHoursOfOperationConfigs: list[ParentHoursOfOperationConfig]` is not serializable by derive)
-#   AssociateQueueEmailAddresses (document member `EmailAddressesConfig: list[EmailAddressConfig]` is not serializable by derive)
-#   AssociateQueueQuickConnects (document member `QuickConnectIds: list[str]` is not serializable by derive)
-#   AssociateRoutingProfileQueues (document member `QueueConfigs: list[RoutingProfileQueueConfig]` is not serializable by derive)
-#   AssociateSecurityProfiles (document member `SecurityProfiles: list[SecurityProfileItem]` is not serializable by derive)
-#   AssociateUserProficiencies (document member `UserProficiencies: list[UserProficiency]` is not serializable by derive)
-#   AssociateWorkspace (document member `ResourceArns: list[str]` is not serializable by derive)
-#   BatchAssociateAnalyticsDataSet (document member `DataSetIds: list[str]` is not serializable by derive)
-#   BatchCreateDataTableValue (document member `Values: list[DataTableValue]` is not serializable by derive)
-#   BatchDeleteDataTableValue (document member `Values: list[DataTableDeleteValueIdentifier]` is not serializable by derive)
-#   BatchDescribeDataTableValue (document member `Values: list[DataTableValueIdentifier]` is not serializable by derive)
-#   BatchDisassociateAnalyticsDataSet (document member `DataSetIds: list[str]` is not serializable by derive)
-#   BatchGetAttachedFileMetadata (document member `FileIds: list[str]` is not serializable by derive)
-#   BatchGetFlowAssociation (document member `ResourceIds: list[str]` is not serializable by derive)
-#   BatchPutContact (document member `ContactDataRequestList: list[ContactDataRequest]` is not serializable by derive)
-#   BatchUpdateDataTableValue (document member `Values: list[DataTableValue]` is not serializable by derive)
-#   ClaimPhoneNumber (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateAgentStatus (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateAttachedFile (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateAuthCode (document member `Scope: AuthScope` is not serializable by derive)
-#   CreateContact (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   CreateContactFlow (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateContactFlowModule (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateDataTable (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateDataTableAttribute (document member `Validation: Validation` is not serializable by derive)
-#   CreateEmailAddress (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateEvaluationForm (document member `Items: list[EvaluationFormItem]` is not serializable by derive)
-#   CreateExtractionDefinition (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateHoursOfOperation (document member `Config: list[HoursOfOperationConfig]` is not serializable by derive)
-#   CreateHoursOfOperationOverride (document member `Config: list[HoursOfOperationOverrideConfig]` is not serializable by derive)
-#   CreateInstance (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateIntegrationAssociation (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateMetric (document member `MetricCalculation: MetricCalculation` is not serializable by derive)
-#   CreateNotification (document member `Recipients: list[str]` is not serializable by derive)
-#   CreatePredefinedAttribute (document member `Values: PredefinedAttributeValues` is not serializable by derive)
-#   CreatePrompt (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateQueue (document member `QuickConnectIds: list[str]` is not serializable by derive)
-#   CreateQuickConnect (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRoutingProfile (document member `QueueConfigs: list[RoutingProfileQueueConfig]` is not serializable by derive)
-#   CreateRule (document member `Actions: list[RuleAction]` is not serializable by derive)
-#   CreateSecurityProfile (document member `Permissions: list[str]` is not serializable by derive)
-#   CreateTaskTemplate (document member `Constraints: TaskTemplateConstraints` is not serializable by derive)
-#   CreateTestCase (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTrafficDistributionGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateUseCase (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateUser (document member `SecurityProfileIds: list[str]` is not serializable by derive)
-#   CreateUserHierarchyGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateView (document member `Content: ViewInputContent` is not serializable by derive)
-#   CreateVocabulary (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateWorkspace (document member `Tags: dict[str, str]` is not serializable by derive)
-#   DeleteContactData (document member `ContactFields: list[ContactField]` is not serializable by derive)
-#   DisassociateHoursOfOperations (document member `ParentHoursOfOperationIds: list[str]` is not serializable by derive)
-#   DisassociateQueueEmailAddresses (document member `EmailAddressesId: list[str]` is not serializable by derive)
-#   DisassociateQueueQuickConnects (document member `QuickConnectIds: list[str]` is not serializable by derive)
-#   DisassociateRoutingProfileQueues (document member `QueueReferences: list[RoutingProfileQueueReference]` is not serializable by derive)
-#   DisassociateSecurityProfiles (document member `SecurityProfiles: list[SecurityProfileItem]` is not serializable by derive)
-#   DisassociateUserProficiencies (document member `UserProficiencies: list[UserProficiencyDisassociate]` is not serializable by derive)
-#   DisassociateWorkspace (document member `ResourceArns: list[str]` is not serializable by derive)
-#   EvaluateDataTableValues (document member `Values: list[DataTableValueEvaluationSet]` is not serializable by derive)
-#   GetContactMetrics (document member `Metrics: list[ContactMetricInfo]` is not serializable by derive)
-#   GetCurrentMetricData (document member `Filters: Filters` is not serializable by derive)
-#   GetCurrentUserData (document member `Filters: UserDataFilters` is not serializable by derive)
-#   GetMetricData (document member `Filters: Filters` is not serializable by derive)
-#   GetMetricDataV2 (document member `Filters: list[FilterV2]` is not serializable by derive)
-#   ImportPhoneNumber (document member `Tags: dict[str, str]` is not serializable by derive)
+#   CreateNotification (document member `Content: dict[LocaleCode, str]` is not serializable)
+#   CreateRule (document member `Actions: list[RuleAction]` is not serializable)
+#   CreateTestCase (httpHeader `LastModifiedTime` has unsupported type DateTime)
 #   ListAgentStatuses (httpQuery `AgentStatusTypes` has unsupported type list[AgentStatusType])
 #   ListContactFlows (httpQuery `ContactFlowTypes` has unsupported type list[ContactFlowType])
 #   ListContactReferences (httpQuery `ReferenceTypes` has unsupported type list[ReferenceType])
-#   ListDataTableAttributes (document member `AttributeIds: list[str]` is not serializable by derive)
-#   ListDataTablePrimaryValues (document member `RecordIds: list[str]` is not serializable by derive)
-#   ListDataTableValues (document member `RecordIds: list[str]` is not serializable by derive)
 #   ListPhoneNumbers (httpQuery `PhoneNumberTypes` has unsupported type list[PhoneNumberType])
-#   ListPhoneNumbersV2 (document member `PhoneNumberCountryCodes: list[PhoneNumberCountryCode]` is not serializable by derive)
 #   ListQueues (httpQuery `QueueTypes` has unsupported type list[QueueType])
 #   ListQuickConnects (httpQuery `QuickConnectTypes` has unsupported type list[QuickConnectType])
-#   ListRealtimeContactAnalysisSegmentsV2 (document member `SegmentTypes: list[RealTimeContactAnalysisSegmentType]` is not serializable by derive)
-#   MonitorContact (document member `AllowedMonitorCapabilities: list[MonitorCapability]` is not serializable by derive)
-#   SearchAgentStatuses (document member `SearchFilter: AgentStatusSearchFilter` is not serializable by derive)
-#   SearchContactEvaluations (document member `SearchCriteria: EvaluationSearchCriteria` is not serializable by derive)
-#   SearchContactFlowModules (document member `SearchFilter: ContactFlowModuleSearchFilter` is not serializable by derive)
-#   SearchContactFlows (document member `SearchFilter: ContactFlowSearchFilter` is not serializable by derive)
-#   SearchContacts (document member `SearchCriteria: SearchCriteria` is not serializable by derive)
-#   SearchDataTables (document member `SearchFilter: DataTableSearchFilter` is not serializable by derive)
-#   SearchEmailAddresses (document member `SearchCriteria: EmailAddressSearchCriteria` is not serializable by derive)
-#   SearchEvaluationForms (document member `SearchCriteria: EvaluationFormSearchCriteria` is not serializable by derive)
-#   SearchHoursOfOperationOverrides (document member `SearchFilter: HoursOfOperationSearchFilter` is not serializable by derive)
-#   SearchHoursOfOperations (document member `SearchFilter: HoursOfOperationSearchFilter` is not serializable by derive)
-#   SearchMetrics (document member `SearchFilter: MetricSearchFilter` is not serializable by derive)
-#   SearchNotifications (document member `SearchFilter: NotificationSearchFilter` is not serializable by derive)
-#   SearchPredefinedAttributes (document member `SearchCriteria: PredefinedAttributeSearchCriteria` is not serializable by derive)
-#   SearchPrompts (document member `SearchFilter: PromptSearchFilter` is not serializable by derive)
-#   SearchQueues (document member `SearchFilter: QueueSearchFilter` is not serializable by derive)
-#   SearchQuickConnects (document member `SearchFilter: QuickConnectSearchFilter` is not serializable by derive)
-#   SearchResourceTags (document member `ResourceTypes: list[str]` is not serializable by derive)
-#   SearchRoutingProfiles (document member `SearchFilter: RoutingProfileSearchFilter` is not serializable by derive)
-#   SearchRules (document member `SearchCriteria: RulesSearchCriteria` is not serializable by derive)
-#   SearchSecurityProfiles (document member `SearchCriteria: SecurityProfileSearchCriteria` is not serializable by derive)
-#   SearchTestCases (document member `SearchFilter: TestCaseSearchFilter` is not serializable by derive)
-#   SearchUserHierarchyGroups (document member `SearchFilter: UserHierarchyGroupSearchFilter` is not serializable by derive)
-#   SearchUsers (document member `SearchFilter: UserSearchFilter` is not serializable by derive)
-#   SearchViews (document member `SearchFilter: ViewSearchFilter` is not serializable by derive)
-#   SearchWorkspaceAssociations (document member `SearchFilter: WorkspaceAssociationSearchFilter` is not serializable by derive)
-#   SearchWorkspaces (document member `SearchFilter: WorkspaceSearchFilter` is not serializable by derive)
-#   SendChatIntegrationEvent (document member `NewSessionDetails: NewSessionDetails` is not serializable by derive)
-#   SendOutboundEmail (document member `AdditionalRecipients: OutboundAdditionalRecipients` is not serializable by derive)
-#   SendOutboundWebNotification (document member `Content: WebNotificationContent` is not serializable by derive)
-#   StartAssistantContact (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   StartAttachedFileUpload (document member `Tags: dict[str, str]` is not serializable by derive)
-#   StartChatContact (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   StartContactConversationalAnalyticsJob (document member `AnalyticsModes: list[AnalyticsMode]` is not serializable by derive)
-#   StartContactEvaluation (document member `Tags: dict[str, str]` is not serializable by derive)
-#   StartEmailContact (document member `References: dict[str, Reference]` is not serializable by derive)
-#   StartOutboundChatContact (document member `SegmentAttributes: dict[str, SegmentAttributeValue]` is not serializable by derive)
-#   StartOutboundEmailContact (document member `AdditionalRecipients: OutboundAdditionalRecipients` is not serializable by derive)
-#   StartOutboundVoiceContact (document member `References: dict[str, Reference]` is not serializable by derive)
-#   StartTaskContact (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   StartWebRTCContact (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   SubmitContactEvaluation (document member `Answers: dict[str, EvaluationAnswerInput]` is not serializable by derive)
-#   TagContact (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
+#   StartEmailContact (document member `EmailMessage: InboundEmailContent` is not serializable)
 #   UntagContact (httpQuery `TagKeys` has unsupported type list[str])
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAttachedFilesConfiguration (document member `ExtensionConfiguration: ExtensionConfiguration` is not serializable by derive)
-#   UpdateAuthenticationProfile (document member `AllowedIps: list[str]` is not serializable by derive)
-#   UpdateContact (document member `References: dict[str, Reference]` is not serializable by derive)
-#   UpdateContactAttributes (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   UpdateContactEvaluation (document member `Answers: dict[str, EvaluationAnswerInput]` is not serializable by derive)
-#   UpdateContactRoutingData (document member `RoutingCriteria: RoutingCriteriaInput` is not serializable by derive)
-#   UpdateDataTableAttribute (document member `Validation: Validation` is not serializable by derive)
-#   UpdateDataTablePrimaryValues (document member `PrimaryValues: list[PrimaryValue]` is not serializable by derive)
-#   UpdateEvaluationForm (document member `Items: list[EvaluationFormItem]` is not serializable by derive)
-#   UpdateHoursOfOperation (document member `Config: list[HoursOfOperationConfig]` is not serializable by derive)
-#   UpdateHoursOfOperationOverride (document member `Config: list[HoursOfOperationOverrideConfig]` is not serializable by derive)
-#   UpdateMetricContent (document member `MetricCalculation: MetricCalculation` is not serializable by derive)
-#   UpdateNotificationContent (document member `Content: dict[LocaleCode, str]` is not serializable by derive)
-#   UpdateParticipantRoleConfig (document member `ChannelConfiguration: UpdateParticipantRoleConfigChannelInfo` is not serializable by derive)
-#   UpdatePredefinedAttribute (document member `Values: PredefinedAttributeValues` is not serializable by derive)
-#   UpdateRoutingProfileConcurrency (document member `MediaConcurrencies: list[MediaConcurrency]` is not serializable by derive)
-#   UpdateRoutingProfileQueues (document member `QueueConfigs: list[RoutingProfileQueueConfig]` is not serializable by derive)
-#   UpdateRule (document member `Actions: list[RuleAction]` is not serializable by derive)
-#   UpdateSecurityProfile (document member `Permissions: list[str]` is not serializable by derive)
-#   UpdateTaskTemplate (document member `Constraints: TaskTemplateConstraints` is not serializable by derive)
+#   UpdateNotificationContent (document member `Content: dict[LocaleCode, str]` is not serializable)
+#   UpdateRule (document member `Actions: list[RuleAction]` is not serializable)
 #   UpdateTestCase (httpHeader `LastModifiedTime` has unsupported type DateTime)
-#   UpdateTrafficDistribution (document member `TelephonyConfig: TelephonyConfig` is not serializable by derive)
-#   UpdateUserConfig (document member `AutoAcceptConfigs: list[AutoAcceptConfig]` is not serializable by derive)
 #   UpdateUserNotificationStatus (httpHeader `LastModifiedTime` has unsupported type DateTime)
-#   UpdateUserProficiencies (document member `UserProficiencies: list[UserProficiency]` is not serializable by derive)
-#   UpdateUserSecurityProfiles (document member `SecurityProfileIds: list[str]` is not serializable by derive)
-#   UpdateViewContent (document member `Content: ViewInputContent` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   GetMetricData (operation not generated)
 #   ListAgentStatuses (operation not generated)
 #   ListContactFlows (operation not generated)
 #   ListContactReferences (operation not generated)
-#   ListDataTableAttributes (operation not generated)
-#   ListDataTablePrimaryValues (operation not generated)
-#   ListDataTableValues (operation not generated)
 #   ListPhoneNumbers (operation not generated)
-#   ListPhoneNumbersV2 (operation not generated)
 #   ListQueues (operation not generated)
 #   ListQuickConnects (operation not generated)
-#   SearchAgentStatuses (operation not generated)
-#   SearchContactFlowModules (operation not generated)
-#   SearchContactFlows (operation not generated)
-#   SearchContacts (operation not generated)
-#   SearchDataTables (operation not generated)
-#   SearchHoursOfOperationOverrides (operation not generated)
-#   SearchHoursOfOperations (operation not generated)
-#   SearchMetrics (operation not generated)
-#   SearchPredefinedAttributes (operation not generated)
-#   SearchPrompts (operation not generated)
-#   SearchQueues (operation not generated)
-#   SearchQuickConnects (operation not generated)
-#   SearchResourceTags (operation not generated)
-#   SearchRoutingProfiles (operation not generated)
-#   SearchRules (operation not generated)
-#   SearchSecurityProfiles (operation not generated)
-#   SearchTestCases (operation not generated)
-#   SearchUserHierarchyGroups (operation not generated)
-#   SearchUsers (operation not generated)
-#   SearchViews (operation not generated)
-#   SearchWorkspaceAssociations (operation not generated)
-#   SearchWorkspaces (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -12499,6 +12775,2416 @@ struct UpdateWorkspaceVisibilityDocument:
     # document members of UpdateWorkspaceVisibility
     Visibility Visibility
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def connect_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def connect_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def connect_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AgentConfig to a compact JSON object (declaration order).
+def agent_config_to_json(AgentConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Distributions:
+        e0.append(x0.to_json())
+    parts.append("\"Distributions\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize AgentFirst to a compact JSON object (declaration order).
+def agent_first_to_json(AgentFirst v) -> str:
+    list[str] parts = []
+    if v.Preview.is_some():
+        auto u0 = v.Preview.unwrap()
+        parts.append("\"Preview\":" + preview_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize AgentHierarchyGroups to a compact JSON object (declaration order).
+def agent_hierarchy_groups_to_json(AgentHierarchyGroups v) -> str:
+    list[str] parts = []
+    if v.L1Ids.is_some():
+        auto u0 = v.L1Ids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"L1Ids\":" + connect_json_arr(e1))
+    if v.L2Ids.is_some():
+        auto u2 = v.L2Ids.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connect_json_str(x3))
+        parts.append("\"L2Ids\":" + connect_json_arr(e3))
+    if v.L3Ids.is_some():
+        auto u4 = v.L3Ids.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(connect_json_str(x5))
+        parts.append("\"L3Ids\":" + connect_json_arr(e5))
+    if v.L4Ids.is_some():
+        auto u6 = v.L4Ids.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(connect_json_str(x7))
+        parts.append("\"L4Ids\":" + connect_json_arr(e7))
+    if v.L5Ids.is_some():
+        auto u8 = v.L5Ids.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(connect_json_str(x9))
+        parts.append("\"L5Ids\":" + connect_json_arr(e9))
+    return connect_json_obj(parts)
+
+# Serialize AgentStatusSearchCriteria to a compact JSON object (declaration order).
+def agent_status_search_criteria_to_json(AgentStatusSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(agent_status_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(agent_status_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize AgentStatusSearchFilter to a compact JSON object (declaration order).
+def agent_status_search_filter_to_json(AgentStatusSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize AgentsCriteria to a compact JSON object (declaration order).
+def agents_criteria_to_json(AgentsCriteria v) -> str:
+    list[str] parts = []
+    if v.AgentIds.is_some():
+        auto u0 = v.AgentIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"AgentIds\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize AiAgentsCriteria to a compact JSON object (declaration order).
+def ai_agents_criteria_to_json(AiAgentsCriteria v) -> str:
+    list[str] parts = []
+    if v.Criteria.is_some():
+        auto u0 = v.Criteria.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Criteria\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize AnalyticsConfiguration to a compact JSON object (declaration order).
+def analytics_configuration_to_json(AnalyticsConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"LanguageConfiguration\":" + v.LanguageConfiguration.to_json())
+    parts.append("\"RedactionConfiguration\":" + redaction_configuration_to_json(v.RedactionConfiguration))
+    parts.append("\"SentimentConfiguration\":" + v.SentimentConfiguration.to_json())
+    parts.append("\"SummaryConfiguration\":" + summary_configuration_to_json(v.SummaryConfiguration))
+    parts.append("\"RulesConfiguration\":" + v.RulesConfiguration.to_json())
+    return connect_json_obj(parts)
+
+# Serialize Application to a compact JSON object (declaration order).
+def application_to_json(Application v) -> str:
+    list[str] parts = []
+    if v.Namespace.is_some():
+        auto u0 = v.Namespace.unwrap()
+        parts.append("\"Namespace\":" + connect_json_str(u0))
+    if v.ApplicationPermissions.is_some():
+        auto u1 = v.ApplicationPermissions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connect_json_str(x2))
+        parts.append("\"ApplicationPermissions\":" + connect_json_arr(e2))
+    if v.Type.is_some():
+        auto u3 = v.Type.unwrap()
+        parts.append("\"Type\":" + u3.to_json())
+    return connect_json_obj(parts)
+
+# Serialize AttributeAndCondition to a compact JSON object (declaration order).
+def attribute_and_condition_to_json(AttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + connect_json_arr(e1))
+    if v.HierarchyGroupCondition.is_some():
+        auto u2 = v.HierarchyGroupCondition.unwrap()
+        parts.append("\"HierarchyGroupCondition\":" + u2.to_json())
+    return connect_json_obj(parts)
+
+# Serialize AttributeCondition to a compact JSON object (declaration order).
+def attribute_condition_to_json(AttributeCondition v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + connect_json_str(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        parts.append("\"Value\":" + connect_json_str(u1))
+    if v.ProficiencyLevel.is_some():
+        auto u2 = v.ProficiencyLevel.unwrap()
+        parts.append("\"ProficiencyLevel\":" + str(u2))
+    if v.Range.is_some():
+        auto u3 = v.Range.unwrap()
+        parts.append("\"Range\":" + u3.to_json())
+    if v.MatchCriteria.is_some():
+        auto u4 = v.MatchCriteria.unwrap()
+        parts.append("\"MatchCriteria\":" + match_criteria_to_json(u4))
+    if v.ComparisonOperator.is_some():
+        auto u5 = v.ComparisonOperator.unwrap()
+        parts.append("\"ComparisonOperator\":" + connect_json_str(u5))
+    return connect_json_obj(parts)
+
+# Serialize AuthScope to a compact JSON object (declaration order).
+def auth_scope_to_json(AuthScope v) -> str:
+    list[str] parts = []
+    if v.SecurityProfileIds.is_some():
+        auto u0 = v.SecurityProfileIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"SecurityProfileIds\":" + connect_json_arr(e1))
+    parts.append("\"EntityType\":" + connect_json_str(v.EntityType))
+    if v.EntityId.is_some():
+        auto u2 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + connect_json_str(u2))
+    if v.DomainName.is_some():
+        auto u3 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + connect_json_str(u3))
+    return connect_json_obj(parts)
+
+# Serialize CalculationComponent to a compact JSON object (declaration order).
+def calculation_component_to_json(CalculationComponent v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + connect_json_str(v.Alias))
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + connect_json_str(u0))
+    if v.MetricId.is_some():
+        auto u1 = v.MetricId.unwrap()
+        parts.append("\"MetricId\":" + connect_json_str(u1))
+    if v.MetricFilters.is_some():
+        auto u2 = v.MetricFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(metric_filter_to_json(x3))
+        parts.append("\"MetricFilters\":" + connect_json_arr(e3))
+    return connect_json_obj(parts)
+
+# Serialize ChatParticipantRoleConfig to a compact JSON object (declaration order).
+def chat_participant_role_config_to_json(ChatParticipantRoleConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ParticipantTimerConfigList:
+        e0.append(x0.to_json())
+    parts.append("\"ParticipantTimerConfigList\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize CommonAttributeAndCondition to a compact JSON object (declaration order).
+def common_attribute_and_condition_to_json(CommonAttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize ContactAnalysis to a compact JSON object (declaration order).
+def contact_analysis_to_json(ContactAnalysis v) -> str:
+    list[str] parts = []
+    if v.Transcript.is_some():
+        auto u0 = v.Transcript.unwrap()
+        parts.append("\"Transcript\":" + transcript_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize ContactDataRequest to a compact JSON object (declaration order).
+def contact_data_request_to_json(ContactDataRequest v) -> str:
+    list[str] parts = []
+    if v.SystemEndpoint.is_some():
+        auto u0 = v.SystemEndpoint.unwrap()
+        parts.append("\"SystemEndpoint\":" + u0.to_json())
+    if v.CustomerEndpoint.is_some():
+        auto u1 = v.CustomerEndpoint.unwrap()
+        parts.append("\"CustomerEndpoint\":" + u1.to_json())
+    if v.RequestIdentifier.is_some():
+        auto u2 = v.RequestIdentifier.unwrap()
+        parts.append("\"RequestIdentifier\":" + connect_json_str(u2))
+    if v.QueueId.is_some():
+        auto u3 = v.QueueId.unwrap()
+        parts.append("\"QueueId\":" + connect_json_str(u3))
+    if v.Attributes.is_some():
+        auto u4 = v.Attributes.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(connect_json_str(k5) + ":" + connect_json_str(u4[k5]))
+        parts.append("\"Attributes\":" + connect_json_obj(m5))
+    if v.Campaign.is_some():
+        auto u6 = v.Campaign.unwrap()
+        parts.append("\"Campaign\":" + u6.to_json())
+    if v.OutboundStrategy.is_some():
+        auto u7 = v.OutboundStrategy.unwrap()
+        parts.append("\"OutboundStrategy\":" + outbound_strategy_to_json(u7))
+    return connect_json_obj(parts)
+
+# Serialize ContactEvaluationAttributeAndCondition to a compact JSON object (declaration order).
+def contact_evaluation_attribute_and_condition_to_json(ContactEvaluationAttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + connect_json_arr(e1))
+    if v.AttributeConditions.is_some():
+        auto u2 = v.AttributeConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AttributeConditions\":" + connect_json_arr(e3))
+    return connect_json_obj(parts)
+
+# Serialize ContactEvaluationAttributeFilter to a compact JSON object (declaration order).
+def contact_evaluation_attribute_filter_to_json(ContactEvaluationAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(contact_evaluation_attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + contact_evaluation_attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    if v.ContactEvaluationAttributeCondition.is_some():
+        auto u4 = v.ContactEvaluationAttributeCondition.unwrap()
+        parts.append("\"ContactEvaluationAttributeCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ContactFilter to a compact JSON object (declaration order).
+def contact_filter_to_json(ContactFilter v) -> str:
+    list[str] parts = []
+    if v.ContactStates.is_some():
+        auto u0 = v.ContactStates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ContactStates\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize ContactFlowAttributeAndCondition to a compact JSON object (declaration order).
+def contact_flow_attribute_and_condition_to_json(ContactFlowAttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + connect_json_arr(e1))
+    if v.ContactFlowTypeCondition.is_some():
+        auto u2 = v.ContactFlowTypeCondition.unwrap()
+        parts.append("\"ContactFlowTypeCondition\":" + u2.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ContactFlowAttributeFilter to a compact JSON object (declaration order).
+def contact_flow_attribute_filter_to_json(ContactFlowAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(contact_flow_attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + contact_flow_attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    if v.ContactFlowTypeCondition.is_some():
+        auto u4 = v.ContactFlowTypeCondition.unwrap()
+        parts.append("\"ContactFlowTypeCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ContactFlowModuleSearchCriteria to a compact JSON object (declaration order).
+def contact_flow_module_search_criteria_to_json(ContactFlowModuleSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(contact_flow_module_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(contact_flow_module_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.StateCondition.is_some():
+        auto u5 = v.StateCondition.unwrap()
+        parts.append("\"StateCondition\":" + u5.to_json())
+    if v.StatusCondition.is_some():
+        auto u6 = v.StatusCondition.unwrap()
+        parts.append("\"StatusCondition\":" + u6.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ContactFlowModuleSearchFilter to a compact JSON object (declaration order).
+def contact_flow_module_search_filter_to_json(ContactFlowModuleSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize ContactFlowSearchCriteria to a compact JSON object (declaration order).
+def contact_flow_search_criteria_to_json(ContactFlowSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(contact_flow_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(contact_flow_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.TypeCondition.is_some():
+        auto u5 = v.TypeCondition.unwrap()
+        parts.append("\"TypeCondition\":" + u5.to_json())
+    if v.StateCondition.is_some():
+        auto u6 = v.StateCondition.unwrap()
+        parts.append("\"StateCondition\":" + u6.to_json())
+    if v.StatusCondition.is_some():
+        auto u7 = v.StatusCondition.unwrap()
+        parts.append("\"StatusCondition\":" + u7.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ContactFlowSearchFilter to a compact JSON object (declaration order).
+def contact_flow_search_filter_to_json(ContactFlowSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    if v.FlowAttributeFilter.is_some():
+        auto u1 = v.FlowAttributeFilter.unwrap()
+        parts.append("\"FlowAttributeFilter\":" + contact_flow_attribute_filter_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize ContentAttributes to a compact JSON object (declaration order).
+def content_attributes_to_json(ContentAttributes v) -> str:
+    list[str] parts = []
+    if v.RecommenderConfig.is_some():
+        auto u0 = v.RecommenderConfig.unwrap()
+        parts.append("\"RecommenderConfig\":" + recommender_config_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize ControlPlaneAttributeFilter to a compact JSON object (declaration order).
+def control_plane_attribute_filter_to_json(ControlPlaneAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(common_attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + common_attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ControlPlaneTagFilter to a compact JSON object (declaration order).
+def control_plane_tag_filter_to_json(ControlPlaneTagFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            list[str] e2 = []
+            for x2 in x1:
+                e2.append(x2.to_json())
+            e1.append(connect_json_arr(e2))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u3 = v.AndConditions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"AndConditions\":" + connect_json_arr(e4))
+    if v.TagCondition.is_some():
+        auto u5 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u5.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ControlPlaneUserAttributeFilter to a compact JSON object (declaration order).
+def control_plane_user_attribute_filter_to_json(ControlPlaneUserAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    if v.HierarchyGroupCondition.is_some():
+        auto u4 = v.HierarchyGroupCondition.unwrap()
+        parts.append("\"HierarchyGroupCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize DataTableAccessControlConfiguration to a compact JSON object (declaration order).
+def data_table_access_control_configuration_to_json(DataTableAccessControlConfiguration v) -> str:
+    list[str] parts = []
+    if v.PrimaryAttributeAccessControlConfiguration.is_some():
+        auto u0 = v.PrimaryAttributeAccessControlConfiguration.unwrap()
+        parts.append("\"PrimaryAttributeAccessControlConfiguration\":" + primary_attribute_access_control_configuration_item_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize DataTableDeleteValueIdentifier to a compact JSON object (declaration order).
+def data_table_delete_value_identifier_to_json(DataTableDeleteValueIdentifier v) -> str:
+    list[str] parts = []
+    if v.PrimaryValues.is_some():
+        auto u0 = v.PrimaryValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PrimaryValues\":" + connect_json_arr(e1))
+    parts.append("\"AttributeName\":" + connect_json_str(v.AttributeName))
+    parts.append("\"LockVersion\":" + v.LockVersion.to_json())
+    return connect_json_obj(parts)
+
+# Serialize DataTableSearchCriteria to a compact JSON object (declaration order).
+def data_table_search_criteria_to_json(DataTableSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(data_table_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(data_table_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize DataTableSearchFilter to a compact JSON object (declaration order).
+def data_table_search_filter_to_json(DataTableSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize DataTableValue to a compact JSON object (declaration order).
+def data_table_value_to_json(DataTableValue v) -> str:
+    list[str] parts = []
+    if v.PrimaryValues.is_some():
+        auto u0 = v.PrimaryValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PrimaryValues\":" + connect_json_arr(e1))
+    parts.append("\"AttributeName\":" + connect_json_str(v.AttributeName))
+    parts.append("\"Value\":" + connect_json_str(v.Value))
+    if v.LockVersion.is_some():
+        auto u2 = v.LockVersion.unwrap()
+        parts.append("\"LockVersion\":" + u2.to_json())
+    if v.LastModifiedTime.is_some():
+        auto u3 = v.LastModifiedTime.unwrap()
+        parts.append("\"LastModifiedTime\":" + str(datetime.to_timestamp(u3)))
+    if v.LastModifiedRegion.is_some():
+        auto u4 = v.LastModifiedRegion.unwrap()
+        parts.append("\"LastModifiedRegion\":" + connect_json_str(u4))
+    return connect_json_obj(parts)
+
+# Serialize DataTableValueEvaluationSet to a compact JSON object (declaration order).
+def data_table_value_evaluation_set_to_json(DataTableValueEvaluationSet v) -> str:
+    list[str] parts = []
+    if v.PrimaryValues.is_some():
+        auto u0 = v.PrimaryValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PrimaryValues\":" + connect_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.AttributeNames:
+        e2.append(connect_json_str(x2))
+    parts.append("\"AttributeNames\":" + connect_json_arr(e2))
+    return connect_json_obj(parts)
+
+# Serialize DataTableValueIdentifier to a compact JSON object (declaration order).
+def data_table_value_identifier_to_json(DataTableValueIdentifier v) -> str:
+    list[str] parts = []
+    if v.PrimaryValues.is_some():
+        auto u0 = v.PrimaryValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PrimaryValues\":" + connect_json_arr(e1))
+    parts.append("\"AttributeName\":" + connect_json_str(v.AttributeName))
+    return connect_json_obj(parts)
+
+# Serialize EmailAddressSearchCriteria to a compact JSON object (declaration order).
+def email_address_search_criteria_to_json(EmailAddressSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(email_address_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(email_address_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EmailAddressSearchFilter to a compact JSON object (declaration order).
+def email_address_search_filter_to_json(EmailAddressSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationAnswerData to a compact JSON object (declaration order).
+def evaluation_answer_data_to_json(EvaluationAnswerData v) -> str:
+    list[str] parts = []
+    if v.StringValue.is_some():
+        auto u0 = v.StringValue.unwrap()
+        parts.append("\"StringValue\":" + connect_json_str(u0))
+    if v.NumericValue.is_some():
+        auto u1 = v.NumericValue.unwrap()
+        parts.append("\"NumericValue\":" + str(u1))
+    if v.StringValues.is_some():
+        auto u2 = v.StringValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connect_json_str(x3))
+        parts.append("\"StringValues\":" + connect_json_arr(e3))
+    if v.DateTimeValue.is_some():
+        auto u4 = v.DateTimeValue.unwrap()
+        parts.append("\"DateTimeValue\":" + connect_json_str(u4))
+    if v.NotApplicable.is_some():
+        auto u5 = v.NotApplicable.unwrap()
+        parts.append("\"NotApplicable\":" + json.dumps(JsonValue.Bool(u5)))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationAnswerInput to a compact JSON object (declaration order).
+def evaluation_answer_input_to_json(EvaluationAnswerInput v) -> str:
+    list[str] parts = []
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + evaluation_answer_data_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormItem to a compact JSON object (declaration order).
+def evaluation_form_item_to_json(EvaluationFormItem v) -> str:
+    list[str] parts = []
+    if v.Section.is_some():
+        auto u0 = v.Section.unwrap()
+        parts.append("\"Section\":" + evaluation_form_section_to_json(u0))
+    if v.Question.is_some():
+        auto u1 = v.Question.unwrap()
+        parts.append("\"Question\":" + evaluation_form_question_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormItemEnablementCondition to a compact JSON object (declaration order).
+def evaluation_form_item_enablement_condition_to_json(EvaluationFormItemEnablementCondition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Operands:
+        e0.append(evaluation_form_item_enablement_condition_operand_to_json(x0))
+    parts.append("\"Operands\":" + connect_json_arr(e0))
+    if v.Operator.is_some():
+        auto u1 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u1.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormItemEnablementConditionOperand to a compact JSON object (declaration order).
+def evaluation_form_item_enablement_condition_operand_to_json(EvaluationFormItemEnablementConditionOperand v) -> str:
+    list[str] parts = []
+    if v.Expression.is_some():
+        auto u0 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + evaluation_form_item_enablement_expression_to_json(u0))
+    if v.Condition.is_some():
+        auto u1 = v.Condition.unwrap()
+        parts.append("\"Condition\":" + evaluation_form_item_enablement_condition_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormItemEnablementConfiguration to a compact JSON object (declaration order).
+def evaluation_form_item_enablement_configuration_to_json(EvaluationFormItemEnablementConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Condition\":" + evaluation_form_item_enablement_condition_to_json(v.Condition))
+    parts.append("\"Action\":" + v.Action.to_json())
+    if v.DefaultAction.is_some():
+        auto u0 = v.DefaultAction.unwrap()
+        parts.append("\"DefaultAction\":" + u0.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormItemEnablementExpression to a compact JSON object (declaration order).
+def evaluation_form_item_enablement_expression_to_json(EvaluationFormItemEnablementExpression v) -> str:
+    list[str] parts = []
+    parts.append("\"Source\":" + v.Source.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(x0.to_json())
+    parts.append("\"Values\":" + connect_json_arr(e0))
+    parts.append("\"Comparator\":" + v.Comparator.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormMultiSelectQuestionAutomation to a compact JSON object (declaration order).
+def evaluation_form_multi_select_question_automation_to_json(EvaluationFormMultiSelectQuestionAutomation v) -> str:
+    list[str] parts = []
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(evaluation_form_multi_select_question_automation_option_to_json(x1))
+        parts.append("\"Options\":" + connect_json_arr(e1))
+    if v.DefaultOptionRefIds.is_some():
+        auto u2 = v.DefaultOptionRefIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connect_json_str(x3))
+        parts.append("\"DefaultOptionRefIds\":" + connect_json_arr(e3))
+    if v.AnswerSource.is_some():
+        auto u4 = v.AnswerSource.unwrap()
+        parts.append("\"AnswerSource\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormMultiSelectQuestionAutomationOption to a compact JSON object (declaration order).
+def evaluation_form_multi_select_question_automation_option_to_json(EvaluationFormMultiSelectQuestionAutomationOption v) -> str:
+    list[str] parts = []
+    if v.RuleCategory.is_some():
+        auto u0 = v.RuleCategory.unwrap()
+        parts.append("\"RuleCategory\":" + multi_select_question_rule_category_automation_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormMultiSelectQuestionProperties to a compact JSON object (declaration order).
+def evaluation_form_multi_select_question_properties_to_json(EvaluationFormMultiSelectQuestionProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Options:
+        e0.append(x0.to_json())
+    parts.append("\"Options\":" + connect_json_arr(e0))
+    if v.DisplayAs.is_some():
+        auto u1 = v.DisplayAs.unwrap()
+        parts.append("\"DisplayAs\":" + u1.to_json())
+    if v.Automation.is_some():
+        auto u2 = v.Automation.unwrap()
+        parts.append("\"Automation\":" + evaluation_form_multi_select_question_automation_to_json(u2))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormNumericQuestionProperties to a compact JSON object (declaration order).
+def evaluation_form_numeric_question_properties_to_json(EvaluationFormNumericQuestionProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"MinValue\":" + str(v.MinValue))
+    parts.append("\"MaxValue\":" + str(v.MaxValue))
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Options\":" + connect_json_arr(e1))
+    if v.Automation.is_some():
+        auto u2 = v.Automation.unwrap()
+        parts.append("\"Automation\":" + u2.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormQuestion to a compact JSON object (declaration order).
+def evaluation_form_question_to_json(EvaluationFormQuestion v) -> str:
+    list[str] parts = []
+    parts.append("\"Title\":" + connect_json_str(v.Title))
+    if v.Instructions.is_some():
+        auto u0 = v.Instructions.unwrap()
+        parts.append("\"Instructions\":" + connect_json_str(u0))
+    parts.append("\"RefId\":" + connect_json_str(v.RefId))
+    if v.NotApplicableEnabled.is_some():
+        auto u1 = v.NotApplicableEnabled.unwrap()
+        parts.append("\"NotApplicableEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+    parts.append("\"QuestionType\":" + v.QuestionType.to_json())
+    if v.QuestionTypeProperties.is_some():
+        auto u2 = v.QuestionTypeProperties.unwrap()
+        parts.append("\"QuestionTypeProperties\":" + evaluation_form_question_type_properties_to_json(u2))
+    if v.Enablement.is_some():
+        auto u3 = v.Enablement.unwrap()
+        parts.append("\"Enablement\":" + evaluation_form_item_enablement_configuration_to_json(u3))
+    if v.Weight.is_some():
+        auto u4 = v.Weight.unwrap()
+        parts.append("\"Weight\":" + str(u4))
+    if v.ScoringConfiguration.is_some():
+        auto u5 = v.ScoringConfiguration.unwrap()
+        parts.append("\"ScoringConfiguration\":" + evaluation_form_question_scoring_configuration_to_json(u5))
+    if v.MetricConfiguration.is_some():
+        auto u6 = v.MetricConfiguration.unwrap()
+        parts.append("\"MetricConfiguration\":" + u6.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormQuestionScoringConfiguration to a compact JSON object (declaration order).
+def evaluation_form_question_scoring_configuration_to_json(EvaluationFormQuestionScoringConfiguration v) -> str:
+    list[str] parts = []
+    if v.PointsConfiguration.is_some():
+        auto u0 = v.PointsConfiguration.unwrap()
+        parts.append("\"PointsConfiguration\":" + u0.to_json())
+    if v.IsExcludedFromScoring.is_some():
+        auto u1 = v.IsExcludedFromScoring.unwrap()
+        parts.append("\"IsExcludedFromScoring\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ScoreThresholds.is_some():
+        auto u2 = v.ScoreThresholds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ScoreThresholds\":" + connect_json_arr(e3))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormQuestionTypeProperties to a compact JSON object (declaration order).
+def evaluation_form_question_type_properties_to_json(EvaluationFormQuestionTypeProperties v) -> str:
+    list[str] parts = []
+    if v.Numeric.is_some():
+        auto u0 = v.Numeric.unwrap()
+        parts.append("\"Numeric\":" + evaluation_form_numeric_question_properties_to_json(u0))
+    if v.SingleSelect.is_some():
+        auto u1 = v.SingleSelect.unwrap()
+        parts.append("\"SingleSelect\":" + evaluation_form_single_select_question_properties_to_json(u1))
+    if v.Text.is_some():
+        auto u2 = v.Text.unwrap()
+        parts.append("\"Text\":" + u2.to_json())
+    if v.MultiSelect.is_some():
+        auto u3 = v.MultiSelect.unwrap()
+        parts.append("\"MultiSelect\":" + evaluation_form_multi_select_question_properties_to_json(u3))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormScoringStrategy to a compact JSON object (declaration order).
+def evaluation_form_scoring_strategy_to_json(EvaluationFormScoringStrategy v) -> str:
+    list[str] parts = []
+    parts.append("\"Mode\":" + v.Mode.to_json())
+    parts.append("\"Status\":" + v.Status.to_json())
+    if v.ScoreThresholds.is_some():
+        auto u0 = v.ScoreThresholds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ScoreThresholds\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormSearchCriteria to a compact JSON object (declaration order).
+def evaluation_form_search_criteria_to_json(EvaluationFormSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(evaluation_form_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(evaluation_form_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.NumberCondition.is_some():
+        auto u5 = v.NumberCondition.unwrap()
+        parts.append("\"NumberCondition\":" + u5.to_json())
+    if v.BooleanCondition.is_some():
+        auto u6 = v.BooleanCondition.unwrap()
+        parts.append("\"BooleanCondition\":" + u6.to_json())
+    if v.DateTimeCondition.is_some():
+        auto u7 = v.DateTimeCondition.unwrap()
+        parts.append("\"DateTimeCondition\":" + u7.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormSearchFilter to a compact JSON object (declaration order).
+def evaluation_form_search_filter_to_json(EvaluationFormSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormSection to a compact JSON object (declaration order).
+def evaluation_form_section_to_json(EvaluationFormSection v) -> str:
+    list[str] parts = []
+    parts.append("\"Title\":" + connect_json_str(v.Title))
+    parts.append("\"RefId\":" + connect_json_str(v.RefId))
+    if v.Instructions.is_some():
+        auto u0 = v.Instructions.unwrap()
+        parts.append("\"Instructions\":" + connect_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Items:
+        e1.append(evaluation_form_item_to_json(x1))
+    parts.append("\"Items\":" + connect_json_arr(e1))
+    if v.Weight.is_some():
+        auto u2 = v.Weight.unwrap()
+        parts.append("\"Weight\":" + str(u2))
+    if v.IsExcludedFromScoring.is_some():
+        auto u3 = v.IsExcludedFromScoring.unwrap()
+        parts.append("\"IsExcludedFromScoring\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ScoreThresholds.is_some():
+        auto u4 = v.ScoreThresholds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ScoreThresholds\":" + connect_json_arr(e5))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormSingleSelectQuestionAutomation to a compact JSON object (declaration order).
+def evaluation_form_single_select_question_automation_to_json(EvaluationFormSingleSelectQuestionAutomation v) -> str:
+    list[str] parts = []
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Options\":" + connect_json_arr(e1))
+    if v.DefaultOptionRefId.is_some():
+        auto u2 = v.DefaultOptionRefId.unwrap()
+        parts.append("\"DefaultOptionRefId\":" + connect_json_str(u2))
+    if v.AnswerSource.is_some():
+        auto u3 = v.AnswerSource.unwrap()
+        parts.append("\"AnswerSource\":" + u3.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationFormSingleSelectQuestionProperties to a compact JSON object (declaration order).
+def evaluation_form_single_select_question_properties_to_json(EvaluationFormSingleSelectQuestionProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Options:
+        e0.append(x0.to_json())
+    parts.append("\"Options\":" + connect_json_arr(e0))
+    if v.DisplayAs.is_some():
+        auto u1 = v.DisplayAs.unwrap()
+        parts.append("\"DisplayAs\":" + u1.to_json())
+    if v.Automation.is_some():
+        auto u2 = v.Automation.unwrap()
+        parts.append("\"Automation\":" + evaluation_form_single_select_question_automation_to_json(u2))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationReviewConfiguration to a compact JSON object (declaration order).
+def evaluation_review_configuration_to_json(EvaluationReviewConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ReviewNotificationRecipients:
+        e0.append(x0.to_json())
+    parts.append("\"ReviewNotificationRecipients\":" + connect_json_arr(e0))
+    if v.EligibilityDays.is_some():
+        auto u1 = v.EligibilityDays.unwrap()
+        parts.append("\"EligibilityDays\":" + str(u1))
+    return connect_json_obj(parts)
+
+# Serialize EvaluationSearchCriteria to a compact JSON object (declaration order).
+def evaluation_search_criteria_to_json(EvaluationSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(evaluation_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(evaluation_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.NumberCondition.is_some():
+        auto u5 = v.NumberCondition.unwrap()
+        parts.append("\"NumberCondition\":" + u5.to_json())
+    if v.BooleanCondition.is_some():
+        auto u6 = v.BooleanCondition.unwrap()
+        parts.append("\"BooleanCondition\":" + u6.to_json())
+    if v.DateTimeCondition.is_some():
+        auto u7 = v.DateTimeCondition.unwrap()
+        parts.append("\"DateTimeCondition\":" + u7.to_json())
+    if v.DecimalCondition.is_some():
+        auto u8 = v.DecimalCondition.unwrap()
+        parts.append("\"DecimalCondition\":" + u8.to_json())
+    return connect_json_obj(parts)
+
+# Serialize EvaluationSearchFilter to a compact JSON object (declaration order).
+def evaluation_search_filter_to_json(EvaluationSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    if v.ContactEvaluationAttributeFilter.is_some():
+        auto u1 = v.ContactEvaluationAttributeFilter.unwrap()
+        parts.append("\"ContactEvaluationAttributeFilter\":" + contact_evaluation_attribute_filter_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.AttributeCondition.is_some():
+        auto u0 = v.AttributeCondition.unwrap()
+        parts.append("\"AttributeCondition\":" + attribute_condition_to_json(u0))
+    if v.AndExpression.is_some():
+        auto u1 = v.AndExpression.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(expression_to_json(x2))
+        parts.append("\"AndExpression\":" + connect_json_arr(e2))
+    if v.OrExpression.is_some():
+        auto u3 = v.OrExpression.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(expression_to_json(x4))
+        parts.append("\"OrExpression\":" + connect_json_arr(e4))
+    if v.NotAttributeCondition.is_some():
+        auto u5 = v.NotAttributeCondition.unwrap()
+        parts.append("\"NotAttributeCondition\":" + attribute_condition_to_json(u5))
+    return connect_json_obj(parts)
+
+# Serialize ExtensionConfiguration to a compact JSON object (declaration order).
+def extension_configuration_to_json(ExtensionConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AllowedExtensions:
+        e0.append(x0.to_json())
+    parts.append("\"AllowedExtensions\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize FilterV2 to a compact JSON object (declaration order).
+def filter_v2_to_json(FilterV2 v) -> str:
+    list[str] parts = []
+    if v.FilterKey.is_some():
+        auto u0 = v.FilterKey.unwrap()
+        parts.append("\"FilterKey\":" + connect_json_str(u0))
+    if v.FilterValues.is_some():
+        auto u1 = v.FilterValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connect_json_str(x2))
+        parts.append("\"FilterValues\":" + connect_json_arr(e2))
+    if v.StringCondition.is_some():
+        auto u3 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u3.to_json())
+    return connect_json_obj(parts)
+
+# Serialize Filters to a compact JSON object (declaration order).
+def filters_to_json(Filters v) -> str:
+    list[str] parts = []
+    if v.Queues.is_some():
+        auto u0 = v.Queues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"Queues\":" + connect_json_arr(e1))
+    if v.Channels.is_some():
+        auto u2 = v.Channels.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Channels\":" + connect_json_arr(e3))
+    if v.RoutingProfiles.is_some():
+        auto u4 = v.RoutingProfiles.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(connect_json_str(x5))
+        parts.append("\"RoutingProfiles\":" + connect_json_arr(e5))
+    if v.RoutingStepExpressions.is_some():
+        auto u6 = v.RoutingStepExpressions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(connect_json_str(x7))
+        parts.append("\"RoutingStepExpressions\":" + connect_json_arr(e7))
+    if v.AgentStatuses.is_some():
+        auto u8 = v.AgentStatuses.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(connect_json_str(x9))
+        parts.append("\"AgentStatuses\":" + connect_json_arr(e9))
+    if v.Subtypes.is_some():
+        auto u10 = v.Subtypes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(connect_json_str(x11))
+        parts.append("\"Subtypes\":" + connect_json_arr(e11))
+    if v.ValidationTestTypes.is_some():
+        auto u12 = v.ValidationTestTypes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(connect_json_str(x13))
+        parts.append("\"ValidationTestTypes\":" + connect_json_arr(e13))
+    return connect_json_obj(parts)
+
+# Serialize GranularAccessControlConfiguration to a compact JSON object (declaration order).
+def granular_access_control_configuration_to_json(GranularAccessControlConfiguration v) -> str:
+    list[str] parts = []
+    if v.DataTableAccessControlConfiguration.is_some():
+        auto u0 = v.DataTableAccessControlConfiguration.unwrap()
+        parts.append("\"DataTableAccessControlConfiguration\":" + data_table_access_control_configuration_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize HoursOfOperationOverrideSearchCriteria to a compact JSON object (declaration order).
+def hours_of_operation_override_search_criteria_to_json(HoursOfOperationOverrideSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(hours_of_operation_override_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(hours_of_operation_override_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.DateCondition.is_some():
+        auto u5 = v.DateCondition.unwrap()
+        parts.append("\"DateCondition\":" + u5.to_json())
+    return connect_json_obj(parts)
+
+# Serialize HoursOfOperationSearchCriteria to a compact JSON object (declaration order).
+def hours_of_operation_search_criteria_to_json(HoursOfOperationSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(hours_of_operation_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(hours_of_operation_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize HoursOfOperationSearchFilter to a compact JSON object (declaration order).
+def hours_of_operation_search_filter_to_json(HoursOfOperationSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize ListCondition to a compact JSON object (declaration order).
+def list_condition_to_json(ListCondition v) -> str:
+    list[str] parts = []
+    if v.TargetListType.is_some():
+        auto u0 = v.TargetListType.unwrap()
+        parts.append("\"TargetListType\":" + connect_json_str(u0))
+    if v.Conditions.is_some():
+        auto u1 = v.Conditions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Conditions\":" + connect_json_arr(e2))
+    return connect_json_obj(parts)
+
+# Serialize MatchCriteria to a compact JSON object (declaration order).
+def match_criteria_to_json(MatchCriteria v) -> str:
+    list[str] parts = []
+    if v.AgentsCriteria.is_some():
+        auto u0 = v.AgentsCriteria.unwrap()
+        parts.append("\"AgentsCriteria\":" + agents_criteria_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize MediaConcurrency to a compact JSON object (declaration order).
+def media_concurrency_to_json(MediaConcurrency v) -> str:
+    list[str] parts = []
+    parts.append("\"Channel\":" + v.Channel.to_json())
+    if v.Concurrency.is_some():
+        auto u0 = v.Concurrency.unwrap()
+        parts.append("\"Concurrency\":" + str(u0))
+    if v.CrossChannelBehavior.is_some():
+        auto u1 = v.CrossChannelBehavior.unwrap()
+        parts.append("\"CrossChannelBehavior\":" + u1.to_json())
+    if v.WorkloadTypeConcurrencies.is_some():
+        auto u2 = v.WorkloadTypeConcurrencies.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"WorkloadTypeConcurrencies\":" + connect_json_arr(e3))
+    return connect_json_obj(parts)
+
+# Serialize MetricCalculation to a compact JSON object (declaration order).
+def metric_calculation_to_json(MetricCalculation v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CalculationComponents:
+        e0.append(calculation_component_to_json(x0))
+    parts.append("\"CalculationComponents\":" + connect_json_arr(e0))
+    parts.append("\"Calculation\":" + connect_json_str(v.Calculation))
+    return connect_json_obj(parts)
+
+# Serialize MetricFilter to a compact JSON object (declaration order).
+def metric_filter_to_json(MetricFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"MetricFilterKey\":" + connect_json_str(v.MetricFilterKey))
+    if v.Negate.is_some():
+        auto u0 = v.Negate.unwrap()
+        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.NumberCondition.is_some():
+        auto u1 = v.NumberCondition.unwrap()
+        parts.append("\"NumberCondition\":" + metric_filter_number_condition_to_json(u1))
+    if v.StringCondition.is_some():
+        auto u2 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + metric_filter_string_condition_to_json(u2))
+    if v.BooleanCondition.is_some():
+        auto u3 = v.BooleanCondition.unwrap()
+        parts.append("\"BooleanCondition\":" + u3.to_json())
+    return connect_json_obj(parts)
+
+# Serialize MetricFilterNumberCondition to a compact JSON object (declaration order).
+def metric_filter_number_condition_to_json(MetricFilterNumberCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"Comparison\":" + v.Comparison.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(str(x0))
+    parts.append("\"Values\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize MetricFilterStringCondition to a compact JSON object (declaration order).
+def metric_filter_string_condition_to_json(MetricFilterStringCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"Comparison\":" + v.Comparison.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(connect_json_str(x0))
+    parts.append("\"Values\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize MetricFilterV2 to a compact JSON object (declaration order).
+def metric_filter_v2_to_json(MetricFilterV2 v) -> str:
+    list[str] parts = []
+    if v.MetricFilterKey.is_some():
+        auto u0 = v.MetricFilterKey.unwrap()
+        parts.append("\"MetricFilterKey\":" + connect_json_str(u0))
+    if v.MetricFilterValues.is_some():
+        auto u1 = v.MetricFilterValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connect_json_str(x2))
+        parts.append("\"MetricFilterValues\":" + connect_json_arr(e2))
+    if v.Negate.is_some():
+        auto u3 = v.Negate.unwrap()
+        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u3)))
+    return connect_json_obj(parts)
+
+# Serialize MetricSearchCriteria to a compact JSON object (declaration order).
+def metric_search_criteria_to_json(MetricSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(metric_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(metric_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.BooleanCondition.is_some():
+        auto u5 = v.BooleanCondition.unwrap()
+        parts.append("\"BooleanCondition\":" + u5.to_json())
+    return connect_json_obj(parts)
+
+# Serialize MetricSearchFilter to a compact JSON object (declaration order).
+def metric_search_filter_to_json(MetricSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize MetricV2 to a compact JSON object (declaration order).
+def metric_v2_to_json(MetricV2 v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + connect_json_str(u0))
+    if v.Threshold.is_some():
+        auto u1 = v.Threshold.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Threshold\":" + connect_json_arr(e2))
+    if v.MetricId.is_some():
+        auto u3 = v.MetricId.unwrap()
+        parts.append("\"MetricId\":" + connect_json_str(u3))
+    if v.MetricFilters.is_some():
+        auto u4 = v.MetricFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(metric_filter_v2_to_json(x5))
+        parts.append("\"MetricFilters\":" + connect_json_arr(e5))
+    return connect_json_obj(parts)
+
+# Serialize MultiSelectQuestionRuleCategoryAutomation to a compact JSON object (declaration order).
+def multi_select_question_rule_category_automation_to_json(MultiSelectQuestionRuleCategoryAutomation v) -> str:
+    list[str] parts = []
+    parts.append("\"Category\":" + connect_json_str(v.Category))
+    parts.append("\"Condition\":" + v.Condition.to_json())
+    list[str] e0 = []
+    for x0 in v.OptionRefIds:
+        e0.append(connect_json_str(x0))
+    parts.append("\"OptionRefIds\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize NameCriteria to a compact JSON object (declaration order).
+def name_criteria_to_json(NameCriteria v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SearchText:
+        e0.append(connect_json_str(x0))
+    parts.append("\"SearchText\":" + connect_json_arr(e0))
+    parts.append("\"MatchType\":" + v.MatchType.to_json())
+    return connect_json_obj(parts)
+
+# Serialize NewSessionDetails to a compact JSON object (declaration order).
+def new_session_details_to_json(NewSessionDetails v) -> str:
+    list[str] parts = []
+    if v.SupportedMessagingContentTypes.is_some():
+        auto u0 = v.SupportedMessagingContentTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"SupportedMessagingContentTypes\":" + connect_json_arr(e1))
+    if v.ParticipantDetails.is_some():
+        auto u2 = v.ParticipantDetails.unwrap()
+        parts.append("\"ParticipantDetails\":" + u2.to_json())
+    if v.Attributes.is_some():
+        auto u3 = v.Attributes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+        parts.append("\"Attributes\":" + connect_json_obj(m4))
+    if v.StreamingConfiguration.is_some():
+        auto u5 = v.StreamingConfiguration.unwrap()
+        parts.append("\"StreamingConfiguration\":" + u5.to_json())
+    return connect_json_obj(parts)
+
+# Serialize NotificationSearchCriteria to a compact JSON object (declaration order).
+def notification_search_criteria_to_json(NotificationSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(notification_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(notification_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize NotificationSearchFilter to a compact JSON object (declaration order).
+def notification_search_filter_to_json(NotificationSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize NullableAdditionalRecipients to a compact JSON object (declaration order).
+def nullable_additional_recipients_to_json(NullableAdditionalRecipients v) -> str:
+    list[str] parts = []
+    if v.CcEmailAddresses.is_some():
+        auto u0 = v.CcEmailAddresses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CcEmailAddresses\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize OutboundAdditionalRecipients to a compact JSON object (declaration order).
+def outbound_additional_recipients_to_json(OutboundAdditionalRecipients v) -> str:
+    list[str] parts = []
+    if v.CcEmailAddresses.is_some():
+        auto u0 = v.CcEmailAddresses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CcEmailAddresses\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize OutboundEmailContent to a compact JSON object (declaration order).
+def outbound_email_content_to_json(OutboundEmailContent v) -> str:
+    list[str] parts = []
+    parts.append("\"MessageSourceType\":" + v.MessageSourceType.to_json())
+    if v.TemplatedMessageConfig.is_some():
+        auto u0 = v.TemplatedMessageConfig.unwrap()
+        parts.append("\"TemplatedMessageConfig\":" + templated_message_config_to_json(u0))
+    if v.RawMessage.is_some():
+        auto u1 = v.RawMessage.unwrap()
+        parts.append("\"RawMessage\":" + u1.to_json())
+    return connect_json_obj(parts)
+
+# Serialize OutboundStrategy to a compact JSON object (declaration order).
+def outbound_strategy_to_json(OutboundStrategy v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + connect_json_str(v.Type))
+    if v.Config.is_some():
+        auto u0 = v.Config.unwrap()
+        parts.append("\"Config\":" + outbound_strategy_config_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize OutboundStrategyConfig to a compact JSON object (declaration order).
+def outbound_strategy_config_to_json(OutboundStrategyConfig v) -> str:
+    list[str] parts = []
+    if v.AgentFirst.is_some():
+        auto u0 = v.AgentFirst.unwrap()
+        parts.append("\"AgentFirst\":" + agent_first_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize PredefinedAttributeSearchCriteria to a compact JSON object (declaration order).
+def predefined_attribute_search_criteria_to_json(PredefinedAttributeSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(predefined_attribute_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(predefined_attribute_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize PredefinedAttributeValues to a compact JSON object (declaration order).
+def predefined_attribute_values_to_json(PredefinedAttributeValues v) -> str:
+    list[str] parts = []
+    if v.StringList.is_some():
+        auto u0 = v.StringList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"StringList\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize Preview to a compact JSON object (declaration order).
+def preview_to_json(Preview v) -> str:
+    list[str] parts = []
+    parts.append("\"PostAcceptTimeoutConfig\":" + v.PostAcceptTimeoutConfig.to_json())
+    list[str] e0 = []
+    for x0 in v.AllowedUserActions:
+        e0.append(x0.to_json())
+    parts.append("\"AllowedUserActions\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize PrimaryAttributeAccessControlConfigurationItem to a compact JSON object (declaration order).
+def primary_attribute_access_control_configuration_item_to_json(PrimaryAttributeAccessControlConfigurationItem v) -> str:
+    list[str] parts = []
+    if v.PrimaryAttributeValues.is_some():
+        auto u0 = v.PrimaryAttributeValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(primary_attribute_value_to_json(x1))
+        parts.append("\"PrimaryAttributeValues\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize PrimaryAttributeValue to a compact JSON object (declaration order).
+def primary_attribute_value_to_json(PrimaryAttributeValue v) -> str:
+    list[str] parts = []
+    if v.AccessType.is_some():
+        auto u0 = v.AccessType.unwrap()
+        parts.append("\"AccessType\":" + connect_json_str(u0))
+    if v.AttributeName.is_some():
+        auto u1 = v.AttributeName.unwrap()
+        parts.append("\"AttributeName\":" + connect_json_str(u1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connect_json_str(x3))
+        parts.append("\"Values\":" + connect_json_arr(e3))
+    return connect_json_obj(parts)
+
+# Serialize PrimaryAttributeValueFilter to a compact JSON object (declaration order).
+def primary_attribute_value_filter_to_json(PrimaryAttributeValueFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"AttributeName\":" + connect_json_str(v.AttributeName))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(connect_json_str(x0))
+    parts.append("\"Values\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize PromptSearchCriteria to a compact JSON object (declaration order).
+def prompt_search_criteria_to_json(PromptSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(prompt_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(prompt_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize PromptSearchFilter to a compact JSON object (declaration order).
+def prompt_search_filter_to_json(PromptSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize QueueSearchCriteria to a compact JSON object (declaration order).
+def queue_search_criteria_to_json(QueueSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(queue_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(queue_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.QueueTypeCondition.is_some():
+        auto u5 = v.QueueTypeCondition.unwrap()
+        parts.append("\"QueueTypeCondition\":" + connect_json_str(u5))
+    return connect_json_obj(parts)
+
+# Serialize QueueSearchFilter to a compact JSON object (declaration order).
+def queue_search_filter_to_json(QueueSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize QuickConnectSearchCriteria to a compact JSON object (declaration order).
+def quick_connect_search_criteria_to_json(QuickConnectSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quick_connect_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quick_connect_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize QuickConnectSearchFilter to a compact JSON object (declaration order).
+def quick_connect_search_filter_to_json(QuickConnectSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize RecommenderConfig to a compact JSON object (declaration order).
+def recommender_config_to_json(RecommenderConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + connect_json_str(v.DomainName))
+    parts.append("\"RecommenderName\":" + connect_json_str(v.RecommenderName))
+    if v.Context.is_some():
+        auto u0 = v.Context.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(connect_json_str(k1) + ":" + connect_json_str(u0[k1]))
+        parts.append("\"Context\":" + connect_json_obj(m1))
+    return connect_json_obj(parts)
+
+# Serialize RecurrenceConfig to a compact JSON object (declaration order).
+def recurrence_config_to_json(RecurrenceConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"RecurrencePattern\":" + recurrence_pattern_to_json(v.RecurrencePattern))
+    return connect_json_obj(parts)
+
+# Serialize RecurrencePattern to a compact JSON object (declaration order).
+def recurrence_pattern_to_json(RecurrencePattern v) -> str:
+    list[str] parts = []
+    parts.append("\"Frequency\":" + v.Frequency.to_json())
+    parts.append("\"Interval\":" + str(v.Interval))
+    if v.ByMonth.is_some():
+        auto u0 = v.ByMonth.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"ByMonth\":" + connect_json_arr(e1))
+    if v.ByMonthDay.is_some():
+        auto u2 = v.ByMonthDay.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"ByMonthDay\":" + connect_json_arr(e3))
+    if v.ByWeekdayOccurrence.is_some():
+        auto u4 = v.ByWeekdayOccurrence.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(x5))
+        parts.append("\"ByWeekdayOccurrence\":" + connect_json_arr(e5))
+    return connect_json_obj(parts)
+
+# Serialize RedactionConfiguration to a compact JSON object (declaration order).
+def redaction_configuration_to_json(RedactionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Behavior\":" + v.Behavior.to_json())
+    parts.append("\"Policy\":" + v.Policy.to_json())
+    if v.Entities.is_some():
+        auto u0 = v.Entities.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"Entities\":" + connect_json_arr(e1))
+    if v.MaskMode.is_some():
+        auto u2 = v.MaskMode.unwrap()
+        parts.append("\"MaskMode\":" + u2.to_json())
+    return connect_json_obj(parts)
+
+# Serialize RoutingCriteriaInput to a compact JSON object (declaration order).
+def routing_criteria_input_to_json(RoutingCriteriaInput v) -> str:
+    list[str] parts = []
+    if v.Steps.is_some():
+        auto u0 = v.Steps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(routing_criteria_input_step_to_json(x1))
+        parts.append("\"Steps\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize RoutingCriteriaInputStep to a compact JSON object (declaration order).
+def routing_criteria_input_step_to_json(RoutingCriteriaInputStep v) -> str:
+    list[str] parts = []
+    if v.Expiry.is_some():
+        auto u0 = v.Expiry.unwrap()
+        parts.append("\"Expiry\":" + u0.to_json())
+    if v.Expression.is_some():
+        auto u1 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + expression_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize RoutingProfileSearchCriteria to a compact JSON object (declaration order).
+def routing_profile_search_criteria_to_json(RoutingProfileSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(routing_profile_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(routing_profile_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize RoutingProfileSearchFilter to a compact JSON object (declaration order).
+def routing_profile_search_filter_to_json(RoutingProfileSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize RuleAttributeAndCondition to a compact JSON object (declaration order).
+def rule_attribute_and_condition_to_json(RuleAttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize RuleAttributeFilter to a compact JSON object (declaration order).
+def rule_attribute_filter_to_json(RuleAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rule_attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + rule_attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    return connect_json_obj(parts)
+
+# Serialize RulesSearchCriteria to a compact JSON object (declaration order).
+def rules_search_criteria_to_json(RulesSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rules_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rules_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize RulesSearchFilter to a compact JSON object (declaration order).
+def rules_search_filter_to_json(RulesSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + rule_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize SearchContactsAdditionalTimeRange to a compact JSON object (declaration order).
+def search_contacts_additional_time_range_to_json(SearchContactsAdditionalTimeRange v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Criteria:
+        e0.append(x0.to_json())
+    parts.append("\"Criteria\":" + connect_json_arr(e0))
+    parts.append("\"MatchType\":" + v.MatchType.to_json())
+    return connect_json_obj(parts)
+
+# Serialize SearchCriteria to a compact JSON object (declaration order).
+def search_criteria_to_json(SearchCriteria v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + name_criteria_to_json(u0))
+    if v.AgentIds.is_some():
+        auto u1 = v.AgentIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connect_json_str(x2))
+        parts.append("\"AgentIds\":" + connect_json_arr(e2))
+    if v.AgentHierarchyGroups.is_some():
+        auto u3 = v.AgentHierarchyGroups.unwrap()
+        parts.append("\"AgentHierarchyGroups\":" + agent_hierarchy_groups_to_json(u3))
+    if v.Channels.is_some():
+        auto u4 = v.Channels.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Channels\":" + connect_json_arr(e5))
+    if v.ContactAnalysis.is_some():
+        auto u6 = v.ContactAnalysis.unwrap()
+        parts.append("\"ContactAnalysis\":" + contact_analysis_to_json(u6))
+    if v.InitiationMethods.is_some():
+        auto u7 = v.InitiationMethods.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"InitiationMethods\":" + connect_json_arr(e8))
+    if v.QueueIds.is_some():
+        auto u9 = v.QueueIds.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(connect_json_str(x10))
+        parts.append("\"QueueIds\":" + connect_json_arr(e10))
+    if v.RoutingCriteria.is_some():
+        auto u11 = v.RoutingCriteria.unwrap()
+        parts.append("\"RoutingCriteria\":" + searchable_routing_criteria_to_json(u11))
+    if v.AdditionalTimeRange.is_some():
+        auto u12 = v.AdditionalTimeRange.unwrap()
+        parts.append("\"AdditionalTimeRange\":" + search_contacts_additional_time_range_to_json(u12))
+    if v.SearchableContactAttributes.is_some():
+        auto u13 = v.SearchableContactAttributes.unwrap()
+        parts.append("\"SearchableContactAttributes\":" + searchable_contact_attributes_to_json(u13))
+    if v.SearchableSegmentAttributes.is_some():
+        auto u14 = v.SearchableSegmentAttributes.unwrap()
+        parts.append("\"SearchableSegmentAttributes\":" + searchable_segment_attributes_to_json(u14))
+    if v.ActiveRegions.is_some():
+        auto u15 = v.ActiveRegions.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(connect_json_str(x16))
+        parts.append("\"ActiveRegions\":" + connect_json_arr(e16))
+    if v.ContactTags.is_some():
+        auto u17 = v.ContactTags.unwrap()
+        parts.append("\"ContactTags\":" + control_plane_tag_filter_to_json(u17))
+    if v.AiAgents.is_some():
+        auto u18 = v.AiAgents.unwrap()
+        parts.append("\"AiAgents\":" + ai_agents_criteria_to_json(u18))
+    return connect_json_obj(parts)
+
+# Serialize SearchableAgentCriteriaStep to a compact JSON object (declaration order).
+def searchable_agent_criteria_step_to_json(SearchableAgentCriteriaStep v) -> str:
+    list[str] parts = []
+    if v.AgentIds.is_some():
+        auto u0 = v.AgentIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"AgentIds\":" + connect_json_arr(e1))
+    if v.MatchType.is_some():
+        auto u2 = v.MatchType.unwrap()
+        parts.append("\"MatchType\":" + u2.to_json())
+    return connect_json_obj(parts)
+
+# Serialize SearchableContactAttributes to a compact JSON object (declaration order).
+def searchable_contact_attributes_to_json(SearchableContactAttributes v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Criteria:
+        e0.append(searchable_contact_attributes_criteria_to_json(x0))
+    parts.append("\"Criteria\":" + connect_json_arr(e0))
+    if v.MatchType.is_some():
+        auto u1 = v.MatchType.unwrap()
+        parts.append("\"MatchType\":" + u1.to_json())
+    return connect_json_obj(parts)
+
+# Serialize SearchableContactAttributesCriteria to a compact JSON object (declaration order).
+def searchable_contact_attributes_criteria_to_json(SearchableContactAttributesCriteria v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + connect_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(connect_json_str(x0))
+    parts.append("\"Values\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize SearchableRoutingCriteria to a compact JSON object (declaration order).
+def searchable_routing_criteria_to_json(SearchableRoutingCriteria v) -> str:
+    list[str] parts = []
+    if v.Steps.is_some():
+        auto u0 = v.Steps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(searchable_routing_criteria_step_to_json(x1))
+        parts.append("\"Steps\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize SearchableRoutingCriteriaStep to a compact JSON object (declaration order).
+def searchable_routing_criteria_step_to_json(SearchableRoutingCriteriaStep v) -> str:
+    list[str] parts = []
+    if v.AgentCriteria.is_some():
+        auto u0 = v.AgentCriteria.unwrap()
+        parts.append("\"AgentCriteria\":" + searchable_agent_criteria_step_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize SearchableSegmentAttributes to a compact JSON object (declaration order).
+def searchable_segment_attributes_to_json(SearchableSegmentAttributes v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Criteria:
+        e0.append(searchable_segment_attributes_criteria_to_json(x0))
+    parts.append("\"Criteria\":" + connect_json_arr(e0))
+    if v.MatchType.is_some():
+        auto u1 = v.MatchType.unwrap()
+        parts.append("\"MatchType\":" + u1.to_json())
+    return connect_json_obj(parts)
+
+# Serialize SearchableSegmentAttributesCriteria to a compact JSON object (declaration order).
+def searchable_segment_attributes_criteria_to_json(SearchableSegmentAttributesCriteria v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + connect_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(connect_json_str(x0))
+    parts.append("\"Values\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize SecurityProfileSearchCriteria to a compact JSON object (declaration order).
+def security_profile_search_criteria_to_json(SecurityProfileSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(security_profile_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(security_profile_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize SecurityProfilesSearchFilter to a compact JSON object (declaration order).
+def security_profiles_search_filter_to_json(SecurityProfilesSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize SegmentAttributeValue to a compact JSON object (declaration order).
+def segment_attribute_value_to_json(SegmentAttributeValue v) -> str:
+    list[str] parts = []
+    if v.ValueString.is_some():
+        auto u0 = v.ValueString.unwrap()
+        parts.append("\"ValueString\":" + connect_json_str(u0))
+    if v.ValueMap.is_some():
+        auto u1 = v.ValueMap.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(connect_json_str(k2) + ":" + segment_attribute_value_to_json(u1[k2]))
+        parts.append("\"ValueMap\":" + connect_json_obj(m2))
+    if v.ValueInteger.is_some():
+        auto u3 = v.ValueInteger.unwrap()
+        parts.append("\"ValueInteger\":" + str(u3))
+    if v.ValueList.is_some():
+        auto u4 = v.ValueList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(segment_attribute_value_to_json(x5))
+        parts.append("\"ValueList\":" + connect_json_arr(e5))
+    if v.ValueArn.is_some():
+        auto u6 = v.ValueArn.unwrap()
+        parts.append("\"ValueArn\":" + connect_json_str(u6))
+    return connect_json_obj(parts)
+
+# Serialize SignInConfig to a compact JSON object (declaration order).
+def sign_in_config_to_json(SignInConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Distributions:
+        e0.append(x0.to_json())
+    parts.append("\"Distributions\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize SummaryConfiguration to a compact JSON object (declaration order).
+def summary_configuration_to_json(SummaryConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SummaryModes:
+        e0.append(x0.to_json())
+    parts.append("\"SummaryModes\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize TaskTemplateConstraints to a compact JSON object (declaration order).
+def task_template_constraints_to_json(TaskTemplateConstraints v) -> str:
+    list[str] parts = []
+    if v.RequiredFields.is_some():
+        auto u0 = v.RequiredFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RequiredFields\":" + connect_json_arr(e1))
+    if v.ReadOnlyFields.is_some():
+        auto u2 = v.ReadOnlyFields.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ReadOnlyFields\":" + connect_json_arr(e3))
+    if v.InvisibleFields.is_some():
+        auto u4 = v.InvisibleFields.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"InvisibleFields\":" + connect_json_arr(e5))
+    return connect_json_obj(parts)
+
+# Serialize TaskTemplateDefaults to a compact JSON object (declaration order).
+def task_template_defaults_to_json(TaskTemplateDefaults v) -> str:
+    list[str] parts = []
+    if v.DefaultFieldValues.is_some():
+        auto u0 = v.DefaultFieldValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DefaultFieldValues\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize TaskTemplateField to a compact JSON object (declaration order).
+def task_template_field_to_json(TaskTemplateField v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + v.Id.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + connect_json_str(u0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    if v.SingleSelectOptions.is_some():
+        auto u2 = v.SingleSelectOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connect_json_str(x3))
+        parts.append("\"SingleSelectOptions\":" + connect_json_arr(e3))
+    return connect_json_obj(parts)
+
+# Serialize TelephonyConfig to a compact JSON object (declaration order).
+def telephony_config_to_json(TelephonyConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Distributions:
+        e0.append(x0.to_json())
+    parts.append("\"Distributions\":" + connect_json_arr(e0))
+    return connect_json_obj(parts)
+
+# Serialize TemplateAttributes to a compact JSON object (declaration order).
+def template_attributes_to_json(TemplateAttributes v) -> str:
+    list[str] parts = []
+    if v.CustomAttributes.is_some():
+        auto u0 = v.CustomAttributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(connect_json_str(k1) + ":" + connect_json_str(u0[k1]))
+        parts.append("\"CustomAttributes\":" + connect_json_obj(m1))
+    if v.CustomerProfileAttributes.is_some():
+        auto u2 = v.CustomerProfileAttributes.unwrap()
+        parts.append("\"CustomerProfileAttributes\":" + connect_json_str(u2))
+    return connect_json_obj(parts)
+
+# Serialize TemplatedMessageConfig to a compact JSON object (declaration order).
+def templated_message_config_to_json(TemplatedMessageConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"KnowledgeBaseId\":" + connect_json_str(v.KnowledgeBaseId))
+    parts.append("\"MessageTemplateId\":" + connect_json_str(v.MessageTemplateId))
+    parts.append("\"TemplateAttributes\":" + template_attributes_to_json(v.TemplateAttributes))
+    return connect_json_obj(parts)
+
+# Serialize TestCaseSearchCriteria to a compact JSON object (declaration order).
+def test_case_search_criteria_to_json(TestCaseSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(test_case_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(test_case_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.StatusCondition.is_some():
+        auto u5 = v.StatusCondition.unwrap()
+        parts.append("\"StatusCondition\":" + u5.to_json())
+    return connect_json_obj(parts)
+
+# Serialize TestCaseSearchFilter to a compact JSON object (declaration order).
+def test_case_search_filter_to_json(TestCaseSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize Transcript to a compact JSON object (declaration order).
+def transcript_to_json(Transcript v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Criteria:
+        e0.append(transcript_criteria_to_json(x0))
+    parts.append("\"Criteria\":" + connect_json_arr(e0))
+    if v.MatchType.is_some():
+        auto u1 = v.MatchType.unwrap()
+        parts.append("\"MatchType\":" + u1.to_json())
+    return connect_json_obj(parts)
+
+# Serialize TranscriptCriteria to a compact JSON object (declaration order).
+def transcript_criteria_to_json(TranscriptCriteria v) -> str:
+    list[str] parts = []
+    parts.append("\"ParticipantRole\":" + v.ParticipantRole.to_json())
+    list[str] e0 = []
+    for x0 in v.SearchText:
+        e0.append(connect_json_str(x0))
+    parts.append("\"SearchText\":" + connect_json_arr(e0))
+    parts.append("\"MatchType\":" + v.MatchType.to_json())
+    return connect_json_obj(parts)
+
+# Serialize UpdateParticipantRoleConfigChannelInfo to a compact JSON object (declaration order).
+def update_participant_role_config_channel_info_to_json(UpdateParticipantRoleConfigChannelInfo v) -> str:
+    list[str] parts = []
+    if v.Chat.is_some():
+        auto u0 = v.Chat.unwrap()
+        parts.append("\"Chat\":" + chat_participant_role_config_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize UserDataFilters to a compact JSON object (declaration order).
+def user_data_filters_to_json(UserDataFilters v) -> str:
+    list[str] parts = []
+    if v.Queues.is_some():
+        auto u0 = v.Queues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_json_str(x1))
+        parts.append("\"Queues\":" + connect_json_arr(e1))
+    if v.ContactFilter.is_some():
+        auto u2 = v.ContactFilter.unwrap()
+        parts.append("\"ContactFilter\":" + contact_filter_to_json(u2))
+    if v.RoutingProfiles.is_some():
+        auto u3 = v.RoutingProfiles.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(connect_json_str(x4))
+        parts.append("\"RoutingProfiles\":" + connect_json_arr(e4))
+    if v.Agents.is_some():
+        auto u5 = v.Agents.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(connect_json_str(x6))
+        parts.append("\"Agents\":" + connect_json_arr(e6))
+    if v.UserHierarchyGroups.is_some():
+        auto u7 = v.UserHierarchyGroups.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(connect_json_str(x8))
+        parts.append("\"UserHierarchyGroups\":" + connect_json_arr(e8))
+    return connect_json_obj(parts)
+
+# Serialize UserHierarchyGroupSearchCriteria to a compact JSON object (declaration order).
+def user_hierarchy_group_search_criteria_to_json(UserHierarchyGroupSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(user_hierarchy_group_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(user_hierarchy_group_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize UserHierarchyGroupSearchFilter to a compact JSON object (declaration order).
+def user_hierarchy_group_search_filter_to_json(UserHierarchyGroupSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize UserSearchCriteria to a compact JSON object (declaration order).
+def user_search_criteria_to_json(UserSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(user_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(user_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.ListCondition.is_some():
+        auto u5 = v.ListCondition.unwrap()
+        parts.append("\"ListCondition\":" + list_condition_to_json(u5))
+    if v.HierarchyGroupCondition.is_some():
+        auto u6 = v.HierarchyGroupCondition.unwrap()
+        parts.append("\"HierarchyGroupCondition\":" + u6.to_json())
+    return connect_json_obj(parts)
+
+# Serialize UserSearchFilter to a compact JSON object (declaration order).
+def user_search_filter_to_json(UserSearchFilter v) -> str:
+    list[str] parts = []
+    if v.TagFilter.is_some():
+        auto u0 = v.TagFilter.unwrap()
+        parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    if v.UserAttributeFilter.is_some():
+        auto u1 = v.UserAttributeFilter.unwrap()
+        parts.append("\"UserAttributeFilter\":" + control_plane_user_attribute_filter_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize Validation to a compact JSON object (declaration order).
+def validation_to_json(Validation v) -> str:
+    list[str] parts = []
+    if v.MinLength.is_some():
+        auto u0 = v.MinLength.unwrap()
+        parts.append("\"MinLength\":" + str(u0))
+    if v.MaxLength.is_some():
+        auto u1 = v.MaxLength.unwrap()
+        parts.append("\"MaxLength\":" + str(u1))
+    if v.MinValues.is_some():
+        auto u2 = v.MinValues.unwrap()
+        parts.append("\"MinValues\":" + str(u2))
+    if v.MaxValues.is_some():
+        auto u3 = v.MaxValues.unwrap()
+        parts.append("\"MaxValues\":" + str(u3))
+    if v.IgnoreCase.is_some():
+        auto u4 = v.IgnoreCase.unwrap()
+        parts.append("\"IgnoreCase\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Minimum.is_some():
+        auto u5 = v.Minimum.unwrap()
+        parts.append("\"Minimum\":" + str(u5))
+    if v.Maximum.is_some():
+        auto u6 = v.Maximum.unwrap()
+        parts.append("\"Maximum\":" + str(u6))
+    if v.ExclusiveMinimum.is_some():
+        auto u7 = v.ExclusiveMinimum.unwrap()
+        parts.append("\"ExclusiveMinimum\":" + str(u7))
+    if v.ExclusiveMaximum.is_some():
+        auto u8 = v.ExclusiveMaximum.unwrap()
+        parts.append("\"ExclusiveMaximum\":" + str(u8))
+    if v.MultipleOf.is_some():
+        auto u9 = v.MultipleOf.unwrap()
+        parts.append("\"MultipleOf\":" + str(u9))
+    if v.Enum.is_some():
+        auto u10 = v.Enum.unwrap()
+        parts.append("\"Enum\":" + validation_enum_to_json(u10))
+    return connect_json_obj(parts)
+
+# Serialize ValidationEnum to a compact JSON object (declaration order).
+def validation_enum_to_json(ValidationEnum v) -> str:
+    list[str] parts = []
+    if v.Strict.is_some():
+        auto u0 = v.Strict.unwrap()
+        parts.append("\"Strict\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connect_json_str(x2))
+        parts.append("\"Values\":" + connect_json_arr(e2))
+    return connect_json_obj(parts)
+
+# Serialize ViewInputContent to a compact JSON object (declaration order).
+def view_input_content_to_json(ViewInputContent v) -> str:
+    list[str] parts = []
+    if v.Template.is_some():
+        auto u0 = v.Template.unwrap()
+        parts.append("\"Template\":" + connect_json_str(u0))
+    if v.Actions.is_some():
+        auto u1 = v.Actions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connect_json_str(x2))
+        parts.append("\"Actions\":" + connect_json_arr(e2))
+    return connect_json_obj(parts)
+
+# Serialize ViewSearchCriteria to a compact JSON object (declaration order).
+def view_search_criteria_to_json(ViewSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(view_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(view_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    if v.ViewTypeCondition.is_some():
+        auto u5 = v.ViewTypeCondition.unwrap()
+        parts.append("\"ViewTypeCondition\":" + u5.to_json())
+    if v.ViewStatusCondition.is_some():
+        auto u6 = v.ViewStatusCondition.unwrap()
+        parts.append("\"ViewStatusCondition\":" + u6.to_json())
+    return connect_json_obj(parts)
+
+# Serialize ViewSearchFilter to a compact JSON object (declaration order).
+def view_search_filter_to_json(ViewSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize WebNotificationContent to a compact JSON object (declaration order).
+def web_notification_content_to_json(WebNotificationContent v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.ViewArn.is_some():
+        auto u0 = v.ViewArn.unwrap()
+        parts.append("\"ViewArn\":" + connect_json_str(u0))
+    if v.Attributes.is_some():
+        auto u1 = v.Attributes.unwrap()
+        parts.append("\"Attributes\":" + content_attributes_to_json(u1))
+    return connect_json_obj(parts)
+
+# Serialize WorkspaceAssociationSearchCriteria to a compact JSON object (declaration order).
+def workspace_association_search_criteria_to_json(WorkspaceAssociationSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspace_association_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workspace_association_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize WorkspaceAssociationSearchFilter to a compact JSON object (declaration order).
+def workspace_association_search_filter_to_json(WorkspaceAssociationSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize WorkspaceSearchCriteria to a compact JSON object (declaration order).
+def workspace_search_criteria_to_json(WorkspaceSearchCriteria v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workspace_search_criteria_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndConditions.is_some():
+        auto u2 = v.AndConditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workspace_search_criteria_to_json(x3))
+        parts.append("\"AndConditions\":" + connect_json_arr(e3))
+    if v.StringCondition.is_some():
+        auto u4 = v.StringCondition.unwrap()
+        parts.append("\"StringCondition\":" + u4.to_json())
+    return connect_json_obj(parts)
+
+# Serialize WorkspaceSearchFilter to a compact JSON object (declaration order).
+def workspace_search_filter_to_json(WorkspaceSearchFilter v) -> str:
+    list[str] parts = []
+    if v.AttributeFilter.is_some():
+        auto u0 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + control_plane_attribute_filter_to_json(u0))
+    return connect_json_obj(parts)
+
 # A bound Connect client: credentials + region, threaded into every operation.
 struct ConnectClient:
     core.Credentials creds
@@ -12596,6 +15282,22 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # AssociateHoursOfOperations  POST /hours-of-operations/{InstanceId}/{HoursOfOperationId}/associate-hours
+    # errors: ConditionalOperationFailedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def associate_hours_of_operations(self, AssociateHoursOfOperationsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["HoursOfOperationId"] = input.HoursOfOperationId
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/associate-hours", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ParentHoursOfOperationConfigs:
+            e0.append(x0.to_json())
+        parts.append("\"ParentHoursOfOperationConfigs\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # AssociateInstanceStorageConfig  PUT /instance/{InstanceId}/storage-config
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
     def associate_instance_storage_config(self, AssociateInstanceStorageConfigRequest input) -> str:
@@ -12640,6 +15342,65 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # AssociateQueueEmailAddresses  POST /queues/{InstanceId}/{QueueId}/associate-email-addresses
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def associate_queue_email_addresses(self, AssociateQueueEmailAddressesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["QueueId"] = input.QueueId
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/associate-email-addresses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.EmailAddressesConfig:
+            e0.append(x0.to_json())
+        parts.append("\"EmailAddressesConfig\":" + connect_json_arr(e0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # AssociateQueueQuickConnects  POST /queues/{InstanceId}/{QueueId}/associate-quick-connects
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def associate_queue_quick_connects(self, AssociateQueueQuickConnectsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["QueueId"] = input.QueueId
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/associate-quick-connects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.QuickConnectIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"QuickConnectIds\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # AssociateRoutingProfileQueues  POST /routing-profiles/{InstanceId}/{RoutingProfileId}/associate-queues
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def associate_routing_profile_queues(self, AssociateRoutingProfileQueuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["RoutingProfileId"] = input.RoutingProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/associate-queues", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueueConfigs.is_some():
+            auto u0 = input.QueueConfigs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"QueueConfigs\":" + connect_json_arr(e1))
+        if input.ManualAssignmentQueueConfigs.is_some():
+            auto u2 = input.ManualAssignmentQueueConfigs.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ManualAssignmentQueueConfigs\":" + connect_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # AssociateSecurityKey  PUT /instance/{InstanceId}/security-key
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def associate_security_key(self, AssociateSecurityKeyRequest input) -> str:
@@ -12651,6 +15412,23 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # AssociateSecurityProfiles  POST /associate-security-profiles/{InstanceId}
+    # errors: AccessDeniedException, ConditionalOperationFailedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException
+    def associate_security_profiles(self, AssociateSecurityProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/associate-security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SecurityProfiles:
+            e0.append(x0.to_json())
+        parts.append("\"SecurityProfiles\":" + connect_json_arr(e0))
+        parts.append("\"EntityType\":" + input.EntityType.to_json())
+        parts.append("\"EntityArn\":" + connect_json_str(input.EntityArn))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # AssociateTrafficDistributionGroupUser  PUT /traffic-distribution-group/{TrafficDistributionGroupId}/user
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
     def associate_traffic_distribution_group_user(self, AssociateTrafficDistributionGroupUserRequest input) -> str:
@@ -12660,6 +15438,219 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateTrafficDistributionGroupUserDocument(UserId=input.UserId, InstanceId=input.InstanceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # AssociateUserProficiencies  POST /users/{InstanceId}/{UserId}/associate-proficiencies
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def associate_user_proficiencies(self, AssociateUserProficienciesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["UserId"] = input.UserId
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/associate-proficiencies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserProficiencies:
+            e0.append(x0.to_json())
+        parts.append("\"UserProficiencies\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # AssociateWorkspace  POST /workspaces/{InstanceId}/{WorkspaceId}/associate
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def associate_workspace(self, AssociateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["WorkspaceId"] = input.WorkspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(connect_json_str(x0))
+        parts.append("\"ResourceArns\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchAssociateAnalyticsDataSet  PUT /analytics-data/instance/{InstanceId}/associations
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_associate_analytics_data_set(self, BatchAssociateAnalyticsDataSetRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/analytics-data/instance/{InstanceId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DataSetIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"DataSetIds\":" + connect_json_arr(e0))
+        if input.TargetAccountId.is_some():
+            auto u1 = input.TargetAccountId.unwrap()
+            parts.append("\"TargetAccountId\":" + connect_json_str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchCreateDataTableValue  POST /data-tables/{InstanceId}/{DataTableId}/values/create
+    # errors: AccessDeniedException, ConflictException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def batch_create_data_table_value(self, BatchCreateDataTableValueRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(data_table_value_to_json(x0))
+        parts.append("\"Values\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchDeleteDataTableValue  POST /data-tables/{InstanceId}/{DataTableId}/values/delete
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_delete_data_table_value(self, BatchDeleteDataTableValueRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(data_table_delete_value_identifier_to_json(x0))
+        parts.append("\"Values\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchDescribeDataTableValue  POST /data-tables/{InstanceId}/{DataTableId}/values/describe
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_describe_data_table_value(self, BatchDescribeDataTableValueRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(data_table_value_identifier_to_json(x0))
+        parts.append("\"Values\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchDisassociateAnalyticsDataSet  POST /analytics-data/instance/{InstanceId}/associations
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_disassociate_analytics_data_set(self, BatchDisassociateAnalyticsDataSetRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/analytics-data/instance/{InstanceId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DataSetIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"DataSetIds\":" + connect_json_arr(e0))
+        if input.TargetAccountId.is_some():
+            auto u1 = input.TargetAccountId.unwrap()
+            parts.append("\"TargetAccountId\":" + connect_json_str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchGetAttachedFileMetadata  POST /attached-files/{InstanceId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_get_attached_file_metadata(self, BatchGetAttachedFileMetadataRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        dict[str, str] query = {}
+        query["associatedResourceArn"] = input.AssociatedResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/attached-files/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.FileIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"FileIds\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchGetFlowAssociation  POST /flow-associations-batch/{InstanceId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_get_flow_association(self, BatchGetFlowAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/flow-associations-batch/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ResourceIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"ResourceIds\":" + connect_json_arr(e0))
+        if input.ResourceType.is_some():
+            auto u1 = input.ResourceType.unwrap()
+            parts.append("\"ResourceType\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchPutContact  PUT /contact/batch/{InstanceId}
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
+    def batch_put_contact(self, BatchPutContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/batch/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.ContactDataRequestList:
+            e1.append(contact_data_request_to_json(x1))
+        parts.append("\"ContactDataRequestList\":" + connect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # BatchUpdateDataTableValue  POST /data-tables/{InstanceId}/{DataTableId}/values/update
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_update_data_table_value(self, BatchUpdateDataTableValueRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(data_table_value_to_json(x0))
+        parts.append("\"Values\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # ClaimPhoneNumber  POST /phone-number/claim
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
+    def claim_phone_number(self, ClaimPhoneNumberRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/claim", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TargetArn.is_some():
+            auto u0 = input.TargetArn.unwrap()
+            parts.append("\"TargetArn\":" + connect_json_str(u0))
+        if input.InstanceId.is_some():
+            auto u1 = input.InstanceId.unwrap()
+            parts.append("\"InstanceId\":" + connect_json_str(u1))
+        parts.append("\"PhoneNumber\":" + connect_json_str(input.PhoneNumber))
+        if input.PhoneNumberDescription.is_some():
+            auto u2 = input.PhoneNumberDescription.unwrap()
+            parts.append("\"PhoneNumberDescription\":" + connect_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"Tags\":" + connect_json_obj(m4))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u5))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # CompleteAttachedFileUpload  POST /attached-files/{InstanceId}/{FileId}
@@ -12674,6 +15665,151 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # CreateAgentStatus  PUT /agent-status/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_agent_status(self, CreateAgentStatusRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/agent-status/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"State\":" + input.State.to_json())
+        if input.DisplayOrder.is_some():
+            auto u1 = input.DisplayOrder.unwrap()
+            parts.append("\"DisplayOrder\":" + str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateAttachedFile  PUT /attached-files/{InstanceId}/files
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ServiceQuotaExceededException, ThrottlingException
+    def create_attached_file(self, CreateAttachedFileRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        dict[str, str] query = {}
+        query["associatedResourceArn"] = input.AssociatedResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/attached-files/{InstanceId}/files", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"FileUseCaseType\":" + input.FileUseCaseType.to_json())
+        parts.append("\"FileSourceUri\":" + connect_json_str(input.FileSourceUri))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateAuthCode  POST /auth/code/{InstanceId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def create_auth_code(self, CreateAuthCodeRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/auth/code/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Scope\":" + auth_scope_to_json(input.Scope))
+        if input.MaxSessionDurationMinutes.is_some():
+            auto u0 = input.MaxSessionDurationMinutes.unwrap()
+            parts.append("\"MaxSessionDurationMinutes\":" + str(u0))
+        parts.append("\"SessionInactivityDurationMinutes\":" + str(input.SessionInactivityDurationMinutes))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateContact  PUT /contact/create-contact
+    # errors: AccessDeniedException, ConflictException, IdempotencyException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_contact(self, CreateContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/create-contact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        if input.RelatedContactId.is_some():
+            auto u1 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u1))
+        if input.Attributes.is_some():
+            auto u2 = input.Attributes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Attributes\":" + connect_json_obj(m3))
+        if input.References.is_some():
+            auto u4 = input.References.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(connect_json_str(k5) + ":" + u4[k5].to_json())
+            parts.append("\"References\":" + connect_json_obj(m5))
+        parts.append("\"Channel\":" + input.Channel.to_json())
+        parts.append("\"InitiationMethod\":" + input.InitiationMethod.to_json())
+        if input.ExpiryDurationInMinutes.is_some():
+            auto u6 = input.ExpiryDurationInMinutes.unwrap()
+            parts.append("\"ExpiryDurationInMinutes\":" + str(u6))
+        if input.UserInfo.is_some():
+            auto u7 = input.UserInfo.unwrap()
+            parts.append("\"UserInfo\":" + u7.to_json())
+        if input.InitiateAs.is_some():
+            auto u8 = input.InitiateAs.unwrap()
+            parts.append("\"InitiateAs\":" + u8.to_json())
+        if input.Name.is_some():
+            auto u9 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u9))
+        if input.Description.is_some():
+            auto u10 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u10))
+        if input.SegmentAttributes.is_some():
+            auto u11 = input.SegmentAttributes.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(connect_json_str(k12) + ":" + segment_attribute_value_to_json(u11[k12]))
+            parts.append("\"SegmentAttributes\":" + connect_json_obj(m12))
+        if input.PreviousContactId.is_some():
+            auto u13 = input.PreviousContactId.unwrap()
+            parts.append("\"PreviousContactId\":" + connect_json_str(u13))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateContactFlow  PUT /contact-flows/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidContactFlowException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_contact_flow(self, CreateContactFlowRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        parts.append("\"Type\":" + input.Type.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"Content\":" + connect_json_str(input.Content))
+        if input.Status.is_some():
+            auto u1 = input.Status.unwrap()
+            parts.append("\"Status\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # CreateContactFlowAlias  PUT /contact-flows/{InstanceId}/{ContactFlowId}/alias
     # errors: AccessDeniedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_contact_flow_alias(self, CreateContactFlowAliasRequest input) -> str:
@@ -12684,6 +15820,37 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateContactFlowAliasDocument(Description=input.Description, ContactFlowVersion=input.ContactFlowVersion, AliasName=input.AliasName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateContactFlowModule  PUT /contact-flow-modules/{InstanceId}
+    # errors: AccessDeniedException, DuplicateResourceException, IdempotencyException, InternalServiceException, InvalidContactFlowModuleException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_contact_flow_module(self, CreateContactFlowModuleRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"Content\":" + connect_json_str(input.Content))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u3))
+        if input.Settings.is_some():
+            auto u4 = input.Settings.unwrap()
+            parts.append("\"Settings\":" + connect_json_str(u4))
+        if input.ExternalInvocationConfiguration.is_some():
+            auto u5 = input.ExternalInvocationConfiguration.unwrap()
+            parts.append("\"ExternalInvocationConfiguration\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # CreateContactFlowModuleAlias  PUT /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias
@@ -12722,6 +15889,301 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # CreateDataTable  PUT /data-tables/{InstanceId}
+    # errors: AccessDeniedException, ConflictException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_data_table(self, CreateDataTableRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-tables/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"TimeZone\":" + connect_json_str(input.TimeZone))
+        parts.append("\"ValueLockLevel\":" + input.ValueLockLevel.to_json())
+        parts.append("\"Status\":" + connect_json_str(input.Status))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateDataTableAttribute  PUT /data-tables/{InstanceId}/{DataTableId}/attributes
+    # errors: AccessDeniedException, ConflictException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_data_table_attribute(self, CreateDataTableAttributeRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        parts.append("\"ValueType\":" + input.ValueType.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.Primary.is_some():
+            auto u1 = input.Primary.unwrap()
+            parts.append("\"Primary\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.Validation.is_some():
+            auto u2 = input.Validation.unwrap()
+            parts.append("\"Validation\":" + validation_to_json(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateEmailAddress  PUT /email-addresses/{InstanceId}
+    # errors: AccessDeniedException, DuplicateResourceException, IdempotencyException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_email_address(self, CreateEmailAddressRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/email-addresses/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"EmailAddress\":" + connect_json_str(input.EmailAddress))
+        if input.DisplayName.is_some():
+            auto u1 = input.DisplayName.unwrap()
+            parts.append("\"DisplayName\":" + connect_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateEvaluationForm  PUT /evaluation-forms/{InstanceId}
+    # errors: InternalServiceException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_evaluation_form(self, CreateEvaluationFormRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/evaluation-forms/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Title\":" + connect_json_str(input.Title))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.Items:
+            e1.append(evaluation_form_item_to_json(x1))
+        parts.append("\"Items\":" + connect_json_arr(e1))
+        if input.ScoringStrategy.is_some():
+            auto u2 = input.ScoringStrategy.unwrap()
+            parts.append("\"ScoringStrategy\":" + evaluation_form_scoring_strategy_to_json(u2))
+        if input.AutoEvaluationConfiguration.is_some():
+            auto u3 = input.AutoEvaluationConfiguration.unwrap()
+            parts.append("\"AutoEvaluationConfiguration\":" + u3.to_json())
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u4))
+        if input.AsDraft.is_some():
+            auto u5 = input.AsDraft.unwrap()
+            parts.append("\"AsDraft\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(connect_json_str(k7) + ":" + connect_json_str(u6[k7]))
+            parts.append("\"Tags\":" + connect_json_obj(m7))
+        if input.ReviewConfiguration.is_some():
+            auto u8 = input.ReviewConfiguration.unwrap()
+            parts.append("\"ReviewConfiguration\":" + evaluation_review_configuration_to_json(u8))
+        if input.TargetConfiguration.is_some():
+            auto u9 = input.TargetConfiguration.unwrap()
+            parts.append("\"TargetConfiguration\":" + u9.to_json())
+        if input.LanguageConfiguration.is_some():
+            auto u10 = input.LanguageConfiguration.unwrap()
+            parts.append("\"LanguageConfiguration\":" + u10.to_json())
+        if input.AIVersion.is_some():
+            auto u11 = input.AIVersion.unwrap()
+            parts.append("\"AIVersion\":" + connect_json_str(u11))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateExtractionDefinition  POST /extraction-definitions/{InstanceId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_extraction_definition(self, CreateExtractionDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/extraction-definitions/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        parts.append("\"ExtractionConfiguration\":" + input.ExtractionConfiguration.to_json())
+        if input.Display.is_some():
+            auto u1 = input.Display.unwrap()
+            parts.append("\"Display\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateHoursOfOperation  PUT /hours-of-operations/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_hours_of_operation(self, CreateHoursOfOperationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/hours-of-operations/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"TimeZone\":" + connect_json_str(input.TimeZone))
+        list[str] e1 = []
+        for x1 in input.Config:
+            e1.append(x1.to_json())
+        parts.append("\"Config\":" + connect_json_arr(e1))
+        if input.ParentHoursOfOperationConfigs.is_some():
+            auto u2 = input.ParentHoursOfOperationConfigs.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ParentHoursOfOperationConfigs\":" + connect_json_arr(e3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(connect_json_str(k5) + ":" + connect_json_str(u4[k5]))
+            parts.append("\"Tags\":" + connect_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateHoursOfOperationOverride  PUT /hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_hours_of_operation_override(self, CreateHoursOfOperationOverrideRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["HoursOfOperationId"] = input.HoursOfOperationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.Config:
+            e1.append(x1.to_json())
+        parts.append("\"Config\":" + connect_json_arr(e1))
+        parts.append("\"EffectiveFrom\":" + connect_json_str(input.EffectiveFrom))
+        parts.append("\"EffectiveTill\":" + connect_json_str(input.EffectiveTill))
+        if input.RecurrenceConfig.is_some():
+            auto u2 = input.RecurrenceConfig.unwrap()
+            parts.append("\"RecurrenceConfig\":" + recurrence_config_to_json(u2))
+        if input.OverrideType.is_some():
+            auto u3 = input.OverrideType.unwrap()
+            parts.append("\"OverrideType\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateInstance  PUT /instance
+    # errors: InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_instance(self, CreateInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"IdentityManagementType\":" + input.IdentityManagementType.to_json())
+        if input.InstanceAlias.is_some():
+            auto u1 = input.InstanceAlias.unwrap()
+            parts.append("\"InstanceAlias\":" + connect_json_str(u1))
+        if input.DirectoryId.is_some():
+            auto u2 = input.DirectoryId.unwrap()
+            parts.append("\"DirectoryId\":" + connect_json_str(u2))
+        parts.append("\"InboundCallsEnabled\":" + json.dumps(JsonValue.Bool(input.InboundCallsEnabled)))
+        parts.append("\"OutboundCallsEnabled\":" + json.dumps(JsonValue.Bool(input.OutboundCallsEnabled)))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"Tags\":" + connect_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateIntegrationAssociation  PUT /instance/{InstanceId}/integration-associations
+    # errors: DuplicateResourceException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def create_integration_association(self, CreateIntegrationAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/integration-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"IntegrationType\":" + input.IntegrationType.to_json())
+        parts.append("\"IntegrationArn\":" + connect_json_str(input.IntegrationArn))
+        if input.SourceApplicationUrl.is_some():
+            auto u0 = input.SourceApplicationUrl.unwrap()
+            parts.append("\"SourceApplicationUrl\":" + connect_json_str(u0))
+        if input.SourceApplicationName.is_some():
+            auto u1 = input.SourceApplicationName.unwrap()
+            parts.append("\"SourceApplicationName\":" + connect_json_str(u1))
+        if input.SourceType.is_some():
+            auto u2 = input.SourceType.unwrap()
+            parts.append("\"SourceType\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"Tags\":" + connect_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateMetric  PUT /metrics/definitions/{InstanceId}
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_metric(self, CreateMetricRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/metrics/definitions/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        parts.append("\"MetricCalculation\":" + metric_calculation_to_json(input.MetricCalculation))
+        parts.append("\"Unit\":" + input.Unit.to_json())
+        if input.Status.is_some():
+            auto u0 = input.Status.unwrap()
+            parts.append("\"Status\":" + u0.to_json())
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u2))
+        if input.PositiveTrendIndicator.is_some():
+            auto u3 = input.PositiveTrendIndicator.unwrap()
+            parts.append("\"PositiveTrendIndicator\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(connect_json_str(k5) + ":" + connect_json_str(u4[k5]))
+            parts.append("\"Tags\":" + connect_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # CreateParticipant  POST /contact/create-participant
     # errors: ConflictException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def create_participant(self, CreateParticipantRequest input) -> str:
@@ -12743,6 +16205,52 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # CreatePredefinedAttribute  PUT /predefined-attributes/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_predefined_attribute(self, CreatePredefinedAttributeRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/predefined-attributes/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Values.is_some():
+            auto u0 = input.Values.unwrap()
+            parts.append("\"Values\":" + predefined_attribute_values_to_json(u0))
+        if input.Purposes.is_some():
+            auto u1 = input.Purposes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(connect_json_str(x2))
+            parts.append("\"Purposes\":" + connect_json_arr(e2))
+        if input.AttributeConfiguration.is_some():
+            auto u3 = input.AttributeConfiguration.unwrap()
+            parts.append("\"AttributeConfiguration\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreatePrompt  PUT /prompts/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_prompt(self, CreatePromptRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/prompts/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"S3Uri\":" + connect_json_str(input.S3Uri))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # CreatePushNotificationRegistration  PUT /push-notification/{InstanceId}/registrations
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def create_push_notification_registration(self, CreatePushNotificationRegistrationRequest input) -> str:
@@ -12752,6 +16260,376 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/push-notification/{InstanceId}/registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePushNotificationRegistrationDocument(ClientToken=input.ClientToken, PinpointAppArn=input.PinpointAppArn, DeviceToken=input.DeviceToken, DeviceType=input.DeviceType, ContactConfiguration=input.ContactConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateQueue  PUT /queues/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_queue(self, CreateQueueRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/queues/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.OutboundCallerConfig.is_some():
+            auto u1 = input.OutboundCallerConfig.unwrap()
+            parts.append("\"OutboundCallerConfig\":" + u1.to_json())
+        if input.OutboundEmailConfig.is_some():
+            auto u2 = input.OutboundEmailConfig.unwrap()
+            parts.append("\"OutboundEmailConfig\":" + u2.to_json())
+        parts.append("\"HoursOfOperationId\":" + connect_json_str(input.HoursOfOperationId))
+        if input.MaxContacts.is_some():
+            auto u3 = input.MaxContacts.unwrap()
+            parts.append("\"MaxContacts\":" + str(u3))
+        if input.QuickConnectIds.is_some():
+            auto u4 = input.QuickConnectIds.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(connect_json_str(x5))
+            parts.append("\"QuickConnectIds\":" + connect_json_arr(e5))
+        if input.EmailAddressesConfig.is_some():
+            auto u6 = input.EmailAddressesConfig.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"EmailAddressesConfig\":" + connect_json_arr(e7))
+        if input.Tags.is_some():
+            auto u8 = input.Tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(connect_json_str(k9) + ":" + connect_json_str(u8[k9]))
+            parts.append("\"Tags\":" + connect_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateQuickConnect  PUT /quick-connects/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_quick_connect(self, CreateQuickConnectRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/quick-connects/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"QuickConnectConfig\":" + input.QuickConnectConfig.to_json())
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateRoutingProfile  PUT /routing-profiles/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_routing_profile(self, CreateRoutingProfileRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/routing-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        parts.append("\"Description\":" + connect_json_str(input.Description))
+        parts.append("\"DefaultOutboundQueueId\":" + connect_json_str(input.DefaultOutboundQueueId))
+        if input.QueueConfigs.is_some():
+            auto u0 = input.QueueConfigs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"QueueConfigs\":" + connect_json_arr(e1))
+        if input.ManualAssignmentQueueConfigs.is_some():
+            auto u2 = input.ManualAssignmentQueueConfigs.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ManualAssignmentQueueConfigs\":" + connect_json_arr(e3))
+        list[str] e4 = []
+        for x4 in input.MediaConcurrencies:
+            e4.append(media_concurrency_to_json(x4))
+        parts.append("\"MediaConcurrencies\":" + connect_json_arr(e4))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(connect_json_str(k6) + ":" + connect_json_str(u5[k6]))
+            parts.append("\"Tags\":" + connect_json_obj(m6))
+        if input.AgentAvailabilityTimer.is_some():
+            auto u7 = input.AgentAvailabilityTimer.unwrap()
+            parts.append("\"AgentAvailabilityTimer\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateSecurityProfile  PUT /security-profiles/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_security_profile(self, CreateSecurityProfileRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SecurityProfileName\":" + connect_json_str(input.SecurityProfileName))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(connect_json_str(x2))
+            parts.append("\"Permissions\":" + connect_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"Tags\":" + connect_json_obj(m4))
+        if input.AllowedAccessControlTags.is_some():
+            auto u5 = input.AllowedAccessControlTags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(connect_json_str(k6) + ":" + connect_json_str(u5[k6]))
+            parts.append("\"AllowedAccessControlTags\":" + connect_json_obj(m6))
+        if input.TagRestrictedResources.is_some():
+            auto u7 = input.TagRestrictedResources.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(connect_json_str(x8))
+            parts.append("\"TagRestrictedResources\":" + connect_json_arr(e8))
+        if input.Applications.is_some():
+            auto u9 = input.Applications.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(application_to_json(x10))
+            parts.append("\"Applications\":" + connect_json_arr(e10))
+        if input.HierarchyRestrictedResources.is_some():
+            auto u11 = input.HierarchyRestrictedResources.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(connect_json_str(x12))
+            parts.append("\"HierarchyRestrictedResources\":" + connect_json_arr(e12))
+        if input.AllowedAccessControlHierarchyGroupId.is_some():
+            auto u13 = input.AllowedAccessControlHierarchyGroupId.unwrap()
+            parts.append("\"AllowedAccessControlHierarchyGroupId\":" + connect_json_str(u13))
+        if input.AllowedFlowModules.is_some():
+            auto u14 = input.AllowedFlowModules.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"AllowedFlowModules\":" + connect_json_arr(e15))
+        if input.AllowedAIAgents.is_some():
+            auto u16 = input.AllowedAIAgents.unwrap()
+            list[str] e17 = []
+            for x17 in u16:
+                e17.append(x17.to_json())
+            parts.append("\"AllowedAIAgents\":" + connect_json_arr(e17))
+        if input.GranularAccessControlConfiguration.is_some():
+            auto u18 = input.GranularAccessControlConfiguration.unwrap()
+            parts.append("\"GranularAccessControlConfiguration\":" + granular_access_control_configuration_to_json(u18))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateTaskTemplate  PUT /instance/{InstanceId}/task/template
+    # errors: InternalServiceException, InvalidParameterException, PropertyValidationException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_task_template(self, CreateTaskTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/task/template", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.ContactFlowId.is_some():
+            auto u1 = input.ContactFlowId.unwrap()
+            parts.append("\"ContactFlowId\":" + connect_json_str(u1))
+        if input.SelfAssignFlowId.is_some():
+            auto u2 = input.SelfAssignFlowId.unwrap()
+            parts.append("\"SelfAssignFlowId\":" + connect_json_str(u2))
+        if input.ContactHooks.is_some():
+            auto u3 = input.ContactHooks.unwrap()
+            parts.append("\"ContactHooks\":" + u3.to_json())
+        if input.Constraints.is_some():
+            auto u4 = input.Constraints.unwrap()
+            parts.append("\"Constraints\":" + task_template_constraints_to_json(u4))
+        if input.Defaults.is_some():
+            auto u5 = input.Defaults.unwrap()
+            parts.append("\"Defaults\":" + task_template_defaults_to_json(u5))
+        if input.Status.is_some():
+            auto u6 = input.Status.unwrap()
+            parts.append("\"Status\":" + u6.to_json())
+        list[str] e7 = []
+        for x7 in input.Fields:
+            e7.append(task_template_field_to_json(x7))
+        parts.append("\"Fields\":" + connect_json_arr(e7))
+        if input.ClientToken.is_some():
+            auto u8 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u8))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateTrafficDistributionGroup  PUT /traffic-distribution-group
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ResourceNotReadyException, ServiceQuotaExceededException, ThrottlingException
+    def create_traffic_distribution_group(self, CreateTrafficDistributionGroupRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateUseCase  PUT /instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases
+    # errors: DuplicateResourceException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def create_use_case(self, CreateUseCaseRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["IntegrationAssociationId"] = input.IntegrationAssociationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"UseCaseType\":" + input.UseCaseType.to_json())
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(connect_json_str(k1) + ":" + connect_json_str(u0[k1]))
+            parts.append("\"Tags\":" + connect_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateUser  PUT /users/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/users/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Username\":" + connect_json_str(input.Username))
+        if input.Password.is_some():
+            auto u0 = input.Password.unwrap()
+            parts.append("\"Password\":" + connect_json_str(u0))
+        if input.IdentityInfo.is_some():
+            auto u1 = input.IdentityInfo.unwrap()
+            parts.append("\"IdentityInfo\":" + u1.to_json())
+        if input.PhoneConfig.is_some():
+            auto u2 = input.PhoneConfig.unwrap()
+            parts.append("\"PhoneConfig\":" + u2.to_json())
+        if input.DirectoryUserId.is_some():
+            auto u3 = input.DirectoryUserId.unwrap()
+            parts.append("\"DirectoryUserId\":" + connect_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.SecurityProfileIds:
+            e4.append(connect_json_str(x4))
+        parts.append("\"SecurityProfileIds\":" + connect_json_arr(e4))
+        parts.append("\"RoutingProfileId\":" + connect_json_str(input.RoutingProfileId))
+        if input.HierarchyGroupId.is_some():
+            auto u5 = input.HierarchyGroupId.unwrap()
+            parts.append("\"HierarchyGroupId\":" + connect_json_str(u5))
+        if input.AutoAcceptConfigs.is_some():
+            auto u6 = input.AutoAcceptConfigs.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"AutoAcceptConfigs\":" + connect_json_arr(e7))
+        if input.AfterContactWorkConfigs.is_some():
+            auto u8 = input.AfterContactWorkConfigs.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"AfterContactWorkConfigs\":" + connect_json_arr(e9))
+        if input.PhoneNumberConfigs.is_some():
+            auto u10 = input.PhoneNumberConfigs.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"PhoneNumberConfigs\":" + connect_json_arr(e11))
+        if input.PersistentConnectionConfigs.is_some():
+            auto u12 = input.PersistentConnectionConfigs.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"PersistentConnectionConfigs\":" + connect_json_arr(e13))
+        if input.VoiceEnhancementConfigs.is_some():
+            auto u14 = input.VoiceEnhancementConfigs.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"VoiceEnhancementConfigs\":" + connect_json_arr(e15))
+        if input.Tags.is_some():
+            auto u16 = input.Tags.unwrap()
+            list[str] m17 = []
+            for k17 in sorted(u16.keys()):
+                m17.append(connect_json_str(k17) + ":" + connect_json_str(u16[k17]))
+            parts.append("\"Tags\":" + connect_json_obj(m17))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateUserHierarchyGroup  PUT /user-hierarchy-groups/{InstanceId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_user_hierarchy_group(self, CreateUserHierarchyGroupRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/user-hierarchy-groups/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.ParentGroupId.is_some():
+            auto u0 = input.ParentGroupId.unwrap()
+            parts.append("\"ParentGroupId\":" + connect_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateView  PUT /views/{InstanceId}
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_view(self, CreateViewRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/views/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"Status\":" + input.Status.to_json())
+        parts.append("\"Content\":" + view_input_content_to_json(input.Content))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # CreateViewVersion  PUT /views/{InstanceId}/{ViewId}/versions
@@ -12764,6 +16642,56 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/views/{InstanceId}/{ViewId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateViewVersionDocument(VersionDescription=input.VersionDescription, ViewContentSha256=input.ViewContentSha256)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateVocabulary  POST /vocabulary/{InstanceId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_vocabulary(self, CreateVocabularyRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"VocabularyName\":" + connect_json_str(input.VocabularyName))
+        parts.append("\"LanguageCode\":" + input.LanguageCode.to_json())
+        parts.append("\"Content\":" + connect_json_str(input.Content))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # CreateWorkspace  PUT /workspaces/{InstanceId}
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_workspace(self, CreateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.Theme.is_some():
+            auto u1 = input.Theme.unwrap()
+            parts.append("\"Theme\":" + u1.to_json())
+        if input.Title.is_some():
+            auto u2 = input.Title.unwrap()
+            parts.append("\"Title\":" + connect_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"Tags\":" + connect_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # CreateWorkspacePage  PUT /workspaces/{InstanceId}/{WorkspaceId}/pages
@@ -12801,6 +16729,22 @@ struct ConnectClient:
         query["associatedResourceArn"] = input.AssociatedResourceArn
         auto b = binding.HttpBinding(method="DELETE", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
+
+    # DeleteContactData  POST /contact/delete/{InstanceId}/{ContactId}
+    # errors: ContactNotTerminatedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def delete_contact_data(self, DeleteContactDataRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ContactId"] = input.ContactId
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/delete/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ContactFields:
+            e0.append(x0.to_json())
+        parts.append("\"ContactFields\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # DeleteContactEvaluation  DELETE /contact-evaluations/{InstanceId}/{EvaluationId}
     # errors: InternalServiceException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
@@ -13645,6 +17589,22 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/flow-associations/{InstanceId}/{ResourceId}/{ResourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # DisassociateHoursOfOperations  POST /hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours
+    # errors: ConditionalOperationFailedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def disassociate_hours_of_operations(self, DisassociateHoursOfOperationsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["HoursOfOperationId"] = input.HoursOfOperationId
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ParentHoursOfOperationIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"ParentHoursOfOperationIds\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # DisassociateInstanceStorageConfig  DELETE /instance/{InstanceId}/storage-config/{AssociationId}
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def disassociate_instance_storage_config(self, DisassociateInstanceStorageConfigRequest input) -> str:
@@ -13697,6 +17657,65 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/phone-number/{PhoneNumberId}/contact-flow", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # DisassociateQueueEmailAddresses  POST /queues/{InstanceId}/{QueueId}/disassociate-email-addresses
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def disassociate_queue_email_addresses(self, DisassociateQueueEmailAddressesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["QueueId"] = input.QueueId
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/disassociate-email-addresses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.EmailAddressesId:
+            e0.append(connect_json_str(x0))
+        parts.append("\"EmailAddressesId\":" + connect_json_arr(e0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # DisassociateQueueQuickConnects  POST /queues/{InstanceId}/{QueueId}/disassociate-quick-connects
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def disassociate_queue_quick_connects(self, DisassociateQueueQuickConnectsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["QueueId"] = input.QueueId
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/disassociate-quick-connects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.QuickConnectIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"QuickConnectIds\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # DisassociateRoutingProfileQueues  POST /routing-profiles/{InstanceId}/{RoutingProfileId}/disassociate-queues
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def disassociate_routing_profile_queues(self, DisassociateRoutingProfileQueuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["RoutingProfileId"] = input.RoutingProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/disassociate-queues", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueueReferences.is_some():
+            auto u0 = input.QueueReferences.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"QueueReferences\":" + connect_json_arr(e1))
+        if input.ManualAssignmentQueueReferences.is_some():
+            auto u2 = input.ManualAssignmentQueueReferences.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ManualAssignmentQueueReferences\":" + connect_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # DisassociateSecurityKey  DELETE /instance/{InstanceId}/security-key/{AssociationId}
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def disassociate_security_key(self, DisassociateSecurityKeyRequest input) -> str:
@@ -13710,6 +17729,23 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/security-key/{AssociationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # DisassociateSecurityProfiles  POST /disassociate-security-profiles/{InstanceId}
+    # errors: AccessDeniedException, ConditionalOperationFailedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException
+    def disassociate_security_profiles(self, DisassociateSecurityProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SecurityProfiles:
+            e0.append(x0.to_json())
+        parts.append("\"SecurityProfiles\":" + connect_json_arr(e0))
+        parts.append("\"EntityType\":" + input.EntityType.to_json())
+        parts.append("\"EntityArn\":" + connect_json_str(input.EntityArn))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # DisassociateTrafficDistributionGroupUser  DELETE /traffic-distribution-group/{TrafficDistributionGroupId}/user
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
     def disassociate_traffic_distribution_group_user(self, DisassociateTrafficDistributionGroupUserRequest input) -> str:
@@ -13722,6 +17758,38 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # DisassociateUserProficiencies  POST /users/{InstanceId}/{UserId}/disassociate-proficiencies
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def disassociate_user_proficiencies(self, DisassociateUserProficienciesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["UserId"] = input.UserId
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/disassociate-proficiencies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserProficiencies:
+            e0.append(x0.to_json())
+        parts.append("\"UserProficiencies\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # DisassociateWorkspace  POST /workspaces/{InstanceId}/{WorkspaceId}/disassociate
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def disassociate_workspace(self, DisassociateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["WorkspaceId"] = input.WorkspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(connect_json_str(x0))
+        parts.append("\"ResourceArns\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # DismissUserContact  POST /users/{InstanceId}/{UserId}/contact
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def dismiss_user_contact(self, DismissUserContactRequest input) -> str:
@@ -13732,6 +17800,30 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/contact", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DismissUserContactDocument(ContactId=input.ContactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # EvaluateDataTableValues  POST /data-tables/{InstanceId}/{DataTableId}/values/evaluate
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def evaluate_data_table_values(self, EvaluateDataTableValuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/evaluate", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(data_table_value_evaluation_set_to_json(x0))
+        parts.append("\"Values\":" + connect_json_arr(e0))
+        if input.TimeZone.is_some():
+            auto u1 = input.TimeZone.unwrap()
+            parts.append("\"TimeZone\":" + connect_json_str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # GetAttachedFile  GET /attached-files/{InstanceId}/{FileId}
@@ -13760,6 +17852,21 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="GET", path_template="/contact/attributes/{InstanceId}/{InitialContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # GetContactMetrics  POST /metrics/contact
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_contact_metrics(self, GetContactMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/contact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
+        list[str] e0 = []
+        for x0 in input.Metrics:
+            e0.append(x0.to_json())
+        parts.append("\"Metrics\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # GetCrossRegionRouting  GET /cross-region-routing/{InstanceId}
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def get_cross_region_routing(self, GetCrossRegionRoutingRequest input) -> str:
@@ -13768,6 +17875,58 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         auto b = binding.HttpBinding(method="GET", path_template="/cross-region-routing/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
+
+    # GetCurrentMetricData  POST /metrics/current/{InstanceId}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_current_metric_data(self, GetCurrentMetricDataRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/current/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Filters\":" + filters_to_json(input.Filters))
+        if input.Groupings.is_some():
+            auto u0 = input.Groupings.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Groupings\":" + connect_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.CurrentMetrics:
+            e2.append(x2.to_json())
+        parts.append("\"CurrentMetrics\":" + connect_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.SortCriteria.is_some():
+            auto u5 = input.SortCriteria.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"SortCriteria\":" + connect_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # GetCurrentUserData  POST /metrics/userdata/{InstanceId}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_current_user_data(self, GetCurrentUserDataRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/userdata/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Filters\":" + user_data_filters_to_json(input.Filters))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # GetEffectiveHoursOfOperations  GET /effective-hours-of-operations/{InstanceId}/{HoursOfOperationId}
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -13815,6 +17974,71 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="GET", path_template="/flow-associations/{InstanceId}/{ResourceId}/{ResourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # GetMetricData  POST /metrics/historical/{InstanceId}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_metric_data(self, GetMetricDataRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/historical/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
+        parts.append("\"Filters\":" + filters_to_json(input.Filters))
+        if input.Groupings.is_some():
+            auto u0 = input.Groupings.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Groupings\":" + connect_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.HistoricalMetrics:
+            e2.append(x2.to_json())
+        parts.append("\"HistoricalMetrics\":" + connect_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # GetMetricDataV2  POST /metrics/data
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_metric_data_v2(self, GetMetricDataV2Request input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/data", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + connect_json_str(input.ResourceArn))
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
+        if input.Interval.is_some():
+            auto u0 = input.Interval.unwrap()
+            parts.append("\"Interval\":" + u0.to_json())
+        list[str] e1 = []
+        for x1 in input.Filters:
+            e1.append(filter_v2_to_json(x1))
+        parts.append("\"Filters\":" + connect_json_arr(e1))
+        if input.Groupings.is_some():
+            auto u2 = input.Groupings.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(connect_json_str(x3))
+            parts.append("\"Groupings\":" + connect_json_arr(e3))
+        list[str] e4 = []
+        for x4 in input.Metrics:
+            e4.append(metric_v2_to_json(x4))
+        parts.append("\"Metrics\":" + connect_json_arr(e4))
+        if input.NextToken.is_some():
+            auto u5 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u5))
+        if input.MaxResults.is_some():
+            auto u6 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # GetPromptFile  GET /prompts/{InstanceId}/{PromptId}/file
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def get_prompt_file(self, GetPromptFileRequest input) -> str:
@@ -13857,6 +18081,29 @@ struct ConnectClient:
         labels["Id"] = input.Id
         auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
+
+    # ImportPhoneNumber  POST /phone-number/import
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
+    def import_phone_number(self, ImportPhoneNumberRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/import", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"SourcePhoneNumberArn\":" + connect_json_str(input.SourcePhoneNumberArn))
+        if input.PhoneNumberDescription.is_some():
+            auto u0 = input.PhoneNumberDescription.unwrap()
+            parts.append("\"PhoneNumberDescription\":" + connect_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Tags\":" + connect_json_obj(m2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # ImportWorkspaceMedia  POST /workspaces/{InstanceId}/{WorkspaceId}/media
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -14075,6 +18322,87 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
+
+    # ListDataTableAttributes  POST /data-tables/{InstanceId}/{DataTableId}/attributes
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_data_table_attributes(self, ListDataTableAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AttributeIds.is_some():
+            auto u0 = input.AttributeIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(connect_json_str(x1))
+            parts.append("\"AttributeIds\":" + connect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # ListDataTablePrimaryValues  POST /data-tables/{InstanceId}/{DataTableId}/values/list-primary
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_data_table_primary_values(self, ListDataTablePrimaryValuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/list-primary", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RecordIds.is_some():
+            auto u0 = input.RecordIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(connect_json_str(x1))
+            parts.append("\"RecordIds\":" + connect_json_arr(e1))
+        if input.PrimaryAttributeValues.is_some():
+            auto u2 = input.PrimaryAttributeValues.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(primary_attribute_value_filter_to_json(x3))
+            parts.append("\"PrimaryAttributeValues\":" + connect_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # ListDataTableValues  POST /data-tables/{InstanceId}/{DataTableId}/values/list
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_data_table_values(self, ListDataTableValuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RecordIds.is_some():
+            auto u0 = input.RecordIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(connect_json_str(x1))
+            parts.append("\"RecordIds\":" + connect_json_arr(e1))
+        if input.PrimaryAttributeValues.is_some():
+            auto u2 = input.PrimaryAttributeValues.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(primary_attribute_value_filter_to_json(x3))
+            parts.append("\"PrimaryAttributeValues\":" + connect_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # ListDataTables  GET /data-tables/{InstanceId}
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -14332,6 +18660,42 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="GET", path_template="/notifications/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # ListPhoneNumbersV2  POST /phone-number/list
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
+    def list_phone_numbers_v2(self, ListPhoneNumbersV2Request input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TargetArn.is_some():
+            auto u0 = input.TargetArn.unwrap()
+            parts.append("\"TargetArn\":" + connect_json_str(u0))
+        if input.InstanceId.is_some():
+            auto u1 = input.InstanceId.unwrap()
+            parts.append("\"InstanceId\":" + connect_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u3))
+        if input.PhoneNumberCountryCodes.is_some():
+            auto u4 = input.PhoneNumberCountryCodes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"PhoneNumberCountryCodes\":" + connect_json_arr(e5))
+        if input.PhoneNumberTypes.is_some():
+            auto u6 = input.PhoneNumberTypes.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"PhoneNumberTypes\":" + connect_json_arr(e7))
+        if input.PhoneNumberPrefix.is_some():
+            auto u8 = input.PhoneNumberPrefix.unwrap()
+            parts.append("\"PhoneNumberPrefix\":" + connect_json_str(u8))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # ListPredefinedAttributes  GET /predefined-attributes/{InstanceId}
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def list_predefined_attributes(self, ListPredefinedAttributesRequest input) -> str:
@@ -14389,6 +18753,29 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}/quick-connects", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
+
+    # ListRealtimeContactAnalysisSegmentsV2  POST /contact/list-real-time-analysis-segments-v2/{InstanceId}/{ContactId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, OutputTypeNotFoundException, ResourceNotFoundException, ThrottlingException
+    def list_realtime_contact_analysis_segments_v2(self, ListRealtimeContactAnalysisSegmentsV2Request input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ContactId"] = input.ContactId
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/list-real-time-analysis-segments-v2/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u1))
+        parts.append("\"OutputType\":" + input.OutputType.to_json())
+        list[str] e2 = []
+        for x2 in input.SegmentTypes:
+            e2.append(x2.to_json())
+        parts.append("\"SegmentTypes\":" + connect_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # ListReplicationFindings  GET /replication-findings/{InstanceId}
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -14809,6 +19196,27 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
+    # MonitorContact  POST /contact/monitor
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def monitor_contact(self, MonitorContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/monitor", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
+        parts.append("\"UserId\":" + connect_json_str(input.UserId))
+        if input.AllowedMonitorCapabilities.is_some():
+            auto u0 = input.AllowedMonitorCapabilities.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"AllowedMonitorCapabilities\":" + connect_json_arr(e1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # PauseContact  POST /contact/pause
     # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def pause_contact(self, PauseContactRequest input) -> str:
@@ -14871,6 +19279,28 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # SearchAgentStatuses  POST /search-agent-statuses
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_agent_statuses(self, SearchAgentStatusesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-agent-statuses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + agent_status_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + agent_status_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # SearchAvailablePhoneNumbers  POST /phone-number/search-available
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, ThrottlingException
     def search_available_phone_numbers(self, SearchAvailablePhoneNumbersRequest input) -> str:
@@ -14878,6 +19308,513 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/phone-number/search-available", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchAvailablePhoneNumbersDocument(TargetArn=input.TargetArn, InstanceId=input.InstanceId, PhoneNumberCountryCode=input.PhoneNumberCountryCode, PhoneNumberType=input.PhoneNumberType, PhoneNumberPrefix=input.PhoneNumberPrefix, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchContactEvaluations  POST /search-contact-evaluations
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_contact_evaluations(self, SearchContactEvaluationsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-evaluations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchCriteria.is_some():
+            auto u2 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + evaluation_search_criteria_to_json(u2))
+        if input.SearchFilter.is_some():
+            auto u3 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + evaluation_search_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchContactFlowModules  POST /search-contact-flow-modules
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_contact_flow_modules(self, SearchContactFlowModulesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-flow-modules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + contact_flow_module_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + contact_flow_module_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchContactFlows  POST /search-contact-flows
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_contact_flows(self, SearchContactFlowsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + contact_flow_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + contact_flow_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchContacts  POST /search-contacts
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_contacts(self, SearchContactsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contacts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"TimeRange\":" + input.TimeRange.to_json())
+        if input.SearchCriteria.is_some():
+            auto u0 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + search_criteria_to_json(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u2))
+        if input.Sort.is_some():
+            auto u3 = input.Sort.unwrap()
+            parts.append("\"Sort\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchDataTables  POST /search-data-tables
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_data_tables(self, SearchDataTablesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-data-tables", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + data_table_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + data_table_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchEmailAddresses  POST /search-email-addresses
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_email_addresses(self, SearchEmailAddressesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-email-addresses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u1))
+        if input.SearchCriteria.is_some():
+            auto u2 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + email_address_search_criteria_to_json(u2))
+        if input.SearchFilter.is_some():
+            auto u3 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + email_address_search_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchEvaluationForms  POST /search-evaluation-forms
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_evaluation_forms(self, SearchEvaluationFormsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-evaluation-forms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchCriteria.is_some():
+            auto u2 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + evaluation_form_search_criteria_to_json(u2))
+        if input.SearchFilter.is_some():
+            auto u3 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + evaluation_form_search_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchHoursOfOperationOverrides  POST /search-hours-of-operation-overrides
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_hours_of_operation_overrides(self, SearchHoursOfOperationOverridesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-hours-of-operation-overrides", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + hours_of_operation_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + hours_of_operation_override_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchHoursOfOperations  POST /search-hours-of-operations
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_hours_of_operations(self, SearchHoursOfOperationsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-hours-of-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + hours_of_operation_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + hours_of_operation_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchMetrics  POST /search-metrics
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_metrics(self, SearchMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-metrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + metric_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + metric_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchNotifications  POST /search-notifications
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_notifications(self, SearchNotificationsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-notifications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + notification_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + notification_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchPredefinedAttributes  POST /search-predefined-attributes
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_predefined_attributes(self, SearchPredefinedAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-predefined-attributes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchCriteria.is_some():
+            auto u2 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + predefined_attribute_search_criteria_to_json(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchPrompts  POST /search-prompts
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_prompts(self, SearchPromptsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-prompts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + prompt_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + prompt_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchQueues  POST /search-queues
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_queues(self, SearchQueuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-queues", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + queue_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + queue_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchQuickConnects  POST /search-quick-connects
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_quick_connects(self, SearchQuickConnectsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-quick-connects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + quick_connect_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + quick_connect_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchResourceTags  POST /search-resource-tags
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, MaximumResultReturnedException, ResourceNotFoundException, ThrottlingException
+    def search_resource_tags(self, SearchResourceTagsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-resource-tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.ResourceTypes.is_some():
+            auto u0 = input.ResourceTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(connect_json_str(x1))
+            parts.append("\"ResourceTypes\":" + connect_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        if input.SearchCriteria.is_some():
+            auto u4 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchRoutingProfiles  POST /search-routing-profiles
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_routing_profiles(self, SearchRoutingProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-routing-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + routing_profile_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + routing_profile_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchRules  POST /search-rules
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_rules(self, SearchRulesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u1))
+        if input.SearchCriteria.is_some():
+            auto u2 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + rules_search_criteria_to_json(u2))
+        if input.SearchFilter.is_some():
+            auto u3 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + rules_search_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchSecurityProfiles  POST /search-security-profiles
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_security_profiles(self, SearchSecurityProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-security-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchCriteria.is_some():
+            auto u2 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + security_profile_search_criteria_to_json(u2))
+        if input.SearchFilter.is_some():
+            auto u3 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + security_profiles_search_filter_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchTestCases  POST /search-test-cases
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_test_cases(self, SearchTestCasesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-test-cases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + test_case_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + test_case_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchUserHierarchyGroups  POST /search-user-hierarchy-groups
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_user_hierarchy_groups(self, SearchUserHierarchyGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-user-hierarchy-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + user_hierarchy_group_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + user_hierarchy_group_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchUsers  POST /search-users
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_users(self, SearchUsersRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-users", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + user_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + user_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchViews  POST /search-views
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_views(self, SearchViewsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-views", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + view_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + view_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # SearchVocabularies  POST /vocabulary-summary/{InstanceId}
@@ -14889,6 +19826,284 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/vocabulary-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchVocabulariesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, State=input.State, NameStartsWith=input.NameStartsWith, LanguageCode=input.LanguageCode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchWorkspaceAssociations  POST /search-workspace-associations
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_workspace_associations(self, SearchWorkspaceAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-workspace-associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + workspace_association_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + workspace_association_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SearchWorkspaces  POST /search-workspaces
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def search_workspaces(self, SearchWorkspacesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + connect_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.SearchFilter.is_some():
+            auto u2 = input.SearchFilter.unwrap()
+            parts.append("\"SearchFilter\":" + workspace_search_filter_to_json(u2))
+        if input.SearchCriteria.is_some():
+            auto u3 = input.SearchCriteria.unwrap()
+            parts.append("\"SearchCriteria\":" + workspace_search_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SendChatIntegrationEvent  POST /chat-integration-event
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def send_chat_integration_event(self, SendChatIntegrationEventRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/chat-integration-event", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SourceId\":" + connect_json_str(input.SourceId))
+        parts.append("\"DestinationId\":" + connect_json_str(input.DestinationId))
+        if input.Subtype.is_some():
+            auto u0 = input.Subtype.unwrap()
+            parts.append("\"Subtype\":" + connect_json_str(u0))
+        parts.append("\"Event\":" + input.Event.to_json())
+        if input.NewSessionDetails.is_some():
+            auto u1 = input.NewSessionDetails.unwrap()
+            parts.append("\"NewSessionDetails\":" + new_session_details_to_json(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SendOutboundEmail  PUT /instance/{InstanceId}/outbound-email
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def send_outbound_email(self, SendOutboundEmailRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/outbound-email", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FromEmailAddress\":" + input.FromEmailAddress.to_json())
+        parts.append("\"DestinationEmailAddress\":" + input.DestinationEmailAddress.to_json())
+        if input.AdditionalRecipients.is_some():
+            auto u0 = input.AdditionalRecipients.unwrap()
+            parts.append("\"AdditionalRecipients\":" + outbound_additional_recipients_to_json(u0))
+        parts.append("\"EmailMessage\":" + outbound_email_content_to_json(input.EmailMessage))
+        parts.append("\"TrafficType\":" + input.TrafficType.to_json())
+        if input.SourceCampaign.is_some():
+            auto u1 = input.SourceCampaign.unwrap()
+            parts.append("\"SourceCampaign\":" + u1.to_json())
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # SendOutboundWebNotification  POST /instance/{InstanceId}/outbound-web-notification
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def send_outbound_web_notification(self, SendOutboundWebNotificationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/outbound-web-notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"BrowserId\":" + connect_json_str(input.BrowserId))
+        parts.append("\"SessionId\":" + connect_json_str(input.SessionId))
+        parts.append("\"ExpiresAt\":" + str(datetime.to_timestamp(input.ExpiresAt)))
+        parts.append("\"Source\":" + input.Source.to_json())
+        parts.append("\"Destination\":" + input.Destination.to_json())
+        parts.append("\"Content\":" + web_notification_content_to_json(input.Content))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartAssistantContact  PUT /contact/assistant
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def start_assistant_contact(self, StartAssistantContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/assistant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"AiAgent\":" + input.AiAgent.to_json())
+        parts.append("\"ParticipantDetails\":" + input.ParticipantDetails.to_json())
+        if input.InitialMessage.is_some():
+            auto u0 = input.InitialMessage.unwrap()
+            parts.append("\"InitialMessage\":" + u0.to_json())
+        if input.Attributes.is_some():
+            auto u1 = input.Attributes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Attributes\":" + connect_json_obj(m2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u3))
+        if input.PersistentChat.is_some():
+            auto u4 = input.PersistentChat.unwrap()
+            parts.append("\"PersistentChat\":" + u4.to_json())
+        if input.RelatedContactId.is_some():
+            auto u5 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u5))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartAttachedFileUpload  PUT /attached-files/{InstanceId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ServiceQuotaExceededException, ThrottlingException
+    def start_attached_file_upload(self, StartAttachedFileUploadRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        dict[str, str] query = {}
+        query["associatedResourceArn"] = input.AssociatedResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/attached-files/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u0))
+        parts.append("\"FileName\":" + connect_json_str(input.FileName))
+        parts.append("\"FileSizeInBytes\":" + str(input.FileSizeInBytes))
+        if input.UrlExpiryInSeconds.is_some():
+            auto u1 = input.UrlExpiryInSeconds.unwrap()
+            parts.append("\"UrlExpiryInSeconds\":" + str(u1))
+        parts.append("\"FileUseCaseType\":" + input.FileUseCaseType.to_json())
+        if input.CreatedBy.is_some():
+            auto u2 = input.CreatedBy.unwrap()
+            parts.append("\"CreatedBy\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"Tags\":" + connect_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartChatContact  PUT /contact/chat
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
+    def start_chat_contact(self, StartChatContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/chat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"ContactFlowId\":" + connect_json_str(input.ContactFlowId))
+        if input.Attributes.is_some():
+            auto u0 = input.Attributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(connect_json_str(k1) + ":" + connect_json_str(u0[k1]))
+            parts.append("\"Attributes\":" + connect_json_obj(m1))
+        parts.append("\"ParticipantDetails\":" + input.ParticipantDetails.to_json())
+        if input.ParticipantConfiguration.is_some():
+            auto u2 = input.ParticipantConfiguration.unwrap()
+            parts.append("\"ParticipantConfiguration\":" + u2.to_json())
+        if input.InitialMessage.is_some():
+            auto u3 = input.InitialMessage.unwrap()
+            parts.append("\"InitialMessage\":" + u3.to_json())
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u4))
+        if input.ChatDurationInMinutes.is_some():
+            auto u5 = input.ChatDurationInMinutes.unwrap()
+            parts.append("\"ChatDurationInMinutes\":" + str(u5))
+        if input.SupportedMessagingContentTypes.is_some():
+            auto u6 = input.SupportedMessagingContentTypes.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(connect_json_str(x7))
+            parts.append("\"SupportedMessagingContentTypes\":" + connect_json_arr(e7))
+        if input.PersistentChat.is_some():
+            auto u8 = input.PersistentChat.unwrap()
+            parts.append("\"PersistentChat\":" + u8.to_json())
+        if input.RelatedContactId.is_some():
+            auto u9 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u9))
+        if input.SegmentAttributes.is_some():
+            auto u10 = input.SegmentAttributes.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(connect_json_str(k11) + ":" + segment_attribute_value_to_json(u10[k11]))
+            parts.append("\"SegmentAttributes\":" + connect_json_obj(m11))
+        if input.CustomerId.is_some():
+            auto u12 = input.CustomerId.unwrap()
+            parts.append("\"CustomerId\":" + connect_json_str(u12))
+        if input.DisconnectOnCustomerExit.is_some():
+            auto u13 = input.DisconnectOnCustomerExit.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(connect_json_str(x14))
+            parts.append("\"DisconnectOnCustomerExit\":" + connect_json_arr(e14))
+        if input.ConnectionTypes.is_some():
+            auto u15 = input.ConnectionTypes.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"ConnectionTypes\":" + connect_json_arr(e16))
+        if input.ChatStreamingConfiguration.is_some():
+            auto u17 = input.ChatStreamingConfiguration.unwrap()
+            parts.append("\"ChatStreamingConfiguration\":" + u17.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartContactConversationalAnalyticsJob  POST /contact/start-conversational-analytics-job/{InstanceId}/{ContactId}
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def start_contact_conversational_analytics_job(self, StartContactConversationalAnalyticsJobRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ContactId"] = input.ContactId
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-conversational-analytics-job/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AnalyticsModes:
+            e0.append(x0.to_json())
+        parts.append("\"AnalyticsModes\":" + connect_json_arr(e0))
+        parts.append("\"AnalyticsConfiguration\":" + analytics_configuration_to_json(input.AnalyticsConfiguration))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartContactEvaluation  PUT /contact-evaluations/{InstanceId}
+    # errors: InternalServiceException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def start_contact_evaluation(self, StartContactEvaluationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-evaluations/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
+        parts.append("\"EvaluationFormId\":" + connect_json_str(input.EvaluationFormId))
+        if input.AutoEvaluationConfiguration.is_some():
+            auto u0 = input.AutoEvaluationConfiguration.unwrap()
+            parts.append("\"AutoEvaluationConfiguration\":" + u0.to_json())
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Tags\":" + connect_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # StartContactMediaProcessing  POST /contact/start-contact-media-processing
@@ -14930,6 +20145,132 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # StartOutboundChatContact  PUT /contact/outbound-chat
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def start_outbound_chat_contact(self, StartOutboundChatContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-chat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SourceEndpoint\":" + input.SourceEndpoint.to_json())
+        parts.append("\"DestinationEndpoint\":" + input.DestinationEndpoint.to_json())
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        list[str] m0 = []
+        for k0 in sorted(input.SegmentAttributes.keys()):
+            m0.append(connect_json_str(k0) + ":" + segment_attribute_value_to_json(input.SegmentAttributes[k0]))
+        parts.append("\"SegmentAttributes\":" + connect_json_obj(m0))
+        if input.Attributes.is_some():
+            auto u1 = input.Attributes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(connect_json_str(k2) + ":" + connect_json_str(u1[k2]))
+            parts.append("\"Attributes\":" + connect_json_obj(m2))
+        parts.append("\"ContactFlowId\":" + connect_json_str(input.ContactFlowId))
+        if input.ChatDurationInMinutes.is_some():
+            auto u3 = input.ChatDurationInMinutes.unwrap()
+            parts.append("\"ChatDurationInMinutes\":" + str(u3))
+        if input.ParticipantDetails.is_some():
+            auto u4 = input.ParticipantDetails.unwrap()
+            parts.append("\"ParticipantDetails\":" + u4.to_json())
+        if input.InitialSystemMessage.is_some():
+            auto u5 = input.InitialSystemMessage.unwrap()
+            parts.append("\"InitialSystemMessage\":" + u5.to_json())
+        if input.InitialTemplatedSystemMessage.is_some():
+            auto u6 = input.InitialTemplatedSystemMessage.unwrap()
+            parts.append("\"InitialTemplatedSystemMessage\":" + templated_message_config_to_json(u6))
+        if input.RelatedContactId.is_some():
+            auto u7 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u7))
+        if input.SupportedMessagingContentTypes.is_some():
+            auto u8 = input.SupportedMessagingContentTypes.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(connect_json_str(x9))
+            parts.append("\"SupportedMessagingContentTypes\":" + connect_json_arr(e9))
+        if input.ClientToken.is_some():
+            auto u10 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u10))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartOutboundEmailContact  PUT /contact/outbound-email
+    # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def start_outbound_email_contact(self, StartOutboundEmailContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-email", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
+        if input.FromEmailAddress.is_some():
+            auto u0 = input.FromEmailAddress.unwrap()
+            parts.append("\"FromEmailAddress\":" + u0.to_json())
+        parts.append("\"DestinationEmailAddress\":" + input.DestinationEmailAddress.to_json())
+        if input.AdditionalRecipients.is_some():
+            auto u1 = input.AdditionalRecipients.unwrap()
+            parts.append("\"AdditionalRecipients\":" + outbound_additional_recipients_to_json(u1))
+        parts.append("\"EmailMessage\":" + outbound_email_content_to_json(input.EmailMessage))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartOutboundVoiceContact  PUT /contact/outbound-voice
+    # errors: DestinationNotAllowedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, OutboundContactNotPermittedException, ResourceNotFoundException
+    def start_outbound_voice_contact(self, StartOutboundVoiceContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-voice", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        if input.References.is_some():
+            auto u2 = input.References.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"References\":" + connect_json_obj(m3))
+        if input.RelatedContactId.is_some():
+            auto u4 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u4))
+        parts.append("\"DestinationPhoneNumber\":" + connect_json_str(input.DestinationPhoneNumber))
+        parts.append("\"ContactFlowId\":" + connect_json_str(input.ContactFlowId))
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u5))
+        if input.SourcePhoneNumber.is_some():
+            auto u6 = input.SourcePhoneNumber.unwrap()
+            parts.append("\"SourcePhoneNumber\":" + connect_json_str(u6))
+        if input.QueueId.is_some():
+            auto u7 = input.QueueId.unwrap()
+            parts.append("\"QueueId\":" + connect_json_str(u7))
+        if input.Attributes.is_some():
+            auto u8 = input.Attributes.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(connect_json_str(k9) + ":" + connect_json_str(u8[k9]))
+            parts.append("\"Attributes\":" + connect_json_obj(m9))
+        if input.AnswerMachineDetectionConfig.is_some():
+            auto u10 = input.AnswerMachineDetectionConfig.unwrap()
+            parts.append("\"AnswerMachineDetectionConfig\":" + u10.to_json())
+        if input.CampaignId.is_some():
+            auto u11 = input.CampaignId.unwrap()
+            parts.append("\"CampaignId\":" + connect_json_str(u11))
+        if input.TrafficType.is_some():
+            auto u12 = input.TrafficType.unwrap()
+            parts.append("\"TrafficType\":" + u12.to_json())
+        if input.OutboundStrategy.is_some():
+            auto u13 = input.OutboundStrategy.unwrap()
+            parts.append("\"OutboundStrategy\":" + outbound_strategy_to_json(u13))
+        if input.RingTimeoutInSeconds.is_some():
+            auto u14 = input.RingTimeoutInSeconds.unwrap()
+            parts.append("\"RingTimeoutInSeconds\":" + str(u14))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # StartScreenSharing  PUT /contact/screen-sharing
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def start_screen_sharing(self, StartScreenSharingRequest input) -> str:
@@ -14937,6 +20278,65 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/contact/screen-sharing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartScreenSharingDocument(ClientToken=input.ClientToken, InstanceId=input.InstanceId, ContactId=input.ContactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartTaskContact  PUT /contact/task
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def start_task_contact(self, StartTaskContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.PreviousContactId.is_some():
+            auto u0 = input.PreviousContactId.unwrap()
+            parts.append("\"PreviousContactId\":" + connect_json_str(u0))
+        if input.ContactFlowId.is_some():
+            auto u1 = input.ContactFlowId.unwrap()
+            parts.append("\"ContactFlowId\":" + connect_json_str(u1))
+        if input.Attributes.is_some():
+            auto u2 = input.Attributes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + connect_json_str(u2[k3]))
+            parts.append("\"Attributes\":" + connect_json_obj(m3))
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.References.is_some():
+            auto u4 = input.References.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(connect_json_str(k5) + ":" + u4[k5].to_json())
+            parts.append("\"References\":" + connect_json_obj(m5))
+        if input.Description.is_some():
+            auto u6 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u6))
+        if input.ClientToken.is_some():
+            auto u7 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u7))
+        if input.ScheduledTime.is_some():
+            auto u8 = input.ScheduledTime.unwrap()
+            parts.append("\"ScheduledTime\":" + str(datetime.to_timestamp(u8)))
+        if input.TaskTemplateId.is_some():
+            auto u9 = input.TaskTemplateId.unwrap()
+            parts.append("\"TaskTemplateId\":" + connect_json_str(u9))
+        if input.QuickConnectId.is_some():
+            auto u10 = input.QuickConnectId.unwrap()
+            parts.append("\"QuickConnectId\":" + connect_json_str(u10))
+        if input.RelatedContactId.is_some():
+            auto u11 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u11))
+        if input.SegmentAttributes.is_some():
+            auto u12 = input.SegmentAttributes.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(connect_json_str(k13) + ":" + segment_attribute_value_to_json(u12[k13]))
+            parts.append("\"SegmentAttributes\":" + connect_json_obj(m13))
+        if input.Attachments.is_some():
+            auto u14 = input.Attachments.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"Attachments\":" + connect_json_arr(e15))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # StartTestCaseExecution  PUT /test-cases/{InstanceId}/{TestCaseId}/start-execution
@@ -14949,6 +20349,48 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/test-cases/{InstanceId}/{TestCaseId}/start-execution", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTestCaseExecutionDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # StartWebRTCContact  PUT /contact/webrtc
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
+    def start_web_rtc_contact(self, StartWebRTCContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/webrtc", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Attributes.is_some():
+            auto u0 = input.Attributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(connect_json_str(k1) + ":" + connect_json_str(u0[k1]))
+            parts.append("\"Attributes\":" + connect_json_obj(m1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u2))
+        parts.append("\"ContactFlowId\":" + connect_json_str(input.ContactFlowId))
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        if input.AllowedCapabilities.is_some():
+            auto u3 = input.AllowedCapabilities.unwrap()
+            parts.append("\"AllowedCapabilities\":" + u3.to_json())
+        parts.append("\"ParticipantDetails\":" + input.ParticipantDetails.to_json())
+        if input.RelatedContactId.is_some():
+            auto u4 = input.RelatedContactId.unwrap()
+            parts.append("\"RelatedContactId\":" + connect_json_str(u4))
+        if input.References.is_some():
+            auto u5 = input.References.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(connect_json_str(k6) + ":" + u5[k6].to_json())
+            parts.append("\"References\":" + connect_json_obj(m6))
+        if input.Description.is_some():
+            auto u7 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u7))
+        if input.SegmentAttributes.is_some():
+            auto u8 = input.SegmentAttributes.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(connect_json_str(k9) + ":" + segment_attribute_value_to_json(u8[k9]))
+            parts.append("\"SegmentAttributes\":" + connect_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # StopContact  POST /contact/stop
@@ -15000,6 +20442,33 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # SubmitContactEvaluation  POST /contact-evaluations/{InstanceId}/{EvaluationId}/submit
+    # errors: InternalServiceException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
+    def submit_contact_evaluation(self, SubmitContactEvaluationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["EvaluationId"] = input.EvaluationId
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}/submit", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Answers.is_some():
+            auto u0 = input.Answers.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(connect_json_str(k1) + ":" + evaluation_answer_input_to_json(u0[k1]))
+            parts.append("\"Answers\":" + connect_json_obj(m1))
+        if input.Notes.is_some():
+            auto u2 = input.Notes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"Notes\":" + connect_json_obj(m3))
+        if input.SubmittedBy.is_some():
+            auto u4 = input.SubmittedBy.unwrap()
+            parts.append("\"SubmittedBy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # SuspendContactRecording  POST /contact/suspend-recording
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidRequestException, ResourceNotFoundException
     def suspend_contact_recording(self, SuspendContactRecordingRequest input) -> str:
@@ -15007,6 +20476,36 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/contact/suspend-recording", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SuspendContactRecordingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, InitialContactId=input.InitialContactId, ContactRecordingType=input.ContactRecordingType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # TagContact  POST /contact/tags
+    # errors: InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def tag_contact(self, TagContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(connect_json_str(k0) + ":" + connect_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + connect_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(connect_json_str(k0) + ":" + connect_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + connect_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # TransferContact  POST /contact/transfer
@@ -15028,6 +20527,150 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/agent-status/{InstanceId}/{AgentStatusId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentStatusDocument(Name=input.Name, Description=input.Description, State=input.State, DisplayOrder=input.DisplayOrder, ResetOrderNumber=input.ResetOrderNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateAttachedFilesConfiguration  POST /attached-files-configurations/{InstanceId}/{AttachmentScope}
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
+    def update_attached_files_configuration(self, UpdateAttachedFilesConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["AttachmentScope"] = input.AttachmentScope
+        auto b = binding.HttpBinding(method="POST", path_template="/attached-files-configurations/{InstanceId}/{AttachmentScope}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaximumSizeLimitInBytes.is_some():
+            auto u0 = input.MaximumSizeLimitInBytes.unwrap()
+            parts.append("\"MaximumSizeLimitInBytes\":" + str(u0))
+        if input.ExtensionConfiguration.is_some():
+            auto u1 = input.ExtensionConfiguration.unwrap()
+            parts.append("\"ExtensionConfiguration\":" + extension_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateAuthenticationProfile  POST /authentication-profiles/{InstanceId}/{AuthenticationProfileId}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_authentication_profile(self, UpdateAuthenticationProfileRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AuthenticationProfileId"] = input.AuthenticationProfileId
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/authentication-profiles/{InstanceId}/{AuthenticationProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        if input.AllowedIps.is_some():
+            auto u2 = input.AllowedIps.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(connect_json_str(x3))
+            parts.append("\"AllowedIps\":" + connect_json_arr(e3))
+        if input.BlockedIps.is_some():
+            auto u4 = input.BlockedIps.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(connect_json_str(x5))
+            parts.append("\"BlockedIps\":" + connect_json_arr(e5))
+        if input.PeriodicSessionDuration.is_some():
+            auto u6 = input.PeriodicSessionDuration.unwrap()
+            parts.append("\"PeriodicSessionDuration\":" + str(u6))
+        if input.SessionInactivityDuration.is_some():
+            auto u7 = input.SessionInactivityDuration.unwrap()
+            parts.append("\"SessionInactivityDuration\":" + str(u7))
+        if input.SessionInactivityHandlingEnabled.is_some():
+            auto u8 = input.SessionInactivityHandlingEnabled.unwrap()
+            parts.append("\"SessionInactivityHandlingEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateContact  POST /contacts/{InstanceId}/{ContactId}
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_contact(self, UpdateContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ContactId"] = input.ContactId
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        if input.References.is_some():
+            auto u2 = input.References.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"References\":" + connect_json_obj(m3))
+        if input.SegmentAttributes.is_some():
+            auto u4 = input.SegmentAttributes.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(connect_json_str(k5) + ":" + segment_attribute_value_to_json(u4[k5]))
+            parts.append("\"SegmentAttributes\":" + connect_json_obj(m5))
+        if input.QueueInfo.is_some():
+            auto u6 = input.QueueInfo.unwrap()
+            parts.append("\"QueueInfo\":" + u6.to_json())
+        if input.UserInfo.is_some():
+            auto u7 = input.UserInfo.unwrap()
+            parts.append("\"UserInfo\":" + u7.to_json())
+        if input.CustomerEndpoint.is_some():
+            auto u8 = input.CustomerEndpoint.unwrap()
+            parts.append("\"CustomerEndpoint\":" + u8.to_json())
+        if input.SystemEndpoint.is_some():
+            auto u9 = input.SystemEndpoint.unwrap()
+            parts.append("\"SystemEndpoint\":" + u9.to_json())
+        if input.AdditionalRecipients.is_some():
+            auto u10 = input.AdditionalRecipients.unwrap()
+            parts.append("\"AdditionalRecipients\":" + nullable_additional_recipients_to_json(u10))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateContactAttributes  POST /contact/attributes
+    # errors: InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def update_contact_attributes(self, UpdateContactAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/attributes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InitialContactId\":" + connect_json_str(input.InitialContactId))
+        parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
+        list[str] m0 = []
+        for k0 in sorted(input.Attributes.keys()):
+            m0.append(connect_json_str(k0) + ":" + connect_json_str(input.Attributes[k0]))
+        parts.append("\"Attributes\":" + connect_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateContactEvaluation  POST /contact-evaluations/{InstanceId}/{EvaluationId}
+    # errors: InternalServiceException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
+    def update_contact_evaluation(self, UpdateContactEvaluationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["EvaluationId"] = input.EvaluationId
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Answers.is_some():
+            auto u0 = input.Answers.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(connect_json_str(k1) + ":" + evaluation_answer_input_to_json(u0[k1]))
+            parts.append("\"Answers\":" + connect_json_obj(m1))
+        if input.Notes.is_some():
+            auto u2 = input.Notes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(connect_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"Notes\":" + connect_json_obj(m3))
+        if input.UpdatedBy.is_some():
+            auto u4 = input.UpdatedBy.unwrap()
+            parts.append("\"UpdatedBy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdateContactFlowAlias  POST /contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}
@@ -15116,6 +20759,27 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateContactRoutingData  POST /contacts/{InstanceId}/{ContactId}/routing-data
+    # errors: AccessDeniedException, InternalServiceException, InvalidActiveRegionException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
+    def update_contact_routing_data(self, UpdateContactRoutingDataRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ContactId"] = input.ContactId
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}/routing-data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueueTimeAdjustmentSeconds.is_some():
+            auto u0 = input.QueueTimeAdjustmentSeconds.unwrap()
+            parts.append("\"QueueTimeAdjustmentSeconds\":" + str(u0))
+        if input.QueuePriority.is_some():
+            auto u1 = input.QueuePriority.unwrap()
+            parts.append("\"QueuePriority\":" + str(u1))
+        if input.RoutingCriteria.is_some():
+            auto u2 = input.RoutingCriteria.unwrap()
+            parts.append("\"RoutingCriteria\":" + routing_criteria_input_to_json(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdateContactSchedule  POST /contact/schedule
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def update_contact_schedule(self, UpdateContactScheduleRequest input) -> str:
@@ -15145,6 +20809,30 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateDataTableAttribute  POST /data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def update_data_table_attribute(self, UpdateDataTableAttributeRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        labels["AttributeName"] = input.AttributeName
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        parts.append("\"ValueType\":" + input.ValueType.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.Primary.is_some():
+            auto u1 = input.Primary.unwrap()
+            parts.append("\"Primary\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.Validation.is_some():
+            auto u2 = input.Validation.unwrap()
+            parts.append("\"Validation\":" + validation_to_json(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdateDataTableMetadata  POST /data-tables/{InstanceId}/{DataTableId}
     # errors: AccessDeniedException, ConflictException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_data_table_metadata(self, UpdateDataTableMetadataRequest input) -> str:
@@ -15155,6 +20843,27 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataTableMetadataDocument(Name=input.Name, Description=input.Description, ValueLockLevel=input.ValueLockLevel, TimeZone=input.TimeZone)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateDataTablePrimaryValues  POST /data-tables/{InstanceId}/{DataTableId}/values/update-primary
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_data_table_primary_values(self, UpdateDataTablePrimaryValuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["DataTableId"] = input.DataTableId
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/update-primary", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.PrimaryValues:
+            e0.append(x0.to_json())
+        parts.append("\"PrimaryValues\":" + connect_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.NewPrimaryValues:
+            e1.append(x1.to_json())
+        parts.append("\"NewPrimaryValues\":" + connect_json_arr(e1))
+        parts.append("\"LockVersion\":" + input.LockVersion.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdateEmailAddressMetadata  POST /email-addresses/{InstanceId}/{EmailAddressId}
@@ -15169,6 +20878,54 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateEvaluationForm  PUT /evaluation-forms/{InstanceId}/{EvaluationFormId}
+    # errors: InternalServiceException, InvalidParameterException, ResourceConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def update_evaluation_form(self, UpdateEvaluationFormRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["EvaluationFormId"] = input.EvaluationFormId
+        auto b = binding.HttpBinding(method="PUT", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"EvaluationFormVersion\":" + str(input.EvaluationFormVersion))
+        if input.CreateNewVersion.is_some():
+            auto u0 = input.CreateNewVersion.unwrap()
+            parts.append("\"CreateNewVersion\":" + json.dumps(JsonValue.Bool(u0)))
+        parts.append("\"Title\":" + connect_json_str(input.Title))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.Items:
+            e2.append(evaluation_form_item_to_json(x2))
+        parts.append("\"Items\":" + connect_json_arr(e2))
+        if input.ScoringStrategy.is_some():
+            auto u3 = input.ScoringStrategy.unwrap()
+            parts.append("\"ScoringStrategy\":" + evaluation_form_scoring_strategy_to_json(u3))
+        if input.AutoEvaluationConfiguration.is_some():
+            auto u4 = input.AutoEvaluationConfiguration.unwrap()
+            parts.append("\"AutoEvaluationConfiguration\":" + u4.to_json())
+        if input.ReviewConfiguration.is_some():
+            auto u5 = input.ReviewConfiguration.unwrap()
+            parts.append("\"ReviewConfiguration\":" + evaluation_review_configuration_to_json(u5))
+        if input.AsDraft.is_some():
+            auto u6 = input.AsDraft.unwrap()
+            parts.append("\"AsDraft\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.ClientToken.is_some():
+            auto u7 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + connect_json_str(u7))
+        if input.TargetConfiguration.is_some():
+            auto u8 = input.TargetConfiguration.unwrap()
+            parts.append("\"TargetConfiguration\":" + u8.to_json())
+        if input.LanguageConfiguration.is_some():
+            auto u9 = input.LanguageConfiguration.unwrap()
+            parts.append("\"LanguageConfiguration\":" + u9.to_json())
+        if input.AIVersion.is_some():
+            auto u10 = input.AIVersion.unwrap()
+            parts.append("\"AIVersion\":" + connect_json_str(u10))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdateExtractionDefinition  PUT /extraction-definitions/{InstanceId}/{ExtractionDefinitionId}
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
     def update_extraction_definition(self, UpdateExtractionDefinitionRequest input) -> str:
@@ -15179,6 +20936,70 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateExtractionDefinitionDocument(ClientToken=input.ClientToken, Name=input.Name, ExtractionConfiguration=input.ExtractionConfiguration, Display=input.Display)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateHoursOfOperation  POST /hours-of-operations/{InstanceId}/{HoursOfOperationId}
+    # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_hours_of_operation(self, UpdateHoursOfOperationRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["HoursOfOperationId"] = input.HoursOfOperationId
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        if input.TimeZone.is_some():
+            auto u2 = input.TimeZone.unwrap()
+            parts.append("\"TimeZone\":" + connect_json_str(u2))
+        if input.Config.is_some():
+            auto u3 = input.Config.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Config\":" + connect_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateHoursOfOperationOverride  POST /hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}
+    # errors: ConditionalOperationFailedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_hours_of_operation_override(self, UpdateHoursOfOperationOverrideRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["HoursOfOperationId"] = input.HoursOfOperationId
+        labels["HoursOfOperationOverrideId"] = input.HoursOfOperationOverrideId
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        if input.Config.is_some():
+            auto u2 = input.Config.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Config\":" + connect_json_arr(e3))
+        if input.EffectiveFrom.is_some():
+            auto u4 = input.EffectiveFrom.unwrap()
+            parts.append("\"EffectiveFrom\":" + connect_json_str(u4))
+        if input.EffectiveTill.is_some():
+            auto u5 = input.EffectiveTill.unwrap()
+            parts.append("\"EffectiveTill\":" + connect_json_str(u5))
+        if input.RecurrenceConfig.is_some():
+            auto u6 = input.RecurrenceConfig.unwrap()
+            parts.append("\"RecurrenceConfig\":" + recurrence_config_to_json(u6))
+        if input.OverrideType.is_some():
+            auto u7 = input.OverrideType.unwrap()
+            parts.append("\"OverrideType\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdateInstanceAttribute  POST /instance/{InstanceId}/attribute/{AttributeType}
@@ -15205,6 +21026,27 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateInstanceStorageConfigDocument(StorageConfig=input.StorageConfig, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateMetricContent  POST /metrics/definitions/{InstanceId}/{MetricId}/content
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_metric_content(self, UpdateMetricContentRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["MetricId"] = input.MetricId
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/definitions/{InstanceId}/{MetricId}/content", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MetricCalculation.is_some():
+            auto u0 = input.MetricCalculation.unwrap()
+            parts.append("\"MetricCalculation\":" + metric_calculation_to_json(u0))
+        if input.Unit.is_some():
+            auto u1 = input.Unit.unwrap()
+            parts.append("\"Unit\":" + u1.to_json())
+        if input.PositiveTrendIndicator.is_some():
+            auto u2 = input.PositiveTrendIndicator.unwrap()
+            parts.append("\"PositiveTrendIndicator\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdateMetricMetadata  POST /metrics/definitions/{InstanceId}/{MetricId}/metadata
@@ -15240,6 +21082,19 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateParticipantRoleConfig  PUT /contact/participant-role-config/{InstanceId}/{ContactId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_participant_role_config(self, UpdateParticipantRoleConfigRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ContactId"] = input.ContactId
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/participant-role-config/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChannelConfiguration\":" + update_participant_role_config_channel_info_to_json(input.ChannelConfiguration))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdatePhoneNumber  PUT /phone-number/{PhoneNumberId}
     # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidParameterException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
     def update_phone_number(self, UpdatePhoneNumberRequest input) -> str:
@@ -15260,6 +21115,30 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberMetadataDocument(PhoneNumberDescription=input.PhoneNumberDescription, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdatePredefinedAttribute  POST /predefined-attributes/{InstanceId}/{Name}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_predefined_attribute(self, UpdatePredefinedAttributeRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Values.is_some():
+            auto u0 = input.Values.unwrap()
+            parts.append("\"Values\":" + predefined_attribute_values_to_json(u0))
+        if input.Purposes.is_some():
+            auto u1 = input.Purposes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(connect_json_str(x2))
+            parts.append("\"Purposes\":" + connect_json_arr(e2))
+        if input.AttributeConfiguration.is_some():
+            auto u3 = input.AttributeConfiguration.unwrap()
+            parts.append("\"AttributeConfiguration\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdatePrompt  POST /prompts/{InstanceId}/{PromptId}
@@ -15382,6 +21261,22 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateRoutingProfileConcurrency  POST /routing-profiles/{InstanceId}/{RoutingProfileId}/concurrency
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_routing_profile_concurrency(self, UpdateRoutingProfileConcurrencyRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["RoutingProfileId"] = input.RoutingProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/concurrency", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.MediaConcurrencies:
+            e0.append(media_concurrency_to_json(x0))
+        parts.append("\"MediaConcurrencies\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdateRoutingProfileDefaultOutboundQueue  POST /routing-profiles/{InstanceId}/{RoutingProfileId}/default-outbound-queue
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_routing_profile_default_outbound_queue(self, UpdateRoutingProfileDefaultOutboundQueueRequest input) -> str:
@@ -15404,6 +21299,189 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoutingProfileNameDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateRoutingProfileQueues  POST /routing-profiles/{InstanceId}/{RoutingProfileId}/queues
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_routing_profile_queues(self, UpdateRoutingProfileQueuesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["RoutingProfileId"] = input.RoutingProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/queues", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.QueueConfigs:
+            e0.append(x0.to_json())
+        parts.append("\"QueueConfigs\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateSecurityProfile  POST /security-profiles/{InstanceId}/{SecurityProfileId}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_security_profile(self, UpdateSecurityProfileRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["SecurityProfileId"] = input.SecurityProfileId
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(connect_json_str(x2))
+            parts.append("\"Permissions\":" + connect_json_arr(e2))
+        if input.AllowedAccessControlTags.is_some():
+            auto u3 = input.AllowedAccessControlTags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(connect_json_str(k4) + ":" + connect_json_str(u3[k4]))
+            parts.append("\"AllowedAccessControlTags\":" + connect_json_obj(m4))
+        if input.TagRestrictedResources.is_some():
+            auto u5 = input.TagRestrictedResources.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(connect_json_str(x6))
+            parts.append("\"TagRestrictedResources\":" + connect_json_arr(e6))
+        if input.Applications.is_some():
+            auto u7 = input.Applications.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(application_to_json(x8))
+            parts.append("\"Applications\":" + connect_json_arr(e8))
+        if input.HierarchyRestrictedResources.is_some():
+            auto u9 = input.HierarchyRestrictedResources.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(connect_json_str(x10))
+            parts.append("\"HierarchyRestrictedResources\":" + connect_json_arr(e10))
+        if input.AllowedAccessControlHierarchyGroupId.is_some():
+            auto u11 = input.AllowedAccessControlHierarchyGroupId.unwrap()
+            parts.append("\"AllowedAccessControlHierarchyGroupId\":" + connect_json_str(u11))
+        if input.AllowedFlowModules.is_some():
+            auto u12 = input.AllowedFlowModules.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"AllowedFlowModules\":" + connect_json_arr(e13))
+        if input.AllowedAIAgents.is_some():
+            auto u14 = input.AllowedAIAgents.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"AllowedAIAgents\":" + connect_json_arr(e15))
+        if input.GranularAccessControlConfiguration.is_some():
+            auto u16 = input.GranularAccessControlConfiguration.unwrap()
+            parts.append("\"GranularAccessControlConfiguration\":" + granular_access_control_configuration_to_json(u16))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateTaskTemplate  POST /instance/{InstanceId}/task/template/{TaskTemplateId}
+    # errors: InternalServiceException, InvalidParameterException, PropertyValidationException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def update_task_template(self, UpdateTaskTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TaskTemplateId"] = input.TaskTemplateId
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + connect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u1))
+        if input.ContactFlowId.is_some():
+            auto u2 = input.ContactFlowId.unwrap()
+            parts.append("\"ContactFlowId\":" + connect_json_str(u2))
+        if input.SelfAssignFlowId.is_some():
+            auto u3 = input.SelfAssignFlowId.unwrap()
+            parts.append("\"SelfAssignFlowId\":" + connect_json_str(u3))
+        if input.ContactHooks.is_some():
+            auto u4 = input.ContactHooks.unwrap()
+            parts.append("\"ContactHooks\":" + u4.to_json())
+        if input.Constraints.is_some():
+            auto u5 = input.Constraints.unwrap()
+            parts.append("\"Constraints\":" + task_template_constraints_to_json(u5))
+        if input.Defaults.is_some():
+            auto u6 = input.Defaults.unwrap()
+            parts.append("\"Defaults\":" + task_template_defaults_to_json(u6))
+        if input.Status.is_some():
+            auto u7 = input.Status.unwrap()
+            parts.append("\"Status\":" + u7.to_json())
+        if input.Fields.is_some():
+            auto u8 = input.Fields.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(task_template_field_to_json(x9))
+            parts.append("\"Fields\":" + connect_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateTrafficDistribution  PUT /traffic-distribution/{Id}
+    # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
+    def update_traffic_distribution(self, UpdateTrafficDistributionRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TelephonyConfig.is_some():
+            auto u0 = input.TelephonyConfig.unwrap()
+            parts.append("\"TelephonyConfig\":" + telephony_config_to_json(u0))
+        if input.SignInConfig.is_some():
+            auto u1 = input.SignInConfig.unwrap()
+            parts.append("\"SignInConfig\":" + sign_in_config_to_json(u1))
+        if input.AgentConfig.is_some():
+            auto u2 = input.AgentConfig.unwrap()
+            parts.append("\"AgentConfig\":" + agent_config_to_json(u2))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateUserConfig  POST /users/{InstanceId}/{UserId}/config
+    # errors: ConditionalOperationFailedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_user_config(self, UpdateUserConfigRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["UserId"] = input.UserId
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AutoAcceptConfigs.is_some():
+            auto u0 = input.AutoAcceptConfigs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"AutoAcceptConfigs\":" + connect_json_arr(e1))
+        if input.AfterContactWorkConfigs.is_some():
+            auto u2 = input.AfterContactWorkConfigs.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"AfterContactWorkConfigs\":" + connect_json_arr(e3))
+        if input.PhoneNumberConfigs.is_some():
+            auto u4 = input.PhoneNumberConfigs.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"PhoneNumberConfigs\":" + connect_json_arr(e5))
+        if input.PersistentConnectionConfigs.is_some():
+            auto u6 = input.PersistentConnectionConfigs.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"PersistentConnectionConfigs\":" + connect_json_arr(e7))
+        if input.VoiceEnhancementConfigs.is_some():
+            auto u8 = input.VoiceEnhancementConfigs.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"VoiceEnhancementConfigs\":" + connect_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdateUserHierarchy  POST /users/{InstanceId}/{UserId}/hierarchy
@@ -15465,6 +21543,22 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateUserProficiencies  POST /users/{InstanceId}/{UserId}/proficiencies
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_user_proficiencies(self, UpdateUserProficienciesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["UserId"] = input.UserId
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/proficiencies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserProficiencies:
+            e0.append(x0.to_json())
+        parts.append("\"UserProficiencies\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdateUserRoutingProfile  POST /users/{InstanceId}/{UserId}/routing-profile
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_user_routing_profile(self, UpdateUserRoutingProfileRequest input) -> str:
@@ -15475,6 +21569,36 @@ struct ConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/routing-profile", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserRoutingProfileDocument(RoutingProfileId=input.RoutingProfileId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateUserSecurityProfiles  POST /users/{InstanceId}/{UserId}/security-profiles
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_user_security_profiles(self, UpdateUserSecurityProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["UserId"] = input.UserId
+        labels["InstanceId"] = input.InstanceId
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/security-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SecurityProfileIds:
+            e0.append(connect_json_str(x0))
+        parts.append("\"SecurityProfileIds\":" + connect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateViewContent  POST /views/{InstanceId}/{ViewId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, TooManyRequestsException
+    def update_view_content(self, UpdateViewContentRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["ViewId"] = input.ViewId
+        auto b = binding.HttpBinding(method="POST", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Status\":" + input.Status.to_json())
+        parts.append("\"Content\":" + view_input_content_to_json(input.Content))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
     # UpdateViewMetadata  POST /views/{InstanceId}/{ViewId}/metadata
@@ -15537,6 +21661,19 @@ struct ConnectClient:
         auto doc = UpdateWorkspaceVisibilityDocument(Visibility=input.Visibility)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # Paginator for GetMetricData — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: MetricResults).
+    def paginate_get_metric_data(self, GetMetricDataRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.get_metric_data(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListApprovedOrigins — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Origins).
@@ -15674,6 +21811,45 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         while True:
             auto raw = self.list_contact_flow_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDataTableAttributes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Attributes).
+    def paginate_list_data_table_attributes(self, ListDataTableAttributesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.list_data_table_attributes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDataTablePrimaryValues — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: PrimaryValuesList).
+    def paginate_list_data_table_primary_values(self, ListDataTablePrimaryValuesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.list_data_table_primary_values(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDataTableValues — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Values).
+    def paginate_list_data_table_values(self, ListDataTableValuesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.list_data_table_values(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -15895,6 +22071,19 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         while True:
             auto raw = self.list_metrics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListPhoneNumbersV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ListPhoneNumbersSummaryList).
+    def paginate_list_phone_numbers_v2(self, ListPhoneNumbersV2Request input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.list_phone_numbers_v2(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -16240,6 +22429,19 @@ struct ConnectClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for SearchAgentStatuses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: AgentStatuses).
+    def paginate_search_agent_statuses(self, SearchAgentStatusesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_agent_statuses(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for SearchAvailablePhoneNumbers — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: AvailableNumbersList).
     def paginate_search_available_phone_numbers(self, SearchAvailablePhoneNumbersRequest input):
@@ -16253,12 +22455,285 @@ struct ConnectClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for SearchContactFlowModules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ContactFlowModules).
+    def paginate_search_contact_flow_modules(self, SearchContactFlowModulesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_contact_flow_modules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchContactFlows — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ContactFlows).
+    def paginate_search_contact_flows(self, SearchContactFlowsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_contact_flows(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchContacts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Contacts).
+    def paginate_search_contacts(self, SearchContactsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_contacts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchDataTables — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: DataTables).
+    def paginate_search_data_tables(self, SearchDataTablesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_data_tables(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchHoursOfOperationOverrides — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: HoursOfOperationOverrides).
+    def paginate_search_hours_of_operation_overrides(self, SearchHoursOfOperationOverridesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_hours_of_operation_overrides(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchHoursOfOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: HoursOfOperations).
+    def paginate_search_hours_of_operations(self, SearchHoursOfOperationsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_hours_of_operations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchMetrics — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Metrics).
+    def paginate_search_metrics(self, SearchMetricsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_metrics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchPredefinedAttributes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: PredefinedAttributes).
+    def paginate_search_predefined_attributes(self, SearchPredefinedAttributesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_predefined_attributes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchPrompts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Prompts).
+    def paginate_search_prompts(self, SearchPromptsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_prompts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchQueues — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Queues).
+    def paginate_search_queues(self, SearchQueuesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_queues(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchQuickConnects — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: QuickConnects).
+    def paginate_search_quick_connects(self, SearchQuickConnectsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_quick_connects(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchResourceTags — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Tags).
+    def paginate_search_resource_tags(self, SearchResourceTagsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_resource_tags(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchRoutingProfiles — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RoutingProfiles).
+    def paginate_search_routing_profiles(self, SearchRoutingProfilesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_routing_profiles(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Rules).
+    def paginate_search_rules(self, SearchRulesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchSecurityProfiles — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: SecurityProfiles).
+    def paginate_search_security_profiles(self, SearchSecurityProfilesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_security_profiles(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchTestCases — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TestCases).
+    def paginate_search_test_cases(self, SearchTestCasesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_test_cases(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchUserHierarchyGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: UserHierarchyGroups).
+    def paginate_search_user_hierarchy_groups(self, SearchUserHierarchyGroupsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_user_hierarchy_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchUsers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Users).
+    def paginate_search_users(self, SearchUsersRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_users(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchViews — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Views).
+    def paginate_search_views(self, SearchViewsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_views(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for SearchVocabularies — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: VocabularySummaryList).
     def paginate_search_vocabularies(self, SearchVocabulariesRequest input):
         auto host = endpoints.regional_host(connect_service(), self.region)
         while True:
             auto raw = self.search_vocabularies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchWorkspaceAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: WorkspaceAssociations).
+    def paginate_search_workspace_associations(self, SearchWorkspaceAssociationsRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_workspace_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchWorkspaces — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Workspaces).
+    def paginate_search_workspaces(self, SearchWorkspacesRequest input):
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        while True:
+            auto raw = self.search_workspaces(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

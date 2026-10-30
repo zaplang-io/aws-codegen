@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 54 operations — 38 with a generated method,
-#   16 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 54 operations — 54 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   179 structs (134 @derive(Json)), 18 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -221,59 +221,69 @@ struct AccessPolicySummary:
 struct AccountSettingsDetail:
     Optional[CapacityLimits] capacityLimits
 
-# no @derive(Json): member(s) ids: list[str], names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str], names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCollectionGroupRequest:
     Optional[list[str]] ids
     Optional[list[str]] names
 
-# no @derive(Json): member(s) collectionGroupDetails: list[CollectionGroupDetail], collectionGroupErrorDetails: list[CollectionGroupErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collectionGroupDetails: list[CollectionGroupDetail], collectionGroupErrorDetails: list[CollectionGroupErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCollectionGroupResponse:
     Optional[list[CollectionGroupDetail]] collectionGroupDetails
     Optional[list[CollectionGroupErrorDetail]] collectionGroupErrorDetails
 
-# no @derive(Json): member(s) ids: list[str], names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str], names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCollectionRequest:
     Optional[list[str]] ids
     Optional[list[str]] names
 
-# no @derive(Json): member(s) collectionDetails: list[CollectionDetail], collectionErrorDetails: list[CollectionErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collectionDetails: list[CollectionDetail], collectionErrorDetails: list[CollectionErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCollectionResponse:
     Optional[list[CollectionDetail]] collectionDetails
     Optional[list[CollectionErrorDetail]] collectionErrorDetails
 
-# no @derive(Json): member(s) resourceIdentifiers: list[LifecyclePolicyResourceIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIdentifiers: list[LifecyclePolicyResourceIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetEffectiveLifecyclePolicyRequest:
     list[LifecyclePolicyResourceIdentifier] resourceIdentifiers
 
-# no @derive(Json): member(s) effectiveLifecyclePolicyDetails: list[EffectiveLifecyclePolicyDetail], effectiveLifecyclePolicyErrorDetails: list[EffectiveLifecyclePolicyErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) effectiveLifecyclePolicyDetails: list[EffectiveLifecyclePolicyDetail], effectiveLifecyclePolicyErrorDetails: list[EffectiveLifecyclePolicyErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetEffectiveLifecyclePolicyResponse:
     Optional[list[EffectiveLifecyclePolicyDetail]] effectiveLifecyclePolicyDetails
     Optional[list[EffectiveLifecyclePolicyErrorDetail]] effectiveLifecyclePolicyErrorDetails
 
-# no @derive(Json): member(s) identifiers: list[LifecyclePolicyIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identifiers: list[LifecyclePolicyIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetLifecyclePolicyRequest:
     list[LifecyclePolicyIdentifier] identifiers
 
-# no @derive(Json): member(s) lifecyclePolicyDetails: list[LifecyclePolicyDetail], lifecyclePolicyErrorDetails: list[LifecyclePolicyErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecyclePolicyDetails: list[LifecyclePolicyDetail], lifecyclePolicyErrorDetails: list[LifecyclePolicyErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetLifecyclePolicyResponse:
     Optional[list[LifecyclePolicyDetail]] lifecyclePolicyDetails
     Optional[list[LifecyclePolicyErrorDetail]] lifecyclePolicyErrorDetails
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetVpcEndpointRequest:
     list[str] ids
 
-# no @derive(Json): member(s) vpcEndpointDetails: list[VpcEndpointDetail], vpcEndpointErrorDetails: list[VpcEndpointErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcEndpointDetails: list[VpcEndpointDetail], vpcEndpointErrorDetails: list[VpcEndpointErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetVpcEndpointResponse:
     Optional[list[VpcEndpointDetail]] vpcEndpointDetails
     Optional[list[VpcEndpointErrorDetail]] vpcEndpointErrorDetails
@@ -342,8 +352,9 @@ struct CollectionGroupCapacityLimits:
     Optional[float64] minIndexingCapacityInOCU
     Optional[float64] minSearchCapacityInOCU
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollectionGroupDetail:
     Optional[str] id
     Optional[str] arn
@@ -415,8 +426,9 @@ struct CreateCollectionDetail:
     Optional[int64] lastModifiedDate
     Optional[str] collectionGroupName
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollectionGroupDetail:
     Optional[str] id
     Optional[str] arn
@@ -428,8 +440,9 @@ struct CreateCollectionGroupDetail:
     Optional[CollectionGroupCapacityLimits] capacityLimits
     Optional[ServerlessGeneration] generation
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollectionGroupRequest:
     str name
     StandbyReplicas standbyReplicas
@@ -439,13 +452,15 @@ struct CreateCollectionGroupRequest:
     Optional[ServerlessGeneration] generation
     Optional[str] clientToken
 
-# no @derive(Json): member(s) createCollectionGroupDetail: CreateCollectionGroupDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) createCollectionGroupDetail: CreateCollectionGroupDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollectionGroupResponse:
     Optional[CreateCollectionGroupDetail] createCollectionGroupDetail
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollectionRequest:
     str name
     Optional[CollectionType] type
@@ -479,8 +494,9 @@ struct CreateIndexResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIngestionJobRequest:
     str collectionId
     str ingestionJobName
@@ -490,13 +506,15 @@ struct CreateIngestionJobRequest:
     Optional[list[Tag]] tags
     Optional[str] clientToken
 
-# no @derive(Json): member(s) ingestionJobDetail: IngestionJobDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionJobDetail: IngestionJobDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIngestionJobResponse:
     Optional[IngestionJobDetail] ingestionJobDetail
 
-# no @derive(Json): member(s) source: IngestionStreamSource, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: IngestionStreamSource, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIngestionStreamRequest:
     str collectionId
     str ingestionStreamName
@@ -507,8 +525,9 @@ struct CreateIngestionStreamRequest:
     Optional[list[Tag]] tags
     Optional[str] clientToken
 
-# no @derive(Json): member(s) ingestionStreamDetail: IngestionStreamDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionStreamDetail: IngestionStreamDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIngestionStreamResponse:
     Optional[IngestionStreamDetail] ingestionStreamDetail
 
@@ -556,8 +575,9 @@ struct CreateVpcEndpointDetail:
     Optional[str] name
     Optional[VpcEndpointStatus] status
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcEndpointRequest:
     str name
     str vpcId
@@ -744,8 +764,9 @@ struct GetIngestionJobRequest:
     str collectionId
     str ingestionJobId
 
-# no @derive(Json): member(s) ingestionJobDetail: IngestionJobDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionJobDetail: IngestionJobDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIngestionJobResponse:
     Optional[IngestionJobDetail] ingestionJobDetail
 
@@ -754,8 +775,9 @@ struct GetIngestionStreamRequest:
     str collectionId
     str ingestionStreamId
 
-# no @derive(Json): member(s) ingestionStreamDetail: IngestionStreamDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionStreamDetail: IngestionStreamDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIngestionStreamResponse:
     Optional[IngestionStreamDetail] ingestionStreamDetail
 
@@ -818,8 +840,9 @@ struct IngestionFailureReason:
     Optional[IngestionFailureCode] code
     Optional[str] message
 
-# no @derive(Json): member(s) failureReasons: list[IngestionFailureReason], activeAlerts: list[IngestionAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[IngestionFailureReason], activeAlerts: list[IngestionAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestionJobDetail:
     Optional[str] ingestionJobId
     Optional[str] arn
@@ -861,8 +884,9 @@ struct IngestionJobSummary:
 struct IngestionStatistics:
     Optional[S3Statistics] s3
 
-# no @derive(Json): member(s) source: IngestionStreamSource, failureReasons: list[IngestionFailureReason], activeAlerts: list[IngestionAlert] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: IngestionStreamSource, failureReasons: list[IngestionFailureReason], activeAlerts: list[IngestionAlert] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestionStreamDetail:
     Optional[str] ingestionStreamId
     Optional[str] arn
@@ -881,14 +905,16 @@ struct IngestionStreamDetail:
     Optional[list[IngestionFailureReason]] failureReasons
     Optional[list[IngestionAlert]] activeAlerts
 
-# no @derive(Json): member(s) buckets: list[StreamBucketConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buckets: list[StreamBucketConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestionStreamS3Source:
     str sqsArn
     Optional[list[StreamBucketConfig]] buckets
 
-# no @derive(Json): member(s) s3: IngestionStreamS3Source not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3: IngestionStreamS3Source not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestionStreamSource:
     IngestionStreamS3Source s3
 
@@ -946,16 +972,18 @@ struct LifecyclePolicySummary:
     Optional[int64] createdDate
     Optional[int64] lastModifiedDate
 
-# no @derive(Json): member(s) resource: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resource: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPoliciesRequest:
     str type
     Optional[list[str]] resource
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) accessPolicySummaries: list[AccessPolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPolicySummaries: list[AccessPolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPoliciesResponse:
     Optional[list[AccessPolicySummary]] accessPolicySummaries
     Optional[str] nextToken
@@ -965,8 +993,9 @@ struct ListCollectionGroupsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collectionGroupSummaries: list[CollectionGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collectionGroupSummaries: list[CollectionGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollectionGroupsResponse:
     Optional[list[CollectionGroupSummary]] collectionGroupSummaries
     Optional[str] nextToken
@@ -977,8 +1006,9 @@ struct ListCollectionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) collectionSummaries: list[CollectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collectionSummaries: list[CollectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollectionsResponse:
     Optional[list[CollectionSummary]] collectionSummaries
     Optional[str] nextToken
@@ -989,8 +1019,9 @@ struct ListIngestionJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) ingestionJobSummaries: list[IngestionJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionJobSummaries: list[IngestionJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIngestionJobsResponse:
     Optional[list[IngestionJobSummary]] ingestionJobSummaries
     Optional[str] nextToken
@@ -1001,22 +1032,25 @@ struct ListIngestionStreamsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) ingestionStreamSummaries: list[IngestionStreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestionStreamSummaries: list[IngestionStreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIngestionStreamsResponse:
     Optional[list[IngestionStreamSummary]] ingestionStreamSummaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLifecyclePoliciesRequest:
     str type
     Optional[list[str]] resources
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) lifecyclePolicySummaries: list[LifecyclePolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecyclePolicySummaries: list[LifecyclePolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLifecyclePoliciesResponse:
     Optional[list[LifecyclePolicySummary]] lifecyclePolicySummaries
     Optional[str] nextToken
@@ -1027,22 +1061,25 @@ struct ListSecurityConfigsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) securityConfigSummaries: list[SecurityConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityConfigSummaries: list[SecurityConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityConfigsResponse:
     Optional[list[SecurityConfigSummary]] securityConfigSummaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resource: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resource: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityPoliciesRequest:
     SecurityPolicyType type
     Optional[list[str]] resource
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) securityPolicySummaries: list[SecurityPolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityPolicySummaries: list[SecurityPolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityPoliciesResponse:
     Optional[list[SecurityPolicySummary]] securityPolicySummaries
     Optional[str] nextToken
@@ -1051,8 +1088,9 @@ struct ListSecurityPoliciesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -1062,8 +1100,9 @@ struct ListVpcEndpointsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) vpcEndpointSummaries: list[VpcEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcEndpointSummaries: list[VpcEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcEndpointsResponse:
     Optional[list[VpcEndpointSummary]] vpcEndpointSummaries
     Optional[str] nextToken
@@ -1158,8 +1197,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -1169,8 +1209,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -1306,8 +1347,9 @@ struct UpdateSecurityPolicyRequest:
 struct UpdateSecurityPolicyResponse:
     Optional[SecurityPolicyDetail] securityPolicyDetail
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVpcEndpointDetail:
     Optional[str] id
     Optional[str] name
@@ -1316,8 +1358,9 @@ struct UpdateVpcEndpointDetail:
     Optional[list[str]] securityGroupIds
     Optional[int64] lastModifiedDate
 
-# no @derive(Json): member(s) addSubnetIds: list[str], removeSubnetIds: list[str], addSecurityGroupIds: list[str], removeSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addSubnetIds: list[str], removeSubnetIds: list[str], addSecurityGroupIds: list[str], removeSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVpcEndpointRequest:
     str id
     Optional[list[str]] addSubnetIds
@@ -1326,8 +1369,9 @@ struct UpdateVpcEndpointRequest:
     Optional[list[str]] removeSecurityGroupIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) UpdateVpcEndpointDetail: UpdateVpcEndpointDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateVpcEndpointDetail: UpdateVpcEndpointDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVpcEndpointResponse:
     Optional[UpdateVpcEndpointDetail] UpdateVpcEndpointDetail
 
@@ -1339,8 +1383,9 @@ struct ValidationException:
 struct VectorOptions:
     ServerlessVectorAccelerationStatus ServerlessVectorAcceleration
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpointDetail:
     Optional[str] id
     Optional[str] name
@@ -1399,29 +1444,380 @@ def aoss_error_from_code(str code) -> OpenSearchServerlessError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchGetCollection (input BatchGetCollectionRequest)
-#   BatchGetCollectionGroup (input BatchGetCollectionGroupRequest)
-#   BatchGetEffectiveLifecyclePolicy (input BatchGetEffectiveLifecyclePolicyRequest)
-#   BatchGetLifecyclePolicy (input BatchGetLifecyclePolicyRequest)
-#   BatchGetVpcEndpoint (input BatchGetVpcEndpointRequest)
-#   CreateCollection (input CreateCollectionRequest)
-#   CreateCollectionGroup (input CreateCollectionGroupRequest)
-#   CreateIngestionJob (input CreateIngestionJobRequest)
-#   CreateIngestionStream (input CreateIngestionStreamRequest)
-#   CreateVpcEndpoint (input CreateVpcEndpointRequest)
-#   ListAccessPolicies (input ListAccessPoliciesRequest)
-#   ListLifecyclePolicies (input ListLifecyclePoliciesRequest)
-#   ListSecurityPolicies (input ListSecurityPoliciesRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateVpcEndpoint (input UpdateVpcEndpointRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def aoss_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def aoss_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def aoss_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchGetCollectionGroupRequest to a compact JSON object (declaration order).
+def batch_get_collection_group_request_to_json(BatchGetCollectionGroupRequest v) -> str:
+    list[str] parts = []
+    if v.ids.is_some():
+        auto u0 = v.ids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aoss_json_str(x1))
+        parts.append("\"ids\":" + aoss_json_arr(e1))
+    if v.names.is_some():
+        auto u2 = v.names.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(aoss_json_str(x3))
+        parts.append("\"names\":" + aoss_json_arr(e3))
+    return aoss_json_obj(parts)
+
+# Serialize BatchGetCollectionRequest to a compact JSON object (declaration order).
+def batch_get_collection_request_to_json(BatchGetCollectionRequest v) -> str:
+    list[str] parts = []
+    if v.ids.is_some():
+        auto u0 = v.ids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aoss_json_str(x1))
+        parts.append("\"ids\":" + aoss_json_arr(e1))
+    if v.names.is_some():
+        auto u2 = v.names.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(aoss_json_str(x3))
+        parts.append("\"names\":" + aoss_json_arr(e3))
+    return aoss_json_obj(parts)
+
+# Serialize BatchGetEffectiveLifecyclePolicyRequest to a compact JSON object (declaration order).
+def batch_get_effective_lifecycle_policy_request_to_json(BatchGetEffectiveLifecyclePolicyRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.resourceIdentifiers:
+        e0.append(x0.to_json())
+    parts.append("\"resourceIdentifiers\":" + aoss_json_arr(e0))
+    return aoss_json_obj(parts)
+
+# Serialize BatchGetLifecyclePolicyRequest to a compact JSON object (declaration order).
+def batch_get_lifecycle_policy_request_to_json(BatchGetLifecyclePolicyRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.identifiers:
+        e0.append(x0.to_json())
+    parts.append("\"identifiers\":" + aoss_json_arr(e0))
+    return aoss_json_obj(parts)
+
+# Serialize BatchGetVpcEndpointRequest to a compact JSON object (declaration order).
+def batch_get_vpc_endpoint_request_to_json(BatchGetVpcEndpointRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(aoss_json_str(x0))
+    parts.append("\"ids\":" + aoss_json_arr(e0))
+    return aoss_json_obj(parts)
+
+# Serialize CreateCollectionGroupRequest to a compact JSON object (declaration order).
+def create_collection_group_request_to_json(CreateCollectionGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aoss_json_str(v.name))
+    parts.append("\"standbyReplicas\":" + v.standbyReplicas.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + aoss_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + aoss_json_arr(e2))
+    if v.capacityLimits.is_some():
+        auto u3 = v.capacityLimits.unwrap()
+        parts.append("\"capacityLimits\":" + u3.to_json())
+    if v.generation.is_some():
+        auto u4 = v.generation.unwrap()
+        parts.append("\"generation\":" + u4.to_json())
+    if v.clientToken.is_some():
+        auto u5 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + aoss_json_str(u5))
+    return aoss_json_obj(parts)
+
+# Serialize CreateCollectionRequest to a compact JSON object (declaration order).
+def create_collection_request_to_json(CreateCollectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aoss_json_str(v.name))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + aoss_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + aoss_json_arr(e3))
+    if v.standbyReplicas.is_some():
+        auto u4 = v.standbyReplicas.unwrap()
+        parts.append("\"standbyReplicas\":" + u4.to_json())
+    if v.vectorOptions.is_some():
+        auto u5 = v.vectorOptions.unwrap()
+        parts.append("\"vectorOptions\":" + u5.to_json())
+    if v.collectionGroupName.is_some():
+        auto u6 = v.collectionGroupName.unwrap()
+        parts.append("\"collectionGroupName\":" + aoss_json_str(u6))
+    if v.encryptionConfig.is_some():
+        auto u7 = v.encryptionConfig.unwrap()
+        parts.append("\"encryptionConfig\":" + u7.to_json())
+    if v.deletionProtection.is_some():
+        auto u8 = v.deletionProtection.unwrap()
+        parts.append("\"deletionProtection\":" + u8.to_json())
+    if v.clientToken.is_some():
+        auto u9 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + aoss_json_str(u9))
+    return aoss_json_obj(parts)
+
+# Serialize CreateIngestionJobRequest to a compact JSON object (declaration order).
+def create_ingestion_job_request_to_json(CreateIngestionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"collectionId\":" + aoss_json_str(v.collectionId))
+    parts.append("\"ingestionJobName\":" + aoss_json_str(v.ingestionJobName))
+    parts.append("\"indexName\":" + aoss_json_str(v.indexName))
+    if v.failureIndexName.is_some():
+        auto u0 = v.failureIndexName.unwrap()
+        parts.append("\"failureIndexName\":" + aoss_json_str(u0))
+    parts.append("\"source\":" + v.source.to_json())
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + aoss_json_arr(e2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + aoss_json_str(u3))
+    return aoss_json_obj(parts)
+
+# Serialize CreateIngestionStreamRequest to a compact JSON object (declaration order).
+def create_ingestion_stream_request_to_json(CreateIngestionStreamRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"collectionId\":" + aoss_json_str(v.collectionId))
+    parts.append("\"ingestionStreamName\":" + aoss_json_str(v.ingestionStreamName))
+    parts.append("\"indexName\":" + aoss_json_str(v.indexName))
+    if v.failureIndexName.is_some():
+        auto u0 = v.failureIndexName.unwrap()
+        parts.append("\"failureIndexName\":" + aoss_json_str(u0))
+    parts.append("\"source\":" + ingestion_stream_source_to_json(v.source))
+    parts.append("\"roleArn\":" + aoss_json_str(v.roleArn))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + aoss_json_arr(e2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + aoss_json_str(u3))
+    return aoss_json_obj(parts)
+
+# Serialize CreateVpcEndpointRequest to a compact JSON object (declaration order).
+def create_vpc_endpoint_request_to_json(CreateVpcEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aoss_json_str(v.name))
+    parts.append("\"vpcId\":" + aoss_json_str(v.vpcId))
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(aoss_json_str(x0))
+    parts.append("\"subnetIds\":" + aoss_json_arr(e0))
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(aoss_json_str(x2))
+        parts.append("\"securityGroupIds\":" + aoss_json_arr(e2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + aoss_json_str(u3))
+    return aoss_json_obj(parts)
+
+# Serialize IngestionStreamS3Source to a compact JSON object (declaration order).
+def ingestion_stream_s3_source_to_json(IngestionStreamS3Source v) -> str:
+    list[str] parts = []
+    parts.append("\"sqsArn\":" + aoss_json_str(v.sqsArn))
+    if v.buckets.is_some():
+        auto u0 = v.buckets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"buckets\":" + aoss_json_arr(e1))
+    return aoss_json_obj(parts)
+
+# Serialize IngestionStreamSource to a compact JSON object (declaration order).
+def ingestion_stream_source_to_json(IngestionStreamSource v) -> str:
+    list[str] parts = []
+    parts.append("\"s3\":" + ingestion_stream_s3_source_to_json(v.s3))
+    return aoss_json_obj(parts)
+
+# Serialize ListAccessPoliciesRequest to a compact JSON object (declaration order).
+def list_access_policies_request_to_json(ListAccessPoliciesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + aoss_json_str(v.type))
+    if v.resource.is_some():
+        auto u0 = v.resource.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aoss_json_str(x1))
+        parts.append("\"resource\":" + aoss_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + aoss_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return aoss_json_obj(parts)
+
+# Serialize ListLifecyclePoliciesRequest to a compact JSON object (declaration order).
+def list_lifecycle_policies_request_to_json(ListLifecyclePoliciesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + aoss_json_str(v.type))
+    if v.resources.is_some():
+        auto u0 = v.resources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aoss_json_str(x1))
+        parts.append("\"resources\":" + aoss_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + aoss_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return aoss_json_obj(parts)
+
+# Serialize ListSecurityPoliciesRequest to a compact JSON object (declaration order).
+def list_security_policies_request_to_json(ListSecurityPoliciesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.resource.is_some():
+        auto u0 = v.resource.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aoss_json_str(x1))
+        parts.append("\"resource\":" + aoss_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + aoss_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    return aoss_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + aoss_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + aoss_json_arr(e0))
+    return aoss_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + aoss_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(aoss_json_str(x0))
+    parts.append("\"tagKeys\":" + aoss_json_arr(e0))
+    return aoss_json_obj(parts)
+
+# Serialize UpdateVpcEndpointRequest to a compact JSON object (declaration order).
+def update_vpc_endpoint_request_to_json(UpdateVpcEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + aoss_json_str(v.id))
+    if v.addSubnetIds.is_some():
+        auto u0 = v.addSubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aoss_json_str(x1))
+        parts.append("\"addSubnetIds\":" + aoss_json_arr(e1))
+    if v.removeSubnetIds.is_some():
+        auto u2 = v.removeSubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(aoss_json_str(x3))
+        parts.append("\"removeSubnetIds\":" + aoss_json_arr(e3))
+    if v.addSecurityGroupIds.is_some():
+        auto u4 = v.addSecurityGroupIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(aoss_json_str(x5))
+        parts.append("\"addSecurityGroupIds\":" + aoss_json_arr(e5))
+    if v.removeSecurityGroupIds.is_some():
+        auto u6 = v.removeSecurityGroupIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(aoss_json_str(x7))
+        parts.append("\"removeSecurityGroupIds\":" + aoss_json_arr(e7))
+    if v.clientToken.is_some():
+        auto u8 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + aoss_json_str(u8))
+    return aoss_json_obj(parts)
 
 # A bound OpenSearchServerless client: credentials + region, threaded into every operation.
 struct OpenSearchServerlessClient:
     core.Credentials creds
     str region
+
+    # BatchGetCollection
+    # errors: InternalServerException, ValidationException
+    def batch_get_collection(self, BatchGetCollectionRequest input) -> str:
+        auto body = batch_get_collection_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "BatchGetCollection", body)
+
+    # BatchGetCollectionGroup
+    # errors: InternalServerException, ValidationException
+    def batch_get_collection_group(self, BatchGetCollectionGroupRequest input) -> str:
+        auto body = batch_get_collection_group_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "BatchGetCollectionGroup", body)
+
+    # BatchGetEffectiveLifecyclePolicy
+    # errors: InternalServerException, ValidationException
+    def batch_get_effective_lifecycle_policy(self, BatchGetEffectiveLifecyclePolicyRequest input) -> str:
+        auto body = batch_get_effective_lifecycle_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "BatchGetEffectiveLifecyclePolicy", body)
+
+    # BatchGetLifecyclePolicy
+    # errors: InternalServerException, ValidationException
+    def batch_get_lifecycle_policy(self, BatchGetLifecyclePolicyRequest input) -> str:
+        auto body = batch_get_lifecycle_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "BatchGetLifecyclePolicy", body)
+
+    # BatchGetVpcEndpoint
+    # errors: InternalServerException, ValidationException
+    def batch_get_vpc_endpoint(self, BatchGetVpcEndpointRequest input) -> str:
+        auto body = batch_get_vpc_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "BatchGetVpcEndpoint", body)
 
     # CancelIngestionJob
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -1435,11 +1831,35 @@ struct OpenSearchServerlessClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateAccessPolicy", body)
 
+    # CreateCollection
+    # errors: ConflictException, InternalServerException, OcuLimitExceededException, ServiceQuotaExceededException, ValidationException
+    def create_collection(self, CreateCollectionRequest input) -> str:
+        auto body = create_collection_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateCollection", body)
+
+    # CreateCollectionGroup
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_collection_group(self, CreateCollectionGroupRequest input) -> str:
+        auto body = create_collection_group_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateCollectionGroup", body)
+
     # CreateIndex
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_index(self, CreateIndexRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateIndex", body)
+
+    # CreateIngestionJob
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_ingestion_job(self, CreateIngestionJobRequest input) -> str:
+        auto body = create_ingestion_job_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateIngestionJob", body)
+
+    # CreateIngestionStream
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_ingestion_stream(self, CreateIngestionStreamRequest input) -> str:
+        auto body = create_ingestion_stream_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateIngestionStream", body)
 
     # CreateLifecyclePolicy
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
@@ -1458,6 +1878,12 @@ struct OpenSearchServerlessClient:
     def create_security_policy(self, CreateSecurityPolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateSecurityPolicy", body)
+
+    # CreateVpcEndpoint
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_vpc_endpoint(self, CreateVpcEndpointRequest input) -> str:
+        auto body = create_vpc_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "CreateVpcEndpoint", body)
 
     # DeleteAccessPolicy
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -1561,6 +1987,12 @@ struct OpenSearchServerlessClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "GetSecurityPolicy", body)
 
+    # ListAccessPolicies
+    # errors: InternalServerException, ValidationException
+    def list_access_policies(self, ListAccessPoliciesRequest input) -> str:
+        auto body = list_access_policies_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "ListAccessPolicies", body)
+
     # ListCollectionGroups
     # errors: InternalServerException, ValidationException
     def list_collection_groups(self, ListCollectionGroupsRequest input) -> str:
@@ -1585,11 +2017,23 @@ struct OpenSearchServerlessClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "ListIngestionStreams", body)
 
+    # ListLifecyclePolicies
+    # errors: InternalServerException, ValidationException
+    def list_lifecycle_policies(self, ListLifecyclePoliciesRequest input) -> str:
+        auto body = list_lifecycle_policies_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "ListLifecyclePolicies", body)
+
     # ListSecurityConfigs
     # errors: InternalServerException, ValidationException
     def list_security_configs(self, ListSecurityConfigsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "ListSecurityConfigs", body)
+
+    # ListSecurityPolicies
+    # errors: InternalServerException, ValidationException
+    def list_security_policies(self, ListSecurityPoliciesRequest input) -> str:
+        auto body = list_security_policies_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "ListSecurityPolicies", body)
 
     # ListTagsForResource
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -1602,6 +2046,18 @@ struct OpenSearchServerlessClient:
     def list_vpc_endpoints(self, ListVpcEndpointsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "ListVpcEndpoints", body)
+
+    # TagResource
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAccessPolicy
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -1650,6 +2106,12 @@ struct OpenSearchServerlessClient:
     def update_security_policy(self, UpdateSecurityPolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "UpdateSecurityPolicy", body)
+
+    # UpdateVpcEndpoint
+    # errors: ConflictException, InternalServerException, ValidationException
+    def update_vpc_endpoint(self, UpdateVpcEndpointRequest input) -> str:
+        auto body = update_vpc_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(aoss_protocol(), self.creds, self.region, "UpdateVpcEndpoint", body)
 
     # Paginator for ListIngestionJobs — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: ingestionJobSummaries).

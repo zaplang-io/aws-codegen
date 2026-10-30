@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 409 operations — 290 with a generated method,
-#   119 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 409 operations — 408 with a generated method,
+#   1 skipped (input has a non-string-keyed map or free-form document member).
 #   1580 structs (1036 @derive(Json)), 349 enums, 4 error variants.
-#   87 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   90 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The SageMaker awsJson protocol: version 1.1, API id "SageMaker".
 def api_sagemaker_protocol() -> awsjson.AwsJson:
@@ -4702,14 +4703,16 @@ struct AIAdapterS3Entry:
     str AdapterId
     str S3Uri
 
-# no @derive(Json): member(s) ModelPackageArns: list[AIAdapterModelPackageEntry], S3Uris: list[AIAdapterS3Entry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelPackageArns: list[AIAdapterModelPackageEntry], S3Uris: list[AIAdapterS3Entry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIAdapterSource:
     Optional[list[AIAdapterModelPackageEntry]] ModelPackageArns
     Optional[list[AIAdapterS3Entry]] S3Uris
 
-# no @derive(Json): member(s) InferenceComponents: list[AIBenchmarkInferenceComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceComponents: list[AIBenchmarkInferenceComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIBenchmarkEndpoint:
     str Identifier
     Optional[str] TargetContainerHostname
@@ -4728,8 +4731,9 @@ struct AIBenchmarkJobSummary:
     Optional[DateTime] EndTime
     Optional[str] AIWorkloadConfigName
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIBenchmarkNetworkConfig:
     Optional[VpcConfig] VpcConfig
 
@@ -4738,20 +4742,23 @@ struct AIBenchmarkOutputConfig:
     str S3OutputLocation
     Optional[AIMlflowConfig] MlflowConfig
 
-# no @derive(Json): member(s) CloudWatchLogs: list[AICloudWatchLogs] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchLogs: list[AICloudWatchLogs] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIBenchmarkOutputResult:
     str S3OutputLocation
     Optional[list[AICloudWatchLogs]] CloudWatchLogs
     Optional[AIMlflowConfig] MlflowConfig
 
-# no @derive(Json): member(s) Endpoint: AIBenchmarkEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoint: AIBenchmarkEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIBenchmarkTarget:
     Optional[AIBenchmarkEndpoint] Endpoint
 
-# no @derive(Json): member(s) MlReservationArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MlReservationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AICapacityReservationConfig:
     Optional[str] CapacityReservationPreference
     Optional[list[str]] MlReservationArns
@@ -4761,8 +4768,9 @@ struct AICloudWatchLogs:
     Optional[str] LogGroupArn
     Optional[str] LogStreamName
 
-# no @derive(Json): member(s) InputDataConfig: list[AIWorkloadInputDataConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: list[AIWorkloadInputDataConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIDatasetConfig:
     Optional[list[AIWorkloadInputDataConfig]] InputDataConfig
 
@@ -4780,8 +4788,9 @@ struct AIModelSource:
 struct AIModelSourceS3:
     Optional[str] S3Uri
 
-# no @derive(Json): member(s) OptimizationDetails: list[AIRecommendationOptimizationDetail], ModelDetails: AIRecommendationModelDetails, DeploymentConfiguration: AIRecommendationDeploymentConfiguration, ExpectedPerformance: list[AIRecommendationPerformanceMetric], AdapterDetails: AIRecommendationAdapterDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptimizationDetails: list[AIRecommendationOptimizationDetail], ModelDetails: AIRecommendationModelDetails, DeploymentConfiguration: AIRecommendationDeploymentConfiguration, ExpectedPerformance: list[AIRecommendationPerformanceMetric], AdapterDetails: AIRecommendationAdapterDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendation:
     Optional[str] RecommendationDescription
     Optional[list[AIRecommendationOptimizationDetail]] OptimizationDetails
@@ -4791,14 +4800,16 @@ struct AIRecommendation:
     Optional[list[AIRecommendationPerformanceMetric]] ExpectedPerformance
     Optional[AIRecommendationAdapterDetails] AdapterDetails
 
-# no @derive(Json): member(s) ModelPackageArns: list[AIAdapterModelPackageEntry], S3Uris: list[AIAdapterS3Entry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelPackageArns: list[AIAdapterModelPackageEntry], S3Uris: list[AIAdapterS3Entry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendationAdapterDetails:
     list[AIAdapterModelPackageEntry] ModelPackageArns
     list[AIAdapterS3Entry] S3Uris
 
-# no @derive(Json): member(s) InstanceTypes: list[AIRecommendationInstanceType], CapacityReservationConfig: AICapacityReservationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypes: list[AIRecommendationInstanceType], CapacityReservationConfig: AICapacityReservationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendationComputeSpec:
     Optional[list[AIRecommendationInstanceType]] InstanceTypes
     Optional[AICapacityReservationConfig] CapacityReservationConfig
@@ -4807,8 +4818,9 @@ struct AIRecommendationComputeSpec:
 struct AIRecommendationConstraint:
     AIRecommendationMetric Metric
 
-# no @derive(Json): member(s) S3: list[AIRecommendationDeploymentS3Channel], EnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3: list[AIRecommendationDeploymentS3Channel], EnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendationDeploymentConfiguration:
     Optional[list[AIRecommendationDeploymentS3Channel]] S3
     Optional[str] ImageUri
@@ -4841,15 +4853,17 @@ struct AIRecommendationJobSummary:
     DateTime CreationTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) InstanceDetails: list[AIRecommendationInstanceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceDetails: list[AIRecommendationInstanceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendationModelDetails:
     Optional[str] ModelPackageArn
     Optional[str] InferenceSpecificationName
     Optional[list[AIRecommendationInstanceDetail]] InstanceDetails
 
-# no @derive(Json): member(s) OptimizationConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptimizationConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendationOptimizationDetail:
     AIRecommendationOptimizationType OptimizationType
     Optional[dict[str, str]] OptimizationConfig
@@ -4873,8 +4887,9 @@ struct AIRecommendationPerformanceMetric:
     str Value
     Optional[str] Unit
 
-# no @derive(Json): member(s) Constraints: list[AIRecommendationConstraint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Constraints: list[AIRecommendationConstraint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AIRecommendationPerformanceTarget:
     list[AIRecommendationConstraint] Constraints
 
@@ -4933,32 +4948,37 @@ struct AddAssociationResponse:
     Optional[str] SourceArn
     Optional[str] DestinationArn
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], InstanceTypes: list[ClusterInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], InstanceTypes: list[ClusterInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddClusterNodeSpecification:
     str InstanceGroupName
     int64 IncrementTargetCountBy
     Optional[list[str]] AvailabilityZones
     Optional[list[ClusterInstanceType]] InstanceTypes
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsInput:
     str ResourceArn
     list[Tag] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsOutput:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) EfaEnis: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EfaEnis: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalEnis:
     Optional[list[str]] EfaEnis
 
-# no @derive(Json): member(s) Containers: list[ModelPackageContainerDefinition], SupportedTransformInstanceTypes: list[TransformInstanceType], SupportedRealtimeInferenceInstanceTypes: list[ProductionVariantInstanceType], SupportedContentTypes: list[str], SupportedResponseMIMETypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Containers: list[ModelPackageContainerDefinition], SupportedTransformInstanceTypes: list[TransformInstanceType], SupportedRealtimeInferenceInstanceTypes: list[ProductionVariantInstanceType], SupportedContentTypes: list[str], SupportedResponseMIMETypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalInferenceSpecificationDefinition:
     str Name
     Optional[str] Description
@@ -4993,8 +5013,9 @@ struct Alarm:
 struct AlarmDetails:
     str AlarmName
 
-# no @derive(Json): member(s) MetricDefinitions: list[MetricDefinition], ContainerEntrypoint: list[str], ContainerArguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricDefinitions: list[MetricDefinition], ContainerEntrypoint: list[str], ContainerArguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlgorithmSpecification:
     Optional[str] TrainingImage
     Optional[str] AlgorithmName
@@ -5005,8 +5026,9 @@ struct AlgorithmSpecification:
     Optional[list[str]] ContainerArguments
     Optional[TrainingImageConfig] TrainingImageConfig
 
-# no @derive(Json): member(s) ValidationStatuses: list[AlgorithmStatusItem], ImageScanStatuses: list[AlgorithmStatusItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationStatuses: list[AlgorithmStatusItem], ImageScanStatuses: list[AlgorithmStatusItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlgorithmStatusDetails:
     Optional[list[AlgorithmStatusItem]] ValidationStatuses
     Optional[list[AlgorithmStatusItem]] ImageScanStatuses
@@ -5025,15 +5047,17 @@ struct AlgorithmSummary:
     DateTime CreationTime
     AlgorithmStatus AlgorithmStatus
 
-# no @derive(Json): member(s) TrainingJobDefinition: TrainingJobDefinition, TransformJobDefinition: TransformJobDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingJobDefinition: TrainingJobDefinition, TransformJobDefinition: TransformJobDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlgorithmValidationProfile:
     str ProfileName
     TrainingJobDefinition TrainingJobDefinition
     Optional[TransformJobDefinition] TransformJobDefinition
 
-# no @derive(Json): member(s) ValidationProfiles: list[AlgorithmValidationProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationProfiles: list[AlgorithmValidationProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlgorithmValidationSpecification:
     str ValidationRole
     list[AlgorithmValidationProfile] ValidationProfiles
@@ -5058,8 +5082,9 @@ struct AppDetails:
     Optional[DateTime] CreationTime
     Optional[ResourceSpec] ResourceSpec
 
-# no @derive(Json): member(s) KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppImageConfigDetails:
     Optional[str] AppImageConfigArn
     Optional[str] AppImageConfigName
@@ -5073,15 +5098,17 @@ struct AppImageConfigDetails:
 struct AppLifecycleManagement:
     Optional[IdleSettings] IdleSettings
 
-# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppSpecification:
     str ImageUri
     Optional[list[str]] ContainerEntrypoint
     Optional[list[str]] ContainerArguments
 
-# no @derive(Json): member(s) SourceTypes: list[ArtifactSourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTypes: list[ArtifactSourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArtifactSource:
     str SourceUri
     Optional[list[ArtifactSourceType]] SourceTypes
@@ -5091,8 +5118,9 @@ struct ArtifactSourceType:
     ArtifactSourceIdType SourceIdType
     str Value
 
-# no @derive(Json): member(s) Source: ArtifactSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: ArtifactSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArtifactSummary:
     Optional[str] ArtifactArn
     Optional[str] ArtifactName
@@ -5132,21 +5160,24 @@ struct AssociationSummary:
 struct AsyncInferenceClientConfig:
     Optional[int64] MaxConcurrentInvocationsPerInstance
 
-# no @derive(Json): member(s) OutputConfig: AsyncInferenceOutputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputConfig: AsyncInferenceOutputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AsyncInferenceConfig:
     Optional[AsyncInferenceClientConfig] ClientConfig
     AsyncInferenceOutputConfig OutputConfig
 
-# no @derive(Json): member(s) IncludeInferenceResponseIn: list[AsyncNotificationTopicTypes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeInferenceResponseIn: list[AsyncNotificationTopicTypes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AsyncInferenceNotificationConfig:
     Optional[str] SuccessTopic
     Optional[str] ErrorTopic
     Optional[list[AsyncNotificationTopicTypes]] IncludeInferenceResponseIn
 
-# no @derive(Json): member(s) NotificationConfig: AsyncInferenceNotificationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationConfig: AsyncInferenceNotificationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AsyncInferenceOutputConfig:
     Optional[str] KmsKeyId
     Optional[str] S3OutputPath
@@ -5202,13 +5233,15 @@ struct AuthorizedUrl:
     Optional[str] Url
     Optional[str] LocalPath
 
-# no @derive(Json): member(s) AutoMLAlgorithms: list[AutoMLAlgorithm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMLAlgorithms: list[AutoMLAlgorithm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLAlgorithmConfig:
     list[AutoMLAlgorithm] AutoMLAlgorithms
 
-# no @derive(Json): member(s) CandidateSteps: list[AutoMLCandidateStep], InferenceContainers: list[AutoMLContainerDefinition], CandidateProperties: CandidateProperties, InferenceContainerDefinitions: dict[AutoMLProcessingUnit, list[AutoMLContainerDefinition]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CandidateSteps: list[AutoMLCandidateStep], InferenceContainers: list[AutoMLContainerDefinition], CandidateProperties: CandidateProperties, InferenceContainerDefinitions: dict[AutoMLProcessingUnit, list[AutoMLContainerDefinition]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLCandidate:
     str CandidateName
     Optional[FinalAutoMLJobObjectiveMetric] FinalAutoMLJobObjectiveMetric
@@ -5223,8 +5256,9 @@ struct AutoMLCandidate:
     Optional[CandidateProperties] CandidateProperties
     Optional[dict[AutoMLProcessingUnit, list[AutoMLContainerDefinition]]] InferenceContainerDefinitions
 
-# no @derive(Json): member(s) AlgorithmsConfig: list[AutoMLAlgorithmConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlgorithmsConfig: list[AutoMLAlgorithmConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLCandidateGenerationConfig:
     Optional[str] FeatureSpecificationS3Uri
     Optional[list[AutoMLAlgorithmConfig]] AlgorithmsConfig
@@ -5248,8 +5282,9 @@ struct AutoMLChannel:
 struct AutoMLComputeConfig:
     Optional[EmrServerlessComputeConfig] EmrServerlessComputeConfig
 
-# no @derive(Json): member(s) Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLContainerDefinition:
     str Image
     str ModelDataUrl
@@ -5281,8 +5316,9 @@ struct AutoMLJobCompletionCriteria:
     Optional[int64] MaxRuntimePerTrainingJobInSeconds
     Optional[int64] MaxAutoMLJobRuntimeInSeconds
 
-# no @derive(Json): member(s) SecurityConfig: AutoMLSecurityConfig, CandidateGenerationConfig: AutoMLCandidateGenerationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityConfig: AutoMLSecurityConfig, CandidateGenerationConfig: AutoMLCandidateGenerationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLJobConfig:
     Optional[AutoMLJobCompletionCriteria] CompletionCriteria
     Optional[AutoMLSecurityConfig] SecurityConfig
@@ -5298,8 +5334,9 @@ struct AutoMLJobObjective:
 struct AutoMLJobStepMetadata:
     Optional[str] Arn
 
-# no @derive(Json): member(s) PartialFailureReasons: list[AutoMLPartialFailureReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartialFailureReasons: list[AutoMLPartialFailureReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLJobSummary:
     str AutoMLJobName
     str AutoMLJobArn
@@ -5320,8 +5357,9 @@ struct AutoMLOutputDataConfig:
 struct AutoMLPartialFailureReason:
     Optional[str] PartialFailureMessage
 
-# no @derive(Json): member(s) TimeSeriesForecastingJobConfig: TimeSeriesForecastingJobConfig, TabularJobConfig: TabularJobConfig, TextGenerationJobConfig: TextGenerationJobConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesForecastingJobConfig: TimeSeriesForecastingJobConfig, TabularJobConfig: TabularJobConfig, TextGenerationJobConfig: TextGenerationJobConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLProblemTypeConfig:
     Optional[ImageClassificationJobConfig] ImageClassificationJobConfig
     Optional[TextClassificationJobConfig] TextClassificationJobConfig
@@ -5345,8 +5383,9 @@ struct AutoMLS3DataSource:
     AutoMLS3DataType S3DataType
     str S3Uri
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLSecurityConfig:
     Optional[str] VolumeKmsKeyId
     Optional[bool] EnableInterContainerTrafficEncryption
@@ -5357,8 +5396,9 @@ struct AutoParameter:
     str Name
     str ValueHint
 
-# no @derive(Json): member(s) Alarms: list[Alarm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alarms: list[Alarm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoRollbackConfig:
     Optional[list[Alarm]] Alarms
 
@@ -5366,8 +5406,9 @@ struct AutoRollbackConfig:
 struct Autotune:
     str Mode
 
-# no @derive(Json): member(s) ReleaseNotes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReleaseNotes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AvailableUpgrade:
     Optional[str] Version
     Optional[list[str]] ReleaseNotes
@@ -5378,8 +5419,9 @@ struct BaseModel:
     Optional[str] HubContentVersion
     Optional[str] RecipeName
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], InstanceTypes: list[ClusterInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], InstanceTypes: list[ClusterInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAddClusterNodesError:
     str InstanceGroupName
     BatchAddClusterNodesErrorCode ErrorCode
@@ -5388,15 +5430,17 @@ struct BatchAddClusterNodesError:
     Optional[list[ClusterInstanceType]] InstanceTypes
     Optional[str] Message
 
-# no @derive(Json): member(s) NodesToAdd: list[AddClusterNodeSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodesToAdd: list[AddClusterNodeSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAddClusterNodesRequest:
     str ClusterName
     Optional[str] ClientToken
     list[AddClusterNodeSpecification] NodesToAdd
 
-# no @derive(Json): member(s) Successful: list[NodeAdditionResult], Failed: list[BatchAddClusterNodesError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[NodeAdditionResult], Failed: list[BatchAddClusterNodesError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAddClusterNodesResponse:
     list[NodeAdditionResult] Successful
     list[BatchAddClusterNodesError] Failed
@@ -5419,15 +5463,17 @@ struct BatchDeleteClusterNodesError:
     str Message
     str NodeId
 
-# no @derive(Json): member(s) NodeIds: list[str], NodeLogicalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIds: list[str], NodeLogicalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteClusterNodesRequest:
     str ClusterName
     Optional[list[str]] NodeIds
     Optional[list[str]] NodeLogicalIds
 
-# no @derive(Json): member(s) Failed: list[BatchDeleteClusterNodesError], Successful: list[str], FailedNodeLogicalIds: list[BatchDeleteClusterNodeLogicalIdsError], SuccessfulNodeLogicalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failed: list[BatchDeleteClusterNodesError], Successful: list[str], FailedNodeLogicalIds: list[BatchDeleteClusterNodeLogicalIdsError], SuccessfulNodeLogicalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteClusterNodesResponse:
     Optional[list[BatchDeleteClusterNodesError]] Failed
     Optional[list[str]] Successful
@@ -5439,19 +5485,22 @@ struct BatchDescribeModelPackageError:
     str ErrorCode
     str ErrorResponse
 
-# no @derive(Json): member(s) ModelPackageArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelPackageArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeModelPackageInput:
     list[str] ModelPackageArnList
 
-# no @derive(Json): member(s) ModelPackageSummaries: dict[str, BatchDescribeModelPackageSummary], BatchDescribeModelPackageErrorMap: dict[str, BatchDescribeModelPackageError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelPackageSummaries: dict[str, BatchDescribeModelPackageSummary], BatchDescribeModelPackageErrorMap: dict[str, BatchDescribeModelPackageError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeModelPackageOutput:
     Optional[dict[str, BatchDescribeModelPackageSummary]] ModelPackageSummaries
     Optional[dict[str, BatchDescribeModelPackageError]] BatchDescribeModelPackageErrorMap
 
-# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeModelPackageSummary:
     str ModelPackageGroupName
     Optional[int64] ModelPackageVersion
@@ -5475,15 +5524,17 @@ struct BatchRebootClusterNodesError:
     BatchRebootClusterNodesErrorCode ErrorCode
     str Message
 
-# no @derive(Json): member(s) NodeIds: list[str], NodeLogicalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIds: list[str], NodeLogicalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRebootClusterNodesRequest:
     str ClusterName
     Optional[list[str]] NodeIds
     Optional[list[str]] NodeLogicalIds
 
-# no @derive(Json): member(s) Successful: list[str], Failed: list[BatchRebootClusterNodesError], FailedNodeLogicalIds: list[BatchRebootClusterNodeLogicalIdsError], SuccessfulNodeLogicalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[str], Failed: list[BatchRebootClusterNodesError], FailedNodeLogicalIds: list[BatchRebootClusterNodeLogicalIdsError], SuccessfulNodeLogicalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRebootClusterNodesResponse:
     Optional[list[str]] Successful
     Optional[list[BatchRebootClusterNodesError]] Failed
@@ -5502,15 +5553,17 @@ struct BatchReplaceClusterNodesError:
     BatchReplaceClusterNodesErrorCode ErrorCode
     str Message
 
-# no @derive(Json): member(s) NodeIds: list[str], NodeLogicalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIds: list[str], NodeLogicalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReplaceClusterNodesRequest:
     str ClusterName
     Optional[list[str]] NodeIds
     Optional[list[str]] NodeLogicalIds
 
-# no @derive(Json): member(s) Successful: list[str], Failed: list[BatchReplaceClusterNodesError], FailedNodeLogicalIds: list[BatchReplaceClusterNodeLogicalIdsError], SuccessfulNodeLogicalIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[str], Failed: list[BatchReplaceClusterNodesError], FailedNodeLogicalIds: list[BatchReplaceClusterNodeLogicalIdsError], SuccessfulNodeLogicalIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReplaceClusterNodesResponse:
     Optional[list[str]] Successful
     Optional[list[BatchReplaceClusterNodesError]] Failed
@@ -5574,8 +5627,9 @@ struct BlueGreenUpdatePolicy:
 struct CacheHitResult:
     Optional[str] SourcePipelineExecutionArn
 
-# no @derive(Json): member(s) OutputParameters: list[OutputParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputParameters: list[OutputParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallbackStepMetadata:
     Optional[str] CallbackToken
     Optional[str] SqsQueueUrl
@@ -5587,19 +5641,22 @@ struct CandidateArtifactLocations:
     Optional[str] ModelInsights
     Optional[str] BacktestResults
 
-# no @derive(Json): member(s) AlgorithmsConfig: list[AutoMLAlgorithmConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlgorithmsConfig: list[AutoMLAlgorithmConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CandidateGenerationConfig:
     Optional[list[AutoMLAlgorithmConfig]] AlgorithmsConfig
 
-# no @derive(Json): member(s) CandidateMetrics: list[MetricDatum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CandidateMetrics: list[MetricDatum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CandidateProperties:
     Optional[CandidateArtifactLocations] CandidateArtifactLocations
     Optional[list[MetricDatum]] CandidateMetrics
 
-# no @derive(Json): member(s) IdentityProviderOAuthSettings: list[IdentityProviderOAuthSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityProviderOAuthSettings: list[IdentityProviderOAuthSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CanvasAppSettings:
     Optional[TimeSeriesForecastingSettings] TimeSeriesForecastingSettings
     Optional[ModelRegisterSettings] ModelRegisterSettings
@@ -5625,8 +5682,9 @@ struct CapacitySizeConfig:
     NodeUnavailabilityType Type
     int64 Value
 
-# no @derive(Json): member(s) CsvContentTypes: list[str], JsonContentTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CsvContentTypes: list[str], JsonContentTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptureContentTypeHeader:
     Optional[list[str]] CsvContentTypes
     Optional[list[str]] JsonContentTypes
@@ -5635,25 +5693,29 @@ struct CaptureContentTypeHeader:
 struct CaptureOption:
     CaptureMode CaptureMode
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoricalParameter:
     str Name
     list[str] Value
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoricalParameterRange:
     str Name
     list[str] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoricalParameterRangeSpecification:
     list[str] Values
 
-# no @derive(Json): member(s) Parameters: list[CfnStackCreateParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[CfnStackCreateParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CfnCreateTemplateProvider:
     str TemplateName
     str TemplateURL
@@ -5681,8 +5743,9 @@ struct CfnStackUpdateParameter:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Parameters: list[CfnStackParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[CfnStackParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CfnTemplateProviderDetail:
     str TemplateName
     str TemplateURL
@@ -5690,15 +5753,17 @@ struct CfnTemplateProviderDetail:
     Optional[list[CfnStackParameter]] Parameters
     Optional[CfnStackDetail] StackDetail
 
-# no @derive(Json): member(s) Parameters: list[CfnStackUpdateParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[CfnStackUpdateParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CfnUpdateTemplateProvider:
     str TemplateName
     str TemplateURL
     Optional[list[CfnStackUpdateParameter]] Parameters
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Channel:
     str ChannelName
     DataSource DataSource
@@ -5708,8 +5773,9 @@ struct Channel:
     Optional[TrainingInputMode] InputMode
     Optional[ShuffleConfig] ShuffleConfig
 
-# no @derive(Json): member(s) SupportedContentTypes: list[str], SupportedCompressionTypes: list[CompressionType], SupportedInputModes: list[TrainingInputMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedContentTypes: list[str], SupportedCompressionTypes: list[CompressionType], SupportedInputModes: list[TrainingInputMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelSpecification:
     str Name
     Optional[str] Description
@@ -5734,15 +5800,17 @@ struct ClarifyCheckStepMetadata:
     Optional[bool] SkipCheck
     Optional[bool] RegisterNewBaseline
 
-# no @derive(Json): member(s) InferenceConfig: ClarifyInferenceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceConfig: ClarifyInferenceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClarifyExplainerConfig:
     Optional[str] EnableExplanations
     Optional[ClarifyInferenceConfig] InferenceConfig
     ClarifyShapConfig ShapConfig
 
-# no @derive(Json): member(s) LabelHeaders: list[str], FeatureHeaders: list[str], FeatureTypes: list[ClarifyFeatureType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelHeaders: list[str], FeatureHeaders: list[str], FeatureTypes: list[ClarifyFeatureType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClarifyInferenceConfig:
     Optional[str] FeaturesAttribute
     Optional[str] ContentTemplate
@@ -5781,8 +5849,9 @@ struct CleanupFailure:
     Optional[CleanupFailureErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) CleanedSteps: list[str], FailedSteps: list[CleanupFailure], SkippedSteps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CleanedSteps: list[str], FailedSteps: list[CleanupFailure], SkippedSteps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CleanupStepMetadata:
     Optional[list[str]] CleanedSteps
     Optional[list[CleanupFailure]] FailedSteps
@@ -5795,15 +5864,17 @@ struct ClusterAccountingDatabase:
     Optional[str] Name
     str SecretArn
 
-# no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterAutoPatchConfig:
     ClusterPatchingStrategy PatchingStrategy
     Optional[ClusterPatchSchedule] PatchSchedule
     Optional[DeploymentConfiguration] DeploymentConfig
 
-# no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterAutoPatchConfigDetails:
     Optional[ClusterPatchingStrategy] PatchingStrategy
     Optional[ClusterPatchScheduleDetails] CurrentPatchSchedule
@@ -5833,8 +5904,9 @@ struct ClusterEbsVolumeConfig:
     Optional[str] VolumeKmsKeyId
     Optional[bool] RootVolume
 
-# no @derive(Json): member(s) EventDetails: EventDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDetails: EventDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterEventDetail:
     str EventId
     str ClusterArn
@@ -5870,8 +5942,9 @@ struct ClusterFsxOpenZfsConfig:
     str DnsName
     Optional[str] MountPath
 
-# no @derive(Json): member(s) InstanceRequirements: ClusterInstanceRequirementDetails, InstanceTypeDetails: list[ClusterInstanceTypeDetail], InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig, AutoPatchConfig: ClusterAutoPatchConfigDetails, ActiveOperations: dict[str, int64], KubernetesConfig: ClusterKubernetesConfigDetails, ActiveSoftwareUpdateConfig: DeploymentConfiguration, SlurmConfig: ClusterSlurmConfigDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceRequirements: ClusterInstanceRequirementDetails, InstanceTypeDetails: list[ClusterInstanceTypeDetail], InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig, AutoPatchConfig: ClusterAutoPatchConfigDetails, ActiveOperations: dict[str, int64], KubernetesConfig: ClusterKubernetesConfigDetails, ActiveSoftwareUpdateConfig: DeploymentConfiguration, SlurmConfig: ClusterSlurmConfigDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterInstanceGroupDetails:
     Optional[int64] CurrentCount
     Optional[int64] TargetCount
@@ -5905,8 +5978,9 @@ struct ClusterInstanceGroupDetails:
     Optional[ClusterSlurmConfigDetails] SlurmConfig
     Optional[ClusterNetworkInterfaceDetails] NetworkInterface
 
-# no @derive(Json): member(s) InstanceRequirements: ClusterInstanceRequirements, InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig, AutoPatchConfig: ClusterAutoPatchConfig, KubernetesConfig: ClusterKubernetesConfig, SlurmConfig: ClusterSlurmConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceRequirements: ClusterInstanceRequirements, InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig, AutoPatchConfig: ClusterAutoPatchConfig, KubernetesConfig: ClusterKubernetesConfig, SlurmConfig: ClusterSlurmConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterInstanceGroupSpecification:
     int64 InstanceCount
     Optional[int64] MinInstanceCount
@@ -5934,14 +6008,16 @@ struct ClusterInstancePlacement:
     Optional[str] AvailabilityZone
     Optional[str] AvailabilityZoneId
 
-# no @derive(Json): member(s) CurrentInstanceTypes: list[ClusterInstanceType], DesiredInstanceTypes: list[ClusterInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CurrentInstanceTypes: list[ClusterInstanceType], DesiredInstanceTypes: list[ClusterInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterInstanceRequirementDetails:
     Optional[list[ClusterInstanceType]] CurrentInstanceTypes
     Optional[list[ClusterInstanceType]] DesiredInstanceTypes
 
-# no @derive(Json): member(s) InstanceTypes: list[ClusterInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypes: list[ClusterInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterInstanceRequirements:
     list[ClusterInstanceType] InstanceTypes
 
@@ -5962,22 +6038,25 @@ struct ClusterInstanceTypeDetail:
     Optional[int64] CurrentCount
     Optional[int64] ThreadsPerCore
 
-# no @derive(Json): member(s) Labels: dict[str, str], Taints: list[ClusterKubernetesTaint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: dict[str, str], Taints: list[ClusterKubernetesTaint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterKubernetesConfig:
     Optional[dict[str, str]] Labels
     Optional[list[ClusterKubernetesTaint]] Taints
 
-# no @derive(Json): member(s) CurrentLabels: dict[str, str], DesiredLabels: dict[str, str], CurrentTaints: list[ClusterKubernetesTaint], DesiredTaints: list[ClusterKubernetesTaint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CurrentLabels: dict[str, str], DesiredLabels: dict[str, str], CurrentTaints: list[ClusterKubernetesTaint], DesiredTaints: list[ClusterKubernetesTaint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterKubernetesConfigDetails:
     Optional[dict[str, str]] CurrentLabels
     Optional[dict[str, str]] DesiredLabels
     Optional[list[ClusterKubernetesTaint]] CurrentTaints
     Optional[list[ClusterKubernetesTaint]] DesiredTaints
 
-# no @derive(Json): member(s) CurrentLabels: dict[str, str], DesiredLabels: dict[str, str], CurrentTaints: list[ClusterKubernetesTaint], DesiredTaints: list[ClusterKubernetesTaint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CurrentLabels: dict[str, str], DesiredLabels: dict[str, str], CurrentTaints: list[ClusterKubernetesTaint], DesiredTaints: list[ClusterKubernetesTaint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterKubernetesConfigNodeDetails:
     Optional[dict[str, str]] CurrentLabels
     Optional[dict[str, str]] DesiredLabels
@@ -5996,8 +6075,9 @@ struct ClusterLifeCycleConfig:
     Optional[str] OnCreate
     Optional[str] OnInitComplete
 
-# no @derive(Json): member(s) EksRoleAccessEntries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EksRoleAccessEntries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterMetadata:
     Optional[str] FailureMessage
     Optional[list[str]] EksRoleAccessEntries
@@ -6011,8 +6091,9 @@ struct ClusterNetworkInterface:
 struct ClusterNetworkInterfaceDetails:
     Optional[ClusterInterfaceType] InterfaceType
 
-# no @derive(Json): member(s) OverrideVpcConfig: VpcConfig, InstanceStorageConfigs: list[ClusterInstanceStorageConfig], KubernetesConfig: ClusterKubernetesConfigNodeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideVpcConfig: VpcConfig, InstanceStorageConfigs: list[ClusterInstanceStorageConfig], KubernetesConfig: ClusterKubernetesConfigNodeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterNodeDetails:
     Optional[str] InstanceGroupName
     Optional[str] InstanceId
@@ -6080,8 +6161,9 @@ struct ClusterPatchSchedule:
 struct ClusterPatchScheduleDetails:
     Optional[DateTime] NextPatchDate
 
-# no @derive(Json): member(s) InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterRestrictedInstanceGroupDetails:
     Optional[int64] CurrentCount
     Optional[int64] TargetCount
@@ -6098,8 +6180,9 @@ struct ClusterRestrictedInstanceGroupDetails:
     Optional[ScheduledUpdateConfig] ScheduledUpdateConfig
     Optional[EnvironmentConfigDetails] EnvironmentConfig
 
-# no @derive(Json): member(s) InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceStorageConfigs: list[ClusterInstanceStorageConfig], OnStartDeepHealthChecks: list[DeepHealthCheckType], OverrideVpcConfig: VpcConfig, ScheduledUpdateConfig: ScheduledUpdateConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterRestrictedInstanceGroupSpecification:
     int64 InstanceCount
     str InstanceGroupName
@@ -6144,14 +6227,16 @@ struct ClusterSharedEnvironmentConfigDetails:
     Optional[ClusterFSxLustreDeletionPolicy] CurrentFSxLustreDeletionPolicy
     Optional[ClusterFSxLustreDeletionPolicy] DesiredFSxLustreDeletionPolicy
 
-# no @derive(Json): member(s) PartitionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSlurmConfig:
     ClusterSlurmNodeType NodeType
     Optional[list[str]] PartitionNames
 
-# no @derive(Json): member(s) PartitionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSlurmConfigDetails:
     ClusterSlurmNodeType NodeType
     Optional[list[str]] PartitionNames
@@ -6161,8 +6246,9 @@ struct ClusterSpotOptions:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TrainingPlanArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingPlanArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSummary:
     str ClusterArn
     str ClusterName
@@ -6176,14 +6262,16 @@ struct ClusterTieredStorageConfig:
     ClusterConfigMode Mode
     Optional[int64] InstanceMemoryAllocationPercentage
 
-# no @derive(Json): member(s) ContainerConfig: ContainerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerConfig: ContainerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeEditorAppImageConfig:
     Optional[FileSystemConfig] FileSystemConfig
     Optional[ContainerConfig] ContainerConfig
 
-# no @derive(Json): member(s) CustomImages: list[CustomImage], LifecycleConfigArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomImages: list[CustomImage], LifecycleConfigArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeEditorAppSettings:
     Optional[ResourceSpec] DefaultResourceSpec
     Optional[list[CustomImage]] CustomImages
@@ -6218,8 +6306,9 @@ struct CognitoMemberDefinition:
 struct CollectionConfig:
     Optional[VectorConfig] VectorConfig
 
-# no @derive(Json): member(s) CollectionParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CollectionParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollectionConfiguration:
     Optional[str] CollectionName
     Optional[dict[str, str]] CollectionParameters
@@ -6238,8 +6327,9 @@ struct CompilationJobSummary:
     Optional[DateTime] LastModifiedTime
     CompilationJobStatus CompilationJobStatus
 
-# no @derive(Json): member(s) ComputeQuotaResources: list[ComputeQuotaResourceConfig], ResourceSharingConfig: ResourceSharingConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeQuotaResources: list[ComputeQuotaResourceConfig], ResourceSharingConfig: ResourceSharingConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeQuotaConfig:
     Optional[list[ComputeQuotaResourceConfig]] ComputeQuotaResources
     Optional[ResourceSharingConfig] ResourceSharingConfig
@@ -6254,8 +6344,9 @@ struct ComputeQuotaResourceConfig:
     Optional[float64] MemoryInGiB
     Optional[AcceleratorPartitionConfig] AcceleratorPartition
 
-# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeQuotaSummary:
     str ComputeQuotaArn
     str ComputeQuotaId
@@ -6282,15 +6373,17 @@ struct ConditionStepMetadata:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ContainerArguments: list[str], ContainerEntrypoint: list[str], ContainerEnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerArguments: list[str], ContainerEntrypoint: list[str], ContainerEnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerConfig:
     Optional[list[str]] ContainerArguments
     Optional[list[str]] ContainerEntrypoint
     Optional[dict[str, str]] ContainerEnvironmentVariables
 
-# no @derive(Json): member(s) AdditionalModelDataSources: list[AdditionalModelDataSource], Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalModelDataSources: list[AdditionalModelDataSource], Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerDefinition:
     Optional[str] ContainerHostname
     Optional[str] Image
@@ -6305,8 +6398,9 @@ struct ContainerDefinition:
     Optional[MultiModelConfig] MultiModelConfig
     Optional[ContainerMetricsConfig] ContainerMetricsConfig
 
-# no @derive(Json): member(s) MetricsEndpoints: list[MetricsEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricsEndpoints: list[MetricsEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerMetricsConfig:
     Optional[list[MetricsEndpoint]] MetricsEndpoints
 
@@ -6341,8 +6435,9 @@ struct ContinuousParameterRangeSpecification:
 struct ConvergenceDetected:
     Optional[CompleteOnConvergence] CompleteOnConvergence
 
-# no @derive(Json): member(s) BenchmarkTarget: AIBenchmarkTarget, NetworkConfig: AIBenchmarkNetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BenchmarkTarget: AIBenchmarkTarget, NetworkConfig: AIBenchmarkNetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAIBenchmarkJobRequest:
     str AIBenchmarkJobName
     AIBenchmarkTarget BenchmarkTarget
@@ -6356,8 +6451,9 @@ struct CreateAIBenchmarkJobRequest:
 struct CreateAIBenchmarkJobResponse:
     str AIBenchmarkJobArn
 
-# no @derive(Json): member(s) PerformanceTarget: AIRecommendationPerformanceTarget, ComputeSpec: AIRecommendationComputeSpec, AdapterSource: AIAdapterSource, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerformanceTarget: AIRecommendationPerformanceTarget, ComputeSpec: AIRecommendationComputeSpec, AdapterSource: AIAdapterSource, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAIRecommendationJobRequest:
     str AIRecommendationJobName
     AIModelSource ModelSource
@@ -6375,8 +6471,9 @@ struct CreateAIRecommendationJobRequest:
 struct CreateAIRecommendationJobResponse:
     str AIRecommendationJobArn
 
-# no @derive(Json): member(s) DatasetConfig: AIDatasetConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetConfig: AIDatasetConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAIWorkloadConfigRequest:
     str AIWorkloadConfigName
     Optional[AIDatasetConfig] DatasetConfig
@@ -6387,8 +6484,9 @@ struct CreateAIWorkloadConfigRequest:
 struct CreateAIWorkloadConfigResponse:
     str AIWorkloadConfigArn
 
-# no @derive(Json): member(s) Properties: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateActionRequest:
     str ActionName
     ActionSource Source
@@ -6403,8 +6501,9 @@ struct CreateActionRequest:
 struct CreateActionResponse:
     Optional[str] ActionArn
 
-# no @derive(Json): member(s) TrainingSpecification: TrainingSpecification, InferenceSpecification: InferenceSpecification, ValidationSpecification: AlgorithmValidationSpecification, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingSpecification: TrainingSpecification, InferenceSpecification: InferenceSpecification, ValidationSpecification: AlgorithmValidationSpecification, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAlgorithmInput:
     str AlgorithmName
     Optional[str] AlgorithmDescription
@@ -6418,8 +6517,9 @@ struct CreateAlgorithmInput:
 struct CreateAlgorithmOutput:
     str AlgorithmArn
 
-# no @derive(Json): member(s) Tags: list[Tag], KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppImageConfigRequest:
     str AppImageConfigName
     Optional[list[Tag]] Tags
@@ -6431,8 +6531,9 @@ struct CreateAppImageConfigRequest:
 struct CreateAppImageConfigResponse:
     Optional[str] AppImageConfigArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppRequest:
     str DomainId
     Optional[str] UserProfileName
@@ -6447,8 +6548,9 @@ struct CreateAppRequest:
 struct CreateAppResponse:
     Optional[str] AppArn
 
-# no @derive(Json): member(s) Source: ArtifactSource, Properties: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: ArtifactSource, Properties: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateArtifactRequest:
     Optional[str] ArtifactName
     ArtifactSource Source
@@ -6461,8 +6563,9 @@ struct CreateArtifactRequest:
 struct CreateArtifactResponse:
     Optional[str] ArtifactArn
 
-# no @derive(Json): member(s) InputDataConfig: list[AutoMLChannel], AutoMLJobConfig: AutoMLJobConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: list[AutoMLChannel], AutoMLJobConfig: AutoMLJobConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAutoMLJobRequest:
     str AutoMLJobName
     list[AutoMLChannel] InputDataConfig
@@ -6479,8 +6582,9 @@ struct CreateAutoMLJobRequest:
 struct CreateAutoMLJobResponse:
     str AutoMLJobArn
 
-# no @derive(Json): member(s) AutoMLJobInputDataConfig: list[AutoMLJobChannel], AutoMLProblemTypeConfig: AutoMLProblemTypeConfig, Tags: list[Tag], SecurityConfig: AutoMLSecurityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMLJobInputDataConfig: list[AutoMLJobChannel], AutoMLProblemTypeConfig: AutoMLProblemTypeConfig, Tags: list[Tag], SecurityConfig: AutoMLSecurityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAutoMLJobV2Request:
     str AutoMLJobName
     list[AutoMLJobChannel] AutoMLJobInputDataConfig
@@ -6498,8 +6602,9 @@ struct CreateAutoMLJobV2Request:
 struct CreateAutoMLJobV2Response:
     str AutoMLJobArn
 
-# no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupSpecification], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupSpecification], VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupSpecification], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupSpecification], VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     str ClusterName
     Optional[list[ClusterInstanceGroupSpecification]] InstanceGroups
@@ -6518,8 +6623,9 @@ struct CreateClusterRequest:
 struct CreateClusterResponse:
     str ClusterArn
 
-# no @derive(Json): member(s) SchedulerConfig: SchedulerConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchedulerConfig: SchedulerConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterSchedulerConfigRequest:
     str Name
     str ClusterArn
@@ -6532,8 +6638,9 @@ struct CreateClusterSchedulerConfigResponse:
     str ClusterSchedulerConfigArn
     str ClusterSchedulerConfigId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCodeRepositoryInput:
     str CodeRepositoryName
     GitConfig GitConfig
@@ -6543,8 +6650,9 @@ struct CreateCodeRepositoryInput:
 struct CreateCodeRepositoryOutput:
     str CodeRepositoryArn
 
-# no @derive(Json): member(s) VpcConfig: NeoVpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: NeoVpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCompilationJobRequest:
     str CompilationJobName
     str RoleArn
@@ -6559,8 +6667,9 @@ struct CreateCompilationJobRequest:
 struct CreateCompilationJobResponse:
     str CompilationJobArn
 
-# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComputeQuotaRequest:
     str Name
     Optional[str] Description
@@ -6575,8 +6684,9 @@ struct CreateComputeQuotaResponse:
     str ComputeQuotaArn
     str ComputeQuotaId
 
-# no @derive(Json): member(s) Properties: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContextRequest:
     str ContextName
     ContextSource Source
@@ -6589,8 +6699,9 @@ struct CreateContextRequest:
 struct CreateContextResponse:
     Optional[str] ContextArn
 
-# no @derive(Json): member(s) DataQualityAppSpecification: DataQualityAppSpecification, DataQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataQualityAppSpecification: DataQualityAppSpecification, DataQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataQualityJobDefinitionRequest:
     str JobDefinitionName
     Optional[DataQualityBaselineConfig] DataQualityBaselineConfig
@@ -6607,8 +6718,9 @@ struct CreateDataQualityJobDefinitionRequest:
 struct CreateDataQualityJobDefinitionResponse:
     str JobDefinitionArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeviceFleetRequest:
     str DeviceFleetName
     Optional[str] RoleArn
@@ -6617,8 +6729,9 @@ struct CreateDeviceFleetRequest:
     Optional[list[Tag]] Tags
     Optional[bool] EnableIotRoleAlias
 
-# no @derive(Json): member(s) DefaultUserSettings: UserSettings, DomainSettings: DomainSettings, SubnetIds: list[str], Tags: list[Tag], DefaultSpaceSettings: DefaultSpaceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultUserSettings: UserSettings, DomainSettings: DomainSettings, SubnetIds: list[str], Tags: list[Tag], DefaultSpaceSettings: DefaultSpaceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainRequest:
     str DomainName
     AuthMode AuthMode
@@ -6641,8 +6754,9 @@ struct CreateDomainResponse:
     Optional[str] DomainId
     Optional[str] Url
 
-# no @derive(Json): member(s) ModelConfigs: list[EdgeDeploymentModelConfig], Stages: list[DeploymentStage], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelConfigs: list[EdgeDeploymentModelConfig], Stages: list[DeploymentStage], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEdgeDeploymentPlanRequest:
     str EdgeDeploymentPlanName
     list[EdgeDeploymentModelConfig] ModelConfigs
@@ -6654,14 +6768,16 @@ struct CreateEdgeDeploymentPlanRequest:
 struct CreateEdgeDeploymentPlanResponse:
     str EdgeDeploymentPlanArn
 
-# no @derive(Json): member(s) Stages: list[DeploymentStage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Stages: list[DeploymentStage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEdgeDeploymentStageRequest:
     str EdgeDeploymentPlanName
     list[DeploymentStage] Stages
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEdgePackagingJobRequest:
     str EdgePackagingJobName
     str CompilationJobName
@@ -6672,8 +6788,9 @@ struct CreateEdgePackagingJobRequest:
     Optional[str] ResourceKey
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ProductionVariants: list[ProductionVariant], DataCaptureConfig: DataCaptureConfig, Tags: list[Tag], AsyncInferenceConfig: AsyncInferenceConfig, ExplainerConfig: ExplainerConfig, ShadowProductionVariants: list[ProductionVariant], VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductionVariants: list[ProductionVariant], DataCaptureConfig: DataCaptureConfig, Tags: list[Tag], AsyncInferenceConfig: AsyncInferenceConfig, ExplainerConfig: ExplainerConfig, ShadowProductionVariants: list[ProductionVariant], VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointConfigInput:
     str EndpointConfigName
     list[ProductionVariant] ProductionVariants
@@ -6692,8 +6809,9 @@ struct CreateEndpointConfigInput:
 struct CreateEndpointConfigOutput:
     str EndpointConfigArn
 
-# no @derive(Json): member(s) DeploymentConfig: DeploymentConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeploymentConfig: DeploymentConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointInput:
     str EndpointName
     str EndpointConfigName
@@ -6704,8 +6822,9 @@ struct CreateEndpointInput:
 struct CreateEndpointOutput:
     str EndpointArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExperimentRequest:
     str ExperimentName
     Optional[str] DisplayName
@@ -6716,8 +6835,9 @@ struct CreateExperimentRequest:
 struct CreateExperimentResponse:
     Optional[str] ExperimentArn
 
-# no @derive(Json): member(s) FeatureDefinitions: list[FeatureDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureDefinitions: list[FeatureDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFeatureGroupRequest:
     str FeatureGroupName
     str RecordIdentifierFeatureName
@@ -6734,8 +6854,9 @@ struct CreateFeatureGroupRequest:
 struct CreateFeatureGroupResponse:
     str FeatureGroupArn
 
-# no @derive(Json): member(s) HumanLoopConfig: HumanLoopConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanLoopConfig: HumanLoopConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFlowDefinitionRequest:
     str FlowDefinitionName
     Optional[HumanLoopRequestSource] HumanLoopRequestSource
@@ -6759,14 +6880,16 @@ struct CreateHubContentPresignedUrlsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuthorizedUrlConfigs: list[AuthorizedUrl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedUrlConfigs: list[AuthorizedUrl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHubContentPresignedUrlsResponse:
     list[AuthorizedUrl] AuthorizedUrlConfigs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHubContentReferenceRequest:
     str HubName
     str SageMakerPublicHubContentArn
@@ -6779,8 +6902,9 @@ struct CreateHubContentReferenceResponse:
     str HubArn
     str HubContentArn
 
-# no @derive(Json): member(s) HubSearchKeywords: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubSearchKeywords: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHubRequest:
     str HubName
     str HubDescription
@@ -6793,8 +6917,9 @@ struct CreateHubRequest:
 struct CreateHubResponse:
     str HubArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHumanTaskUiRequest:
     str HumanTaskUiName
     UiTemplate UiTemplate
@@ -6804,8 +6929,9 @@ struct CreateHumanTaskUiRequest:
 struct CreateHumanTaskUiResponse:
     str HumanTaskUiArn
 
-# no @derive(Json): member(s) HyperParameterTuningJobConfig: HyperParameterTuningJobConfig, TrainingJobDefinition: HyperParameterTrainingJobDefinition, TrainingJobDefinitions: list[HyperParameterTrainingJobDefinition], WarmStartConfig: HyperParameterTuningJobWarmStartConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameterTuningJobConfig: HyperParameterTuningJobConfig, TrainingJobDefinition: HyperParameterTrainingJobDefinition, TrainingJobDefinitions: list[HyperParameterTrainingJobDefinition], WarmStartConfig: HyperParameterTuningJobWarmStartConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHyperParameterTuningJobRequest:
     str HyperParameterTuningJobName
     HyperParameterTuningJobConfig HyperParameterTuningJobConfig
@@ -6819,8 +6945,9 @@ struct CreateHyperParameterTuningJobRequest:
 struct CreateHyperParameterTuningJobResponse:
     str HyperParameterTuningJobArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateImageRequest:
     Optional[str] Description
     Optional[str] DisplayName
@@ -6832,8 +6959,9 @@ struct CreateImageRequest:
 struct CreateImageResponse:
     Optional[str] ImageArn
 
-# no @derive(Json): member(s) Aliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateImageVersionRequest:
     str BaseImage
     str ClientToken
@@ -6851,8 +6979,9 @@ struct CreateImageVersionRequest:
 struct CreateImageVersionResponse:
     Optional[str] ImageVersionArn
 
-# no @derive(Json): member(s) Specification: InferenceComponentSpecification, Specifications: list[InferenceComponentSpecification], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Specification: InferenceComponentSpecification, Specifications: list[InferenceComponentSpecification], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInferenceComponentInput:
     str InferenceComponentName
     str EndpointName
@@ -6866,8 +6995,9 @@ struct CreateInferenceComponentInput:
 struct CreateInferenceComponentOutput:
     str InferenceComponentArn
 
-# no @derive(Json): member(s) ModelVariants: list[ModelVariantConfig], DataStorageConfig: InferenceExperimentDataStorageConfig, ShadowModeConfig: ShadowModeConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelVariants: list[ModelVariantConfig], DataStorageConfig: InferenceExperimentDataStorageConfig, ShadowModeConfig: ShadowModeConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInferenceExperimentRequest:
     str Name
     str Type
@@ -6885,8 +7015,9 @@ struct CreateInferenceExperimentRequest:
 struct CreateInferenceExperimentResponse:
     str InferenceExperimentArn
 
-# no @derive(Json): member(s) InputConfig: RecommendationJobInputConfig, StoppingConditions: RecommendationJobStoppingConditions, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: RecommendationJobInputConfig, StoppingConditions: RecommendationJobStoppingConditions, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInferenceRecommendationsJobRequest:
     str JobName
     RecommendationJobType JobType
@@ -6901,8 +7032,9 @@ struct CreateInferenceRecommendationsJobRequest:
 struct CreateInferenceRecommendationsJobResponse:
     str JobArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateJobRequest:
     str JobName
     str RoleArn
@@ -6915,8 +7047,9 @@ struct CreateJobRequest:
 struct CreateJobResponse:
     str JobArn
 
-# no @derive(Json): member(s) InputConfig: LabelingJobInputConfig, LabelingJobAlgorithmsConfig: LabelingJobAlgorithmsConfig, HumanTaskConfig: HumanTaskConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: LabelingJobInputConfig, LabelingJobAlgorithmsConfig: LabelingJobAlgorithmsConfig, HumanTaskConfig: HumanTaskConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLabelingJobRequest:
     str LabelingJobName
     str LabelAttributeName
@@ -6933,8 +7066,9 @@ struct CreateLabelingJobRequest:
 struct CreateLabelingJobResponse:
     str LabelingJobArn
 
-# no @derive(Json): member(s) DefaultDomainIdList: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultDomainIdList: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMlflowAppRequest:
     str Name
     str ArtifactStoreUri
@@ -6950,8 +7084,9 @@ struct CreateMlflowAppRequest:
 struct CreateMlflowAppResponse:
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMlflowTrackingServerRequest:
     str TrackingServerName
     str ArtifactStoreUri
@@ -6968,8 +7103,9 @@ struct CreateMlflowTrackingServerRequest:
 struct CreateMlflowTrackingServerResponse:
     Optional[str] TrackingServerArn
 
-# no @derive(Json): member(s) ModelBiasAppSpecification: ModelBiasAppSpecification, ModelBiasJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelBiasAppSpecification: ModelBiasAppSpecification, ModelBiasJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelBiasJobDefinitionRequest:
     str JobDefinitionName
     Optional[ModelBiasBaselineConfig] ModelBiasBaselineConfig
@@ -6997,8 +7133,9 @@ struct CreateModelCardExportJobRequest:
 struct CreateModelCardExportJobResponse:
     str ModelCardExportJobArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelCardRequest:
     str ModelCardName
     Optional[ModelCardSecurityConfig] SecurityConfig
@@ -7010,8 +7147,9 @@ struct CreateModelCardRequest:
 struct CreateModelCardResponse:
     str ModelCardArn
 
-# no @derive(Json): member(s) ModelExplainabilityAppSpecification: ModelExplainabilityAppSpecification, ModelExplainabilityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelExplainabilityAppSpecification: ModelExplainabilityAppSpecification, ModelExplainabilityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelExplainabilityJobDefinitionRequest:
     str JobDefinitionName
     Optional[ModelExplainabilityBaselineConfig] ModelExplainabilityBaselineConfig
@@ -7028,8 +7166,9 @@ struct CreateModelExplainabilityJobDefinitionRequest:
 struct CreateModelExplainabilityJobDefinitionResponse:
     str JobDefinitionArn
 
-# no @derive(Json): member(s) PrimaryContainer: ContainerDefinition, Containers: list[ContainerDefinition], Tags: list[Tag], VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryContainer: ContainerDefinition, Containers: list[ContainerDefinition], Tags: list[Tag], VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelInput:
     str ModelName
     Optional[ContainerDefinition] PrimaryContainer
@@ -7044,8 +7183,9 @@ struct CreateModelInput:
 struct CreateModelOutput:
     str ModelArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelPackageGroupInput:
     str ModelPackageGroupName
     Optional[str] ModelPackageGroupDescription
@@ -7056,8 +7196,9 @@ struct CreateModelPackageGroupInput:
 struct CreateModelPackageGroupOutput:
     str ModelPackageGroupArn
 
-# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification, ValidationSpecification: ModelPackageValidationSpecification, SourceAlgorithmSpecification: SourceAlgorithmSpecification, Tags: list[Tag], CustomerMetadataProperties: dict[str, str], AdditionalInferenceSpecifications: list[AdditionalInferenceSpecificationDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification, ValidationSpecification: ModelPackageValidationSpecification, SourceAlgorithmSpecification: SourceAlgorithmSpecification, Tags: list[Tag], CustomerMetadataProperties: dict[str, str], AdditionalInferenceSpecifications: list[AdditionalInferenceSpecificationDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelPackageInput:
     Optional[str] ModelPackageName
     Optional[str] ModelPackageGroupName
@@ -7089,8 +7230,9 @@ struct CreateModelPackageInput:
 struct CreateModelPackageOutput:
     str ModelPackageArn
 
-# no @derive(Json): member(s) ModelQualityAppSpecification: ModelQualityAppSpecification, ModelQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelQualityAppSpecification: ModelQualityAppSpecification, ModelQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelQualityJobDefinitionRequest:
     str JobDefinitionName
     Optional[ModelQualityBaselineConfig] ModelQualityBaselineConfig
@@ -7107,8 +7249,9 @@ struct CreateModelQualityJobDefinitionRequest:
 struct CreateModelQualityJobDefinitionResponse:
     str JobDefinitionArn
 
-# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMonitoringScheduleRequest:
     str MonitoringScheduleName
     MonitoringScheduleConfig MonitoringScheduleConfig
@@ -7118,8 +7261,9 @@ struct CreateMonitoringScheduleRequest:
 struct CreateMonitoringScheduleResponse:
     str MonitoringScheduleArn
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Tags: list[Tag], AcceleratorTypes: list[NotebookInstanceAcceleratorType], AdditionalCodeRepositories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Tags: list[Tag], AcceleratorTypes: list[NotebookInstanceAcceleratorType], AdditionalCodeRepositories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotebookInstanceInput:
     str NotebookInstanceName
     InstanceType InstanceType
@@ -7139,8 +7283,9 @@ struct CreateNotebookInstanceInput:
     Optional[str] PlatformIdentifier
     Optional[InstanceMetadataServiceConfiguration] InstanceMetadataServiceConfiguration
 
-# no @derive(Json): member(s) OnCreate: list[NotebookInstanceLifecycleHook], OnStart: list[NotebookInstanceLifecycleHook], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnCreate: list[NotebookInstanceLifecycleHook], OnStart: list[NotebookInstanceLifecycleHook], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotebookInstanceLifecycleConfigInput:
     str NotebookInstanceLifecycleConfigName
     Optional[list[NotebookInstanceLifecycleHook]] OnCreate
@@ -7155,8 +7300,9 @@ struct CreateNotebookInstanceLifecycleConfigOutput:
 struct CreateNotebookInstanceOutput:
     Optional[str] NotebookInstanceArn
 
-# no @derive(Json): member(s) OptimizationEnvironment: dict[str, str], OptimizationConfigs: list[OptimizationConfig], Tags: list[Tag], VpcConfig: OptimizationVpcConfig, TrainingPlanArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptimizationEnvironment: dict[str, str], OptimizationConfigs: list[OptimizationConfig], Tags: list[Tag], VpcConfig: OptimizationVpcConfig, TrainingPlanArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOptimizationJobRequest:
     str OptimizationJobName
     str RoleArn
@@ -7185,8 +7331,9 @@ struct CreatePartnerAppPresignedUrlRequest:
 struct CreatePartnerAppPresignedUrlResponse:
     Optional[str] Url
 
-# no @derive(Json): member(s) ApplicationConfig: PartnerAppConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationConfig: PartnerAppConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnerAppRequest:
     str Name
     PartnerAppType Type
@@ -7206,8 +7353,9 @@ struct CreatePartnerAppRequest:
 struct CreatePartnerAppResponse:
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePipelineRequest:
     str PipelineName
     Optional[str] PipelineDisplayName
@@ -7265,8 +7413,9 @@ struct CreatePresignedNotebookInstanceUrlInput:
 struct CreatePresignedNotebookInstanceUrlOutput:
     Optional[str] AuthorizedUrl
 
-# no @derive(Json): member(s) ProcessingInputs: list[ProcessingInput], ProcessingOutputConfig: ProcessingOutputConfig, ProcessingResources: ProcessingResources, AppSpecification: AppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingInputs: list[ProcessingInput], ProcessingOutputConfig: ProcessingOutputConfig, ProcessingResources: ProcessingResources, AppSpecification: AppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProcessingJobRequest:
     Optional[list[ProcessingInput]] ProcessingInputs
     Optional[ProcessingOutputConfig] ProcessingOutputConfig
@@ -7284,8 +7433,9 @@ struct CreateProcessingJobRequest:
 struct CreateProcessingJobResponse:
     str ProcessingJobArn
 
-# no @derive(Json): member(s) ServiceCatalogProvisioningDetails: ServiceCatalogProvisioningDetails, Tags: list[Tag], TemplateProviders: list[CreateTemplateProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceCatalogProvisioningDetails: ServiceCatalogProvisioningDetails, Tags: list[Tag], TemplateProviders: list[CreateTemplateProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectInput:
     str ProjectName
     Optional[str] ProjectDescription
@@ -7298,8 +7448,9 @@ struct CreateProjectOutput:
     str ProjectArn
     str ProjectId
 
-# no @derive(Json): member(s) Tags: list[Tag], SpaceSettings: SpaceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], SpaceSettings: SpaceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSpaceRequest:
     str DomainId
     str SpaceName
@@ -7313,8 +7464,9 @@ struct CreateSpaceRequest:
 struct CreateSpaceResponse:
     Optional[str] SpaceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStudioLifecycleConfigRequest:
     str StudioLifecycleConfigName
     str StudioLifecycleConfigContent
@@ -7325,13 +7477,15 @@ struct CreateStudioLifecycleConfigRequest:
 struct CreateStudioLifecycleConfigResponse:
     Optional[str] StudioLifecycleConfigArn
 
-# no @derive(Json): member(s) CfnTemplateProvider: CfnCreateTemplateProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CfnTemplateProvider: CfnCreateTemplateProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTemplateProvider:
     Optional[CfnCreateTemplateProvider] CfnTemplateProvider
 
-# no @derive(Json): member(s) HyperParameters: dict[str, str], AlgorithmSpecification: AlgorithmSpecification, InputDataConfig: list[Channel], ResourceConfig: ResourceConfig, VpcConfig: VpcConfig, Tags: list[Tag], DebugHookConfig: DebugHookConfig, DebugRuleConfigurations: list[DebugRuleConfiguration], ProfilerConfig: ProfilerConfig, ProfilerRuleConfigurations: list[ProfilerRuleConfiguration], Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameters: dict[str, str], AlgorithmSpecification: AlgorithmSpecification, InputDataConfig: list[Channel], ResourceConfig: ResourceConfig, VpcConfig: VpcConfig, Tags: list[Tag], DebugHookConfig: DebugHookConfig, DebugRuleConfigurations: list[DebugRuleConfiguration], ProfilerConfig: ProfilerConfig, ProfilerRuleConfigurations: list[ProfilerRuleConfiguration], Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrainingJobRequest:
     str TrainingJobName
     Optional[dict[str, str]] HyperParameters
@@ -7366,8 +7520,9 @@ struct CreateTrainingJobRequest:
 struct CreateTrainingJobResponse:
     str TrainingJobArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrainingPlanRequest:
     str TrainingPlanName
     str TrainingPlanOfferingId
@@ -7378,8 +7533,9 @@ struct CreateTrainingPlanRequest:
 struct CreateTrainingPlanResponse:
     str TrainingPlanArn
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrainingSessionRequest:
     str TrainingSessionName
     Optional[str] ModelPackageGroupArn
@@ -7394,8 +7550,9 @@ struct CreateTrainingSessionRequest:
 struct CreateTrainingSessionResponse:
     str TrainingSessionArn
 
-# no @derive(Json): member(s) Environment: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransformJobRequest:
     str TransformJobName
     str ModelName
@@ -7416,8 +7573,9 @@ struct CreateTransformJobRequest:
 struct CreateTransformJobResponse:
     str TransformJobArn
 
-# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], InputArtifacts: dict[str, TrialComponentArtifact], OutputArtifacts: dict[str, TrialComponentArtifact], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], InputArtifacts: dict[str, TrialComponentArtifact], OutputArtifacts: dict[str, TrialComponentArtifact], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrialComponentRequest:
     str TrialComponentName
     Optional[str] DisplayName
@@ -7434,8 +7592,9 @@ struct CreateTrialComponentRequest:
 struct CreateTrialComponentResponse:
     Optional[str] TrialComponentArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrialRequest:
     str TrialName
     Optional[str] DisplayName
@@ -7447,8 +7606,9 @@ struct CreateTrialRequest:
 struct CreateTrialResponse:
     Optional[str] TrialArn
 
-# no @derive(Json): member(s) Tags: list[Tag], UserSettings: UserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], UserSettings: UserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserProfileRequest:
     str DomainId
     str UserProfileName
@@ -7461,8 +7621,9 @@ struct CreateUserProfileRequest:
 struct CreateUserProfileResponse:
     Optional[str] UserProfileArn
 
-# no @derive(Json): member(s) OidcConfig: OidcConfig, SourceIpConfig: SourceIpConfig, Tags: list[Tag], WorkforceVpcConfig: WorkforceVpcConfigRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OidcConfig: OidcConfig, SourceIpConfig: SourceIpConfig, Tags: list[Tag], WorkforceVpcConfig: WorkforceVpcConfigRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkforceRequest:
     Optional[CognitoConfig] CognitoConfig
     Optional[OidcConfig] OidcConfig
@@ -7476,8 +7637,9 @@ struct CreateWorkforceRequest:
 struct CreateWorkforceResponse:
     str WorkforceArn
 
-# no @derive(Json): member(s) MemberDefinitions: list[MemberDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDefinitions: list[MemberDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkteamRequest:
     str WorkteamName
     Optional[str] WorkforceName
@@ -7520,8 +7682,9 @@ struct CustomizedMetricSpecification:
     Optional[str] Namespace
     Optional[Statistic] Statistic
 
-# no @derive(Json): member(s) CaptureOptions: list[CaptureOption], CaptureContentTypeHeader: CaptureContentTypeHeader not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CaptureOptions: list[CaptureOption], CaptureContentTypeHeader: CaptureContentTypeHeader not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataCaptureConfig:
     Optional[bool] EnableCapture
     int64 InitialSamplingPercentage
@@ -7550,8 +7713,9 @@ struct DataProcessing:
     Optional[str] OutputFilter
     Optional[JoinSource] JoinSource
 
-# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str], Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str], Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityAppSpecification:
     str ImageUri
     Optional[list[str]] ContainerEntrypoint
@@ -7571,8 +7735,9 @@ struct DataQualityJobInput:
     Optional[EndpointInput] EndpointInput
     Optional[BatchTransformInput] BatchTransformInput
 
-# no @derive(Json): member(s) S3DataSource: S3DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3DataSource: S3DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSource:
     Optional[S3DataSource] S3DataSource
     Optional[FileSystemDataSource] FileSystemDataSource
@@ -7596,16 +7761,18 @@ struct DatasetDefinition:
 struct DatasetSource:
     str DatasetArn
 
-# no @derive(Json): member(s) HookParameters: dict[str, str], CollectionConfigurations: list[CollectionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HookParameters: dict[str, str], CollectionConfigurations: list[CollectionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DebugHookConfig:
     Optional[str] LocalPath
     str S3OutputPath
     Optional[dict[str, str]] HookParameters
     Optional[list[CollectionConfiguration]] CollectionConfigurations
 
-# no @derive(Json): member(s) RuleParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DebugRuleConfiguration:
     str RuleConfigurationName
     Optional[str] LocalPath
@@ -7628,8 +7795,9 @@ struct DefaultEbsStorageSettings:
     int64 DefaultEbsVolumeSizeInGb
     int64 MaximumEbsVolumeSizeInGb
 
-# no @derive(Json): member(s) SecurityGroups: list[str], JupyterServerAppSettings: JupyterServerAppSettings, KernelGatewayAppSettings: KernelGatewayAppSettings, JupyterLabAppSettings: JupyterLabAppSettings, CustomFileSystemConfigs: list[CustomFileSystemConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[str], JupyterServerAppSettings: JupyterServerAppSettings, KernelGatewayAppSettings: KernelGatewayAppSettings, JupyterLabAppSettings: JupyterLabAppSettings, CustomFileSystemConfigs: list[CustomFileSystemConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultSpaceSettings:
     Optional[str] ExecutionRole
     Optional[list[str]] SecurityGroups
@@ -7692,8 +7860,9 @@ struct DeleteAppRequest:
     AppType AppType
     str AppName
 
-# no @derive(Json): member(s) Source: ArtifactSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: ArtifactSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteArtifactRequest:
     Optional[str] ArtifactArn
     Optional[ArtifactSource] Source
@@ -7966,8 +8135,9 @@ struct DeleteSpaceRequest:
 struct DeleteStudioLifecycleConfigRequest:
     str StudioLifecycleConfigName
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTagsInput:
     str ResourceArn
     list[str] TagKeys
@@ -8034,43 +8204,49 @@ struct DeployedImage:
     Optional[str] ResolvedImage
     Optional[DateTime] ResolutionTime
 
-# no @derive(Json): member(s) AutoRollbackConfiguration: AutoRollbackConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoRollbackConfiguration: AutoRollbackConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentConfig:
     Optional[BlueGreenUpdatePolicy] BlueGreenUpdatePolicy
     Optional[RollingUpdatePolicy] RollingUpdatePolicy
     Optional[AutoRollbackConfig] AutoRollbackConfiguration
 
-# no @derive(Json): member(s) AutoRollbackConfiguration: list[AlarmDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoRollbackConfiguration: list[AlarmDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentConfiguration:
     Optional[RollingDeploymentPolicy] RollingUpdatePolicy
     Optional[int64] WaitIntervalInSeconds
     Optional[list[AlarmDetails]] AutoRollbackConfiguration
 
-# no @derive(Json): member(s) RealTimeInferenceRecommendations: list[RealTimeInferenceRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RealTimeInferenceRecommendations: list[RealTimeInferenceRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentRecommendation:
     RecommendationStatus RecommendationStatus
     Optional[list[RealTimeInferenceRecommendation]] RealTimeInferenceRecommendations
 
-# no @derive(Json): member(s) DeviceSelectionConfig: DeviceSelectionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceSelectionConfig: DeviceSelectionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentStage:
     str StageName
     DeviceSelectionConfig DeviceSelectionConfig
     Optional[EdgeDeploymentConfig] DeploymentConfig
 
-# no @derive(Json): member(s) DeviceSelectionConfig: DeviceSelectionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceSelectionConfig: DeviceSelectionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentStageStatusSummary:
     str StageName
     DeviceSelectionConfig DeviceSelectionConfig
     EdgeDeploymentConfig DeploymentConfig
     EdgeDeploymentStatus DeploymentStatus
 
-# no @derive(Json): member(s) DeviceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeregisterDevicesRequest:
     str DeviceFleetName
     list[str] DeviceNames
@@ -8083,8 +8259,9 @@ struct DerivedInformation:
 struct DescribeAIBenchmarkJobRequest:
     str AIBenchmarkJobName
 
-# no @derive(Json): member(s) BenchmarkTarget: AIBenchmarkTarget, OutputConfig: AIBenchmarkOutputResult, NetworkConfig: AIBenchmarkNetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BenchmarkTarget: AIBenchmarkTarget, OutputConfig: AIBenchmarkOutputResult, NetworkConfig: AIBenchmarkNetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAIBenchmarkJobResponse:
     str AIBenchmarkJobName
     str AIBenchmarkJobArn
@@ -8104,8 +8281,9 @@ struct DescribeAIBenchmarkJobResponse:
 struct DescribeAIRecommendationJobRequest:
     str AIRecommendationJobName
 
-# no @derive(Json): member(s) PerformanceTarget: AIRecommendationPerformanceTarget, Recommendations: list[AIRecommendation], ComputeSpec: AIRecommendationComputeSpec, AdapterSource: AIAdapterSource, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerformanceTarget: AIRecommendationPerformanceTarget, Recommendations: list[AIRecommendation], ComputeSpec: AIRecommendationComputeSpec, AdapterSource: AIAdapterSource, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAIRecommendationJobResponse:
     str AIRecommendationJobName
     str AIRecommendationJobArn
@@ -8130,8 +8308,9 @@ struct DescribeAIRecommendationJobResponse:
 struct DescribeAIWorkloadConfigRequest:
     str AIWorkloadConfigName
 
-# no @derive(Json): member(s) DatasetConfig: AIDatasetConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetConfig: AIDatasetConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAIWorkloadConfigResponse:
     str AIWorkloadConfigName
     str AIWorkloadConfigArn
@@ -8144,8 +8323,9 @@ struct DescribeAIWorkloadConfigResponse:
 struct DescribeActionRequest:
     str ActionName
 
-# no @derive(Json): member(s) Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActionResponse:
     Optional[str] ActionName
     Optional[str] ActionArn
@@ -8165,8 +8345,9 @@ struct DescribeActionResponse:
 struct DescribeAlgorithmInput:
     str AlgorithmName
 
-# no @derive(Json): member(s) TrainingSpecification: TrainingSpecification, InferenceSpecification: InferenceSpecification, ValidationSpecification: AlgorithmValidationSpecification, AlgorithmStatusDetails: AlgorithmStatusDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingSpecification: TrainingSpecification, InferenceSpecification: InferenceSpecification, ValidationSpecification: AlgorithmValidationSpecification, AlgorithmStatusDetails: AlgorithmStatusDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAlgorithmOutput:
     str AlgorithmName
     str AlgorithmArn
@@ -8184,8 +8365,9 @@ struct DescribeAlgorithmOutput:
 struct DescribeAppImageConfigRequest:
     str AppImageConfigName
 
-# no @derive(Json): member(s) KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppImageConfigResponse:
     Optional[str] AppImageConfigArn
     Optional[str] AppImageConfigName
@@ -8225,8 +8407,9 @@ struct DescribeAppResponse:
 struct DescribeArtifactRequest:
     str ArtifactArn
 
-# no @derive(Json): member(s) Source: ArtifactSource, Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: ArtifactSource, Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeArtifactResponse:
     Optional[str] ArtifactName
     Optional[str] ArtifactArn
@@ -8244,8 +8427,9 @@ struct DescribeArtifactResponse:
 struct DescribeAutoMLJobRequest:
     str AutoMLJobName
 
-# no @derive(Json): member(s) InputDataConfig: list[AutoMLChannel], AutoMLJobConfig: AutoMLJobConfig, PartialFailureReasons: list[AutoMLPartialFailureReason], BestCandidate: AutoMLCandidate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDataConfig: list[AutoMLChannel], AutoMLJobConfig: AutoMLJobConfig, PartialFailureReasons: list[AutoMLPartialFailureReason], BestCandidate: AutoMLCandidate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutoMLJobResponse:
     str AutoMLJobName
     str AutoMLJobArn
@@ -8273,8 +8457,9 @@ struct DescribeAutoMLJobResponse:
 struct DescribeAutoMLJobV2Request:
     str AutoMLJobName
 
-# no @derive(Json): member(s) AutoMLJobInputDataConfig: list[AutoMLJobChannel], AutoMLProblemTypeConfig: AutoMLProblemTypeConfig, PartialFailureReasons: list[AutoMLPartialFailureReason], BestCandidate: AutoMLCandidate, SecurityConfig: AutoMLSecurityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMLJobInputDataConfig: list[AutoMLJobChannel], AutoMLProblemTypeConfig: AutoMLProblemTypeConfig, PartialFailureReasons: list[AutoMLPartialFailureReason], BestCandidate: AutoMLCandidate, SecurityConfig: AutoMLSecurityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutoMLJobV2Response:
     str AutoMLJobName
     str AutoMLJobArn
@@ -8305,8 +8490,9 @@ struct DescribeClusterEventRequest:
     str EventId
     str ClusterName
 
-# no @derive(Json): member(s) EventDetails: ClusterEventDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDetails: ClusterEventDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterEventResponse:
     Optional[ClusterEventDetail] EventDetails
 
@@ -8316,8 +8502,9 @@ struct DescribeClusterNodeRequest:
     Optional[str] NodeId
     Optional[str] NodeLogicalId
 
-# no @derive(Json): member(s) NodeDetails: ClusterNodeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeDetails: ClusterNodeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterNodeResponse:
     ClusterNodeDetails NodeDetails
 
@@ -8325,8 +8512,9 @@ struct DescribeClusterNodeResponse:
 struct DescribeClusterRequest:
     str ClusterName
 
-# no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupDetails], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupDetails], VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupDetails], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupDetails], VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterResponse:
     str ClusterArn
     Optional[str] ClusterName
@@ -8349,8 +8537,9 @@ struct DescribeClusterSchedulerConfigRequest:
     str ClusterSchedulerConfigId
     Optional[int64] ClusterSchedulerConfigVersion
 
-# no @derive(Json): member(s) StatusDetails: dict[SchedulerConfigComponent, SchedulerResourceStatus], SchedulerConfig: SchedulerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatusDetails: dict[SchedulerConfigComponent, SchedulerResourceStatus], SchedulerConfig: SchedulerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterSchedulerConfigResponse:
     str ClusterSchedulerConfigArn
     str ClusterSchedulerConfigId
@@ -8383,8 +8572,9 @@ struct DescribeCodeRepositoryOutput:
 struct DescribeCompilationJobRequest:
     str CompilationJobName
 
-# no @derive(Json): member(s) VpcConfig: NeoVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: NeoVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCompilationJobResponse:
     str CompilationJobName
     str CompilationJobArn
@@ -8410,8 +8600,9 @@ struct DescribeComputeQuotaRequest:
     str ComputeQuotaId
     Optional[int64] ComputeQuotaVersion
 
-# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComputeQuotaResponse:
     str ComputeQuotaArn
     str ComputeQuotaId
@@ -8433,8 +8624,9 @@ struct DescribeComputeQuotaResponse:
 struct DescribeContextRequest:
     str ContextName
 
-# no @derive(Json): member(s) Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContextResponse:
     Optional[str] ContextName
     Optional[str] ContextArn
@@ -8452,8 +8644,9 @@ struct DescribeContextResponse:
 struct DescribeDataQualityJobDefinitionRequest:
     str JobDefinitionName
 
-# no @derive(Json): member(s) DataQualityAppSpecification: DataQualityAppSpecification, DataQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataQualityAppSpecification: DataQualityAppSpecification, DataQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataQualityJobDefinitionResponse:
     str JobDefinitionArn
     str JobDefinitionName
@@ -8488,8 +8681,9 @@ struct DescribeDeviceRequest:
     str DeviceName
     str DeviceFleetName
 
-# no @derive(Json): member(s) Models: list[EdgeModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Models: list[EdgeModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeviceResponse:
     Optional[str] DeviceArn
     str DeviceName
@@ -8507,8 +8701,9 @@ struct DescribeDeviceResponse:
 struct DescribeDomainRequest:
     str DomainId
 
-# no @derive(Json): member(s) DefaultUserSettings: UserSettings, DomainSettings: DomainSettings, SubnetIds: list[str], DefaultSpaceSettings: DefaultSpaceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultUserSettings: UserSettings, DomainSettings: DomainSettings, SubnetIds: list[str], DefaultSpaceSettings: DefaultSpaceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDomainResponse:
     Optional[str] DomainArn
     Optional[str] DomainId
@@ -8541,8 +8736,9 @@ struct DescribeEdgeDeploymentPlanRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ModelConfigs: list[EdgeDeploymentModelConfig], Stages: list[DeploymentStageStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelConfigs: list[EdgeDeploymentModelConfig], Stages: list[DeploymentStageStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEdgeDeploymentPlanResponse:
     str EdgeDeploymentPlanArn
     str EdgeDeploymentPlanName
@@ -8582,8 +8778,9 @@ struct DescribeEdgePackagingJobResponse:
 struct DescribeEndpointConfigInput:
     str EndpointConfigName
 
-# no @derive(Json): member(s) ProductionVariants: list[ProductionVariant], DataCaptureConfig: DataCaptureConfig, AsyncInferenceConfig: AsyncInferenceConfig, ExplainerConfig: ExplainerConfig, ShadowProductionVariants: list[ProductionVariant], VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductionVariants: list[ProductionVariant], DataCaptureConfig: DataCaptureConfig, AsyncInferenceConfig: AsyncInferenceConfig, ExplainerConfig: ExplainerConfig, ShadowProductionVariants: list[ProductionVariant], VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointConfigOutput:
     str EndpointConfigName
     str EndpointConfigArn
@@ -8603,8 +8800,9 @@ struct DescribeEndpointConfigOutput:
 struct DescribeEndpointInput:
     str EndpointName
 
-# no @derive(Json): member(s) ProductionVariants: list[ProductionVariantSummary], LastDeploymentConfig: DeploymentConfig, AsyncInferenceConfig: AsyncInferenceConfig, PendingDeploymentSummary: PendingDeploymentSummary, ExplainerConfig: ExplainerConfig, ShadowProductionVariants: list[ProductionVariantSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductionVariants: list[ProductionVariantSummary], LastDeploymentConfig: DeploymentConfig, AsyncInferenceConfig: AsyncInferenceConfig, PendingDeploymentSummary: PendingDeploymentSummary, ExplainerConfig: ExplainerConfig, ShadowProductionVariants: list[ProductionVariantSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointOutput:
     str EndpointName
     str EndpointArn
@@ -8643,8 +8841,9 @@ struct DescribeFeatureGroupRequest:
     str FeatureGroupName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FeatureDefinitions: list[FeatureDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureDefinitions: list[FeatureDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFeatureGroupResponse:
     str FeatureGroupArn
     str FeatureGroupName
@@ -8670,8 +8869,9 @@ struct DescribeFeatureMetadataRequest:
     str FeatureGroupName
     str FeatureName
 
-# no @derive(Json): member(s) Parameters: list[FeatureParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[FeatureParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFeatureMetadataResponse:
     str FeatureGroupArn
     str FeatureGroupName
@@ -8686,8 +8886,9 @@ struct DescribeFeatureMetadataResponse:
 struct DescribeFlowDefinitionRequest:
     str FlowDefinitionName
 
-# no @derive(Json): member(s) HumanLoopConfig: HumanLoopConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanLoopConfig: HumanLoopConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowDefinitionResponse:
     str FlowDefinitionArn
     str FlowDefinitionName
@@ -8707,8 +8908,9 @@ struct DescribeHubContentRequest:
     str HubContentName
     Optional[str] HubContentVersion
 
-# no @derive(Json): member(s) HubContentSearchKeywords: list[str], HubContentDependencies: list[HubContentDependency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSearchKeywords: list[str], HubContentDependencies: list[HubContentDependency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHubContentResponse:
     str HubContentName
     str HubContentArn
@@ -8735,8 +8937,9 @@ struct DescribeHubContentResponse:
 struct DescribeHubRequest:
     str HubName
 
-# no @derive(Json): member(s) HubSearchKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubSearchKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHubResponse:
     str HubName
     str HubArn
@@ -8765,8 +8968,9 @@ struct DescribeHumanTaskUiResponse:
 struct DescribeHyperParameterTuningJobRequest:
     str HyperParameterTuningJobName
 
-# no @derive(Json): member(s) HyperParameterTuningJobConfig: HyperParameterTuningJobConfig, TrainingJobDefinition: HyperParameterTrainingJobDefinition, TrainingJobDefinitions: list[HyperParameterTrainingJobDefinition], BestTrainingJob: HyperParameterTrainingJobSummary, OverallBestTrainingJob: HyperParameterTrainingJobSummary, WarmStartConfig: HyperParameterTuningJobWarmStartConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameterTuningJobConfig: HyperParameterTuningJobConfig, TrainingJobDefinition: HyperParameterTrainingJobDefinition, TrainingJobDefinitions: list[HyperParameterTrainingJobDefinition], BestTrainingJob: HyperParameterTrainingJobSummary, OverallBestTrainingJob: HyperParameterTrainingJobSummary, WarmStartConfig: HyperParameterTuningJobWarmStartConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHyperParameterTuningJobResponse:
     str HyperParameterTuningJobName
     str HyperParameterTuningJobArn
@@ -8832,8 +9036,9 @@ struct DescribeImageVersionResponse:
 struct DescribeInferenceComponentInput:
     str InferenceComponentName
 
-# no @derive(Json): member(s) Specification: InferenceComponentSpecificationSummary, Specifications: list[InferenceComponentSpecificationSummary], RuntimeConfig: InferenceComponentRuntimeConfigSummary, LastDeploymentConfig: InferenceComponentDeploymentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Specification: InferenceComponentSpecificationSummary, Specifications: list[InferenceComponentSpecificationSummary], RuntimeConfig: InferenceComponentRuntimeConfigSummary, LastDeploymentConfig: InferenceComponentDeploymentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInferenceComponentOutput:
     str InferenceComponentName
     str InferenceComponentArn
@@ -8853,8 +9058,9 @@ struct DescribeInferenceComponentOutput:
 struct DescribeInferenceExperimentRequest:
     str Name
 
-# no @derive(Json): member(s) ModelVariants: list[ModelVariantConfigSummary], DataStorageConfig: InferenceExperimentDataStorageConfig, ShadowModeConfig: ShadowModeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelVariants: list[ModelVariantConfigSummary], DataStorageConfig: InferenceExperimentDataStorageConfig, ShadowModeConfig: ShadowModeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInferenceExperimentResponse:
     str Arn
     str Name
@@ -8877,8 +9083,9 @@ struct DescribeInferenceExperimentResponse:
 struct DescribeInferenceRecommendationsJobRequest:
     str JobName
 
-# no @derive(Json): member(s) InputConfig: RecommendationJobInputConfig, StoppingConditions: RecommendationJobStoppingConditions, InferenceRecommendations: list[InferenceRecommendation], EndpointPerformances: list[EndpointPerformance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: RecommendationJobInputConfig, StoppingConditions: RecommendationJobStoppingConditions, InferenceRecommendations: list[InferenceRecommendation], EndpointPerformances: list[EndpointPerformance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInferenceRecommendationsJobResponse:
     str JobName
     Optional[str] JobDescription
@@ -8900,8 +9107,9 @@ struct DescribeJobRequest:
     str JobName
     JobCategory JobCategory
 
-# no @derive(Json): member(s) SecondaryStatusTransitions: list[JobSecondaryStatusTransition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecondaryStatusTransitions: list[JobSecondaryStatusTransition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobResponse:
     str JobName
     str JobArn
@@ -8933,8 +9141,9 @@ struct DescribeJobSchemaVersionResponse:
 struct DescribeLabelingJobRequest:
     str LabelingJobName
 
-# no @derive(Json): member(s) InputConfig: LabelingJobInputConfig, LabelingJobAlgorithmsConfig: LabelingJobAlgorithmsConfig, HumanTaskConfig: HumanTaskConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: LabelingJobInputConfig, LabelingJobAlgorithmsConfig: LabelingJobAlgorithmsConfig, HumanTaskConfig: HumanTaskConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLabelingJobResponse:
     LabelingJobStatus LabelingJobStatus
     LabelCounters LabelCounters
@@ -8974,8 +9183,9 @@ struct DescribeLineageGroupResponse:
 struct DescribeMlflowAppRequest:
     str Arn
 
-# no @derive(Json): member(s) DefaultDomainIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultDomainIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMlflowAppResponse:
     Optional[str] Arn
     Optional[str] Name
@@ -9023,8 +9233,9 @@ struct DescribeMlflowTrackingServerResponse:
 struct DescribeModelBiasJobDefinitionRequest:
     str JobDefinitionName
 
-# no @derive(Json): member(s) ModelBiasAppSpecification: ModelBiasAppSpecification, ModelBiasJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelBiasAppSpecification: ModelBiasAppSpecification, ModelBiasJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeModelBiasJobDefinitionResponse:
     str JobDefinitionArn
     str JobDefinitionName
@@ -9079,8 +9290,9 @@ struct DescribeModelCardResponse:
 struct DescribeModelExplainabilityJobDefinitionRequest:
     str JobDefinitionName
 
-# no @derive(Json): member(s) ModelExplainabilityAppSpecification: ModelExplainabilityAppSpecification, ModelExplainabilityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelExplainabilityAppSpecification: ModelExplainabilityAppSpecification, ModelExplainabilityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeModelExplainabilityJobDefinitionResponse:
     str JobDefinitionArn
     str JobDefinitionName
@@ -9098,8 +9310,9 @@ struct DescribeModelExplainabilityJobDefinitionResponse:
 struct DescribeModelInput:
     str ModelName
 
-# no @derive(Json): member(s) PrimaryContainer: ContainerDefinition, Containers: list[ContainerDefinition], VpcConfig: VpcConfig, DeploymentRecommendation: DeploymentRecommendation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryContainer: ContainerDefinition, Containers: list[ContainerDefinition], VpcConfig: VpcConfig, DeploymentRecommendation: DeploymentRecommendation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeModelOutput:
     str ModelName
     Optional[ContainerDefinition] PrimaryContainer
@@ -9131,8 +9344,9 @@ struct DescribeModelPackageInput:
     str ModelPackageName
     Optional[IncludedData] IncludedData
 
-# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification, SourceAlgorithmSpecification: SourceAlgorithmSpecification, ValidationSpecification: ModelPackageValidationSpecification, ModelPackageStatusDetails: ModelPackageStatusDetails, CustomerMetadataProperties: dict[str, str], AdditionalInferenceSpecifications: list[AdditionalInferenceSpecificationDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification, SourceAlgorithmSpecification: SourceAlgorithmSpecification, ValidationSpecification: ModelPackageValidationSpecification, ModelPackageStatusDetails: ModelPackageStatusDetails, CustomerMetadataProperties: dict[str, str], AdditionalInferenceSpecifications: list[AdditionalInferenceSpecificationDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeModelPackageOutput:
     str ModelPackageName
     Optional[str] ModelPackageGroupName
@@ -9171,8 +9385,9 @@ struct DescribeModelPackageOutput:
 struct DescribeModelQualityJobDefinitionRequest:
     str JobDefinitionName
 
-# no @derive(Json): member(s) ModelQualityAppSpecification: ModelQualityAppSpecification, ModelQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelQualityAppSpecification: ModelQualityAppSpecification, ModelQualityJobOutputConfig: MonitoringOutputConfig, NetworkConfig: MonitoringNetworkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeModelQualityJobDefinitionResponse:
     str JobDefinitionArn
     str JobDefinitionName
@@ -9190,8 +9405,9 @@ struct DescribeModelQualityJobDefinitionResponse:
 struct DescribeMonitoringScheduleRequest:
     str MonitoringScheduleName
 
-# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMonitoringScheduleResponse:
     str MonitoringScheduleArn
     str MonitoringScheduleName
@@ -9212,8 +9428,9 @@ struct DescribeNotebookInstanceInput:
 struct DescribeNotebookInstanceLifecycleConfigInput:
     str NotebookInstanceLifecycleConfigName
 
-# no @derive(Json): member(s) OnCreate: list[NotebookInstanceLifecycleHook], OnStart: list[NotebookInstanceLifecycleHook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnCreate: list[NotebookInstanceLifecycleHook], OnStart: list[NotebookInstanceLifecycleHook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotebookInstanceLifecycleConfigOutput:
     Optional[str] NotebookInstanceLifecycleConfigArn
     Optional[str] NotebookInstanceLifecycleConfigName
@@ -9222,8 +9439,9 @@ struct DescribeNotebookInstanceLifecycleConfigOutput:
     Optional[DateTime] LastModifiedTime
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) SecurityGroups: list[str], AcceleratorTypes: list[NotebookInstanceAcceleratorType], AdditionalCodeRepositories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[str], AcceleratorTypes: list[NotebookInstanceAcceleratorType], AdditionalCodeRepositories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotebookInstanceOutput:
     Optional[str] NotebookInstanceArn
     Optional[str] NotebookInstanceName
@@ -9253,8 +9471,9 @@ struct DescribeNotebookInstanceOutput:
 struct DescribeOptimizationJobRequest:
     str OptimizationJobName
 
-# no @derive(Json): member(s) OptimizationEnvironment: dict[str, str], OptimizationConfigs: list[OptimizationConfig], VpcConfig: OptimizationVpcConfig, TrainingPlanArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptimizationEnvironment: dict[str, str], OptimizationConfigs: list[OptimizationConfig], VpcConfig: OptimizationVpcConfig, TrainingPlanArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOptimizationJobResponse:
     str OptimizationJobArn
     OptimizationJobStatus OptimizationJobStatus
@@ -9281,8 +9500,9 @@ struct DescribePartnerAppRequest:
     str Arn
     Optional[bool] IncludeAvailableUpgrade
 
-# no @derive(Json): member(s) ApplicationConfig: PartnerAppConfig, AvailableUpgrade: AvailableUpgrade not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationConfig: PartnerAppConfig, AvailableUpgrade: AvailableUpgrade not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePartnerAppResponse:
     Optional[str] Arn
     Optional[str] Name
@@ -9318,8 +9538,9 @@ struct DescribePipelineDefinitionForExecutionResponse:
 struct DescribePipelineExecutionRequest:
     str PipelineExecutionArn
 
-# no @derive(Json): member(s) SelectiveExecutionConfig: SelectiveExecutionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectiveExecutionConfig: SelectiveExecutionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipelineExecutionResponse:
     Optional[str] PipelineArn
     Optional[str] PipelineExecutionArn
@@ -9364,8 +9585,9 @@ struct DescribePipelineResponse:
 struct DescribeProcessingJobRequest:
     str ProcessingJobName
 
-# no @derive(Json): member(s) ProcessingInputs: list[ProcessingInput], ProcessingOutputConfig: ProcessingOutputConfig, ProcessingResources: ProcessingResources, AppSpecification: AppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingInputs: list[ProcessingInput], ProcessingOutputConfig: ProcessingOutputConfig, ProcessingResources: ProcessingResources, AppSpecification: AppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProcessingJobResponse:
     Optional[list[ProcessingInput]] ProcessingInputs
     Optional[ProcessingOutputConfig] ProcessingOutputConfig
@@ -9393,8 +9615,9 @@ struct DescribeProcessingJobResponse:
 struct DescribeProjectInput:
     str ProjectName
 
-# no @derive(Json): member(s) ServiceCatalogProvisioningDetails: ServiceCatalogProvisioningDetails, TemplateProviderDetails: list[TemplateProviderDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceCatalogProvisioningDetails: ServiceCatalogProvisioningDetails, TemplateProviderDetails: list[TemplateProviderDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProjectOutput:
     str ProjectArn
     str ProjectName
@@ -9434,8 +9657,9 @@ struct DescribeSpaceRequest:
     str DomainId
     str SpaceName
 
-# no @derive(Json): member(s) SpaceSettings: SpaceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpaceSettings: SpaceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSpaceResponse:
     Optional[str] DomainId
     Optional[str] SpaceArn
@@ -9476,8 +9700,9 @@ struct DescribeSubscribedWorkteamResponse:
 struct DescribeTrainingJobRequest:
     str TrainingJobName
 
-# no @derive(Json): member(s) HyperParameters: dict[str, str], AlgorithmSpecification: AlgorithmSpecification, InputDataConfig: list[Channel], ResourceConfig: ResourceConfig, VpcConfig: VpcConfig, SecondaryStatusTransitions: list[SecondaryStatusTransition], FinalMetricDataList: list[MetricData], DebugHookConfig: DebugHookConfig, DebugRuleConfigurations: list[DebugRuleConfiguration], DebugRuleEvaluationStatuses: list[DebugRuleEvaluationStatus], ProfilerConfig: ProfilerConfig, ProfilerRuleConfigurations: list[ProfilerRuleConfiguration], ProfilerRuleEvaluationStatuses: list[ProfilerRuleEvaluationStatus], Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameters: dict[str, str], AlgorithmSpecification: AlgorithmSpecification, InputDataConfig: list[Channel], ResourceConfig: ResourceConfig, VpcConfig: VpcConfig, SecondaryStatusTransitions: list[SecondaryStatusTransition], FinalMetricDataList: list[MetricData], DebugHookConfig: DebugHookConfig, DebugRuleConfigurations: list[DebugRuleConfiguration], DebugRuleEvaluationStatuses: list[DebugRuleEvaluationStatus], ProfilerConfig: ProfilerConfig, ProfilerRuleConfigurations: list[ProfilerRuleConfiguration], ProfilerRuleEvaluationStatuses: list[ProfilerRuleEvaluationStatus], Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrainingJobResponse:
     str TrainingJobName
     str TrainingJobArn
@@ -9536,8 +9761,9 @@ struct DescribeTrainingPlanExtensionHistoryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TrainingPlanExtensions: list[TrainingPlanExtension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingPlanExtensions: list[TrainingPlanExtension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrainingPlanExtensionHistoryResponse:
     list[TrainingPlanExtension] TrainingPlanExtensions
     Optional[str] NextToken
@@ -9546,8 +9772,9 @@ struct DescribeTrainingPlanExtensionHistoryResponse:
 struct DescribeTrainingPlanRequest:
     str TrainingPlanName
 
-# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName], ReservedCapacitySummaries: list[ReservedCapacitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName], ReservedCapacitySummaries: list[ReservedCapacitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrainingPlanResponse:
     str TrainingPlanArn
     str TrainingPlanName
@@ -9572,8 +9799,9 @@ struct DescribeTrainingPlanResponse:
 struct DescribeTrainingSessionRequest:
     str TrainingSessionName
 
-# no @derive(Json): member(s) TrainingSessionDetail: TrainingSessionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingSessionDetail: TrainingSessionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrainingSessionResponse:
     TrainingSessionDetail TrainingSessionDetail
 
@@ -9581,8 +9809,9 @@ struct DescribeTrainingSessionResponse:
 struct DescribeTransformJobRequest:
     str TransformJobName
 
-# no @derive(Json): member(s) Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTransformJobResponse:
     str TransformJobName
     str TransformJobArn
@@ -9610,8 +9839,9 @@ struct DescribeTransformJobResponse:
 struct DescribeTrialComponentRequest:
     str TrialComponentName
 
-# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], InputArtifacts: dict[str, TrialComponentArtifact], OutputArtifacts: dict[str, TrialComponentArtifact], Metrics: list[TrialComponentMetricSummary], Sources: list[TrialComponentSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], InputArtifacts: dict[str, TrialComponentArtifact], OutputArtifacts: dict[str, TrialComponentArtifact], Metrics: list[TrialComponentMetricSummary], Sources: list[TrialComponentSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrialComponentResponse:
     Optional[str] TrialComponentName
     Optional[str] TrialComponentArn
@@ -9654,8 +9884,9 @@ struct DescribeUserProfileRequest:
     str DomainId
     str UserProfileName
 
-# no @derive(Json): member(s) UserSettings: UserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserSettings: UserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserProfileResponse:
     Optional[str] DomainId
     Optional[str] UserProfileArn
@@ -9673,8 +9904,9 @@ struct DescribeUserProfileResponse:
 struct DescribeWorkforceRequest:
     str WorkforceName
 
-# no @derive(Json): member(s) Workforce: Workforce not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workforce: Workforce not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkforceResponse:
     Workforce Workforce
 
@@ -9682,8 +9914,9 @@ struct DescribeWorkforceResponse:
 struct DescribeWorkteamRequest:
     str WorkteamName
 
-# no @derive(Json): member(s) Workteam: Workteam not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workteam: Workteam not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkteamResponse:
     Workteam Workteam
 
@@ -9736,8 +9969,9 @@ struct DeviceFleetSummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) DeviceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceSelectionConfig:
     DeviceSubsetType DeviceSubsetType
     Optional[int64] Percentage
@@ -9749,8 +9983,9 @@ struct DeviceStats:
     int64 ConnectedDeviceCount
     int64 RegisteredDeviceCount
 
-# no @derive(Json): member(s) Models: list[EdgeModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Models: list[EdgeModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceSummary:
     str DeviceName
     str DeviceArn
@@ -9786,8 +10021,9 @@ struct DisassociateTrialComponentResponse:
     Optional[str] TrialComponentArn
     Optional[str] TrialArn
 
-# no @derive(Json): member(s) VpcOnlyTrustedAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcOnlyTrustedAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DockerSettings:
     Optional[FeatureStatus] EnableDockerAccess
     Optional[list[str]] VpcOnlyTrustedAccounts
@@ -9803,8 +10039,9 @@ struct DomainDetails:
     Optional[DateTime] LastModifiedTime
     Optional[str] Url
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], DockerSettings: DockerSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], DockerSettings: DockerSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainSettings:
     Optional[list[str]] SecurityGroupIds
     Optional[RStudioServerProDomainSettings] RStudioServerProDomainSettings
@@ -9815,8 +10052,9 @@ struct DomainSettings:
     Optional[UnifiedStudioSettings] UnifiedStudioSettings
     Optional[IPAddressType] IpAddressType
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], DockerSettings: DockerSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], DockerSettings: DockerSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainSettingsForUpdate:
     Optional[RStudioServerProDomainSettingsForUpdate] RStudioServerProDomainSettingsForUpdate
     Optional[ExecutionRoleIdentityConfig] ExecutionRoleIdentityConfig
@@ -9855,8 +10093,9 @@ struct DriftCheckModelQuality:
     Optional[MetricsSource] Statistics
     Optional[MetricsSource] Constraints
 
-# no @derive(Json): member(s) ScalingPolicies: list[ScalingPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPolicies: list[ScalingPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynamicScalingConfiguration:
     Optional[int64] MinCapacity
     Optional[int64] MaxCapacity
@@ -9988,8 +10227,9 @@ struct EmrServerlessSettings:
     Optional[str] ExecutionRoleArn
     Optional[FeatureStatus] Status
 
-# no @derive(Json): member(s) AssumableRoleArns: list[str], ExecutionRoleArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssumableRoleArns: list[str], ExecutionRoleArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmrSettings:
     Optional[list[str]] AssumableRoleArns
     Optional[list[str]] ExecutionRoleArns
@@ -10004,8 +10244,9 @@ struct EnableSagemakerServicecatalogPortfolioOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ProductionVariants: list[ProductionVariantSummary], MonitoringSchedules: list[MonitoringSchedule], Tags: list[Tag], ShadowProductionVariants: list[ProductionVariantSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductionVariants: list[ProductionVariantSummary], MonitoringSchedules: list[MonitoringSchedule], Tags: list[Tag], ShadowProductionVariants: list[ProductionVariantSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Endpoint:
     str EndpointName
     str EndpointArn
@@ -10048,8 +10289,9 @@ struct EndpointInput:
     Optional[str] EndTimeOffset
     Optional[str] ExcludeFeaturesAttribute
 
-# no @derive(Json): member(s) EnvironmentParameterRanges: EnvironmentParameterRanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentParameterRanges: EnvironmentParameterRanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointInputConfiguration:
     Optional[ProductionVariantInstanceType] InstanceType
     Optional[ProductionVariantServerlessConfig] ServerlessConfig
@@ -10103,8 +10345,9 @@ struct EnvironmentParameter:
     str ValueType
     str Value
 
-# no @derive(Json): member(s) CategoricalParameterRanges: list[CategoricalParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoricalParameterRanges: list[CategoricalParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentParameterRanges:
     Optional[list[CategoricalParameter]] CategoricalParameterRanges
 
@@ -10113,13 +10356,15 @@ struct ErrorInfo:
     Optional[str] Code
     Optional[str] Reason
 
-# no @derive(Json): member(s) EventMetadata: EventMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventMetadata: EventMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDetails:
     Optional[EventMetadata] EventMetadata
 
-# no @derive(Json): member(s) Cluster: ClusterMetadata, InstanceGroup: InstanceGroupMetadata, Instance: InstanceMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: ClusterMetadata, InstanceGroup: InstanceGroupMetadata, Instance: InstanceMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventMetadata:
     Optional[ClusterMetadata] Cluster
     Optional[InstanceGroupMetadata] InstanceGroup
@@ -10128,8 +10373,9 @@ struct EventMetadata:
     Optional[DatabaseConfigurationMetadata] DatabaseConfiguration
     Optional[SlurmHealthMetadata] SlurmHealth
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Experiment:
     Optional[str] ExperimentName
     Optional[str] ExperimentArn
@@ -10167,8 +10413,9 @@ struct ExperimentSummary:
 struct Explainability:
     Optional[MetricsSource] Report
 
-# no @derive(Json): member(s) ClarifyExplainerConfig: ClarifyExplainerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClarifyExplainerConfig: ClarifyExplainerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExplainerConfig:
     Optional[ClarifyExplainerConfig] ClarifyExplainerConfig
 
@@ -10176,8 +10423,9 @@ struct ExplainerConfig:
 struct ExtendTrainingPlanRequest:
     str TrainingPlanExtensionOfferingId
 
-# no @derive(Json): member(s) TrainingPlanExtensions: list[TrainingPlanExtension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingPlanExtensions: list[TrainingPlanExtension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtendTrainingPlanResponse:
     list[TrainingPlanExtension] TrainingPlanExtensions
 
@@ -10206,8 +10454,9 @@ struct FeatureDefinition:
     Optional[CollectionType] CollectionType
     Optional[CollectionConfig] CollectionConfig
 
-# no @derive(Json): member(s) FeatureDefinitions: list[FeatureDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureDefinitions: list[FeatureDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeatureGroup:
     Optional[str] FeatureGroupArn
     Optional[str] FeatureGroupName
@@ -10234,8 +10483,9 @@ struct FeatureGroupSummary:
     Optional[FeatureGroupStatus] FeatureGroupStatus
     Optional[OfflineStoreStatus] OfflineStoreStatus
 
-# no @derive(Json): member(s) Parameters: list[FeatureParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[FeatureParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeatureMetadata:
     Optional[str] FeatureGroupArn
     Optional[str] FeatureGroupName
@@ -10325,8 +10575,9 @@ struct GenerativeAiSettings:
 struct GetDeviceFleetReportRequest:
     str DeviceFleetName
 
-# no @derive(Json): member(s) AgentVersions: list[AgentVersion], ModelStats: list[EdgeModelStat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentVersions: list[AgentVersion], ModelStats: list[EdgeModelStat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceFleetReportResponse:
     str DeviceFleetArn
     str DeviceFleetName
@@ -10371,8 +10622,9 @@ struct GetScalingConfigurationRecommendationRequest:
     Optional[int64] TargetCpuUtilizationPerCore
     Optional[ScalingPolicyObjective] ScalingPolicyObjective
 
-# no @derive(Json): member(s) DynamicScalingConfiguration: DynamicScalingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DynamicScalingConfiguration: DynamicScalingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScalingConfigurationRecommendationResponse:
     Optional[str] InferenceRecommendationsJobName
     Optional[str] RecommendationId
@@ -10387,8 +10639,9 @@ struct GetSearchSuggestionsRequest:
     ResourceType Resource
     Optional[SuggestionQuery] SuggestionQuery
 
-# no @derive(Json): member(s) PropertyNameSuggestions: list[PropertyNameSuggestion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyNameSuggestions: list[PropertyNameSuggestion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSearchSuggestionsResponse:
     Optional[list[PropertyNameSuggestion]] PropertyNameSuggestions
 
@@ -10402,8 +10655,9 @@ struct GitConfig:
 struct GitConfigForUpdate:
     Optional[str] SecretArn
 
-# no @derive(Json): member(s) VersionAliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HiddenSageMakerImage:
     Optional[str] SageMakerImageName
     Optional[list[str]] VersionAliases
@@ -10416,8 +10670,9 @@ struct HolidayConfigAttributes:
 struct HubAccessConfig:
     str HubContentArn
 
-# no @derive(Json): member(s) HubContentSearchKeywords: list[str], HubContentDependencies: list[HubContentDependency], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSearchKeywords: list[str], HubContentDependencies: list[HubContentDependency], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HubContent:
     str HubContentName
     str HubContentArn
@@ -10446,8 +10701,9 @@ struct HubContentDependency:
     Optional[str] DependencyOriginPath
     Optional[str] DependencyCopyPath
 
-# no @derive(Json): member(s) HubContentSearchKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSearchKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HubContentInfo:
     str HubContentName
     str HubContentArn
@@ -10463,8 +10719,9 @@ struct HubContentInfo:
     DateTime CreationTime
     Optional[DateTime] OriginalCreationTime
 
-# no @derive(Json): member(s) HubSearchKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubSearchKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HubInfo:
     str HubName
     str HubArn
@@ -10487,8 +10744,9 @@ struct HumanLoopActivationConditionsConfig:
 struct HumanLoopActivationConfig:
     HumanLoopActivationConditionsConfig HumanLoopActivationConditionsConfig
 
-# no @derive(Json): member(s) TaskKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopConfig:
     str WorkteamArn
     str HumanTaskUiArn
@@ -10504,8 +10762,9 @@ struct HumanLoopConfig:
 struct HumanLoopRequestSource:
     AwsManagedHumanLoopRequestSource AwsManagedHumanLoopRequestSource
 
-# no @derive(Json): member(s) TaskKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanTaskConfig:
     str WorkteamArn
     UiConfig UiConfig
@@ -10526,16 +10785,18 @@ struct HumanTaskUiSummary:
     str HumanTaskUiArn
     DateTime CreationTime
 
-# no @derive(Json): member(s) MetricDefinitions: list[MetricDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricDefinitions: list[MetricDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterAlgorithmSpecification:
     Optional[str] TrainingImage
     TrainingInputMode TrainingInputMode
     Optional[str] AlgorithmName
     Optional[list[MetricDefinition]] MetricDefinitions
 
-# no @derive(Json): member(s) Range: ParameterRange not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Range: ParameterRange not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterSpecification:
     str Name
     Optional[str] Description
@@ -10545,8 +10806,9 @@ struct HyperParameterSpecification:
     Optional[bool] IsRequired
     Optional[str] DefaultValue
 
-# no @derive(Json): member(s) HyperParameterRanges: ParameterRanges, StaticHyperParameters: dict[str, str], AlgorithmSpecification: HyperParameterAlgorithmSpecification, InputDataConfig: list[Channel], VpcConfig: VpcConfig, ResourceConfig: ResourceConfig, HyperParameterTuningResourceConfig: HyperParameterTuningResourceConfig, Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameterRanges: ParameterRanges, StaticHyperParameters: dict[str, str], AlgorithmSpecification: HyperParameterAlgorithmSpecification, InputDataConfig: list[Channel], VpcConfig: VpcConfig, ResourceConfig: ResourceConfig, HyperParameterTuningResourceConfig: HyperParameterTuningResourceConfig, Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTrainingJobDefinition:
     Optional[str] DefinitionName
     Optional[HyperParameterTuningJobObjective] TuningObjective
@@ -10567,8 +10829,9 @@ struct HyperParameterTrainingJobDefinition:
     Optional[RetryStrategy] RetryStrategy
     Optional[dict[str, str]] Environment
 
-# no @derive(Json): member(s) TunedHyperParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TunedHyperParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTrainingJobSummary:
     Optional[str] TrainingJobDefinitionName
     str TrainingJobName
@@ -10594,8 +10857,9 @@ struct HyperParameterTuningJobCompletionDetails:
     Optional[int64] NumberOfTrainingJobsObjectiveNotImproving
     Optional[DateTime] ConvergenceDetectedTime
 
-# no @derive(Json): member(s) ParameterRanges: ParameterRanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterRanges: ParameterRanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTuningJobConfig:
     HyperParameterTuningJobStrategyType Strategy
     Optional[HyperParameterTuningJobStrategyConfig] StrategyConfig
@@ -10615,8 +10879,9 @@ struct HyperParameterTuningJobObjective:
     HyperParameterTuningJobObjectiveType Type
     str MetricName
 
-# no @derive(Json): member(s) HyperParameterTuningJobConfig: HyperParameterTuningJobConfig, TrainingJobDefinition: HyperParameterTrainingJobDefinition, TrainingJobDefinitions: list[HyperParameterTrainingJobDefinition], BestTrainingJob: HyperParameterTrainingJobSummary, OverallBestTrainingJob: HyperParameterTrainingJobSummary, WarmStartConfig: HyperParameterTuningJobWarmStartConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameterTuningJobConfig: HyperParameterTuningJobConfig, TrainingJobDefinition: HyperParameterTrainingJobDefinition, TrainingJobDefinitions: list[HyperParameterTrainingJobDefinition], BestTrainingJob: HyperParameterTrainingJobSummary, OverallBestTrainingJob: HyperParameterTrainingJobSummary, WarmStartConfig: HyperParameterTuningJobWarmStartConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTuningJobSearchEntity:
     Optional[str] HyperParameterTuningJobName
     Optional[str] HyperParameterTuningJobArn
@@ -10654,14 +10919,16 @@ struct HyperParameterTuningJobSummary:
     ObjectiveStatusCounters ObjectiveStatusCounters
     Optional[ResourceLimits] ResourceLimits
 
-# no @derive(Json): member(s) ParentHyperParameterTuningJobs: list[ParentHyperParameterTuningJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParentHyperParameterTuningJobs: list[ParentHyperParameterTuningJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTuningJobWarmStartConfig:
     list[ParentHyperParameterTuningJob] ParentHyperParameterTuningJobs
     HyperParameterTuningJobWarmStartType WarmStartType
 
-# no @derive(Json): member(s) InstanceConfigs: list[HyperParameterTuningInstanceConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceConfigs: list[HyperParameterTuningInstanceConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTuningResourceConfig:
     Optional[TrainingInstanceType] InstanceType
     Optional[int64] InstanceCount
@@ -10738,8 +11005,9 @@ struct ImageVersion:
     DateTime LastModifiedTime
     int64 Version
 
-# no @derive(Json): member(s) HubContentSearchKeywords: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSearchKeywords: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportHubContentRequest:
     str HubContentName
     Optional[str] HubContentVersion
@@ -10776,16 +11044,18 @@ struct InferenceComponentComputeResourceRequirements:
     int64 MinMemoryRequiredInMb
     Optional[int64] MaxMemoryRequiredInMb
 
-# no @derive(Json): member(s) Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceComponentContainerSpecification:
     Optional[str] Image
     Optional[str] ArtifactUrl
     Optional[dict[str, str]] Environment
     Optional[ContainerMetricsConfig] ContainerMetricsConfig
 
-# no @derive(Json): member(s) Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceComponentContainerSpecificationSummary:
     Optional[DeployedImage] DeployedImage
     Optional[str] ArtifactUrl
@@ -10800,8 +11070,9 @@ struct InferenceComponentDataCacheConfig:
 struct InferenceComponentDataCacheConfigSummary:
     bool EnableCaching
 
-# no @derive(Json): member(s) AutoRollbackConfiguration: AutoRollbackConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoRollbackConfiguration: AutoRollbackConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceComponentDeploymentConfig:
     InferenceComponentRollingUpdatePolicy RollingUpdatePolicy
     Optional[AutoRollbackConfig] AutoRollbackConfiguration
@@ -10826,8 +11097,9 @@ struct InferenceComponentRollingUpdatePolicy:
 struct InferenceComponentRuntimeConfig:
     int64 CopyCount
 
-# no @derive(Json): member(s) PlacementStatus: list[InferenceComponentPlacementStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PlacementStatus: list[InferenceComponentPlacementStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceComponentRuntimeConfigSummary:
     Optional[int64] DesiredCopyCount
     Optional[int64] CurrentCopyCount
@@ -10838,8 +11110,9 @@ struct InferenceComponentSchedulingConfig:
     InferenceComponentPlacementStrategy PlacementStrategy
     Optional[InferenceComponentAvailabilityZoneBalance] AvailabilityZoneBalance
 
-# no @derive(Json): member(s) Container: InferenceComponentContainerSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Container: InferenceComponentContainerSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceComponentSpecification:
     Optional[ProductionVariantInstanceType] InstanceType
     Optional[str] ModelName
@@ -10850,8 +11123,9 @@ struct InferenceComponentSpecification:
     Optional[InferenceComponentDataCacheConfig] DataCacheConfig
     Optional[InferenceComponentSchedulingConfig] SchedulingConfig
 
-# no @derive(Json): member(s) Container: InferenceComponentContainerSpecificationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Container: InferenceComponentContainerSpecificationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceComponentSpecificationSummary:
     Optional[ProductionVariantInstanceType] InstanceType
     Optional[str] ModelName
@@ -10882,8 +11156,9 @@ struct InferenceComponentSummary:
 struct InferenceExecutionConfig:
     InferenceExecutionMode Mode
 
-# no @derive(Json): member(s) ContentType: CaptureContentTypeHeader not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentType: CaptureContentTypeHeader not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceExperimentDataStorageConfig:
     str Destination
     Optional[str] KmsKey
@@ -10916,8 +11191,9 @@ struct InferenceMetrics:
     int64 MaxInvocations
     int64 ModelLatency
 
-# no @derive(Json): member(s) ModelConfiguration: ModelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelConfiguration: ModelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceRecommendation:
     Optional[str] RecommendationId
     Optional[RecommendationMetrics] Metrics
@@ -10942,16 +11218,18 @@ struct InferenceRecommendationsJob:
     Optional[str] SamplePayloadUrl
     Optional[str] ModelPackageVersionArn
 
-# no @derive(Json): member(s) InferenceBenchmark: RecommendationJobInferenceBenchmark not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceBenchmark: RecommendationJobInferenceBenchmark not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceRecommendationsJobStep:
     str StepType
     str JobName
     RecommendationJobStatus Status
     Optional[RecommendationJobInferenceBenchmark] InferenceBenchmark
 
-# no @derive(Json): member(s) Containers: list[ModelPackageContainerDefinition], SupportedTransformInstanceTypes: list[TransformInstanceType], SupportedRealtimeInferenceInstanceTypes: list[ProductionVariantInstanceType], SupportedContentTypes: list[str], SupportedResponseMIMETypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Containers: list[ModelPackageContainerDefinition], SupportedTransformInstanceTypes: list[TransformInstanceType], SupportedRealtimeInferenceInstanceTypes: list[ProductionVariantInstanceType], SupportedContentTypes: list[str], SupportedResponseMIMETypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceSpecification:
     list[ModelPackageContainerDefinition] Containers
     Optional[list[TransformInstanceType]] SupportedTransformInstanceTypes
@@ -10976,15 +11254,17 @@ struct InstanceGroup:
     int64 InstanceCount
     str InstanceGroupName
 
-# no @derive(Json): member(s) InstanceIds: list[str], DeepHealthChecks: list[DeepHealthCheckType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceIds: list[str], DeepHealthChecks: list[DeepHealthCheckType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceGroupHealthCheckConfiguration:
     str InstanceGroupName
     Optional[list[str]] InstanceIds
     list[DeepHealthCheckType] DeepHealthChecks
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceGroupMetadata:
     Optional[str] FailureMessage
     Optional[str] AvailabilityZoneId
@@ -11000,8 +11280,9 @@ struct InstanceGroupScalingMetadata:
     Optional[int64] MinCount
     Optional[str] FailureMessage
 
-# no @derive(Json): member(s) AdditionalEnis: AdditionalEnis, InstanceRequirementsEniConfigurations: list[InstanceRequirementsEniConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEnis: AdditionalEnis, InstanceRequirementsEniConfigurations: list[InstanceRequirementsEniConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceMetadata:
     Optional[str] CustomerEni
     Optional[AdditionalEnis] AdditionalEnis
@@ -11015,8 +11296,9 @@ struct InstanceMetadata:
 struct InstanceMetadataServiceConfiguration:
     str MinimumInstanceMetadataServiceVersion
 
-# no @derive(Json): member(s) PlacementSpecifications: list[PlacementSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PlacementSpecifications: list[PlacementSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePlacementConfig:
     Optional[bool] EnableMultipleJobs
     Optional[list[PlacementSpecification]] PlacementSpecifications
@@ -11032,15 +11314,17 @@ struct InstancePoolSummary:
     ProductionVariantInstanceType InstanceType
     int64 CurrentInstanceCount
 
-# no @derive(Json): member(s) TrainingPlanArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingPlanArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePreference:
     TrainingInstanceType InstanceType
     Optional[int64] InstanceCount
     Optional[list[str]] TrainingPlanArns
 
-# no @derive(Json): member(s) AdditionalEnis: AdditionalEnis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEnis: AdditionalEnis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceRequirementsEniConfiguration:
     Optional[str] CustomerEni
     Optional[AdditionalEnis] AdditionalEnis
@@ -11063,8 +11347,9 @@ struct IterationContext:
     Optional[int64] Index
     Optional[str] Item
 
-# no @derive(Json): member(s) SecondaryStatusTransitions: list[JobSecondaryStatusTransition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecondaryStatusTransitions: list[JobSecondaryStatusTransition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[str] JobName
     Optional[str] JobArn
@@ -11107,14 +11392,16 @@ struct JobSummary:
     DateTime LastModifiedTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) ContainerConfig: ContainerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerConfig: ContainerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JupyterLabAppImageConfig:
     Optional[FileSystemConfig] FileSystemConfig
     Optional[ContainerConfig] ContainerConfig
 
-# no @derive(Json): member(s) CustomImages: list[CustomImage], LifecycleConfigArns: list[str], CodeRepositories: list[CodeRepository], EmrSettings: EmrSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomImages: list[CustomImage], LifecycleConfigArns: list[str], CodeRepositories: list[CodeRepository], EmrSettings: EmrSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JupyterLabAppSettings:
     Optional[ResourceSpec] DefaultResourceSpec
     Optional[list[CustomImage]] CustomImages
@@ -11124,8 +11411,9 @@ struct JupyterLabAppSettings:
     Optional[EmrSettings] EmrSettings
     Optional[str] BuiltInLifecycleConfigArn
 
-# no @derive(Json): member(s) LifecycleConfigArns: list[str], CodeRepositories: list[CodeRepository] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LifecycleConfigArns: list[str], CodeRepositories: list[CodeRepository] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JupyterServerAppSettings:
     Optional[ResourceSpec] DefaultResourceSpec
     Optional[list[str]] LifecycleConfigArns
@@ -11135,15 +11423,17 @@ struct JupyterServerAppSettings:
 struct KendraSettings:
     Optional[FeatureStatus] Status
 
-# no @derive(Json): member(s) CustomImages: list[CustomImage], LifecycleConfigArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomImages: list[CustomImage], LifecycleConfigArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KernelGatewayAppSettings:
     Optional[ResourceSpec] DefaultResourceSpec
     Optional[list[CustomImage]] CustomImages
     Optional[list[str]] LifecycleConfigArns
 
-# no @derive(Json): member(s) KernelSpecs: list[KernelSpec] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KernelSpecs: list[KernelSpec] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KernelGatewayImageConfig:
     list[KernelSpec] KernelSpecs
     Optional[FileSystemConfig] FileSystemConfig
@@ -11167,15 +11457,17 @@ struct LabelCountersForWorkteam:
     Optional[int64] PendingHuman
     Optional[int64] Total
 
-# no @derive(Json): member(s) LabelingJobResourceConfig: LabelingJobResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelingJobResourceConfig: LabelingJobResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelingJobAlgorithmsConfig:
     str LabelingJobAlgorithmSpecificationArn
     Optional[str] InitialActiveLearningModelArn
     Optional[LabelingJobResourceConfig] LabelingJobResourceConfig
 
-# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelingJobDataAttributes:
     Optional[list[ContentClassifier]] ContentClassifiers
 
@@ -11193,8 +11485,9 @@ struct LabelingJobForWorkteamSummary:
     Optional[LabelCountersForWorkteam] LabelCounters
     Optional[int64] NumberOfHumanWorkersPerDataObject
 
-# no @derive(Json): member(s) DataAttributes: LabelingJobDataAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataAttributes: LabelingJobDataAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelingJobInputConfig:
     LabelingJobDataSource DataSource
     Optional[LabelingJobDataAttributes] DataAttributes
@@ -11210,8 +11503,9 @@ struct LabelingJobOutputConfig:
     Optional[str] KmsKeyId
     Optional[str] SnsTopicArn
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelingJobResourceConfig:
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
@@ -11229,8 +11523,9 @@ struct LabelingJobStoppingConditions:
     Optional[int64] MaxHumanLabeledObjectCount
     Optional[int64] MaxPercentageOfInputDatasetLabeled
 
-# no @derive(Json): member(s) InputConfig: LabelingJobInputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: LabelingJobInputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelingJobSummary:
     str LabelingJobName
     str LabelingJobArn
@@ -11245,8 +11540,9 @@ struct LabelingJobSummary:
     Optional[LabelingJobOutput] LabelingJobOutput
     Optional[LabelingJobInputConfig] InputConfig
 
-# no @derive(Json): member(s) OutputParameters: list[OutputParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputParameters: list[OutputParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaStepMetadata:
     Optional[str] Arn
     Optional[list[OutputParameter]] OutputParameters
@@ -11264,8 +11560,9 @@ struct LineageGroupSummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) ActionArns: dict[str, str], ArtifactArns: dict[str, str], ContextArns: dict[str, str], Associations: list[AssociationInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionArns: dict[str, str], ArtifactArns: dict[str, str], ContextArns: dict[str, str], Associations: list[AssociationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineageMetadata:
     Optional[dict[str, str]] ActionArns
     Optional[dict[str, str]] ArtifactArns
@@ -11283,8 +11580,9 @@ struct ListAIBenchmarkJobsRequest:
     Optional[ListAIBenchmarkJobsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) AIBenchmarkJobs: list[AIBenchmarkJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AIBenchmarkJobs: list[AIBenchmarkJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAIBenchmarkJobsResponse:
     list[AIBenchmarkJobSummary] AIBenchmarkJobs
     Optional[str] NextToken
@@ -11300,8 +11598,9 @@ struct ListAIRecommendationJobsRequest:
     Optional[ListAIRecommendationJobsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) AIRecommendationJobs: list[AIRecommendationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AIRecommendationJobs: list[AIRecommendationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAIRecommendationJobsResponse:
     list[AIRecommendationJobSummary] AIRecommendationJobs
     Optional[str] NextToken
@@ -11316,8 +11615,9 @@ struct ListAIWorkloadConfigsRequest:
     Optional[ListAIWorkloadConfigsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) AIWorkloadConfigs: list[AIWorkloadConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AIWorkloadConfigs: list[AIWorkloadConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAIWorkloadConfigsResponse:
     list[AIWorkloadConfigSummary] AIWorkloadConfigs
     Optional[str] NextToken
@@ -11333,8 +11633,9 @@ struct ListActionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ActionSummaries: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionSummaries: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionsResponse:
     Optional[list[ActionSummary]] ActionSummaries
     Optional[str] NextToken
@@ -11349,8 +11650,9 @@ struct ListAlgorithmsInput:
     Optional[AlgorithmSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) AlgorithmSummaryList: list[AlgorithmSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlgorithmSummaryList: list[AlgorithmSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAlgorithmsOutput:
     list[AlgorithmSummary] AlgorithmSummaryList
     Optional[str] NextToken
@@ -11363,8 +11665,9 @@ struct ListAliasesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SageMakerImageVersionAliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SageMakerImageVersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAliasesResponse:
     Optional[list[str]] SageMakerImageVersionAliases
     Optional[str] NextToken
@@ -11381,8 +11684,9 @@ struct ListAppImageConfigsRequest:
     Optional[AppImageConfigSortKey] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) AppImageConfigs: list[AppImageConfigDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppImageConfigs: list[AppImageConfigDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppImageConfigsResponse:
     Optional[str] NextToken
     Optional[list[AppImageConfigDetails]] AppImageConfigs
@@ -11397,8 +11701,9 @@ struct ListAppsRequest:
     Optional[str] UserProfileNameEquals
     Optional[str] SpaceNameEquals
 
-# no @derive(Json): member(s) Apps: list[AppDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Apps: list[AppDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppsResponse:
     Optional[list[AppDetails]] Apps
     Optional[str] NextToken
@@ -11414,8 +11719,9 @@ struct ListArtifactsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ArtifactSummaries: list[ArtifactSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ArtifactSummaries: list[ArtifactSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListArtifactsResponse:
     Optional[list[ArtifactSummary]] ArtifactSummaries
     Optional[str] NextToken
@@ -11434,8 +11740,9 @@ struct ListAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AssociationSummaries: list[AssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationSummaries: list[AssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationsResponse:
     Optional[list[AssociationSummary]] AssociationSummaries
     Optional[str] NextToken
@@ -11453,8 +11760,9 @@ struct ListAutoMLJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AutoMLJobSummaries: list[AutoMLJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMLJobSummaries: list[AutoMLJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutoMLJobsResponse:
     list[AutoMLJobSummary] AutoMLJobSummaries
     Optional[str] NextToken
@@ -11469,8 +11777,9 @@ struct ListCandidatesForAutoMLJobRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Candidates: list[AutoMLCandidate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Candidates: list[AutoMLCandidate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCandidatesForAutoMLJobResponse:
     list[AutoMLCandidate] Candidates
     Optional[str] NextToken
@@ -11488,8 +11797,9 @@ struct ListClusterEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[ClusterEventSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[ClusterEventSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterEventsResponse:
     Optional[str] NextToken
     Optional[list[ClusterEventSummary]] Events
@@ -11506,8 +11816,9 @@ struct ListClusterNodesRequest:
     Optional[SortOrder] SortOrder
     Optional[bool] IncludeNodeLogicalIds
 
-# no @derive(Json): member(s) ClusterNodeSummaries: list[ClusterNodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterNodeSummaries: list[ClusterNodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterNodesResponse:
     Optional[str] NextToken
     list[ClusterNodeSummary] ClusterNodeSummaries
@@ -11524,8 +11835,9 @@ struct ListClusterSchedulerConfigsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ClusterSchedulerConfigSummaries: list[ClusterSchedulerConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterSchedulerConfigSummaries: list[ClusterSchedulerConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterSchedulerConfigsResponse:
     Optional[list[ClusterSchedulerConfigSummary]] ClusterSchedulerConfigSummaries
     Optional[str] NextToken
@@ -11541,8 +11853,9 @@ struct ListClustersRequest:
     Optional[SortOrder] SortOrder
     Optional[str] TrainingPlanArn
 
-# no @derive(Json): member(s) ClusterSummaries: list[ClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterSummaries: list[ClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     Optional[str] NextToken
     list[ClusterSummary] ClusterSummaries
@@ -11559,8 +11872,9 @@ struct ListCodeRepositoriesInput:
     Optional[CodeRepositorySortBy] SortBy
     Optional[CodeRepositorySortOrder] SortOrder
 
-# no @derive(Json): member(s) CodeRepositorySummaryList: list[CodeRepositorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeRepositorySummaryList: list[CodeRepositorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeRepositoriesOutput:
     list[CodeRepositorySummary] CodeRepositorySummaryList
     Optional[str] NextToken
@@ -11578,8 +11892,9 @@ struct ListCompilationJobsRequest:
     Optional[ListCompilationJobsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) CompilationJobSummaries: list[CompilationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompilationJobSummaries: list[CompilationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCompilationJobsResponse:
     list[CompilationJobSummary] CompilationJobSummaries
     Optional[str] NextToken
@@ -11596,8 +11911,9 @@ struct ListComputeQuotasRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ComputeQuotaSummaries: list[ComputeQuotaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeQuotaSummaries: list[ComputeQuotaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComputeQuotasResponse:
     Optional[list[ComputeQuotaSummary]] ComputeQuotaSummaries
     Optional[str] NextToken
@@ -11613,8 +11929,9 @@ struct ListContextsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContextSummaries: list[ContextSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextSummaries: list[ContextSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContextsResponse:
     Optional[list[ContextSummary]] ContextSummaries
     Optional[str] NextToken
@@ -11630,8 +11947,9 @@ struct ListDataQualityJobDefinitionsRequest:
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityJobDefinitionsResponse:
     list[MonitoringJobDefinitionSummary] JobDefinitionSummaries
     Optional[str] NextToken
@@ -11648,8 +11966,9 @@ struct ListDeviceFleetsRequest:
     Optional[ListDeviceFleetsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) DeviceFleetSummaries: list[DeviceFleetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceFleetSummaries: list[DeviceFleetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceFleetsResponse:
     list[DeviceFleetSummary] DeviceFleetSummaries
     Optional[str] NextToken
@@ -11662,8 +11981,9 @@ struct ListDevicesRequest:
     Optional[str] ModelName
     Optional[str] DeviceFleetName
 
-# no @derive(Json): member(s) DeviceSummaries: list[DeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceSummaries: list[DeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesResponse:
     list[DeviceSummary] DeviceSummaries
     Optional[str] NextToken
@@ -11673,8 +11993,9 @@ struct ListDomainsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Domains: list[DomainDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[DomainDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     Optional[list[DomainDetails]] Domains
     Optional[str] NextToken
@@ -11692,8 +12013,9 @@ struct ListEdgeDeploymentPlansRequest:
     Optional[ListEdgeDeploymentPlansSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) EdgeDeploymentPlanSummaries: list[EdgeDeploymentPlanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeDeploymentPlanSummaries: list[EdgeDeploymentPlanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEdgeDeploymentPlansResponse:
     list[EdgeDeploymentPlanSummary] EdgeDeploymentPlanSummaries
     Optional[str] NextToken
@@ -11712,8 +12034,9 @@ struct ListEdgePackagingJobsRequest:
     Optional[ListEdgePackagingJobsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) EdgePackagingJobSummaries: list[EdgePackagingJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgePackagingJobSummaries: list[EdgePackagingJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEdgePackagingJobsResponse:
     list[EdgePackagingJobSummary] EdgePackagingJobSummaries
     Optional[str] NextToken
@@ -11728,8 +12051,9 @@ struct ListEndpointConfigsInput:
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-# no @derive(Json): member(s) EndpointConfigs: list[EndpointConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointConfigs: list[EndpointConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointConfigsOutput:
     list[EndpointConfigSummary] EndpointConfigs
     Optional[str] NextToken
@@ -11747,8 +12071,9 @@ struct ListEndpointsInput:
     Optional[DateTime] LastModifiedTimeAfter
     Optional[EndpointStatus] StatusEquals
 
-# no @derive(Json): member(s) Endpoints: list[EndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[EndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointsOutput:
     list[EndpointSummary] Endpoints
     Optional[str] NextToken
@@ -11762,8 +12087,9 @@ struct ListExperimentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ExperimentSummaries: list[ExperimentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExperimentSummaries: list[ExperimentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExperimentsResponse:
     Optional[list[ExperimentSummary]] ExperimentSummaries
     Optional[str] NextToken
@@ -11780,8 +12106,9 @@ struct ListFeatureGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FeatureGroupSummaries: list[FeatureGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureGroupSummaries: list[FeatureGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFeatureGroupsResponse:
     list[FeatureGroupSummary] FeatureGroupSummaries
     Optional[str] NextToken
@@ -11794,8 +12121,9 @@ struct ListFlowDefinitionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlowDefinitionSummaries: list[FlowDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowDefinitionSummaries: list[FlowDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowDefinitionsResponse:
     list[FlowDefinitionSummary] FlowDefinitionSummaries
     Optional[str] NextToken
@@ -11814,8 +12142,9 @@ struct ListHubContentVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) HubContentSummaries: list[HubContentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSummaries: list[HubContentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHubContentVersionsResponse:
     list[HubContentInfo] HubContentSummaries
     Optional[str] NextToken
@@ -11833,8 +12162,9 @@ struct ListHubContentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) HubContentSummaries: list[HubContentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSummaries: list[HubContentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHubContentsResponse:
     list[HubContentInfo] HubContentSummaries
     Optional[str] NextToken
@@ -11851,8 +12181,9 @@ struct ListHubsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) HubSummaries: list[HubInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubSummaries: list[HubInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHubsResponse:
     list[HubInfo] HubSummaries
     Optional[str] NextToken
@@ -11865,8 +12196,9 @@ struct ListHumanTaskUisRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HumanTaskUiSummaries: list[HumanTaskUiSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanTaskUiSummaries: list[HumanTaskUiSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHumanTaskUisResponse:
     list[HumanTaskUiSummary] HumanTaskUiSummaries
     Optional[str] NextToken
@@ -11884,8 +12216,9 @@ struct ListHyperParameterTuningJobsRequest:
     Optional[DateTime] LastModifiedTimeBefore
     Optional[HyperParameterTuningJobStatus] StatusEquals
 
-# no @derive(Json): member(s) HyperParameterTuningJobSummaries: list[HyperParameterTuningJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameterTuningJobSummaries: list[HyperParameterTuningJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHyperParameterTuningJobsResponse:
     list[HyperParameterTuningJobSummary] HyperParameterTuningJobSummaries
     Optional[str] NextToken
@@ -11902,8 +12235,9 @@ struct ListImageVersionsRequest:
     Optional[ImageVersionSortBy] SortBy
     Optional[ImageVersionSortOrder] SortOrder
 
-# no @derive(Json): member(s) ImageVersions: list[ImageVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageVersions: list[ImageVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImageVersionsResponse:
     Optional[list[ImageVersion]] ImageVersions
     Optional[str] NextToken
@@ -11920,8 +12254,9 @@ struct ListImagesRequest:
     Optional[ImageSortBy] SortBy
     Optional[ImageSortOrder] SortOrder
 
-# no @derive(Json): member(s) Images: list[Image] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Images: list[Image] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImagesResponse:
     Optional[list[Image]] Images
     Optional[str] NextToken
@@ -11941,8 +12276,9 @@ struct ListInferenceComponentsInput:
     Optional[str] EndpointNameEquals
     Optional[str] VariantNameEquals
 
-# no @derive(Json): member(s) InferenceComponents: list[InferenceComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceComponents: list[InferenceComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceComponentsOutput:
     list[InferenceComponentSummary] InferenceComponents
     Optional[str] NextToken
@@ -11961,8 +12297,9 @@ struct ListInferenceExperimentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InferenceExperiments: list[InferenceExperimentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceExperiments: list[InferenceExperimentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceExperimentsResponse:
     Optional[list[InferenceExperimentSummary]] InferenceExperiments
     Optional[str] NextToken
@@ -11975,8 +12312,9 @@ struct ListInferenceRecommendationsJobStepsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Steps: list[InferenceRecommendationsJobStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[InferenceRecommendationsJobStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceRecommendationsJobStepsResponse:
     Optional[list[InferenceRecommendationsJobStep]] Steps
     Optional[str] NextToken
@@ -11996,8 +12334,9 @@ struct ListInferenceRecommendationsJobsRequest:
     Optional[str] ModelNameEquals
     Optional[str] ModelPackageVersionArnEquals
 
-# no @derive(Json): member(s) InferenceRecommendationsJobs: list[InferenceRecommendationsJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceRecommendationsJobs: list[InferenceRecommendationsJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceRecommendationsJobsResponse:
     list[InferenceRecommendationsJob] InferenceRecommendationsJobs
     Optional[str] NextToken
@@ -12008,8 +12347,9 @@ struct ListJobSchemaVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) JobConfigSchemas: list[JobConfigSchemaVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobConfigSchemas: list[JobConfigSchemaVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobSchemaVersionsResponse:
     Optional[str] NextToken
     list[JobConfigSchemaVersionSummary] JobConfigSchemas
@@ -12028,8 +12368,9 @@ struct ListJobsRequest:
     Optional[SortOrder] SortOrder
     Optional[JobStatus] StatusEquals
 
-# no @derive(Json): member(s) JobSummaries: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobSummaries: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     Optional[str] NextToken
     list[JobSummary] JobSummaries
@@ -12045,8 +12386,9 @@ struct ListLabelingJobsForWorkteamRequest:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) LabelingJobSummaryList: list[LabelingJobForWorkteamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelingJobSummaryList: list[LabelingJobForWorkteamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLabelingJobsForWorkteamResponse:
     list[LabelingJobForWorkteamSummary] LabelingJobSummaryList
     Optional[str] NextToken
@@ -12064,8 +12406,9 @@ struct ListLabelingJobsRequest:
     Optional[SortOrder] SortOrder
     Optional[LabelingJobStatus] StatusEquals
 
-# no @derive(Json): member(s) LabelingJobSummaryList: list[LabelingJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelingJobSummaryList: list[LabelingJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLabelingJobsResponse:
     Optional[list[LabelingJobSummary]] LabelingJobSummaryList
     Optional[str] NextToken
@@ -12079,8 +12422,9 @@ struct ListLineageGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LineageGroupSummaries: list[LineageGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineageGroupSummaries: list[LineageGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLineageGroupsResponse:
     Optional[list[LineageGroupSummary]] LineageGroupSummaries
     Optional[str] NextToken
@@ -12098,8 +12442,9 @@ struct ListMlflowAppsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Summaries: list[MlflowAppSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summaries: list[MlflowAppSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMlflowAppsResponse:
     Optional[list[MlflowAppSummary]] Summaries
     Optional[str] NextToken
@@ -12115,8 +12460,9 @@ struct ListMlflowTrackingServersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TrackingServerSummaries: list[TrackingServerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrackingServerSummaries: list[TrackingServerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMlflowTrackingServersResponse:
     Optional[list[TrackingServerSummary]] TrackingServerSummaries
     Optional[str] NextToken
@@ -12132,8 +12478,9 @@ struct ListModelBiasJobDefinitionsRequest:
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelBiasJobDefinitionsResponse:
     list[MonitoringJobDefinitionSummary] JobDefinitionSummaries
     Optional[str] NextToken
@@ -12151,8 +12498,9 @@ struct ListModelCardExportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ModelCardExportJobSummaries: list[ModelCardExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelCardExportJobSummaries: list[ModelCardExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelCardExportJobsResponse:
     list[ModelCardExportJobSummary] ModelCardExportJobSummaries
     Optional[str] NextToken
@@ -12168,8 +12516,9 @@ struct ListModelCardVersionsRequest:
     Optional[str] SortBy
     Optional[ModelCardSortOrder] SortOrder
 
-# no @derive(Json): member(s) ModelCardVersionSummaryList: list[ModelCardVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelCardVersionSummaryList: list[ModelCardVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelCardVersionsResponse:
     list[ModelCardVersionSummary] ModelCardVersionSummaryList
     Optional[str] NextToken
@@ -12185,8 +12534,9 @@ struct ListModelCardsRequest:
     Optional[ModelCardSortBy] SortBy
     Optional[ModelCardSortOrder] SortOrder
 
-# no @derive(Json): member(s) ModelCardSummaries: list[ModelCardSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelCardSummaries: list[ModelCardSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelCardsResponse:
     list[ModelCardSummary] ModelCardSummaries
     Optional[str] NextToken
@@ -12202,21 +12552,24 @@ struct ListModelExplainabilityJobDefinitionsRequest:
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelExplainabilityJobDefinitionsResponse:
     list[MonitoringJobDefinitionSummary] JobDefinitionSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SearchExpression: ModelMetadataSearchExpression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchExpression: ModelMetadataSearchExpression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelMetadataRequest:
     Optional[ModelMetadataSearchExpression] SearchExpression
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ModelMetadataSummaries: list[ModelMetadataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelMetadataSummaries: list[ModelMetadataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelMetadataResponse:
     list[ModelMetadataSummary] ModelMetadataSummaries
     Optional[str] NextToken
@@ -12232,8 +12585,9 @@ struct ListModelPackageGroupsInput:
     Optional[SortOrder] SortOrder
     Optional[CrossAccountFilterOption] CrossAccountFilterOption
 
-# no @derive(Json): member(s) ModelPackageGroupSummaryList: list[ModelPackageGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelPackageGroupSummaryList: list[ModelPackageGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelPackageGroupsOutput:
     list[ModelPackageGroupSummary] ModelPackageGroupSummaryList
     Optional[str] NextToken
@@ -12251,8 +12605,9 @@ struct ListModelPackagesInput:
     Optional[ModelPackageSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ModelPackageSummaryList: list[ModelPackageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelPackageSummaryList: list[ModelPackageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelPackagesOutput:
     list[ModelPackageSummary] ModelPackageSummaryList
     Optional[str] NextToken
@@ -12268,8 +12623,9 @@ struct ListModelQualityJobDefinitionsRequest:
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobDefinitionSummaries: list[MonitoringJobDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelQualityJobDefinitionsResponse:
     list[MonitoringJobDefinitionSummary] JobDefinitionSummaries
     Optional[str] NextToken
@@ -12284,8 +12640,9 @@ struct ListModelsInput:
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-# no @derive(Json): member(s) Models: list[ModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Models: list[ModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelsOutput:
     list[ModelSummary] Models
     Optional[str] NextToken
@@ -12302,8 +12659,9 @@ struct ListMonitoringAlertHistoryRequest:
     Optional[DateTime] CreationTimeAfter
     Optional[MonitoringAlertStatus] StatusEquals
 
-# no @derive(Json): member(s) MonitoringAlertHistory: list[MonitoringAlertHistorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringAlertHistory: list[MonitoringAlertHistorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitoringAlertHistoryResponse:
     Optional[list[MonitoringAlertHistorySummary]] MonitoringAlertHistory
     Optional[str] NextToken
@@ -12314,8 +12672,9 @@ struct ListMonitoringAlertsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MonitoringAlertSummaries: list[MonitoringAlertSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringAlertSummaries: list[MonitoringAlertSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitoringAlertsResponse:
     Optional[list[MonitoringAlertSummary]] MonitoringAlertSummaries
     Optional[str] NextToken
@@ -12338,8 +12697,9 @@ struct ListMonitoringExecutionsRequest:
     Optional[str] MonitoringJobDefinitionName
     Optional[MonitoringType] MonitoringTypeEquals
 
-# no @derive(Json): member(s) MonitoringExecutionSummaries: list[MonitoringExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringExecutionSummaries: list[MonitoringExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitoringExecutionsResponse:
     list[MonitoringExecutionSummary] MonitoringExecutionSummaries
     Optional[str] NextToken
@@ -12360,8 +12720,9 @@ struct ListMonitoringSchedulesRequest:
     Optional[str] MonitoringJobDefinitionName
     Optional[MonitoringType] MonitoringTypeEquals
 
-# no @derive(Json): member(s) MonitoringScheduleSummaries: list[MonitoringScheduleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringScheduleSummaries: list[MonitoringScheduleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitoringSchedulesResponse:
     list[MonitoringScheduleSummary] MonitoringScheduleSummaries
     Optional[str] NextToken
@@ -12378,8 +12739,9 @@ struct ListNotebookInstanceLifecycleConfigsInput:
     Optional[DateTime] LastModifiedTimeBefore
     Optional[DateTime] LastModifiedTimeAfter
 
-# no @derive(Json): member(s) NotebookInstanceLifecycleConfigs: list[NotebookInstanceLifecycleConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotebookInstanceLifecycleConfigs: list[NotebookInstanceLifecycleConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebookInstanceLifecycleConfigsOutput:
     Optional[str] NextToken
     Optional[list[NotebookInstanceLifecycleConfigSummary]] NotebookInstanceLifecycleConfigs
@@ -12400,8 +12762,9 @@ struct ListNotebookInstancesInput:
     Optional[str] DefaultCodeRepositoryContains
     Optional[str] AdditionalCodeRepositoryEquals
 
-# no @derive(Json): member(s) NotebookInstances: list[NotebookInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotebookInstances: list[NotebookInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebookInstancesOutput:
     Optional[str] NextToken
     Optional[list[NotebookInstanceSummary]] NotebookInstances
@@ -12420,8 +12783,9 @@ struct ListOptimizationJobsRequest:
     Optional[ListOptimizationJobsSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) OptimizationJobSummaries: list[OptimizationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptimizationJobSummaries: list[OptimizationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOptimizationJobsResponse:
     list[OptimizationJobSummary] OptimizationJobSummaries
     Optional[str] NextToken
@@ -12431,8 +12795,9 @@ struct ListPartnerAppsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Summaries: list[PartnerAppSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summaries: list[PartnerAppSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartnerAppsResponse:
     Optional[list[PartnerAppSummary]] Summaries
     Optional[str] NextToken
@@ -12444,8 +12809,9 @@ struct ListPipelineExecutionStepsRequest:
     Optional[int64] MaxResults
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) PipelineExecutionSteps: list[PipelineExecutionStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineExecutionSteps: list[PipelineExecutionStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineExecutionStepsResponse:
     Optional[list[PipelineExecutionStep]] PipelineExecutionSteps
     Optional[str] NextToken
@@ -12460,8 +12826,9 @@ struct ListPipelineExecutionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PipelineExecutionSummaries: list[PipelineExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineExecutionSummaries: list[PipelineExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineExecutionsResponse:
     Optional[list[PipelineExecutionSummary]] PipelineExecutionSummaries
     Optional[str] NextToken
@@ -12472,8 +12839,9 @@ struct ListPipelineParametersForExecutionRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PipelineParameters: list[Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineParameters: list[Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineParametersForExecutionResponse:
     Optional[list[Parameter]] PipelineParameters
     Optional[str] NextToken
@@ -12487,8 +12855,9 @@ struct ListPipelineVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PipelineVersionSummaries: list[PipelineVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineVersionSummaries: list[PipelineVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineVersionsResponse:
     Optional[list[PipelineVersionSummary]] PipelineVersionSummaries
     Optional[str] NextToken
@@ -12503,8 +12872,9 @@ struct ListPipelinesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PipelineSummaries: list[PipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineSummaries: list[PipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelinesResponse:
     Optional[list[PipelineSummary]] PipelineSummaries
     Optional[str] NextToken
@@ -12522,8 +12892,9 @@ struct ListProcessingJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProcessingJobSummaries: list[ProcessingJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingJobSummaries: list[ProcessingJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProcessingJobsResponse:
     list[ProcessingJobSummary] ProcessingJobSummaries
     Optional[str] NextToken
@@ -12538,8 +12909,9 @@ struct ListProjectsInput:
     Optional[ProjectSortBy] SortBy
     Optional[ProjectSortOrder] SortOrder
 
-# no @derive(Json): member(s) ProjectSummaryList: list[ProjectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProjectSummaryList: list[ProjectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsOutput:
     list[ProjectSummary] ProjectSummaryList
     Optional[str] NextToken
@@ -12554,8 +12926,9 @@ struct ListResourceCatalogsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceCatalogs: list[ResourceCatalog] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCatalogs: list[ResourceCatalog] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceCatalogsResponse:
     Optional[list[ResourceCatalog]] ResourceCatalogs
     Optional[str] NextToken
@@ -12569,8 +12942,9 @@ struct ListSpacesRequest:
     Optional[str] DomainIdEquals
     Optional[str] SpaceNameContains
 
-# no @derive(Json): member(s) Spaces: list[SpaceDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Spaces: list[SpaceDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpacesResponse:
     Optional[list[SpaceDetails]] Spaces
     Optional[str] NextToken
@@ -12583,8 +12957,9 @@ struct ListStageDevicesRequest:
     Optional[bool] ExcludeDevicesDeployedInOtherStage
     str StageName
 
-# no @derive(Json): member(s) DeviceDeploymentSummaries: list[DeviceDeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceDeploymentSummaries: list[DeviceDeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStageDevicesResponse:
     list[DeviceDeploymentSummary] DeviceDeploymentSummaries
     Optional[str] NextToken
@@ -12602,8 +12977,9 @@ struct ListStudioLifecycleConfigsRequest:
     Optional[StudioLifecycleConfigSortKey] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) StudioLifecycleConfigs: list[StudioLifecycleConfigDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StudioLifecycleConfigs: list[StudioLifecycleConfigDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStudioLifecycleConfigsResponse:
     Optional[str] NextToken
     Optional[list[StudioLifecycleConfigDetails]] StudioLifecycleConfigs
@@ -12614,8 +12990,9 @@ struct ListSubscribedWorkteamsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SubscribedWorkteams: list[SubscribedWorkteam] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubscribedWorkteams: list[SubscribedWorkteam] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscribedWorkteamsResponse:
     list[SubscribedWorkteam] SubscribedWorkteams
     Optional[str] NextToken
@@ -12626,8 +13003,9 @@ struct ListTagsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsOutput:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -12641,8 +13019,9 @@ struct ListTrainingJobsForHyperParameterTuningJobRequest:
     Optional[TrainingJobSortByOptions] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) TrainingJobSummaries: list[HyperParameterTrainingJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingJobSummaries: list[HyperParameterTrainingJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainingJobsForHyperParameterTuningJobResponse:
     list[HyperParameterTrainingJobSummary] TrainingJobSummaries
     Optional[str] NextToken
@@ -12662,14 +13041,16 @@ struct ListTrainingJobsRequest:
     Optional[WarmPoolResourceStatus] WarmPoolStatusEquals
     Optional[str] TrainingPlanArnEquals
 
-# no @derive(Json): member(s) TrainingJobSummaries: list[TrainingJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingJobSummaries: list[TrainingJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainingJobsResponse:
     list[TrainingJobSummary] TrainingJobSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[TrainingPlanFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[TrainingPlanFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainingPlansRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -12679,8 +13060,9 @@ struct ListTrainingPlansRequest:
     Optional[TrainingPlanSortOrder] SortOrder
     Optional[list[TrainingPlanFilter]] Filters
 
-# no @derive(Json): member(s) TrainingPlanSummaries: list[TrainingPlanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingPlanSummaries: list[TrainingPlanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainingPlansResponse:
     Optional[str] NextToken
     list[TrainingPlanSummary] TrainingPlanSummaries
@@ -12694,8 +13076,9 @@ struct ListTrainingSessionsRequest:
     Optional[str] NameContains
     Optional[TrainingSessionStatus] StatusEquals
 
-# no @derive(Json): member(s) TrainingSessionSummaries: list[TrainingSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingSessionSummaries: list[TrainingSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainingSessionsResponse:
     Optional[str] NextToken
     Optional[list[TrainingSessionSummary]] TrainingSessionSummaries
@@ -12713,8 +13096,9 @@ struct ListTransformJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TransformJobSummaries: list[TransformJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransformJobSummaries: list[TransformJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTransformJobsResponse:
     list[TransformJobSummary] TransformJobSummaries
     Optional[str] NextToken
@@ -12731,8 +13115,9 @@ struct ListTrialComponentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrialComponentSummaries: list[TrialComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrialComponentSummaries: list[TrialComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrialComponentsResponse:
     Optional[list[TrialComponentSummary]] TrialComponentSummaries
     Optional[str] NextToken
@@ -12748,8 +13133,9 @@ struct ListTrialsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrialSummaries: list[TrialSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrialSummaries: list[TrialSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrialsResponse:
     Optional[list[TrialSummary]] TrialSummaries
     Optional[str] NextToken
@@ -12760,8 +13146,9 @@ struct ListUltraServersByReservedCapacityRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UltraServers: list[UltraServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UltraServers: list[UltraServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUltraServersByReservedCapacityResponse:
     Optional[str] NextToken
     list[UltraServer] UltraServers
@@ -12775,8 +13162,9 @@ struct ListUserProfilesRequest:
     Optional[str] DomainIdEquals
     Optional[str] UserProfileNameContains
 
-# no @derive(Json): member(s) UserProfiles: list[UserProfileDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserProfiles: list[UserProfileDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserProfilesResponse:
     Optional[list[UserProfileDetails]] UserProfiles
     Optional[str] NextToken
@@ -12789,8 +13177,9 @@ struct ListWorkforcesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Workforces: list[Workforce] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workforces: list[Workforce] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkforcesResponse:
     list[Workforce] Workforces
     Optional[str] NextToken
@@ -12803,8 +13192,9 @@ struct ListWorkteamsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Workteams: list[Workteam] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workteams: list[Workteam] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkteamsResponse:
     list[Workteam] Workteams
     Optional[str] NextToken
@@ -12823,8 +13213,9 @@ struct MLflowConfiguration:
 struct ManagedConfiguration:
     Optional[str] ManagedStorageType
 
-# no @derive(Json): member(s) OidcMemberDefinition: OidcMemberDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OidcMemberDefinition: OidcMemberDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberDefinition:
     Optional[CognitoMemberDefinition] CognitoMemberDefinition
     Optional[OidcMemberDefinition] OidcMemberDefinition
@@ -12896,8 +13287,9 @@ struct MlflowDetails:
     Optional[str] MlflowExperimentId
     Optional[str] MlflowRunId
 
-# no @derive(Json): member(s) PrimaryContainer: ContainerDefinition, Containers: list[ContainerDefinition], VpcConfig: VpcConfig, Tags: list[Tag], DeploymentRecommendation: DeploymentRecommendation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryContainer: ContainerDefinition, Containers: list[ContainerDefinition], VpcConfig: VpcConfig, Tags: list[Tag], DeploymentRecommendation: DeploymentRecommendation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Model:
     Optional[str] ModelName
     Optional[ContainerDefinition] PrimaryContainer
@@ -12919,8 +13311,9 @@ struct ModelAccessConfig:
 struct ModelArtifacts:
     str S3ModelArtifacts
 
-# no @derive(Json): member(s) Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelBiasAppSpecification:
     str ImageUri
     str ConfigUri
@@ -12937,8 +13330,9 @@ struct ModelBiasJobInput:
     Optional[BatchTransformInput] BatchTransformInput
     MonitoringGroundTruthS3Input GroundTruthS3Input
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelCard:
     Optional[str] ModelCardArn
     Optional[str] ModelCardName
@@ -12999,14 +13393,16 @@ struct ModelClientConfig:
     Optional[int64] InvocationsTimeoutInSeconds
     Optional[int64] InvocationsMaxRetries
 
-# no @derive(Json): member(s) OverrideEnvironment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideEnvironment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelCompilationConfig:
     Optional[str] Image
     Optional[dict[str, str]] OverrideEnvironment
 
-# no @derive(Json): member(s) EnvironmentParameters: list[EnvironmentParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentParameters: list[EnvironmentParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelConfiguration:
     Optional[str] InferenceSpecificationName
     Optional[list[EnvironmentParameter]] EnvironmentParameters
@@ -13024,8 +13420,9 @@ struct ModelDashboardEndpoint:
 struct ModelDashboardIndicatorAction:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Model: Model, Endpoints: list[ModelDashboardEndpoint], LastBatchTransformJob: TransformJob, MonitoringSchedules: list[ModelDashboardMonitoringSchedule], ModelCard: ModelDashboardModelCard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Model: Model, Endpoints: list[ModelDashboardEndpoint], LastBatchTransformJob: TransformJob, MonitoringSchedules: list[ModelDashboardMonitoringSchedule], ModelCard: ModelDashboardModelCard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelDashboardModel:
     Optional[Model] Model
     Optional[list[ModelDashboardEndpoint]] Endpoints
@@ -13033,8 +13430,9 @@ struct ModelDashboardModel:
     Optional[list[ModelDashboardMonitoringSchedule]] MonitoringSchedules
     Optional[ModelDashboardModelCard] ModelCard
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelDashboardModelCard:
     Optional[str] ModelCardArn
     Optional[str] ModelCardName
@@ -13049,8 +13447,9 @@ struct ModelDashboardModelCard:
     Optional[str] ModelId
     Optional[str] RiskRating
 
-# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig, MonitoringAlertSummaries: list[MonitoringAlertSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig, MonitoringAlertSummaries: list[MonitoringAlertSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelDashboardMonitoringSchedule:
     Optional[str] MonitoringScheduleArn
     Optional[str] MonitoringScheduleName
@@ -13087,8 +13486,9 @@ struct ModelDeployResult:
 struct ModelDigests:
     Optional[str] ArtifactDigest
 
-# no @derive(Json): member(s) Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelExplainabilityAppSpecification:
     str ImageUri
     str ConfigUri
@@ -13129,8 +13529,9 @@ struct ModelMetadataFilter:
     ModelMetadataFilterType Name
     str Value
 
-# no @derive(Json): member(s) Filters: list[ModelMetadataFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ModelMetadataFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelMetadataSearchExpression:
     Optional[list[ModelMetadataFilter]] Filters
 
@@ -13149,8 +13550,9 @@ struct ModelMetrics:
     Optional[Bias] Bias
     Optional[Explainability] Explainability
 
-# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification, SourceAlgorithmSpecification: SourceAlgorithmSpecification, ValidationSpecification: ModelPackageValidationSpecification, ModelPackageStatusDetails: ModelPackageStatusDetails, AdditionalInferenceSpecifications: list[AdditionalInferenceSpecificationDefinition], Tags: list[Tag], CustomerMetadataProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceSpecification: InferenceSpecification, SourceAlgorithmSpecification: SourceAlgorithmSpecification, ValidationSpecification: ModelPackageValidationSpecification, ModelPackageStatusDetails: ModelPackageStatusDetails, AdditionalInferenceSpecifications: list[AdditionalInferenceSpecificationDefinition], Tags: list[Tag], CustomerMetadataProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelPackage:
     Optional[str] ModelPackageName
     Optional[str] ModelPackageGroupName
@@ -13190,8 +13592,9 @@ struct ModelPackageConfig:
     str ModelPackageGroupArn
     Optional[str] SourceModelPackageArn
 
-# no @derive(Json): member(s) Environment: dict[str, str], AdditionalModelDataSources: list[AdditionalModelDataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str], AdditionalModelDataSources: list[AdditionalModelDataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelPackageContainerDefinition:
     Optional[str] ContainerHostname
     Optional[str] Image
@@ -13210,8 +13613,9 @@ struct ModelPackageContainerDefinition:
     Optional[bool] IsCheckpoint
     Optional[BaseModel] BaseModel
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelPackageGroup:
     Optional[str] ModelPackageGroupName
     Optional[str] ModelPackageGroupArn
@@ -13239,8 +13643,9 @@ struct ModelPackageModelCard:
 struct ModelPackageSecurityConfig:
     str KmsKeyId
 
-# no @derive(Json): member(s) ValidationStatuses: list[ModelPackageStatusItem], ImageScanStatuses: list[ModelPackageStatusItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationStatuses: list[ModelPackageStatusItem], ImageScanStatuses: list[ModelPackageStatusItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelPackageStatusDetails:
     list[ModelPackageStatusItem] ValidationStatuses
     Optional[list[ModelPackageStatusItem]] ImageScanStatuses
@@ -13264,14 +13669,16 @@ struct ModelPackageSummary:
     Optional[ModelLifeCycle] ModelLifeCycle
     Optional[ModelPackageRegistrationType] ModelPackageRegistrationType
 
-# no @derive(Json): member(s) TransformJobDefinition: TransformJobDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransformJobDefinition: TransformJobDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelPackageValidationProfile:
     str ProfileName
     TransformJobDefinition TransformJobDefinition
 
-# no @derive(Json): member(s) ValidationProfiles: list[ModelPackageValidationProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationProfiles: list[ModelPackageValidationProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelPackageValidationSpecification:
     str ValidationRole
     list[ModelPackageValidationProfile] ValidationProfiles
@@ -13281,8 +13688,9 @@ struct ModelQuality:
     Optional[MetricsSource] Statistics
     Optional[MetricsSource] Constraints
 
-# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str], Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str], Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelQualityAppSpecification:
     str ImageUri
     Optional[list[str]] ContainerEntrypoint
@@ -13303,8 +13711,9 @@ struct ModelQualityJobInput:
     Optional[BatchTransformInput] BatchTransformInput
     MonitoringGroundTruthS3Input GroundTruthS3Input
 
-# no @derive(Json): member(s) OverrideEnvironment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideEnvironment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelQuantizationConfig:
     Optional[str] Image
     Optional[dict[str, str]] OverrideEnvironment
@@ -13314,8 +13723,9 @@ struct ModelRegisterSettings:
     Optional[FeatureStatus] Status
     Optional[str] CrossAccountModelRegisterRoleArn
 
-# no @derive(Json): member(s) OverrideEnvironment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideEnvironment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelShardingConfig:
     Optional[str] Image
     Optional[dict[str, str]] OverrideEnvironment
@@ -13374,8 +13784,9 @@ struct MonitoringAlertSummary:
     int64 EvaluationPeriod
     MonitoringAlertActions Actions
 
-# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerEntrypoint: list[str], ContainerArguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringAppSpecification:
     str ImageUri
     Optional[list[str]] ContainerEntrypoint
@@ -13432,8 +13843,9 @@ struct MonitoringInput:
     Optional[EndpointInput] EndpointInput
     Optional[BatchTransformInput] BatchTransformInput
 
-# no @derive(Json): member(s) MonitoringInputs: list[MonitoringInput], MonitoringOutputConfig: MonitoringOutputConfig, MonitoringAppSpecification: MonitoringAppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringInputs: list[MonitoringInput], MonitoringOutputConfig: MonitoringOutputConfig, MonitoringAppSpecification: MonitoringAppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringJobDefinition:
     Optional[MonitoringBaselineConfig] BaselineConfig
     list[MonitoringInput] MonitoringInputs
@@ -13456,8 +13868,9 @@ struct MonitoringJobDefinitionSummary:
 struct MonitoringJsonDatasetFormat:
     Optional[bool] Line
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringNetworkConfig:
     Optional[bool] EnableInterContainerTrafficEncryption
     Optional[bool] EnableNetworkIsolation
@@ -13467,8 +13880,9 @@ struct MonitoringNetworkConfig:
 struct MonitoringOutput:
     MonitoringS3Output S3Output
 
-# no @derive(Json): member(s) MonitoringOutputs: list[MonitoringOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringOutputs: list[MonitoringOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringOutputConfig:
     list[MonitoringOutput] MonitoringOutputs
     Optional[str] KmsKeyId
@@ -13488,8 +13902,9 @@ struct MonitoringS3Output:
     str LocalPath
     Optional[ProcessingS3UploadMode] S3UploadMode
 
-# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringSchedule:
     Optional[str] MonitoringScheduleArn
     Optional[str] MonitoringScheduleName
@@ -13503,8 +13918,9 @@ struct MonitoringSchedule:
     Optional[MonitoringExecutionSummary] LastMonitoringExecutionSummary
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MonitoringJobDefinition: MonitoringJobDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringJobDefinition: MonitoringJobDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringScheduleConfig:
     Optional[ScheduleConfig] ScheduleConfig
     Optional[MonitoringJobDefinition] MonitoringJobDefinition
@@ -13534,27 +13950,31 @@ struct MonitoringStoppingCondition:
 struct MultiModelConfig:
     Optional[ModelCacheSetting] ModelCacheSetting
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NeoVpcConfig:
     list[str] SecurityGroupIds
     list[str] Subnets
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NestedFilters:
     str NestedPropertyName
     list[Filter] Filters
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfig:
     Optional[bool] EnableInterContainerTrafficEncryption
     Optional[bool] EnableNetworkIsolation
     Optional[VpcConfig] VpcConfig
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], InstanceTypes: list[ClusterInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], InstanceTypes: list[ClusterInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeAdditionResult:
     str NodeLogicalId
     str InstanceGroupName
@@ -13573,8 +13993,9 @@ struct NotebookInstanceLifecycleConfigSummary:
 struct NotebookInstanceLifecycleHook:
     Optional[str] Content
 
-# no @derive(Json): member(s) AdditionalCodeRepositories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalCodeRepositories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotebookInstanceSummary:
     str NotebookInstanceName
     str NotebookInstanceArn
@@ -13609,8 +14030,9 @@ struct OfflineStoreStatus:
     OfflineStoreStatusValue Status
     Optional[str] BlockedReason
 
-# no @derive(Json): member(s) AuthenticationRequestExtraParams: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationRequestExtraParams: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OidcConfig:
     str ClientId
     str ClientSecret
@@ -13623,8 +14045,9 @@ struct OidcConfig:
     Optional[str] Scope
     Optional[dict[str, str]] AuthenticationRequestExtraParams
 
-# no @derive(Json): member(s) AuthenticationRequestExtraParams: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationRequestExtraParams: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OidcConfigForResponse:
     Optional[str] ClientId
     Optional[str] Issuer
@@ -13636,8 +14059,9 @@ struct OidcConfigForResponse:
     Optional[str] Scope
     Optional[dict[str, str]] AuthenticationRequestExtraParams
 
-# no @derive(Json): member(s) Groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OidcMemberDefinition:
     Optional[list[str]] Groups
 
@@ -13657,8 +14081,9 @@ struct OnlineStoreConfigUpdate:
 struct OnlineStoreSecurityConfig:
     Optional[str] KmsKeyId
 
-# no @derive(Json): member(s) ModelQuantizationConfig: ModelQuantizationConfig, ModelCompilationConfig: ModelCompilationConfig, ModelShardingConfig: ModelShardingConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelQuantizationConfig: ModelQuantizationConfig, ModelCompilationConfig: ModelCompilationConfig, ModelShardingConfig: ModelShardingConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OptimizationConfig:
     Optional[ModelQuantizationConfig] ModelQuantizationConfig
     Optional[ModelCompilationConfig] ModelCompilationConfig
@@ -13681,8 +14106,9 @@ struct OptimizationJobOutputConfig:
     str S3OutputLocation
     Optional[OptimizationSageMakerModel] SageMakerModel
 
-# no @derive(Json): member(s) OptimizationTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptimizationTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OptimizationJobSummary:
     str OptimizationJobName
     str OptimizationJobArn
@@ -13707,8 +14133,9 @@ struct OptimizationOutput:
 struct OptimizationSageMakerModel:
     Optional[str] ModelName
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OptimizationVpcConfig:
     list[str] SecurityGroupIds
     list[str] Subnets
@@ -13749,15 +14176,17 @@ struct Parameter:
     str Name
     str Value
 
-# no @derive(Json): member(s) CategoricalParameterRangeSpecification: CategoricalParameterRangeSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoricalParameterRangeSpecification: CategoricalParameterRangeSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterRange:
     Optional[IntegerParameterRangeSpecification] IntegerParameterRangeSpecification
     Optional[ContinuousParameterRangeSpecification] ContinuousParameterRangeSpecification
     Optional[CategoricalParameterRangeSpecification] CategoricalParameterRangeSpecification
 
-# no @derive(Json): member(s) IntegerParameterRanges: list[IntegerParameterRange], ContinuousParameterRanges: list[ContinuousParameterRange], CategoricalParameterRanges: list[CategoricalParameterRange], AutoParameters: list[AutoParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegerParameterRanges: list[IntegerParameterRange], ContinuousParameterRanges: list[ContinuousParameterRange], CategoricalParameterRanges: list[CategoricalParameterRange], AutoParameters: list[AutoParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterRanges:
     Optional[list[IntegerParameterRange]] IntegerParameterRanges
     Optional[list[ContinuousParameterRange]] ContinuousParameterRanges
@@ -13773,8 +14202,9 @@ struct Parent:
 struct ParentHyperParameterTuningJob:
     Optional[str] HyperParameterTuningJobName
 
-# no @derive(Json): member(s) AdminUsers: list[str], Arguments: dict[str, str], AssignedGroupPatterns: list[str], RoleGroupAssignments: list[RoleGroupAssignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminUsers: list[str], Arguments: dict[str, str], AssignedGroupPatterns: list[str], RoleGroupAssignments: list[RoleGroupAssignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartnerAppConfig:
     Optional[list[str]] AdminUsers
     Optional[dict[str, str]] Arguments
@@ -13793,16 +14223,18 @@ struct PartnerAppSummary:
     Optional[PartnerAppStatus] Status
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) ProductionVariants: list[PendingProductionVariantSummary], ShadowProductionVariants: list[PendingProductionVariantSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductionVariants: list[PendingProductionVariantSummary], ShadowProductionVariants: list[PendingProductionVariantSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PendingDeploymentSummary:
     str EndpointConfigName
     Optional[list[PendingProductionVariantSummary]] ProductionVariants
     Optional[DateTime] StartTime
     Optional[list[PendingProductionVariantSummary]] ShadowProductionVariants
 
-# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PendingProductionVariantSummary:
     str VariantName
     Optional[list[DeployedImage]] DeployedImages
@@ -13825,8 +14257,9 @@ struct Phase:
     Optional[int64] SpawnRate
     Optional[int64] DurationInSeconds
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Pipeline:
     Optional[str] PipelineArn
     Optional[str] PipelineName
@@ -13848,8 +14281,9 @@ struct PipelineDefinitionS3Location:
     str ObjectKey
     Optional[str] VersionId
 
-# no @derive(Json): member(s) SelectiveExecutionConfig: SelectiveExecutionConfig, PipelineParameters: list[Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectiveExecutionConfig: SelectiveExecutionConfig, PipelineParameters: list[Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecution:
     Optional[str] PipelineArn
     Optional[str] PipelineExecutionArn
@@ -13868,8 +14302,9 @@ struct PipelineExecution:
     Optional[int64] PipelineVersionId
     Optional[str] PipelineVersionDisplayName
 
-# no @derive(Json): member(s) Metadata: PipelineExecutionStepMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: PipelineExecutionStepMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionStep:
     Optional[str] StepName
     Optional[str] StepDisplayName
@@ -13884,8 +14319,9 @@ struct PipelineExecutionStep:
     Optional[SelectiveExecutionResult] SelectiveExecutionResult
     Optional[IterationContext] IterationContext
 
-# no @derive(Json): member(s) Callback: CallbackStepMetadata, Lambda: LambdaStepMetadata, Lineage: LineageMetadata, Cleanup: CleanupStepMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Callback: CallbackStepMetadata, Lambda: LambdaStepMetadata, Lineage: LineageMetadata, Cleanup: CleanupStepMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionStepMetadata:
     Optional[TrainingJobStepMetadata] TrainingJob
     Optional[ProcessingJobStepMetadata] ProcessingJob
@@ -13987,8 +14423,9 @@ struct PriorityClass:
     str Name
     int64 Weight
 
-# no @derive(Json): member(s) InstancePreferences: list[ProcessingInstancePreference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstancePreferences: list[ProcessingInstancePreference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessingClusterConfig:
     Optional[int64] InstanceCount
     Optional[ProcessingInstanceType] InstanceType
@@ -14014,8 +14451,9 @@ struct ProcessingInstancePreference:
     ProcessingInstanceType InstanceType
     Optional[int64] InstanceCount
 
-# no @derive(Json): member(s) ProcessingInputs: list[ProcessingInput], ProcessingOutputConfig: ProcessingOutputConfig, ProcessingResources: ProcessingResources, AppSpecification: AppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingInputs: list[ProcessingInput], ProcessingOutputConfig: ProcessingOutputConfig, ProcessingResources: ProcessingResources, AppSpecification: AppSpecification, Environment: dict[str, str], NetworkConfig: NetworkConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessingJob:
     Optional[list[ProcessingInput]] ProcessingInputs
     Optional[ProcessingOutputConfig] ProcessingOutputConfig
@@ -14062,14 +14500,16 @@ struct ProcessingOutput:
     Optional[ProcessingFeatureStoreOutput] FeatureStoreOutput
     Optional[bool] AppManaged
 
-# no @derive(Json): member(s) Outputs: list[ProcessingOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[ProcessingOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessingOutputConfig:
     list[ProcessingOutput] Outputs
     Optional[str] KmsKeyId
 
-# no @derive(Json): member(s) ClusterConfig: ProcessingClusterConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterConfig: ProcessingClusterConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessingResources:
     ProcessingClusterConfig ClusterConfig
 
@@ -14092,8 +14532,9 @@ struct ProcessingS3Output:
 struct ProcessingStoppingCondition:
     int64 MaxRuntimeInSeconds
 
-# no @derive(Json): member(s) InstancePools: list[InstancePool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstancePools: list[InstancePool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductionVariant:
     str VariantName
     Optional[str] ModelName
@@ -14119,8 +14560,9 @@ struct ProductionVariantCapacityReservationConfig:
     Optional[str] CapacityReservationPreference
     Optional[str] MlReservationArn
 
-# no @derive(Json): member(s) Ec2CapacityReservations: list[Ec2CapacityReservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2CapacityReservations: list[Ec2CapacityReservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductionVariantCapacityReservationSummary:
     Optional[str] MlReservationArn
     Optional[str] CapacityReservationPreference
@@ -14169,8 +14611,9 @@ struct ProductionVariantStatus:
     Optional[str] StatusMessage
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], CapacityReservationConfig: ProductionVariantCapacityReservationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], CapacityReservationConfig: ProductionVariantCapacityReservationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductionVariantSummary:
     str VariantName
     Optional[list[DeployedImage]] DeployedImages
@@ -14186,24 +14629,27 @@ struct ProductionVariantSummary:
     Optional[ProductionVariantRoutingConfig] RoutingConfig
     Optional[ProductionVariantCapacityReservationSummary] CapacityReservationConfig
 
-# no @derive(Json): member(s) ProfilingParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfilingParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfilerConfig:
     Optional[str] S3OutputPath
     Optional[int64] ProfilingIntervalInMilliseconds
     Optional[dict[str, str]] ProfilingParameters
     Optional[bool] DisableProfiler
 
-# no @derive(Json): member(s) ProfilingParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfilingParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfilerConfigForUpdate:
     Optional[str] S3OutputPath
     Optional[int64] ProfilingIntervalInMilliseconds
     Optional[dict[str, str]] ProfilingParameters
     Optional[bool] DisableProfiler
 
-# no @derive(Json): member(s) RuleParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfilerRuleConfiguration:
     str RuleConfigurationName
     Optional[str] LocalPath
@@ -14221,8 +14667,9 @@ struct ProfilerRuleEvaluationStatus:
     Optional[str] StatusDetails
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) ServiceCatalogProvisioningDetails: ServiceCatalogProvisioningDetails, TemplateProviderDetails: list[TemplateProviderDetail], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceCatalogProvisioningDetails: ServiceCatalogProvisioningDetails, TemplateProviderDetails: list[TemplateProviderDetail], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Project:
     Optional[str] ProjectArn
     Optional[str] ProjectName
@@ -14286,8 +14733,9 @@ struct QualityCheckStepMetadata:
     Optional[bool] SkipCheck
     Optional[bool] RegisterNewBaseline
 
-# no @derive(Json): member(s) Types: list[str], LineageTypes: list[LineageType], Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str], LineageTypes: list[LineageType], Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryFilters:
     Optional[list[str]] Types
     Optional[list[LineageType]] LineageTypes
@@ -14297,8 +14745,9 @@ struct QueryFilters:
     Optional[DateTime] ModifiedAfter
     Optional[dict[str, str]] Properties
 
-# no @derive(Json): member(s) StartArns: list[str], Filters: QueryFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StartArns: list[str], Filters: QueryFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryLineageRequest:
     Optional[list[str]] StartArns
     Optional[Direction] Direction
@@ -14308,15 +14757,17 @@ struct QueryLineageRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Vertices: list[Vertex], Edges: list[Edge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vertices: list[Vertex], Edges: list[Edge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryLineageResponse:
     Optional[list[Vertex]] Vertices
     Optional[list[Edge]] Edges
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CustomImages: list[CustomImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomImages: list[CustomImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RSessionAppSettings:
     Optional[ResourceSpec] DefaultResourceSpec
     Optional[list[CustomImage]] CustomImages
@@ -14345,8 +14796,9 @@ struct RealTimeInferenceConfig:
     ProductionVariantInstanceType InstanceType
     int64 InstanceCount
 
-# no @derive(Json): member(s) Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeInferenceRecommendation:
     str RecommendationId
     ProductionVariantInstanceType InstanceType
@@ -14356,8 +14808,9 @@ struct RealTimeInferenceRecommendation:
 struct RecommendationJobCompiledOutputConfig:
     Optional[str] S3OutputUri
 
-# no @derive(Json): member(s) PayloadConfig: RecommendationJobPayloadConfig, SupportedInstanceTypes: list[str], SupportedResponseMIMETypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PayloadConfig: RecommendationJobPayloadConfig, SupportedInstanceTypes: list[str], SupportedResponseMIMETypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationJobContainerConfig:
     Optional[str] Domain
     Optional[str] Task
@@ -14370,8 +14823,9 @@ struct RecommendationJobContainerConfig:
     Optional[str] DataInputConfig
     Optional[list[str]] SupportedResponseMIMETypes
 
-# no @derive(Json): member(s) ModelConfiguration: ModelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelConfiguration: ModelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationJobInferenceBenchmark:
     Optional[RecommendationMetrics] Metrics
     Optional[InferenceMetrics] EndpointMetrics
@@ -14381,8 +14835,9 @@ struct RecommendationJobInferenceBenchmark:
     Optional[DateTime] InvocationEndTime
     Optional[DateTime] InvocationStartTime
 
-# no @derive(Json): member(s) TrafficPattern: TrafficPattern, EndpointConfigurations: list[EndpointInputConfiguration], ContainerConfig: RecommendationJobContainerConfig, Endpoints: list[EndpointInfo], VpcConfig: RecommendationJobVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrafficPattern: TrafficPattern, EndpointConfigurations: list[EndpointInputConfiguration], ContainerConfig: RecommendationJobContainerConfig, Endpoints: list[EndpointInfo], VpcConfig: RecommendationJobVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationJobInputConfig:
     Optional[str] ModelPackageVersionArn
     Optional[str] ModelName
@@ -14400,8 +14855,9 @@ struct RecommendationJobOutputConfig:
     Optional[str] KmsKeyId
     Optional[RecommendationJobCompiledOutputConfig] CompiledOutputConfig
 
-# no @derive(Json): member(s) SupportedContentTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedContentTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationJobPayloadConfig:
     Optional[str] SamplePayloadUrl
     Optional[list[str]] SupportedContentTypes
@@ -14411,15 +14867,17 @@ struct RecommendationJobResourceLimit:
     Optional[int64] MaxNumberOfTests
     Optional[int64] MaxParallelOfTests
 
-# no @derive(Json): member(s) ModelLatencyThresholds: list[ModelLatencyThreshold] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelLatencyThresholds: list[ModelLatencyThreshold] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationJobStoppingConditions:
     Optional[int64] MaxInvocations
     Optional[list[ModelLatencyThreshold]] ModelLatencyThresholds
     Optional[FlatInvocations] FlatInvocations
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationJobVpcConfig:
     list[str] SecurityGroupIds
     list[str] Subnets
@@ -14446,8 +14904,9 @@ struct RedshiftDatasetDefinition:
     RedshiftResultFormat OutputFormat
     Optional[RedshiftResultCompressionType] OutputCompression
 
-# no @derive(Json): member(s) Devices: list[Device], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Devices: list[Device], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterDevicesRequest:
     str DeviceFleetName
     list[Device] Devices
@@ -14472,8 +14931,9 @@ struct RenderUiTemplateRequest:
     str RoleArn
     Optional[str] HumanTaskUiArn
 
-# no @derive(Json): member(s) Errors: list[RenderingError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[RenderingError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenderUiTemplateResponse:
     str RenderedContent
     list[RenderingError] Errors
@@ -14535,8 +14995,9 @@ struct ResourceCatalog:
     str Description
     DateTime CreationTime
 
-# no @derive(Json): member(s) InstanceGroups: list[InstanceGroup], InstancePlacementConfig: InstancePlacementConfig, InstancePreferences: list[InstancePreference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[InstanceGroup], InstancePlacementConfig: InstancePlacementConfig, InstancePreferences: list[InstancePreference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceConfig:
     Optional[TrainingInstanceType] InstanceType
     Optional[int64] InstanceCount
@@ -14572,8 +15033,9 @@ struct ResourceLimits:
 struct ResourceNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) AbsoluteBorrowLimits: list[ComputeQuotaResourceConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AbsoluteBorrowLimits: list[ComputeQuotaResourceConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSharingConfig:
     ResourceSharingStrategy Strategy
     Optional[int64] BorrowLimit
@@ -14606,8 +15068,9 @@ struct RetryPipelineExecutionResponse:
 struct RetryStrategy:
     int64 MaximumRetryAttempts
 
-# no @derive(Json): member(s) GroupPatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupPatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoleGroupAssignment:
     str RoleName
     list[str] GroupPatterns
@@ -14624,8 +15087,9 @@ struct RollingUpdatePolicy:
     Optional[int64] MaximumExecutionTimeoutInSeconds
     Optional[CapacitySize] RollbackMaximumBatchSize
 
-# no @derive(Json): member(s) AttributeNames: list[str], InstanceGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[str], InstanceGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DataSource:
     S3DataType S3DataType
     str S3Uri
@@ -14685,29 +15149,33 @@ struct ScheduleConfig:
     Optional[str] DataAnalysisStartTime
     Optional[str] DataAnalysisEndTime
 
-# no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledUpdateConfig:
     str ScheduleExpression
     Optional[DeploymentConfiguration] DeploymentConfig
 
-# no @derive(Json): member(s) PriorityClasses: list[PriorityClass] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PriorityClasses: list[PriorityClass] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchedulerConfig:
     Optional[list[PriorityClass]] PriorityClasses
     Optional[FairShare] FairShare
     Optional[IdleResourceSharing] IdleResourceSharing
 
-# no @derive(Json): member(s) Filters: list[Filter], NestedFilters: list[NestedFilters], SubExpressions: list[SearchExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter], NestedFilters: list[NestedFilters], SubExpressions: list[SearchExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchExpression:
     Optional[list[Filter]] Filters
     Optional[list[NestedFilters]] NestedFilters
     Optional[list[SearchExpression]] SubExpressions
     Optional[BooleanOperator] Operator
 
-# no @derive(Json): member(s) TrainingJob: TrainingJob, Experiment: Experiment, Trial: Trial, TrialComponent: TrialComponent, Endpoint: Endpoint, ModelPackage: ModelPackage, ModelPackageGroup: ModelPackageGroup, Pipeline: Pipeline, PipelineExecution: PipelineExecution, FeatureGroup: FeatureGroup, FeatureMetadata: FeatureMetadata, Project: Project, HyperParameterTuningJob: HyperParameterTuningJobSearchEntity, ModelCard: ModelCard, Model: ModelDashboardModel, Job: Job, HubContent: HubContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingJob: TrainingJob, Experiment: Experiment, Trial: Trial, TrialComponent: TrialComponent, Endpoint: Endpoint, ModelPackage: ModelPackage, ModelPackageGroup: ModelPackageGroup, Pipeline: Pipeline, PipelineExecution: PipelineExecution, FeatureGroup: FeatureGroup, FeatureMetadata: FeatureMetadata, Project: Project, HyperParameterTuningJob: HyperParameterTuningJobSearchEntity, ModelCard: ModelCard, Model: ModelDashboardModel, Job: Job, HubContent: HubContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRecord:
     Optional[TrainingJob] TrainingJob
     Optional[Experiment] Experiment
@@ -14728,8 +15196,9 @@ struct SearchRecord:
     Optional[Job] Job
     Optional[HubContent] HubContent
 
-# no @derive(Json): member(s) SearchExpression: SearchExpression, VisibilityConditions: list[VisibilityConditions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchExpression: SearchExpression, VisibilityConditions: list[VisibilityConditions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRequest:
     ResourceType Resource
     Optional[SearchExpression] SearchExpression
@@ -14740,15 +15209,17 @@ struct SearchRequest:
     Optional[CrossAccountFilterOption] CrossAccountFilterOption
     Optional[list[VisibilityConditions]] VisibilityConditions
 
-# no @derive(Json): member(s) Results: list[SearchRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[SearchRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResponse:
     Optional[list[SearchRecord]] Results
     Optional[str] NextToken
     Optional[TotalHits] TotalHits
 
-# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTrainingPlanOfferingsRequest:
     Optional[ReservedCapacityInstanceType] InstanceType
     Optional[int64] InstanceCount
@@ -14760,8 +15231,9 @@ struct SearchTrainingPlanOfferingsRequest:
     Optional[list[SageMakerResourceName]] TargetResources
     Optional[str] TrainingPlanArn
 
-# no @derive(Json): member(s) TrainingPlanOfferings: list[TrainingPlanOffering], TrainingPlanExtensionOfferings: list[TrainingPlanExtensionOffering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingPlanOfferings: list[TrainingPlanOffering], TrainingPlanExtensionOfferings: list[TrainingPlanExtensionOffering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTrainingPlanOfferingsResponse:
     list[TrainingPlanOffering] TrainingPlanOfferings
     Optional[list[TrainingPlanExtensionOffering]] TrainingPlanExtensionOfferings
@@ -14777,8 +15249,9 @@ struct SecondaryStatusTransition:
 struct SelectedStep:
     str StepName
 
-# no @derive(Json): member(s) SelectedSteps: list[SelectedStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedSteps: list[SelectedStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectiveExecutionConfig:
     Optional[str] SourcePipelineExecutionArn
     list[SelectedStep] SelectedSteps
@@ -14797,8 +15270,9 @@ struct SendPipelineExecutionStepFailureRequest:
 struct SendPipelineExecutionStepFailureResponse:
     Optional[str] PipelineExecutionArn
 
-# no @derive(Json): member(s) OutputParameters: list[OutputParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputParameters: list[OutputParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendPipelineExecutionStepSuccessRequest:
     str CallbackToken
     Optional[list[OutputParameter]] OutputParameters
@@ -14824,16 +15298,18 @@ struct ServiceCatalogProvisionedProductDetails:
     Optional[str] ProvisionedProductId
     Optional[str] ProvisionedProductStatusMessage
 
-# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceCatalogProvisioningDetails:
     str ProductId
     Optional[str] ProvisioningArtifactId
     Optional[str] PathId
     Optional[list[ProvisioningParameter]] ProvisioningParameters
 
-# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceCatalogProvisioningUpdateDetails:
     Optional[str] ProvisioningArtifactId
     Optional[list[ProvisioningParameter]] ProvisioningParameters
@@ -14842,8 +15318,9 @@ struct ServiceCatalogProvisioningUpdateDetails:
 struct SessionChainingConfig:
     Optional[bool] EnableSessionTagChaining
 
-# no @derive(Json): member(s) ShadowModelVariants: list[ShadowModelVariantConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShadowModelVariants: list[ShadowModelVariantConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShadowModeConfig:
     str SourceModelVariantName
     list[ShadowModelVariantConfig] ShadowModelVariants
@@ -14876,13 +15353,15 @@ struct SourceAlgorithm:
     Optional[str] ModelDataETag
     str AlgorithmName
 
-# no @derive(Json): member(s) SourceAlgorithms: list[SourceAlgorithm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceAlgorithms: list[SourceAlgorithm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceAlgorithmSpecification:
     list[SourceAlgorithm] SourceAlgorithms
 
-# no @derive(Json): member(s) Cidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceIpConfig:
     list[str] Cidrs
 
@@ -14911,15 +15390,17 @@ struct SpaceDetails:
 struct SpaceIdleSettings:
     Optional[int64] IdleTimeoutInMinutes
 
-# no @derive(Json): member(s) CodeRepositories: list[CodeRepository] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeRepositories: list[CodeRepository] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpaceJupyterLabAppSettings:
     Optional[ResourceSpec] DefaultResourceSpec
     Optional[list[CodeRepository]] CodeRepositories
     Optional[SpaceAppLifecycleManagement] AppLifecycleManagement
 
-# no @derive(Json): member(s) JupyterServerAppSettings: JupyterServerAppSettings, KernelGatewayAppSettings: KernelGatewayAppSettings, JupyterLabAppSettings: SpaceJupyterLabAppSettings, CustomFileSystems: list[CustomFileSystem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JupyterServerAppSettings: JupyterServerAppSettings, KernelGatewayAppSettings: KernelGatewayAppSettings, JupyterLabAppSettings: SpaceJupyterLabAppSettings, CustomFileSystems: list[CustomFileSystem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpaceSettings:
     Optional[JupyterServerAppSettings] JupyterServerAppSettings
     Optional[KernelGatewayAppSettings] KernelGatewayAppSettings
@@ -14955,8 +15436,9 @@ struct Stairs:
     Optional[int64] NumberOfSteps
     Optional[int64] UsersPerStep
 
-# no @derive(Json): member(s) DeepHealthCheckConfigurations: list[InstanceGroupHealthCheckConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeepHealthCheckConfigurations: list[InstanceGroupHealthCheckConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartClusterHealthCheckRequest:
     str ClusterName
     list[InstanceGroupHealthCheckConfiguration] DeepHealthCheckConfigurations
@@ -14994,8 +15476,9 @@ struct StartMonitoringScheduleRequest:
 struct StartNotebookInstanceInput:
     str NotebookInstanceName
 
-# no @derive(Json): member(s) PipelineParameters: list[Parameter], SelectiveExecutionConfig: SelectiveExecutionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineParameters: list[Parameter], SelectiveExecutionConfig: SelectiveExecutionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartPipelineExecutionRequest:
     str PipelineName
     Optional[str] PipelineExecutionDisplayName
@@ -15058,8 +15541,9 @@ struct StopEdgePackagingJobRequest:
 struct StopHyperParameterTuningJobRequest:
     str HyperParameterTuningJobName
 
-# no @derive(Json): member(s) ModelVariantActions: dict[str, ModelVariantAction], DesiredModelVariants: list[ModelVariantConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelVariantActions: dict[str, ModelVariantAction], DesiredModelVariants: list[ModelVariantConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopInferenceExperimentRequest:
     str Name
     dict[str, ModelVariantAction] ModelVariantActions
@@ -15153,8 +15637,9 @@ struct StudioLifecycleConfigDetails:
     Optional[DateTime] LastModifiedTime
     Optional[StudioLifecycleConfigAppType] StudioLifecycleConfigAppType
 
-# no @derive(Json): member(s) HiddenMlTools: list[MlTools], HiddenAppTypes: list[AppType], HiddenInstanceTypes: list[AppInstanceType], HiddenSageMakerImageVersionAliases: list[HiddenSageMakerImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HiddenMlTools: list[MlTools], HiddenAppTypes: list[AppType], HiddenInstanceTypes: list[AppInstanceType], HiddenSageMakerImageVersionAliases: list[HiddenSageMakerImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StudioWebPortalSettings:
     Optional[list[MlTools]] HiddenMlTools
     Optional[list[AppType]] HiddenAppTypes
@@ -15174,8 +15659,9 @@ struct SubscribedWorkteam:
 struct SuggestionQuery:
     Optional[PropertyNameQuery] PropertyNameQuery
 
-# no @derive(Json): member(s) CandidateGenerationConfig: CandidateGenerationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CandidateGenerationConfig: CandidateGenerationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TabularJobConfig:
     Optional[CandidateGenerationConfig] CandidateGenerationConfig
     Optional[AutoMLJobCompletionCriteria] CompletionCriteria
@@ -15206,8 +15692,9 @@ struct TargetTrackingScalingPolicyConfiguration:
     Optional[MetricSpecification] MetricSpecification
     Optional[float64] TargetValue
 
-# no @derive(Json): member(s) CfnTemplateProviderDetail: CfnTemplateProviderDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CfnTemplateProviderDetail: CfnTemplateProviderDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateProviderDetail:
     Optional[CfnTemplateProviderDetail] CfnTemplateProviderDetail
 
@@ -15226,8 +15713,9 @@ struct TextClassificationJobConfig:
     str ContentColumn
     str TargetLabelColumn
 
-# no @derive(Json): member(s) TextGenerationHyperParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextGenerationHyperParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextGenerationJobConfig:
     Optional[AutoMLJobCompletionCriteria] CompletionCriteria
     Optional[str] BaseModelName
@@ -15256,16 +15744,18 @@ struct ThroughputConfigUpdate:
     Optional[int64] ProvisionedReadCapacityUnits
     Optional[int64] ProvisionedWriteCapacityUnits
 
-# no @derive(Json): member(s) GroupingAttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupingAttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesConfig:
     str TargetAttributeName
     str TimestampAttributeName
     str ItemIdentifierAttributeName
     Optional[list[str]] GroupingAttributeNames
 
-# no @derive(Json): member(s) ForecastQuantiles: list[str], Transformations: TimeSeriesTransformations, TimeSeriesConfig: TimeSeriesConfig, HolidayConfig: list[HolidayConfigAttributes], CandidateGenerationConfig: CandidateGenerationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastQuantiles: list[str], Transformations: TimeSeriesTransformations, TimeSeriesConfig: TimeSeriesConfig, HolidayConfig: list[HolidayConfigAttributes], CandidateGenerationConfig: CandidateGenerationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesForecastingJobConfig:
     Optional[str] FeatureSpecificationS3Uri
     Optional[AutoMLJobCompletionCriteria] CompletionCriteria
@@ -15282,8 +15772,9 @@ struct TimeSeriesForecastingSettings:
     Optional[FeatureStatus] Status
     Optional[str] AmazonForecastRoleArn
 
-# no @derive(Json): member(s) Filling: dict[str, dict[FillingType, str]], Aggregation: dict[str, AggregationTransformationValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filling: dict[str, dict[FillingType, str]], Aggregation: dict[str, AggregationTransformationValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesTransformations:
     Optional[dict[str, dict[FillingType, str]]] Filling
     Optional[dict[str, AggregationTransformationValue]] Aggregation
@@ -15303,8 +15794,9 @@ struct TrackingServerSummary:
     Optional[IsTrackingServerActive] IsActive
     Optional[str] MlflowVersion
 
-# no @derive(Json): member(s) Phases: list[Phase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Phases: list[Phase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrafficPattern:
     Optional[TrafficType] TrafficType
     Optional[list[Phase]] Phases
@@ -15322,8 +15814,9 @@ struct TrainingImageConfig:
     TrainingRepositoryAccessMode TrainingRepositoryAccessMode
     Optional[TrainingRepositoryAuthConfig] TrainingRepositoryAuthConfig
 
-# no @derive(Json): member(s) HyperParameters: dict[str, str], AlgorithmSpecification: AlgorithmSpecification, InputDataConfig: list[Channel], ResourceConfig: ResourceConfig, VpcConfig: VpcConfig, SecondaryStatusTransitions: list[SecondaryStatusTransition], FinalMetricDataList: list[MetricData], DebugHookConfig: DebugHookConfig, DebugRuleConfigurations: list[DebugRuleConfiguration], DebugRuleEvaluationStatuses: list[DebugRuleEvaluationStatus], ProfilerConfig: ProfilerConfig, Environment: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameters: dict[str, str], AlgorithmSpecification: AlgorithmSpecification, InputDataConfig: list[Channel], ResourceConfig: ResourceConfig, VpcConfig: VpcConfig, SecondaryStatusTransitions: list[SecondaryStatusTransition], FinalMetricDataList: list[MetricData], DebugHookConfig: DebugHookConfig, DebugRuleConfigurations: list[DebugRuleConfiguration], DebugRuleEvaluationStatuses: list[DebugRuleEvaluationStatus], ProfilerConfig: ProfilerConfig, Environment: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingJob:
     Optional[str] TrainingJobName
     Optional[str] TrainingJobArn
@@ -15367,8 +15860,9 @@ struct TrainingJob:
     Optional[RetryStrategy] RetryStrategy
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) HyperParameters: dict[str, str], InputDataConfig: list[Channel], ResourceConfig: ResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HyperParameters: dict[str, str], InputDataConfig: list[Channel], ResourceConfig: ResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingJobDefinition:
     TrainingInputMode TrainingInputMode
     Optional[dict[str, str]] HyperParameters
@@ -15430,8 +15924,9 @@ struct TrainingPlanFilter:
     str Name
     str Value
 
-# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName], ReservedCapacityOfferings: list[ReservedCapacityOffering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName], ReservedCapacityOfferings: list[ReservedCapacityOffering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingPlanOffering:
     str TrainingPlanOfferingId
     list[SageMakerResourceName] TargetResources
@@ -15443,8 +15938,9 @@ struct TrainingPlanOffering:
     Optional[str] CurrencyCode
     Optional[list[ReservedCapacityOffering]] ReservedCapacityOfferings
 
-# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName], ReservedCapacitySummaries: list[ReservedCapacitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetResources: list[SageMakerResourceName], ReservedCapacitySummaries: list[ReservedCapacitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingPlanSummary:
     str TrainingPlanArn
     str TrainingPlanName
@@ -15474,8 +15970,9 @@ struct TrainingProgressInfo:
 struct TrainingRepositoryAuthConfig:
     str TrainingRepositoryCredentialsProviderArn
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingSessionDetail:
     str TrainingSessionArn
     str TrainingSessionName
@@ -15515,8 +16012,9 @@ struct TrainingSessionSummary:
     DateTime CreationTime
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) SupportedHyperParameters: list[HyperParameterSpecification], SupportedTrainingInstanceTypes: list[TrainingInstanceType], MetricDefinitions: list[MetricDefinition], TrainingChannels: list[ChannelSpecification], SupportedTuningJobObjectiveMetrics: list[HyperParameterTuningJobObjective] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedHyperParameters: list[HyperParameterSpecification], SupportedTrainingInstanceTypes: list[TrainingInstanceType], MetricDefinitions: list[MetricDefinition], TrainingChannels: list[ChannelSpecification], SupportedTuningJobObjectiveMetrics: list[HyperParameterTuningJobObjective] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingSpecification:
     str TrainingImage
     Optional[str] TrainingImageDigest
@@ -15539,8 +16037,9 @@ struct TransformInput:
     Optional[CompressionType] CompressionType
     Optional[SplitType] SplitType
 
-# no @derive(Json): member(s) Environment: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformJob:
     Optional[str] TransformJobName
     Optional[str] TransformJobArn
@@ -15565,8 +16064,9 @@ struct TransformJob:
     Optional[ExperimentConfig] ExperimentConfig
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Environment: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformJobDefinition:
     Optional[int64] MaxConcurrentTransforms
     Optional[int64] MaxPayloadInMB
@@ -15609,8 +16109,9 @@ struct TransformS3DataSource:
     S3DataType S3DataType
     str S3Uri
 
-# no @derive(Json): member(s) Tags: list[Tag], TrialComponentSummaries: list[TrialComponentSimpleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], TrialComponentSummaries: list[TrialComponentSimpleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Trial:
     Optional[str] TrialName
     Optional[str] TrialArn
@@ -15625,8 +16126,9 @@ struct Trial:
     Optional[list[Tag]] Tags
     Optional[list[TrialComponentSimpleSummary]] TrialComponentSummaries
 
-# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], InputArtifacts: dict[str, TrialComponentArtifact], OutputArtifacts: dict[str, TrialComponentArtifact], Metrics: list[TrialComponentMetricSummary], SourceDetail: TrialComponentSourceDetail, Tags: list[Tag], Parents: list[Parent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], InputArtifacts: dict[str, TrialComponentArtifact], OutputArtifacts: dict[str, TrialComponentArtifact], Metrics: list[TrialComponentMetricSummary], SourceDetail: TrialComponentSourceDetail, Tags: list[Tag], Parents: list[Parent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrialComponent:
     Optional[str] TrialComponentName
     Optional[str] DisplayName
@@ -15685,8 +16187,9 @@ struct TrialComponentSource:
     str SourceArn
     Optional[str] SourceType
 
-# no @derive(Json): member(s) TrainingJob: TrainingJob, ProcessingJob: ProcessingJob, TransformJob: TransformJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingJob: TrainingJob, ProcessingJob: ProcessingJob, TransformJob: TransformJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrialComponentSourceDetail:
     Optional[str] SourceArn
     Optional[TrainingJob] TrainingJob
@@ -15803,8 +16306,9 @@ struct UnifiedStudioSettings:
     Optional[str] ProjectS3Path
     Optional[str] SingleSignOnApplicationArn
 
-# no @derive(Json): member(s) Properties: dict[str, str], PropertiesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], PropertiesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateActionRequest:
     str ActionName
     Optional[str] Description
@@ -15816,8 +16320,9 @@ struct UpdateActionRequest:
 struct UpdateActionResponse:
     Optional[str] ActionArn
 
-# no @derive(Json): member(s) KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KernelGatewayImageConfig: KernelGatewayImageConfig, JupyterLabAppImageConfig: JupyterLabAppImageConfig, CodeEditorAppImageConfig: CodeEditorAppImageConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppImageConfigRequest:
     str AppImageConfigName
     Optional[KernelGatewayImageConfig] KernelGatewayImageConfig
@@ -15828,8 +16333,9 @@ struct UpdateAppImageConfigRequest:
 struct UpdateAppImageConfigResponse:
     Optional[str] AppImageConfigArn
 
-# no @derive(Json): member(s) Properties: dict[str, str], PropertiesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], PropertiesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateArtifactRequest:
     str ArtifactArn
     Optional[str] ArtifactName
@@ -15840,8 +16346,9 @@ struct UpdateArtifactRequest:
 struct UpdateArtifactResponse:
     Optional[str] ArtifactArn
 
-# no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupSpecification], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupSpecification], InstanceGroupsToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupSpecification], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupSpecification], InstanceGroupsToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterRequest:
     str ClusterName
     Optional[list[ClusterInstanceGroupSpecification]] InstanceGroups
@@ -15859,8 +16366,9 @@ struct UpdateClusterRequest:
 struct UpdateClusterResponse:
     str ClusterArn
 
-# no @derive(Json): member(s) SchedulerConfig: SchedulerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchedulerConfig: SchedulerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterSchedulerConfigRequest:
     str ClusterSchedulerConfigId
     int64 TargetVersion
@@ -15877,8 +16385,9 @@ struct UpdateClusterSoftwareInstanceGroupSpecification:
     str InstanceGroupName
     Optional[str] ImageReleaseVersion
 
-# no @derive(Json): member(s) InstanceGroups: list[UpdateClusterSoftwareInstanceGroupSpecification], DeploymentConfig: DeploymentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[UpdateClusterSoftwareInstanceGroupSpecification], DeploymentConfig: DeploymentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterSoftwareRequest:
     str ClusterName
     Optional[list[UpdateClusterSoftwareInstanceGroupSpecification]] InstanceGroups
@@ -15898,8 +16407,9 @@ struct UpdateCodeRepositoryInput:
 struct UpdateCodeRepositoryOutput:
     str CodeRepositoryArn
 
-# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeQuotaConfig: ComputeQuotaConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComputeQuotaRequest:
     str ComputeQuotaId
     int64 TargetVersion
@@ -15913,8 +16423,9 @@ struct UpdateComputeQuotaResponse:
     str ComputeQuotaArn
     int64 ComputeQuotaVersion
 
-# no @derive(Json): member(s) Properties: dict[str, str], PropertiesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], PropertiesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContextRequest:
     str ContextName
     Optional[str] Description
@@ -15933,14 +16444,16 @@ struct UpdateDeviceFleetRequest:
     EdgeOutputConfig OutputConfig
     Optional[bool] EnableIotRoleAlias
 
-# no @derive(Json): member(s) Devices: list[Device] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Devices: list[Device] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDevicesRequest:
     str DeviceFleetName
     list[Device] Devices
 
-# no @derive(Json): member(s) DefaultUserSettings: UserSettings, DomainSettingsForUpdate: DomainSettingsForUpdate, DefaultSpaceSettings: DefaultSpaceSettings, SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultUserSettings: UserSettings, DomainSettingsForUpdate: DomainSettingsForUpdate, DefaultSpaceSettings: DefaultSpaceSettings, SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainRequest:
     str DomainId
     Optional[UserSettings] DefaultUserSettings
@@ -15957,8 +16470,9 @@ struct UpdateDomainRequest:
 struct UpdateDomainResponse:
     Optional[str] DomainArn
 
-# no @derive(Json): member(s) ExcludeRetainedVariantProperties: list[VariantProperty], DeploymentConfig: DeploymentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludeRetainedVariantProperties: list[VariantProperty], DeploymentConfig: DeploymentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointInput:
     str EndpointName
     str EndpointConfigName
@@ -15971,8 +16485,9 @@ struct UpdateEndpointInput:
 struct UpdateEndpointOutput:
     str EndpointArn
 
-# no @derive(Json): member(s) DesiredWeightsAndCapacities: list[DesiredWeightAndCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DesiredWeightsAndCapacities: list[DesiredWeightAndCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointWeightsAndCapacitiesInput:
     str EndpointName
     list[DesiredWeightAndCapacity] DesiredWeightsAndCapacities
@@ -15991,8 +16506,9 @@ struct UpdateExperimentRequest:
 struct UpdateExperimentResponse:
     Optional[str] ExperimentArn
 
-# no @derive(Json): member(s) FeatureAdditions: list[FeatureDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureAdditions: list[FeatureDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFeatureGroupRequest:
     str FeatureGroupName
     Optional[list[FeatureDefinition]] FeatureAdditions
@@ -16003,8 +16519,9 @@ struct UpdateFeatureGroupRequest:
 struct UpdateFeatureGroupResponse:
     str FeatureGroupArn
 
-# no @derive(Json): member(s) ParameterAdditions: list[FeatureParameter], ParameterRemovals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterAdditions: list[FeatureParameter], ParameterRemovals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFeatureMetadataRequest:
     str FeatureGroupName
     str FeatureName
@@ -16024,8 +16541,9 @@ struct UpdateHubContentReferenceResponse:
     str HubArn
     str HubContentArn
 
-# no @derive(Json): member(s) HubContentSearchKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubContentSearchKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateHubContentRequest:
     str HubName
     str HubContentName
@@ -16042,8 +16560,9 @@ struct UpdateHubContentResponse:
     str HubArn
     str HubContentArn
 
-# no @derive(Json): member(s) HubSearchKeywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HubSearchKeywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateHubRequest:
     str HubName
     Optional[str] HubDescription
@@ -16054,8 +16573,9 @@ struct UpdateHubRequest:
 struct UpdateHubResponse:
     str HubArn
 
-# no @derive(Json): member(s) DeleteProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeleteProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateImageRequest:
     Optional[list[str]] DeleteProperties
     Optional[str] Description
@@ -16067,8 +16587,9 @@ struct UpdateImageRequest:
 struct UpdateImageResponse:
     Optional[str] ImageArn
 
-# no @derive(Json): member(s) AliasesToAdd: list[str], AliasesToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AliasesToAdd: list[str], AliasesToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateImageVersionRequest:
     str ImageName
     Optional[str] Alias
@@ -16087,8 +16608,9 @@ struct UpdateImageVersionRequest:
 struct UpdateImageVersionResponse:
     Optional[str] ImageVersionArn
 
-# no @derive(Json): member(s) Specification: InferenceComponentSpecification, Specifications: list[InferenceComponentSpecification], DeploymentConfig: InferenceComponentDeploymentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Specification: InferenceComponentSpecification, Specifications: list[InferenceComponentSpecification], DeploymentConfig: InferenceComponentDeploymentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInferenceComponentInput:
     str InferenceComponentName
     Optional[InferenceComponentSpecification] Specification
@@ -16109,8 +16631,9 @@ struct UpdateInferenceComponentRuntimeConfigInput:
 struct UpdateInferenceComponentRuntimeConfigOutput:
     str InferenceComponentArn
 
-# no @derive(Json): member(s) ModelVariants: list[ModelVariantConfig], DataStorageConfig: InferenceExperimentDataStorageConfig, ShadowModeConfig: ShadowModeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelVariants: list[ModelVariantConfig], DataStorageConfig: InferenceExperimentDataStorageConfig, ShadowModeConfig: ShadowModeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInferenceExperimentRequest:
     str Name
     Optional[InferenceExperimentSchedule] Schedule
@@ -16123,8 +16646,9 @@ struct UpdateInferenceExperimentRequest:
 struct UpdateInferenceExperimentResponse:
     str InferenceExperimentArn
 
-# no @derive(Json): member(s) DefaultDomainIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultDomainIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMlflowAppRequest:
     str Arn
     Optional[str] Name
@@ -16162,8 +16686,9 @@ struct UpdateModelCardRequest:
 struct UpdateModelCardResponse:
     str ModelCardArn
 
-# no @derive(Json): member(s) CustomerMetadataProperties: dict[str, str], CustomerMetadataPropertiesToRemove: list[str], AdditionalInferenceSpecificationsToAdd: list[AdditionalInferenceSpecificationDefinition], InferenceSpecification: InferenceSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerMetadataProperties: dict[str, str], CustomerMetadataPropertiesToRemove: list[str], AdditionalInferenceSpecificationsToAdd: list[AdditionalInferenceSpecificationDefinition], InferenceSpecification: InferenceSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateModelPackageInput:
     str ModelPackageArn
     Optional[ModelApprovalStatus] ModelApprovalStatus
@@ -16194,8 +16719,9 @@ struct UpdateMonitoringAlertResponse:
     str MonitoringScheduleArn
     Optional[str] MonitoringAlertName
 
-# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringScheduleConfig: MonitoringScheduleConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMonitoringScheduleRequest:
     str MonitoringScheduleName
     MonitoringScheduleConfig MonitoringScheduleConfig
@@ -16204,8 +16730,9 @@ struct UpdateMonitoringScheduleRequest:
 struct UpdateMonitoringScheduleResponse:
     str MonitoringScheduleArn
 
-# no @derive(Json): member(s) AdditionalCodeRepositories: list[str], AcceleratorTypes: list[NotebookInstanceAcceleratorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalCodeRepositories: list[str], AcceleratorTypes: list[NotebookInstanceAcceleratorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotebookInstanceInput:
     str NotebookInstanceName
     Optional[InstanceType] InstanceType
@@ -16224,8 +16751,9 @@ struct UpdateNotebookInstanceInput:
     Optional[RootAccess] RootAccess
     Optional[InstanceMetadataServiceConfiguration] InstanceMetadataServiceConfiguration
 
-# no @derive(Json): member(s) OnCreate: list[NotebookInstanceLifecycleHook], OnStart: list[NotebookInstanceLifecycleHook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnCreate: list[NotebookInstanceLifecycleHook], OnStart: list[NotebookInstanceLifecycleHook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotebookInstanceLifecycleConfigInput:
     str NotebookInstanceLifecycleConfigName
     Optional[list[NotebookInstanceLifecycleHook]] OnCreate
@@ -16241,8 +16769,9 @@ struct UpdateNotebookInstanceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ApplicationConfig: PartnerAppConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationConfig: PartnerAppConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePartnerAppRequest:
     str Arn
     Optional[PartnerAppMaintenanceConfig] MaintenanceConfig
@@ -16298,8 +16827,9 @@ struct UpdatePipelineVersionResponse:
     Optional[str] PipelineArn
     Optional[int64] PipelineVersionId
 
-# no @derive(Json): member(s) ServiceCatalogProvisioningUpdateDetails: ServiceCatalogProvisioningUpdateDetails, Tags: list[Tag], TemplateProvidersToUpdate: list[UpdateTemplateProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceCatalogProvisioningUpdateDetails: ServiceCatalogProvisioningUpdateDetails, Tags: list[Tag], TemplateProvidersToUpdate: list[UpdateTemplateProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectInput:
     str ProjectName
     Optional[str] ProjectDescription
@@ -16311,8 +16841,9 @@ struct UpdateProjectInput:
 struct UpdateProjectOutput:
     str ProjectArn
 
-# no @derive(Json): member(s) SpaceSettings: SpaceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpaceSettings: SpaceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSpaceRequest:
     str DomainId
     str SpaceName
@@ -16323,13 +16854,15 @@ struct UpdateSpaceRequest:
 struct UpdateSpaceResponse:
     Optional[str] SpaceArn
 
-# no @derive(Json): member(s) CfnTemplateProvider: CfnUpdateTemplateProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CfnTemplateProvider: CfnUpdateTemplateProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTemplateProvider:
     Optional[CfnUpdateTemplateProvider] CfnTemplateProvider
 
-# no @derive(Json): member(s) ProfilerConfig: ProfilerConfigForUpdate, ProfilerRuleConfigurations: list[ProfilerRuleConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfilerConfig: ProfilerConfigForUpdate, ProfilerRuleConfigurations: list[ProfilerRuleConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTrainingJobRequest:
     str TrainingJobName
     Optional[ProfilerConfigForUpdate] ProfilerConfig
@@ -16341,8 +16874,9 @@ struct UpdateTrainingJobRequest:
 struct UpdateTrainingJobResponse:
     str TrainingJobArn
 
-# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], ParametersToRemove: list[str], InputArtifacts: dict[str, TrialComponentArtifact], InputArtifactsToRemove: list[str], OutputArtifacts: dict[str, TrialComponentArtifact], OutputArtifactsToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, TrialComponentParameterValue], ParametersToRemove: list[str], InputArtifacts: dict[str, TrialComponentArtifact], InputArtifactsToRemove: list[str], OutputArtifacts: dict[str, TrialComponentArtifact], OutputArtifactsToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTrialComponentRequest:
     str TrialComponentName
     Optional[str] DisplayName
@@ -16369,8 +16903,9 @@ struct UpdateTrialRequest:
 struct UpdateTrialResponse:
     Optional[str] TrialArn
 
-# no @derive(Json): member(s) UserSettings: UserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserSettings: UserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserProfileRequest:
     str DomainId
     str UserProfileName
@@ -16380,8 +16915,9 @@ struct UpdateUserProfileRequest:
 struct UpdateUserProfileResponse:
     Optional[str] UserProfileArn
 
-# no @derive(Json): member(s) SourceIpConfig: SourceIpConfig, OidcConfig: OidcConfig, WorkforceVpcConfig: WorkforceVpcConfigRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceIpConfig: SourceIpConfig, OidcConfig: OidcConfig, WorkforceVpcConfig: WorkforceVpcConfigRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkforceRequest:
     str WorkforceName
     Optional[SourceIpConfig] SourceIpConfig
@@ -16389,13 +16925,15 @@ struct UpdateWorkforceRequest:
     Optional[WorkforceVpcConfigRequest] WorkforceVpcConfig
     Optional[WorkforceIpAddressType] IpAddressType
 
-# no @derive(Json): member(s) Workforce: Workforce not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workforce: Workforce not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkforceResponse:
     Workforce Workforce
 
-# no @derive(Json): member(s) MemberDefinitions: list[MemberDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDefinitions: list[MemberDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkteamRequest:
     str WorkteamName
     Optional[list[MemberDefinition]] MemberDefinitions
@@ -16403,8 +16941,9 @@ struct UpdateWorkteamRequest:
     Optional[NotificationConfiguration] NotificationConfiguration
     Optional[WorkerAccessConfiguration] WorkerAccessConfiguration
 
-# no @derive(Json): member(s) Workteam: Workteam not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workteam: Workteam not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkteamResponse:
     Workteam Workteam
 
@@ -16423,8 +16962,9 @@ struct UserProfileDetails:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) SecurityGroups: list[str], JupyterServerAppSettings: JupyterServerAppSettings, KernelGatewayAppSettings: KernelGatewayAppSettings, RSessionAppSettings: RSessionAppSettings, CanvasAppSettings: CanvasAppSettings, CodeEditorAppSettings: CodeEditorAppSettings, JupyterLabAppSettings: JupyterLabAppSettings, CustomFileSystemConfigs: list[CustomFileSystemConfig], StudioWebPortalSettings: StudioWebPortalSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[str], JupyterServerAppSettings: JupyterServerAppSettings, KernelGatewayAppSettings: KernelGatewayAppSettings, RSessionAppSettings: RSessionAppSettings, CanvasAppSettings: CanvasAppSettings, CodeEditorAppSettings: CodeEditorAppSettings, JupyterLabAppSettings: JupyterLabAppSettings, CustomFileSystemConfigs: list[CustomFileSystemConfig], StudioWebPortalSettings: StudioWebPortalSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserSettings:
     Optional[str] ExecutionRole
     Optional[list[str]] SecurityGroups
@@ -16464,8 +17004,9 @@ struct VisibilityConditions:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] SecurityGroupIds
     list[str] Subnets
@@ -16480,8 +17021,9 @@ struct WarmPoolStatus:
 struct WorkerAccessConfiguration:
     Optional[S3Presign] S3Presign
 
-# no @derive(Json): member(s) SourceIpConfig: SourceIpConfig, OidcConfig: OidcConfigForResponse, WorkforceVpcConfig: WorkforceVpcConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceIpConfig: SourceIpConfig, OidcConfig: OidcConfigForResponse, WorkforceVpcConfig: WorkforceVpcConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workforce:
     str WorkforceName
     str WorkforceArn
@@ -16496,15 +17038,17 @@ struct Workforce:
     Optional[str] FailureReason
     Optional[WorkforceIpAddressType] IpAddressType
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkforceVpcConfigRequest:
     Optional[str] VpcId
     Optional[list[str]] SecurityGroupIds
     Optional[list[str]] Subnets
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkforceVpcConfigResponse:
     str VpcId
     list[str] SecurityGroupIds
@@ -16520,8 +17064,9 @@ struct WorkspaceSettings:
     Optional[str] S3ArtifactPath
     Optional[str] S3KmsKeyId
 
-# no @derive(Json): member(s) MemberDefinitions: list[MemberDefinition], ProductListingIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDefinitions: list[MemberDefinition], ProductListingIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workteam:
     str WorkteamName
     list[MemberDefinition] MemberDefinitions
@@ -16560,133 +17105,6129 @@ def api_sagemaker_error_from_code(str code) -> SageMakerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTags (input AddTagsInput)
-#   BatchAddClusterNodes (input BatchAddClusterNodesRequest)
-#   BatchDeleteClusterNodes (input BatchDeleteClusterNodesRequest)
-#   BatchDescribeModelPackage (input BatchDescribeModelPackageInput)
-#   BatchRebootClusterNodes (input BatchRebootClusterNodesRequest)
-#   BatchReplaceClusterNodes (input BatchReplaceClusterNodesRequest)
-#   CreateAIBenchmarkJob (input CreateAIBenchmarkJobRequest)
-#   CreateAIRecommendationJob (input CreateAIRecommendationJobRequest)
-#   CreateAIWorkloadConfig (input CreateAIWorkloadConfigRequest)
-#   CreateAction (input CreateActionRequest)
-#   CreateAlgorithm (input CreateAlgorithmInput)
-#   CreateApp (input CreateAppRequest)
-#   CreateAppImageConfig (input CreateAppImageConfigRequest)
-#   CreateArtifact (input CreateArtifactRequest)
-#   CreateAutoMLJob (input CreateAutoMLJobRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateAutoMLJobV2 (input CreateAutoMLJobV2Request)
-#   CreateCluster (input CreateClusterRequest)
-#   CreateClusterSchedulerConfig (input CreateClusterSchedulerConfigRequest)
-#   CreateCodeRepository (input CreateCodeRepositoryInput)
-#   CreateCompilationJob (input CreateCompilationJobRequest)
-#   CreateComputeQuota (input CreateComputeQuotaRequest)
-#   CreateContext (input CreateContextRequest)
-#   CreateDataQualityJobDefinition (input CreateDataQualityJobDefinitionRequest)
-#   CreateDeviceFleet (input CreateDeviceFleetRequest)
-#   CreateDomain (input CreateDomainRequest)
-#   CreateEdgeDeploymentPlan (input CreateEdgeDeploymentPlanRequest)
-#   CreateEdgeDeploymentStage (input CreateEdgeDeploymentStageRequest)
-#   CreateEdgePackagingJob (input CreateEdgePackagingJobRequest)
-#   CreateEndpoint (input CreateEndpointInput)
-#   CreateEndpointConfig (input CreateEndpointConfigInput)
-#   CreateExperiment (input CreateExperimentRequest)
-#   CreateFeatureGroup (input CreateFeatureGroupRequest)
-#   CreateFlowDefinition (input CreateFlowDefinitionRequest)
-#   CreateHub (input CreateHubRequest)
-#   CreateHubContentReference (input CreateHubContentReferenceRequest)
-#   CreateHumanTaskUi (input CreateHumanTaskUiRequest)
-#   CreateHyperParameterTuningJob (input CreateHyperParameterTuningJobRequest)
-#   CreateImage (input CreateImageRequest)
-#   CreateImageVersion (input CreateImageVersionRequest)
-#   CreateInferenceComponent (input CreateInferenceComponentInput)
-#   CreateInferenceExperiment (input CreateInferenceExperimentRequest)
-#   CreateInferenceRecommendationsJob (input CreateInferenceRecommendationsJobRequest)
-#   CreateJob (input CreateJobRequest)
-#   CreateLabelingJob (input CreateLabelingJobRequest)
-#   CreateMlflowApp (input CreateMlflowAppRequest)
-#   CreateMlflowTrackingServer (input CreateMlflowTrackingServerRequest)
-#   CreateModel (input CreateModelInput)
-#   CreateModelBiasJobDefinition (input CreateModelBiasJobDefinitionRequest)
-#   CreateModelCard (input CreateModelCardRequest)
-#   CreateModelExplainabilityJobDefinition (input CreateModelExplainabilityJobDefinitionRequest)
-#   CreateModelPackage (input CreateModelPackageInput)
-#   CreateModelPackageGroup (input CreateModelPackageGroupInput)
-#   CreateModelQualityJobDefinition (input CreateModelQualityJobDefinitionRequest)
-#   CreateMonitoringSchedule (input CreateMonitoringScheduleRequest)
-#   CreateNotebookInstance (input CreateNotebookInstanceInput)
-#   CreateNotebookInstanceLifecycleConfig (input CreateNotebookInstanceLifecycleConfigInput)
-#   CreateOptimizationJob (input CreateOptimizationJobRequest)
-#   CreatePartnerApp (input CreatePartnerAppRequest)
-#   CreatePipeline (input CreatePipelineRequest)
-#   CreateProcessingJob (input CreateProcessingJobRequest)
-#   CreateProject (input CreateProjectInput)
-#   CreateSpace (input CreateSpaceRequest)
-#   CreateStudioLifecycleConfig (input CreateStudioLifecycleConfigRequest)
-#   CreateTrainingJob (input CreateTrainingJobRequest)
-#   CreateTrainingPlan (input CreateTrainingPlanRequest)
-#   CreateTrainingSession (input CreateTrainingSessionRequest)
-#   CreateTransformJob (input CreateTransformJobRequest)
-#   CreateTrial (input CreateTrialRequest)
-#   CreateTrialComponent (input CreateTrialComponentRequest)
-#   CreateUserProfile (input CreateUserProfileRequest)
-#   CreateWorkforce (input CreateWorkforceRequest)
-#   CreateWorkteam (input CreateWorkteamRequest)
-#   DeleteArtifact (input DeleteArtifactRequest)
-#   DeleteTags (input DeleteTagsInput)
-#   DeregisterDevices (input DeregisterDevicesRequest)
-#   ImportHubContent (input ImportHubContentRequest)
-#   ListModelMetadata (input ListModelMetadataRequest)
-#   ListTrainingPlans (input ListTrainingPlansRequest)
-#   QueryLineage (input QueryLineageRequest)
-#   RegisterDevices (input RegisterDevicesRequest)
-#   Search (input SearchRequest)
-#   SearchTrainingPlanOfferings (input SearchTrainingPlanOfferingsRequest)
-#   SendPipelineExecutionStepSuccess (input SendPipelineExecutionStepSuccessRequest)
-#   StartClusterHealthCheck (input StartClusterHealthCheckRequest)
-#   StartPipelineExecution (input StartPipelineExecutionRequest)
-#   StopInferenceExperiment (input StopInferenceExperimentRequest)
-#   UpdateAction (input UpdateActionRequest)
-#   UpdateAppImageConfig (input UpdateAppImageConfigRequest)
-#   UpdateArtifact (input UpdateArtifactRequest)
-#   UpdateCluster (input UpdateClusterRequest)
-#   UpdateClusterSchedulerConfig (input UpdateClusterSchedulerConfigRequest)
-#   UpdateClusterSoftware (input UpdateClusterSoftwareRequest)
-#   UpdateComputeQuota (input UpdateComputeQuotaRequest)
-#   UpdateContext (input UpdateContextRequest)
-#   UpdateDevices (input UpdateDevicesRequest)
-#   UpdateDomain (input UpdateDomainRequest)
-#   UpdateEndpoint (input UpdateEndpointInput)
-#   UpdateEndpointWeightsAndCapacities (input UpdateEndpointWeightsAndCapacitiesInput)
-#   UpdateFeatureGroup (input UpdateFeatureGroupRequest)
-#   UpdateFeatureMetadata (input UpdateFeatureMetadataRequest)
-#   UpdateHub (input UpdateHubRequest)
-#   UpdateHubContent (input UpdateHubContentRequest)
-#   UpdateImage (input UpdateImageRequest)
-#   UpdateImageVersion (input UpdateImageVersionRequest)
-#   UpdateInferenceComponent (input UpdateInferenceComponentInput)
-#   UpdateInferenceExperiment (input UpdateInferenceExperimentRequest)
-#   UpdateMlflowApp (input UpdateMlflowAppRequest)
-#   UpdateModelPackage (input UpdateModelPackageInput)
-#   UpdateMonitoringSchedule (input UpdateMonitoringScheduleRequest)
-#   UpdateNotebookInstance (input UpdateNotebookInstanceInput)
-#   UpdateNotebookInstanceLifecycleConfig (input UpdateNotebookInstanceLifecycleConfigInput)
-#   UpdatePartnerApp (input UpdatePartnerAppRequest)
-#   UpdateProject (input UpdateProjectInput)
-#   UpdateSpace (input UpdateSpaceRequest)
-#   UpdateTrainingJob (input UpdateTrainingJobRequest)
-#   UpdateTrialComponent (input UpdateTrialComponentRequest)
-#   UpdateUserProfile (input UpdateUserProfileRequest)
-#   UpdateWorkforce (input UpdateWorkforceRequest)
-#   UpdateWorkteam (input UpdateWorkteamRequest)
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListModelMetadata (input not derivable (no generated method))
-#   ListTrainingPlans (input not derivable (no generated method))
-#   Search (input not derivable (no generated method))
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_sagemaker_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def api_sagemaker_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_sagemaker_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AIAdapterSource to a compact JSON object (declaration order).
+def ai_adapter_source_to_json(AIAdapterSource v) -> str:
+    list[str] parts = []
+    if v.ModelPackageArns.is_some():
+        auto u0 = v.ModelPackageArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ModelPackageArns\":" + api_sagemaker_json_arr(e1))
+    if v.S3Uris.is_some():
+        auto u2 = v.S3Uris.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"S3Uris\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AIBenchmarkEndpoint to a compact JSON object (declaration order).
+def ai_benchmark_endpoint_to_json(AIBenchmarkEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"Identifier\":" + api_sagemaker_json_str(v.Identifier))
+    if v.TargetContainerHostname.is_some():
+        auto u0 = v.TargetContainerHostname.unwrap()
+        parts.append("\"TargetContainerHostname\":" + api_sagemaker_json_str(u0))
+    if v.InferenceComponents.is_some():
+        auto u1 = v.InferenceComponents.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"InferenceComponents\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AIBenchmarkNetworkConfig to a compact JSON object (declaration order).
+def ai_benchmark_network_config_to_json(AIBenchmarkNetworkConfig v) -> str:
+    list[str] parts = []
+    if v.VpcConfig.is_some():
+        auto u0 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AIBenchmarkTarget to a compact JSON object (declaration order).
+def ai_benchmark_target_to_json(AIBenchmarkTarget v) -> str:
+    list[str] parts = []
+    if v.Endpoint.is_some():
+        auto u0 = v.Endpoint.unwrap()
+        parts.append("\"Endpoint\":" + ai_benchmark_endpoint_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AICapacityReservationConfig to a compact JSON object (declaration order).
+def ai_capacity_reservation_config_to_json(AICapacityReservationConfig v) -> str:
+    list[str] parts = []
+    if v.CapacityReservationPreference.is_some():
+        auto u0 = v.CapacityReservationPreference.unwrap()
+        parts.append("\"CapacityReservationPreference\":" + api_sagemaker_json_str(u0))
+    if v.MlReservationArns.is_some():
+        auto u1 = v.MlReservationArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"MlReservationArns\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AIDatasetConfig to a compact JSON object (declaration order).
+def ai_dataset_config_to_json(AIDatasetConfig v) -> str:
+    list[str] parts = []
+    if v.InputDataConfig.is_some():
+        auto u0 = v.InputDataConfig.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"InputDataConfig\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AIRecommendationComputeSpec to a compact JSON object (declaration order).
+def ai_recommendation_compute_spec_to_json(AIRecommendationComputeSpec v) -> str:
+    list[str] parts = []
+    if v.InstanceTypes.is_some():
+        auto u0 = v.InstanceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"InstanceTypes\":" + api_sagemaker_json_arr(e1))
+    if v.CapacityReservationConfig.is_some():
+        auto u2 = v.CapacityReservationConfig.unwrap()
+        parts.append("\"CapacityReservationConfig\":" + ai_capacity_reservation_config_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AIRecommendationPerformanceTarget to a compact JSON object (declaration order).
+def ai_recommendation_performance_target_to_json(AIRecommendationPerformanceTarget v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Constraints:
+        e0.append(x0.to_json())
+    parts.append("\"Constraints\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AddClusterNodeSpecification to a compact JSON object (declaration order).
+def add_cluster_node_specification_to_json(AddClusterNodeSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceGroupName\":" + api_sagemaker_json_str(v.InstanceGroupName))
+    parts.append("\"IncrementTargetCountBy\":" + str(v.IncrementTargetCountBy))
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"AvailabilityZones\":" + api_sagemaker_json_arr(e1))
+    if v.InstanceTypes.is_some():
+        auto u2 = v.InstanceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"InstanceTypes\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AddTagsInput to a compact JSON object (declaration order).
+def add_tags_input_to_json(AddTagsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + api_sagemaker_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AdditionalInferenceSpecificationDefinition to a compact JSON object (declaration order).
+def additional_inference_specification_definition_to_json(AdditionalInferenceSpecificationDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Containers:
+        e1.append(model_package_container_definition_to_json(x1))
+    parts.append("\"Containers\":" + api_sagemaker_json_arr(e1))
+    if v.SupportedTransformInstanceTypes.is_some():
+        auto u2 = v.SupportedTransformInstanceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"SupportedTransformInstanceTypes\":" + api_sagemaker_json_arr(e3))
+    if v.SupportedRealtimeInferenceInstanceTypes.is_some():
+        auto u4 = v.SupportedRealtimeInferenceInstanceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SupportedRealtimeInferenceInstanceTypes\":" + api_sagemaker_json_arr(e5))
+    if v.SupportedContentTypes.is_some():
+        auto u6 = v.SupportedContentTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(api_sagemaker_json_str(x7))
+        parts.append("\"SupportedContentTypes\":" + api_sagemaker_json_arr(e7))
+    if v.SupportedResponseMIMETypes.is_some():
+        auto u8 = v.SupportedResponseMIMETypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(api_sagemaker_json_str(x9))
+        parts.append("\"SupportedResponseMIMETypes\":" + api_sagemaker_json_arr(e9))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AlgorithmSpecification to a compact JSON object (declaration order).
+def algorithm_specification_to_json(AlgorithmSpecification v) -> str:
+    list[str] parts = []
+    if v.TrainingImage.is_some():
+        auto u0 = v.TrainingImage.unwrap()
+        parts.append("\"TrainingImage\":" + api_sagemaker_json_str(u0))
+    if v.AlgorithmName.is_some():
+        auto u1 = v.AlgorithmName.unwrap()
+        parts.append("\"AlgorithmName\":" + api_sagemaker_json_str(u1))
+    parts.append("\"TrainingInputMode\":" + v.TrainingInputMode.to_json())
+    if v.MetricDefinitions.is_some():
+        auto u2 = v.MetricDefinitions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MetricDefinitions\":" + api_sagemaker_json_arr(e3))
+    if v.EnableSageMakerMetricsTimeSeries.is_some():
+        auto u4 = v.EnableSageMakerMetricsTimeSeries.unwrap()
+        parts.append("\"EnableSageMakerMetricsTimeSeries\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ContainerEntrypoint.is_some():
+        auto u5 = v.ContainerEntrypoint.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(api_sagemaker_json_str(x6))
+        parts.append("\"ContainerEntrypoint\":" + api_sagemaker_json_arr(e6))
+    if v.ContainerArguments.is_some():
+        auto u7 = v.ContainerArguments.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(api_sagemaker_json_str(x8))
+        parts.append("\"ContainerArguments\":" + api_sagemaker_json_arr(e8))
+    if v.TrainingImageConfig.is_some():
+        auto u9 = v.TrainingImageConfig.unwrap()
+        parts.append("\"TrainingImageConfig\":" + u9.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AlgorithmValidationProfile to a compact JSON object (declaration order).
+def algorithm_validation_profile_to_json(AlgorithmValidationProfile v) -> str:
+    list[str] parts = []
+    parts.append("\"ProfileName\":" + api_sagemaker_json_str(v.ProfileName))
+    parts.append("\"TrainingJobDefinition\":" + training_job_definition_to_json(v.TrainingJobDefinition))
+    if v.TransformJobDefinition.is_some():
+        auto u0 = v.TransformJobDefinition.unwrap()
+        parts.append("\"TransformJobDefinition\":" + transform_job_definition_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AlgorithmValidationSpecification to a compact JSON object (declaration order).
+def algorithm_validation_specification_to_json(AlgorithmValidationSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ValidationRole\":" + api_sagemaker_json_str(v.ValidationRole))
+    list[str] e0 = []
+    for x0 in v.ValidationProfiles:
+        e0.append(algorithm_validation_profile_to_json(x0))
+    parts.append("\"ValidationProfiles\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AppSpecification to a compact JSON object (declaration order).
+def app_specification_to_json(AppSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageUri\":" + api_sagemaker_json_str(v.ImageUri))
+    if v.ContainerEntrypoint.is_some():
+        auto u0 = v.ContainerEntrypoint.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"ContainerEntrypoint\":" + api_sagemaker_json_arr(e1))
+    if v.ContainerArguments.is_some():
+        auto u2 = v.ContainerArguments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"ContainerArguments\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ArtifactSource to a compact JSON object (declaration order).
+def artifact_source_to_json(ArtifactSource v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceUri\":" + api_sagemaker_json_str(v.SourceUri))
+    if v.SourceTypes.is_some():
+        auto u0 = v.SourceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SourceTypes\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AsyncInferenceConfig to a compact JSON object (declaration order).
+def async_inference_config_to_json(AsyncInferenceConfig v) -> str:
+    list[str] parts = []
+    if v.ClientConfig.is_some():
+        auto u0 = v.ClientConfig.unwrap()
+        parts.append("\"ClientConfig\":" + u0.to_json())
+    parts.append("\"OutputConfig\":" + async_inference_output_config_to_json(v.OutputConfig))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AsyncInferenceNotificationConfig to a compact JSON object (declaration order).
+def async_inference_notification_config_to_json(AsyncInferenceNotificationConfig v) -> str:
+    list[str] parts = []
+    if v.SuccessTopic.is_some():
+        auto u0 = v.SuccessTopic.unwrap()
+        parts.append("\"SuccessTopic\":" + api_sagemaker_json_str(u0))
+    if v.ErrorTopic.is_some():
+        auto u1 = v.ErrorTopic.unwrap()
+        parts.append("\"ErrorTopic\":" + api_sagemaker_json_str(u1))
+    if v.IncludeInferenceResponseIn.is_some():
+        auto u2 = v.IncludeInferenceResponseIn.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"IncludeInferenceResponseIn\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AsyncInferenceOutputConfig to a compact JSON object (declaration order).
+def async_inference_output_config_to_json(AsyncInferenceOutputConfig v) -> str:
+    list[str] parts = []
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u0))
+    if v.S3OutputPath.is_some():
+        auto u1 = v.S3OutputPath.unwrap()
+        parts.append("\"S3OutputPath\":" + api_sagemaker_json_str(u1))
+    if v.NotificationConfig.is_some():
+        auto u2 = v.NotificationConfig.unwrap()
+        parts.append("\"NotificationConfig\":" + async_inference_notification_config_to_json(u2))
+    if v.S3FailurePath.is_some():
+        auto u3 = v.S3FailurePath.unwrap()
+        parts.append("\"S3FailurePath\":" + api_sagemaker_json_str(u3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AutoMLAlgorithmConfig to a compact JSON object (declaration order).
+def auto_ml_algorithm_config_to_json(AutoMLAlgorithmConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AutoMLAlgorithms:
+        e0.append(x0.to_json())
+    parts.append("\"AutoMLAlgorithms\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AutoMLCandidateGenerationConfig to a compact JSON object (declaration order).
+def auto_ml_candidate_generation_config_to_json(AutoMLCandidateGenerationConfig v) -> str:
+    list[str] parts = []
+    if v.FeatureSpecificationS3Uri.is_some():
+        auto u0 = v.FeatureSpecificationS3Uri.unwrap()
+        parts.append("\"FeatureSpecificationS3Uri\":" + api_sagemaker_json_str(u0))
+    if v.AlgorithmsConfig.is_some():
+        auto u1 = v.AlgorithmsConfig.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(auto_ml_algorithm_config_to_json(x2))
+        parts.append("\"AlgorithmsConfig\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AutoMLJobConfig to a compact JSON object (declaration order).
+def auto_ml_job_config_to_json(AutoMLJobConfig v) -> str:
+    list[str] parts = []
+    if v.CompletionCriteria.is_some():
+        auto u0 = v.CompletionCriteria.unwrap()
+        parts.append("\"CompletionCriteria\":" + u0.to_json())
+    if v.SecurityConfig.is_some():
+        auto u1 = v.SecurityConfig.unwrap()
+        parts.append("\"SecurityConfig\":" + auto_ml_security_config_to_json(u1))
+    if v.CandidateGenerationConfig.is_some():
+        auto u2 = v.CandidateGenerationConfig.unwrap()
+        parts.append("\"CandidateGenerationConfig\":" + auto_ml_candidate_generation_config_to_json(u2))
+    if v.DataSplitConfig.is_some():
+        auto u3 = v.DataSplitConfig.unwrap()
+        parts.append("\"DataSplitConfig\":" + u3.to_json())
+    if v.Mode.is_some():
+        auto u4 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u4.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AutoMLSecurityConfig to a compact JSON object (declaration order).
+def auto_ml_security_config_to_json(AutoMLSecurityConfig v) -> str:
+    list[str] parts = []
+    if v.VolumeKmsKeyId.is_some():
+        auto u0 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + api_sagemaker_json_str(u0))
+    if v.EnableInterContainerTrafficEncryption.is_some():
+        auto u1 = v.EnableInterContainerTrafficEncryption.unwrap()
+        parts.append("\"EnableInterContainerTrafficEncryption\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.VpcConfig.is_some():
+        auto u2 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AutoRollbackConfig to a compact JSON object (declaration order).
+def auto_rollback_config_to_json(AutoRollbackConfig v) -> str:
+    list[str] parts = []
+    if v.Alarms.is_some():
+        auto u0 = v.Alarms.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Alarms\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize BatchAddClusterNodesRequest to a compact JSON object (declaration order).
+def batch_add_cluster_nodes_request_to_json(BatchAddClusterNodesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + api_sagemaker_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.NodesToAdd:
+        e1.append(add_cluster_node_specification_to_json(x1))
+    parts.append("\"NodesToAdd\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize BatchDeleteClusterNodesRequest to a compact JSON object (declaration order).
+def batch_delete_cluster_nodes_request_to_json(BatchDeleteClusterNodesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.NodeIds.is_some():
+        auto u0 = v.NodeIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"NodeIds\":" + api_sagemaker_json_arr(e1))
+    if v.NodeLogicalIds.is_some():
+        auto u2 = v.NodeLogicalIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"NodeLogicalIds\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize BatchDescribeModelPackageInput to a compact JSON object (declaration order).
+def batch_describe_model_package_input_to_json(BatchDescribeModelPackageInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ModelPackageArnList:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"ModelPackageArnList\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize BatchRebootClusterNodesRequest to a compact JSON object (declaration order).
+def batch_reboot_cluster_nodes_request_to_json(BatchRebootClusterNodesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.NodeIds.is_some():
+        auto u0 = v.NodeIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"NodeIds\":" + api_sagemaker_json_arr(e1))
+    if v.NodeLogicalIds.is_some():
+        auto u2 = v.NodeLogicalIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"NodeLogicalIds\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize BatchReplaceClusterNodesRequest to a compact JSON object (declaration order).
+def batch_replace_cluster_nodes_request_to_json(BatchReplaceClusterNodesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.NodeIds.is_some():
+        auto u0 = v.NodeIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"NodeIds\":" + api_sagemaker_json_arr(e1))
+    if v.NodeLogicalIds.is_some():
+        auto u2 = v.NodeLogicalIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"NodeLogicalIds\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CanvasAppSettings to a compact JSON object (declaration order).
+def canvas_app_settings_to_json(CanvasAppSettings v) -> str:
+    list[str] parts = []
+    if v.TimeSeriesForecastingSettings.is_some():
+        auto u0 = v.TimeSeriesForecastingSettings.unwrap()
+        parts.append("\"TimeSeriesForecastingSettings\":" + u0.to_json())
+    if v.ModelRegisterSettings.is_some():
+        auto u1 = v.ModelRegisterSettings.unwrap()
+        parts.append("\"ModelRegisterSettings\":" + u1.to_json())
+    if v.WorkspaceSettings.is_some():
+        auto u2 = v.WorkspaceSettings.unwrap()
+        parts.append("\"WorkspaceSettings\":" + u2.to_json())
+    if v.IdentityProviderOAuthSettings.is_some():
+        auto u3 = v.IdentityProviderOAuthSettings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"IdentityProviderOAuthSettings\":" + api_sagemaker_json_arr(e4))
+    if v.DirectDeploySettings.is_some():
+        auto u5 = v.DirectDeploySettings.unwrap()
+        parts.append("\"DirectDeploySettings\":" + u5.to_json())
+    if v.KendraSettings.is_some():
+        auto u6 = v.KendraSettings.unwrap()
+        parts.append("\"KendraSettings\":" + u6.to_json())
+    if v.GenerativeAiSettings.is_some():
+        auto u7 = v.GenerativeAiSettings.unwrap()
+        parts.append("\"GenerativeAiSettings\":" + u7.to_json())
+    if v.EmrServerlessSettings.is_some():
+        auto u8 = v.EmrServerlessSettings.unwrap()
+        parts.append("\"EmrServerlessSettings\":" + u8.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CaptureContentTypeHeader to a compact JSON object (declaration order).
+def capture_content_type_header_to_json(CaptureContentTypeHeader v) -> str:
+    list[str] parts = []
+    if v.CsvContentTypes.is_some():
+        auto u0 = v.CsvContentTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"CsvContentTypes\":" + api_sagemaker_json_arr(e1))
+    if v.JsonContentTypes.is_some():
+        auto u2 = v.JsonContentTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"JsonContentTypes\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CategoricalParameter to a compact JSON object (declaration order).
+def categorical_parameter_to_json(CategoricalParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Value:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"Value\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CategoricalParameterRange to a compact JSON object (declaration order).
+def categorical_parameter_range_to_json(CategoricalParameterRange v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"Values\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CategoricalParameterRangeSpecification to a compact JSON object (declaration order).
+def categorical_parameter_range_specification_to_json(CategoricalParameterRangeSpecification v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"Values\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CfnCreateTemplateProvider to a compact JSON object (declaration order).
+def cfn_create_template_provider_to_json(CfnCreateTemplateProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"TemplateName\":" + api_sagemaker_json_str(v.TemplateName))
+    parts.append("\"TemplateURL\":" + api_sagemaker_json_str(v.TemplateURL))
+    if v.RoleARN.is_some():
+        auto u0 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + api_sagemaker_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Parameters\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CfnUpdateTemplateProvider to a compact JSON object (declaration order).
+def cfn_update_template_provider_to_json(CfnUpdateTemplateProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"TemplateName\":" + api_sagemaker_json_str(v.TemplateName))
+    parts.append("\"TemplateURL\":" + api_sagemaker_json_str(v.TemplateURL))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Parameters\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize Channel to a compact JSON object (declaration order).
+def channel__to_json(Channel v) -> str:
+    list[str] parts = []
+    parts.append("\"ChannelName\":" + api_sagemaker_json_str(v.ChannelName))
+    parts.append("\"DataSource\":" + data_source_to_json(v.DataSource))
+    if v.ContentType.is_some():
+        auto u0 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + api_sagemaker_json_str(u0))
+    if v.CompressionType.is_some():
+        auto u1 = v.CompressionType.unwrap()
+        parts.append("\"CompressionType\":" + u1.to_json())
+    if v.RecordWrapperType.is_some():
+        auto u2 = v.RecordWrapperType.unwrap()
+        parts.append("\"RecordWrapperType\":" + u2.to_json())
+    if v.InputMode.is_some():
+        auto u3 = v.InputMode.unwrap()
+        parts.append("\"InputMode\":" + u3.to_json())
+    if v.ShuffleConfig.is_some():
+        auto u4 = v.ShuffleConfig.unwrap()
+        parts.append("\"ShuffleConfig\":" + u4.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ChannelSpecification to a compact JSON object (declaration order).
+def channel_specification_to_json(ChannelSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.IsRequired.is_some():
+        auto u1 = v.IsRequired.unwrap()
+        parts.append("\"IsRequired\":" + json.dumps(JsonValue.Bool(u1)))
+    list[str] e2 = []
+    for x2 in v.SupportedContentTypes:
+        e2.append(api_sagemaker_json_str(x2))
+    parts.append("\"SupportedContentTypes\":" + api_sagemaker_json_arr(e2))
+    if v.SupportedCompressionTypes.is_some():
+        auto u3 = v.SupportedCompressionTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SupportedCompressionTypes\":" + api_sagemaker_json_arr(e4))
+    list[str] e5 = []
+    for x5 in v.SupportedInputModes:
+        e5.append(x5.to_json())
+    parts.append("\"SupportedInputModes\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClarifyExplainerConfig to a compact JSON object (declaration order).
+def clarify_explainer_config_to_json(ClarifyExplainerConfig v) -> str:
+    list[str] parts = []
+    if v.EnableExplanations.is_some():
+        auto u0 = v.EnableExplanations.unwrap()
+        parts.append("\"EnableExplanations\":" + api_sagemaker_json_str(u0))
+    if v.InferenceConfig.is_some():
+        auto u1 = v.InferenceConfig.unwrap()
+        parts.append("\"InferenceConfig\":" + clarify_inference_config_to_json(u1))
+    parts.append("\"ShapConfig\":" + v.ShapConfig.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClarifyInferenceConfig to a compact JSON object (declaration order).
+def clarify_inference_config_to_json(ClarifyInferenceConfig v) -> str:
+    list[str] parts = []
+    if v.FeaturesAttribute.is_some():
+        auto u0 = v.FeaturesAttribute.unwrap()
+        parts.append("\"FeaturesAttribute\":" + api_sagemaker_json_str(u0))
+    if v.ContentTemplate.is_some():
+        auto u1 = v.ContentTemplate.unwrap()
+        parts.append("\"ContentTemplate\":" + api_sagemaker_json_str(u1))
+    if v.MaxRecordCount.is_some():
+        auto u2 = v.MaxRecordCount.unwrap()
+        parts.append("\"MaxRecordCount\":" + str(u2))
+    if v.MaxPayloadInMB.is_some():
+        auto u3 = v.MaxPayloadInMB.unwrap()
+        parts.append("\"MaxPayloadInMB\":" + str(u3))
+    if v.ProbabilityIndex.is_some():
+        auto u4 = v.ProbabilityIndex.unwrap()
+        parts.append("\"ProbabilityIndex\":" + str(u4))
+    if v.LabelIndex.is_some():
+        auto u5 = v.LabelIndex.unwrap()
+        parts.append("\"LabelIndex\":" + str(u5))
+    if v.ProbabilityAttribute.is_some():
+        auto u6 = v.ProbabilityAttribute.unwrap()
+        parts.append("\"ProbabilityAttribute\":" + api_sagemaker_json_str(u6))
+    if v.LabelAttribute.is_some():
+        auto u7 = v.LabelAttribute.unwrap()
+        parts.append("\"LabelAttribute\":" + api_sagemaker_json_str(u7))
+    if v.LabelHeaders.is_some():
+        auto u8 = v.LabelHeaders.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(api_sagemaker_json_str(x9))
+        parts.append("\"LabelHeaders\":" + api_sagemaker_json_arr(e9))
+    if v.FeatureHeaders.is_some():
+        auto u10 = v.FeatureHeaders.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(api_sagemaker_json_str(x11))
+        parts.append("\"FeatureHeaders\":" + api_sagemaker_json_arr(e11))
+    if v.FeatureTypes.is_some():
+        auto u12 = v.FeatureTypes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"FeatureTypes\":" + api_sagemaker_json_arr(e13))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClusterAutoPatchConfig to a compact JSON object (declaration order).
+def cluster_auto_patch_config_to_json(ClusterAutoPatchConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"PatchingStrategy\":" + v.PatchingStrategy.to_json())
+    if v.PatchSchedule.is_some():
+        auto u0 = v.PatchSchedule.unwrap()
+        parts.append("\"PatchSchedule\":" + u0.to_json())
+    if v.DeploymentConfig.is_some():
+        auto u1 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + deployment_configuration_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClusterInstanceGroupSpecification to a compact JSON object (declaration order).
+def cluster_instance_group_specification_to_json(ClusterInstanceGroupSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceCount\":" + str(v.InstanceCount))
+    if v.MinInstanceCount.is_some():
+        auto u0 = v.MinInstanceCount.unwrap()
+        parts.append("\"MinInstanceCount\":" + str(u0))
+    parts.append("\"InstanceGroupName\":" + api_sagemaker_json_str(v.InstanceGroupName))
+    if v.InstanceType.is_some():
+        auto u1 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u1.to_json())
+    if v.InstanceRequirements.is_some():
+        auto u2 = v.InstanceRequirements.unwrap()
+        parts.append("\"InstanceRequirements\":" + cluster_instance_requirements_to_json(u2))
+    if v.LifeCycleConfig.is_some():
+        auto u3 = v.LifeCycleConfig.unwrap()
+        parts.append("\"LifeCycleConfig\":" + u3.to_json())
+    parts.append("\"ExecutionRole\":" + api_sagemaker_json_str(v.ExecutionRole))
+    if v.ThreadsPerCore.is_some():
+        auto u4 = v.ThreadsPerCore.unwrap()
+        parts.append("\"ThreadsPerCore\":" + str(u4))
+    if v.InstanceStorageConfigs.is_some():
+        auto u5 = v.InstanceStorageConfigs.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"InstanceStorageConfigs\":" + api_sagemaker_json_arr(e6))
+    if v.OnStartDeepHealthChecks.is_some():
+        auto u7 = v.OnStartDeepHealthChecks.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"OnStartDeepHealthChecks\":" + api_sagemaker_json_arr(e8))
+    if v.TrainingPlanArn.is_some():
+        auto u9 = v.TrainingPlanArn.unwrap()
+        parts.append("\"TrainingPlanArn\":" + api_sagemaker_json_str(u9))
+    if v.OverrideVpcConfig.is_some():
+        auto u10 = v.OverrideVpcConfig.unwrap()
+        parts.append("\"OverrideVpcConfig\":" + vpc_config_to_json(u10))
+    if v.ScheduledUpdateConfig.is_some():
+        auto u11 = v.ScheduledUpdateConfig.unwrap()
+        parts.append("\"ScheduledUpdateConfig\":" + scheduled_update_config_to_json(u11))
+    if v.ImageId.is_some():
+        auto u12 = v.ImageId.unwrap()
+        parts.append("\"ImageId\":" + api_sagemaker_json_str(u12))
+    if v.AutoPatchConfig.is_some():
+        auto u13 = v.AutoPatchConfig.unwrap()
+        parts.append("\"AutoPatchConfig\":" + cluster_auto_patch_config_to_json(u13))
+    if v.ImageReleaseVersion.is_some():
+        auto u14 = v.ImageReleaseVersion.unwrap()
+        parts.append("\"ImageReleaseVersion\":" + api_sagemaker_json_str(u14))
+    if v.KubernetesConfig.is_some():
+        auto u15 = v.KubernetesConfig.unwrap()
+        parts.append("\"KubernetesConfig\":" + cluster_kubernetes_config_to_json(u15))
+    if v.SlurmConfig.is_some():
+        auto u16 = v.SlurmConfig.unwrap()
+        parts.append("\"SlurmConfig\":" + cluster_slurm_config_to_json(u16))
+    if v.CapacityRequirements.is_some():
+        auto u17 = v.CapacityRequirements.unwrap()
+        parts.append("\"CapacityRequirements\":" + u17.to_json())
+    if v.NetworkInterface.is_some():
+        auto u18 = v.NetworkInterface.unwrap()
+        parts.append("\"NetworkInterface\":" + u18.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClusterInstanceRequirements to a compact JSON object (declaration order).
+def cluster_instance_requirements_to_json(ClusterInstanceRequirements v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.InstanceTypes:
+        e0.append(x0.to_json())
+    parts.append("\"InstanceTypes\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClusterKubernetesConfig to a compact JSON object (declaration order).
+def cluster_kubernetes_config_to_json(ClusterKubernetesConfig v) -> str:
+    list[str] parts = []
+    if v.Labels.is_some():
+        auto u0 = v.Labels.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(api_sagemaker_json_str(k1) + ":" + api_sagemaker_json_str(u0[k1]))
+        parts.append("\"Labels\":" + api_sagemaker_json_obj(m1))
+    if v.Taints.is_some():
+        auto u2 = v.Taints.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Taints\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClusterRestrictedInstanceGroupSpecification to a compact JSON object (declaration order).
+def cluster_restricted_instance_group_specification_to_json(ClusterRestrictedInstanceGroupSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceCount\":" + str(v.InstanceCount))
+    parts.append("\"InstanceGroupName\":" + api_sagemaker_json_str(v.InstanceGroupName))
+    parts.append("\"InstanceType\":" + v.InstanceType.to_json())
+    parts.append("\"ExecutionRole\":" + api_sagemaker_json_str(v.ExecutionRole))
+    if v.ThreadsPerCore.is_some():
+        auto u0 = v.ThreadsPerCore.unwrap()
+        parts.append("\"ThreadsPerCore\":" + str(u0))
+    if v.InstanceStorageConfigs.is_some():
+        auto u1 = v.InstanceStorageConfigs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"InstanceStorageConfigs\":" + api_sagemaker_json_arr(e2))
+    if v.OnStartDeepHealthChecks.is_some():
+        auto u3 = v.OnStartDeepHealthChecks.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"OnStartDeepHealthChecks\":" + api_sagemaker_json_arr(e4))
+    if v.TrainingPlanArn.is_some():
+        auto u5 = v.TrainingPlanArn.unwrap()
+        parts.append("\"TrainingPlanArn\":" + api_sagemaker_json_str(u5))
+    if v.OverrideVpcConfig.is_some():
+        auto u6 = v.OverrideVpcConfig.unwrap()
+        parts.append("\"OverrideVpcConfig\":" + vpc_config_to_json(u6))
+    if v.ScheduledUpdateConfig.is_some():
+        auto u7 = v.ScheduledUpdateConfig.unwrap()
+        parts.append("\"ScheduledUpdateConfig\":" + scheduled_update_config_to_json(u7))
+    if v.EnvironmentConfig.is_some():
+        auto u8 = v.EnvironmentConfig.unwrap()
+        parts.append("\"EnvironmentConfig\":" + u8.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ClusterSlurmConfig to a compact JSON object (declaration order).
+def cluster_slurm_config_to_json(ClusterSlurmConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"NodeType\":" + v.NodeType.to_json())
+    if v.PartitionNames.is_some():
+        auto u0 = v.PartitionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"PartitionNames\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CodeEditorAppImageConfig to a compact JSON object (declaration order).
+def code_editor_app_image_config_to_json(CodeEditorAppImageConfig v) -> str:
+    list[str] parts = []
+    if v.FileSystemConfig.is_some():
+        auto u0 = v.FileSystemConfig.unwrap()
+        parts.append("\"FileSystemConfig\":" + u0.to_json())
+    if v.ContainerConfig.is_some():
+        auto u1 = v.ContainerConfig.unwrap()
+        parts.append("\"ContainerConfig\":" + container_config_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CodeEditorAppSettings to a compact JSON object (declaration order).
+def code_editor_app_settings_to_json(CodeEditorAppSettings v) -> str:
+    list[str] parts = []
+    if v.DefaultResourceSpec.is_some():
+        auto u0 = v.DefaultResourceSpec.unwrap()
+        parts.append("\"DefaultResourceSpec\":" + u0.to_json())
+    if v.CustomImages.is_some():
+        auto u1 = v.CustomImages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomImages\":" + api_sagemaker_json_arr(e2))
+    if v.LifecycleConfigArns.is_some():
+        auto u3 = v.LifecycleConfigArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"LifecycleConfigArns\":" + api_sagemaker_json_arr(e4))
+    if v.AppLifecycleManagement.is_some():
+        auto u5 = v.AppLifecycleManagement.unwrap()
+        parts.append("\"AppLifecycleManagement\":" + u5.to_json())
+    if v.BuiltInLifecycleConfigArn.is_some():
+        auto u6 = v.BuiltInLifecycleConfigArn.unwrap()
+        parts.append("\"BuiltInLifecycleConfigArn\":" + api_sagemaker_json_str(u6))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CollectionConfiguration to a compact JSON object (declaration order).
+def collection_configuration_to_json(CollectionConfiguration v) -> str:
+    list[str] parts = []
+    if v.CollectionName.is_some():
+        auto u0 = v.CollectionName.unwrap()
+        parts.append("\"CollectionName\":" + api_sagemaker_json_str(u0))
+    if v.CollectionParameters.is_some():
+        auto u1 = v.CollectionParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"CollectionParameters\":" + api_sagemaker_json_obj(m2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ComputeQuotaConfig to a compact JSON object (declaration order).
+def compute_quota_config_to_json(ComputeQuotaConfig v) -> str:
+    list[str] parts = []
+    if v.ComputeQuotaResources.is_some():
+        auto u0 = v.ComputeQuotaResources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ComputeQuotaResources\":" + api_sagemaker_json_arr(e1))
+    if v.ResourceSharingConfig.is_some():
+        auto u2 = v.ResourceSharingConfig.unwrap()
+        parts.append("\"ResourceSharingConfig\":" + resource_sharing_config_to_json(u2))
+    if v.PreemptTeamTasks.is_some():
+        auto u3 = v.PreemptTeamTasks.unwrap()
+        parts.append("\"PreemptTeamTasks\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ContainerConfig to a compact JSON object (declaration order).
+def container_config_to_json(ContainerConfig v) -> str:
+    list[str] parts = []
+    if v.ContainerArguments.is_some():
+        auto u0 = v.ContainerArguments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"ContainerArguments\":" + api_sagemaker_json_arr(e1))
+    if v.ContainerEntrypoint.is_some():
+        auto u2 = v.ContainerEntrypoint.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"ContainerEntrypoint\":" + api_sagemaker_json_arr(e3))
+    if v.ContainerEnvironmentVariables.is_some():
+        auto u4 = v.ContainerEnvironmentVariables.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + api_sagemaker_json_str(u4[k5]))
+        parts.append("\"ContainerEnvironmentVariables\":" + api_sagemaker_json_obj(m5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ContainerDefinition to a compact JSON object (declaration order).
+def container_definition_to_json(ContainerDefinition v) -> str:
+    list[str] parts = []
+    if v.ContainerHostname.is_some():
+        auto u0 = v.ContainerHostname.unwrap()
+        parts.append("\"ContainerHostname\":" + api_sagemaker_json_str(u0))
+    if v.Image.is_some():
+        auto u1 = v.Image.unwrap()
+        parts.append("\"Image\":" + api_sagemaker_json_str(u1))
+    if v.ImageConfig.is_some():
+        auto u2 = v.ImageConfig.unwrap()
+        parts.append("\"ImageConfig\":" + u2.to_json())
+    if v.Mode.is_some():
+        auto u3 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u3.to_json())
+    if v.ModelDataUrl.is_some():
+        auto u4 = v.ModelDataUrl.unwrap()
+        parts.append("\"ModelDataUrl\":" + api_sagemaker_json_str(u4))
+    if v.ModelDataSource.is_some():
+        auto u5 = v.ModelDataSource.unwrap()
+        parts.append("\"ModelDataSource\":" + u5.to_json())
+    if v.AdditionalModelDataSources.is_some():
+        auto u6 = v.AdditionalModelDataSources.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"AdditionalModelDataSources\":" + api_sagemaker_json_arr(e7))
+    if v.Environment.is_some():
+        auto u8 = v.Environment.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(api_sagemaker_json_str(k9) + ":" + api_sagemaker_json_str(u8[k9]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m9))
+    if v.ModelPackageName.is_some():
+        auto u10 = v.ModelPackageName.unwrap()
+        parts.append("\"ModelPackageName\":" + api_sagemaker_json_str(u10))
+    if v.InferenceSpecificationName.is_some():
+        auto u11 = v.InferenceSpecificationName.unwrap()
+        parts.append("\"InferenceSpecificationName\":" + api_sagemaker_json_str(u11))
+    if v.MultiModelConfig.is_some():
+        auto u12 = v.MultiModelConfig.unwrap()
+        parts.append("\"MultiModelConfig\":" + u12.to_json())
+    if v.ContainerMetricsConfig.is_some():
+        auto u13 = v.ContainerMetricsConfig.unwrap()
+        parts.append("\"ContainerMetricsConfig\":" + container_metrics_config_to_json(u13))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ContainerMetricsConfig to a compact JSON object (declaration order).
+def container_metrics_config_to_json(ContainerMetricsConfig v) -> str:
+    list[str] parts = []
+    if v.MetricsEndpoints.is_some():
+        auto u0 = v.MetricsEndpoints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"MetricsEndpoints\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAIBenchmarkJobRequest to a compact JSON object (declaration order).
+def create_ai_benchmark_job_request_to_json(CreateAIBenchmarkJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AIBenchmarkJobName\":" + api_sagemaker_json_str(v.AIBenchmarkJobName))
+    parts.append("\"BenchmarkTarget\":" + ai_benchmark_target_to_json(v.BenchmarkTarget))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    parts.append("\"AIWorkloadConfigIdentifier\":" + api_sagemaker_json_str(v.AIWorkloadConfigIdentifier))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.NetworkConfig.is_some():
+        auto u0 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + ai_benchmark_network_config_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAIRecommendationJobRequest to a compact JSON object (declaration order).
+def create_ai_recommendation_job_request_to_json(CreateAIRecommendationJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AIRecommendationJobName\":" + api_sagemaker_json_str(v.AIRecommendationJobName))
+    parts.append("\"ModelSource\":" + v.ModelSource.to_json())
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    parts.append("\"AIWorkloadConfigIdentifier\":" + api_sagemaker_json_str(v.AIWorkloadConfigIdentifier))
+    parts.append("\"PerformanceTarget\":" + ai_recommendation_performance_target_to_json(v.PerformanceTarget))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.InferenceSpecification.is_some():
+        auto u0 = v.InferenceSpecification.unwrap()
+        parts.append("\"InferenceSpecification\":" + u0.to_json())
+    if v.OptimizeModel.is_some():
+        auto u1 = v.OptimizeModel.unwrap()
+        parts.append("\"OptimizeModel\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ComputeSpec.is_some():
+        auto u2 = v.ComputeSpec.unwrap()
+        parts.append("\"ComputeSpec\":" + ai_recommendation_compute_spec_to_json(u2))
+    if v.AdapterSource.is_some():
+        auto u3 = v.AdapterSource.unwrap()
+        parts.append("\"AdapterSource\":" + ai_adapter_source_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAIWorkloadConfigRequest to a compact JSON object (declaration order).
+def create_ai_workload_config_request_to_json(CreateAIWorkloadConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AIWorkloadConfigName\":" + api_sagemaker_json_str(v.AIWorkloadConfigName))
+    if v.DatasetConfig.is_some():
+        auto u0 = v.DatasetConfig.unwrap()
+        parts.append("\"DatasetConfig\":" + ai_dataset_config_to_json(u0))
+    if v.AIWorkloadConfigs.is_some():
+        auto u1 = v.AIWorkloadConfigs.unwrap()
+        parts.append("\"AIWorkloadConfigs\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateActionRequest to a compact JSON object (declaration order).
+def create_action_request_to_json(CreateActionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ActionName\":" + api_sagemaker_json_str(v.ActionName))
+    parts.append("\"Source\":" + v.Source.to_json())
+    parts.append("\"ActionType\":" + api_sagemaker_json_str(v.ActionType))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"Status\":" + u1.to_json())
+    if v.Properties.is_some():
+        auto u2 = v.Properties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_sagemaker_json_str(k3) + ":" + api_sagemaker_json_str(u2[k3]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m3))
+    if v.MetadataProperties.is_some():
+        auto u4 = v.MetadataProperties.unwrap()
+        parts.append("\"MetadataProperties\":" + u4.to_json())
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e6))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAlgorithmInput to a compact JSON object (declaration order).
+def create_algorithm_input_to_json(CreateAlgorithmInput v) -> str:
+    list[str] parts = []
+    parts.append("\"AlgorithmName\":" + api_sagemaker_json_str(v.AlgorithmName))
+    if v.AlgorithmDescription.is_some():
+        auto u0 = v.AlgorithmDescription.unwrap()
+        parts.append("\"AlgorithmDescription\":" + api_sagemaker_json_str(u0))
+    parts.append("\"TrainingSpecification\":" + training_specification_to_json(v.TrainingSpecification))
+    if v.InferenceSpecification.is_some():
+        auto u1 = v.InferenceSpecification.unwrap()
+        parts.append("\"InferenceSpecification\":" + inference_specification_to_json(u1))
+    if v.ValidationSpecification.is_some():
+        auto u2 = v.ValidationSpecification.unwrap()
+        parts.append("\"ValidationSpecification\":" + algorithm_validation_specification_to_json(u2))
+    if v.CertifyForMarketplace.is_some():
+        auto u3 = v.CertifyForMarketplace.unwrap()
+        parts.append("\"CertifyForMarketplace\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAppImageConfigRequest to a compact JSON object (declaration order).
+def create_app_image_config_request_to_json(CreateAppImageConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AppImageConfigName\":" + api_sagemaker_json_str(v.AppImageConfigName))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    if v.KernelGatewayImageConfig.is_some():
+        auto u2 = v.KernelGatewayImageConfig.unwrap()
+        parts.append("\"KernelGatewayImageConfig\":" + kernel_gateway_image_config_to_json(u2))
+    if v.JupyterLabAppImageConfig.is_some():
+        auto u3 = v.JupyterLabAppImageConfig.unwrap()
+        parts.append("\"JupyterLabAppImageConfig\":" + jupyter_lab_app_image_config_to_json(u3))
+    if v.CodeEditorAppImageConfig.is_some():
+        auto u4 = v.CodeEditorAppImageConfig.unwrap()
+        parts.append("\"CodeEditorAppImageConfig\":" + code_editor_app_image_config_to_json(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAppRequest to a compact JSON object (declaration order).
+def create_app_request_to_json(CreateAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainId\":" + api_sagemaker_json_str(v.DomainId))
+    if v.UserProfileName.is_some():
+        auto u0 = v.UserProfileName.unwrap()
+        parts.append("\"UserProfileName\":" + api_sagemaker_json_str(u0))
+    if v.SpaceName.is_some():
+        auto u1 = v.SpaceName.unwrap()
+        parts.append("\"SpaceName\":" + api_sagemaker_json_str(u1))
+    parts.append("\"AppType\":" + v.AppType.to_json())
+    parts.append("\"AppName\":" + api_sagemaker_json_str(v.AppName))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.ResourceSpec.is_some():
+        auto u4 = v.ResourceSpec.unwrap()
+        parts.append("\"ResourceSpec\":" + u4.to_json())
+    if v.RecoveryMode.is_some():
+        auto u5 = v.RecoveryMode.unwrap()
+        parts.append("\"RecoveryMode\":" + json.dumps(JsonValue.Bool(u5)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateArtifactRequest to a compact JSON object (declaration order).
+def create_artifact_request_to_json(CreateArtifactRequest v) -> str:
+    list[str] parts = []
+    if v.ArtifactName.is_some():
+        auto u0 = v.ArtifactName.unwrap()
+        parts.append("\"ArtifactName\":" + api_sagemaker_json_str(u0))
+    parts.append("\"Source\":" + artifact_source_to_json(v.Source))
+    parts.append("\"ArtifactType\":" + api_sagemaker_json_str(v.ArtifactType))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m2))
+    if v.MetadataProperties.is_some():
+        auto u3 = v.MetadataProperties.unwrap()
+        parts.append("\"MetadataProperties\":" + u3.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateAutoMLJobRequest to a compact JSON object (declaration order).
+def create_auto_ml_job_request_to_json(CreateAutoMLJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AutoMLJobName\":" + api_sagemaker_json_str(v.AutoMLJobName))
+    list[str] e0 = []
+    for x0 in v.InputDataConfig:
+        e0.append(x0.to_json())
+    parts.append("\"InputDataConfig\":" + api_sagemaker_json_arr(e0))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    if v.ProblemType.is_some():
+        auto u1 = v.ProblemType.unwrap()
+        parts.append("\"ProblemType\":" + u1.to_json())
+    if v.AutoMLJobObjective.is_some():
+        auto u2 = v.AutoMLJobObjective.unwrap()
+        parts.append("\"AutoMLJobObjective\":" + u2.to_json())
+    if v.AutoMLJobConfig.is_some():
+        auto u3 = v.AutoMLJobConfig.unwrap()
+        parts.append("\"AutoMLJobConfig\":" + auto_ml_job_config_to_json(u3))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.GenerateCandidateDefinitionsOnly.is_some():
+        auto u4 = v.GenerateCandidateDefinitionsOnly.unwrap()
+        parts.append("\"GenerateCandidateDefinitionsOnly\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e6))
+    if v.ModelDeployConfig.is_some():
+        auto u7 = v.ModelDeployConfig.unwrap()
+        parts.append("\"ModelDeployConfig\":" + u7.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateClusterRequest to a compact JSON object (declaration order).
+def create_cluster_request_to_json(CreateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.InstanceGroups.is_some():
+        auto u0 = v.InstanceGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cluster_instance_group_specification_to_json(x1))
+        parts.append("\"InstanceGroups\":" + api_sagemaker_json_arr(e1))
+    if v.RestrictedInstanceGroups.is_some():
+        auto u2 = v.RestrictedInstanceGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cluster_restricted_instance_group_specification_to_json(x3))
+        parts.append("\"RestrictedInstanceGroups\":" + api_sagemaker_json_arr(e3))
+    if v.RestrictedInstanceGroupsConfig.is_some():
+        auto u4 = v.RestrictedInstanceGroupsConfig.unwrap()
+        parts.append("\"RestrictedInstanceGroupsConfig\":" + u4.to_json())
+    if v.VpcConfig.is_some():
+        auto u5 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e7))
+    if v.Orchestrator.is_some():
+        auto u8 = v.Orchestrator.unwrap()
+        parts.append("\"Orchestrator\":" + u8.to_json())
+    if v.NodeRecovery.is_some():
+        auto u9 = v.NodeRecovery.unwrap()
+        parts.append("\"NodeRecovery\":" + u9.to_json())
+    if v.TieredStorageConfig.is_some():
+        auto u10 = v.TieredStorageConfig.unwrap()
+        parts.append("\"TieredStorageConfig\":" + u10.to_json())
+    if v.NodeProvisioningMode.is_some():
+        auto u11 = v.NodeProvisioningMode.unwrap()
+        parts.append("\"NodeProvisioningMode\":" + api_sagemaker_json_str(u11))
+    if v.ClusterRole.is_some():
+        auto u12 = v.ClusterRole.unwrap()
+        parts.append("\"ClusterRole\":" + api_sagemaker_json_str(u12))
+    if v.AutoScaling.is_some():
+        auto u13 = v.AutoScaling.unwrap()
+        parts.append("\"AutoScaling\":" + u13.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateClusterSchedulerConfigRequest to a compact JSON object (declaration order).
+def create_cluster_scheduler_config_request_to_json(CreateClusterSchedulerConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    parts.append("\"ClusterArn\":" + api_sagemaker_json_str(v.ClusterArn))
+    parts.append("\"SchedulerConfig\":" + scheduler_config_to_json(v.SchedulerConfig))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateCodeRepositoryInput to a compact JSON object (declaration order).
+def create_code_repository_input_to_json(CreateCodeRepositoryInput v) -> str:
+    list[str] parts = []
+    parts.append("\"CodeRepositoryName\":" + api_sagemaker_json_str(v.CodeRepositoryName))
+    parts.append("\"GitConfig\":" + v.GitConfig.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateCompilationJobRequest to a compact JSON object (declaration order).
+def create_compilation_job_request_to_json(CreateCompilationJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CompilationJobName\":" + api_sagemaker_json_str(v.CompilationJobName))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.ModelPackageVersionArn.is_some():
+        auto u0 = v.ModelPackageVersionArn.unwrap()
+        parts.append("\"ModelPackageVersionArn\":" + api_sagemaker_json_str(u0))
+    if v.InputConfig.is_some():
+        auto u1 = v.InputConfig.unwrap()
+        parts.append("\"InputConfig\":" + u1.to_json())
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.VpcConfig.is_some():
+        auto u2 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + neo_vpc_config_to_json(u2))
+    parts.append("\"StoppingCondition\":" + v.StoppingCondition.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateComputeQuotaRequest to a compact JSON object (declaration order).
+def create_compute_quota_request_to_json(CreateComputeQuotaRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    parts.append("\"ClusterArn\":" + api_sagemaker_json_str(v.ClusterArn))
+    parts.append("\"ComputeQuotaConfig\":" + compute_quota_config_to_json(v.ComputeQuotaConfig))
+    parts.append("\"ComputeQuotaTarget\":" + v.ComputeQuotaTarget.to_json())
+    if v.ActivationState.is_some():
+        auto u1 = v.ActivationState.unwrap()
+        parts.append("\"ActivationState\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateContextRequest to a compact JSON object (declaration order).
+def create_context_request_to_json(CreateContextRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ContextName\":" + api_sagemaker_json_str(v.ContextName))
+    parts.append("\"Source\":" + v.Source.to_json())
+    parts.append("\"ContextType\":" + api_sagemaker_json_str(v.ContextType))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateDataQualityJobDefinitionRequest to a compact JSON object (declaration order).
+def create_data_quality_job_definition_request_to_json(CreateDataQualityJobDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobDefinitionName\":" + api_sagemaker_json_str(v.JobDefinitionName))
+    if v.DataQualityBaselineConfig.is_some():
+        auto u0 = v.DataQualityBaselineConfig.unwrap()
+        parts.append("\"DataQualityBaselineConfig\":" + u0.to_json())
+    parts.append("\"DataQualityAppSpecification\":" + data_quality_app_specification_to_json(v.DataQualityAppSpecification))
+    parts.append("\"DataQualityJobInput\":" + v.DataQualityJobInput.to_json())
+    parts.append("\"DataQualityJobOutputConfig\":" + monitoring_output_config_to_json(v.DataQualityJobOutputConfig))
+    parts.append("\"JobResources\":" + v.JobResources.to_json())
+    if v.NetworkConfig.is_some():
+        auto u1 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + monitoring_network_config_to_json(u1))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.StoppingCondition.is_some():
+        auto u2 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateDeviceFleetRequest to a compact JSON object (declaration order).
+def create_device_fleet_request_to_json(CreateDeviceFleetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceFleetName\":" + api_sagemaker_json_str(v.DeviceFleetName))
+    if v.RoleArn.is_some():
+        auto u0 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + api_sagemaker_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u1))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.EnableIotRoleAlias.is_some():
+        auto u4 = v.EnableIotRoleAlias.unwrap()
+        parts.append("\"EnableIotRoleAlias\":" + json.dumps(JsonValue.Bool(u4)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateDomainRequest to a compact JSON object (declaration order).
+def create_domain_request_to_json(CreateDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + api_sagemaker_json_str(v.DomainName))
+    parts.append("\"AuthMode\":" + v.AuthMode.to_json())
+    parts.append("\"DefaultUserSettings\":" + user_settings_to_json(v.DefaultUserSettings))
+    if v.DomainSettings.is_some():
+        auto u0 = v.DomainSettings.unwrap()
+        parts.append("\"DomainSettings\":" + domain_settings_to_json(u0))
+    if v.SubnetIds.is_some():
+        auto u1 = v.SubnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"SubnetIds\":" + api_sagemaker_json_arr(e2))
+    if v.VpcId.is_some():
+        auto u3 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + api_sagemaker_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    if v.AppNetworkAccessType.is_some():
+        auto u6 = v.AppNetworkAccessType.unwrap()
+        parts.append("\"AppNetworkAccessType\":" + u6.to_json())
+    if v.HomeEfsFileSystemKmsKeyId.is_some():
+        auto u7 = v.HomeEfsFileSystemKmsKeyId.unwrap()
+        parts.append("\"HomeEfsFileSystemKmsKeyId\":" + api_sagemaker_json_str(u7))
+    if v.KmsKeyId.is_some():
+        auto u8 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u8))
+    if v.AppSecurityGroupManagement.is_some():
+        auto u9 = v.AppSecurityGroupManagement.unwrap()
+        parts.append("\"AppSecurityGroupManagement\":" + u9.to_json())
+    if v.HomeEfsFileSystemCreation.is_some():
+        auto u10 = v.HomeEfsFileSystemCreation.unwrap()
+        parts.append("\"HomeEfsFileSystemCreation\":" + u10.to_json())
+    if v.TagPropagation.is_some():
+        auto u11 = v.TagPropagation.unwrap()
+        parts.append("\"TagPropagation\":" + u11.to_json())
+    if v.DefaultSpaceSettings.is_some():
+        auto u12 = v.DefaultSpaceSettings.unwrap()
+        parts.append("\"DefaultSpaceSettings\":" + default_space_settings_to_json(u12))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateEdgeDeploymentPlanRequest to a compact JSON object (declaration order).
+def create_edge_deployment_plan_request_to_json(CreateEdgeDeploymentPlanRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EdgeDeploymentPlanName\":" + api_sagemaker_json_str(v.EdgeDeploymentPlanName))
+    list[str] e0 = []
+    for x0 in v.ModelConfigs:
+        e0.append(x0.to_json())
+    parts.append("\"ModelConfigs\":" + api_sagemaker_json_arr(e0))
+    parts.append("\"DeviceFleetName\":" + api_sagemaker_json_str(v.DeviceFleetName))
+    if v.Stages.is_some():
+        auto u1 = v.Stages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(deployment_stage_to_json(x2))
+        parts.append("\"Stages\":" + api_sagemaker_json_arr(e2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateEdgeDeploymentStageRequest to a compact JSON object (declaration order).
+def create_edge_deployment_stage_request_to_json(CreateEdgeDeploymentStageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EdgeDeploymentPlanName\":" + api_sagemaker_json_str(v.EdgeDeploymentPlanName))
+    list[str] e0 = []
+    for x0 in v.Stages:
+        e0.append(deployment_stage_to_json(x0))
+    parts.append("\"Stages\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateEdgePackagingJobRequest to a compact JSON object (declaration order).
+def create_edge_packaging_job_request_to_json(CreateEdgePackagingJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EdgePackagingJobName\":" + api_sagemaker_json_str(v.EdgePackagingJobName))
+    parts.append("\"CompilationJobName\":" + api_sagemaker_json_str(v.CompilationJobName))
+    parts.append("\"ModelName\":" + api_sagemaker_json_str(v.ModelName))
+    parts.append("\"ModelVersion\":" + api_sagemaker_json_str(v.ModelVersion))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.ResourceKey.is_some():
+        auto u0 = v.ResourceKey.unwrap()
+        parts.append("\"ResourceKey\":" + api_sagemaker_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateEndpointConfigInput to a compact JSON object (declaration order).
+def create_endpoint_config_input_to_json(CreateEndpointConfigInput v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointConfigName\":" + api_sagemaker_json_str(v.EndpointConfigName))
+    list[str] e0 = []
+    for x0 in v.ProductionVariants:
+        e0.append(production_variant_to_json(x0))
+    parts.append("\"ProductionVariants\":" + api_sagemaker_json_arr(e0))
+    if v.DataCaptureConfig.is_some():
+        auto u1 = v.DataCaptureConfig.unwrap()
+        parts.append("\"DataCaptureConfig\":" + data_capture_config_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.KmsKeyId.is_some():
+        auto u4 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u4))
+    if v.AsyncInferenceConfig.is_some():
+        auto u5 = v.AsyncInferenceConfig.unwrap()
+        parts.append("\"AsyncInferenceConfig\":" + async_inference_config_to_json(u5))
+    if v.ExplainerConfig.is_some():
+        auto u6 = v.ExplainerConfig.unwrap()
+        parts.append("\"ExplainerConfig\":" + explainer_config_to_json(u6))
+    if v.ShadowProductionVariants.is_some():
+        auto u7 = v.ShadowProductionVariants.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(production_variant_to_json(x8))
+        parts.append("\"ShadowProductionVariants\":" + api_sagemaker_json_arr(e8))
+    if v.ExecutionRoleArn.is_some():
+        auto u9 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + api_sagemaker_json_str(u9))
+    if v.VpcConfig.is_some():
+        auto u10 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u10))
+    if v.EnableNetworkIsolation.is_some():
+        auto u11 = v.EnableNetworkIsolation.unwrap()
+        parts.append("\"EnableNetworkIsolation\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.MetricsConfig.is_some():
+        auto u12 = v.MetricsConfig.unwrap()
+        parts.append("\"MetricsConfig\":" + u12.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateEndpointInput to a compact JSON object (declaration order).
+def create_endpoint_input_to_json(CreateEndpointInput v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointName\":" + api_sagemaker_json_str(v.EndpointName))
+    parts.append("\"EndpointConfigName\":" + api_sagemaker_json_str(v.EndpointConfigName))
+    if v.DeploymentConfig.is_some():
+        auto u0 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + deployment_config_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateExperimentRequest to a compact JSON object (declaration order).
+def create_experiment_request_to_json(CreateExperimentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ExperimentName\":" + api_sagemaker_json_str(v.ExperimentName))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + api_sagemaker_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateFeatureGroupRequest to a compact JSON object (declaration order).
+def create_feature_group_request_to_json(CreateFeatureGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FeatureGroupName\":" + api_sagemaker_json_str(v.FeatureGroupName))
+    parts.append("\"RecordIdentifierFeatureName\":" + api_sagemaker_json_str(v.RecordIdentifierFeatureName))
+    parts.append("\"EventTimeFeatureName\":" + api_sagemaker_json_str(v.EventTimeFeatureName))
+    list[str] e0 = []
+    for x0 in v.FeatureDefinitions:
+        e0.append(x0.to_json())
+    parts.append("\"FeatureDefinitions\":" + api_sagemaker_json_arr(e0))
+    if v.OnlineStoreConfig.is_some():
+        auto u1 = v.OnlineStoreConfig.unwrap()
+        parts.append("\"OnlineStoreConfig\":" + u1.to_json())
+    if v.OfflineStoreConfig.is_some():
+        auto u2 = v.OfflineStoreConfig.unwrap()
+        parts.append("\"OfflineStoreConfig\":" + u2.to_json())
+    if v.ThroughputConfig.is_some():
+        auto u3 = v.ThroughputConfig.unwrap()
+        parts.append("\"ThroughputConfig\":" + u3.to_json())
+    if v.RoleArn.is_some():
+        auto u4 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + api_sagemaker_json_str(u4))
+    if v.Description.is_some():
+        auto u5 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateFlowDefinitionRequest to a compact JSON object (declaration order).
+def create_flow_definition_request_to_json(CreateFlowDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FlowDefinitionName\":" + api_sagemaker_json_str(v.FlowDefinitionName))
+    if v.HumanLoopRequestSource.is_some():
+        auto u0 = v.HumanLoopRequestSource.unwrap()
+        parts.append("\"HumanLoopRequestSource\":" + u0.to_json())
+    if v.HumanLoopActivationConfig.is_some():
+        auto u1 = v.HumanLoopActivationConfig.unwrap()
+        parts.append("\"HumanLoopActivationConfig\":" + u1.to_json())
+    if v.HumanLoopConfig.is_some():
+        auto u2 = v.HumanLoopConfig.unwrap()
+        parts.append("\"HumanLoopConfig\":" + human_loop_config_to_json(u2))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateHubContentReferenceRequest to a compact JSON object (declaration order).
+def create_hub_content_reference_request_to_json(CreateHubContentReferenceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HubName\":" + api_sagemaker_json_str(v.HubName))
+    parts.append("\"SageMakerPublicHubContentArn\":" + api_sagemaker_json_str(v.SageMakerPublicHubContentArn))
+    if v.HubContentName.is_some():
+        auto u0 = v.HubContentName.unwrap()
+        parts.append("\"HubContentName\":" + api_sagemaker_json_str(u0))
+    if v.MinVersion.is_some():
+        auto u1 = v.MinVersion.unwrap()
+        parts.append("\"MinVersion\":" + api_sagemaker_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateHubRequest to a compact JSON object (declaration order).
+def create_hub_request_to_json(CreateHubRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HubName\":" + api_sagemaker_json_str(v.HubName))
+    parts.append("\"HubDescription\":" + api_sagemaker_json_str(v.HubDescription))
+    if v.HubDisplayName.is_some():
+        auto u0 = v.HubDisplayName.unwrap()
+        parts.append("\"HubDisplayName\":" + api_sagemaker_json_str(u0))
+    if v.HubSearchKeywords.is_some():
+        auto u1 = v.HubSearchKeywords.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"HubSearchKeywords\":" + api_sagemaker_json_arr(e2))
+    if v.S3StorageConfig.is_some():
+        auto u3 = v.S3StorageConfig.unwrap()
+        parts.append("\"S3StorageConfig\":" + u3.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateHumanTaskUiRequest to a compact JSON object (declaration order).
+def create_human_task_ui_request_to_json(CreateHumanTaskUiRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HumanTaskUiName\":" + api_sagemaker_json_str(v.HumanTaskUiName))
+    parts.append("\"UiTemplate\":" + v.UiTemplate.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateHyperParameterTuningJobRequest to a compact JSON object (declaration order).
+def create_hyper_parameter_tuning_job_request_to_json(CreateHyperParameterTuningJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HyperParameterTuningJobName\":" + api_sagemaker_json_str(v.HyperParameterTuningJobName))
+    parts.append("\"HyperParameterTuningJobConfig\":" + hyper_parameter_tuning_job_config_to_json(v.HyperParameterTuningJobConfig))
+    if v.TrainingJobDefinition.is_some():
+        auto u0 = v.TrainingJobDefinition.unwrap()
+        parts.append("\"TrainingJobDefinition\":" + hyper_parameter_training_job_definition_to_json(u0))
+    if v.TrainingJobDefinitions.is_some():
+        auto u1 = v.TrainingJobDefinitions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(hyper_parameter_training_job_definition_to_json(x2))
+        parts.append("\"TrainingJobDefinitions\":" + api_sagemaker_json_arr(e2))
+    if v.WarmStartConfig.is_some():
+        auto u3 = v.WarmStartConfig.unwrap()
+        parts.append("\"WarmStartConfig\":" + hyper_parameter_tuning_job_warm_start_config_to_json(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    if v.Autotune.is_some():
+        auto u6 = v.Autotune.unwrap()
+        parts.append("\"Autotune\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateImageRequest to a compact JSON object (declaration order).
+def create_image_request_to_json(CreateImageRequest v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.DisplayName.is_some():
+        auto u1 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + api_sagemaker_json_str(u1))
+    parts.append("\"ImageName\":" + api_sagemaker_json_str(v.ImageName))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateImageVersionRequest to a compact JSON object (declaration order).
+def create_image_version_request_to_json(CreateImageVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"BaseImage\":" + api_sagemaker_json_str(v.BaseImage))
+    parts.append("\"ClientToken\":" + api_sagemaker_json_str(v.ClientToken))
+    parts.append("\"ImageName\":" + api_sagemaker_json_str(v.ImageName))
+    if v.Aliases.is_some():
+        auto u0 = v.Aliases.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"Aliases\":" + api_sagemaker_json_arr(e1))
+    if v.VendorGuidance.is_some():
+        auto u2 = v.VendorGuidance.unwrap()
+        parts.append("\"VendorGuidance\":" + u2.to_json())
+    if v.JobType.is_some():
+        auto u3 = v.JobType.unwrap()
+        parts.append("\"JobType\":" + u3.to_json())
+    if v.MLFramework.is_some():
+        auto u4 = v.MLFramework.unwrap()
+        parts.append("\"MLFramework\":" + api_sagemaker_json_str(u4))
+    if v.ProgrammingLang.is_some():
+        auto u5 = v.ProgrammingLang.unwrap()
+        parts.append("\"ProgrammingLang\":" + api_sagemaker_json_str(u5))
+    if v.Processor.is_some():
+        auto u6 = v.Processor.unwrap()
+        parts.append("\"Processor\":" + u6.to_json())
+    if v.Horovod.is_some():
+        auto u7 = v.Horovod.unwrap()
+        parts.append("\"Horovod\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.ReleaseNotes.is_some():
+        auto u8 = v.ReleaseNotes.unwrap()
+        parts.append("\"ReleaseNotes\":" + api_sagemaker_json_str(u8))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateInferenceComponentInput to a compact JSON object (declaration order).
+def create_inference_component_input_to_json(CreateInferenceComponentInput v) -> str:
+    list[str] parts = []
+    parts.append("\"InferenceComponentName\":" + api_sagemaker_json_str(v.InferenceComponentName))
+    parts.append("\"EndpointName\":" + api_sagemaker_json_str(v.EndpointName))
+    if v.VariantName.is_some():
+        auto u0 = v.VariantName.unwrap()
+        parts.append("\"VariantName\":" + api_sagemaker_json_str(u0))
+    if v.Specification.is_some():
+        auto u1 = v.Specification.unwrap()
+        parts.append("\"Specification\":" + inference_component_specification_to_json(u1))
+    if v.Specifications.is_some():
+        auto u2 = v.Specifications.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(inference_component_specification_to_json(x3))
+        parts.append("\"Specifications\":" + api_sagemaker_json_arr(e3))
+    if v.RuntimeConfig.is_some():
+        auto u4 = v.RuntimeConfig.unwrap()
+        parts.append("\"RuntimeConfig\":" + u4.to_json())
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e6))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateInferenceExperimentRequest to a compact JSON object (declaration order).
+def create_inference_experiment_request_to_json(CreateInferenceExperimentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    parts.append("\"Type\":" + api_sagemaker_json_str(v.Type))
+    if v.Schedule.is_some():
+        auto u0 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + u0.to_json())
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u1))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    parts.append("\"EndpointName\":" + api_sagemaker_json_str(v.EndpointName))
+    list[str] e2 = []
+    for x2 in v.ModelVariants:
+        e2.append(x2.to_json())
+    parts.append("\"ModelVariants\":" + api_sagemaker_json_arr(e2))
+    if v.DataStorageConfig.is_some():
+        auto u3 = v.DataStorageConfig.unwrap()
+        parts.append("\"DataStorageConfig\":" + inference_experiment_data_storage_config_to_json(u3))
+    parts.append("\"ShadowModeConfig\":" + shadow_mode_config_to_json(v.ShadowModeConfig))
+    if v.KmsKey.is_some():
+        auto u4 = v.KmsKey.unwrap()
+        parts.append("\"KmsKey\":" + api_sagemaker_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e6))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateInferenceRecommendationsJobRequest to a compact JSON object (declaration order).
+def create_inference_recommendations_job_request_to_json(CreateInferenceRecommendationsJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobName\":" + api_sagemaker_json_str(v.JobName))
+    parts.append("\"JobType\":" + v.JobType.to_json())
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    parts.append("\"InputConfig\":" + recommendation_job_input_config_to_json(v.InputConfig))
+    if v.JobDescription.is_some():
+        auto u0 = v.JobDescription.unwrap()
+        parts.append("\"JobDescription\":" + api_sagemaker_json_str(u0))
+    if v.StoppingConditions.is_some():
+        auto u1 = v.StoppingConditions.unwrap()
+        parts.append("\"StoppingConditions\":" + recommendation_job_stopping_conditions_to_json(u1))
+    if v.OutputConfig.is_some():
+        auto u2 = v.OutputConfig.unwrap()
+        parts.append("\"OutputConfig\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateJobRequest to a compact JSON object (declaration order).
+def create_job_request_to_json(CreateJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobName\":" + api_sagemaker_json_str(v.JobName))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    parts.append("\"JobCategory\":" + v.JobCategory.to_json())
+    parts.append("\"JobConfigSchemaVersion\":" + api_sagemaker_json_str(v.JobConfigSchemaVersion))
+    parts.append("\"JobConfigDocument\":" + api_sagemaker_json_str(v.JobConfigDocument))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateLabelingJobRequest to a compact JSON object (declaration order).
+def create_labeling_job_request_to_json(CreateLabelingJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LabelingJobName\":" + api_sagemaker_json_str(v.LabelingJobName))
+    parts.append("\"LabelAttributeName\":" + api_sagemaker_json_str(v.LabelAttributeName))
+    parts.append("\"InputConfig\":" + labeling_job_input_config_to_json(v.InputConfig))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.LabelCategoryConfigS3Uri.is_some():
+        auto u0 = v.LabelCategoryConfigS3Uri.unwrap()
+        parts.append("\"LabelCategoryConfigS3Uri\":" + api_sagemaker_json_str(u0))
+    if v.StoppingConditions.is_some():
+        auto u1 = v.StoppingConditions.unwrap()
+        parts.append("\"StoppingConditions\":" + u1.to_json())
+    if v.LabelingJobAlgorithmsConfig.is_some():
+        auto u2 = v.LabelingJobAlgorithmsConfig.unwrap()
+        parts.append("\"LabelingJobAlgorithmsConfig\":" + labeling_job_algorithms_config_to_json(u2))
+    parts.append("\"HumanTaskConfig\":" + human_task_config_to_json(v.HumanTaskConfig))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateMlflowAppRequest to a compact JSON object (declaration order).
+def create_mlflow_app_request_to_json(CreateMlflowAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    parts.append("\"ArtifactStoreUri\":" + api_sagemaker_json_str(v.ArtifactStoreUri))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u0))
+    if v.ModelRegistrationMode.is_some():
+        auto u1 = v.ModelRegistrationMode.unwrap()
+        parts.append("\"ModelRegistrationMode\":" + u1.to_json())
+    if v.WeeklyMaintenanceWindowStart.is_some():
+        auto u2 = v.WeeklyMaintenanceWindowStart.unwrap()
+        parts.append("\"WeeklyMaintenanceWindowStart\":" + api_sagemaker_json_str(u2))
+    if v.AccountDefaultStatus.is_some():
+        auto u3 = v.AccountDefaultStatus.unwrap()
+        parts.append("\"AccountDefaultStatus\":" + u3.to_json())
+    if v.DefaultDomainIdList.is_some():
+        auto u4 = v.DefaultDomainIdList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_sagemaker_json_str(x5))
+        parts.append("\"DefaultDomainIdList\":" + api_sagemaker_json_arr(e5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateMlflowTrackingServerRequest to a compact JSON object (declaration order).
+def create_mlflow_tracking_server_request_to_json(CreateMlflowTrackingServerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrackingServerName\":" + api_sagemaker_json_str(v.TrackingServerName))
+    parts.append("\"ArtifactStoreUri\":" + api_sagemaker_json_str(v.ArtifactStoreUri))
+    if v.TrackingServerSize.is_some():
+        auto u0 = v.TrackingServerSize.unwrap()
+        parts.append("\"TrackingServerSize\":" + u0.to_json())
+    if v.MlflowVersion.is_some():
+        auto u1 = v.MlflowVersion.unwrap()
+        parts.append("\"MlflowVersion\":" + api_sagemaker_json_str(u1))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.AutomaticModelRegistration.is_some():
+        auto u2 = v.AutomaticModelRegistration.unwrap()
+        parts.append("\"AutomaticModelRegistration\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.WeeklyMaintenanceWindowStart.is_some():
+        auto u3 = v.WeeklyMaintenanceWindowStart.unwrap()
+        parts.append("\"WeeklyMaintenanceWindowStart\":" + api_sagemaker_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    if v.S3BucketOwnerAccountId.is_some():
+        auto u6 = v.S3BucketOwnerAccountId.unwrap()
+        parts.append("\"S3BucketOwnerAccountId\":" + api_sagemaker_json_str(u6))
+    if v.S3BucketOwnerVerification.is_some():
+        auto u7 = v.S3BucketOwnerVerification.unwrap()
+        parts.append("\"S3BucketOwnerVerification\":" + json.dumps(JsonValue.Bool(u7)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelBiasJobDefinitionRequest to a compact JSON object (declaration order).
+def create_model_bias_job_definition_request_to_json(CreateModelBiasJobDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobDefinitionName\":" + api_sagemaker_json_str(v.JobDefinitionName))
+    if v.ModelBiasBaselineConfig.is_some():
+        auto u0 = v.ModelBiasBaselineConfig.unwrap()
+        parts.append("\"ModelBiasBaselineConfig\":" + u0.to_json())
+    parts.append("\"ModelBiasAppSpecification\":" + model_bias_app_specification_to_json(v.ModelBiasAppSpecification))
+    parts.append("\"ModelBiasJobInput\":" + v.ModelBiasJobInput.to_json())
+    parts.append("\"ModelBiasJobOutputConfig\":" + monitoring_output_config_to_json(v.ModelBiasJobOutputConfig))
+    parts.append("\"JobResources\":" + v.JobResources.to_json())
+    if v.NetworkConfig.is_some():
+        auto u1 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + monitoring_network_config_to_json(u1))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.StoppingCondition.is_some():
+        auto u2 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelCardRequest to a compact JSON object (declaration order).
+def create_model_card_request_to_json(CreateModelCardRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelCardName\":" + api_sagemaker_json_str(v.ModelCardName))
+    if v.SecurityConfig.is_some():
+        auto u0 = v.SecurityConfig.unwrap()
+        parts.append("\"SecurityConfig\":" + u0.to_json())
+    parts.append("\"Content\":" + api_sagemaker_json_str(v.Content))
+    parts.append("\"ModelCardStatus\":" + v.ModelCardStatus.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelExplainabilityJobDefinitionRequest to a compact JSON object (declaration order).
+def create_model_explainability_job_definition_request_to_json(CreateModelExplainabilityJobDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobDefinitionName\":" + api_sagemaker_json_str(v.JobDefinitionName))
+    if v.ModelExplainabilityBaselineConfig.is_some():
+        auto u0 = v.ModelExplainabilityBaselineConfig.unwrap()
+        parts.append("\"ModelExplainabilityBaselineConfig\":" + u0.to_json())
+    parts.append("\"ModelExplainabilityAppSpecification\":" + model_explainability_app_specification_to_json(v.ModelExplainabilityAppSpecification))
+    parts.append("\"ModelExplainabilityJobInput\":" + v.ModelExplainabilityJobInput.to_json())
+    parts.append("\"ModelExplainabilityJobOutputConfig\":" + monitoring_output_config_to_json(v.ModelExplainabilityJobOutputConfig))
+    parts.append("\"JobResources\":" + v.JobResources.to_json())
+    if v.NetworkConfig.is_some():
+        auto u1 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + monitoring_network_config_to_json(u1))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.StoppingCondition.is_some():
+        auto u2 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelInput to a compact JSON object (declaration order).
+def create_model_input_to_json(CreateModelInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelName\":" + api_sagemaker_json_str(v.ModelName))
+    if v.PrimaryContainer.is_some():
+        auto u0 = v.PrimaryContainer.unwrap()
+        parts.append("\"PrimaryContainer\":" + container_definition_to_json(u0))
+    if v.Containers.is_some():
+        auto u1 = v.Containers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(container_definition_to_json(x2))
+        parts.append("\"Containers\":" + api_sagemaker_json_arr(e2))
+    if v.InferenceExecutionConfig.is_some():
+        auto u3 = v.InferenceExecutionConfig.unwrap()
+        parts.append("\"InferenceExecutionConfig\":" + u3.to_json())
+    if v.ExecutionRoleArn.is_some():
+        auto u4 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + api_sagemaker_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e6))
+    if v.VpcConfig.is_some():
+        auto u7 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u7))
+    if v.EnableNetworkIsolation.is_some():
+        auto u8 = v.EnableNetworkIsolation.unwrap()
+        parts.append("\"EnableNetworkIsolation\":" + json.dumps(JsonValue.Bool(u8)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelPackageGroupInput to a compact JSON object (declaration order).
+def create_model_package_group_input_to_json(CreateModelPackageGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelPackageGroupName\":" + api_sagemaker_json_str(v.ModelPackageGroupName))
+    if v.ModelPackageGroupDescription.is_some():
+        auto u0 = v.ModelPackageGroupDescription.unwrap()
+        parts.append("\"ModelPackageGroupDescription\":" + api_sagemaker_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    if v.ManagedConfiguration.is_some():
+        auto u3 = v.ManagedConfiguration.unwrap()
+        parts.append("\"ManagedConfiguration\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelPackageInput to a compact JSON object (declaration order).
+def create_model_package_input_to_json(CreateModelPackageInput v) -> str:
+    list[str] parts = []
+    if v.ModelPackageName.is_some():
+        auto u0 = v.ModelPackageName.unwrap()
+        parts.append("\"ModelPackageName\":" + api_sagemaker_json_str(u0))
+    if v.ModelPackageGroupName.is_some():
+        auto u1 = v.ModelPackageGroupName.unwrap()
+        parts.append("\"ModelPackageGroupName\":" + api_sagemaker_json_str(u1))
+    if v.ModelPackageDescription.is_some():
+        auto u2 = v.ModelPackageDescription.unwrap()
+        parts.append("\"ModelPackageDescription\":" + api_sagemaker_json_str(u2))
+    if v.ModelPackageRegistrationType.is_some():
+        auto u3 = v.ModelPackageRegistrationType.unwrap()
+        parts.append("\"ModelPackageRegistrationType\":" + u3.to_json())
+    if v.InferenceSpecification.is_some():
+        auto u4 = v.InferenceSpecification.unwrap()
+        parts.append("\"InferenceSpecification\":" + inference_specification_to_json(u4))
+    if v.ValidationSpecification.is_some():
+        auto u5 = v.ValidationSpecification.unwrap()
+        parts.append("\"ValidationSpecification\":" + model_package_validation_specification_to_json(u5))
+    if v.SourceAlgorithmSpecification.is_some():
+        auto u6 = v.SourceAlgorithmSpecification.unwrap()
+        parts.append("\"SourceAlgorithmSpecification\":" + source_algorithm_specification_to_json(u6))
+    if v.CertifyForMarketplace.is_some():
+        auto u7 = v.CertifyForMarketplace.unwrap()
+        parts.append("\"CertifyForMarketplace\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e9))
+    if v.ModelApprovalStatus.is_some():
+        auto u10 = v.ModelApprovalStatus.unwrap()
+        parts.append("\"ModelApprovalStatus\":" + u10.to_json())
+    if v.MetadataProperties.is_some():
+        auto u11 = v.MetadataProperties.unwrap()
+        parts.append("\"MetadataProperties\":" + u11.to_json())
+    if v.ModelMetrics.is_some():
+        auto u12 = v.ModelMetrics.unwrap()
+        parts.append("\"ModelMetrics\":" + u12.to_json())
+    if v.ClientToken.is_some():
+        auto u13 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + api_sagemaker_json_str(u13))
+    if v.Domain.is_some():
+        auto u14 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + api_sagemaker_json_str(u14))
+    if v.Task.is_some():
+        auto u15 = v.Task.unwrap()
+        parts.append("\"Task\":" + api_sagemaker_json_str(u15))
+    if v.SamplePayloadUrl.is_some():
+        auto u16 = v.SamplePayloadUrl.unwrap()
+        parts.append("\"SamplePayloadUrl\":" + api_sagemaker_json_str(u16))
+    if v.CustomerMetadataProperties.is_some():
+        auto u17 = v.CustomerMetadataProperties.unwrap()
+        list[str] m18 = []
+        for k18 in sorted(u17.keys()):
+            m18.append(api_sagemaker_json_str(k18) + ":" + api_sagemaker_json_str(u17[k18]))
+        parts.append("\"CustomerMetadataProperties\":" + api_sagemaker_json_obj(m18))
+    if v.DriftCheckBaselines.is_some():
+        auto u19 = v.DriftCheckBaselines.unwrap()
+        parts.append("\"DriftCheckBaselines\":" + u19.to_json())
+    if v.AdditionalInferenceSpecifications.is_some():
+        auto u20 = v.AdditionalInferenceSpecifications.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(additional_inference_specification_definition_to_json(x21))
+        parts.append("\"AdditionalInferenceSpecifications\":" + api_sagemaker_json_arr(e21))
+    if v.SkipModelValidation.is_some():
+        auto u22 = v.SkipModelValidation.unwrap()
+        parts.append("\"SkipModelValidation\":" + u22.to_json())
+    if v.SourceUri.is_some():
+        auto u23 = v.SourceUri.unwrap()
+        parts.append("\"SourceUri\":" + api_sagemaker_json_str(u23))
+    if v.SecurityConfig.is_some():
+        auto u24 = v.SecurityConfig.unwrap()
+        parts.append("\"SecurityConfig\":" + u24.to_json())
+    if v.ModelCard.is_some():
+        auto u25 = v.ModelCard.unwrap()
+        parts.append("\"ModelCard\":" + u25.to_json())
+    if v.ModelLifeCycle.is_some():
+        auto u26 = v.ModelLifeCycle.unwrap()
+        parts.append("\"ModelLifeCycle\":" + u26.to_json())
+    if v.ManagedStorageType.is_some():
+        auto u27 = v.ManagedStorageType.unwrap()
+        parts.append("\"ManagedStorageType\":" + api_sagemaker_json_str(u27))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateModelQualityJobDefinitionRequest to a compact JSON object (declaration order).
+def create_model_quality_job_definition_request_to_json(CreateModelQualityJobDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobDefinitionName\":" + api_sagemaker_json_str(v.JobDefinitionName))
+    if v.ModelQualityBaselineConfig.is_some():
+        auto u0 = v.ModelQualityBaselineConfig.unwrap()
+        parts.append("\"ModelQualityBaselineConfig\":" + u0.to_json())
+    parts.append("\"ModelQualityAppSpecification\":" + model_quality_app_specification_to_json(v.ModelQualityAppSpecification))
+    parts.append("\"ModelQualityJobInput\":" + v.ModelQualityJobInput.to_json())
+    parts.append("\"ModelQualityJobOutputConfig\":" + monitoring_output_config_to_json(v.ModelQualityJobOutputConfig))
+    parts.append("\"JobResources\":" + v.JobResources.to_json())
+    if v.NetworkConfig.is_some():
+        auto u1 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + monitoring_network_config_to_json(u1))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.StoppingCondition.is_some():
+        auto u2 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateMonitoringScheduleRequest to a compact JSON object (declaration order).
+def create_monitoring_schedule_request_to_json(CreateMonitoringScheduleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"MonitoringScheduleName\":" + api_sagemaker_json_str(v.MonitoringScheduleName))
+    parts.append("\"MonitoringScheduleConfig\":" + monitoring_schedule_config_to_json(v.MonitoringScheduleConfig))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateNotebookInstanceInput to a compact JSON object (declaration order).
+def create_notebook_instance_input_to_json(CreateNotebookInstanceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"NotebookInstanceName\":" + api_sagemaker_json_str(v.NotebookInstanceName))
+    parts.append("\"InstanceType\":" + v.InstanceType.to_json())
+    if v.SubnetId.is_some():
+        auto u0 = v.SubnetId.unwrap()
+        parts.append("\"SubnetId\":" + api_sagemaker_json_str(u0))
+    if v.SecurityGroupIds.is_some():
+        auto u1 = v.SecurityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e2))
+    if v.IpAddressType.is_some():
+        auto u3 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u3.to_json())
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.KmsKeyId.is_some():
+        auto u4 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e6))
+    if v.LifecycleConfigName.is_some():
+        auto u7 = v.LifecycleConfigName.unwrap()
+        parts.append("\"LifecycleConfigName\":" + api_sagemaker_json_str(u7))
+    if v.DirectInternetAccess.is_some():
+        auto u8 = v.DirectInternetAccess.unwrap()
+        parts.append("\"DirectInternetAccess\":" + u8.to_json())
+    if v.VolumeSizeInGB.is_some():
+        auto u9 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u9))
+    if v.AcceleratorTypes.is_some():
+        auto u10 = v.AcceleratorTypes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"AcceleratorTypes\":" + api_sagemaker_json_arr(e11))
+    if v.DefaultCodeRepository.is_some():
+        auto u12 = v.DefaultCodeRepository.unwrap()
+        parts.append("\"DefaultCodeRepository\":" + api_sagemaker_json_str(u12))
+    if v.AdditionalCodeRepositories.is_some():
+        auto u13 = v.AdditionalCodeRepositories.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(api_sagemaker_json_str(x14))
+        parts.append("\"AdditionalCodeRepositories\":" + api_sagemaker_json_arr(e14))
+    if v.RootAccess.is_some():
+        auto u15 = v.RootAccess.unwrap()
+        parts.append("\"RootAccess\":" + u15.to_json())
+    if v.PlatformIdentifier.is_some():
+        auto u16 = v.PlatformIdentifier.unwrap()
+        parts.append("\"PlatformIdentifier\":" + api_sagemaker_json_str(u16))
+    if v.InstanceMetadataServiceConfiguration.is_some():
+        auto u17 = v.InstanceMetadataServiceConfiguration.unwrap()
+        parts.append("\"InstanceMetadataServiceConfiguration\":" + u17.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateNotebookInstanceLifecycleConfigInput to a compact JSON object (declaration order).
+def create_notebook_instance_lifecycle_config_input_to_json(CreateNotebookInstanceLifecycleConfigInput v) -> str:
+    list[str] parts = []
+    parts.append("\"NotebookInstanceLifecycleConfigName\":" + api_sagemaker_json_str(v.NotebookInstanceLifecycleConfigName))
+    if v.OnCreate.is_some():
+        auto u0 = v.OnCreate.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"OnCreate\":" + api_sagemaker_json_arr(e1))
+    if v.OnStart.is_some():
+        auto u2 = v.OnStart.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"OnStart\":" + api_sagemaker_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateOptimizationJobRequest to a compact JSON object (declaration order).
+def create_optimization_job_request_to_json(CreateOptimizationJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OptimizationJobName\":" + api_sagemaker_json_str(v.OptimizationJobName))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    parts.append("\"ModelSource\":" + v.ModelSource.to_json())
+    parts.append("\"DeploymentInstanceType\":" + v.DeploymentInstanceType.to_json())
+    if v.MaxInstanceCount.is_some():
+        auto u0 = v.MaxInstanceCount.unwrap()
+        parts.append("\"MaxInstanceCount\":" + str(u0))
+    if v.OptimizationEnvironment.is_some():
+        auto u1 = v.OptimizationEnvironment.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"OptimizationEnvironment\":" + api_sagemaker_json_obj(m2))
+    list[str] e3 = []
+    for x3 in v.OptimizationConfigs:
+        e3.append(optimization_config_to_json(x3))
+    parts.append("\"OptimizationConfigs\":" + api_sagemaker_json_arr(e3))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    parts.append("\"StoppingCondition\":" + v.StoppingCondition.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    if v.VpcConfig.is_some():
+        auto u6 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + optimization_vpc_config_to_json(u6))
+    if v.TrainingPlanArns.is_some():
+        auto u7 = v.TrainingPlanArns.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(api_sagemaker_json_str(x8))
+        parts.append("\"TrainingPlanArns\":" + api_sagemaker_json_arr(e8))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreatePartnerAppRequest to a compact JSON object (declaration order).
+def create_partner_app_request_to_json(CreatePartnerAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"ExecutionRoleArn\":" + api_sagemaker_json_str(v.ExecutionRoleArn))
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u0))
+    if v.MaintenanceConfig.is_some():
+        auto u1 = v.MaintenanceConfig.unwrap()
+        parts.append("\"MaintenanceConfig\":" + u1.to_json())
+    parts.append("\"Tier\":" + api_sagemaker_json_str(v.Tier))
+    if v.ApplicationConfig.is_some():
+        auto u2 = v.ApplicationConfig.unwrap()
+        parts.append("\"ApplicationConfig\":" + partner_app_config_to_json(u2))
+    if v.IdcConfig.is_some():
+        auto u3 = v.IdcConfig.unwrap()
+        parts.append("\"IdcConfig\":" + u3.to_json())
+    parts.append("\"AuthType\":" + v.AuthType.to_json())
+    if v.EnableIamSessionBasedIdentity.is_some():
+        auto u4 = v.EnableIamSessionBasedIdentity.unwrap()
+        parts.append("\"EnableIamSessionBasedIdentity\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.EnableAutoMinorVersionUpgrade.is_some():
+        auto u5 = v.EnableAutoMinorVersionUpgrade.unwrap()
+        parts.append("\"EnableAutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.ClientToken.is_some():
+        auto u6 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + api_sagemaker_json_str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e8))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreatePipelineRequest to a compact JSON object (declaration order).
+def create_pipeline_request_to_json(CreatePipelineRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PipelineName\":" + api_sagemaker_json_str(v.PipelineName))
+    if v.PipelineDisplayName.is_some():
+        auto u0 = v.PipelineDisplayName.unwrap()
+        parts.append("\"PipelineDisplayName\":" + api_sagemaker_json_str(u0))
+    if v.PipelineDefinition.is_some():
+        auto u1 = v.PipelineDefinition.unwrap()
+        parts.append("\"PipelineDefinition\":" + api_sagemaker_json_str(u1))
+    if v.PipelineDefinitionS3Location.is_some():
+        auto u2 = v.PipelineDefinitionS3Location.unwrap()
+        parts.append("\"PipelineDefinitionS3Location\":" + u2.to_json())
+    if v.PipelineDescription.is_some():
+        auto u3 = v.PipelineDescription.unwrap()
+        parts.append("\"PipelineDescription\":" + api_sagemaker_json_str(u3))
+    parts.append("\"ClientRequestToken\":" + api_sagemaker_json_str(v.ClientRequestToken))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    if v.ParallelismConfiguration.is_some():
+        auto u6 = v.ParallelismConfiguration.unwrap()
+        parts.append("\"ParallelismConfiguration\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateProcessingJobRequest to a compact JSON object (declaration order).
+def create_processing_job_request_to_json(CreateProcessingJobRequest v) -> str:
+    list[str] parts = []
+    if v.ProcessingInputs.is_some():
+        auto u0 = v.ProcessingInputs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ProcessingInputs\":" + api_sagemaker_json_arr(e1))
+    if v.ProcessingOutputConfig.is_some():
+        auto u2 = v.ProcessingOutputConfig.unwrap()
+        parts.append("\"ProcessingOutputConfig\":" + processing_output_config_to_json(u2))
+    parts.append("\"ProcessingJobName\":" + api_sagemaker_json_str(v.ProcessingJobName))
+    parts.append("\"ProcessingResources\":" + processing_resources_to_json(v.ProcessingResources))
+    if v.StoppingCondition.is_some():
+        auto u3 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u3.to_json())
+    parts.append("\"AppSpecification\":" + app_specification_to_json(v.AppSpecification))
+    if v.Environment.is_some():
+        auto u4 = v.Environment.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + api_sagemaker_json_str(u4[k5]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m5))
+    if v.NetworkConfig.is_some():
+        auto u6 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + network_config_to_json(u6))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e8))
+    if v.ExperimentConfig.is_some():
+        auto u9 = v.ExperimentConfig.unwrap()
+        parts.append("\"ExperimentConfig\":" + u9.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateProjectInput to a compact JSON object (declaration order).
+def create_project_input_to_json(CreateProjectInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ProjectName\":" + api_sagemaker_json_str(v.ProjectName))
+    if v.ProjectDescription.is_some():
+        auto u0 = v.ProjectDescription.unwrap()
+        parts.append("\"ProjectDescription\":" + api_sagemaker_json_str(u0))
+    if v.ServiceCatalogProvisioningDetails.is_some():
+        auto u1 = v.ServiceCatalogProvisioningDetails.unwrap()
+        parts.append("\"ServiceCatalogProvisioningDetails\":" + service_catalog_provisioning_details_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.TemplateProviders.is_some():
+        auto u4 = v.TemplateProviders.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(create_template_provider_to_json(x5))
+        parts.append("\"TemplateProviders\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateSpaceRequest to a compact JSON object (declaration order).
+def create_space_request_to_json(CreateSpaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainId\":" + api_sagemaker_json_str(v.DomainId))
+    parts.append("\"SpaceName\":" + api_sagemaker_json_str(v.SpaceName))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    if v.SpaceSettings.is_some():
+        auto u2 = v.SpaceSettings.unwrap()
+        parts.append("\"SpaceSettings\":" + space_settings_to_json(u2))
+    if v.OwnershipSettings.is_some():
+        auto u3 = v.OwnershipSettings.unwrap()
+        parts.append("\"OwnershipSettings\":" + u3.to_json())
+    if v.SpaceSharingSettings.is_some():
+        auto u4 = v.SpaceSharingSettings.unwrap()
+        parts.append("\"SpaceSharingSettings\":" + u4.to_json())
+    if v.SpaceDisplayName.is_some():
+        auto u5 = v.SpaceDisplayName.unwrap()
+        parts.append("\"SpaceDisplayName\":" + api_sagemaker_json_str(u5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateStudioLifecycleConfigRequest to a compact JSON object (declaration order).
+def create_studio_lifecycle_config_request_to_json(CreateStudioLifecycleConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"StudioLifecycleConfigName\":" + api_sagemaker_json_str(v.StudioLifecycleConfigName))
+    parts.append("\"StudioLifecycleConfigContent\":" + api_sagemaker_json_str(v.StudioLifecycleConfigContent))
+    parts.append("\"StudioLifecycleConfigAppType\":" + v.StudioLifecycleConfigAppType.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTemplateProvider to a compact JSON object (declaration order).
+def create_template_provider_to_json(CreateTemplateProvider v) -> str:
+    list[str] parts = []
+    if v.CfnTemplateProvider.is_some():
+        auto u0 = v.CfnTemplateProvider.unwrap()
+        parts.append("\"CfnTemplateProvider\":" + cfn_create_template_provider_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTrainingJobRequest to a compact JSON object (declaration order).
+def create_training_job_request_to_json(CreateTrainingJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrainingJobName\":" + api_sagemaker_json_str(v.TrainingJobName))
+    if v.HyperParameters.is_some():
+        auto u0 = v.HyperParameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(api_sagemaker_json_str(k1) + ":" + api_sagemaker_json_str(u0[k1]))
+        parts.append("\"HyperParameters\":" + api_sagemaker_json_obj(m1))
+    if v.AlgorithmSpecification.is_some():
+        auto u2 = v.AlgorithmSpecification.unwrap()
+        parts.append("\"AlgorithmSpecification\":" + algorithm_specification_to_json(u2))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.InputDataConfig.is_some():
+        auto u3 = v.InputDataConfig.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(channel__to_json(x4))
+        parts.append("\"InputDataConfig\":" + api_sagemaker_json_arr(e4))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    if v.ResourceConfig.is_some():
+        auto u5 = v.ResourceConfig.unwrap()
+        parts.append("\"ResourceConfig\":" + resource_config_to_json(u5))
+    if v.VpcConfig.is_some():
+        auto u6 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u6))
+    if v.StoppingCondition.is_some():
+        auto u7 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u7.to_json())
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e9))
+    if v.EnableNetworkIsolation.is_some():
+        auto u10 = v.EnableNetworkIsolation.unwrap()
+        parts.append("\"EnableNetworkIsolation\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.EnableInterContainerTrafficEncryption.is_some():
+        auto u11 = v.EnableInterContainerTrafficEncryption.unwrap()
+        parts.append("\"EnableInterContainerTrafficEncryption\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.EnableManagedSpotTraining.is_some():
+        auto u12 = v.EnableManagedSpotTraining.unwrap()
+        parts.append("\"EnableManagedSpotTraining\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.CheckpointConfig.is_some():
+        auto u13 = v.CheckpointConfig.unwrap()
+        parts.append("\"CheckpointConfig\":" + u13.to_json())
+    if v.DebugHookConfig.is_some():
+        auto u14 = v.DebugHookConfig.unwrap()
+        parts.append("\"DebugHookConfig\":" + debug_hook_config_to_json(u14))
+    if v.DebugRuleConfigurations.is_some():
+        auto u15 = v.DebugRuleConfigurations.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(debug_rule_configuration_to_json(x16))
+        parts.append("\"DebugRuleConfigurations\":" + api_sagemaker_json_arr(e16))
+    if v.TensorBoardOutputConfig.is_some():
+        auto u17 = v.TensorBoardOutputConfig.unwrap()
+        parts.append("\"TensorBoardOutputConfig\":" + u17.to_json())
+    if v.ExperimentConfig.is_some():
+        auto u18 = v.ExperimentConfig.unwrap()
+        parts.append("\"ExperimentConfig\":" + u18.to_json())
+    if v.ProfilerConfig.is_some():
+        auto u19 = v.ProfilerConfig.unwrap()
+        parts.append("\"ProfilerConfig\":" + profiler_config_to_json(u19))
+    if v.ProfilerRuleConfigurations.is_some():
+        auto u20 = v.ProfilerRuleConfigurations.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(profiler_rule_configuration_to_json(x21))
+        parts.append("\"ProfilerRuleConfigurations\":" + api_sagemaker_json_arr(e21))
+    if v.Environment.is_some():
+        auto u22 = v.Environment.unwrap()
+        list[str] m23 = []
+        for k23 in sorted(u22.keys()):
+            m23.append(api_sagemaker_json_str(k23) + ":" + api_sagemaker_json_str(u22[k23]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m23))
+    if v.RetryStrategy.is_some():
+        auto u24 = v.RetryStrategy.unwrap()
+        parts.append("\"RetryStrategy\":" + u24.to_json())
+    if v.RemoteDebugConfig.is_some():
+        auto u25 = v.RemoteDebugConfig.unwrap()
+        parts.append("\"RemoteDebugConfig\":" + u25.to_json())
+    if v.InfraCheckConfig.is_some():
+        auto u26 = v.InfraCheckConfig.unwrap()
+        parts.append("\"InfraCheckConfig\":" + u26.to_json())
+    if v.SessionChainingConfig.is_some():
+        auto u27 = v.SessionChainingConfig.unwrap()
+        parts.append("\"SessionChainingConfig\":" + u27.to_json())
+    if v.ServerlessJobConfig.is_some():
+        auto u28 = v.ServerlessJobConfig.unwrap()
+        parts.append("\"ServerlessJobConfig\":" + u28.to_json())
+    if v.MlflowConfig.is_some():
+        auto u29 = v.MlflowConfig.unwrap()
+        parts.append("\"MlflowConfig\":" + u29.to_json())
+    if v.ModelPackageConfig.is_some():
+        auto u30 = v.ModelPackageConfig.unwrap()
+        parts.append("\"ModelPackageConfig\":" + u30.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTrainingPlanRequest to a compact JSON object (declaration order).
+def create_training_plan_request_to_json(CreateTrainingPlanRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrainingPlanName\":" + api_sagemaker_json_str(v.TrainingPlanName))
+    parts.append("\"TrainingPlanOfferingId\":" + api_sagemaker_json_str(v.TrainingPlanOfferingId))
+    if v.SpareInstanceCountPerUltraServer.is_some():
+        auto u0 = v.SpareInstanceCountPerUltraServer.unwrap()
+        parts.append("\"SpareInstanceCountPerUltraServer\":" + str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTrainingSessionRequest to a compact JSON object (declaration order).
+def create_training_session_request_to_json(CreateTrainingSessionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrainingSessionName\":" + api_sagemaker_json_str(v.TrainingSessionName))
+    if v.ModelPackageGroupArn.is_some():
+        auto u0 = v.ModelPackageGroupArn.unwrap()
+        parts.append("\"ModelPackageGroupArn\":" + api_sagemaker_json_str(u0))
+    parts.append("\"LoraConfig\":" + v.LoraConfig.to_json())
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.VpcConfig.is_some():
+        auto u1 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u1))
+    parts.append("\"ModelConfig\":" + v.ModelConfig.to_json())
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTransformJobRequest to a compact JSON object (declaration order).
+def create_transform_job_request_to_json(CreateTransformJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TransformJobName\":" + api_sagemaker_json_str(v.TransformJobName))
+    parts.append("\"ModelName\":" + api_sagemaker_json_str(v.ModelName))
+    if v.MaxConcurrentTransforms.is_some():
+        auto u0 = v.MaxConcurrentTransforms.unwrap()
+        parts.append("\"MaxConcurrentTransforms\":" + str(u0))
+    if v.ModelClientConfig.is_some():
+        auto u1 = v.ModelClientConfig.unwrap()
+        parts.append("\"ModelClientConfig\":" + u1.to_json())
+    if v.MaxPayloadInMB.is_some():
+        auto u2 = v.MaxPayloadInMB.unwrap()
+        parts.append("\"MaxPayloadInMB\":" + str(u2))
+    if v.BatchStrategy.is_some():
+        auto u3 = v.BatchStrategy.unwrap()
+        parts.append("\"BatchStrategy\":" + u3.to_json())
+    if v.Environment.is_some():
+        auto u4 = v.Environment.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + api_sagemaker_json_str(u4[k5]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m5))
+    parts.append("\"TransformInput\":" + v.TransformInput.to_json())
+    parts.append("\"TransformOutput\":" + v.TransformOutput.to_json())
+    if v.DataCaptureConfig.is_some():
+        auto u6 = v.DataCaptureConfig.unwrap()
+        parts.append("\"DataCaptureConfig\":" + u6.to_json())
+    parts.append("\"TransformResources\":" + v.TransformResources.to_json())
+    if v.DataProcessing.is_some():
+        auto u7 = v.DataProcessing.unwrap()
+        parts.append("\"DataProcessing\":" + u7.to_json())
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e9))
+    if v.ExperimentConfig.is_some():
+        auto u10 = v.ExperimentConfig.unwrap()
+        parts.append("\"ExperimentConfig\":" + u10.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTrialComponentRequest to a compact JSON object (declaration order).
+def create_trial_component_request_to_json(CreateTrialComponentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrialComponentName\":" + api_sagemaker_json_str(v.TrialComponentName))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + api_sagemaker_json_str(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"Status\":" + u1.to_json())
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(u2)))
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(u3)))
+    if v.Parameters.is_some():
+        auto u4 = v.Parameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + u4[k5].to_json())
+        parts.append("\"Parameters\":" + api_sagemaker_json_obj(m5))
+    if v.InputArtifacts.is_some():
+        auto u6 = v.InputArtifacts.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(api_sagemaker_json_str(k7) + ":" + u6[k7].to_json())
+        parts.append("\"InputArtifacts\":" + api_sagemaker_json_obj(m7))
+    if v.OutputArtifacts.is_some():
+        auto u8 = v.OutputArtifacts.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(api_sagemaker_json_str(k9) + ":" + u8[k9].to_json())
+        parts.append("\"OutputArtifacts\":" + api_sagemaker_json_obj(m9))
+    if v.MetadataProperties.is_some():
+        auto u10 = v.MetadataProperties.unwrap()
+        parts.append("\"MetadataProperties\":" + u10.to_json())
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e12))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateTrialRequest to a compact JSON object (declaration order).
+def create_trial_request_to_json(CreateTrialRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrialName\":" + api_sagemaker_json_str(v.TrialName))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + api_sagemaker_json_str(u0))
+    parts.append("\"ExperimentName\":" + api_sagemaker_json_str(v.ExperimentName))
+    if v.MetadataProperties.is_some():
+        auto u1 = v.MetadataProperties.unwrap()
+        parts.append("\"MetadataProperties\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateUserProfileRequest to a compact JSON object (declaration order).
+def create_user_profile_request_to_json(CreateUserProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainId\":" + api_sagemaker_json_str(v.DomainId))
+    parts.append("\"UserProfileName\":" + api_sagemaker_json_str(v.UserProfileName))
+    if v.SingleSignOnUserIdentifier.is_some():
+        auto u0 = v.SingleSignOnUserIdentifier.unwrap()
+        parts.append("\"SingleSignOnUserIdentifier\":" + api_sagemaker_json_str(u0))
+    if v.SingleSignOnUserValue.is_some():
+        auto u1 = v.SingleSignOnUserValue.unwrap()
+        parts.append("\"SingleSignOnUserValue\":" + api_sagemaker_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.UserSettings.is_some():
+        auto u4 = v.UserSettings.unwrap()
+        parts.append("\"UserSettings\":" + user_settings_to_json(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateWorkforceRequest to a compact JSON object (declaration order).
+def create_workforce_request_to_json(CreateWorkforceRequest v) -> str:
+    list[str] parts = []
+    if v.CognitoConfig.is_some():
+        auto u0 = v.CognitoConfig.unwrap()
+        parts.append("\"CognitoConfig\":" + u0.to_json())
+    if v.OidcConfig.is_some():
+        auto u1 = v.OidcConfig.unwrap()
+        parts.append("\"OidcConfig\":" + oidc_config_to_json(u1))
+    if v.SourceIpConfig.is_some():
+        auto u2 = v.SourceIpConfig.unwrap()
+        parts.append("\"SourceIpConfig\":" + source_ip_config_to_json(u2))
+    parts.append("\"WorkforceName\":" + api_sagemaker_json_str(v.WorkforceName))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e4))
+    if v.WorkforceVpcConfig.is_some():
+        auto u5 = v.WorkforceVpcConfig.unwrap()
+        parts.append("\"WorkforceVpcConfig\":" + workforce_vpc_config_request_to_json(u5))
+    if v.IpAddressType.is_some():
+        auto u6 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateWorkteamRequest to a compact JSON object (declaration order).
+def create_workteam_request_to_json(CreateWorkteamRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkteamName\":" + api_sagemaker_json_str(v.WorkteamName))
+    if v.WorkforceName.is_some():
+        auto u0 = v.WorkforceName.unwrap()
+        parts.append("\"WorkforceName\":" + api_sagemaker_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.MemberDefinitions:
+        e1.append(member_definition_to_json(x1))
+    parts.append("\"MemberDefinitions\":" + api_sagemaker_json_arr(e1))
+    parts.append("\"Description\":" + api_sagemaker_json_str(v.Description))
+    if v.NotificationConfiguration.is_some():
+        auto u2 = v.NotificationConfiguration.unwrap()
+        parts.append("\"NotificationConfiguration\":" + u2.to_json())
+    if v.WorkerAccessConfiguration.is_some():
+        auto u3 = v.WorkerAccessConfiguration.unwrap()
+        parts.append("\"WorkerAccessConfiguration\":" + u3.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DataCaptureConfig to a compact JSON object (declaration order).
+def data_capture_config_to_json(DataCaptureConfig v) -> str:
+    list[str] parts = []
+    if v.EnableCapture.is_some():
+        auto u0 = v.EnableCapture.unwrap()
+        parts.append("\"EnableCapture\":" + json.dumps(JsonValue.Bool(u0)))
+    parts.append("\"InitialSamplingPercentage\":" + str(v.InitialSamplingPercentage))
+    parts.append("\"DestinationS3Uri\":" + api_sagemaker_json_str(v.DestinationS3Uri))
+    if v.KmsKeyId.is_some():
+        auto u1 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.CaptureOptions:
+        e2.append(x2.to_json())
+    parts.append("\"CaptureOptions\":" + api_sagemaker_json_arr(e2))
+    if v.CaptureContentTypeHeader.is_some():
+        auto u3 = v.CaptureContentTypeHeader.unwrap()
+        parts.append("\"CaptureContentTypeHeader\":" + capture_content_type_header_to_json(u3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DataQualityAppSpecification to a compact JSON object (declaration order).
+def data_quality_app_specification_to_json(DataQualityAppSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageUri\":" + api_sagemaker_json_str(v.ImageUri))
+    if v.ContainerEntrypoint.is_some():
+        auto u0 = v.ContainerEntrypoint.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"ContainerEntrypoint\":" + api_sagemaker_json_arr(e1))
+    if v.ContainerArguments.is_some():
+        auto u2 = v.ContainerArguments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"ContainerArguments\":" + api_sagemaker_json_arr(e3))
+    if v.RecordPreprocessorSourceUri.is_some():
+        auto u4 = v.RecordPreprocessorSourceUri.unwrap()
+        parts.append("\"RecordPreprocessorSourceUri\":" + api_sagemaker_json_str(u4))
+    if v.PostAnalyticsProcessorSourceUri.is_some():
+        auto u5 = v.PostAnalyticsProcessorSourceUri.unwrap()
+        parts.append("\"PostAnalyticsProcessorSourceUri\":" + api_sagemaker_json_str(u5))
+    if v.Environment.is_some():
+        auto u6 = v.Environment.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(api_sagemaker_json_str(k7) + ":" + api_sagemaker_json_str(u6[k7]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DataSource to a compact JSON object (declaration order).
+def data_source_to_json(DataSource v) -> str:
+    list[str] parts = []
+    if v.S3DataSource.is_some():
+        auto u0 = v.S3DataSource.unwrap()
+        parts.append("\"S3DataSource\":" + s3_data_source_to_json(u0))
+    if v.FileSystemDataSource.is_some():
+        auto u1 = v.FileSystemDataSource.unwrap()
+        parts.append("\"FileSystemDataSource\":" + u1.to_json())
+    if v.DatasetSource.is_some():
+        auto u2 = v.DatasetSource.unwrap()
+        parts.append("\"DatasetSource\":" + u2.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DebugHookConfig to a compact JSON object (declaration order).
+def debug_hook_config_to_json(DebugHookConfig v) -> str:
+    list[str] parts = []
+    if v.LocalPath.is_some():
+        auto u0 = v.LocalPath.unwrap()
+        parts.append("\"LocalPath\":" + api_sagemaker_json_str(u0))
+    parts.append("\"S3OutputPath\":" + api_sagemaker_json_str(v.S3OutputPath))
+    if v.HookParameters.is_some():
+        auto u1 = v.HookParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"HookParameters\":" + api_sagemaker_json_obj(m2))
+    if v.CollectionConfigurations.is_some():
+        auto u3 = v.CollectionConfigurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(collection_configuration_to_json(x4))
+        parts.append("\"CollectionConfigurations\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DebugRuleConfiguration to a compact JSON object (declaration order).
+def debug_rule_configuration_to_json(DebugRuleConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleConfigurationName\":" + api_sagemaker_json_str(v.RuleConfigurationName))
+    if v.LocalPath.is_some():
+        auto u0 = v.LocalPath.unwrap()
+        parts.append("\"LocalPath\":" + api_sagemaker_json_str(u0))
+    if v.S3OutputPath.is_some():
+        auto u1 = v.S3OutputPath.unwrap()
+        parts.append("\"S3OutputPath\":" + api_sagemaker_json_str(u1))
+    parts.append("\"RuleEvaluatorImage\":" + api_sagemaker_json_str(v.RuleEvaluatorImage))
+    if v.InstanceType.is_some():
+        auto u2 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u2.to_json())
+    if v.VolumeSizeInGB.is_some():
+        auto u3 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u3))
+    if v.RuleParameters.is_some():
+        auto u4 = v.RuleParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + api_sagemaker_json_str(u4[k5]))
+        parts.append("\"RuleParameters\":" + api_sagemaker_json_obj(m5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DefaultSpaceSettings to a compact JSON object (declaration order).
+def default_space_settings_to_json(DefaultSpaceSettings v) -> str:
+    list[str] parts = []
+    if v.ExecutionRole.is_some():
+        auto u0 = v.ExecutionRole.unwrap()
+        parts.append("\"ExecutionRole\":" + api_sagemaker_json_str(u0))
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"SecurityGroups\":" + api_sagemaker_json_arr(e2))
+    if v.JupyterServerAppSettings.is_some():
+        auto u3 = v.JupyterServerAppSettings.unwrap()
+        parts.append("\"JupyterServerAppSettings\":" + jupyter_server_app_settings_to_json(u3))
+    if v.KernelGatewayAppSettings.is_some():
+        auto u4 = v.KernelGatewayAppSettings.unwrap()
+        parts.append("\"KernelGatewayAppSettings\":" + kernel_gateway_app_settings_to_json(u4))
+    if v.JupyterLabAppSettings.is_some():
+        auto u5 = v.JupyterLabAppSettings.unwrap()
+        parts.append("\"JupyterLabAppSettings\":" + jupyter_lab_app_settings_to_json(u5))
+    if v.SpaceStorageSettings.is_some():
+        auto u6 = v.SpaceStorageSettings.unwrap()
+        parts.append("\"SpaceStorageSettings\":" + u6.to_json())
+    if v.CustomPosixUserConfig.is_some():
+        auto u7 = v.CustomPosixUserConfig.unwrap()
+        parts.append("\"CustomPosixUserConfig\":" + u7.to_json())
+    if v.CustomFileSystemConfigs.is_some():
+        auto u8 = v.CustomFileSystemConfigs.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"CustomFileSystemConfigs\":" + api_sagemaker_json_arr(e9))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeleteArtifactRequest to a compact JSON object (declaration order).
+def delete_artifact_request_to_json(DeleteArtifactRequest v) -> str:
+    list[str] parts = []
+    if v.ArtifactArn.is_some():
+        auto u0 = v.ArtifactArn.unwrap()
+        parts.append("\"ArtifactArn\":" + api_sagemaker_json_str(u0))
+    if v.Source.is_some():
+        auto u1 = v.Source.unwrap()
+        parts.append("\"Source\":" + artifact_source_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeleteTagsInput to a compact JSON object (declaration order).
+def delete_tags_input_to_json(DeleteTagsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + api_sagemaker_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"TagKeys\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeploymentConfig to a compact JSON object (declaration order).
+def deployment_config_to_json(DeploymentConfig v) -> str:
+    list[str] parts = []
+    if v.BlueGreenUpdatePolicy.is_some():
+        auto u0 = v.BlueGreenUpdatePolicy.unwrap()
+        parts.append("\"BlueGreenUpdatePolicy\":" + u0.to_json())
+    if v.RollingUpdatePolicy.is_some():
+        auto u1 = v.RollingUpdatePolicy.unwrap()
+        parts.append("\"RollingUpdatePolicy\":" + u1.to_json())
+    if v.AutoRollbackConfiguration.is_some():
+        auto u2 = v.AutoRollbackConfiguration.unwrap()
+        parts.append("\"AutoRollbackConfiguration\":" + auto_rollback_config_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeploymentConfiguration to a compact JSON object (declaration order).
+def deployment_configuration_to_json(DeploymentConfiguration v) -> str:
+    list[str] parts = []
+    if v.RollingUpdatePolicy.is_some():
+        auto u0 = v.RollingUpdatePolicy.unwrap()
+        parts.append("\"RollingUpdatePolicy\":" + u0.to_json())
+    if v.WaitIntervalInSeconds.is_some():
+        auto u1 = v.WaitIntervalInSeconds.unwrap()
+        parts.append("\"WaitIntervalInSeconds\":" + str(u1))
+    if v.AutoRollbackConfiguration.is_some():
+        auto u2 = v.AutoRollbackConfiguration.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AutoRollbackConfiguration\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeploymentStage to a compact JSON object (declaration order).
+def deployment_stage_to_json(DeploymentStage v) -> str:
+    list[str] parts = []
+    parts.append("\"StageName\":" + api_sagemaker_json_str(v.StageName))
+    parts.append("\"DeviceSelectionConfig\":" + device_selection_config_to_json(v.DeviceSelectionConfig))
+    if v.DeploymentConfig.is_some():
+        auto u0 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + u0.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeregisterDevicesRequest to a compact JSON object (declaration order).
+def deregister_devices_request_to_json(DeregisterDevicesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceFleetName\":" + api_sagemaker_json_str(v.DeviceFleetName))
+    list[str] e0 = []
+    for x0 in v.DeviceNames:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"DeviceNames\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DeviceSelectionConfig to a compact JSON object (declaration order).
+def device_selection_config_to_json(DeviceSelectionConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceSubsetType\":" + v.DeviceSubsetType.to_json())
+    if v.Percentage.is_some():
+        auto u0 = v.Percentage.unwrap()
+        parts.append("\"Percentage\":" + str(u0))
+    if v.DeviceNames.is_some():
+        auto u1 = v.DeviceNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"DeviceNames\":" + api_sagemaker_json_arr(e2))
+    if v.DeviceNameContains.is_some():
+        auto u3 = v.DeviceNameContains.unwrap()
+        parts.append("\"DeviceNameContains\":" + api_sagemaker_json_str(u3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DockerSettings to a compact JSON object (declaration order).
+def docker_settings_to_json(DockerSettings v) -> str:
+    list[str] parts = []
+    if v.EnableDockerAccess.is_some():
+        auto u0 = v.EnableDockerAccess.unwrap()
+        parts.append("\"EnableDockerAccess\":" + u0.to_json())
+    if v.VpcOnlyTrustedAccounts.is_some():
+        auto u1 = v.VpcOnlyTrustedAccounts.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"VpcOnlyTrustedAccounts\":" + api_sagemaker_json_arr(e2))
+    if v.RootlessDocker.is_some():
+        auto u3 = v.RootlessDocker.unwrap()
+        parts.append("\"RootlessDocker\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DomainSettings to a compact JSON object (declaration order).
+def domain_settings_to_json(DomainSettings v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e1))
+    if v.RStudioServerProDomainSettings.is_some():
+        auto u2 = v.RStudioServerProDomainSettings.unwrap()
+        parts.append("\"RStudioServerProDomainSettings\":" + u2.to_json())
+    if v.ExecutionRoleIdentityConfig.is_some():
+        auto u3 = v.ExecutionRoleIdentityConfig.unwrap()
+        parts.append("\"ExecutionRoleIdentityConfig\":" + u3.to_json())
+    if v.TrustedIdentityPropagationSettings.is_some():
+        auto u4 = v.TrustedIdentityPropagationSettings.unwrap()
+        parts.append("\"TrustedIdentityPropagationSettings\":" + u4.to_json())
+    if v.DockerSettings.is_some():
+        auto u5 = v.DockerSettings.unwrap()
+        parts.append("\"DockerSettings\":" + docker_settings_to_json(u5))
+    if v.AmazonQSettings.is_some():
+        auto u6 = v.AmazonQSettings.unwrap()
+        parts.append("\"AmazonQSettings\":" + u6.to_json())
+    if v.UnifiedStudioSettings.is_some():
+        auto u7 = v.UnifiedStudioSettings.unwrap()
+        parts.append("\"UnifiedStudioSettings\":" + u7.to_json())
+    if v.IpAddressType.is_some():
+        auto u8 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u8.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize DomainSettingsForUpdate to a compact JSON object (declaration order).
+def domain_settings_for_update_to_json(DomainSettingsForUpdate v) -> str:
+    list[str] parts = []
+    if v.RStudioServerProDomainSettingsForUpdate.is_some():
+        auto u0 = v.RStudioServerProDomainSettingsForUpdate.unwrap()
+        parts.append("\"RStudioServerProDomainSettingsForUpdate\":" + u0.to_json())
+    if v.ExecutionRoleIdentityConfig.is_some():
+        auto u1 = v.ExecutionRoleIdentityConfig.unwrap()
+        parts.append("\"ExecutionRoleIdentityConfig\":" + u1.to_json())
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e3))
+    if v.TrustedIdentityPropagationSettings.is_some():
+        auto u4 = v.TrustedIdentityPropagationSettings.unwrap()
+        parts.append("\"TrustedIdentityPropagationSettings\":" + u4.to_json())
+    if v.DockerSettings.is_some():
+        auto u5 = v.DockerSettings.unwrap()
+        parts.append("\"DockerSettings\":" + docker_settings_to_json(u5))
+    if v.AmazonQSettings.is_some():
+        auto u6 = v.AmazonQSettings.unwrap()
+        parts.append("\"AmazonQSettings\":" + u6.to_json())
+    if v.UnifiedStudioSettings.is_some():
+        auto u7 = v.UnifiedStudioSettings.unwrap()
+        parts.append("\"UnifiedStudioSettings\":" + u7.to_json())
+    if v.IpAddressType.is_some():
+        auto u8 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u8.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize EmrSettings to a compact JSON object (declaration order).
+def emr_settings_to_json(EmrSettings v) -> str:
+    list[str] parts = []
+    if v.AssumableRoleArns.is_some():
+        auto u0 = v.AssumableRoleArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"AssumableRoleArns\":" + api_sagemaker_json_arr(e1))
+    if v.ExecutionRoleArns.is_some():
+        auto u2 = v.ExecutionRoleArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"ExecutionRoleArns\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize EndpointInputConfiguration to a compact JSON object (declaration order).
+def endpoint_input_configuration_to_json(EndpointInputConfiguration v) -> str:
+    list[str] parts = []
+    if v.InstanceType.is_some():
+        auto u0 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u0.to_json())
+    if v.ServerlessConfig.is_some():
+        auto u1 = v.ServerlessConfig.unwrap()
+        parts.append("\"ServerlessConfig\":" + u1.to_json())
+    if v.InferenceSpecificationName.is_some():
+        auto u2 = v.InferenceSpecificationName.unwrap()
+        parts.append("\"InferenceSpecificationName\":" + api_sagemaker_json_str(u2))
+    if v.EnvironmentParameterRanges.is_some():
+        auto u3 = v.EnvironmentParameterRanges.unwrap()
+        parts.append("\"EnvironmentParameterRanges\":" + environment_parameter_ranges_to_json(u3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize EnvironmentParameterRanges to a compact JSON object (declaration order).
+def environment_parameter_ranges_to_json(EnvironmentParameterRanges v) -> str:
+    list[str] parts = []
+    if v.CategoricalParameterRanges.is_some():
+        auto u0 = v.CategoricalParameterRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(categorical_parameter_to_json(x1))
+        parts.append("\"CategoricalParameterRanges\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ExplainerConfig to a compact JSON object (declaration order).
+def explainer_config_to_json(ExplainerConfig v) -> str:
+    list[str] parts = []
+    if v.ClarifyExplainerConfig.is_some():
+        auto u0 = v.ClarifyExplainerConfig.unwrap()
+        parts.append("\"ClarifyExplainerConfig\":" + clarify_explainer_config_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HiddenSageMakerImage to a compact JSON object (declaration order).
+def hidden_sage_maker_image_to_json(HiddenSageMakerImage v) -> str:
+    list[str] parts = []
+    if v.SageMakerImageName.is_some():
+        auto u0 = v.SageMakerImageName.unwrap()
+        parts.append("\"SageMakerImageName\":" + api_sagemaker_json_str(u0))
+    if v.VersionAliases.is_some():
+        auto u1 = v.VersionAliases.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"VersionAliases\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HumanLoopConfig to a compact JSON object (declaration order).
+def human_loop_config_to_json(HumanLoopConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkteamArn\":" + api_sagemaker_json_str(v.WorkteamArn))
+    parts.append("\"HumanTaskUiArn\":" + api_sagemaker_json_str(v.HumanTaskUiArn))
+    parts.append("\"TaskTitle\":" + api_sagemaker_json_str(v.TaskTitle))
+    parts.append("\"TaskDescription\":" + api_sagemaker_json_str(v.TaskDescription))
+    parts.append("\"TaskCount\":" + str(v.TaskCount))
+    if v.TaskAvailabilityLifetimeInSeconds.is_some():
+        auto u0 = v.TaskAvailabilityLifetimeInSeconds.unwrap()
+        parts.append("\"TaskAvailabilityLifetimeInSeconds\":" + str(u0))
+    if v.TaskTimeLimitInSeconds.is_some():
+        auto u1 = v.TaskTimeLimitInSeconds.unwrap()
+        parts.append("\"TaskTimeLimitInSeconds\":" + str(u1))
+    if v.TaskKeywords.is_some():
+        auto u2 = v.TaskKeywords.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"TaskKeywords\":" + api_sagemaker_json_arr(e3))
+    if v.PublicWorkforceTaskPrice.is_some():
+        auto u4 = v.PublicWorkforceTaskPrice.unwrap()
+        parts.append("\"PublicWorkforceTaskPrice\":" + u4.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HumanTaskConfig to a compact JSON object (declaration order).
+def human_task_config_to_json(HumanTaskConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkteamArn\":" + api_sagemaker_json_str(v.WorkteamArn))
+    parts.append("\"UiConfig\":" + v.UiConfig.to_json())
+    if v.PreHumanTaskLambdaArn.is_some():
+        auto u0 = v.PreHumanTaskLambdaArn.unwrap()
+        parts.append("\"PreHumanTaskLambdaArn\":" + api_sagemaker_json_str(u0))
+    if v.TaskKeywords.is_some():
+        auto u1 = v.TaskKeywords.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"TaskKeywords\":" + api_sagemaker_json_arr(e2))
+    parts.append("\"TaskTitle\":" + api_sagemaker_json_str(v.TaskTitle))
+    parts.append("\"TaskDescription\":" + api_sagemaker_json_str(v.TaskDescription))
+    parts.append("\"NumberOfHumanWorkersPerDataObject\":" + str(v.NumberOfHumanWorkersPerDataObject))
+    parts.append("\"TaskTimeLimitInSeconds\":" + str(v.TaskTimeLimitInSeconds))
+    if v.TaskAvailabilityLifetimeInSeconds.is_some():
+        auto u3 = v.TaskAvailabilityLifetimeInSeconds.unwrap()
+        parts.append("\"TaskAvailabilityLifetimeInSeconds\":" + str(u3))
+    if v.MaxConcurrentTaskCount.is_some():
+        auto u4 = v.MaxConcurrentTaskCount.unwrap()
+        parts.append("\"MaxConcurrentTaskCount\":" + str(u4))
+    if v.AnnotationConsolidationConfig.is_some():
+        auto u5 = v.AnnotationConsolidationConfig.unwrap()
+        parts.append("\"AnnotationConsolidationConfig\":" + u5.to_json())
+    if v.PublicWorkforceTaskPrice.is_some():
+        auto u6 = v.PublicWorkforceTaskPrice.unwrap()
+        parts.append("\"PublicWorkforceTaskPrice\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HyperParameterAlgorithmSpecification to a compact JSON object (declaration order).
+def hyper_parameter_algorithm_specification_to_json(HyperParameterAlgorithmSpecification v) -> str:
+    list[str] parts = []
+    if v.TrainingImage.is_some():
+        auto u0 = v.TrainingImage.unwrap()
+        parts.append("\"TrainingImage\":" + api_sagemaker_json_str(u0))
+    parts.append("\"TrainingInputMode\":" + v.TrainingInputMode.to_json())
+    if v.AlgorithmName.is_some():
+        auto u1 = v.AlgorithmName.unwrap()
+        parts.append("\"AlgorithmName\":" + api_sagemaker_json_str(u1))
+    if v.MetricDefinitions.is_some():
+        auto u2 = v.MetricDefinitions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MetricDefinitions\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HyperParameterSpecification to a compact JSON object (declaration order).
+def hyper_parameter_specification_to_json(HyperParameterSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Range.is_some():
+        auto u1 = v.Range.unwrap()
+        parts.append("\"Range\":" + parameter_range_to_json(u1))
+    if v.IsTunable.is_some():
+        auto u2 = v.IsTunable.unwrap()
+        parts.append("\"IsTunable\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.IsRequired.is_some():
+        auto u3 = v.IsRequired.unwrap()
+        parts.append("\"IsRequired\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.DefaultValue.is_some():
+        auto u4 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + api_sagemaker_json_str(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HyperParameterTrainingJobDefinition to a compact JSON object (declaration order).
+def hyper_parameter_training_job_definition_to_json(HyperParameterTrainingJobDefinition v) -> str:
+    list[str] parts = []
+    if v.DefinitionName.is_some():
+        auto u0 = v.DefinitionName.unwrap()
+        parts.append("\"DefinitionName\":" + api_sagemaker_json_str(u0))
+    if v.TuningObjective.is_some():
+        auto u1 = v.TuningObjective.unwrap()
+        parts.append("\"TuningObjective\":" + u1.to_json())
+    if v.HyperParameterRanges.is_some():
+        auto u2 = v.HyperParameterRanges.unwrap()
+        parts.append("\"HyperParameterRanges\":" + parameter_ranges_to_json(u2))
+    if v.StaticHyperParameters.is_some():
+        auto u3 = v.StaticHyperParameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(api_sagemaker_json_str(k4) + ":" + api_sagemaker_json_str(u3[k4]))
+        parts.append("\"StaticHyperParameters\":" + api_sagemaker_json_obj(m4))
+    parts.append("\"AlgorithmSpecification\":" + hyper_parameter_algorithm_specification_to_json(v.AlgorithmSpecification))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    if v.InputDataConfig.is_some():
+        auto u5 = v.InputDataConfig.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(channel__to_json(x6))
+        parts.append("\"InputDataConfig\":" + api_sagemaker_json_arr(e6))
+    if v.VpcConfig.is_some():
+        auto u7 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u7))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    if v.ResourceConfig.is_some():
+        auto u8 = v.ResourceConfig.unwrap()
+        parts.append("\"ResourceConfig\":" + resource_config_to_json(u8))
+    if v.HyperParameterTuningResourceConfig.is_some():
+        auto u9 = v.HyperParameterTuningResourceConfig.unwrap()
+        parts.append("\"HyperParameterTuningResourceConfig\":" + hyper_parameter_tuning_resource_config_to_json(u9))
+    parts.append("\"StoppingCondition\":" + v.StoppingCondition.to_json())
+    if v.EnableNetworkIsolation.is_some():
+        auto u10 = v.EnableNetworkIsolation.unwrap()
+        parts.append("\"EnableNetworkIsolation\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.EnableInterContainerTrafficEncryption.is_some():
+        auto u11 = v.EnableInterContainerTrafficEncryption.unwrap()
+        parts.append("\"EnableInterContainerTrafficEncryption\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.EnableManagedSpotTraining.is_some():
+        auto u12 = v.EnableManagedSpotTraining.unwrap()
+        parts.append("\"EnableManagedSpotTraining\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.CheckpointConfig.is_some():
+        auto u13 = v.CheckpointConfig.unwrap()
+        parts.append("\"CheckpointConfig\":" + u13.to_json())
+    if v.RetryStrategy.is_some():
+        auto u14 = v.RetryStrategy.unwrap()
+        parts.append("\"RetryStrategy\":" + u14.to_json())
+    if v.Environment.is_some():
+        auto u15 = v.Environment.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(api_sagemaker_json_str(k16) + ":" + api_sagemaker_json_str(u15[k16]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m16))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HyperParameterTuningJobConfig to a compact JSON object (declaration order).
+def hyper_parameter_tuning_job_config_to_json(HyperParameterTuningJobConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Strategy\":" + v.Strategy.to_json())
+    if v.StrategyConfig.is_some():
+        auto u0 = v.StrategyConfig.unwrap()
+        parts.append("\"StrategyConfig\":" + u0.to_json())
+    if v.HyperParameterTuningJobObjective.is_some():
+        auto u1 = v.HyperParameterTuningJobObjective.unwrap()
+        parts.append("\"HyperParameterTuningJobObjective\":" + u1.to_json())
+    parts.append("\"ResourceLimits\":" + v.ResourceLimits.to_json())
+    if v.ParameterRanges.is_some():
+        auto u2 = v.ParameterRanges.unwrap()
+        parts.append("\"ParameterRanges\":" + parameter_ranges_to_json(u2))
+    if v.TrainingJobEarlyStoppingType.is_some():
+        auto u3 = v.TrainingJobEarlyStoppingType.unwrap()
+        parts.append("\"TrainingJobEarlyStoppingType\":" + u3.to_json())
+    if v.TuningJobCompletionCriteria.is_some():
+        auto u4 = v.TuningJobCompletionCriteria.unwrap()
+        parts.append("\"TuningJobCompletionCriteria\":" + u4.to_json())
+    if v.RandomSeed.is_some():
+        auto u5 = v.RandomSeed.unwrap()
+        parts.append("\"RandomSeed\":" + str(u5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HyperParameterTuningJobWarmStartConfig to a compact JSON object (declaration order).
+def hyper_parameter_tuning_job_warm_start_config_to_json(HyperParameterTuningJobWarmStartConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ParentHyperParameterTuningJobs:
+        e0.append(x0.to_json())
+    parts.append("\"ParentHyperParameterTuningJobs\":" + api_sagemaker_json_arr(e0))
+    parts.append("\"WarmStartType\":" + v.WarmStartType.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize HyperParameterTuningResourceConfig to a compact JSON object (declaration order).
+def hyper_parameter_tuning_resource_config_to_json(HyperParameterTuningResourceConfig v) -> str:
+    list[str] parts = []
+    if v.InstanceType.is_some():
+        auto u0 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u0.to_json())
+    if v.InstanceCount.is_some():
+        auto u1 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u1))
+    if v.VolumeSizeInGB.is_some():
+        auto u2 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u2))
+    if v.VolumeKmsKeyId.is_some():
+        auto u3 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + api_sagemaker_json_str(u3))
+    if v.AllocationStrategy.is_some():
+        auto u4 = v.AllocationStrategy.unwrap()
+        parts.append("\"AllocationStrategy\":" + api_sagemaker_json_str(u4))
+    if v.InstanceConfigs.is_some():
+        auto u5 = v.InstanceConfigs.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"InstanceConfigs\":" + api_sagemaker_json_arr(e6))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ImportHubContentRequest to a compact JSON object (declaration order).
+def import_hub_content_request_to_json(ImportHubContentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HubContentName\":" + api_sagemaker_json_str(v.HubContentName))
+    if v.HubContentVersion.is_some():
+        auto u0 = v.HubContentVersion.unwrap()
+        parts.append("\"HubContentVersion\":" + api_sagemaker_json_str(u0))
+    parts.append("\"HubContentType\":" + v.HubContentType.to_json())
+    parts.append("\"DocumentSchemaVersion\":" + api_sagemaker_json_str(v.DocumentSchemaVersion))
+    parts.append("\"HubName\":" + api_sagemaker_json_str(v.HubName))
+    if v.HubContentDisplayName.is_some():
+        auto u1 = v.HubContentDisplayName.unwrap()
+        parts.append("\"HubContentDisplayName\":" + api_sagemaker_json_str(u1))
+    if v.HubContentDescription.is_some():
+        auto u2 = v.HubContentDescription.unwrap()
+        parts.append("\"HubContentDescription\":" + api_sagemaker_json_str(u2))
+    if v.HubContentMarkdown.is_some():
+        auto u3 = v.HubContentMarkdown.unwrap()
+        parts.append("\"HubContentMarkdown\":" + api_sagemaker_json_str(u3))
+    parts.append("\"HubContentDocument\":" + api_sagemaker_json_str(v.HubContentDocument))
+    if v.SupportStatus.is_some():
+        auto u4 = v.SupportStatus.unwrap()
+        parts.append("\"SupportStatus\":" + u4.to_json())
+    if v.HubContentSearchKeywords.is_some():
+        auto u5 = v.HubContentSearchKeywords.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(api_sagemaker_json_str(x6))
+        parts.append("\"HubContentSearchKeywords\":" + api_sagemaker_json_arr(e6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e8))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InferenceComponentContainerSpecification to a compact JSON object (declaration order).
+def inference_component_container_specification_to_json(InferenceComponentContainerSpecification v) -> str:
+    list[str] parts = []
+    if v.Image.is_some():
+        auto u0 = v.Image.unwrap()
+        parts.append("\"Image\":" + api_sagemaker_json_str(u0))
+    if v.ArtifactUrl.is_some():
+        auto u1 = v.ArtifactUrl.unwrap()
+        parts.append("\"ArtifactUrl\":" + api_sagemaker_json_str(u1))
+    if v.Environment.is_some():
+        auto u2 = v.Environment.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_sagemaker_json_str(k3) + ":" + api_sagemaker_json_str(u2[k3]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m3))
+    if v.ContainerMetricsConfig.is_some():
+        auto u4 = v.ContainerMetricsConfig.unwrap()
+        parts.append("\"ContainerMetricsConfig\":" + container_metrics_config_to_json(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InferenceComponentDeploymentConfig to a compact JSON object (declaration order).
+def inference_component_deployment_config_to_json(InferenceComponentDeploymentConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"RollingUpdatePolicy\":" + v.RollingUpdatePolicy.to_json())
+    if v.AutoRollbackConfiguration.is_some():
+        auto u0 = v.AutoRollbackConfiguration.unwrap()
+        parts.append("\"AutoRollbackConfiguration\":" + auto_rollback_config_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InferenceComponentSpecification to a compact JSON object (declaration order).
+def inference_component_specification_to_json(InferenceComponentSpecification v) -> str:
+    list[str] parts = []
+    if v.InstanceType.is_some():
+        auto u0 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u0.to_json())
+    if v.ModelName.is_some():
+        auto u1 = v.ModelName.unwrap()
+        parts.append("\"ModelName\":" + api_sagemaker_json_str(u1))
+    if v.Container.is_some():
+        auto u2 = v.Container.unwrap()
+        parts.append("\"Container\":" + inference_component_container_specification_to_json(u2))
+    if v.StartupParameters.is_some():
+        auto u3 = v.StartupParameters.unwrap()
+        parts.append("\"StartupParameters\":" + u3.to_json())
+    if v.ComputeResourceRequirements.is_some():
+        auto u4 = v.ComputeResourceRequirements.unwrap()
+        parts.append("\"ComputeResourceRequirements\":" + u4.to_json())
+    if v.BaseInferenceComponentName.is_some():
+        auto u5 = v.BaseInferenceComponentName.unwrap()
+        parts.append("\"BaseInferenceComponentName\":" + api_sagemaker_json_str(u5))
+    if v.DataCacheConfig.is_some():
+        auto u6 = v.DataCacheConfig.unwrap()
+        parts.append("\"DataCacheConfig\":" + u6.to_json())
+    if v.SchedulingConfig.is_some():
+        auto u7 = v.SchedulingConfig.unwrap()
+        parts.append("\"SchedulingConfig\":" + u7.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InferenceExperimentDataStorageConfig to a compact JSON object (declaration order).
+def inference_experiment_data_storage_config_to_json(InferenceExperimentDataStorageConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Destination\":" + api_sagemaker_json_str(v.Destination))
+    if v.KmsKey.is_some():
+        auto u0 = v.KmsKey.unwrap()
+        parts.append("\"KmsKey\":" + api_sagemaker_json_str(u0))
+    if v.ContentType.is_some():
+        auto u1 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + capture_content_type_header_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InferenceSpecification to a compact JSON object (declaration order).
+def inference_specification_to_json(InferenceSpecification v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Containers:
+        e0.append(model_package_container_definition_to_json(x0))
+    parts.append("\"Containers\":" + api_sagemaker_json_arr(e0))
+    if v.SupportedTransformInstanceTypes.is_some():
+        auto u1 = v.SupportedTransformInstanceTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SupportedTransformInstanceTypes\":" + api_sagemaker_json_arr(e2))
+    if v.SupportedRealtimeInferenceInstanceTypes.is_some():
+        auto u3 = v.SupportedRealtimeInferenceInstanceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SupportedRealtimeInferenceInstanceTypes\":" + api_sagemaker_json_arr(e4))
+    if v.SupportedContentTypes.is_some():
+        auto u5 = v.SupportedContentTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(api_sagemaker_json_str(x6))
+        parts.append("\"SupportedContentTypes\":" + api_sagemaker_json_arr(e6))
+    if v.SupportedResponseMIMETypes.is_some():
+        auto u7 = v.SupportedResponseMIMETypes.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(api_sagemaker_json_str(x8))
+        parts.append("\"SupportedResponseMIMETypes\":" + api_sagemaker_json_arr(e8))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InstanceGroupHealthCheckConfiguration to a compact JSON object (declaration order).
+def instance_group_health_check_configuration_to_json(InstanceGroupHealthCheckConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceGroupName\":" + api_sagemaker_json_str(v.InstanceGroupName))
+    if v.InstanceIds.is_some():
+        auto u0 = v.InstanceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"InstanceIds\":" + api_sagemaker_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.DeepHealthChecks:
+        e2.append(x2.to_json())
+    parts.append("\"DeepHealthChecks\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InstancePlacementConfig to a compact JSON object (declaration order).
+def instance_placement_config_to_json(InstancePlacementConfig v) -> str:
+    list[str] parts = []
+    if v.EnableMultipleJobs.is_some():
+        auto u0 = v.EnableMultipleJobs.unwrap()
+        parts.append("\"EnableMultipleJobs\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.PlacementSpecifications.is_some():
+        auto u1 = v.PlacementSpecifications.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PlacementSpecifications\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize InstancePreference to a compact JSON object (declaration order).
+def instance_preference_to_json(InstancePreference v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceType\":" + v.InstanceType.to_json())
+    if v.InstanceCount.is_some():
+        auto u0 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u0))
+    if v.TrainingPlanArns.is_some():
+        auto u1 = v.TrainingPlanArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"TrainingPlanArns\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize JupyterLabAppImageConfig to a compact JSON object (declaration order).
+def jupyter_lab_app_image_config_to_json(JupyterLabAppImageConfig v) -> str:
+    list[str] parts = []
+    if v.FileSystemConfig.is_some():
+        auto u0 = v.FileSystemConfig.unwrap()
+        parts.append("\"FileSystemConfig\":" + u0.to_json())
+    if v.ContainerConfig.is_some():
+        auto u1 = v.ContainerConfig.unwrap()
+        parts.append("\"ContainerConfig\":" + container_config_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize JupyterLabAppSettings to a compact JSON object (declaration order).
+def jupyter_lab_app_settings_to_json(JupyterLabAppSettings v) -> str:
+    list[str] parts = []
+    if v.DefaultResourceSpec.is_some():
+        auto u0 = v.DefaultResourceSpec.unwrap()
+        parts.append("\"DefaultResourceSpec\":" + u0.to_json())
+    if v.CustomImages.is_some():
+        auto u1 = v.CustomImages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomImages\":" + api_sagemaker_json_arr(e2))
+    if v.LifecycleConfigArns.is_some():
+        auto u3 = v.LifecycleConfigArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"LifecycleConfigArns\":" + api_sagemaker_json_arr(e4))
+    if v.CodeRepositories.is_some():
+        auto u5 = v.CodeRepositories.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"CodeRepositories\":" + api_sagemaker_json_arr(e6))
+    if v.AppLifecycleManagement.is_some():
+        auto u7 = v.AppLifecycleManagement.unwrap()
+        parts.append("\"AppLifecycleManagement\":" + u7.to_json())
+    if v.EmrSettings.is_some():
+        auto u8 = v.EmrSettings.unwrap()
+        parts.append("\"EmrSettings\":" + emr_settings_to_json(u8))
+    if v.BuiltInLifecycleConfigArn.is_some():
+        auto u9 = v.BuiltInLifecycleConfigArn.unwrap()
+        parts.append("\"BuiltInLifecycleConfigArn\":" + api_sagemaker_json_str(u9))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize JupyterServerAppSettings to a compact JSON object (declaration order).
+def jupyter_server_app_settings_to_json(JupyterServerAppSettings v) -> str:
+    list[str] parts = []
+    if v.DefaultResourceSpec.is_some():
+        auto u0 = v.DefaultResourceSpec.unwrap()
+        parts.append("\"DefaultResourceSpec\":" + u0.to_json())
+    if v.LifecycleConfigArns.is_some():
+        auto u1 = v.LifecycleConfigArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"LifecycleConfigArns\":" + api_sagemaker_json_arr(e2))
+    if v.CodeRepositories.is_some():
+        auto u3 = v.CodeRepositories.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"CodeRepositories\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize KernelGatewayAppSettings to a compact JSON object (declaration order).
+def kernel_gateway_app_settings_to_json(KernelGatewayAppSettings v) -> str:
+    list[str] parts = []
+    if v.DefaultResourceSpec.is_some():
+        auto u0 = v.DefaultResourceSpec.unwrap()
+        parts.append("\"DefaultResourceSpec\":" + u0.to_json())
+    if v.CustomImages.is_some():
+        auto u1 = v.CustomImages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomImages\":" + api_sagemaker_json_arr(e2))
+    if v.LifecycleConfigArns.is_some():
+        auto u3 = v.LifecycleConfigArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"LifecycleConfigArns\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize KernelGatewayImageConfig to a compact JSON object (declaration order).
+def kernel_gateway_image_config_to_json(KernelGatewayImageConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.KernelSpecs:
+        e0.append(x0.to_json())
+    parts.append("\"KernelSpecs\":" + api_sagemaker_json_arr(e0))
+    if v.FileSystemConfig.is_some():
+        auto u1 = v.FileSystemConfig.unwrap()
+        parts.append("\"FileSystemConfig\":" + u1.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize LabelingJobAlgorithmsConfig to a compact JSON object (declaration order).
+def labeling_job_algorithms_config_to_json(LabelingJobAlgorithmsConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"LabelingJobAlgorithmSpecificationArn\":" + api_sagemaker_json_str(v.LabelingJobAlgorithmSpecificationArn))
+    if v.InitialActiveLearningModelArn.is_some():
+        auto u0 = v.InitialActiveLearningModelArn.unwrap()
+        parts.append("\"InitialActiveLearningModelArn\":" + api_sagemaker_json_str(u0))
+    if v.LabelingJobResourceConfig.is_some():
+        auto u1 = v.LabelingJobResourceConfig.unwrap()
+        parts.append("\"LabelingJobResourceConfig\":" + labeling_job_resource_config_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize LabelingJobDataAttributes to a compact JSON object (declaration order).
+def labeling_job_data_attributes_to_json(LabelingJobDataAttributes v) -> str:
+    list[str] parts = []
+    if v.ContentClassifiers.is_some():
+        auto u0 = v.ContentClassifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ContentClassifiers\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize LabelingJobInputConfig to a compact JSON object (declaration order).
+def labeling_job_input_config_to_json(LabelingJobInputConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSource\":" + v.DataSource.to_json())
+    if v.DataAttributes.is_some():
+        auto u0 = v.DataAttributes.unwrap()
+        parts.append("\"DataAttributes\":" + labeling_job_data_attributes_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize LabelingJobResourceConfig to a compact JSON object (declaration order).
+def labeling_job_resource_config_to_json(LabelingJobResourceConfig v) -> str:
+    list[str] parts = []
+    if v.VolumeKmsKeyId.is_some():
+        auto u0 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + api_sagemaker_json_str(u0))
+    if v.VpcConfig.is_some():
+        auto u1 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ListModelMetadataRequest to a compact JSON object (declaration order).
+def list_model_metadata_request_to_json(ListModelMetadataRequest v) -> str:
+    list[str] parts = []
+    if v.SearchExpression.is_some():
+        auto u0 = v.SearchExpression.unwrap()
+        parts.append("\"SearchExpression\":" + model_metadata_search_expression_to_json(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + api_sagemaker_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ListTrainingPlansRequest to a compact JSON object (declaration order).
+def list_training_plans_request_to_json(ListTrainingPlansRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + api_sagemaker_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.StartTimeAfter.is_some():
+        auto u2 = v.StartTimeAfter.unwrap()
+        parts.append("\"StartTimeAfter\":" + str(datetime.to_timestamp(u2)))
+    if v.StartTimeBefore.is_some():
+        auto u3 = v.StartTimeBefore.unwrap()
+        parts.append("\"StartTimeBefore\":" + str(datetime.to_timestamp(u3)))
+    if v.SortBy.is_some():
+        auto u4 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u4.to_json())
+    if v.SortOrder.is_some():
+        auto u5 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u5.to_json())
+    if v.Filters.is_some():
+        auto u6 = v.Filters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Filters\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize MemberDefinition to a compact JSON object (declaration order).
+def member_definition_to_json(MemberDefinition v) -> str:
+    list[str] parts = []
+    if v.CognitoMemberDefinition.is_some():
+        auto u0 = v.CognitoMemberDefinition.unwrap()
+        parts.append("\"CognitoMemberDefinition\":" + u0.to_json())
+    if v.OidcMemberDefinition.is_some():
+        auto u1 = v.OidcMemberDefinition.unwrap()
+        parts.append("\"OidcMemberDefinition\":" + oidc_member_definition_to_json(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelBiasAppSpecification to a compact JSON object (declaration order).
+def model_bias_app_specification_to_json(ModelBiasAppSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageUri\":" + api_sagemaker_json_str(v.ImageUri))
+    parts.append("\"ConfigUri\":" + api_sagemaker_json_str(v.ConfigUri))
+    if v.Environment.is_some():
+        auto u0 = v.Environment.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(api_sagemaker_json_str(k1) + ":" + api_sagemaker_json_str(u0[k1]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelCompilationConfig to a compact JSON object (declaration order).
+def model_compilation_config_to_json(ModelCompilationConfig v) -> str:
+    list[str] parts = []
+    if v.Image.is_some():
+        auto u0 = v.Image.unwrap()
+        parts.append("\"Image\":" + api_sagemaker_json_str(u0))
+    if v.OverrideEnvironment.is_some():
+        auto u1 = v.OverrideEnvironment.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"OverrideEnvironment\":" + api_sagemaker_json_obj(m2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelExplainabilityAppSpecification to a compact JSON object (declaration order).
+def model_explainability_app_specification_to_json(ModelExplainabilityAppSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageUri\":" + api_sagemaker_json_str(v.ImageUri))
+    parts.append("\"ConfigUri\":" + api_sagemaker_json_str(v.ConfigUri))
+    if v.Environment.is_some():
+        auto u0 = v.Environment.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(api_sagemaker_json_str(k1) + ":" + api_sagemaker_json_str(u0[k1]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelMetadataSearchExpression to a compact JSON object (declaration order).
+def model_metadata_search_expression_to_json(ModelMetadataSearchExpression v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelPackageContainerDefinition to a compact JSON object (declaration order).
+def model_package_container_definition_to_json(ModelPackageContainerDefinition v) -> str:
+    list[str] parts = []
+    if v.ContainerHostname.is_some():
+        auto u0 = v.ContainerHostname.unwrap()
+        parts.append("\"ContainerHostname\":" + api_sagemaker_json_str(u0))
+    if v.Image.is_some():
+        auto u1 = v.Image.unwrap()
+        parts.append("\"Image\":" + api_sagemaker_json_str(u1))
+    if v.ImageDigest.is_some():
+        auto u2 = v.ImageDigest.unwrap()
+        parts.append("\"ImageDigest\":" + api_sagemaker_json_str(u2))
+    if v.ModelDataUrl.is_some():
+        auto u3 = v.ModelDataUrl.unwrap()
+        parts.append("\"ModelDataUrl\":" + api_sagemaker_json_str(u3))
+    if v.ModelDataSource.is_some():
+        auto u4 = v.ModelDataSource.unwrap()
+        parts.append("\"ModelDataSource\":" + u4.to_json())
+    if v.ProductId.is_some():
+        auto u5 = v.ProductId.unwrap()
+        parts.append("\"ProductId\":" + api_sagemaker_json_str(u5))
+    if v.Environment.is_some():
+        auto u6 = v.Environment.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(api_sagemaker_json_str(k7) + ":" + api_sagemaker_json_str(u6[k7]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m7))
+    if v.ModelInput.is_some():
+        auto u8 = v.ModelInput.unwrap()
+        parts.append("\"ModelInput\":" + u8.to_json())
+    if v.Framework.is_some():
+        auto u9 = v.Framework.unwrap()
+        parts.append("\"Framework\":" + api_sagemaker_json_str(u9))
+    if v.FrameworkVersion.is_some():
+        auto u10 = v.FrameworkVersion.unwrap()
+        parts.append("\"FrameworkVersion\":" + api_sagemaker_json_str(u10))
+    if v.NearestModelName.is_some():
+        auto u11 = v.NearestModelName.unwrap()
+        parts.append("\"NearestModelName\":" + api_sagemaker_json_str(u11))
+    if v.AdditionalModelDataSources.is_some():
+        auto u12 = v.AdditionalModelDataSources.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"AdditionalModelDataSources\":" + api_sagemaker_json_arr(e13))
+    if v.AdditionalS3DataSource.is_some():
+        auto u14 = v.AdditionalS3DataSource.unwrap()
+        parts.append("\"AdditionalS3DataSource\":" + u14.to_json())
+    if v.ModelDataETag.is_some():
+        auto u15 = v.ModelDataETag.unwrap()
+        parts.append("\"ModelDataETag\":" + api_sagemaker_json_str(u15))
+    if v.IsCheckpoint.is_some():
+        auto u16 = v.IsCheckpoint.unwrap()
+        parts.append("\"IsCheckpoint\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.BaseModel.is_some():
+        auto u17 = v.BaseModel.unwrap()
+        parts.append("\"BaseModel\":" + u17.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelPackageValidationProfile to a compact JSON object (declaration order).
+def model_package_validation_profile_to_json(ModelPackageValidationProfile v) -> str:
+    list[str] parts = []
+    parts.append("\"ProfileName\":" + api_sagemaker_json_str(v.ProfileName))
+    parts.append("\"TransformJobDefinition\":" + transform_job_definition_to_json(v.TransformJobDefinition))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelPackageValidationSpecification to a compact JSON object (declaration order).
+def model_package_validation_specification_to_json(ModelPackageValidationSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ValidationRole\":" + api_sagemaker_json_str(v.ValidationRole))
+    list[str] e0 = []
+    for x0 in v.ValidationProfiles:
+        e0.append(model_package_validation_profile_to_json(x0))
+    parts.append("\"ValidationProfiles\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelQualityAppSpecification to a compact JSON object (declaration order).
+def model_quality_app_specification_to_json(ModelQualityAppSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageUri\":" + api_sagemaker_json_str(v.ImageUri))
+    if v.ContainerEntrypoint.is_some():
+        auto u0 = v.ContainerEntrypoint.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"ContainerEntrypoint\":" + api_sagemaker_json_arr(e1))
+    if v.ContainerArguments.is_some():
+        auto u2 = v.ContainerArguments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"ContainerArguments\":" + api_sagemaker_json_arr(e3))
+    if v.RecordPreprocessorSourceUri.is_some():
+        auto u4 = v.RecordPreprocessorSourceUri.unwrap()
+        parts.append("\"RecordPreprocessorSourceUri\":" + api_sagemaker_json_str(u4))
+    if v.PostAnalyticsProcessorSourceUri.is_some():
+        auto u5 = v.PostAnalyticsProcessorSourceUri.unwrap()
+        parts.append("\"PostAnalyticsProcessorSourceUri\":" + api_sagemaker_json_str(u5))
+    if v.ProblemType.is_some():
+        auto u6 = v.ProblemType.unwrap()
+        parts.append("\"ProblemType\":" + u6.to_json())
+    if v.Environment.is_some():
+        auto u7 = v.Environment.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(api_sagemaker_json_str(k8) + ":" + api_sagemaker_json_str(u7[k8]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m8))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelQuantizationConfig to a compact JSON object (declaration order).
+def model_quantization_config_to_json(ModelQuantizationConfig v) -> str:
+    list[str] parts = []
+    if v.Image.is_some():
+        auto u0 = v.Image.unwrap()
+        parts.append("\"Image\":" + api_sagemaker_json_str(u0))
+    if v.OverrideEnvironment.is_some():
+        auto u1 = v.OverrideEnvironment.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"OverrideEnvironment\":" + api_sagemaker_json_obj(m2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ModelShardingConfig to a compact JSON object (declaration order).
+def model_sharding_config_to_json(ModelShardingConfig v) -> str:
+    list[str] parts = []
+    if v.Image.is_some():
+        auto u0 = v.Image.unwrap()
+        parts.append("\"Image\":" + api_sagemaker_json_str(u0))
+    if v.OverrideEnvironment.is_some():
+        auto u1 = v.OverrideEnvironment.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"OverrideEnvironment\":" + api_sagemaker_json_obj(m2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize MonitoringAppSpecification to a compact JSON object (declaration order).
+def monitoring_app_specification_to_json(MonitoringAppSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageUri\":" + api_sagemaker_json_str(v.ImageUri))
+    if v.ContainerEntrypoint.is_some():
+        auto u0 = v.ContainerEntrypoint.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"ContainerEntrypoint\":" + api_sagemaker_json_arr(e1))
+    if v.ContainerArguments.is_some():
+        auto u2 = v.ContainerArguments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"ContainerArguments\":" + api_sagemaker_json_arr(e3))
+    if v.RecordPreprocessorSourceUri.is_some():
+        auto u4 = v.RecordPreprocessorSourceUri.unwrap()
+        parts.append("\"RecordPreprocessorSourceUri\":" + api_sagemaker_json_str(u4))
+    if v.PostAnalyticsProcessorSourceUri.is_some():
+        auto u5 = v.PostAnalyticsProcessorSourceUri.unwrap()
+        parts.append("\"PostAnalyticsProcessorSourceUri\":" + api_sagemaker_json_str(u5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize MonitoringJobDefinition to a compact JSON object (declaration order).
+def monitoring_job_definition_to_json(MonitoringJobDefinition v) -> str:
+    list[str] parts = []
+    if v.BaselineConfig.is_some():
+        auto u0 = v.BaselineConfig.unwrap()
+        parts.append("\"BaselineConfig\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.MonitoringInputs:
+        e1.append(x1.to_json())
+    parts.append("\"MonitoringInputs\":" + api_sagemaker_json_arr(e1))
+    parts.append("\"MonitoringOutputConfig\":" + monitoring_output_config_to_json(v.MonitoringOutputConfig))
+    parts.append("\"MonitoringResources\":" + v.MonitoringResources.to_json())
+    parts.append("\"MonitoringAppSpecification\":" + monitoring_app_specification_to_json(v.MonitoringAppSpecification))
+    if v.StoppingCondition.is_some():
+        auto u2 = v.StoppingCondition.unwrap()
+        parts.append("\"StoppingCondition\":" + u2.to_json())
+    if v.Environment.is_some():
+        auto u3 = v.Environment.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(api_sagemaker_json_str(k4) + ":" + api_sagemaker_json_str(u3[k4]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m4))
+    if v.NetworkConfig.is_some():
+        auto u5 = v.NetworkConfig.unwrap()
+        parts.append("\"NetworkConfig\":" + network_config_to_json(u5))
+    parts.append("\"RoleArn\":" + api_sagemaker_json_str(v.RoleArn))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize MonitoringNetworkConfig to a compact JSON object (declaration order).
+def monitoring_network_config_to_json(MonitoringNetworkConfig v) -> str:
+    list[str] parts = []
+    if v.EnableInterContainerTrafficEncryption.is_some():
+        auto u0 = v.EnableInterContainerTrafficEncryption.unwrap()
+        parts.append("\"EnableInterContainerTrafficEncryption\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.EnableNetworkIsolation.is_some():
+        auto u1 = v.EnableNetworkIsolation.unwrap()
+        parts.append("\"EnableNetworkIsolation\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.VpcConfig.is_some():
+        auto u2 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize MonitoringOutputConfig to a compact JSON object (declaration order).
+def monitoring_output_config_to_json(MonitoringOutputConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.MonitoringOutputs:
+        e0.append(x0.to_json())
+    parts.append("\"MonitoringOutputs\":" + api_sagemaker_json_arr(e0))
+    if v.KmsKeyId.is_some():
+        auto u1 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize MonitoringScheduleConfig to a compact JSON object (declaration order).
+def monitoring_schedule_config_to_json(MonitoringScheduleConfig v) -> str:
+    list[str] parts = []
+    if v.ScheduleConfig.is_some():
+        auto u0 = v.ScheduleConfig.unwrap()
+        parts.append("\"ScheduleConfig\":" + u0.to_json())
+    if v.MonitoringJobDefinition.is_some():
+        auto u1 = v.MonitoringJobDefinition.unwrap()
+        parts.append("\"MonitoringJobDefinition\":" + monitoring_job_definition_to_json(u1))
+    if v.MonitoringJobDefinitionName.is_some():
+        auto u2 = v.MonitoringJobDefinitionName.unwrap()
+        parts.append("\"MonitoringJobDefinitionName\":" + api_sagemaker_json_str(u2))
+    if v.MonitoringType.is_some():
+        auto u3 = v.MonitoringType.unwrap()
+        parts.append("\"MonitoringType\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize NeoVpcConfig to a compact JSON object (declaration order).
+def neo_vpc_config_to_json(NeoVpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Subnets:
+        e1.append(api_sagemaker_json_str(x1))
+    parts.append("\"Subnets\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize NestedFilters to a compact JSON object (declaration order).
+def nested_filters_to_json(NestedFilters v) -> str:
+    list[str] parts = []
+    parts.append("\"NestedPropertyName\":" + api_sagemaker_json_str(v.NestedPropertyName))
+    list[str] e0 = []
+    for x0 in v.Filters:
+        e0.append(x0.to_json())
+    parts.append("\"Filters\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize NetworkConfig to a compact JSON object (declaration order).
+def network_config_to_json(NetworkConfig v) -> str:
+    list[str] parts = []
+    if v.EnableInterContainerTrafficEncryption.is_some():
+        auto u0 = v.EnableInterContainerTrafficEncryption.unwrap()
+        parts.append("\"EnableInterContainerTrafficEncryption\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.EnableNetworkIsolation.is_some():
+        auto u1 = v.EnableNetworkIsolation.unwrap()
+        parts.append("\"EnableNetworkIsolation\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.VpcConfig.is_some():
+        auto u2 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize OidcConfig to a compact JSON object (declaration order).
+def oidc_config_to_json(OidcConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientId\":" + api_sagemaker_json_str(v.ClientId))
+    parts.append("\"ClientSecret\":" + api_sagemaker_json_str(v.ClientSecret))
+    parts.append("\"Issuer\":" + api_sagemaker_json_str(v.Issuer))
+    parts.append("\"AuthorizationEndpoint\":" + api_sagemaker_json_str(v.AuthorizationEndpoint))
+    parts.append("\"TokenEndpoint\":" + api_sagemaker_json_str(v.TokenEndpoint))
+    parts.append("\"UserInfoEndpoint\":" + api_sagemaker_json_str(v.UserInfoEndpoint))
+    parts.append("\"LogoutEndpoint\":" + api_sagemaker_json_str(v.LogoutEndpoint))
+    parts.append("\"JwksUri\":" + api_sagemaker_json_str(v.JwksUri))
+    if v.Scope.is_some():
+        auto u0 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + api_sagemaker_json_str(u0))
+    if v.AuthenticationRequestExtraParams.is_some():
+        auto u1 = v.AuthenticationRequestExtraParams.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"AuthenticationRequestExtraParams\":" + api_sagemaker_json_obj(m2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize OidcMemberDefinition to a compact JSON object (declaration order).
+def oidc_member_definition_to_json(OidcMemberDefinition v) -> str:
+    list[str] parts = []
+    if v.Groups.is_some():
+        auto u0 = v.Groups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"Groups\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize OptimizationConfig to a compact JSON object (declaration order).
+def optimization_config_to_json(OptimizationConfig v) -> str:
+    list[str] parts = []
+    if v.ModelQuantizationConfig.is_some():
+        auto u0 = v.ModelQuantizationConfig.unwrap()
+        parts.append("\"ModelQuantizationConfig\":" + model_quantization_config_to_json(u0))
+    if v.ModelCompilationConfig.is_some():
+        auto u1 = v.ModelCompilationConfig.unwrap()
+        parts.append("\"ModelCompilationConfig\":" + model_compilation_config_to_json(u1))
+    if v.ModelShardingConfig.is_some():
+        auto u2 = v.ModelShardingConfig.unwrap()
+        parts.append("\"ModelShardingConfig\":" + model_sharding_config_to_json(u2))
+    if v.ModelSpeculativeDecodingConfig.is_some():
+        auto u3 = v.ModelSpeculativeDecodingConfig.unwrap()
+        parts.append("\"ModelSpeculativeDecodingConfig\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize OptimizationVpcConfig to a compact JSON object (declaration order).
+def optimization_vpc_config_to_json(OptimizationVpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Subnets:
+        e1.append(api_sagemaker_json_str(x1))
+    parts.append("\"Subnets\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ParameterRange to a compact JSON object (declaration order).
+def parameter_range_to_json(ParameterRange v) -> str:
+    list[str] parts = []
+    if v.IntegerParameterRangeSpecification.is_some():
+        auto u0 = v.IntegerParameterRangeSpecification.unwrap()
+        parts.append("\"IntegerParameterRangeSpecification\":" + u0.to_json())
+    if v.ContinuousParameterRangeSpecification.is_some():
+        auto u1 = v.ContinuousParameterRangeSpecification.unwrap()
+        parts.append("\"ContinuousParameterRangeSpecification\":" + u1.to_json())
+    if v.CategoricalParameterRangeSpecification.is_some():
+        auto u2 = v.CategoricalParameterRangeSpecification.unwrap()
+        parts.append("\"CategoricalParameterRangeSpecification\":" + categorical_parameter_range_specification_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ParameterRanges to a compact JSON object (declaration order).
+def parameter_ranges_to_json(ParameterRanges v) -> str:
+    list[str] parts = []
+    if v.IntegerParameterRanges.is_some():
+        auto u0 = v.IntegerParameterRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"IntegerParameterRanges\":" + api_sagemaker_json_arr(e1))
+    if v.ContinuousParameterRanges.is_some():
+        auto u2 = v.ContinuousParameterRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ContinuousParameterRanges\":" + api_sagemaker_json_arr(e3))
+    if v.CategoricalParameterRanges.is_some():
+        auto u4 = v.CategoricalParameterRanges.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(categorical_parameter_range_to_json(x5))
+        parts.append("\"CategoricalParameterRanges\":" + api_sagemaker_json_arr(e5))
+    if v.AutoParameters.is_some():
+        auto u6 = v.AutoParameters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"AutoParameters\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize PartnerAppConfig to a compact JSON object (declaration order).
+def partner_app_config_to_json(PartnerAppConfig v) -> str:
+    list[str] parts = []
+    if v.AdminUsers.is_some():
+        auto u0 = v.AdminUsers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"AdminUsers\":" + api_sagemaker_json_arr(e1))
+    if v.Arguments.is_some():
+        auto u2 = v.Arguments.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_sagemaker_json_str(k3) + ":" + api_sagemaker_json_str(u2[k3]))
+        parts.append("\"Arguments\":" + api_sagemaker_json_obj(m3))
+    if v.AssignedGroupPatterns.is_some():
+        auto u4 = v.AssignedGroupPatterns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_sagemaker_json_str(x5))
+        parts.append("\"AssignedGroupPatterns\":" + api_sagemaker_json_arr(e5))
+    if v.RoleGroupAssignments.is_some():
+        auto u6 = v.RoleGroupAssignments.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(role_group_assignment_to_json(x7))
+        parts.append("\"RoleGroupAssignments\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProcessingClusterConfig to a compact JSON object (declaration order).
+def processing_cluster_config_to_json(ProcessingClusterConfig v) -> str:
+    list[str] parts = []
+    if v.InstanceCount.is_some():
+        auto u0 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u0))
+    if v.InstanceType.is_some():
+        auto u1 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u1.to_json())
+    parts.append("\"VolumeSizeInGB\":" + str(v.VolumeSizeInGB))
+    if v.VolumeKmsKeyId.is_some():
+        auto u2 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + api_sagemaker_json_str(u2))
+    if v.InstancePreferences.is_some():
+        auto u3 = v.InstancePreferences.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"InstancePreferences\":" + api_sagemaker_json_arr(e4))
+    if v.SelectedInstanceType.is_some():
+        auto u5 = v.SelectedInstanceType.unwrap()
+        parts.append("\"SelectedInstanceType\":" + u5.to_json())
+    if v.SelectedInstanceCount.is_some():
+        auto u6 = v.SelectedInstanceCount.unwrap()
+        parts.append("\"SelectedInstanceCount\":" + str(u6))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProcessingOutputConfig to a compact JSON object (declaration order).
+def processing_output_config_to_json(ProcessingOutputConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Outputs:
+        e0.append(x0.to_json())
+    parts.append("\"Outputs\":" + api_sagemaker_json_arr(e0))
+    if v.KmsKeyId.is_some():
+        auto u1 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + api_sagemaker_json_str(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProcessingResources to a compact JSON object (declaration order).
+def processing_resources_to_json(ProcessingResources v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterConfig\":" + processing_cluster_config_to_json(v.ClusterConfig))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProductionVariant to a compact JSON object (declaration order).
+def production_variant_to_json(ProductionVariant v) -> str:
+    list[str] parts = []
+    parts.append("\"VariantName\":" + api_sagemaker_json_str(v.VariantName))
+    if v.ModelName.is_some():
+        auto u0 = v.ModelName.unwrap()
+        parts.append("\"ModelName\":" + api_sagemaker_json_str(u0))
+    if v.InitialInstanceCount.is_some():
+        auto u1 = v.InitialInstanceCount.unwrap()
+        parts.append("\"InitialInstanceCount\":" + str(u1))
+    if v.InstanceType.is_some():
+        auto u2 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u2.to_json())
+    if v.InstancePools.is_some():
+        auto u3 = v.InstancePools.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"InstancePools\":" + api_sagemaker_json_arr(e4))
+    if v.VariantInstanceProvisionTimeoutInSeconds.is_some():
+        auto u5 = v.VariantInstanceProvisionTimeoutInSeconds.unwrap()
+        parts.append("\"VariantInstanceProvisionTimeoutInSeconds\":" + str(u5))
+    if v.InitialVariantWeight.is_some():
+        auto u6 = v.InitialVariantWeight.unwrap()
+        parts.append("\"InitialVariantWeight\":" + str(u6))
+    if v.AcceleratorType.is_some():
+        auto u7 = v.AcceleratorType.unwrap()
+        parts.append("\"AcceleratorType\":" + u7.to_json())
+    if v.CoreDumpConfig.is_some():
+        auto u8 = v.CoreDumpConfig.unwrap()
+        parts.append("\"CoreDumpConfig\":" + u8.to_json())
+    if v.ServerlessConfig.is_some():
+        auto u9 = v.ServerlessConfig.unwrap()
+        parts.append("\"ServerlessConfig\":" + u9.to_json())
+    if v.VolumeSizeInGB.is_some():
+        auto u10 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u10))
+    if v.ModelDataDownloadTimeoutInSeconds.is_some():
+        auto u11 = v.ModelDataDownloadTimeoutInSeconds.unwrap()
+        parts.append("\"ModelDataDownloadTimeoutInSeconds\":" + str(u11))
+    if v.ContainerStartupHealthCheckTimeoutInSeconds.is_some():
+        auto u12 = v.ContainerStartupHealthCheckTimeoutInSeconds.unwrap()
+        parts.append("\"ContainerStartupHealthCheckTimeoutInSeconds\":" + str(u12))
+    if v.EnableSSMAccess.is_some():
+        auto u13 = v.EnableSSMAccess.unwrap()
+        parts.append("\"EnableSSMAccess\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.ManagedInstanceScaling.is_some():
+        auto u14 = v.ManagedInstanceScaling.unwrap()
+        parts.append("\"ManagedInstanceScaling\":" + u14.to_json())
+    if v.RoutingConfig.is_some():
+        auto u15 = v.RoutingConfig.unwrap()
+        parts.append("\"RoutingConfig\":" + u15.to_json())
+    if v.InferenceAmiVersion.is_some():
+        auto u16 = v.InferenceAmiVersion.unwrap()
+        parts.append("\"InferenceAmiVersion\":" + u16.to_json())
+    if v.CapacityReservationConfig.is_some():
+        auto u17 = v.CapacityReservationConfig.unwrap()
+        parts.append("\"CapacityReservationConfig\":" + u17.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProfilerConfig to a compact JSON object (declaration order).
+def profiler_config_to_json(ProfilerConfig v) -> str:
+    list[str] parts = []
+    if v.S3OutputPath.is_some():
+        auto u0 = v.S3OutputPath.unwrap()
+        parts.append("\"S3OutputPath\":" + api_sagemaker_json_str(u0))
+    if v.ProfilingIntervalInMilliseconds.is_some():
+        auto u1 = v.ProfilingIntervalInMilliseconds.unwrap()
+        parts.append("\"ProfilingIntervalInMilliseconds\":" + str(u1))
+    if v.ProfilingParameters.is_some():
+        auto u2 = v.ProfilingParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_sagemaker_json_str(k3) + ":" + api_sagemaker_json_str(u2[k3]))
+        parts.append("\"ProfilingParameters\":" + api_sagemaker_json_obj(m3))
+    if v.DisableProfiler.is_some():
+        auto u4 = v.DisableProfiler.unwrap()
+        parts.append("\"DisableProfiler\":" + json.dumps(JsonValue.Bool(u4)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProfilerConfigForUpdate to a compact JSON object (declaration order).
+def profiler_config_for_update_to_json(ProfilerConfigForUpdate v) -> str:
+    list[str] parts = []
+    if v.S3OutputPath.is_some():
+        auto u0 = v.S3OutputPath.unwrap()
+        parts.append("\"S3OutputPath\":" + api_sagemaker_json_str(u0))
+    if v.ProfilingIntervalInMilliseconds.is_some():
+        auto u1 = v.ProfilingIntervalInMilliseconds.unwrap()
+        parts.append("\"ProfilingIntervalInMilliseconds\":" + str(u1))
+    if v.ProfilingParameters.is_some():
+        auto u2 = v.ProfilingParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_sagemaker_json_str(k3) + ":" + api_sagemaker_json_str(u2[k3]))
+        parts.append("\"ProfilingParameters\":" + api_sagemaker_json_obj(m3))
+    if v.DisableProfiler.is_some():
+        auto u4 = v.DisableProfiler.unwrap()
+        parts.append("\"DisableProfiler\":" + json.dumps(JsonValue.Bool(u4)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ProfilerRuleConfiguration to a compact JSON object (declaration order).
+def profiler_rule_configuration_to_json(ProfilerRuleConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleConfigurationName\":" + api_sagemaker_json_str(v.RuleConfigurationName))
+    if v.LocalPath.is_some():
+        auto u0 = v.LocalPath.unwrap()
+        parts.append("\"LocalPath\":" + api_sagemaker_json_str(u0))
+    if v.S3OutputPath.is_some():
+        auto u1 = v.S3OutputPath.unwrap()
+        parts.append("\"S3OutputPath\":" + api_sagemaker_json_str(u1))
+    parts.append("\"RuleEvaluatorImage\":" + api_sagemaker_json_str(v.RuleEvaluatorImage))
+    if v.InstanceType.is_some():
+        auto u2 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u2.to_json())
+    if v.VolumeSizeInGB.is_some():
+        auto u3 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u3))
+    if v.RuleParameters.is_some():
+        auto u4 = v.RuleParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + api_sagemaker_json_str(u4[k5]))
+        parts.append("\"RuleParameters\":" + api_sagemaker_json_obj(m5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize QueryFilters to a compact JSON object (declaration order).
+def query_filters_to_json(QueryFilters v) -> str:
+    list[str] parts = []
+    if v.Types.is_some():
+        auto u0 = v.Types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"Types\":" + api_sagemaker_json_arr(e1))
+    if v.LineageTypes.is_some():
+        auto u2 = v.LineageTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"LineageTypes\":" + api_sagemaker_json_arr(e3))
+    if v.CreatedBefore.is_some():
+        auto u4 = v.CreatedBefore.unwrap()
+        parts.append("\"CreatedBefore\":" + str(datetime.to_timestamp(u4)))
+    if v.CreatedAfter.is_some():
+        auto u5 = v.CreatedAfter.unwrap()
+        parts.append("\"CreatedAfter\":" + str(datetime.to_timestamp(u5)))
+    if v.ModifiedBefore.is_some():
+        auto u6 = v.ModifiedBefore.unwrap()
+        parts.append("\"ModifiedBefore\":" + str(datetime.to_timestamp(u6)))
+    if v.ModifiedAfter.is_some():
+        auto u7 = v.ModifiedAfter.unwrap()
+        parts.append("\"ModifiedAfter\":" + str(datetime.to_timestamp(u7)))
+    if v.Properties.is_some():
+        auto u8 = v.Properties.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(api_sagemaker_json_str(k9) + ":" + api_sagemaker_json_str(u8[k9]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m9))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize QueryLineageRequest to a compact JSON object (declaration order).
+def query_lineage_request_to_json(QueryLineageRequest v) -> str:
+    list[str] parts = []
+    if v.StartArns.is_some():
+        auto u0 = v.StartArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"StartArns\":" + api_sagemaker_json_arr(e1))
+    if v.Direction.is_some():
+        auto u2 = v.Direction.unwrap()
+        parts.append("\"Direction\":" + u2.to_json())
+    if v.IncludeEdges.is_some():
+        auto u3 = v.IncludeEdges.unwrap()
+        parts.append("\"IncludeEdges\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + query_filters_to_json(u4))
+    if v.MaxDepth.is_some():
+        auto u5 = v.MaxDepth.unwrap()
+        parts.append("\"MaxDepth\":" + str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    if v.NextToken.is_some():
+        auto u7 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + api_sagemaker_json_str(u7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RSessionAppSettings to a compact JSON object (declaration order).
+def r_session_app_settings_to_json(RSessionAppSettings v) -> str:
+    list[str] parts = []
+    if v.DefaultResourceSpec.is_some():
+        auto u0 = v.DefaultResourceSpec.unwrap()
+        parts.append("\"DefaultResourceSpec\":" + u0.to_json())
+    if v.CustomImages.is_some():
+        auto u1 = v.CustomImages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomImages\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RecommendationJobContainerConfig to a compact JSON object (declaration order).
+def recommendation_job_container_config_to_json(RecommendationJobContainerConfig v) -> str:
+    list[str] parts = []
+    if v.Domain.is_some():
+        auto u0 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + api_sagemaker_json_str(u0))
+    if v.Task.is_some():
+        auto u1 = v.Task.unwrap()
+        parts.append("\"Task\":" + api_sagemaker_json_str(u1))
+    if v.Framework.is_some():
+        auto u2 = v.Framework.unwrap()
+        parts.append("\"Framework\":" + api_sagemaker_json_str(u2))
+    if v.FrameworkVersion.is_some():
+        auto u3 = v.FrameworkVersion.unwrap()
+        parts.append("\"FrameworkVersion\":" + api_sagemaker_json_str(u3))
+    if v.PayloadConfig.is_some():
+        auto u4 = v.PayloadConfig.unwrap()
+        parts.append("\"PayloadConfig\":" + recommendation_job_payload_config_to_json(u4))
+    if v.NearestModelName.is_some():
+        auto u5 = v.NearestModelName.unwrap()
+        parts.append("\"NearestModelName\":" + api_sagemaker_json_str(u5))
+    if v.SupportedInstanceTypes.is_some():
+        auto u6 = v.SupportedInstanceTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(api_sagemaker_json_str(x7))
+        parts.append("\"SupportedInstanceTypes\":" + api_sagemaker_json_arr(e7))
+    if v.SupportedEndpointType.is_some():
+        auto u8 = v.SupportedEndpointType.unwrap()
+        parts.append("\"SupportedEndpointType\":" + u8.to_json())
+    if v.DataInputConfig.is_some():
+        auto u9 = v.DataInputConfig.unwrap()
+        parts.append("\"DataInputConfig\":" + api_sagemaker_json_str(u9))
+    if v.SupportedResponseMIMETypes.is_some():
+        auto u10 = v.SupportedResponseMIMETypes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(api_sagemaker_json_str(x11))
+        parts.append("\"SupportedResponseMIMETypes\":" + api_sagemaker_json_arr(e11))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RecommendationJobInputConfig to a compact JSON object (declaration order).
+def recommendation_job_input_config_to_json(RecommendationJobInputConfig v) -> str:
+    list[str] parts = []
+    if v.ModelPackageVersionArn.is_some():
+        auto u0 = v.ModelPackageVersionArn.unwrap()
+        parts.append("\"ModelPackageVersionArn\":" + api_sagemaker_json_str(u0))
+    if v.ModelName.is_some():
+        auto u1 = v.ModelName.unwrap()
+        parts.append("\"ModelName\":" + api_sagemaker_json_str(u1))
+    if v.JobDurationInSeconds.is_some():
+        auto u2 = v.JobDurationInSeconds.unwrap()
+        parts.append("\"JobDurationInSeconds\":" + str(u2))
+    if v.TrafficPattern.is_some():
+        auto u3 = v.TrafficPattern.unwrap()
+        parts.append("\"TrafficPattern\":" + traffic_pattern_to_json(u3))
+    if v.ResourceLimit.is_some():
+        auto u4 = v.ResourceLimit.unwrap()
+        parts.append("\"ResourceLimit\":" + u4.to_json())
+    if v.EndpointConfigurations.is_some():
+        auto u5 = v.EndpointConfigurations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(endpoint_input_configuration_to_json(x6))
+        parts.append("\"EndpointConfigurations\":" + api_sagemaker_json_arr(e6))
+    if v.VolumeKmsKeyId.is_some():
+        auto u7 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + api_sagemaker_json_str(u7))
+    if v.ContainerConfig.is_some():
+        auto u8 = v.ContainerConfig.unwrap()
+        parts.append("\"ContainerConfig\":" + recommendation_job_container_config_to_json(u8))
+    if v.Endpoints.is_some():
+        auto u9 = v.Endpoints.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Endpoints\":" + api_sagemaker_json_arr(e10))
+    if v.VpcConfig.is_some():
+        auto u11 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + recommendation_job_vpc_config_to_json(u11))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RecommendationJobPayloadConfig to a compact JSON object (declaration order).
+def recommendation_job_payload_config_to_json(RecommendationJobPayloadConfig v) -> str:
+    list[str] parts = []
+    if v.SamplePayloadUrl.is_some():
+        auto u0 = v.SamplePayloadUrl.unwrap()
+        parts.append("\"SamplePayloadUrl\":" + api_sagemaker_json_str(u0))
+    if v.SupportedContentTypes.is_some():
+        auto u1 = v.SupportedContentTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"SupportedContentTypes\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RecommendationJobStoppingConditions to a compact JSON object (declaration order).
+def recommendation_job_stopping_conditions_to_json(RecommendationJobStoppingConditions v) -> str:
+    list[str] parts = []
+    if v.MaxInvocations.is_some():
+        auto u0 = v.MaxInvocations.unwrap()
+        parts.append("\"MaxInvocations\":" + str(u0))
+    if v.ModelLatencyThresholds.is_some():
+        auto u1 = v.ModelLatencyThresholds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ModelLatencyThresholds\":" + api_sagemaker_json_arr(e2))
+    if v.FlatInvocations.is_some():
+        auto u3 = v.FlatInvocations.unwrap()
+        parts.append("\"FlatInvocations\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RecommendationJobVpcConfig to a compact JSON object (declaration order).
+def recommendation_job_vpc_config_to_json(RecommendationJobVpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Subnets:
+        e1.append(api_sagemaker_json_str(x1))
+    parts.append("\"Subnets\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RegisterDevicesRequest to a compact JSON object (declaration order).
+def register_devices_request_to_json(RegisterDevicesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceFleetName\":" + api_sagemaker_json_str(v.DeviceFleetName))
+    list[str] e0 = []
+    for x0 in v.Devices:
+        e0.append(x0.to_json())
+    parts.append("\"Devices\":" + api_sagemaker_json_arr(e0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ResourceConfig to a compact JSON object (declaration order).
+def resource_config_to_json(ResourceConfig v) -> str:
+    list[str] parts = []
+    if v.InstanceType.is_some():
+        auto u0 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u0.to_json())
+    if v.InstanceCount.is_some():
+        auto u1 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u1))
+    if v.VolumeSizeInGB.is_some():
+        auto u2 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u2))
+    if v.VolumeKmsKeyId.is_some():
+        auto u3 = v.VolumeKmsKeyId.unwrap()
+        parts.append("\"VolumeKmsKeyId\":" + api_sagemaker_json_str(u3))
+    if v.KeepAlivePeriodInSeconds.is_some():
+        auto u4 = v.KeepAlivePeriodInSeconds.unwrap()
+        parts.append("\"KeepAlivePeriodInSeconds\":" + str(u4))
+    if v.InstanceGroups.is_some():
+        auto u5 = v.InstanceGroups.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"InstanceGroups\":" + api_sagemaker_json_arr(e6))
+    if v.TrainingPlanArn.is_some():
+        auto u7 = v.TrainingPlanArn.unwrap()
+        parts.append("\"TrainingPlanArn\":" + api_sagemaker_json_str(u7))
+    if v.InstancePlacementConfig.is_some():
+        auto u8 = v.InstancePlacementConfig.unwrap()
+        parts.append("\"InstancePlacementConfig\":" + instance_placement_config_to_json(u8))
+    if v.InstancePreferences.is_some():
+        auto u9 = v.InstancePreferences.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(instance_preference_to_json(x10))
+        parts.append("\"InstancePreferences\":" + api_sagemaker_json_arr(e10))
+    if v.SelectedInstanceType.is_some():
+        auto u11 = v.SelectedInstanceType.unwrap()
+        parts.append("\"SelectedInstanceType\":" + u11.to_json())
+    if v.SelectedInstanceCount.is_some():
+        auto u12 = v.SelectedInstanceCount.unwrap()
+        parts.append("\"SelectedInstanceCount\":" + str(u12))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ResourceSharingConfig to a compact JSON object (declaration order).
+def resource_sharing_config_to_json(ResourceSharingConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Strategy\":" + v.Strategy.to_json())
+    if v.BorrowLimit.is_some():
+        auto u0 = v.BorrowLimit.unwrap()
+        parts.append("\"BorrowLimit\":" + str(u0))
+    if v.AbsoluteBorrowLimits.is_some():
+        auto u1 = v.AbsoluteBorrowLimits.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AbsoluteBorrowLimits\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize RoleGroupAssignment to a compact JSON object (declaration order).
+def role_group_assignment_to_json(RoleGroupAssignment v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleName\":" + api_sagemaker_json_str(v.RoleName))
+    list[str] e0 = []
+    for x0 in v.GroupPatterns:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"GroupPatterns\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize S3DataSource to a compact JSON object (declaration order).
+def s3_data_source_to_json(S3DataSource v) -> str:
+    list[str] parts = []
+    parts.append("\"S3DataType\":" + v.S3DataType.to_json())
+    parts.append("\"S3Uri\":" + api_sagemaker_json_str(v.S3Uri))
+    if v.S3DataDistributionType.is_some():
+        auto u0 = v.S3DataDistributionType.unwrap()
+        parts.append("\"S3DataDistributionType\":" + u0.to_json())
+    if v.AttributeNames.is_some():
+        auto u1 = v.AttributeNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"AttributeNames\":" + api_sagemaker_json_arr(e2))
+    if v.InstanceGroupNames.is_some():
+        auto u3 = v.InstanceGroupNames.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"InstanceGroupNames\":" + api_sagemaker_json_arr(e4))
+    if v.ModelAccessConfig.is_some():
+        auto u5 = v.ModelAccessConfig.unwrap()
+        parts.append("\"ModelAccessConfig\":" + u5.to_json())
+    if v.HubAccessConfig.is_some():
+        auto u6 = v.HubAccessConfig.unwrap()
+        parts.append("\"HubAccessConfig\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ScheduledUpdateConfig to a compact JSON object (declaration order).
+def scheduled_update_config_to_json(ScheduledUpdateConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"ScheduleExpression\":" + api_sagemaker_json_str(v.ScheduleExpression))
+    if v.DeploymentConfig.is_some():
+        auto u0 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + deployment_configuration_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SchedulerConfig to a compact JSON object (declaration order).
+def scheduler_config_to_json(SchedulerConfig v) -> str:
+    list[str] parts = []
+    if v.PriorityClasses.is_some():
+        auto u0 = v.PriorityClasses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PriorityClasses\":" + api_sagemaker_json_arr(e1))
+    if v.FairShare.is_some():
+        auto u2 = v.FairShare.unwrap()
+        parts.append("\"FairShare\":" + u2.to_json())
+    if v.IdleResourceSharing.is_some():
+        auto u3 = v.IdleResourceSharing.unwrap()
+        parts.append("\"IdleResourceSharing\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SearchExpression to a compact JSON object (declaration order).
+def search_expression_to_json(SearchExpression v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + api_sagemaker_json_arr(e1))
+    if v.NestedFilters.is_some():
+        auto u2 = v.NestedFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(nested_filters_to_json(x3))
+        parts.append("\"NestedFilters\":" + api_sagemaker_json_arr(e3))
+    if v.SubExpressions.is_some():
+        auto u4 = v.SubExpressions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(search_expression_to_json(x5))
+        parts.append("\"SubExpressions\":" + api_sagemaker_json_arr(e5))
+    if v.Operator.is_some():
+        auto u6 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SearchRequest to a compact JSON object (declaration order).
+def search_request_to_json(SearchRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Resource\":" + v.Resource.to_json())
+    if v.SearchExpression.is_some():
+        auto u0 = v.SearchExpression.unwrap()
+        parts.append("\"SearchExpression\":" + search_expression_to_json(u0))
+    if v.SortBy.is_some():
+        auto u1 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + api_sagemaker_json_str(u1))
+    if v.SortOrder.is_some():
+        auto u2 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u2.to_json())
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + api_sagemaker_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.CrossAccountFilterOption.is_some():
+        auto u5 = v.CrossAccountFilterOption.unwrap()
+        parts.append("\"CrossAccountFilterOption\":" + u5.to_json())
+    if v.VisibilityConditions.is_some():
+        auto u6 = v.VisibilityConditions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"VisibilityConditions\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SearchTrainingPlanOfferingsRequest to a compact JSON object (declaration order).
+def search_training_plan_offerings_request_to_json(SearchTrainingPlanOfferingsRequest v) -> str:
+    list[str] parts = []
+    if v.InstanceType.is_some():
+        auto u0 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u0.to_json())
+    if v.InstanceCount.is_some():
+        auto u1 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u1))
+    if v.UltraServerType.is_some():
+        auto u2 = v.UltraServerType.unwrap()
+        parts.append("\"UltraServerType\":" + api_sagemaker_json_str(u2))
+    if v.UltraServerCount.is_some():
+        auto u3 = v.UltraServerCount.unwrap()
+        parts.append("\"UltraServerCount\":" + str(u3))
+    if v.StartTimeAfter.is_some():
+        auto u4 = v.StartTimeAfter.unwrap()
+        parts.append("\"StartTimeAfter\":" + str(datetime.to_timestamp(u4)))
+    if v.EndTimeBefore.is_some():
+        auto u5 = v.EndTimeBefore.unwrap()
+        parts.append("\"EndTimeBefore\":" + str(datetime.to_timestamp(u5)))
+    if v.DurationHours.is_some():
+        auto u6 = v.DurationHours.unwrap()
+        parts.append("\"DurationHours\":" + str(u6))
+    if v.TargetResources.is_some():
+        auto u7 = v.TargetResources.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"TargetResources\":" + api_sagemaker_json_arr(e8))
+    if v.TrainingPlanArn.is_some():
+        auto u9 = v.TrainingPlanArn.unwrap()
+        parts.append("\"TrainingPlanArn\":" + api_sagemaker_json_str(u9))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SelectiveExecutionConfig to a compact JSON object (declaration order).
+def selective_execution_config_to_json(SelectiveExecutionConfig v) -> str:
+    list[str] parts = []
+    if v.SourcePipelineExecutionArn.is_some():
+        auto u0 = v.SourcePipelineExecutionArn.unwrap()
+        parts.append("\"SourcePipelineExecutionArn\":" + api_sagemaker_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SelectedSteps:
+        e1.append(x1.to_json())
+    parts.append("\"SelectedSteps\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SendPipelineExecutionStepSuccessRequest to a compact JSON object (declaration order).
+def send_pipeline_execution_step_success_request_to_json(SendPipelineExecutionStepSuccessRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CallbackToken\":" + api_sagemaker_json_str(v.CallbackToken))
+    if v.OutputParameters.is_some():
+        auto u0 = v.OutputParameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"OutputParameters\":" + api_sagemaker_json_arr(e1))
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + api_sagemaker_json_str(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ServiceCatalogProvisioningDetails to a compact JSON object (declaration order).
+def service_catalog_provisioning_details_to_json(ServiceCatalogProvisioningDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"ProductId\":" + api_sagemaker_json_str(v.ProductId))
+    if v.ProvisioningArtifactId.is_some():
+        auto u0 = v.ProvisioningArtifactId.unwrap()
+        parts.append("\"ProvisioningArtifactId\":" + api_sagemaker_json_str(u0))
+    if v.PathId.is_some():
+        auto u1 = v.PathId.unwrap()
+        parts.append("\"PathId\":" + api_sagemaker_json_str(u1))
+    if v.ProvisioningParameters.is_some():
+        auto u2 = v.ProvisioningParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ProvisioningParameters\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ServiceCatalogProvisioningUpdateDetails to a compact JSON object (declaration order).
+def service_catalog_provisioning_update_details_to_json(ServiceCatalogProvisioningUpdateDetails v) -> str:
+    list[str] parts = []
+    if v.ProvisioningArtifactId.is_some():
+        auto u0 = v.ProvisioningArtifactId.unwrap()
+        parts.append("\"ProvisioningArtifactId\":" + api_sagemaker_json_str(u0))
+    if v.ProvisioningParameters.is_some():
+        auto u1 = v.ProvisioningParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ProvisioningParameters\":" + api_sagemaker_json_arr(e2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize ShadowModeConfig to a compact JSON object (declaration order).
+def shadow_mode_config_to_json(ShadowModeConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceModelVariantName\":" + api_sagemaker_json_str(v.SourceModelVariantName))
+    list[str] e0 = []
+    for x0 in v.ShadowModelVariants:
+        e0.append(x0.to_json())
+    parts.append("\"ShadowModelVariants\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SourceAlgorithmSpecification to a compact JSON object (declaration order).
+def source_algorithm_specification_to_json(SourceAlgorithmSpecification v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SourceAlgorithms:
+        e0.append(x0.to_json())
+    parts.append("\"SourceAlgorithms\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SourceIpConfig to a compact JSON object (declaration order).
+def source_ip_config_to_json(SourceIpConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Cidrs:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"Cidrs\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SpaceJupyterLabAppSettings to a compact JSON object (declaration order).
+def space_jupyter_lab_app_settings_to_json(SpaceJupyterLabAppSettings v) -> str:
+    list[str] parts = []
+    if v.DefaultResourceSpec.is_some():
+        auto u0 = v.DefaultResourceSpec.unwrap()
+        parts.append("\"DefaultResourceSpec\":" + u0.to_json())
+    if v.CodeRepositories.is_some():
+        auto u1 = v.CodeRepositories.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CodeRepositories\":" + api_sagemaker_json_arr(e2))
+    if v.AppLifecycleManagement.is_some():
+        auto u3 = v.AppLifecycleManagement.unwrap()
+        parts.append("\"AppLifecycleManagement\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize SpaceSettings to a compact JSON object (declaration order).
+def space_settings_to_json(SpaceSettings v) -> str:
+    list[str] parts = []
+    if v.JupyterServerAppSettings.is_some():
+        auto u0 = v.JupyterServerAppSettings.unwrap()
+        parts.append("\"JupyterServerAppSettings\":" + jupyter_server_app_settings_to_json(u0))
+    if v.KernelGatewayAppSettings.is_some():
+        auto u1 = v.KernelGatewayAppSettings.unwrap()
+        parts.append("\"KernelGatewayAppSettings\":" + kernel_gateway_app_settings_to_json(u1))
+    if v.CodeEditorAppSettings.is_some():
+        auto u2 = v.CodeEditorAppSettings.unwrap()
+        parts.append("\"CodeEditorAppSettings\":" + u2.to_json())
+    if v.JupyterLabAppSettings.is_some():
+        auto u3 = v.JupyterLabAppSettings.unwrap()
+        parts.append("\"JupyterLabAppSettings\":" + space_jupyter_lab_app_settings_to_json(u3))
+    if v.AppType.is_some():
+        auto u4 = v.AppType.unwrap()
+        parts.append("\"AppType\":" + u4.to_json())
+    if v.SpaceStorageSettings.is_some():
+        auto u5 = v.SpaceStorageSettings.unwrap()
+        parts.append("\"SpaceStorageSettings\":" + u5.to_json())
+    if v.SpaceManagedResources.is_some():
+        auto u6 = v.SpaceManagedResources.unwrap()
+        parts.append("\"SpaceManagedResources\":" + u6.to_json())
+    if v.CustomFileSystems.is_some():
+        auto u7 = v.CustomFileSystems.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CustomFileSystems\":" + api_sagemaker_json_arr(e8))
+    if v.RemoteAccess.is_some():
+        auto u9 = v.RemoteAccess.unwrap()
+        parts.append("\"RemoteAccess\":" + u9.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize StartClusterHealthCheckRequest to a compact JSON object (declaration order).
+def start_cluster_health_check_request_to_json(StartClusterHealthCheckRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    list[str] e0 = []
+    for x0 in v.DeepHealthCheckConfigurations:
+        e0.append(instance_group_health_check_configuration_to_json(x0))
+    parts.append("\"DeepHealthCheckConfigurations\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize StartPipelineExecutionRequest to a compact JSON object (declaration order).
+def start_pipeline_execution_request_to_json(StartPipelineExecutionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PipelineName\":" + api_sagemaker_json_str(v.PipelineName))
+    if v.PipelineExecutionDisplayName.is_some():
+        auto u0 = v.PipelineExecutionDisplayName.unwrap()
+        parts.append("\"PipelineExecutionDisplayName\":" + api_sagemaker_json_str(u0))
+    if v.PipelineParameters.is_some():
+        auto u1 = v.PipelineParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PipelineParameters\":" + api_sagemaker_json_arr(e2))
+    if v.PipelineExecutionDescription.is_some():
+        auto u3 = v.PipelineExecutionDescription.unwrap()
+        parts.append("\"PipelineExecutionDescription\":" + api_sagemaker_json_str(u3))
+    parts.append("\"ClientRequestToken\":" + api_sagemaker_json_str(v.ClientRequestToken))
+    if v.ParallelismConfiguration.is_some():
+        auto u4 = v.ParallelismConfiguration.unwrap()
+        parts.append("\"ParallelismConfiguration\":" + u4.to_json())
+    if v.SelectiveExecutionConfig.is_some():
+        auto u5 = v.SelectiveExecutionConfig.unwrap()
+        parts.append("\"SelectiveExecutionConfig\":" + selective_execution_config_to_json(u5))
+    if v.PipelineVersionId.is_some():
+        auto u6 = v.PipelineVersionId.unwrap()
+        parts.append("\"PipelineVersionId\":" + str(u6))
+    if v.MlflowExperimentName.is_some():
+        auto u7 = v.MlflowExperimentName.unwrap()
+        parts.append("\"MlflowExperimentName\":" + api_sagemaker_json_str(u7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize StopInferenceExperimentRequest to a compact JSON object (declaration order).
+def stop_inference_experiment_request_to_json(StopInferenceExperimentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    list[str] m0 = []
+    for k0 in sorted(v.ModelVariantActions.keys()):
+        m0.append(api_sagemaker_json_str(k0) + ":" + v.ModelVariantActions[k0].to_json())
+    parts.append("\"ModelVariantActions\":" + api_sagemaker_json_obj(m0))
+    if v.DesiredModelVariants.is_some():
+        auto u1 = v.DesiredModelVariants.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"DesiredModelVariants\":" + api_sagemaker_json_arr(e2))
+    if v.DesiredState.is_some():
+        auto u3 = v.DesiredState.unwrap()
+        parts.append("\"DesiredState\":" + u3.to_json())
+    if v.Reason.is_some():
+        auto u4 = v.Reason.unwrap()
+        parts.append("\"Reason\":" + api_sagemaker_json_str(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize StudioWebPortalSettings to a compact JSON object (declaration order).
+def studio_web_portal_settings_to_json(StudioWebPortalSettings v) -> str:
+    list[str] parts = []
+    if v.HiddenMlTools.is_some():
+        auto u0 = v.HiddenMlTools.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"HiddenMlTools\":" + api_sagemaker_json_arr(e1))
+    if v.HiddenAppTypes.is_some():
+        auto u2 = v.HiddenAppTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HiddenAppTypes\":" + api_sagemaker_json_arr(e3))
+    if v.HiddenInstanceTypes.is_some():
+        auto u4 = v.HiddenInstanceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"HiddenInstanceTypes\":" + api_sagemaker_json_arr(e5))
+    if v.HiddenSageMakerImageVersionAliases.is_some():
+        auto u6 = v.HiddenSageMakerImageVersionAliases.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(hidden_sage_maker_image_to_json(x7))
+        parts.append("\"HiddenSageMakerImageVersionAliases\":" + api_sagemaker_json_arr(e7))
+    if v.ExecutionRoleSessionNameMode.is_some():
+        auto u8 = v.ExecutionRoleSessionNameMode.unwrap()
+        parts.append("\"ExecutionRoleSessionNameMode\":" + u8.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize TrafficPattern to a compact JSON object (declaration order).
+def traffic_pattern_to_json(TrafficPattern v) -> str:
+    list[str] parts = []
+    if v.TrafficType.is_some():
+        auto u0 = v.TrafficType.unwrap()
+        parts.append("\"TrafficType\":" + u0.to_json())
+    if v.Phases.is_some():
+        auto u1 = v.Phases.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Phases\":" + api_sagemaker_json_arr(e2))
+    if v.Stairs.is_some():
+        auto u3 = v.Stairs.unwrap()
+        parts.append("\"Stairs\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize TrainingJobDefinition to a compact JSON object (declaration order).
+def training_job_definition_to_json(TrainingJobDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"TrainingInputMode\":" + v.TrainingInputMode.to_json())
+    if v.HyperParameters.is_some():
+        auto u0 = v.HyperParameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(api_sagemaker_json_str(k1) + ":" + api_sagemaker_json_str(u0[k1]))
+        parts.append("\"HyperParameters\":" + api_sagemaker_json_obj(m1))
+    list[str] e2 = []
+    for x2 in v.InputDataConfig:
+        e2.append(channel__to_json(x2))
+    parts.append("\"InputDataConfig\":" + api_sagemaker_json_arr(e2))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    parts.append("\"ResourceConfig\":" + resource_config_to_json(v.ResourceConfig))
+    parts.append("\"StoppingCondition\":" + v.StoppingCondition.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize TrainingSpecification to a compact JSON object (declaration order).
+def training_specification_to_json(TrainingSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"TrainingImage\":" + api_sagemaker_json_str(v.TrainingImage))
+    if v.TrainingImageDigest.is_some():
+        auto u0 = v.TrainingImageDigest.unwrap()
+        parts.append("\"TrainingImageDigest\":" + api_sagemaker_json_str(u0))
+    if v.SupportedHyperParameters.is_some():
+        auto u1 = v.SupportedHyperParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(hyper_parameter_specification_to_json(x2))
+        parts.append("\"SupportedHyperParameters\":" + api_sagemaker_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.SupportedTrainingInstanceTypes:
+        e3.append(x3.to_json())
+    parts.append("\"SupportedTrainingInstanceTypes\":" + api_sagemaker_json_arr(e3))
+    if v.SupportsDistributedTraining.is_some():
+        auto u4 = v.SupportsDistributedTraining.unwrap()
+        parts.append("\"SupportsDistributedTraining\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.MetricDefinitions.is_some():
+        auto u5 = v.MetricDefinitions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"MetricDefinitions\":" + api_sagemaker_json_arr(e6))
+    list[str] e7 = []
+    for x7 in v.TrainingChannels:
+        e7.append(channel_specification_to_json(x7))
+    parts.append("\"TrainingChannels\":" + api_sagemaker_json_arr(e7))
+    if v.SupportedTuningJobObjectiveMetrics.is_some():
+        auto u8 = v.SupportedTuningJobObjectiveMetrics.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"SupportedTuningJobObjectiveMetrics\":" + api_sagemaker_json_arr(e9))
+    if v.AdditionalS3DataSource.is_some():
+        auto u10 = v.AdditionalS3DataSource.unwrap()
+        parts.append("\"AdditionalS3DataSource\":" + u10.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize TransformJobDefinition to a compact JSON object (declaration order).
+def transform_job_definition_to_json(TransformJobDefinition v) -> str:
+    list[str] parts = []
+    if v.MaxConcurrentTransforms.is_some():
+        auto u0 = v.MaxConcurrentTransforms.unwrap()
+        parts.append("\"MaxConcurrentTransforms\":" + str(u0))
+    if v.MaxPayloadInMB.is_some():
+        auto u1 = v.MaxPayloadInMB.unwrap()
+        parts.append("\"MaxPayloadInMB\":" + str(u1))
+    if v.BatchStrategy.is_some():
+        auto u2 = v.BatchStrategy.unwrap()
+        parts.append("\"BatchStrategy\":" + u2.to_json())
+    if v.Environment.is_some():
+        auto u3 = v.Environment.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(api_sagemaker_json_str(k4) + ":" + api_sagemaker_json_str(u3[k4]))
+        parts.append("\"Environment\":" + api_sagemaker_json_obj(m4))
+    parts.append("\"TransformInput\":" + v.TransformInput.to_json())
+    parts.append("\"TransformOutput\":" + v.TransformOutput.to_json())
+    parts.append("\"TransformResources\":" + v.TransformResources.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateActionRequest to a compact JSON object (declaration order).
+def update_action_request_to_json(UpdateActionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ActionName\":" + api_sagemaker_json_str(v.ActionName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"Status\":" + u1.to_json())
+    if v.Properties.is_some():
+        auto u2 = v.Properties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_sagemaker_json_str(k3) + ":" + api_sagemaker_json_str(u2[k3]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m3))
+    if v.PropertiesToRemove.is_some():
+        auto u4 = v.PropertiesToRemove.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_sagemaker_json_str(x5))
+        parts.append("\"PropertiesToRemove\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateAppImageConfigRequest to a compact JSON object (declaration order).
+def update_app_image_config_request_to_json(UpdateAppImageConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AppImageConfigName\":" + api_sagemaker_json_str(v.AppImageConfigName))
+    if v.KernelGatewayImageConfig.is_some():
+        auto u0 = v.KernelGatewayImageConfig.unwrap()
+        parts.append("\"KernelGatewayImageConfig\":" + kernel_gateway_image_config_to_json(u0))
+    if v.JupyterLabAppImageConfig.is_some():
+        auto u1 = v.JupyterLabAppImageConfig.unwrap()
+        parts.append("\"JupyterLabAppImageConfig\":" + jupyter_lab_app_image_config_to_json(u1))
+    if v.CodeEditorAppImageConfig.is_some():
+        auto u2 = v.CodeEditorAppImageConfig.unwrap()
+        parts.append("\"CodeEditorAppImageConfig\":" + code_editor_app_image_config_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateArtifactRequest to a compact JSON object (declaration order).
+def update_artifact_request_to_json(UpdateArtifactRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ArtifactArn\":" + api_sagemaker_json_str(v.ArtifactArn))
+    if v.ArtifactName.is_some():
+        auto u0 = v.ArtifactName.unwrap()
+        parts.append("\"ArtifactName\":" + api_sagemaker_json_str(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m2))
+    if v.PropertiesToRemove.is_some():
+        auto u3 = v.PropertiesToRemove.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"PropertiesToRemove\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateClusterRequest to a compact JSON object (declaration order).
+def update_cluster_request_to_json(UpdateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.InstanceGroups.is_some():
+        auto u0 = v.InstanceGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cluster_instance_group_specification_to_json(x1))
+        parts.append("\"InstanceGroups\":" + api_sagemaker_json_arr(e1))
+    if v.RestrictedInstanceGroups.is_some():
+        auto u2 = v.RestrictedInstanceGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cluster_restricted_instance_group_specification_to_json(x3))
+        parts.append("\"RestrictedInstanceGroups\":" + api_sagemaker_json_arr(e3))
+    if v.RestrictedInstanceGroupsConfig.is_some():
+        auto u4 = v.RestrictedInstanceGroupsConfig.unwrap()
+        parts.append("\"RestrictedInstanceGroupsConfig\":" + u4.to_json())
+    if v.TieredStorageConfig.is_some():
+        auto u5 = v.TieredStorageConfig.unwrap()
+        parts.append("\"TieredStorageConfig\":" + u5.to_json())
+    if v.NodeRecovery.is_some():
+        auto u6 = v.NodeRecovery.unwrap()
+        parts.append("\"NodeRecovery\":" + u6.to_json())
+    if v.InstanceGroupsToDelete.is_some():
+        auto u7 = v.InstanceGroupsToDelete.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(api_sagemaker_json_str(x8))
+        parts.append("\"InstanceGroupsToDelete\":" + api_sagemaker_json_arr(e8))
+    if v.NodeProvisioningMode.is_some():
+        auto u9 = v.NodeProvisioningMode.unwrap()
+        parts.append("\"NodeProvisioningMode\":" + api_sagemaker_json_str(u9))
+    if v.ClusterRole.is_some():
+        auto u10 = v.ClusterRole.unwrap()
+        parts.append("\"ClusterRole\":" + api_sagemaker_json_str(u10))
+    if v.AutoScaling.is_some():
+        auto u11 = v.AutoScaling.unwrap()
+        parts.append("\"AutoScaling\":" + u11.to_json())
+    if v.Orchestrator.is_some():
+        auto u12 = v.Orchestrator.unwrap()
+        parts.append("\"Orchestrator\":" + u12.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateClusterSchedulerConfigRequest to a compact JSON object (declaration order).
+def update_cluster_scheduler_config_request_to_json(UpdateClusterSchedulerConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterSchedulerConfigId\":" + api_sagemaker_json_str(v.ClusterSchedulerConfigId))
+    parts.append("\"TargetVersion\":" + str(v.TargetVersion))
+    if v.SchedulerConfig.is_some():
+        auto u0 = v.SchedulerConfig.unwrap()
+        parts.append("\"SchedulerConfig\":" + scheduler_config_to_json(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateClusterSoftwareRequest to a compact JSON object (declaration order).
+def update_cluster_software_request_to_json(UpdateClusterSoftwareRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + api_sagemaker_json_str(v.ClusterName))
+    if v.InstanceGroups.is_some():
+        auto u0 = v.InstanceGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"InstanceGroups\":" + api_sagemaker_json_arr(e1))
+    if v.DeploymentConfig.is_some():
+        auto u2 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + deployment_configuration_to_json(u2))
+    if v.ImageId.is_some():
+        auto u3 = v.ImageId.unwrap()
+        parts.append("\"ImageId\":" + api_sagemaker_json_str(u3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateComputeQuotaRequest to a compact JSON object (declaration order).
+def update_compute_quota_request_to_json(UpdateComputeQuotaRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ComputeQuotaId\":" + api_sagemaker_json_str(v.ComputeQuotaId))
+    parts.append("\"TargetVersion\":" + str(v.TargetVersion))
+    if v.ComputeQuotaConfig.is_some():
+        auto u0 = v.ComputeQuotaConfig.unwrap()
+        parts.append("\"ComputeQuotaConfig\":" + compute_quota_config_to_json(u0))
+    if v.ComputeQuotaTarget.is_some():
+        auto u1 = v.ComputeQuotaTarget.unwrap()
+        parts.append("\"ComputeQuotaTarget\":" + u1.to_json())
+    if v.ActivationState.is_some():
+        auto u2 = v.ActivationState.unwrap()
+        parts.append("\"ActivationState\":" + u2.to_json())
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateContextRequest to a compact JSON object (declaration order).
+def update_context_request_to_json(UpdateContextRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ContextName\":" + api_sagemaker_json_str(v.ContextName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(api_sagemaker_json_str(k2) + ":" + api_sagemaker_json_str(u1[k2]))
+        parts.append("\"Properties\":" + api_sagemaker_json_obj(m2))
+    if v.PropertiesToRemove.is_some():
+        auto u3 = v.PropertiesToRemove.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"PropertiesToRemove\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateDevicesRequest to a compact JSON object (declaration order).
+def update_devices_request_to_json(UpdateDevicesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceFleetName\":" + api_sagemaker_json_str(v.DeviceFleetName))
+    list[str] e0 = []
+    for x0 in v.Devices:
+        e0.append(x0.to_json())
+    parts.append("\"Devices\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateDomainRequest to a compact JSON object (declaration order).
+def update_domain_request_to_json(UpdateDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainId\":" + api_sagemaker_json_str(v.DomainId))
+    if v.DefaultUserSettings.is_some():
+        auto u0 = v.DefaultUserSettings.unwrap()
+        parts.append("\"DefaultUserSettings\":" + user_settings_to_json(u0))
+    if v.DomainSettingsForUpdate.is_some():
+        auto u1 = v.DomainSettingsForUpdate.unwrap()
+        parts.append("\"DomainSettingsForUpdate\":" + domain_settings_for_update_to_json(u1))
+    if v.AppSecurityGroupManagement.is_some():
+        auto u2 = v.AppSecurityGroupManagement.unwrap()
+        parts.append("\"AppSecurityGroupManagement\":" + u2.to_json())
+    if v.DefaultSpaceSettings.is_some():
+        auto u3 = v.DefaultSpaceSettings.unwrap()
+        parts.append("\"DefaultSpaceSettings\":" + default_space_settings_to_json(u3))
+    if v.SubnetIds.is_some():
+        auto u4 = v.SubnetIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_sagemaker_json_str(x5))
+        parts.append("\"SubnetIds\":" + api_sagemaker_json_arr(e5))
+    if v.AppNetworkAccessType.is_some():
+        auto u6 = v.AppNetworkAccessType.unwrap()
+        parts.append("\"AppNetworkAccessType\":" + u6.to_json())
+    if v.TagPropagation.is_some():
+        auto u7 = v.TagPropagation.unwrap()
+        parts.append("\"TagPropagation\":" + u7.to_json())
+    if v.HomeEfsFileSystemCreation.is_some():
+        auto u8 = v.HomeEfsFileSystemCreation.unwrap()
+        parts.append("\"HomeEfsFileSystemCreation\":" + u8.to_json())
+    if v.VpcId.is_some():
+        auto u9 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + api_sagemaker_json_str(u9))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateEndpointInput to a compact JSON object (declaration order).
+def update_endpoint_input_to_json(UpdateEndpointInput v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointName\":" + api_sagemaker_json_str(v.EndpointName))
+    parts.append("\"EndpointConfigName\":" + api_sagemaker_json_str(v.EndpointConfigName))
+    if v.RetainAllVariantProperties.is_some():
+        auto u0 = v.RetainAllVariantProperties.unwrap()
+        parts.append("\"RetainAllVariantProperties\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ExcludeRetainedVariantProperties.is_some():
+        auto u1 = v.ExcludeRetainedVariantProperties.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ExcludeRetainedVariantProperties\":" + api_sagemaker_json_arr(e2))
+    if v.DeploymentConfig.is_some():
+        auto u3 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + deployment_config_to_json(u3))
+    if v.RetainDeploymentConfig.is_some():
+        auto u4 = v.RetainDeploymentConfig.unwrap()
+        parts.append("\"RetainDeploymentConfig\":" + json.dumps(JsonValue.Bool(u4)))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateEndpointWeightsAndCapacitiesInput to a compact JSON object (declaration order).
+def update_endpoint_weights_and_capacities_input_to_json(UpdateEndpointWeightsAndCapacitiesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointName\":" + api_sagemaker_json_str(v.EndpointName))
+    list[str] e0 = []
+    for x0 in v.DesiredWeightsAndCapacities:
+        e0.append(x0.to_json())
+    parts.append("\"DesiredWeightsAndCapacities\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateFeatureGroupRequest to a compact JSON object (declaration order).
+def update_feature_group_request_to_json(UpdateFeatureGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FeatureGroupName\":" + api_sagemaker_json_str(v.FeatureGroupName))
+    if v.FeatureAdditions.is_some():
+        auto u0 = v.FeatureAdditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FeatureAdditions\":" + api_sagemaker_json_arr(e1))
+    if v.OnlineStoreConfig.is_some():
+        auto u2 = v.OnlineStoreConfig.unwrap()
+        parts.append("\"OnlineStoreConfig\":" + u2.to_json())
+    if v.ThroughputConfig.is_some():
+        auto u3 = v.ThroughputConfig.unwrap()
+        parts.append("\"ThroughputConfig\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateFeatureMetadataRequest to a compact JSON object (declaration order).
+def update_feature_metadata_request_to_json(UpdateFeatureMetadataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FeatureGroupName\":" + api_sagemaker_json_str(v.FeatureGroupName))
+    parts.append("\"FeatureName\":" + api_sagemaker_json_str(v.FeatureName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u0))
+    if v.ParameterAdditions.is_some():
+        auto u1 = v.ParameterAdditions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ParameterAdditions\":" + api_sagemaker_json_arr(e2))
+    if v.ParameterRemovals.is_some():
+        auto u3 = v.ParameterRemovals.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"ParameterRemovals\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateHubContentRequest to a compact JSON object (declaration order).
+def update_hub_content_request_to_json(UpdateHubContentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HubName\":" + api_sagemaker_json_str(v.HubName))
+    parts.append("\"HubContentName\":" + api_sagemaker_json_str(v.HubContentName))
+    parts.append("\"HubContentType\":" + v.HubContentType.to_json())
+    parts.append("\"HubContentVersion\":" + api_sagemaker_json_str(v.HubContentVersion))
+    if v.HubContentDisplayName.is_some():
+        auto u0 = v.HubContentDisplayName.unwrap()
+        parts.append("\"HubContentDisplayName\":" + api_sagemaker_json_str(u0))
+    if v.HubContentDescription.is_some():
+        auto u1 = v.HubContentDescription.unwrap()
+        parts.append("\"HubContentDescription\":" + api_sagemaker_json_str(u1))
+    if v.HubContentMarkdown.is_some():
+        auto u2 = v.HubContentMarkdown.unwrap()
+        parts.append("\"HubContentMarkdown\":" + api_sagemaker_json_str(u2))
+    if v.HubContentSearchKeywords.is_some():
+        auto u3 = v.HubContentSearchKeywords.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"HubContentSearchKeywords\":" + api_sagemaker_json_arr(e4))
+    if v.SupportStatus.is_some():
+        auto u5 = v.SupportStatus.unwrap()
+        parts.append("\"SupportStatus\":" + u5.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateHubRequest to a compact JSON object (declaration order).
+def update_hub_request_to_json(UpdateHubRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HubName\":" + api_sagemaker_json_str(v.HubName))
+    if v.HubDescription.is_some():
+        auto u0 = v.HubDescription.unwrap()
+        parts.append("\"HubDescription\":" + api_sagemaker_json_str(u0))
+    if v.HubDisplayName.is_some():
+        auto u1 = v.HubDisplayName.unwrap()
+        parts.append("\"HubDisplayName\":" + api_sagemaker_json_str(u1))
+    if v.HubSearchKeywords.is_some():
+        auto u2 = v.HubSearchKeywords.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"HubSearchKeywords\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateImageRequest to a compact JSON object (declaration order).
+def update_image_request_to_json(UpdateImageRequest v) -> str:
+    list[str] parts = []
+    if v.DeleteProperties.is_some():
+        auto u0 = v.DeleteProperties.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"DeleteProperties\":" + api_sagemaker_json_arr(e1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u2))
+    if v.DisplayName.is_some():
+        auto u3 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + api_sagemaker_json_str(u3))
+    parts.append("\"ImageName\":" + api_sagemaker_json_str(v.ImageName))
+    if v.RoleArn.is_some():
+        auto u4 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + api_sagemaker_json_str(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateImageVersionRequest to a compact JSON object (declaration order).
+def update_image_version_request_to_json(UpdateImageVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageName\":" + api_sagemaker_json_str(v.ImageName))
+    if v.Alias.is_some():
+        auto u0 = v.Alias.unwrap()
+        parts.append("\"Alias\":" + api_sagemaker_json_str(u0))
+    if v.Version.is_some():
+        auto u1 = v.Version.unwrap()
+        parts.append("\"Version\":" + str(u1))
+    if v.AliasesToAdd.is_some():
+        auto u2 = v.AliasesToAdd.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"AliasesToAdd\":" + api_sagemaker_json_arr(e3))
+    if v.AliasesToDelete.is_some():
+        auto u4 = v.AliasesToDelete.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_sagemaker_json_str(x5))
+        parts.append("\"AliasesToDelete\":" + api_sagemaker_json_arr(e5))
+    if v.VendorGuidance.is_some():
+        auto u6 = v.VendorGuidance.unwrap()
+        parts.append("\"VendorGuidance\":" + u6.to_json())
+    if v.JobType.is_some():
+        auto u7 = v.JobType.unwrap()
+        parts.append("\"JobType\":" + u7.to_json())
+    if v.MLFramework.is_some():
+        auto u8 = v.MLFramework.unwrap()
+        parts.append("\"MLFramework\":" + api_sagemaker_json_str(u8))
+    if v.ProgrammingLang.is_some():
+        auto u9 = v.ProgrammingLang.unwrap()
+        parts.append("\"ProgrammingLang\":" + api_sagemaker_json_str(u9))
+    if v.Processor.is_some():
+        auto u10 = v.Processor.unwrap()
+        parts.append("\"Processor\":" + u10.to_json())
+    if v.Horovod.is_some():
+        auto u11 = v.Horovod.unwrap()
+        parts.append("\"Horovod\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.ReleaseNotes.is_some():
+        auto u12 = v.ReleaseNotes.unwrap()
+        parts.append("\"ReleaseNotes\":" + api_sagemaker_json_str(u12))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateInferenceComponentInput to a compact JSON object (declaration order).
+def update_inference_component_input_to_json(UpdateInferenceComponentInput v) -> str:
+    list[str] parts = []
+    parts.append("\"InferenceComponentName\":" + api_sagemaker_json_str(v.InferenceComponentName))
+    if v.Specification.is_some():
+        auto u0 = v.Specification.unwrap()
+        parts.append("\"Specification\":" + inference_component_specification_to_json(u0))
+    if v.Specifications.is_some():
+        auto u1 = v.Specifications.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(inference_component_specification_to_json(x2))
+        parts.append("\"Specifications\":" + api_sagemaker_json_arr(e2))
+    if v.RuntimeConfig.is_some():
+        auto u3 = v.RuntimeConfig.unwrap()
+        parts.append("\"RuntimeConfig\":" + u3.to_json())
+    if v.DeploymentConfig.is_some():
+        auto u4 = v.DeploymentConfig.unwrap()
+        parts.append("\"DeploymentConfig\":" + inference_component_deployment_config_to_json(u4))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateInferenceExperimentRequest to a compact JSON object (declaration order).
+def update_inference_experiment_request_to_json(UpdateInferenceExperimentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + api_sagemaker_json_str(v.Name))
+    if v.Schedule.is_some():
+        auto u0 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + u0.to_json())
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u1))
+    if v.ModelVariants.is_some():
+        auto u2 = v.ModelVariants.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ModelVariants\":" + api_sagemaker_json_arr(e3))
+    if v.DataStorageConfig.is_some():
+        auto u4 = v.DataStorageConfig.unwrap()
+        parts.append("\"DataStorageConfig\":" + inference_experiment_data_storage_config_to_json(u4))
+    if v.ShadowModeConfig.is_some():
+        auto u5 = v.ShadowModeConfig.unwrap()
+        parts.append("\"ShadowModeConfig\":" + shadow_mode_config_to_json(u5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateMlflowAppRequest to a compact JSON object (declaration order).
+def update_mlflow_app_request_to_json(UpdateMlflowAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + api_sagemaker_json_str(v.Arn))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + api_sagemaker_json_str(u0))
+    if v.ArtifactStoreUri.is_some():
+        auto u1 = v.ArtifactStoreUri.unwrap()
+        parts.append("\"ArtifactStoreUri\":" + api_sagemaker_json_str(u1))
+    if v.ModelRegistrationMode.is_some():
+        auto u2 = v.ModelRegistrationMode.unwrap()
+        parts.append("\"ModelRegistrationMode\":" + u2.to_json())
+    if v.WeeklyMaintenanceWindowStart.is_some():
+        auto u3 = v.WeeklyMaintenanceWindowStart.unwrap()
+        parts.append("\"WeeklyMaintenanceWindowStart\":" + api_sagemaker_json_str(u3))
+    if v.DefaultDomainIdList.is_some():
+        auto u4 = v.DefaultDomainIdList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_sagemaker_json_str(x5))
+        parts.append("\"DefaultDomainIdList\":" + api_sagemaker_json_arr(e5))
+    if v.AccountDefaultStatus.is_some():
+        auto u6 = v.AccountDefaultStatus.unwrap()
+        parts.append("\"AccountDefaultStatus\":" + u6.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateModelPackageInput to a compact JSON object (declaration order).
+def update_model_package_input_to_json(UpdateModelPackageInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelPackageArn\":" + api_sagemaker_json_str(v.ModelPackageArn))
+    if v.ModelApprovalStatus.is_some():
+        auto u0 = v.ModelApprovalStatus.unwrap()
+        parts.append("\"ModelApprovalStatus\":" + u0.to_json())
+    if v.ModelPackageRegistrationType.is_some():
+        auto u1 = v.ModelPackageRegistrationType.unwrap()
+        parts.append("\"ModelPackageRegistrationType\":" + u1.to_json())
+    if v.ApprovalDescription.is_some():
+        auto u2 = v.ApprovalDescription.unwrap()
+        parts.append("\"ApprovalDescription\":" + api_sagemaker_json_str(u2))
+    if v.CustomerMetadataProperties.is_some():
+        auto u3 = v.CustomerMetadataProperties.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(api_sagemaker_json_str(k4) + ":" + api_sagemaker_json_str(u3[k4]))
+        parts.append("\"CustomerMetadataProperties\":" + api_sagemaker_json_obj(m4))
+    if v.CustomerMetadataPropertiesToRemove.is_some():
+        auto u5 = v.CustomerMetadataPropertiesToRemove.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(api_sagemaker_json_str(x6))
+        parts.append("\"CustomerMetadataPropertiesToRemove\":" + api_sagemaker_json_arr(e6))
+    if v.AdditionalInferenceSpecificationsToAdd.is_some():
+        auto u7 = v.AdditionalInferenceSpecificationsToAdd.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(additional_inference_specification_definition_to_json(x8))
+        parts.append("\"AdditionalInferenceSpecificationsToAdd\":" + api_sagemaker_json_arr(e8))
+    if v.InferenceSpecification.is_some():
+        auto u9 = v.InferenceSpecification.unwrap()
+        parts.append("\"InferenceSpecification\":" + inference_specification_to_json(u9))
+    if v.SourceUri.is_some():
+        auto u10 = v.SourceUri.unwrap()
+        parts.append("\"SourceUri\":" + api_sagemaker_json_str(u10))
+    if v.ModelCard.is_some():
+        auto u11 = v.ModelCard.unwrap()
+        parts.append("\"ModelCard\":" + u11.to_json())
+    if v.ModelLifeCycle.is_some():
+        auto u12 = v.ModelLifeCycle.unwrap()
+        parts.append("\"ModelLifeCycle\":" + u12.to_json())
+    if v.ClientToken.is_some():
+        auto u13 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + api_sagemaker_json_str(u13))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateMonitoringScheduleRequest to a compact JSON object (declaration order).
+def update_monitoring_schedule_request_to_json(UpdateMonitoringScheduleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"MonitoringScheduleName\":" + api_sagemaker_json_str(v.MonitoringScheduleName))
+    parts.append("\"MonitoringScheduleConfig\":" + monitoring_schedule_config_to_json(v.MonitoringScheduleConfig))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateNotebookInstanceInput to a compact JSON object (declaration order).
+def update_notebook_instance_input_to_json(UpdateNotebookInstanceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"NotebookInstanceName\":" + api_sagemaker_json_str(v.NotebookInstanceName))
+    if v.InstanceType.is_some():
+        auto u0 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + u0.to_json())
+    if v.IpAddressType.is_some():
+        auto u1 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u1.to_json())
+    if v.PlatformIdentifier.is_some():
+        auto u2 = v.PlatformIdentifier.unwrap()
+        parts.append("\"PlatformIdentifier\":" + api_sagemaker_json_str(u2))
+    if v.RoleArn.is_some():
+        auto u3 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + api_sagemaker_json_str(u3))
+    if v.LifecycleConfigName.is_some():
+        auto u4 = v.LifecycleConfigName.unwrap()
+        parts.append("\"LifecycleConfigName\":" + api_sagemaker_json_str(u4))
+    if v.DisassociateLifecycleConfig.is_some():
+        auto u5 = v.DisassociateLifecycleConfig.unwrap()
+        parts.append("\"DisassociateLifecycleConfig\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.VolumeSizeInGB.is_some():
+        auto u6 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u6))
+    if v.DefaultCodeRepository.is_some():
+        auto u7 = v.DefaultCodeRepository.unwrap()
+        parts.append("\"DefaultCodeRepository\":" + api_sagemaker_json_str(u7))
+    if v.AdditionalCodeRepositories.is_some():
+        auto u8 = v.AdditionalCodeRepositories.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(api_sagemaker_json_str(x9))
+        parts.append("\"AdditionalCodeRepositories\":" + api_sagemaker_json_arr(e9))
+    if v.AcceleratorTypes.is_some():
+        auto u10 = v.AcceleratorTypes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"AcceleratorTypes\":" + api_sagemaker_json_arr(e11))
+    if v.DisassociateAcceleratorTypes.is_some():
+        auto u12 = v.DisassociateAcceleratorTypes.unwrap()
+        parts.append("\"DisassociateAcceleratorTypes\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.DisassociateDefaultCodeRepository.is_some():
+        auto u13 = v.DisassociateDefaultCodeRepository.unwrap()
+        parts.append("\"DisassociateDefaultCodeRepository\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.DisassociateAdditionalCodeRepositories.is_some():
+        auto u14 = v.DisassociateAdditionalCodeRepositories.unwrap()
+        parts.append("\"DisassociateAdditionalCodeRepositories\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.RootAccess.is_some():
+        auto u15 = v.RootAccess.unwrap()
+        parts.append("\"RootAccess\":" + u15.to_json())
+    if v.InstanceMetadataServiceConfiguration.is_some():
+        auto u16 = v.InstanceMetadataServiceConfiguration.unwrap()
+        parts.append("\"InstanceMetadataServiceConfiguration\":" + u16.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateNotebookInstanceLifecycleConfigInput to a compact JSON object (declaration order).
+def update_notebook_instance_lifecycle_config_input_to_json(UpdateNotebookInstanceLifecycleConfigInput v) -> str:
+    list[str] parts = []
+    parts.append("\"NotebookInstanceLifecycleConfigName\":" + api_sagemaker_json_str(v.NotebookInstanceLifecycleConfigName))
+    if v.OnCreate.is_some():
+        auto u0 = v.OnCreate.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"OnCreate\":" + api_sagemaker_json_arr(e1))
+    if v.OnStart.is_some():
+        auto u2 = v.OnStart.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"OnStart\":" + api_sagemaker_json_arr(e3))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdatePartnerAppRequest to a compact JSON object (declaration order).
+def update_partner_app_request_to_json(UpdatePartnerAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + api_sagemaker_json_str(v.Arn))
+    if v.MaintenanceConfig.is_some():
+        auto u0 = v.MaintenanceConfig.unwrap()
+        parts.append("\"MaintenanceConfig\":" + u0.to_json())
+    if v.Tier.is_some():
+        auto u1 = v.Tier.unwrap()
+        parts.append("\"Tier\":" + api_sagemaker_json_str(u1))
+    if v.ApplicationConfig.is_some():
+        auto u2 = v.ApplicationConfig.unwrap()
+        parts.append("\"ApplicationConfig\":" + partner_app_config_to_json(u2))
+    if v.IdcConfig.is_some():
+        auto u3 = v.IdcConfig.unwrap()
+        parts.append("\"IdcConfig\":" + u3.to_json())
+    if v.AuthType.is_some():
+        auto u4 = v.AuthType.unwrap()
+        parts.append("\"AuthType\":" + u4.to_json())
+    if v.EnableIamSessionBasedIdentity.is_some():
+        auto u5 = v.EnableIamSessionBasedIdentity.unwrap()
+        parts.append("\"EnableIamSessionBasedIdentity\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.EnableAutoMinorVersionUpgrade.is_some():
+        auto u6 = v.EnableAutoMinorVersionUpgrade.unwrap()
+        parts.append("\"EnableAutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.AppVersion.is_some():
+        auto u7 = v.AppVersion.unwrap()
+        parts.append("\"AppVersion\":" + api_sagemaker_json_str(u7))
+    if v.ClientToken.is_some():
+        auto u8 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + api_sagemaker_json_str(u8))
+    if v.Tags.is_some():
+        auto u9 = v.Tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e10))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateProjectInput to a compact JSON object (declaration order).
+def update_project_input_to_json(UpdateProjectInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ProjectName\":" + api_sagemaker_json_str(v.ProjectName))
+    if v.ProjectDescription.is_some():
+        auto u0 = v.ProjectDescription.unwrap()
+        parts.append("\"ProjectDescription\":" + api_sagemaker_json_str(u0))
+    if v.ServiceCatalogProvisioningUpdateDetails.is_some():
+        auto u1 = v.ServiceCatalogProvisioningUpdateDetails.unwrap()
+        parts.append("\"ServiceCatalogProvisioningUpdateDetails\":" + service_catalog_provisioning_update_details_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.TemplateProvidersToUpdate.is_some():
+        auto u4 = v.TemplateProvidersToUpdate.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(update_template_provider_to_json(x5))
+        parts.append("\"TemplateProvidersToUpdate\":" + api_sagemaker_json_arr(e5))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateSpaceRequest to a compact JSON object (declaration order).
+def update_space_request_to_json(UpdateSpaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainId\":" + api_sagemaker_json_str(v.DomainId))
+    parts.append("\"SpaceName\":" + api_sagemaker_json_str(v.SpaceName))
+    if v.SpaceSettings.is_some():
+        auto u0 = v.SpaceSettings.unwrap()
+        parts.append("\"SpaceSettings\":" + space_settings_to_json(u0))
+    if v.SpaceDisplayName.is_some():
+        auto u1 = v.SpaceDisplayName.unwrap()
+        parts.append("\"SpaceDisplayName\":" + api_sagemaker_json_str(u1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateTemplateProvider to a compact JSON object (declaration order).
+def update_template_provider_to_json(UpdateTemplateProvider v) -> str:
+    list[str] parts = []
+    if v.CfnTemplateProvider.is_some():
+        auto u0 = v.CfnTemplateProvider.unwrap()
+        parts.append("\"CfnTemplateProvider\":" + cfn_update_template_provider_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateTrainingJobRequest to a compact JSON object (declaration order).
+def update_training_job_request_to_json(UpdateTrainingJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrainingJobName\":" + api_sagemaker_json_str(v.TrainingJobName))
+    if v.ProfilerConfig.is_some():
+        auto u0 = v.ProfilerConfig.unwrap()
+        parts.append("\"ProfilerConfig\":" + profiler_config_for_update_to_json(u0))
+    if v.ProfilerRuleConfigurations.is_some():
+        auto u1 = v.ProfilerRuleConfigurations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(profiler_rule_configuration_to_json(x2))
+        parts.append("\"ProfilerRuleConfigurations\":" + api_sagemaker_json_arr(e2))
+    if v.ResourceConfig.is_some():
+        auto u3 = v.ResourceConfig.unwrap()
+        parts.append("\"ResourceConfig\":" + u3.to_json())
+    if v.RemoteDebugConfig.is_some():
+        auto u4 = v.RemoteDebugConfig.unwrap()
+        parts.append("\"RemoteDebugConfig\":" + u4.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateTrialComponentRequest to a compact JSON object (declaration order).
+def update_trial_component_request_to_json(UpdateTrialComponentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrialComponentName\":" + api_sagemaker_json_str(v.TrialComponentName))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + api_sagemaker_json_str(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"Status\":" + u1.to_json())
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(u2)))
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(u3)))
+    if v.Parameters.is_some():
+        auto u4 = v.Parameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_sagemaker_json_str(k5) + ":" + u4[k5].to_json())
+        parts.append("\"Parameters\":" + api_sagemaker_json_obj(m5))
+    if v.ParametersToRemove.is_some():
+        auto u6 = v.ParametersToRemove.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(api_sagemaker_json_str(x7))
+        parts.append("\"ParametersToRemove\":" + api_sagemaker_json_arr(e7))
+    if v.InputArtifacts.is_some():
+        auto u8 = v.InputArtifacts.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(api_sagemaker_json_str(k9) + ":" + u8[k9].to_json())
+        parts.append("\"InputArtifacts\":" + api_sagemaker_json_obj(m9))
+    if v.InputArtifactsToRemove.is_some():
+        auto u10 = v.InputArtifactsToRemove.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(api_sagemaker_json_str(x11))
+        parts.append("\"InputArtifactsToRemove\":" + api_sagemaker_json_arr(e11))
+    if v.OutputArtifacts.is_some():
+        auto u12 = v.OutputArtifacts.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(api_sagemaker_json_str(k13) + ":" + u12[k13].to_json())
+        parts.append("\"OutputArtifacts\":" + api_sagemaker_json_obj(m13))
+    if v.OutputArtifactsToRemove.is_some():
+        auto u14 = v.OutputArtifactsToRemove.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(api_sagemaker_json_str(x15))
+        parts.append("\"OutputArtifactsToRemove\":" + api_sagemaker_json_arr(e15))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateUserProfileRequest to a compact JSON object (declaration order).
+def update_user_profile_request_to_json(UpdateUserProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainId\":" + api_sagemaker_json_str(v.DomainId))
+    parts.append("\"UserProfileName\":" + api_sagemaker_json_str(v.UserProfileName))
+    if v.UserSettings.is_some():
+        auto u0 = v.UserSettings.unwrap()
+        parts.append("\"UserSettings\":" + user_settings_to_json(u0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateWorkforceRequest to a compact JSON object (declaration order).
+def update_workforce_request_to_json(UpdateWorkforceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkforceName\":" + api_sagemaker_json_str(v.WorkforceName))
+    if v.SourceIpConfig.is_some():
+        auto u0 = v.SourceIpConfig.unwrap()
+        parts.append("\"SourceIpConfig\":" + source_ip_config_to_json(u0))
+    if v.OidcConfig.is_some():
+        auto u1 = v.OidcConfig.unwrap()
+        parts.append("\"OidcConfig\":" + oidc_config_to_json(u1))
+    if v.WorkforceVpcConfig.is_some():
+        auto u2 = v.WorkforceVpcConfig.unwrap()
+        parts.append("\"WorkforceVpcConfig\":" + workforce_vpc_config_request_to_json(u2))
+    if v.IpAddressType.is_some():
+        auto u3 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u3.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdateWorkteamRequest to a compact JSON object (declaration order).
+def update_workteam_request_to_json(UpdateWorkteamRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkteamName\":" + api_sagemaker_json_str(v.WorkteamName))
+    if v.MemberDefinitions.is_some():
+        auto u0 = v.MemberDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(member_definition_to_json(x1))
+        parts.append("\"MemberDefinitions\":" + api_sagemaker_json_arr(e1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + api_sagemaker_json_str(u2))
+    if v.NotificationConfiguration.is_some():
+        auto u3 = v.NotificationConfiguration.unwrap()
+        parts.append("\"NotificationConfiguration\":" + u3.to_json())
+    if v.WorkerAccessConfiguration.is_some():
+        auto u4 = v.WorkerAccessConfiguration.unwrap()
+        parts.append("\"WorkerAccessConfiguration\":" + u4.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UserSettings to a compact JSON object (declaration order).
+def user_settings_to_json(UserSettings v) -> str:
+    list[str] parts = []
+    if v.ExecutionRole.is_some():
+        auto u0 = v.ExecutionRole.unwrap()
+        parts.append("\"ExecutionRole\":" + api_sagemaker_json_str(u0))
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"SecurityGroups\":" + api_sagemaker_json_arr(e2))
+    if v.SharingSettings.is_some():
+        auto u3 = v.SharingSettings.unwrap()
+        parts.append("\"SharingSettings\":" + u3.to_json())
+    if v.JupyterServerAppSettings.is_some():
+        auto u4 = v.JupyterServerAppSettings.unwrap()
+        parts.append("\"JupyterServerAppSettings\":" + jupyter_server_app_settings_to_json(u4))
+    if v.KernelGatewayAppSettings.is_some():
+        auto u5 = v.KernelGatewayAppSettings.unwrap()
+        parts.append("\"KernelGatewayAppSettings\":" + kernel_gateway_app_settings_to_json(u5))
+    if v.TensorBoardAppSettings.is_some():
+        auto u6 = v.TensorBoardAppSettings.unwrap()
+        parts.append("\"TensorBoardAppSettings\":" + u6.to_json())
+    if v.RStudioServerProAppSettings.is_some():
+        auto u7 = v.RStudioServerProAppSettings.unwrap()
+        parts.append("\"RStudioServerProAppSettings\":" + u7.to_json())
+    if v.RSessionAppSettings.is_some():
+        auto u8 = v.RSessionAppSettings.unwrap()
+        parts.append("\"RSessionAppSettings\":" + r_session_app_settings_to_json(u8))
+    if v.CanvasAppSettings.is_some():
+        auto u9 = v.CanvasAppSettings.unwrap()
+        parts.append("\"CanvasAppSettings\":" + canvas_app_settings_to_json(u9))
+    if v.CodeEditorAppSettings.is_some():
+        auto u10 = v.CodeEditorAppSettings.unwrap()
+        parts.append("\"CodeEditorAppSettings\":" + code_editor_app_settings_to_json(u10))
+    if v.JupyterLabAppSettings.is_some():
+        auto u11 = v.JupyterLabAppSettings.unwrap()
+        parts.append("\"JupyterLabAppSettings\":" + jupyter_lab_app_settings_to_json(u11))
+    if v.SpaceStorageSettings.is_some():
+        auto u12 = v.SpaceStorageSettings.unwrap()
+        parts.append("\"SpaceStorageSettings\":" + u12.to_json())
+    if v.DefaultLandingUri.is_some():
+        auto u13 = v.DefaultLandingUri.unwrap()
+        parts.append("\"DefaultLandingUri\":" + api_sagemaker_json_str(u13))
+    if v.StudioWebPortal.is_some():
+        auto u14 = v.StudioWebPortal.unwrap()
+        parts.append("\"StudioWebPortal\":" + u14.to_json())
+    if v.CustomPosixUserConfig.is_some():
+        auto u15 = v.CustomPosixUserConfig.unwrap()
+        parts.append("\"CustomPosixUserConfig\":" + u15.to_json())
+    if v.CustomFileSystemConfigs.is_some():
+        auto u16 = v.CustomFileSystemConfigs.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"CustomFileSystemConfigs\":" + api_sagemaker_json_arr(e17))
+    if v.StudioWebPortalSettings.is_some():
+        auto u18 = v.StudioWebPortalSettings.unwrap()
+        parts.append("\"StudioWebPortalSettings\":" + studio_web_portal_settings_to_json(u18))
+    if v.AutoMountHomeEFS.is_some():
+        auto u19 = v.AutoMountHomeEFS.unwrap()
+        parts.append("\"AutoMountHomeEFS\":" + u19.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(api_sagemaker_json_str(x0))
+    parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Subnets:
+        e1.append(api_sagemaker_json_str(x1))
+    parts.append("\"Subnets\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize WorkforceVpcConfigRequest to a compact JSON object (declaration order).
+def workforce_vpc_config_request_to_json(WorkforceVpcConfigRequest v) -> str:
+    list[str] parts = []
+    if v.VpcId.is_some():
+        auto u0 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + api_sagemaker_json_str(u0))
+    if v.SecurityGroupIds.is_some():
+        auto u1 = v.SecurityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(api_sagemaker_json_str(x2))
+        parts.append("\"SecurityGroupIds\":" + api_sagemaker_json_arr(e2))
+    if v.Subnets.is_some():
+        auto u3 = v.Subnets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(api_sagemaker_json_str(x4))
+        parts.append("\"Subnets\":" + api_sagemaker_json_arr(e4))
+    return api_sagemaker_json_obj(parts)
 
 # A bound SageMaker client: credentials + region, threaded into every operation.
 struct SageMakerClient:
@@ -16698,6 +23239,11 @@ struct SageMakerClient:
     def add_association(self, AddAssociationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "AddAssociation", body)
+
+    # AddTags
+    def add_tags(self, AddTagsInput input) -> str:
+        auto body = add_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "AddTags", body)
 
     # AssociateTrialComponent
     # errors: ResourceLimitExceeded, ResourceNotFound
@@ -16717,10 +23263,289 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "AttachClusterNodeVolume", body)
 
+    # BatchAddClusterNodes
+    # errors: ResourceLimitExceeded, ResourceNotFound
+    def batch_add_cluster_nodes(self, BatchAddClusterNodesRequest input) -> str:
+        auto body = batch_add_cluster_nodes_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "BatchAddClusterNodes", body)
+
+    # BatchDeleteClusterNodes
+    # errors: ResourceNotFound
+    def batch_delete_cluster_nodes(self, BatchDeleteClusterNodesRequest input) -> str:
+        auto body = batch_delete_cluster_nodes_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "BatchDeleteClusterNodes", body)
+
+    # BatchDescribeModelPackage
+    def batch_describe_model_package(self, BatchDescribeModelPackageInput input) -> str:
+        auto body = batch_describe_model_package_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "BatchDescribeModelPackage", body)
+
+    # BatchRebootClusterNodes
+    # errors: ResourceNotFound
+    def batch_reboot_cluster_nodes(self, BatchRebootClusterNodesRequest input) -> str:
+        auto body = batch_reboot_cluster_nodes_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "BatchRebootClusterNodes", body)
+
+    # BatchReplaceClusterNodes
+    # errors: ResourceNotFound
+    def batch_replace_cluster_nodes(self, BatchReplaceClusterNodesRequest input) -> str:
+        auto body = batch_replace_cluster_nodes_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "BatchReplaceClusterNodes", body)
+
+    # CreateAIBenchmarkJob
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_ai_benchmark_job(self, CreateAIBenchmarkJobRequest input) -> str:
+        auto body = create_ai_benchmark_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAIBenchmarkJob", body)
+
+    # CreateAIRecommendationJob
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_ai_recommendation_job(self, CreateAIRecommendationJobRequest input) -> str:
+        auto body = create_ai_recommendation_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAIRecommendationJob", body)
+
+    # CreateAIWorkloadConfig
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_ai_workload_config(self, CreateAIWorkloadConfigRequest input) -> str:
+        auto body = create_ai_workload_config_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAIWorkloadConfig", body)
+
+    # CreateAction
+    # errors: ResourceLimitExceeded
+    def create_action(self, CreateActionRequest input) -> str:
+        auto body = create_action_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAction", body)
+
+    # CreateAlgorithm
+    def create_algorithm(self, CreateAlgorithmInput input) -> str:
+        auto body = create_algorithm_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAlgorithm", body)
+
+    # CreateApp
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_app(self, CreateAppRequest input) -> str:
+        auto body = create_app_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateApp", body)
+
+    # CreateAppImageConfig
+    # errors: ResourceInUse
+    def create_app_image_config(self, CreateAppImageConfigRequest input) -> str:
+        auto body = create_app_image_config_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAppImageConfig", body)
+
+    # CreateArtifact
+    # errors: ResourceLimitExceeded
+    def create_artifact(self, CreateArtifactRequest input) -> str:
+        auto body = create_artifact_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateArtifact", body)
+
+    # CreateAutoMLJob
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_auto_ml_job(self, CreateAutoMLJobRequest input) -> str:
+        auto body = create_auto_ml_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateAutoMLJob", body)
+
+    # CreateCluster
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto body = create_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateCluster", body)
+
+    # CreateClusterSchedulerConfig
+    # errors: ConflictException, ResourceLimitExceeded
+    def create_cluster_scheduler_config(self, CreateClusterSchedulerConfigRequest input) -> str:
+        auto body = create_cluster_scheduler_config_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateClusterSchedulerConfig", body)
+
+    # CreateCodeRepository
+    def create_code_repository(self, CreateCodeRepositoryInput input) -> str:
+        auto body = create_code_repository_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateCodeRepository", body)
+
+    # CreateCompilationJob
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_compilation_job(self, CreateCompilationJobRequest input) -> str:
+        auto body = create_compilation_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateCompilationJob", body)
+
+    # CreateComputeQuota
+    # errors: ConflictException, ResourceLimitExceeded
+    def create_compute_quota(self, CreateComputeQuotaRequest input) -> str:
+        auto body = create_compute_quota_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateComputeQuota", body)
+
+    # CreateContext
+    # errors: ResourceLimitExceeded
+    def create_context(self, CreateContextRequest input) -> str:
+        auto body = create_context_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateContext", body)
+
+    # CreateDataQualityJobDefinition
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_data_quality_job_definition(self, CreateDataQualityJobDefinitionRequest input) -> str:
+        auto body = create_data_quality_job_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateDataQualityJobDefinition", body)
+
+    # CreateDeviceFleet
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_device_fleet(self, CreateDeviceFleetRequest input) -> str:
+        auto body = create_device_fleet_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateDeviceFleet", body)
+
+    # CreateDomain
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_domain(self, CreateDomainRequest input) -> str:
+        auto body = create_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateDomain", body)
+
+    # CreateEdgeDeploymentPlan
+    # errors: ResourceLimitExceeded
+    def create_edge_deployment_plan(self, CreateEdgeDeploymentPlanRequest input) -> str:
+        auto body = create_edge_deployment_plan_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateEdgeDeploymentPlan", body)
+
+    # CreateEdgeDeploymentStage
+    # errors: ResourceLimitExceeded
+    def create_edge_deployment_stage(self, CreateEdgeDeploymentStageRequest input) -> str:
+        auto body = create_edge_deployment_stage_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateEdgeDeploymentStage", body)
+
+    # CreateEdgePackagingJob
+    # errors: ResourceLimitExceeded
+    def create_edge_packaging_job(self, CreateEdgePackagingJobRequest input) -> str:
+        auto body = create_edge_packaging_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateEdgePackagingJob", body)
+
+    # CreateEndpoint
+    # errors: ResourceLimitExceeded
+    def create_endpoint(self, CreateEndpointInput input) -> str:
+        auto body = create_endpoint_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateEndpoint", body)
+
+    # CreateEndpointConfig
+    # errors: ResourceLimitExceeded
+    def create_endpoint_config(self, CreateEndpointConfigInput input) -> str:
+        auto body = create_endpoint_config_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateEndpointConfig", body)
+
+    # CreateExperiment
+    # errors: ResourceLimitExceeded
+    def create_experiment(self, CreateExperimentRequest input) -> str:
+        auto body = create_experiment_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateExperiment", body)
+
+    # CreateFeatureGroup
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_feature_group(self, CreateFeatureGroupRequest input) -> str:
+        auto body = create_feature_group_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateFeatureGroup", body)
+
+    # CreateFlowDefinition
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_flow_definition(self, CreateFlowDefinitionRequest input) -> str:
+        auto body = create_flow_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateFlowDefinition", body)
+
+    # CreateHub
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_hub(self, CreateHubRequest input) -> str:
+        auto body = create_hub_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateHub", body)
+
     # CreateHubContentPresignedUrls
     def create_hub_content_presigned_urls(self, CreateHubContentPresignedUrlsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateHubContentPresignedUrls", body)
+
+    # CreateHubContentReference
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_hub_content_reference(self, CreateHubContentReferenceRequest input) -> str:
+        auto body = create_hub_content_reference_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateHubContentReference", body)
+
+    # CreateHumanTaskUi
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_human_task_ui(self, CreateHumanTaskUiRequest input) -> str:
+        auto body = create_human_task_ui_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateHumanTaskUi", body)
+
+    # CreateHyperParameterTuningJob
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_hyper_parameter_tuning_job(self, CreateHyperParameterTuningJobRequest input) -> str:
+        auto body = create_hyper_parameter_tuning_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateHyperParameterTuningJob", body)
+
+    # CreateImage
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_image(self, CreateImageRequest input) -> str:
+        auto body = create_image_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateImage", body)
+
+    # CreateImageVersion
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_image_version(self, CreateImageVersionRequest input) -> str:
+        auto body = create_image_version_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateImageVersion", body)
+
+    # CreateInferenceComponent
+    # errors: ResourceLimitExceeded
+    def create_inference_component(self, CreateInferenceComponentInput input) -> str:
+        auto body = create_inference_component_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateInferenceComponent", body)
+
+    # CreateInferenceExperiment
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_inference_experiment(self, CreateInferenceExperimentRequest input) -> str:
+        auto body = create_inference_experiment_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateInferenceExperiment", body)
+
+    # CreateInferenceRecommendationsJob
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_inference_recommendations_job(self, CreateInferenceRecommendationsJobRequest input) -> str:
+        auto body = create_inference_recommendations_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateInferenceRecommendationsJob", body)
+
+    # CreateJob
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_job(self, CreateJobRequest input) -> str:
+        auto body = create_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateJob", body)
+
+    # CreateLabelingJob
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_labeling_job(self, CreateLabelingJobRequest input) -> str:
+        auto body = create_labeling_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateLabelingJob", body)
+
+    # CreateMlflowApp
+    # errors: ResourceLimitExceeded
+    def create_mlflow_app(self, CreateMlflowAppRequest input) -> str:
+        auto body = create_mlflow_app_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateMlflowApp", body)
+
+    # CreateMlflowTrackingServer
+    # errors: ResourceLimitExceeded
+    def create_mlflow_tracking_server(self, CreateMlflowTrackingServerRequest input) -> str:
+        auto body = create_mlflow_tracking_server_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateMlflowTrackingServer", body)
+
+    # CreateModel
+    # errors: ResourceLimitExceeded
+    def create_model(self, CreateModelInput input) -> str:
+        auto body = create_model_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModel", body)
+
+    # CreateModelBiasJobDefinition
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_model_bias_job_definition(self, CreateModelBiasJobDefinitionRequest input) -> str:
+        auto body = create_model_bias_job_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelBiasJobDefinition", body)
+
+    # CreateModelCard
+    # errors: ConflictException, ResourceLimitExceeded
+    def create_model_card(self, CreateModelCardRequest input) -> str:
+        auto body = create_model_card_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelCard", body)
 
     # CreateModelCardExportJob
     # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
@@ -16728,11 +23553,71 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelCardExportJob", body)
 
+    # CreateModelExplainabilityJobDefinition
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_model_explainability_job_definition(self, CreateModelExplainabilityJobDefinitionRequest input) -> str:
+        auto body = create_model_explainability_job_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelExplainabilityJobDefinition", body)
+
+    # CreateModelPackage
+    # errors: ConflictException, ResourceLimitExceeded
+    def create_model_package(self, CreateModelPackageInput input) -> str:
+        auto body = create_model_package_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelPackage", body)
+
+    # CreateModelPackageGroup
+    # errors: ResourceLimitExceeded
+    def create_model_package_group(self, CreateModelPackageGroupInput input) -> str:
+        auto body = create_model_package_group_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelPackageGroup", body)
+
+    # CreateModelQualityJobDefinition
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_model_quality_job_definition(self, CreateModelQualityJobDefinitionRequest input) -> str:
+        auto body = create_model_quality_job_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateModelQualityJobDefinition", body)
+
+    # CreateMonitoringSchedule
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_monitoring_schedule(self, CreateMonitoringScheduleRequest input) -> str:
+        auto body = create_monitoring_schedule_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateMonitoringSchedule", body)
+
+    # CreateNotebookInstance
+    # errors: ResourceLimitExceeded
+    def create_notebook_instance(self, CreateNotebookInstanceInput input) -> str:
+        auto body = create_notebook_instance_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateNotebookInstance", body)
+
+    # CreateNotebookInstanceLifecycleConfig
+    # errors: ResourceLimitExceeded
+    def create_notebook_instance_lifecycle_config(self, CreateNotebookInstanceLifecycleConfigInput input) -> str:
+        auto body = create_notebook_instance_lifecycle_config_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateNotebookInstanceLifecycleConfig", body)
+
+    # CreateOptimizationJob
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_optimization_job(self, CreateOptimizationJobRequest input) -> str:
+        auto body = create_optimization_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateOptimizationJob", body)
+
+    # CreatePartnerApp
+    # errors: ConflictException, ResourceLimitExceeded
+    def create_partner_app(self, CreatePartnerAppRequest input) -> str:
+        auto body = create_partner_app_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreatePartnerApp", body)
+
     # CreatePartnerAppPresignedUrl
     # errors: ResourceNotFound
     def create_partner_app_presigned_url(self, CreatePartnerAppPresignedUrlRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreatePartnerAppPresignedUrl", body)
+
+    # CreatePipeline
+    # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
+    def create_pipeline(self, CreatePipelineRequest input) -> str:
+        auto body = create_pipeline_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreatePipeline", body)
 
     # CreatePresignedDomainUrl
     # errors: ResourceNotFound
@@ -16756,6 +23641,83 @@ struct SageMakerClient:
     def create_presigned_notebook_instance_url(self, CreatePresignedNotebookInstanceUrlInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreatePresignedNotebookInstanceUrl", body)
+
+    # CreateProcessingJob
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_processing_job(self, CreateProcessingJobRequest input) -> str:
+        auto body = create_processing_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateProcessingJob", body)
+
+    # CreateProject
+    # errors: ResourceLimitExceeded
+    def create_project(self, CreateProjectInput input) -> str:
+        auto body = create_project_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateProject", body)
+
+    # CreateSpace
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_space(self, CreateSpaceRequest input) -> str:
+        auto body = create_space_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateSpace", body)
+
+    # CreateStudioLifecycleConfig
+    # errors: ResourceInUse
+    def create_studio_lifecycle_config(self, CreateStudioLifecycleConfigRequest input) -> str:
+        auto body = create_studio_lifecycle_config_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateStudioLifecycleConfig", body)
+
+    # CreateTrainingJob
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_training_job(self, CreateTrainingJobRequest input) -> str:
+        auto body = create_training_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateTrainingJob", body)
+
+    # CreateTrainingPlan
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_training_plan(self, CreateTrainingPlanRequest input) -> str:
+        auto body = create_training_plan_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateTrainingPlan", body)
+
+    # CreateTrainingSession
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_training_session(self, CreateTrainingSessionRequest input) -> str:
+        auto body = create_training_session_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateTrainingSession", body)
+
+    # CreateTransformJob
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def create_transform_job(self, CreateTransformJobRequest input) -> str:
+        auto body = create_transform_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateTransformJob", body)
+
+    # CreateTrial
+    # errors: ResourceLimitExceeded, ResourceNotFound
+    def create_trial(self, CreateTrialRequest input) -> str:
+        auto body = create_trial_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateTrial", body)
+
+    # CreateTrialComponent
+    # errors: ResourceLimitExceeded
+    def create_trial_component(self, CreateTrialComponentRequest input) -> str:
+        auto body = create_trial_component_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateTrialComponent", body)
+
+    # CreateUserProfile
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_user_profile(self, CreateUserProfileRequest input) -> str:
+        auto body = create_user_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateUserProfile", body)
+
+    # CreateWorkforce
+    def create_workforce(self, CreateWorkforceRequest input) -> str:
+        auto body = create_workforce_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateWorkforce", body)
+
+    # CreateWorkteam
+    # errors: ResourceInUse, ResourceLimitExceeded
+    def create_workteam(self, CreateWorkteamRequest input) -> str:
+        auto body = create_workteam_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateWorkteam", body)
 
     # DeleteAIBenchmarkJob
     # errors: ResourceNotFound
@@ -16798,6 +23760,12 @@ struct SageMakerClient:
     def delete_app_image_config(self, DeleteAppImageConfigRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteAppImageConfig", body)
+
+    # DeleteArtifact
+    # errors: ResourceNotFound
+    def delete_artifact(self, DeleteArtifactRequest input) -> str:
+        auto body = delete_artifact_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteArtifact", body)
 
     # DeleteAssociation
     # errors: ResourceNotFound
@@ -17072,6 +24040,11 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteStudioLifecycleConfig", body)
 
+    # DeleteTags
+    def delete_tags(self, DeleteTagsInput input) -> str:
+        auto body = delete_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteTags", body)
+
     # DeleteTrainingJob
     # errors: ResourceInUse, ResourceNotFound
     def delete_training_job(self, DeleteTrainingJobRequest input) -> str:
@@ -17112,6 +24085,11 @@ struct SageMakerClient:
     def delete_workteam(self, DeleteWorkteamRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteWorkteam", body)
+
+    # DeregisterDevices
+    def deregister_devices(self, DeregisterDevicesRequest input) -> str:
+        auto body = deregister_devices_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeregisterDevices", body)
 
     # DescribeAIBenchmarkJob
     # errors: ResourceNotFound
@@ -17621,6 +24599,12 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "GetSearchSuggestions", body)
 
+    # ImportHubContent
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def import_hub_content(self, ImportHubContentRequest input) -> str:
+        auto body = import_hub_content_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ImportHubContent", body)
+
     # ListAIBenchmarkJobs
     def list_ai_benchmark_jobs(self, ListAIBenchmarkJobsRequest input) -> str:
         auto body = input.to_json()
@@ -17906,6 +24890,11 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListModelExplainabilityJobDefinitions", body)
 
+    # ListModelMetadata
+    def list_model_metadata(self, ListModelMetadataRequest input) -> str:
+        auto body = list_model_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListModelMetadata", body)
+
     # ListModelPackageGroups
     def list_model_package_groups(self, ListModelPackageGroupsInput input) -> str:
         auto body = input.to_json()
@@ -18049,6 +25038,11 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListTrainingJobsForHyperParameterTuningJob", body)
 
+    # ListTrainingPlans
+    def list_training_plans(self, ListTrainingPlansRequest input) -> str:
+        auto body = list_training_plans_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListTrainingPlans", body)
+
     # ListTrainingSessions
     def list_training_sessions(self, ListTrainingSessionsRequest input) -> str:
         auto body = input.to_json()
@@ -18098,6 +25092,18 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "PutModelPackageGroupPolicy", body)
 
+    # QueryLineage
+    # errors: ResourceNotFound
+    def query_lineage(self, QueryLineageRequest input) -> str:
+        auto body = query_lineage_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "QueryLineage", body)
+
+    # RegisterDevices
+    # errors: ResourceLimitExceeded
+    def register_devices(self, RegisterDevicesRequest input) -> str:
+        auto body = register_devices_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "RegisterDevices", body)
+
     # RenderUiTemplate
     # errors: ResourceNotFound
     def render_ui_template(self, RenderUiTemplateRequest input) -> str:
@@ -18110,11 +25116,34 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "RetryPipelineExecution", body)
 
+    # Search
+    def search(self, SearchRequest input) -> str:
+        auto body = search_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "Search", body)
+
+    # SearchTrainingPlanOfferings
+    # errors: ResourceLimitExceeded
+    def search_training_plan_offerings(self, SearchTrainingPlanOfferingsRequest input) -> str:
+        auto body = search_training_plan_offerings_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "SearchTrainingPlanOfferings", body)
+
     # SendPipelineExecutionStepFailure
     # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
     def send_pipeline_execution_step_failure(self, SendPipelineExecutionStepFailureRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "SendPipelineExecutionStepFailure", body)
+
+    # SendPipelineExecutionStepSuccess
+    # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
+    def send_pipeline_execution_step_success(self, SendPipelineExecutionStepSuccessRequest input) -> str:
+        auto body = send_pipeline_execution_step_success_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "SendPipelineExecutionStepSuccess", body)
+
+    # StartClusterHealthCheck
+    # errors: ResourceNotFound
+    def start_cluster_health_check(self, StartClusterHealthCheckRequest input) -> str:
+        auto body = start_cluster_health_check_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "StartClusterHealthCheck", body)
 
     # StartEdgeDeploymentStage
     def start_edge_deployment_stage(self, StartEdgeDeploymentStageRequest input) -> str:
@@ -18144,6 +25173,12 @@ struct SageMakerClient:
     def start_notebook_instance(self, StartNotebookInstanceInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "StartNotebookInstance", body)
+
+    # StartPipelineExecution
+    # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
+    def start_pipeline_execution(self, StartPipelineExecutionRequest input) -> str:
+        auto body = start_pipeline_execution_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "StartPipelineExecution", body)
 
     # StartSession
     # errors: ResourceLimitExceeded, ResourceNotFound
@@ -18190,6 +25225,12 @@ struct SageMakerClient:
     def stop_hyper_parameter_tuning_job(self, StopHyperParameterTuningJobRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "StopHyperParameterTuningJob", body)
+
+    # StopInferenceExperiment
+    # errors: ConflictException, ResourceNotFound
+    def stop_inference_experiment(self, StopInferenceExperimentRequest input) -> str:
+        auto body = stop_inference_experiment_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "StopInferenceExperiment", body)
 
     # StopInferenceRecommendationsJob
     # errors: ResourceNotFound
@@ -18262,11 +25303,59 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "StopTransformJob", body)
 
+    # UpdateAction
+    # errors: ConflictException, ResourceNotFound
+    def update_action(self, UpdateActionRequest input) -> str:
+        auto body = update_action_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateAction", body)
+
+    # UpdateAppImageConfig
+    # errors: ResourceNotFound
+    def update_app_image_config(self, UpdateAppImageConfigRequest input) -> str:
+        auto body = update_app_image_config_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateAppImageConfig", body)
+
+    # UpdateArtifact
+    # errors: ConflictException, ResourceNotFound
+    def update_artifact(self, UpdateArtifactRequest input) -> str:
+        auto body = update_artifact_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateArtifact", body)
+
+    # UpdateCluster
+    # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
+    def update_cluster(self, UpdateClusterRequest input) -> str:
+        auto body = update_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateCluster", body)
+
+    # UpdateClusterSchedulerConfig
+    # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
+    def update_cluster_scheduler_config(self, UpdateClusterSchedulerConfigRequest input) -> str:
+        auto body = update_cluster_scheduler_config_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateClusterSchedulerConfig", body)
+
+    # UpdateClusterSoftware
+    # errors: ConflictException, ResourceNotFound
+    def update_cluster_software(self, UpdateClusterSoftwareRequest input) -> str:
+        auto body = update_cluster_software_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateClusterSoftware", body)
+
     # UpdateCodeRepository
     # errors: ConflictException
     def update_code_repository(self, UpdateCodeRepositoryInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateCodeRepository", body)
+
+    # UpdateComputeQuota
+    # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
+    def update_compute_quota(self, UpdateComputeQuotaRequest input) -> str:
+        auto body = update_compute_quota_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateComputeQuota", body)
+
+    # UpdateContext
+    # errors: ConflictException, ResourceNotFound
+    def update_context(self, UpdateContextRequest input) -> str:
+        auto body = update_context_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateContext", body)
 
     # UpdateDeviceFleet
     # errors: ResourceInUse
@@ -18274,11 +25363,58 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateDeviceFleet", body)
 
+    # UpdateDevices
+    def update_devices(self, UpdateDevicesRequest input) -> str:
+        auto body = update_devices_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateDevices", body)
+
+    # UpdateDomain
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def update_domain(self, UpdateDomainRequest input) -> str:
+        auto body = update_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateDomain", body)
+
+    # UpdateEndpoint
+    # errors: ResourceLimitExceeded
+    def update_endpoint(self, UpdateEndpointInput input) -> str:
+        auto body = update_endpoint_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateEndpoint", body)
+
+    # UpdateEndpointWeightsAndCapacities
+    # errors: ResourceLimitExceeded
+    def update_endpoint_weights_and_capacities(self, UpdateEndpointWeightsAndCapacitiesInput input) -> str:
+        auto body = update_endpoint_weights_and_capacities_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateEndpointWeightsAndCapacities", body)
+
     # UpdateExperiment
     # errors: ConflictException, ResourceNotFound
     def update_experiment(self, UpdateExperimentRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateExperiment", body)
+
+    # UpdateFeatureGroup
+    # errors: ResourceLimitExceeded, ResourceNotFound
+    def update_feature_group(self, UpdateFeatureGroupRequest input) -> str:
+        auto body = update_feature_group_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateFeatureGroup", body)
+
+    # UpdateFeatureMetadata
+    # errors: ResourceNotFound
+    def update_feature_metadata(self, UpdateFeatureMetadataRequest input) -> str:
+        auto body = update_feature_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateFeatureMetadata", body)
+
+    # UpdateHub
+    # errors: ResourceNotFound
+    def update_hub(self, UpdateHubRequest input) -> str:
+        auto body = update_hub_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateHub", body)
+
+    # UpdateHubContent
+    # errors: ResourceInUse, ResourceNotFound
+    def update_hub_content(self, UpdateHubContentRequest input) -> str:
+        auto body = update_hub_content_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateHubContent", body)
 
     # UpdateHubContentReference
     # errors: ResourceInUse, ResourceNotFound
@@ -18286,11 +25422,41 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateHubContentReference", body)
 
+    # UpdateImage
+    # errors: ResourceInUse, ResourceNotFound
+    def update_image(self, UpdateImageRequest input) -> str:
+        auto body = update_image_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateImage", body)
+
+    # UpdateImageVersion
+    # errors: ResourceInUse, ResourceNotFound
+    def update_image_version(self, UpdateImageVersionRequest input) -> str:
+        auto body = update_image_version_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateImageVersion", body)
+
+    # UpdateInferenceComponent
+    # errors: ResourceLimitExceeded
+    def update_inference_component(self, UpdateInferenceComponentInput input) -> str:
+        auto body = update_inference_component_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateInferenceComponent", body)
+
     # UpdateInferenceComponentRuntimeConfig
     # errors: ResourceLimitExceeded
     def update_inference_component_runtime_config(self, UpdateInferenceComponentRuntimeConfigInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateInferenceComponentRuntimeConfig", body)
+
+    # UpdateInferenceExperiment
+    # errors: ConflictException, ResourceNotFound
+    def update_inference_experiment(self, UpdateInferenceExperimentRequest input) -> str:
+        auto body = update_inference_experiment_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateInferenceExperiment", body)
+
+    # UpdateMlflowApp
+    # errors: ConflictException, ResourceNotFound
+    def update_mlflow_app(self, UpdateMlflowAppRequest input) -> str:
+        auto body = update_mlflow_app_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateMlflowApp", body)
 
     # UpdateMlflowTrackingServer
     # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
@@ -18304,11 +25470,41 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateModelCard", body)
 
+    # UpdateModelPackage
+    # errors: ConflictException
+    def update_model_package(self, UpdateModelPackageInput input) -> str:
+        auto body = update_model_package_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateModelPackage", body)
+
     # UpdateMonitoringAlert
     # errors: ResourceLimitExceeded, ResourceNotFound
     def update_monitoring_alert(self, UpdateMonitoringAlertRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateMonitoringAlert", body)
+
+    # UpdateMonitoringSchedule
+    # errors: ResourceLimitExceeded, ResourceNotFound
+    def update_monitoring_schedule(self, UpdateMonitoringScheduleRequest input) -> str:
+        auto body = update_monitoring_schedule_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateMonitoringSchedule", body)
+
+    # UpdateNotebookInstance
+    # errors: ResourceLimitExceeded
+    def update_notebook_instance(self, UpdateNotebookInstanceInput input) -> str:
+        auto body = update_notebook_instance_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateNotebookInstance", body)
+
+    # UpdateNotebookInstanceLifecycleConfig
+    # errors: ResourceLimitExceeded
+    def update_notebook_instance_lifecycle_config(self, UpdateNotebookInstanceLifecycleConfigInput input) -> str:
+        auto body = update_notebook_instance_lifecycle_config_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateNotebookInstanceLifecycleConfig", body)
+
+    # UpdatePartnerApp
+    # errors: ConflictException, ResourceNotFound
+    def update_partner_app(self, UpdatePartnerAppRequest input) -> str:
+        auto body = update_partner_app_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdatePartnerApp", body)
 
     # UpdatePipeline
     # errors: ConflictException, ResourceNotFound
@@ -18328,11 +25524,53 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdatePipelineVersion", body)
 
+    # UpdateProject
+    # errors: ConflictException
+    def update_project(self, UpdateProjectInput input) -> str:
+        auto body = update_project_input_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateProject", body)
+
+    # UpdateSpace
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def update_space(self, UpdateSpaceRequest input) -> str:
+        auto body = update_space_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateSpace", body)
+
+    # UpdateTrainingJob
+    # errors: ResourceLimitExceeded, ResourceNotFound
+    def update_training_job(self, UpdateTrainingJobRequest input) -> str:
+        auto body = update_training_job_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateTrainingJob", body)
+
     # UpdateTrial
     # errors: ConflictException, ResourceNotFound
     def update_trial(self, UpdateTrialRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateTrial", body)
+
+    # UpdateTrialComponent
+    # errors: ConflictException, ResourceNotFound
+    def update_trial_component(self, UpdateTrialComponentRequest input) -> str:
+        auto body = update_trial_component_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateTrialComponent", body)
+
+    # UpdateUserProfile
+    # errors: ResourceInUse, ResourceLimitExceeded, ResourceNotFound
+    def update_user_profile(self, UpdateUserProfileRequest input) -> str:
+        auto body = update_user_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateUserProfile", body)
+
+    # UpdateWorkforce
+    # errors: ConflictException
+    def update_workforce(self, UpdateWorkforceRequest input) -> str:
+        auto body = update_workforce_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateWorkforce", body)
+
+    # UpdateWorkteam
+    # errors: ResourceLimitExceeded
+    def update_workteam(self, UpdateWorkteamRequest input) -> str:
+        auto body = update_workteam_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateWorkteam", body)
 
     # Paginator for CreateHubContentPresignedUrls — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: AuthorizedUrlConfigs).
@@ -19076,6 +26314,20 @@ struct SageMakerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListModelMetadata — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ModelMetadataSummaries).
+    def paginate_list_model_metadata(self, ListModelMetadataRequest input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = list_model_metadata_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListModelMetadata", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListModelPackageGroups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ModelPackageGroupSummaryList).
     def paginate_list_model_package_groups(self, ListModelPackageGroupsInput input):
@@ -19440,6 +26692,20 @@ struct SageMakerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListTrainingPlans — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TrainingPlanSummaries).
+    def paginate_list_training_plans(self, ListTrainingPlansRequest input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = list_training_plans_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListTrainingPlans", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListTrainingSessions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: TrainingSessionSummaries).
     def paginate_list_training_sessions(self, ListTrainingSessionsRequest input):
@@ -19545,6 +26811,20 @@ struct SageMakerClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListWorkteams", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for Search — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Results).
+    def paginate_search(self, SearchRequest input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = search_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "Search", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

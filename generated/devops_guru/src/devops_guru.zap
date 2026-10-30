@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 19 with a generated method,
-#   12 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   161 structs (84 @derive(Json)), 26 enums, 7 error variants.
-#   7 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The DevOps_Guru rest-json protocol: SigV4 service "devops-guru" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -339,8 +340,9 @@ struct AddNotificationChannelResponse:
 struct AmazonCodeGuruProfilerIntegration:
     Optional[EventSourceOptInStatus] Status
 
-# no @derive(Json): member(s) LogAnomalyShowcases: list[LogAnomalyShowcase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogAnomalyShowcases: list[LogAnomalyShowcase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalousLogGroup:
     Optional[str] LogGroupName
     Optional[DateTime] ImpactStartTime
@@ -358,8 +360,9 @@ struct AnomalyResource:
     Optional[str] Name
     Optional[str] Type
 
-# no @derive(Json): member(s) CloudWatchMetrics: list[CloudWatchMetricsDetail], PerformanceInsightsMetrics: list[PerformanceInsightsMetricsDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchMetrics: list[CloudWatchMetricsDetail], PerformanceInsightsMetrics: list[PerformanceInsightsMetricsDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalySourceDetails:
     Optional[list[CloudWatchMetricsDetail]] CloudWatchMetrics
     Optional[list[PerformanceInsightsMetricsDetail]] PerformanceInsightsMetrics
@@ -375,18 +378,21 @@ struct AnomalyTimeRange:
     DateTime StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) StackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudFormationCollection:
     Optional[list[str]] StackNames
 
-# no @derive(Json): member(s) StackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudFormationCollectionFilter:
     Optional[list[str]] StackNames
 
-# no @derive(Json): member(s) StackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudFormationCostEstimationResourceCollectionFilter:
     Optional[list[str]] StackNames
 
@@ -396,14 +402,16 @@ struct CloudFormationHealth:
     Optional[InsightHealth] Insight
     Optional[int64] AnalyzedResourceCount
 
-# no @derive(Json): member(s) TimestampMetricValuePairList: list[TimestampMetricValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimestampMetricValuePairList: list[TimestampMetricValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchMetricsDataSummary:
     Optional[list[TimestampMetricValuePair]] TimestampMetricValuePairList
     Optional[CloudWatchMetricDataStatusCode] StatusCode
 
-# no @derive(Json): member(s) Dimensions: list[CloudWatchMetricsDimension], MetricDataSummary: CloudWatchMetricsDataSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[CloudWatchMetricsDimension], MetricDataSummary: CloudWatchMetricsDataSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchMetricsDetail:
     Optional[str] MetricName
     Optional[str] Namespace
@@ -424,8 +432,9 @@ struct ConflictException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) CloudFormation: CloudFormationCostEstimationResourceCollectionFilter, Tags: list[TagCostEstimationResourceCollectionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormation: CloudFormationCostEstimationResourceCollectionFilter, Tags: list[TagCostEstimationResourceCollectionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostEstimationResourceCollectionFilter:
     Optional[CloudFormationCostEstimationResourceCollectionFilter] CloudFormation
     Optional[list[TagCostEstimationResourceCollectionFilter]] Tags
@@ -477,8 +486,9 @@ struct DescribeAnomalyRequest:
     str Id
     Optional[str] AccountId
 
-# no @derive(Json): member(s) ProactiveAnomaly: ProactiveAnomaly, ReactiveAnomaly: ReactiveAnomaly not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveAnomaly: ProactiveAnomaly, ReactiveAnomaly: ReactiveAnomaly not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAnomalyResponse:
     Optional[ProactiveAnomaly] ProactiveAnomaly
     Optional[ReactiveAnomaly] ReactiveAnomaly
@@ -508,8 +518,9 @@ struct DescribeInsightRequest:
     str Id
     Optional[str] AccountId
 
-# no @derive(Json): member(s) ProactiveInsight: ProactiveInsight, ReactiveInsight: ReactiveInsight not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveInsight: ProactiveInsight, ReactiveInsight: ReactiveInsight not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInsightResponse:
     Optional[ProactiveInsight] ProactiveInsight
     Optional[ReactiveInsight] ReactiveInsight
@@ -549,8 +560,9 @@ struct DescribeOrganizationResourceCollectionHealthRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CloudFormation: list[CloudFormationHealth], Service: list[ServiceHealth], Account: list[AccountHealth], Tags: list[TagHealth] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormation: list[CloudFormationHealth], Service: list[ServiceHealth], Account: list[AccountHealth], Tags: list[TagHealth] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationResourceCollectionHealthResponse:
     Optional[list[CloudFormationHealth]] CloudFormation
     Optional[list[ServiceHealth]] Service
@@ -565,8 +577,9 @@ struct DescribeResourceCollectionHealthRequest:
     str ResourceCollectionType
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CloudFormation: list[CloudFormationHealth], Service: list[ServiceHealth], Tags: list[TagHealth] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormation: list[CloudFormationHealth], Service: list[ServiceHealth], Tags: list[TagHealth] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResourceCollectionHealthResponse:
     Optional[list[CloudFormationHealth]] CloudFormation
     Optional[list[ServiceHealth]] Service
@@ -588,8 +601,9 @@ struct EndTimeRange:
     Optional[DateTime] FromTime
     Optional[DateTime] ToTime
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection, Resources: list[EventResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection, Resources: list[EventResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[ResourceCollection] ResourceCollection
     Optional[str] Id
@@ -620,8 +634,9 @@ struct EventTimeRange:
 struct GetCostEstimationRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceCollection: CostEstimationResourceCollectionFilter, Costs: list[ServiceResourceCost] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: CostEstimationResourceCollectionFilter, Costs: list[ServiceResourceCost] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostEstimationResponse:
     Optional[CostEstimationResourceCollectionFilter] ResourceCollection
     Optional[CostEstimationStatus] Status
@@ -637,8 +652,9 @@ struct GetResourceCollectionRequest:
     str ResourceCollectionType
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollectionFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollectionFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceCollectionResponse:
     Optional[ResourceCollectionFilter] ResourceCollection
     Optional[str] NextToken
@@ -676,8 +692,9 @@ struct KMSServerSideEncryptionIntegrationConfig:
     Optional[OptInStatus] OptInStatus
     Optional[ServerSideEncryptionType] Type
 
-# no @derive(Json): member(s) ServiceCollection: ServiceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceCollection: ServiceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnomaliesForInsightFilters:
     Optional[ServiceCollection] ServiceCollection
 
@@ -691,8 +708,9 @@ struct ListAnomaliesForInsightRequest:
     Optional[str] AccountId
     Optional[ListAnomaliesForInsightFilters] Filters
 
-# no @derive(Json): member(s) ProactiveAnomalies: list[ProactiveAnomalySummary], ReactiveAnomalies: list[ReactiveAnomalySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveAnomalies: list[ProactiveAnomalySummary], ReactiveAnomalies: list[ReactiveAnomalySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnomaliesForInsightResponse:
     Optional[list[ProactiveAnomalySummary]] ProactiveAnomalies
     Optional[list[ReactiveAnomalySummary]] ReactiveAnomalies
@@ -705,15 +723,17 @@ struct ListAnomalousLogGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AnomalousLogGroups: list[AnomalousLogGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnomalousLogGroups: list[AnomalousLogGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnomalousLogGroupsResponse:
     str InsightId
     list[AnomalousLogGroup] AnomalousLogGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventsFilters:
     Optional[str] InsightId
     Optional[EventTimeRange] EventTimeRange
@@ -730,8 +750,9 @@ struct ListEventsRequest:
     Optional[str] NextToken
     Optional[str] AccountId
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventsResponse:
     list[Event] Events
     Optional[str] NextToken
@@ -757,8 +778,9 @@ struct ListInsightsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ProactiveInsights: list[ProactiveInsightSummary], ReactiveInsights: list[ReactiveInsightSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveInsights: list[ProactiveInsightSummary], ReactiveInsights: list[ReactiveInsightSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInsightsResponse:
     Optional[list[ProactiveInsightSummary]] ProactiveInsights
     Optional[list[ReactiveInsightSummary]] ReactiveInsights
@@ -770,8 +792,9 @@ struct ListInsightsStatusFilter:
     Optional[ListInsightsClosedStatusFilter] Closed
     Optional[ListInsightsAnyStatusFilter] Any
 
-# no @derive(Json): member(s) ResourceTypeFilters: list[ResourceTypeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypeFilters: list[ResourceTypeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitoredResourcesFilters:
     ResourcePermission ResourcePermission
     list[ResourceTypeFilter] ResourceTypeFilters
@@ -783,8 +806,9 @@ struct ListMonitoredResourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MonitoredResourceIdentifiers: list[MonitoredResourceIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoredResourceIdentifiers: list[MonitoredResourceIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitoredResourcesResponse:
     list[MonitoredResourceIdentifier] MonitoredResourceIdentifiers
     Optional[str] NextToken
@@ -794,8 +818,9 @@ struct ListMonitoredResourcesResponse:
 struct ListNotificationChannelsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[NotificationChannel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[NotificationChannel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationChannelsResponse:
     Optional[list[NotificationChannel]] Channels
     Optional[str] NextToken
@@ -809,8 +834,9 @@ struct ListOrganizationInsightsRequest:
     Optional[list[str]] OrganizationalUnitIds
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ProactiveInsights: list[ProactiveOrganizationInsightSummary], ReactiveInsights: list[ReactiveOrganizationInsightSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveInsights: list[ProactiveOrganizationInsightSummary], ReactiveInsights: list[ReactiveOrganizationInsightSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationInsightsResponse:
     Optional[list[ProactiveOrganizationInsightSummary]] ProactiveInsights
     Optional[list[ReactiveOrganizationInsightSummary]] ReactiveInsights
@@ -824,8 +850,9 @@ struct ListRecommendationsRequest:
     Optional[Locale] Locale
     Optional[str] AccountId
 
-# no @derive(Json): member(s) Recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsResponse:
     Optional[list[Recommendation]] Recommendations
     Optional[str] NextToken
@@ -840,8 +867,9 @@ struct LogAnomalyClass:
     Optional[int64] NumberOfLogLinesOccurrences
     Optional[DateTime] LogEventTimestamp
 
-# no @derive(Json): member(s) LogAnomalyClasses: list[LogAnomalyClass] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogAnomalyClasses: list[LogAnomalyClass] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogAnomalyShowcase:
     Optional[list[LogAnomalyClass]] LogAnomalyClasses
 
@@ -853,8 +881,9 @@ struct LogsAnomalyDetectionIntegration:
 struct LogsAnomalyDetectionIntegrationConfig:
     Optional[OptInStatus] OptInStatus
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoredResourceIdentifier:
     Optional[str] MonitoredResourceName
     Optional[str] Type
@@ -862,20 +891,23 @@ struct MonitoredResourceIdentifier:
     Optional[DateTime] LastUpdated
     Optional[ResourceCollection] ResourceCollection
 
-# no @derive(Json): member(s) Config: NotificationChannelConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: NotificationChannelConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationChannel:
     Optional[str] Id
     Optional[NotificationChannelConfig] Config
 
-# no @derive(Json): member(s) Filters: NotificationFilterConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: NotificationFilterConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationChannelConfig:
     SnsChannelConfig Sns
     Optional[NotificationFilterConfig] Filters
 
-# no @derive(Json): member(s) Severities: list[InsightSeverity], MessageTypes: list[NotificationMessageType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Severities: list[InsightSeverity], MessageTypes: list[NotificationMessageType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationFilterConfig:
     Optional[list[InsightSeverity]] Severities
     Optional[list[NotificationMessageType]] MessageTypes
@@ -888,22 +920,25 @@ struct OpsCenterIntegration:
 struct OpsCenterIntegrationConfig:
     Optional[OptInStatus] OptInStatus
 
-# no @derive(Json): member(s) Dimensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceInsightsMetricDimensionGroup:
     Optional[str] Group
     Optional[list[str]] Dimensions
     Optional[int64] Limit
 
-# no @derive(Json): member(s) GroupBy: PerformanceInsightsMetricDimensionGroup, Filter: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: PerformanceInsightsMetricDimensionGroup, Filter: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceInsightsMetricQuery:
     Optional[str] Metric
     Optional[PerformanceInsightsMetricDimensionGroup] GroupBy
     Optional[dict[str, str]] Filter
 
-# no @derive(Json): member(s) MetricQuery: PerformanceInsightsMetricQuery, ReferenceData: list[PerformanceInsightsReferenceData], StatsAtAnomaly: list[PerformanceInsightsStat], StatsAtBaseline: list[PerformanceInsightsStat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricQuery: PerformanceInsightsMetricQuery, ReferenceData: list[PerformanceInsightsReferenceData], StatsAtAnomaly: list[PerformanceInsightsStat], StatsAtBaseline: list[PerformanceInsightsStat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceInsightsMetricsDetail:
     Optional[str] MetricDisplayName
     Optional[str] Unit
@@ -912,20 +947,23 @@ struct PerformanceInsightsMetricsDetail:
     Optional[list[PerformanceInsightsStat]] StatsAtAnomaly
     Optional[list[PerformanceInsightsStat]] StatsAtBaseline
 
-# no @derive(Json): member(s) ReferenceMetric: PerformanceInsightsReferenceMetric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceMetric: PerformanceInsightsReferenceMetric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceInsightsReferenceComparisonValues:
     Optional[PerformanceInsightsReferenceScalar] ReferenceScalar
     Optional[PerformanceInsightsReferenceMetric] ReferenceMetric
 
-# no @derive(Json): member(s) ComparisonValues: PerformanceInsightsReferenceComparisonValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComparisonValues: PerformanceInsightsReferenceComparisonValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceInsightsReferenceData:
     Optional[str] Name
     Optional[PerformanceInsightsReferenceComparisonValues] ComparisonValues
 
-# no @derive(Json): member(s) MetricQuery: PerformanceInsightsMetricQuery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricQuery: PerformanceInsightsMetricQuery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceInsightsReferenceMetric:
     Optional[PerformanceInsightsMetricQuery] MetricQuery
 
@@ -943,8 +981,9 @@ struct PredictionTimeRange:
     DateTime StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProactiveAnomaly:
     Optional[str] Id
     Optional[AnomalySeverity] Severity
@@ -961,8 +1000,9 @@ struct ProactiveAnomaly:
     Optional[list[AnomalyResource]] AnomalyResources
     Optional[str] Description
 
-# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProactiveAnomalySummary:
     Optional[str] Id
     Optional[AnomalySeverity] Severity
@@ -979,8 +1019,9 @@ struct ProactiveAnomalySummary:
     Optional[list[AnomalyResource]] AnomalyResources
     Optional[str] Description
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProactiveInsight:
     Optional[str] Id
     Optional[str] Name
@@ -992,8 +1033,9 @@ struct ProactiveInsight:
     Optional[str] SsmOpsItemId
     Optional[str] Description
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection, AssociatedResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection, AssociatedResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProactiveInsightSummary:
     Optional[str] Id
     Optional[str] Name
@@ -1005,8 +1047,9 @@ struct ProactiveInsightSummary:
     Optional[ServiceCollection] ServiceCollection
     Optional[list[str]] AssociatedResourceArns
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProactiveOrganizationInsightSummary:
     Optional[str] Id
     Optional[str] AccountId
@@ -1029,8 +1072,9 @@ struct PutFeedbackResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactiveAnomaly:
     Optional[str] Id
     Optional[AnomalySeverity] Severity
@@ -1046,8 +1090,9 @@ struct ReactiveAnomaly:
     Optional[str] CausalAnomalyId
     Optional[list[AnomalyResource]] AnomalyResources
 
-# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDetails: AnomalySourceDetails, ResourceCollection: ResourceCollection, AnomalyResources: list[AnomalyResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactiveAnomalySummary:
     Optional[str] Id
     Optional[AnomalySeverity] Severity
@@ -1063,8 +1108,9 @@ struct ReactiveAnomalySummary:
     Optional[str] CausalAnomalyId
     Optional[list[AnomalyResource]] AnomalyResources
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactiveInsight:
     Optional[str] Id
     Optional[str] Name
@@ -1075,8 +1121,9 @@ struct ReactiveInsight:
     Optional[str] SsmOpsItemId
     Optional[str] Description
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection, AssociatedResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection, AssociatedResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactiveInsightSummary:
     Optional[str] Id
     Optional[str] Name
@@ -1087,8 +1134,9 @@ struct ReactiveInsightSummary:
     Optional[ServiceCollection] ServiceCollection
     Optional[list[str]] AssociatedResourceArns
 
-# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactiveOrganizationInsightSummary:
     Optional[str] Id
     Optional[str] AccountId
@@ -1100,8 +1148,9 @@ struct ReactiveOrganizationInsightSummary:
     Optional[ResourceCollection] ResourceCollection
     Optional[ServiceCollection] ServiceCollection
 
-# no @derive(Json): member(s) RelatedEvents: list[RecommendationRelatedEvent], RelatedAnomalies: list[RecommendationRelatedAnomaly] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelatedEvents: list[RecommendationRelatedEvent], RelatedAnomalies: list[RecommendationRelatedAnomaly] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommendation:
     Optional[str] Description
     Optional[str] Link
@@ -1111,8 +1160,9 @@ struct Recommendation:
     Optional[list[RecommendationRelatedAnomaly]] RelatedAnomalies
     Optional[str] Category
 
-# no @derive(Json): member(s) Resources: list[RecommendationRelatedAnomalyResource], SourceDetails: list[RecommendationRelatedAnomalySourceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[RecommendationRelatedAnomalyResource], SourceDetails: list[RecommendationRelatedAnomalySourceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationRelatedAnomaly:
     Optional[list[RecommendationRelatedAnomalyResource]] Resources
     Optional[list[RecommendationRelatedAnomalySourceDetail]] SourceDetails
@@ -1123,8 +1173,9 @@ struct RecommendationRelatedAnomalyResource:
     Optional[str] Name
     Optional[str] Type
 
-# no @derive(Json): member(s) CloudWatchMetrics: list[RecommendationRelatedCloudWatchMetricsSourceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchMetrics: list[RecommendationRelatedCloudWatchMetricsSourceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationRelatedAnomalySourceDetail:
     Optional[list[RecommendationRelatedCloudWatchMetricsSourceDetail]] CloudWatchMetrics
 
@@ -1133,8 +1184,9 @@ struct RecommendationRelatedCloudWatchMetricsSourceDetail:
     Optional[str] MetricName
     Optional[str] Namespace
 
-# no @derive(Json): member(s) Resources: list[RecommendationRelatedEventResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[RecommendationRelatedEventResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationRelatedEvent:
     Optional[str] Name
     Optional[list[RecommendationRelatedEventResource]] Resources
@@ -1154,14 +1206,16 @@ struct RemoveNotificationChannelResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CloudFormation: CloudFormationCollection, Tags: list[TagCollection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormation: CloudFormationCollection, Tags: list[TagCollection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceCollection:
     Optional[CloudFormationCollection] CloudFormation
     Optional[list[TagCollection]] Tags
 
-# no @derive(Json): member(s) CloudFormation: CloudFormationCollectionFilter, Tags: list[TagCollectionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormation: CloudFormationCollectionFilter, Tags: list[TagCollectionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceCollectionFilter:
     Optional[CloudFormationCollectionFilter] CloudFormation
     Optional[list[TagCollectionFilter]] Tags
@@ -1172,8 +1226,9 @@ struct ResourceNotFoundException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) Severities: list[InsightSeverity], Statuses: list[InsightStatus], ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Severities: list[InsightSeverity], Statuses: list[InsightStatus], ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchInsightsFilters:
     Optional[list[InsightSeverity]] Severities
     Optional[list[InsightStatus]] Statuses
@@ -1189,15 +1244,17 @@ struct SearchInsightsRequest:
     Optional[str] NextToken
     InsightType Type
 
-# no @derive(Json): member(s) ProactiveInsights: list[ProactiveInsightSummary], ReactiveInsights: list[ReactiveInsightSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveInsights: list[ProactiveInsightSummary], ReactiveInsights: list[ReactiveInsightSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchInsightsResponse:
     Optional[list[ProactiveInsightSummary]] ProactiveInsights
     Optional[list[ReactiveInsightSummary]] ReactiveInsights
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Severities: list[InsightSeverity], Statuses: list[InsightStatus], ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Severities: list[InsightSeverity], Statuses: list[InsightStatus], ResourceCollection: ResourceCollection, ServiceCollection: ServiceCollection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchOrganizationInsightsFilters:
     Optional[list[InsightSeverity]] Severities
     Optional[list[InsightStatus]] Statuses
@@ -1214,15 +1271,17 @@ struct SearchOrganizationInsightsRequest:
     Optional[str] NextToken
     InsightType Type
 
-# no @derive(Json): member(s) ProactiveInsights: list[ProactiveInsightSummary], ReactiveInsights: list[ReactiveInsightSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProactiveInsights: list[ProactiveInsightSummary], ReactiveInsights: list[ReactiveInsightSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchOrganizationInsightsResponse:
     Optional[list[ProactiveInsightSummary]] ProactiveInsights
     Optional[list[ReactiveInsightSummary]] ReactiveInsights
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceNames: list[ServiceName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceNames: list[ServiceName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceCollection:
     Optional[list[ServiceName]] ServiceNames
 
@@ -1275,20 +1334,23 @@ struct StartTimeRange:
     Optional[DateTime] FromTime
     Optional[DateTime] ToTime
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagCollection:
     str AppBoundaryKey
     list[str] TagValues
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagCollectionFilter:
     str AppBoundaryKey
     list[str] TagValues
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagCostEstimationResourceCollectionFilter:
     str AppBoundaryKey
     list[str] TagValues
@@ -1312,8 +1374,9 @@ struct TimestampMetricValuePair:
     Optional[DateTime] Timestamp
     Optional[float64] MetricValue
 
-# no @derive(Json): member(s) StackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudFormationCollectionFilter:
     Optional[list[str]] StackNames
 
@@ -1327,8 +1390,9 @@ struct UpdateEventSourcesConfigResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CloudFormation: UpdateCloudFormationCollectionFilter, Tags: list[UpdateTagCollectionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormation: UpdateCloudFormationCollectionFilter, Tags: list[UpdateTagCollectionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceCollectionFilter:
     Optional[UpdateCloudFormationCollectionFilter] CloudFormation
     Optional[list[UpdateTagCollectionFilter]] Tags
@@ -1360,14 +1424,16 @@ struct UpdateServiceIntegrationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTagCollectionFilter:
     str AppBoundaryKey
     list[str] TagValues
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[ValidationExceptionReason] Reason
@@ -1412,32 +1478,6 @@ def devops_guru_error_from_code(str code) -> DevOps_GuruError:
     return DevOps_GuruError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   AddNotificationChannel (document member `Config: NotificationChannelConfig` is not serializable by derive)
-#   DescribeOrganizationHealth (document member `AccountIds: list[str]` is not serializable by derive)
-#   DescribeOrganizationOverview (document member `AccountIds: list[str]` is not serializable by derive)
-#   DescribeOrganizationResourceCollectionHealth (document member `AccountIds: list[str]` is not serializable by derive)
-#   ListAnomaliesForInsight (document member `Filters: ListAnomaliesForInsightFilters` is not serializable by derive)
-#   ListEvents (document member `Filters: ListEventsFilters` is not serializable by derive)
-#   ListMonitoredResources (document member `Filters: ListMonitoredResourcesFilters` is not serializable by derive)
-#   ListOrganizationInsights (document member `AccountIds: list[str]` is not serializable by derive)
-#   SearchInsights (document member `Filters: SearchInsightsFilters` is not serializable by derive)
-#   SearchOrganizationInsights (document member `AccountIds: list[str]` is not serializable by derive)
-#   StartCostEstimation (document member `ResourceCollection: CostEstimationResourceCollectionFilter` is not serializable by derive)
-#   UpdateResourceCollection (document member `ResourceCollection: UpdateResourceCollectionFilter` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeOrganizationResourceCollectionHealth (operation not generated)
-#   ListAnomaliesForInsight (operation not generated)
-#   ListEvents (operation not generated)
-#   ListMonitoredResources (operation not generated)
-#   ListOrganizationInsights (operation not generated)
-#   SearchInsights (operation not generated)
-#   SearchOrganizationInsights (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1495,10 +1535,279 @@ struct UpdateServiceIntegrationDocument:
     # document members of UpdateServiceIntegration
     UpdateServiceIntegrationConfig ServiceIntegration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def devops_guru_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def devops_guru_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def devops_guru_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CloudFormationCollection to a compact JSON object (declaration order).
+def cloud_formation_collection_to_json(CloudFormationCollection v) -> str:
+    list[str] parts = []
+    if v.StackNames.is_some():
+        auto u0 = v.StackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(devops_guru_json_str(x1))
+        parts.append("\"StackNames\":" + devops_guru_json_arr(e1))
+    return devops_guru_json_obj(parts)
+
+# Serialize CloudFormationCostEstimationResourceCollectionFilter to a compact JSON object (declaration order).
+def cloud_formation_cost_estimation_resource_collection_filter_to_json(CloudFormationCostEstimationResourceCollectionFilter v) -> str:
+    list[str] parts = []
+    if v.StackNames.is_some():
+        auto u0 = v.StackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(devops_guru_json_str(x1))
+        parts.append("\"StackNames\":" + devops_guru_json_arr(e1))
+    return devops_guru_json_obj(parts)
+
+# Serialize CostEstimationResourceCollectionFilter to a compact JSON object (declaration order).
+def cost_estimation_resource_collection_filter_to_json(CostEstimationResourceCollectionFilter v) -> str:
+    list[str] parts = []
+    if v.CloudFormation.is_some():
+        auto u0 = v.CloudFormation.unwrap()
+        parts.append("\"CloudFormation\":" + cloud_formation_cost_estimation_resource_collection_filter_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(tag_cost_estimation_resource_collection_filter_to_json(x2))
+        parts.append("\"Tags\":" + devops_guru_json_arr(e2))
+    return devops_guru_json_obj(parts)
+
+# Serialize ListAnomaliesForInsightFilters to a compact JSON object (declaration order).
+def list_anomalies_for_insight_filters_to_json(ListAnomaliesForInsightFilters v) -> str:
+    list[str] parts = []
+    if v.ServiceCollection.is_some():
+        auto u0 = v.ServiceCollection.unwrap()
+        parts.append("\"ServiceCollection\":" + service_collection_to_json(u0))
+    return devops_guru_json_obj(parts)
+
+# Serialize ListEventsFilters to a compact JSON object (declaration order).
+def list_events_filters_to_json(ListEventsFilters v) -> str:
+    list[str] parts = []
+    if v.InsightId.is_some():
+        auto u0 = v.InsightId.unwrap()
+        parts.append("\"InsightId\":" + devops_guru_json_str(u0))
+    if v.EventTimeRange.is_some():
+        auto u1 = v.EventTimeRange.unwrap()
+        parts.append("\"EventTimeRange\":" + u1.to_json())
+    if v.EventClass.is_some():
+        auto u2 = v.EventClass.unwrap()
+        parts.append("\"EventClass\":" + u2.to_json())
+    if v.EventSource.is_some():
+        auto u3 = v.EventSource.unwrap()
+        parts.append("\"EventSource\":" + devops_guru_json_str(u3))
+    if v.DataSource.is_some():
+        auto u4 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + u4.to_json())
+    if v.ResourceCollection.is_some():
+        auto u5 = v.ResourceCollection.unwrap()
+        parts.append("\"ResourceCollection\":" + resource_collection_to_json(u5))
+    return devops_guru_json_obj(parts)
+
+# Serialize ListMonitoredResourcesFilters to a compact JSON object (declaration order).
+def list_monitored_resources_filters_to_json(ListMonitoredResourcesFilters v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourcePermission\":" + v.ResourcePermission.to_json())
+    list[str] e0 = []
+    for x0 in v.ResourceTypeFilters:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTypeFilters\":" + devops_guru_json_arr(e0))
+    return devops_guru_json_obj(parts)
+
+# Serialize NotificationChannelConfig to a compact JSON object (declaration order).
+def notification_channel_config_to_json(NotificationChannelConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Sns\":" + v.Sns.to_json())
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + notification_filter_config_to_json(u0))
+    return devops_guru_json_obj(parts)
+
+# Serialize NotificationFilterConfig to a compact JSON object (declaration order).
+def notification_filter_config_to_json(NotificationFilterConfig v) -> str:
+    list[str] parts = []
+    if v.Severities.is_some():
+        auto u0 = v.Severities.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Severities\":" + devops_guru_json_arr(e1))
+    if v.MessageTypes.is_some():
+        auto u2 = v.MessageTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MessageTypes\":" + devops_guru_json_arr(e3))
+    return devops_guru_json_obj(parts)
+
+# Serialize ResourceCollection to a compact JSON object (declaration order).
+def resource_collection_to_json(ResourceCollection v) -> str:
+    list[str] parts = []
+    if v.CloudFormation.is_some():
+        auto u0 = v.CloudFormation.unwrap()
+        parts.append("\"CloudFormation\":" + cloud_formation_collection_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(tag_collection_to_json(x2))
+        parts.append("\"Tags\":" + devops_guru_json_arr(e2))
+    return devops_guru_json_obj(parts)
+
+# Serialize SearchInsightsFilters to a compact JSON object (declaration order).
+def search_insights_filters_to_json(SearchInsightsFilters v) -> str:
+    list[str] parts = []
+    if v.Severities.is_some():
+        auto u0 = v.Severities.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Severities\":" + devops_guru_json_arr(e1))
+    if v.Statuses.is_some():
+        auto u2 = v.Statuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Statuses\":" + devops_guru_json_arr(e3))
+    if v.ResourceCollection.is_some():
+        auto u4 = v.ResourceCollection.unwrap()
+        parts.append("\"ResourceCollection\":" + resource_collection_to_json(u4))
+    if v.ServiceCollection.is_some():
+        auto u5 = v.ServiceCollection.unwrap()
+        parts.append("\"ServiceCollection\":" + service_collection_to_json(u5))
+    return devops_guru_json_obj(parts)
+
+# Serialize SearchOrganizationInsightsFilters to a compact JSON object (declaration order).
+def search_organization_insights_filters_to_json(SearchOrganizationInsightsFilters v) -> str:
+    list[str] parts = []
+    if v.Severities.is_some():
+        auto u0 = v.Severities.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Severities\":" + devops_guru_json_arr(e1))
+    if v.Statuses.is_some():
+        auto u2 = v.Statuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Statuses\":" + devops_guru_json_arr(e3))
+    if v.ResourceCollection.is_some():
+        auto u4 = v.ResourceCollection.unwrap()
+        parts.append("\"ResourceCollection\":" + resource_collection_to_json(u4))
+    if v.ServiceCollection.is_some():
+        auto u5 = v.ServiceCollection.unwrap()
+        parts.append("\"ServiceCollection\":" + service_collection_to_json(u5))
+    return devops_guru_json_obj(parts)
+
+# Serialize ServiceCollection to a compact JSON object (declaration order).
+def service_collection_to_json(ServiceCollection v) -> str:
+    list[str] parts = []
+    if v.ServiceNames.is_some():
+        auto u0 = v.ServiceNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ServiceNames\":" + devops_guru_json_arr(e1))
+    return devops_guru_json_obj(parts)
+
+# Serialize TagCollection to a compact JSON object (declaration order).
+def tag_collection_to_json(TagCollection v) -> str:
+    list[str] parts = []
+    parts.append("\"AppBoundaryKey\":" + devops_guru_json_str(v.AppBoundaryKey))
+    list[str] e0 = []
+    for x0 in v.TagValues:
+        e0.append(devops_guru_json_str(x0))
+    parts.append("\"TagValues\":" + devops_guru_json_arr(e0))
+    return devops_guru_json_obj(parts)
+
+# Serialize TagCostEstimationResourceCollectionFilter to a compact JSON object (declaration order).
+def tag_cost_estimation_resource_collection_filter_to_json(TagCostEstimationResourceCollectionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"AppBoundaryKey\":" + devops_guru_json_str(v.AppBoundaryKey))
+    list[str] e0 = []
+    for x0 in v.TagValues:
+        e0.append(devops_guru_json_str(x0))
+    parts.append("\"TagValues\":" + devops_guru_json_arr(e0))
+    return devops_guru_json_obj(parts)
+
+# Serialize UpdateCloudFormationCollectionFilter to a compact JSON object (declaration order).
+def update_cloud_formation_collection_filter_to_json(UpdateCloudFormationCollectionFilter v) -> str:
+    list[str] parts = []
+    if v.StackNames.is_some():
+        auto u0 = v.StackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(devops_guru_json_str(x1))
+        parts.append("\"StackNames\":" + devops_guru_json_arr(e1))
+    return devops_guru_json_obj(parts)
+
+# Serialize UpdateResourceCollectionFilter to a compact JSON object (declaration order).
+def update_resource_collection_filter_to_json(UpdateResourceCollectionFilter v) -> str:
+    list[str] parts = []
+    if v.CloudFormation.is_some():
+        auto u0 = v.CloudFormation.unwrap()
+        parts.append("\"CloudFormation\":" + update_cloud_formation_collection_filter_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(update_tag_collection_filter_to_json(x2))
+        parts.append("\"Tags\":" + devops_guru_json_arr(e2))
+    return devops_guru_json_obj(parts)
+
+# Serialize UpdateTagCollectionFilter to a compact JSON object (declaration order).
+def update_tag_collection_filter_to_json(UpdateTagCollectionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"AppBoundaryKey\":" + devops_guru_json_str(v.AppBoundaryKey))
+    list[str] e0 = []
+    for x0 in v.TagValues:
+        e0.append(devops_guru_json_str(x0))
+    parts.append("\"TagValues\":" + devops_guru_json_arr(e0))
+    return devops_guru_json_obj(parts)
+
 # A bound DevOps_Guru client: credentials + region, threaded into every operation.
 struct DevOps_GuruClient:
     core.Credentials creds
     str region
+
+    # AddNotificationChannel  PUT /channels
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def add_notification_channel(self, AddNotificationChannelRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Config\":" + notification_channel_config_to_json(input.Config))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
 
     # DeleteInsight  DELETE /insights/{Id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1565,6 +1874,80 @@ struct DevOps_GuruClient:
         auto b = binding.HttpBinding(method="GET", path_template="/insights/{Id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
+    # DescribeOrganizationHealth  POST /organization/health
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def describe_organization_health(self, DescribeOrganizationHealthRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/health", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccountIds.is_some():
+            auto u0 = input.AccountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(devops_guru_json_str(x1))
+            parts.append("\"AccountIds\":" + devops_guru_json_arr(e1))
+        if input.OrganizationalUnitIds.is_some():
+            auto u2 = input.OrganizationalUnitIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(devops_guru_json_str(x3))
+            parts.append("\"OrganizationalUnitIds\":" + devops_guru_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # DescribeOrganizationOverview  POST /organization/overview
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def describe_organization_overview(self, DescribeOrganizationOverviewRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/overview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FromTime\":" + str(datetime.to_timestamp(input.FromTime)))
+        if input.ToTime.is_some():
+            auto u0 = input.ToTime.unwrap()
+            parts.append("\"ToTime\":" + str(datetime.to_timestamp(u0)))
+        if input.AccountIds.is_some():
+            auto u1 = input.AccountIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(devops_guru_json_str(x2))
+            parts.append("\"AccountIds\":" + devops_guru_json_arr(e2))
+        if input.OrganizationalUnitIds.is_some():
+            auto u3 = input.OrganizationalUnitIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(devops_guru_json_str(x4))
+            parts.append("\"OrganizationalUnitIds\":" + devops_guru_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # DescribeOrganizationResourceCollectionHealth  POST /organization/health/resource-collection
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def describe_organization_resource_collection_health(self, DescribeOrganizationResourceCollectionHealthRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/health/resource-collection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"OrganizationResourceCollectionType\":" + input.OrganizationResourceCollectionType.to_json())
+        if input.AccountIds.is_some():
+            auto u0 = input.AccountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(devops_guru_json_str(x1))
+            parts.append("\"AccountIds\":" + devops_guru_json_arr(e1))
+        if input.OrganizationalUnitIds.is_some():
+            auto u2 = input.OrganizationalUnitIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(devops_guru_json_str(x3))
+            parts.append("\"OrganizationalUnitIds\":" + devops_guru_json_arr(e3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
     # DescribeResourceCollectionHealth  GET /accounts/health/resource-collection/{ResourceCollectionType}
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_resource_collection_health(self, DescribeResourceCollectionHealthRequest input) -> str:
@@ -1606,6 +1989,32 @@ struct DevOps_GuruClient:
         auto b = binding.HttpBinding(method="GET", path_template="/resource-collections/{ResourceCollectionType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
+    # ListAnomaliesForInsight  POST /anomalies/insight/{InsightId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_anomalies_for_insight(self, ListAnomaliesForInsightRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InsightId"] = input.InsightId
+        auto b = binding.HttpBinding(method="POST", path_template="/anomalies/insight/{InsightId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StartTimeRange.is_some():
+            auto u0 = input.StartTimeRange.unwrap()
+            parts.append("\"StartTimeRange\":" + u0.to_json())
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u2))
+        if input.AccountId.is_some():
+            auto u3 = input.AccountId.unwrap()
+            parts.append("\"AccountId\":" + devops_guru_json_str(u3))
+        if input.Filters.is_some():
+            auto u4 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_anomalies_for_insight_filters_to_json(u4))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
     # ListAnomalousLogGroups  POST /list-log-anomalies
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_anomalous_log_groups(self, ListAnomalousLogGroupsRequest input) -> str:
@@ -1613,6 +2022,25 @@ struct DevOps_GuruClient:
         auto b = binding.HttpBinding(method="POST", path_template="/list-log-anomalies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAnomalousLogGroupsDocument(InsightId=input.InsightId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # ListEvents  POST /events
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_events(self, ListEventsRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Filters\":" + list_events_filters_to_json(input.Filters))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u1))
+        if input.AccountId.is_some():
+            auto u2 = input.AccountId.unwrap()
+            parts.append("\"AccountId\":" + devops_guru_json_str(u2))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
 
     # ListInsights  POST /insights
@@ -1624,6 +2052,24 @@ struct DevOps_GuruClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
 
+    # ListMonitoredResources  POST /monitoredResources
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_monitored_resources(self, ListMonitoredResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/monitoredResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + list_monitored_resources_filters_to_json(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u2))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
     # ListNotificationChannels  POST /channels
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_notification_channels(self, ListNotificationChannelsRequest input) -> str:
@@ -1631,6 +2077,34 @@ struct DevOps_GuruClient:
         auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListNotificationChannelsDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # ListOrganizationInsights  POST /organization/insights
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_organization_insights(self, ListOrganizationInsightsRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StatusFilter\":" + input.StatusFilter.to_json())
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.AccountIds.is_some():
+            auto u1 = input.AccountIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(devops_guru_json_str(x2))
+            parts.append("\"AccountIds\":" + devops_guru_json_arr(e2))
+        if input.OrganizationalUnitIds.is_some():
+            auto u3 = input.OrganizationalUnitIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(devops_guru_json_str(x4))
+            parts.append("\"OrganizationalUnitIds\":" + devops_guru_json_arr(e4))
+        if input.NextToken.is_some():
+            auto u5 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u5))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
 
     # ListRecommendations  POST /recommendations
@@ -1660,6 +2134,63 @@ struct DevOps_GuruClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
+    # SearchInsights  POST /insights/search
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_insights(self, SearchInsightsRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/insights/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StartTimeRange\":" + input.StartTimeRange.to_json())
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + search_insights_filters_to_json(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u2))
+        parts.append("\"Type\":" + input.Type.to_json())
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # SearchOrganizationInsights  POST /organization/insights/search
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_organization_insights(self, SearchOrganizationInsightsRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/insights/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(devops_guru_json_str(x0))
+        parts.append("\"AccountIds\":" + devops_guru_json_arr(e0))
+        parts.append("\"StartTimeRange\":" + input.StartTimeRange.to_json())
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + search_organization_insights_filters_to_json(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + devops_guru_json_str(u3))
+        parts.append("\"Type\":" + input.Type.to_json())
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # StartCostEstimation  PUT /cost-estimation
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_cost_estimation(self, StartCostEstimationRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/cost-estimation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceCollection\":" + cost_estimation_resource_collection_filter_to_json(input.ResourceCollection))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + devops_guru_json_str(u0))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
     # UpdateEventSourcesConfig  PUT /event-sources
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_event_sources_config(self, UpdateEventSourcesConfigRequest input) -> str:
@@ -1667,6 +2198,17 @@ struct DevOps_GuruClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/event-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventSourcesConfigDocument(EventSources=input.EventSources)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # UpdateResourceCollection  PUT /resource-collections
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def update_resource_collection(self, UpdateResourceCollectionRequest input) -> str:
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/resource-collections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Action\":" + input.Action.to_json())
+        parts.append("\"ResourceCollection\":" + update_resource_collection_filter_to_json(input.ResourceCollection))
+        auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
 
     # UpdateServiceIntegration  PUT /service-integrations
@@ -1677,6 +2219,19 @@ struct DevOps_GuruClient:
         auto doc = UpdateServiceIntegrationDocument(ServiceIntegration=input.ServiceIntegration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
+
+    # Paginator for DescribeOrganizationResourceCollectionHealth — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: CloudFormation, Account, Service, Tags).
+    def paginate_describe_organization_resource_collection_health(self, DescribeOrganizationResourceCollectionHealthRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.describe_organization_resource_collection_health(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for DescribeResourceCollectionHealth — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: CloudFormation, Service, Tags).
@@ -1717,12 +2272,38 @@ struct DevOps_GuruClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListAnomaliesForInsight — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ReactiveAnomalies, ProactiveAnomalies).
+    def paginate_list_anomalies_for_insight(self, ListAnomaliesForInsightRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.list_anomalies_for_insight(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListAnomalousLogGroups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: InsightId, AnomalousLogGroups).
     def paginate_list_anomalous_log_groups(self, ListAnomalousLogGroupsRequest input):
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
         while True:
             auto raw = self.list_anomalous_log_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Events).
+    def paginate_list_events(self, ListEventsRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.list_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -1743,6 +2324,19 @@ struct DevOps_GuruClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListMonitoredResources — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: MonitoredResourceIdentifiers).
+    def paginate_list_monitored_resources(self, ListMonitoredResourcesRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.list_monitored_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListNotificationChannels — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Channels).
     def paginate_list_notification_channels(self, ListNotificationChannelsRequest input):
@@ -1756,12 +2350,51 @@ struct DevOps_GuruClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListOrganizationInsights — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ProactiveInsights, ReactiveInsights).
+    def paginate_list_organization_insights(self, ListOrganizationInsightsRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.list_organization_insights(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListRecommendations — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Recommendations).
     def paginate_list_recommendations(self, ListRecommendationsRequest input):
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
         while True:
             auto raw = self.list_recommendations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchInsights — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ProactiveInsights, ReactiveInsights).
+    def paginate_search_insights(self, SearchInsightsRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.search_insights(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchOrganizationInsights — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ProactiveInsights, ReactiveInsights).
+    def paginate_search_organization_insights(self, SearchOrganizationInsightsRequest input):
+        auto host = endpoints.regional_host(devops_guru_service(), self.region)
+        while True:
+            auto raw = self.search_organization_insights(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 21 operations — 13 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 21 operations — 19 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   51 structs (30 @derive(Json)), 3 enums, 6 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -85,8 +85,9 @@ struct CreateAccessPointRequest:
     Optional[PosixUser] posixUser
     Optional[RootDirectory] rootDirectory
 
-# no @derive(Json): member(s) posixUser: PosixUser, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) posixUser: PosixUser, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccessPointResponse:
     str accessPointArn
     str accessPointId
@@ -110,8 +111,9 @@ struct CreateFileSystemRequest:
     Optional[list[Tag]] tags
     Optional[bool] acceptBucketWarning
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemResponse:
     Optional[DateTime] creationTime
     Optional[str] fileSystemArn
@@ -137,8 +139,9 @@ struct CreateMountTargetRequest:
     Optional[IpAddressType] ipAddressType
     Optional[list[str]] securityGroups
 
-# no @derive(Json): member(s) securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMountTargetResponse:
     Optional[str] availabilityZoneId
     str ownerId
@@ -189,8 +192,9 @@ struct ExpirationDataRule:
 struct GetAccessPointRequest:
     str accessPointId
 
-# no @derive(Json): member(s) posixUser: PosixUser, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) posixUser: PosixUser, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccessPointResponse:
     str accessPointArn
     str accessPointId
@@ -218,8 +222,9 @@ struct GetFileSystemPolicyResponse:
 struct GetFileSystemRequest:
     str fileSystemId
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFileSystemResponse:
     Optional[DateTime] creationTime
     Optional[str] fileSystemArn
@@ -240,8 +245,9 @@ struct GetFileSystemResponse:
 struct GetMountTargetRequest:
     str mountTargetId
 
-# no @derive(Json): member(s) securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMountTargetResponse:
     Optional[str] availabilityZoneId
     str ownerId
@@ -261,8 +267,9 @@ struct GetMountTargetResponse:
 struct GetSynchronizationConfigurationRequest:
     str fileSystemId
 
-# no @derive(Json): member(s) importDataRules: list[ImportDataRule], expirationDataRules: list[ExpirationDataRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importDataRules: list[ImportDataRule], expirationDataRules: list[ExpirationDataRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSynchronizationConfigurationResponse:
     Optional[int64] latestVersionNumber
     list[ImportDataRule] importDataRules
@@ -279,8 +286,9 @@ struct InternalServerException:
     str errorCode
     Optional[str] message
 
-# no @derive(Json): member(s) posixUser: PosixUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) posixUser: PosixUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPointsDescription:
     str accessPointArn
     str accessPointId
@@ -298,8 +306,9 @@ struct ListAccessPointsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accessPoints: list[ListAccessPointsDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPoints: list[ListAccessPointsDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPointsResponse:
     Optional[str] nextToken
     list[ListAccessPointsDescription] accessPoints
@@ -323,8 +332,9 @@ struct ListFileSystemsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fileSystems: list[ListFileSystemsDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileSystems: list[ListFileSystemsDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFileSystemsResponse:
     Optional[str] nextToken
     list[ListFileSystemsDescription] fileSystems
@@ -351,8 +361,9 @@ struct ListMountTargetsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) mountTargets: list[ListMountTargetsDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mountTargets: list[ListMountTargetsDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMountTargetsResponse:
     Optional[str] nextToken
     list[ListMountTargetsDescription] mountTargets
@@ -364,14 +375,16 @@ struct ListTagsForResourceRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
     Optional[str] nextToken
 
-# no @derive(Json): member(s) secondaryGids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondaryGids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PosixUser:
     int64 uid
     int64 gid
@@ -444,8 +457,9 @@ struct UpdateMountTargetRequest:
     str mountTargetId
     list[str] securityGroups
 
-# no @derive(Json): member(s) securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMountTargetResponse:
     Optional[str] availabilityZoneId
     str ownerId
@@ -500,14 +514,8 @@ def s3files_error_from_code(str code) -> S3FilesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAccessPoint (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateFileSystem (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateMountTarget (document member `securityGroups: list[str]` is not serializable by derive)
 #   DeleteFileSystem (httpQuery `forceDelete` has unsupported type bool)
-#   PutSynchronizationConfiguration (document member `importDataRules: list[ImportDataRule]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateMountTarget (document member `securityGroups: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -517,10 +525,133 @@ struct PutFileSystemPolicyDocument:
     # document members of PutFileSystemPolicy
     str policy
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def s3files_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def s3files_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def s3files_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize PosixUser to a compact JSON object (declaration order).
+def posix_user_to_json(PosixUser v) -> str:
+    list[str] parts = []
+    parts.append("\"uid\":" + str(v.uid))
+    parts.append("\"gid\":" + str(v.gid))
+    if v.secondaryGids.is_some():
+        auto u0 = v.secondaryGids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"secondaryGids\":" + s3files_json_arr(e1))
+    return s3files_json_obj(parts)
+
 # A bound S3Files client: credentials + region, threaded into every operation.
 struct S3FilesClient:
     core.Credentials creds
     str region
+
+    # CreateAccessPoint  PUT /access-points
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_access_point(self, CreateAccessPointRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/access-points", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + s3files_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + s3files_json_arr(e2))
+        parts.append("\"fileSystemId\":" + s3files_json_str(input.fileSystemId))
+        if input.posixUser.is_some():
+            auto u3 = input.posixUser.unwrap()
+            parts.append("\"posixUser\":" + posix_user_to_json(u3))
+        if input.rootDirectory.is_some():
+            auto u4 = input.rootDirectory.unwrap()
+            parts.append("\"rootDirectory\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
+
+    # CreateFileSystem  PUT /file-systems
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_file_system(self, CreateFileSystemRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"bucket\":" + s3files_json_str(input.bucket))
+        if input.prefix.is_some():
+            auto u0 = input.prefix.unwrap()
+            parts.append("\"prefix\":" + s3files_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + s3files_json_str(u1))
+        if input.kmsKeyId.is_some():
+            auto u2 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + s3files_json_str(u2))
+        parts.append("\"roleArn\":" + s3files_json_str(input.roleArn))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + s3files_json_arr(e4))
+        if input.acceptBucketWarning.is_some():
+            auto u5 = input.acceptBucketWarning.unwrap()
+            parts.append("\"acceptBucketWarning\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
+
+    # CreateMountTarget  PUT /mount-targets
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_mount_target(self, CreateMountTargetRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/mount-targets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"fileSystemId\":" + s3files_json_str(input.fileSystemId))
+        parts.append("\"subnetId\":" + s3files_json_str(input.subnetId))
+        if input.ipv4Address.is_some():
+            auto u0 = input.ipv4Address.unwrap()
+            parts.append("\"ipv4Address\":" + s3files_json_str(u0))
+        if input.ipv6Address.is_some():
+            auto u1 = input.ipv6Address.unwrap()
+            parts.append("\"ipv6Address\":" + s3files_json_str(u1))
+        if input.ipAddressType.is_some():
+            auto u2 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u2.to_json())
+        if input.securityGroups.is_some():
+            auto u3 = input.securityGroups.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(s3files_json_str(x4))
+            parts.append("\"securityGroups\":" + s3files_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
 
     # DeleteAccessPoint  DELETE /access-points/{accessPointId}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -660,6 +791,58 @@ struct S3FilesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFileSystemPolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
+
+    # PutSynchronizationConfiguration  PUT /file-systems/{fileSystemId}/synchronization-configuration
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_synchronization_configuration(self, PutSynchronizationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        dict[str, str] labels = {}
+        labels["fileSystemId"] = input.fileSystemId
+        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems/{fileSystemId}/synchronization-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.latestVersionNumber.is_some():
+            auto u0 = input.latestVersionNumber.unwrap()
+            parts.append("\"latestVersionNumber\":" + str(u0))
+        list[str] e1 = []
+        for x1 in input.importDataRules:
+            e1.append(x1.to_json())
+        parts.append("\"importDataRules\":" + s3files_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.expirationDataRules:
+            e2.append(x2.to_json())
+        parts.append("\"expirationDataRules\":" + s3files_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
+
+    # TagResource  POST /resource-tags/{resourceId}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceId"] = input.resourceId
+        auto b = binding.HttpBinding(method="POST", path_template="/resource-tags/{resourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + s3files_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
+
+    # UpdateMountTarget  PUT /mount-targets/{mountTargetId}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_mount_target(self, UpdateMountTargetRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        dict[str, str] labels = {}
+        labels["mountTargetId"] = input.mountTargetId
+        auto b = binding.HttpBinding(method="PUT", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.securityGroups:
+            e0.append(s3files_json_str(x0))
+        parts.append("\"securityGroups\":" + s3files_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
 
     # Paginator for ListAccessPoints — yields each Response page, threading the

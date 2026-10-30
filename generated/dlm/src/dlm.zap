@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 8 operations — 3 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 8 operations — 6 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   45 structs (22 @derive(Json)), 11 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -126,8 +126,9 @@ enum StageValues:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) CrossRegionCopy: list[CrossRegionCopyAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossRegionCopy: list[CrossRegionCopyAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     str Name
     list[CrossRegionCopyAction] CrossRegionCopy
@@ -160,8 +161,9 @@ struct CreateLifecyclePolicyRequest:
 struct CreateLifecyclePolicyResponse:
     Optional[str] PolicyId
 
-# no @derive(Json): member(s) Times: list[str], Scripts: list[Script] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Times: list[str], Scripts: list[Script] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRule:
     Optional[LocationValues] Location
     Optional[int64] Interval
@@ -221,28 +223,32 @@ struct EncryptionConfiguration:
     bool Encrypted
     Optional[str] CmkArn
 
-# no @derive(Json): member(s) SnapshotOwner: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnapshotOwner: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventParameters:
     str EventType
     list[str] SnapshotOwner
     str DescriptionRegex
 
-# no @derive(Json): member(s) Parameters: EventParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: EventParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSource:
     str Type
     Optional[EventParameters] Parameters
 
-# no @derive(Json): member(s) ExcludeVolumeTypes: list[str], ExcludeTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludeVolumeTypes: list[str], ExcludeTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Exclusions:
     Optional[bool] ExcludeBootVolumes
     Optional[list[str]] ExcludeVolumeTypes
     Optional[list[Tag]] ExcludeTags
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], AvailabilityZoneIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], AvailabilityZoneIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FastRestoreRule:
     Optional[int64] Count
     Optional[int64] Interval
@@ -262,8 +268,9 @@ struct GetLifecyclePoliciesRequest:
     # wire string of the DefaultPoliciesTypeValues enum (querystring binding)
     Optional[str] DefaultPolicyType
 
-# no @derive(Json): member(s) Policies: list[LifecyclePolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[LifecyclePolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLifecyclePoliciesResponse:
     Optional[list[LifecyclePolicySummary]] Policies
 
@@ -272,8 +279,9 @@ struct GetLifecyclePoliciesResponse:
 struct GetLifecyclePolicyRequest:
     str PolicyId
 
-# no @derive(Json): member(s) Policy: LifecyclePolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policy: LifecyclePolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLifecyclePolicyResponse:
     Optional[LifecyclePolicy] Policy
 
@@ -282,16 +290,18 @@ struct InternalServerException:
     Optional[str] Message
     Optional[str] Code
 
-# no @derive(Json): member(s) RequiredParameters: list[str], MutuallyExclusiveParameters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequiredParameters: list[str], MutuallyExclusiveParameters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidRequestException:
     Optional[str] Message
     Optional[str] Code
     Optional[list[str]] RequiredParameters
     Optional[list[str]] MutuallyExclusiveParameters
 
-# no @derive(Json): member(s) PolicyDetails: PolicyDetails, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyDetails: PolicyDetails, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicy:
     Optional[str] PolicyId
     Optional[str] Description
@@ -305,8 +315,9 @@ struct LifecyclePolicy:
     Optional[str] PolicyArn
     Optional[bool] DefaultPolicy
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicySummary:
     Optional[str] PolicyId
     Optional[str] Description
@@ -326,20 +337,23 @@ struct LimitExceededException:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ExcludeDataVolumeTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludeDataVolumeTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Parameters:
     Optional[bool] ExcludeBootVolume
     Optional[bool] NoReboot
     Optional[list[Tag]] ExcludeDataVolumeTags
 
-# no @derive(Json): member(s) ResourceTypes: list[ResourceTypeValues], ResourceLocations: list[ResourceLocationValues], TargetTags: list[Tag], Schedules: list[Schedule], Parameters: Parameters, EventSource: EventSource, Actions: list[Action], CrossRegionCopyTargets: list[CrossRegionCopyTarget], Exclusions: Exclusions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[ResourceTypeValues], ResourceLocations: list[ResourceLocationValues], TargetTags: list[Tag], Schedules: list[Schedule], Parameters: Parameters, EventSource: EventSource, Actions: list[Action], CrossRegionCopyTargets: list[CrossRegionCopyTarget], Exclusions: Exclusions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyDetails:
     Optional[PolicyTypeValues] PolicyType
     Optional[list[ResourceTypeValues]] ResourceTypes
@@ -358,8 +372,9 @@ struct PolicyDetails:
     Optional[bool] ExtendDeletion
     Optional[Exclusions] Exclusions
 
-# no @derive(Json): member(s) ResourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceNotFoundException:
     Optional[str] Message
     Optional[str] Code
@@ -378,8 +393,9 @@ struct RetentionArchiveTier:
     Optional[int64] Interval
     Optional[RetentionIntervalUnitValues] IntervalUnit
 
-# no @derive(Json): member(s) TagsToAdd: list[Tag], VariableTags: list[Tag], CreateRule: CreateRule, FastRestoreRule: FastRestoreRule, CrossRegionCopyRules: list[CrossRegionCopyRule], ShareRules: list[ShareRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsToAdd: list[Tag], VariableTags: list[Tag], CreateRule: CreateRule, FastRestoreRule: FastRestoreRule, CrossRegionCopyRules: list[CrossRegionCopyRule], ShareRules: list[ShareRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schedule:
     Optional[str] Name
     Optional[bool] CopyTags
@@ -393,8 +409,9 @@ struct Schedule:
     Optional[DeprecateRule] DeprecateRule
     Optional[ArchiveRule] ArchiveRule
 
-# no @derive(Json): member(s) Stages: list[StageValues] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Stages: list[StageValues] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Script:
     Optional[list[StageValues]] Stages
     Optional[str] ExecutionHandlerService
@@ -403,8 +420,9 @@ struct Script:
     Optional[int64] ExecutionTimeout
     Optional[int64] MaximumRetryCount
 
-# no @derive(Json): member(s) TargetAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShareRule:
     list[str] TargetAccounts
     Optional[int64] UnshareInterval
@@ -486,16 +504,370 @@ def dlm_error_from_code(str code) -> DLMError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateLifecyclePolicy (document member `PolicyDetails: PolicyDetails` is not serializable by derive)
 #   GetLifecyclePolicies (httpQuery `PolicyIds` has unsupported type list[str])
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateLifecyclePolicy (document member `PolicyDetails: PolicyDetails` is not serializable by derive)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def dlm_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def dlm_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def dlm_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Action to a compact JSON object (declaration order).
+def action_to_json(Action v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + dlm_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.CrossRegionCopy:
+        e0.append(x0.to_json())
+    parts.append("\"CrossRegionCopy\":" + dlm_json_arr(e0))
+    return dlm_json_obj(parts)
+
+# Serialize CreateRule to a compact JSON object (declaration order).
+def create_rule_to_json(CreateRule v) -> str:
+    list[str] parts = []
+    if v.Location.is_some():
+        auto u0 = v.Location.unwrap()
+        parts.append("\"Location\":" + u0.to_json())
+    if v.Interval.is_some():
+        auto u1 = v.Interval.unwrap()
+        parts.append("\"Interval\":" + str(u1))
+    if v.IntervalUnit.is_some():
+        auto u2 = v.IntervalUnit.unwrap()
+        parts.append("\"IntervalUnit\":" + dlm_json_str(u2))
+    if v.Times.is_some():
+        auto u3 = v.Times.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dlm_json_str(x4))
+        parts.append("\"Times\":" + dlm_json_arr(e4))
+    if v.CronExpression.is_some():
+        auto u5 = v.CronExpression.unwrap()
+        parts.append("\"CronExpression\":" + dlm_json_str(u5))
+    if v.Scripts.is_some():
+        auto u6 = v.Scripts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(script_to_json(x7))
+        parts.append("\"Scripts\":" + dlm_json_arr(e7))
+    return dlm_json_obj(parts)
+
+# Serialize EventParameters to a compact JSON object (declaration order).
+def event_parameters_to_json(EventParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"EventType\":" + dlm_json_str(v.EventType))
+    list[str] e0 = []
+    for x0 in v.SnapshotOwner:
+        e0.append(dlm_json_str(x0))
+    parts.append("\"SnapshotOwner\":" + dlm_json_arr(e0))
+    parts.append("\"DescriptionRegex\":" + dlm_json_str(v.DescriptionRegex))
+    return dlm_json_obj(parts)
+
+# Serialize EventSource to a compact JSON object (declaration order).
+def event_source_to_json(EventSource v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + dlm_json_str(v.Type))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        parts.append("\"Parameters\":" + event_parameters_to_json(u0))
+    return dlm_json_obj(parts)
+
+# Serialize Exclusions to a compact JSON object (declaration order).
+def exclusions_to_json(Exclusions v) -> str:
+    list[str] parts = []
+    if v.ExcludeBootVolumes.is_some():
+        auto u0 = v.ExcludeBootVolumes.unwrap()
+        parts.append("\"ExcludeBootVolumes\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ExcludeVolumeTypes.is_some():
+        auto u1 = v.ExcludeVolumeTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dlm_json_str(x2))
+        parts.append("\"ExcludeVolumeTypes\":" + dlm_json_arr(e2))
+    if v.ExcludeTags.is_some():
+        auto u3 = v.ExcludeTags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ExcludeTags\":" + dlm_json_arr(e4))
+    return dlm_json_obj(parts)
+
+# Serialize FastRestoreRule to a compact JSON object (declaration order).
+def fast_restore_rule_to_json(FastRestoreRule v) -> str:
+    list[str] parts = []
+    if v.Count.is_some():
+        auto u0 = v.Count.unwrap()
+        parts.append("\"Count\":" + str(u0))
+    if v.Interval.is_some():
+        auto u1 = v.Interval.unwrap()
+        parts.append("\"Interval\":" + str(u1))
+    if v.IntervalUnit.is_some():
+        auto u2 = v.IntervalUnit.unwrap()
+        parts.append("\"IntervalUnit\":" + u2.to_json())
+    if v.AvailabilityZones.is_some():
+        auto u3 = v.AvailabilityZones.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dlm_json_str(x4))
+        parts.append("\"AvailabilityZones\":" + dlm_json_arr(e4))
+    if v.AvailabilityZoneIds.is_some():
+        auto u5 = v.AvailabilityZoneIds.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(dlm_json_str(x6))
+        parts.append("\"AvailabilityZoneIds\":" + dlm_json_arr(e6))
+    return dlm_json_obj(parts)
+
+# Serialize Parameters to a compact JSON object (declaration order).
+def parameters_to_json(Parameters v) -> str:
+    list[str] parts = []
+    if v.ExcludeBootVolume.is_some():
+        auto u0 = v.ExcludeBootVolume.unwrap()
+        parts.append("\"ExcludeBootVolume\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.NoReboot.is_some():
+        auto u1 = v.NoReboot.unwrap()
+        parts.append("\"NoReboot\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ExcludeDataVolumeTags.is_some():
+        auto u2 = v.ExcludeDataVolumeTags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ExcludeDataVolumeTags\":" + dlm_json_arr(e3))
+    return dlm_json_obj(parts)
+
+# Serialize PolicyDetails to a compact JSON object (declaration order).
+def policy_details_to_json(PolicyDetails v) -> str:
+    list[str] parts = []
+    if v.PolicyType.is_some():
+        auto u0 = v.PolicyType.unwrap()
+        parts.append("\"PolicyType\":" + u0.to_json())
+    if v.ResourceTypes.is_some():
+        auto u1 = v.ResourceTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ResourceTypes\":" + dlm_json_arr(e2))
+    if v.ResourceLocations.is_some():
+        auto u3 = v.ResourceLocations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ResourceLocations\":" + dlm_json_arr(e4))
+    if v.TargetTags.is_some():
+        auto u5 = v.TargetTags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"TargetTags\":" + dlm_json_arr(e6))
+    if v.Schedules.is_some():
+        auto u7 = v.Schedules.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(schedule_to_json(x8))
+        parts.append("\"Schedules\":" + dlm_json_arr(e8))
+    if v.Parameters.is_some():
+        auto u9 = v.Parameters.unwrap()
+        parts.append("\"Parameters\":" + parameters_to_json(u9))
+    if v.EventSource.is_some():
+        auto u10 = v.EventSource.unwrap()
+        parts.append("\"EventSource\":" + event_source_to_json(u10))
+    if v.Actions.is_some():
+        auto u11 = v.Actions.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(action_to_json(x12))
+        parts.append("\"Actions\":" + dlm_json_arr(e12))
+    if v.PolicyLanguage.is_some():
+        auto u13 = v.PolicyLanguage.unwrap()
+        parts.append("\"PolicyLanguage\":" + u13.to_json())
+    if v.ResourceType.is_some():
+        auto u14 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + u14.to_json())
+    if v.CreateInterval.is_some():
+        auto u15 = v.CreateInterval.unwrap()
+        parts.append("\"CreateInterval\":" + str(u15))
+    if v.RetainInterval.is_some():
+        auto u16 = v.RetainInterval.unwrap()
+        parts.append("\"RetainInterval\":" + str(u16))
+    if v.CopyTags.is_some():
+        auto u17 = v.CopyTags.unwrap()
+        parts.append("\"CopyTags\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.CrossRegionCopyTargets.is_some():
+        auto u18 = v.CrossRegionCopyTargets.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"CrossRegionCopyTargets\":" + dlm_json_arr(e19))
+    if v.ExtendDeletion.is_some():
+        auto u20 = v.ExtendDeletion.unwrap()
+        parts.append("\"ExtendDeletion\":" + json.dumps(JsonValue.Bool(u20)))
+    if v.Exclusions.is_some():
+        auto u21 = v.Exclusions.unwrap()
+        parts.append("\"Exclusions\":" + exclusions_to_json(u21))
+    return dlm_json_obj(parts)
+
+# Serialize Schedule to a compact JSON object (declaration order).
+def schedule_to_json(Schedule v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + dlm_json_str(u0))
+    if v.CopyTags.is_some():
+        auto u1 = v.CopyTags.unwrap()
+        parts.append("\"CopyTags\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.TagsToAdd.is_some():
+        auto u2 = v.TagsToAdd.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"TagsToAdd\":" + dlm_json_arr(e3))
+    if v.VariableTags.is_some():
+        auto u4 = v.VariableTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"VariableTags\":" + dlm_json_arr(e5))
+    if v.CreateRule.is_some():
+        auto u6 = v.CreateRule.unwrap()
+        parts.append("\"CreateRule\":" + create_rule_to_json(u6))
+    if v.RetainRule.is_some():
+        auto u7 = v.RetainRule.unwrap()
+        parts.append("\"RetainRule\":" + u7.to_json())
+    if v.FastRestoreRule.is_some():
+        auto u8 = v.FastRestoreRule.unwrap()
+        parts.append("\"FastRestoreRule\":" + fast_restore_rule_to_json(u8))
+    if v.CrossRegionCopyRules.is_some():
+        auto u9 = v.CrossRegionCopyRules.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"CrossRegionCopyRules\":" + dlm_json_arr(e10))
+    if v.ShareRules.is_some():
+        auto u11 = v.ShareRules.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(share_rule_to_json(x12))
+        parts.append("\"ShareRules\":" + dlm_json_arr(e12))
+    if v.DeprecateRule.is_some():
+        auto u13 = v.DeprecateRule.unwrap()
+        parts.append("\"DeprecateRule\":" + u13.to_json())
+    if v.ArchiveRule.is_some():
+        auto u14 = v.ArchiveRule.unwrap()
+        parts.append("\"ArchiveRule\":" + u14.to_json())
+    return dlm_json_obj(parts)
+
+# Serialize Script to a compact JSON object (declaration order).
+def script_to_json(Script v) -> str:
+    list[str] parts = []
+    if v.Stages.is_some():
+        auto u0 = v.Stages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Stages\":" + dlm_json_arr(e1))
+    if v.ExecutionHandlerService.is_some():
+        auto u2 = v.ExecutionHandlerService.unwrap()
+        parts.append("\"ExecutionHandlerService\":" + dlm_json_str(u2))
+    parts.append("\"ExecutionHandler\":" + dlm_json_str(v.ExecutionHandler))
+    if v.ExecuteOperationOnScriptFailure.is_some():
+        auto u3 = v.ExecuteOperationOnScriptFailure.unwrap()
+        parts.append("\"ExecuteOperationOnScriptFailure\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ExecutionTimeout.is_some():
+        auto u4 = v.ExecutionTimeout.unwrap()
+        parts.append("\"ExecutionTimeout\":" + str(u4))
+    if v.MaximumRetryCount.is_some():
+        auto u5 = v.MaximumRetryCount.unwrap()
+        parts.append("\"MaximumRetryCount\":" + str(u5))
+    return dlm_json_obj(parts)
+
+# Serialize ShareRule to a compact JSON object (declaration order).
+def share_rule_to_json(ShareRule v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TargetAccounts:
+        e0.append(dlm_json_str(x0))
+    parts.append("\"TargetAccounts\":" + dlm_json_arr(e0))
+    if v.UnshareInterval.is_some():
+        auto u1 = v.UnshareInterval.unwrap()
+        parts.append("\"UnshareInterval\":" + str(u1))
+    if v.UnshareIntervalUnit.is_some():
+        auto u2 = v.UnshareIntervalUnit.unwrap()
+        parts.append("\"UnshareIntervalUnit\":" + u2.to_json())
+    return dlm_json_obj(parts)
 
 # A bound DLM client: credentials + region, threaded into every operation.
 struct DLMClient:
     core.Credentials creds
     str region
+
+    # CreateLifecyclePolicy  POST /policies
+    # errors: InternalServerException, InvalidRequestException, LimitExceededException
+    def create_lifecycle_policy(self, CreateLifecyclePolicyRequest input) -> str:
+        auto host = endpoints.regional_host(dlm_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ExecutionRoleArn\":" + dlm_json_str(input.ExecutionRoleArn))
+        parts.append("\"Description\":" + dlm_json_str(input.Description))
+        parts.append("\"State\":" + input.State.to_json())
+        if input.PolicyDetails.is_some():
+            auto u0 = input.PolicyDetails.unwrap()
+            parts.append("\"PolicyDetails\":" + policy_details_to_json(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(dlm_json_str(k2) + ":" + dlm_json_str(u1[k2]))
+            parts.append("\"Tags\":" + dlm_json_obj(m2))
+        if input.DefaultPolicy.is_some():
+            auto u3 = input.DefaultPolicy.unwrap()
+            parts.append("\"DefaultPolicy\":" + u3.to_json())
+        if input.CreateInterval.is_some():
+            auto u4 = input.CreateInterval.unwrap()
+            parts.append("\"CreateInterval\":" + str(u4))
+        if input.RetainInterval.is_some():
+            auto u5 = input.RetainInterval.unwrap()
+            parts.append("\"RetainInterval\":" + str(u5))
+        if input.CopyTags.is_some():
+            auto u6 = input.CopyTags.unwrap()
+            parts.append("\"CopyTags\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.ExtendDeletion.is_some():
+            auto u7 = input.ExtendDeletion.unwrap()
+            parts.append("\"ExtendDeletion\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.CrossRegionCopyTargets.is_some():
+            auto u8 = input.CrossRegionCopyTargets.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"CrossRegionCopyTargets\":" + dlm_json_arr(e9))
+        if input.Exclusions.is_some():
+            auto u10 = input.Exclusions.unwrap()
+            parts.append("\"Exclusions\":" + exclusions_to_json(u10))
+        auto bp = restjson.rest_json_document(b, dlm_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dlm_service(), self.region, host)
 
     # DeleteLifecyclePolicy  DELETE /policies/{policyId}
     # errors: InternalServerException, LimitExceededException, ResourceNotFoundException
@@ -523,6 +895,65 @@ struct DLMClient:
         labels["resourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dlm_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(dlm_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(dlm_json_str(k0) + ":" + dlm_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + dlm_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, dlm_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dlm_service(), self.region, host)
+
+    # UpdateLifecyclePolicy  PATCH /policies/{policyId}
+    # errors: InternalServerException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
+    def update_lifecycle_policy(self, UpdateLifecyclePolicyRequest input) -> str:
+        auto host = endpoints.regional_host(dlm_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyId"] = input.PolicyId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ExecutionRoleArn.is_some():
+            auto u0 = input.ExecutionRoleArn.unwrap()
+            parts.append("\"ExecutionRoleArn\":" + dlm_json_str(u0))
+        if input.State.is_some():
+            auto u1 = input.State.unwrap()
+            parts.append("\"State\":" + u1.to_json())
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + dlm_json_str(u2))
+        if input.PolicyDetails.is_some():
+            auto u3 = input.PolicyDetails.unwrap()
+            parts.append("\"PolicyDetails\":" + policy_details_to_json(u3))
+        if input.CreateInterval.is_some():
+            auto u4 = input.CreateInterval.unwrap()
+            parts.append("\"CreateInterval\":" + str(u4))
+        if input.RetainInterval.is_some():
+            auto u5 = input.RetainInterval.unwrap()
+            parts.append("\"RetainInterval\":" + str(u5))
+        if input.CopyTags.is_some():
+            auto u6 = input.CopyTags.unwrap()
+            parts.append("\"CopyTags\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.ExtendDeletion.is_some():
+            auto u7 = input.ExtendDeletion.unwrap()
+            parts.append("\"ExtendDeletion\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.CrossRegionCopyTargets.is_some():
+            auto u8 = input.CrossRegionCopyTargets.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"CrossRegionCopyTargets\":" + dlm_json_arr(e9))
+        if input.Exclusions.is_some():
+            auto u10 = input.Exclusions.unwrap()
+            parts.append("\"Exclusions\":" + exclusions_to_json(u10))
+        auto bp = restjson.rest_json_document(b, dlm_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dlm_service(), self.region, host)
 
 # Construct a DLMClient bound to credentials + region.
 def dlm_client(core.Credentials creds, str region) -> DLMClient:

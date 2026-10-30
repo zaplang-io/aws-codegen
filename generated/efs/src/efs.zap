@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 21 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 30 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   90 structs (65 @derive(Json)), 12 enums, 32 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -159,8 +159,9 @@ struct AccessPointAlreadyExists:
     Optional[str] Message
     str AccessPointId
 
-# no @derive(Json): member(s) Tags: list[Tag], PosixUser: PosixUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], PosixUser: PosixUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessPointDescription:
     Optional[str] ClientToken
     Optional[str] Name
@@ -302,8 +303,9 @@ struct DescribeAccessPointsRequest:
     Optional[str] AccessPointId
     Optional[str] FileSystemId
 
-# no @derive(Json): member(s) AccessPoints: list[AccessPointDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessPoints: list[AccessPointDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccessPointsResponse:
     Optional[list[AccessPointDescription]] AccessPoints
     Optional[str] NextToken
@@ -314,8 +316,9 @@ struct DescribeAccountPreferencesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResourceIdPreference: ResourceIdPreference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIdPreference: ResourceIdPreference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountPreferencesResponse:
     Optional[ResourceIdPreference] ResourceIdPreference
     Optional[str] NextToken
@@ -338,8 +341,9 @@ struct DescribeFileSystemsRequest:
     Optional[str] CreationToken
     Optional[str] FileSystemId
 
-# no @derive(Json): member(s) FileSystems: list[FileSystemDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystems: list[FileSystemDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileSystemsResponse:
     Optional[str] Marker
     Optional[list[FileSystemDescription]] FileSystems
@@ -355,8 +359,9 @@ struct DescribeLifecycleConfigurationRequest:
 struct DescribeMountTargetSecurityGroupsRequest:
     str MountTargetId
 
-# no @derive(Json): member(s) SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMountTargetSecurityGroupsResponse:
     list[str] SecurityGroups
 
@@ -369,8 +374,9 @@ struct DescribeMountTargetsRequest:
     Optional[str] MountTargetId
     Optional[str] AccessPointId
 
-# no @derive(Json): member(s) MountTargets: list[MountTargetDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MountTargets: list[MountTargetDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMountTargetsResponse:
     Optional[str] Marker
     Optional[list[MountTargetDescription]] MountTargets
@@ -383,8 +389,9 @@ struct DescribeReplicationConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Replications: list[ReplicationConfigurationDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replications: list[ReplicationConfigurationDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationConfigurationsResponse:
     Optional[list[ReplicationConfigurationDescription]] Replications
     Optional[str] NextToken
@@ -396,8 +403,9 @@ struct DescribeTagsRequest:
     Optional[str] Marker
     str FileSystemId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsResponse:
     Optional[str] Marker
     list[Tag] Tags
@@ -427,8 +435,9 @@ struct FileSystemAlreadyExists:
     Optional[str] Message
     str FileSystemId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileSystemDescription:
     str OwnerId
     str CreationToken
@@ -511,8 +520,9 @@ struct IpAddressInUse:
     str ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) LifecyclePolicies: list[LifecyclePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LifecyclePolicies: list[LifecyclePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecycleConfigurationDescription:
     Optional[list[LifecyclePolicy]] LifecyclePolicies
 
@@ -529,8 +539,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -580,8 +591,9 @@ struct PolicyNotFound:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) SecondaryGids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecondaryGids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PosixUser:
     int64 Uid
     int64 Gid
@@ -592,8 +604,9 @@ struct PosixUser:
 struct PutAccountPreferencesRequest:
     ResourceIdType ResourceIdType
 
-# no @derive(Json): member(s) ResourceIdPreference: ResourceIdPreference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIdPreference: ResourceIdPreference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAccountPreferencesResponse:
     Optional[ResourceIdPreference] ResourceIdPreference
 
@@ -621,8 +634,9 @@ struct ReplicationAlreadyExists:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Destinations: list[Destination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[Destination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfigurationDescription:
     str SourceFileSystemId
     str SourceFileSystemRegion
@@ -637,8 +651,9 @@ struct ReplicationNotFound:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceIdPreference:
     Optional[ResourceIdType] ResourceIdType
     Optional[list[Resource]] Resources
@@ -831,15 +846,6 @@ def elasticfilesystem_error_from_code(str code) -> EFSError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAccessPoint (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateFileSystem (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateMountTarget (document member `SecurityGroups: list[str]` is not serializable by derive)
-#   CreateReplicationConfiguration (document member `Destinations: list[DestinationToCreate]` is not serializable by derive)
-#   CreateTags (document member `Tags: list[Tag]` is not serializable by derive)
-#   DeleteTags (document member `TagKeys: list[str]` is not serializable by derive)
-#   ModifyMountTargetSecurityGroups (document member `SecurityGroups: list[str]` is not serializable by derive)
-#   PutLifecycleConfiguration (document member `LifecyclePolicies: list[LifecyclePolicy]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -878,10 +884,169 @@ struct UpdateFileSystemProtectionDocument:
     # document members of UpdateFileSystemProtection
     Optional[ReplicationOverwriteProtection] ReplicationOverwriteProtection
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def elasticfilesystem_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def elasticfilesystem_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def elasticfilesystem_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize PosixUser to a compact JSON object (declaration order).
+def posix_user_to_json(PosixUser v) -> str:
+    list[str] parts = []
+    parts.append("\"Uid\":" + str(v.Uid))
+    parts.append("\"Gid\":" + str(v.Gid))
+    if v.SecondaryGids.is_some():
+        auto u0 = v.SecondaryGids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"SecondaryGids\":" + elasticfilesystem_json_arr(e1))
+    return elasticfilesystem_json_obj(parts)
+
 # A bound EFS client: credentials + region, threaded into every operation.
 struct EFSClient:
     core.Credentials creds
     str region
+
+    # CreateAccessPoint  POST /2015-02-01/access-points
+    # errors: AccessPointAlreadyExists, AccessPointLimitExceeded, BadRequest, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InternalServerError, ThrottlingException
+    def create_access_point(self, CreateAccessPointRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/access-points", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientToken\":" + elasticfilesystem_json_str(input.ClientToken))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + elasticfilesystem_json_arr(e1))
+        parts.append("\"FileSystemId\":" + elasticfilesystem_json_str(input.FileSystemId))
+        if input.PosixUser.is_some():
+            auto u2 = input.PosixUser.unwrap()
+            parts.append("\"PosixUser\":" + posix_user_to_json(u2))
+        if input.RootDirectory.is_some():
+            auto u3 = input.RootDirectory.unwrap()
+            parts.append("\"RootDirectory\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
+    # CreateFileSystem  POST /2015-02-01/file-systems
+    # errors: BadRequest, FileSystemAlreadyExists, FileSystemLimitExceeded, InsufficientThroughputCapacity, InternalServerError, ThroughputLimitExceeded, UnsupportedAvailabilityZone
+    def create_file_system(self, CreateFileSystemRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/file-systems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CreationToken\":" + elasticfilesystem_json_str(input.CreationToken))
+        if input.PerformanceMode.is_some():
+            auto u0 = input.PerformanceMode.unwrap()
+            parts.append("\"PerformanceMode\":" + u0.to_json())
+        if input.Encrypted.is_some():
+            auto u1 = input.Encrypted.unwrap()
+            parts.append("\"Encrypted\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.KmsKeyId.is_some():
+            auto u2 = input.KmsKeyId.unwrap()
+            parts.append("\"KmsKeyId\":" + elasticfilesystem_json_str(u2))
+        if input.ThroughputMode.is_some():
+            auto u3 = input.ThroughputMode.unwrap()
+            parts.append("\"ThroughputMode\":" + u3.to_json())
+        if input.ProvisionedThroughputInMibps.is_some():
+            auto u4 = input.ProvisionedThroughputInMibps.unwrap()
+            parts.append("\"ProvisionedThroughputInMibps\":" + str(u4))
+        if input.AvailabilityZoneName.is_some():
+            auto u5 = input.AvailabilityZoneName.unwrap()
+            parts.append("\"AvailabilityZoneName\":" + elasticfilesystem_json_str(u5))
+        if input.Backup.is_some():
+            auto u6 = input.Backup.unwrap()
+            parts.append("\"Backup\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.Tags.is_some():
+            auto u7 = input.Tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"Tags\":" + elasticfilesystem_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
+    # CreateMountTarget  POST /2015-02-01/mount-targets
+    # errors: AvailabilityZonesMismatch, BadRequest, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InternalServerError, IpAddressInUse, MountTargetConflict, NetworkInterfaceLimitExceeded, NoFreeAddressesInSubnet, SecurityGroupLimitExceeded, SecurityGroupNotFound, SubnetNotFound, UnsupportedAvailabilityZone
+    def create_mount_target(self, CreateMountTargetRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/mount-targets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FileSystemId\":" + elasticfilesystem_json_str(input.FileSystemId))
+        parts.append("\"SubnetId\":" + elasticfilesystem_json_str(input.SubnetId))
+        if input.IpAddress.is_some():
+            auto u0 = input.IpAddress.unwrap()
+            parts.append("\"IpAddress\":" + elasticfilesystem_json_str(u0))
+        if input.Ipv6Address.is_some():
+            auto u1 = input.Ipv6Address.unwrap()
+            parts.append("\"Ipv6Address\":" + elasticfilesystem_json_str(u1))
+        if input.IpAddressType.is_some():
+            auto u2 = input.IpAddressType.unwrap()
+            parts.append("\"IpAddressType\":" + u2.to_json())
+        if input.SecurityGroups.is_some():
+            auto u3 = input.SecurityGroups.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(elasticfilesystem_json_str(x4))
+            parts.append("\"SecurityGroups\":" + elasticfilesystem_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
+    # CreateReplicationConfiguration  POST /2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration
+    # errors: BadRequest, ConflictException, FileSystemLimitExceeded, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InsufficientThroughputCapacity, InternalServerError, ReplicationNotFound, ThroughputLimitExceeded, UnsupportedAvailabilityZone, ValidationException
+    def create_replication_configuration(self, CreateReplicationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["SourceFileSystemId"] = input.SourceFileSystemId
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Destinations:
+            e0.append(x0.to_json())
+        parts.append("\"Destinations\":" + elasticfilesystem_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
+    # CreateTags  POST /2015-02-01/create-tags/{FileSystemId}
+    # errors: BadRequest, FileSystemNotFound, InternalServerError
+    def create_tags(self, CreateTagsRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FileSystemId"] = input.FileSystemId
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/create-tags/{FileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + elasticfilesystem_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
 
     # DeleteAccessPoint  DELETE /2015-02-01/access-points/{AccessPointId}
     # errors: AccessPointNotFound, BadRequest, InternalServerError
@@ -930,6 +1095,21 @@ struct EFSClient:
             query["deletionMode"] = input.DeletionMode.unwrap_or("")
         auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
+
+    # DeleteTags  POST /2015-02-01/delete-tags/{FileSystemId}
+    # errors: BadRequest, FileSystemNotFound, InternalServerError
+    def delete_tags(self, DeleteTagsRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FileSystemId"] = input.FileSystemId
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/delete-tags/{FileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(elasticfilesystem_json_str(x0))
+        parts.append("\"TagKeys\":" + elasticfilesystem_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
 
     # DescribeAccessPoints  GET /2015-02-01/access-points
     # errors: AccessPointNotFound, BadRequest, FileSystemNotFound, InternalServerError
@@ -1068,6 +1248,23 @@ struct EFSClient:
         auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
+    # ModifyMountTargetSecurityGroups  PUT /2015-02-01/mount-targets/{MountTargetId}/security-groups
+    # errors: BadRequest, IncorrectMountTargetState, InternalServerError, MountTargetNotFound, SecurityGroupLimitExceeded, SecurityGroupNotFound
+    def modify_mount_target_security_groups(self, ModifyMountTargetSecurityGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MountTargetId"] = input.MountTargetId
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/mount-targets/{MountTargetId}/security-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SecurityGroups.is_some():
+            auto u0 = input.SecurityGroups.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(elasticfilesystem_json_str(x1))
+            parts.append("\"SecurityGroups\":" + elasticfilesystem_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
     # PutAccountPreferences  PUT /2015-02-01/account-preferences
     # errors: BadRequest, InternalServerError
     def put_account_preferences(self, PutAccountPreferencesRequest input) -> str:
@@ -1097,6 +1294,36 @@ struct EFSClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFileSystemPolicyDocument(Policy=input.Policy, BypassPolicyLockoutSafetyCheck=input.BypassPolicyLockoutSafetyCheck)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
+    # PutLifecycleConfiguration  PUT /2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration
+    # errors: BadRequest, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InternalServerError
+    def put_lifecycle_configuration(self, PutLifecycleConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FileSystemId"] = input.FileSystemId
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.LifecyclePolicies:
+            e0.append(x0.to_json())
+        parts.append("\"LifecyclePolicies\":" + elasticfilesystem_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
+
+    # TagResource  POST /2015-02-01/resource-tags/{ResourceId}
+    # errors: AccessPointNotFound, BadRequest, FileSystemNotFound, InternalServerError
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + elasticfilesystem_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
 
     # UpdateFileSystem  PUT /2015-02-01/file-systems/{FileSystemId}

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 4 operations — 1 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 4 operations — 3 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   16 structs (11 @derive(Json)), 0 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Marketplace_Deployment rest-json protocol: SigV4 service "aws-marketplace" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -63,8 +64,9 @@ struct InternalServerException:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -79,8 +81,9 @@ struct PutDeploymentParameterRequest:
     str productId
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDeploymentParameterResponse:
     str agreementId
     str deploymentParameterId
@@ -164,8 +167,6 @@ def deployment_marketplace_error_from_code(str code) -> Marketplace_DeploymentEr
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   PutDeploymentParameter (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # A bound Marketplace_Deployment client: credentials + region, threaded into every operation.
@@ -181,6 +182,49 @@ struct Marketplace_DeploymentClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deployment_marketplace_service(), self.region, host)
+
+    # PutDeploymentParameter  POST /catalogs/{catalog}/products/{productId}/deployment-parameters
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def put_deployment_parameter(self, PutDeploymentParameterRequest input) -> str:
+        auto host = endpoints.regional_host(deployment_marketplace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["catalog"] = input.catalog
+        labels["productId"] = input.productId
+        auto b = binding.HttpBinding(method="POST", path_template="/catalogs/{catalog}/products/{productId}/deployment-parameters", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agreementId\":" + deployment_marketplace_json_str(input.agreementId))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + deployment_marketplace_json_str(u0))
+        parts.append("\"deploymentParameter\":" + input.deploymentParameter.to_json())
+        if input.expirationDate.is_some():
+            auto u1 = input.expirationDate.unwrap()
+            parts.append("\"expirationDate\":" + deployment_marketplace_json_ts_iso(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(deployment_marketplace_json_str(k3) + ":" + deployment_marketplace_json_str(u2[k3]))
+            parts.append("\"tags\":" + deployment_marketplace_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, deployment_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, deployment_marketplace_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(deployment_marketplace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(deployment_marketplace_json_str(k1) + ":" + deployment_marketplace_json_str(u0[k1]))
+            parts.append("\"tags\":" + deployment_marketplace_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, deployment_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, deployment_marketplace_service(), self.region, host)
 
 # Construct a Marketplace_DeploymentClient bound to credentials + region.
 def deployment_marketplace_client(core.Credentials creds, str region) -> Marketplace_DeploymentClient:

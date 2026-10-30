@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 17 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 22 operations — 21 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   59 structs (46 @derive(Json)), 5 enums, 9 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The ConnectCampaigns rest-json protocol: SigV4 service "connect-campaigns" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -100,8 +101,9 @@ struct AnswerMachineDetectionConfig:
     bool enableAnswerMachineDetection
     Optional[bool] awaitAnswerMachinePrompt
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Campaign:
     str id
     str arn
@@ -136,8 +138,9 @@ struct CreateCampaignRequest:
     OutboundCallConfig outboundCallConfig
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCampaignResponse:
     Optional[str] id
     Optional[str] arn
@@ -163,13 +166,15 @@ struct DeleteInstanceOnboardingJobRequest:
 struct DescribeCampaignRequest:
     str id
 
-# no @derive(Json): member(s) campaign: Campaign not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaign: Campaign not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCampaignResponse:
     Optional[Campaign] campaign
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DialRequest:
     str clientToken
     str phoneNumber
@@ -204,8 +209,9 @@ struct FailedRequest:
 struct GetCampaignStateBatchRequest:
     list[str] campaignIds
 
-# no @derive(Json): member(s) successfulRequests: list[SuccessfulCampaignStateResponse], failedRequests: list[FailedCampaignStateResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRequests: list[SuccessfulCampaignStateResponse], failedRequests: list[FailedCampaignStateResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignStateBatchResponse:
     Optional[list[SuccessfulCampaignStateResponse]] successfulRequests
     Optional[list[FailedCampaignStateResponse]] failedRequests
@@ -277,8 +283,9 @@ struct ListCampaignsRequest:
     Optional[str] nextToken
     Optional[CampaignFilters] filters
 
-# no @derive(Json): member(s) campaignSummaryList: list[CampaignSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignSummaryList: list[CampaignSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCampaignsResponse:
     Optional[str] nextToken
     Optional[list[CampaignSummary]] campaignSummaryList
@@ -288,8 +295,9 @@ struct ListCampaignsResponse:
 struct ListTagsForResourceRequest:
     str arn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -321,8 +329,9 @@ struct PutDialRequestBatchRequest:
     str id
     list[DialRequest] dialRequests
 
-# no @derive(Json): member(s) successfulRequests: list[SuccessfulRequest], failedRequests: list[FailedRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRequests: list[SuccessfulRequest], failedRequests: list[FailedRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDialRequestBatchResponse:
     Optional[list[SuccessfulRequest]] successfulRequests
     Optional[list[FailedRequest]] failedRequests
@@ -458,10 +467,6 @@ def connect_campaigns_error_from_code(str code) -> ConnectCampaignsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCampaign (document member `tags: dict[str, str]` is not serializable by derive)
-#   GetCampaignStateBatch (document member `campaignIds: list[str]` is not serializable by derive)
-#   PutDialRequestBatch (document member `dialRequests: list[DialRequest]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -496,10 +501,75 @@ struct UpdateCampaignOutboundCallConfigDocument:
     Optional[str] connectSourcePhoneNumber
     Optional[AnswerMachineDetectionConfig] answerMachineDetectionConfig
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def connect_campaigns_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def connect_campaigns_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def connect_campaigns_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def connect_campaigns_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DialRequest to a compact JSON object (declaration order).
+def dial_request_to_json(DialRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clientToken\":" + connect_campaigns_json_str(v.clientToken))
+    parts.append("\"phoneNumber\":" + connect_campaigns_json_str(v.phoneNumber))
+    parts.append("\"expirationTime\":" + connect_campaigns_json_ts_iso(v.expirationTime))
+    list[str] m0 = []
+    for k0 in sorted(v.attributes.keys()):
+        m0.append(connect_campaigns_json_str(k0) + ":" + connect_campaigns_json_str(v.attributes[k0]))
+    parts.append("\"attributes\":" + connect_campaigns_json_obj(m0))
+    return connect_campaigns_json_obj(parts)
+
 # A bound ConnectCampaigns client: credentials + region, threaded into every operation.
 struct ConnectCampaignsClient:
     core.Credentials creds
     str region
+
+    # CreateCampaign  PUT /campaigns
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_campaign(self, CreateCampaignRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/campaigns", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + connect_campaigns_json_str(input.name))
+        parts.append("\"connectInstanceId\":" + connect_campaigns_json_str(input.connectInstanceId))
+        parts.append("\"dialerConfig\":" + input.dialerConfig.to_json())
+        parts.append("\"outboundCallConfig\":" + input.outboundCallConfig.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(connect_campaigns_json_str(k1) + ":" + connect_campaigns_json_str(u0[k1]))
+            parts.append("\"tags\":" + connect_campaigns_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
 
     # DeleteCampaign  DELETE /campaigns/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -546,6 +616,19 @@ struct ConnectCampaignsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/campaigns/{id}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
+    # GetCampaignStateBatch  POST /campaigns-state
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_campaign_state_batch(self, GetCampaignStateBatchRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/campaigns-state", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.campaignIds:
+            e0.append(connect_campaigns_json_str(x0))
+        parts.append("\"campaignIds\":" + connect_campaigns_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
     # GetConnectInstanceConfig  GET /connect-instance/{connectInstanceId}/config
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_connect_instance_config(self, GetConnectInstanceConfigRequest input) -> str:
@@ -591,6 +674,21 @@ struct ConnectCampaignsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/campaigns/{id}/pause", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
+    # PutDialRequestBatch  PUT /campaigns/{id}/dial-requests
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_dial_request_batch(self, PutDialRequestBatchRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/campaigns/{id}/dial-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.dialRequests:
+            e0.append(dial_request_to_json(x0))
+        parts.append("\"dialRequests\":" + connect_campaigns_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
     # ResumeCampaign  POST /campaigns/{id}/resume
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ThrottlingException, ValidationException
     def resume_campaign(self, ResumeCampaignRequest input) -> str:
@@ -628,6 +726,21 @@ struct ConnectCampaignsClient:
         labels["id"] = input.id
         auto b = binding.HttpBinding(method="POST", path_template="/campaigns/{id}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
+
+    # TagResource  POST /tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(connect_campaigns_json_str(k0) + ":" + connect_campaigns_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + connect_campaigns_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
 
     # UpdateCampaignDialerConfig  POST /campaigns/{id}/dialer-config
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException

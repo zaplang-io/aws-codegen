@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 36 operations — 25 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 36 operations — 35 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   105 structs (66 @derive(Json)), 13 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -177,8 +177,9 @@ struct AcceptLinkRequest:
     LinkLogSettings logSettings
     Optional[int64] timeoutInMillis
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptLinkResponse:
     str gatewayId
     str peerGatewayId
@@ -215,8 +216,9 @@ struct AssociateCertificateResponse:
     str acmCertificateArn
     CertificateAssociationStatus status
 
-# no @derive(Json): member(s) autoScalingGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoScalingGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoScalingGroupsConfiguration:
     list[str] autoScalingGroupNames
     str roleArn
@@ -260,8 +262,9 @@ struct CreateLinkRequest:
     LinkLogSettings logSettings
     Optional[int64] timeoutInMillis
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLinkResponse:
     str gatewayId
     str peerGatewayId
@@ -343,8 +346,9 @@ struct CreateResponderGatewayRequest:
     Optional[GatewayType] gatewayType
     Optional[ClientRoutingPolicy] clientRoutingPolicy
 
-# no @derive(Json): member(s) listenerConfig: ListenerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listenerConfig: ListenerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResponderGatewayResponse:
     str gatewayId
     ResponderGatewayStatus status
@@ -438,13 +442,15 @@ struct EksEndpointsConfiguration:
     str clusterName
     str roleArn
 
-# no @derive(Json): member(s) criteria: list[FilterCriterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criteria: list[FilterCriterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     list[FilterCriterion] criteria
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCriterion:
     str path
     list[str] values
@@ -469,8 +475,9 @@ struct GetInboundExternalLinkRequest:
     str gatewayId
     str linkId
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInboundExternalLinkResponse:
     str gatewayId
     str linkId
@@ -491,8 +498,9 @@ struct GetLinkRequest:
     str gatewayId
     str linkId
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkResponse:
     str gatewayId
     str peerGatewayId
@@ -517,8 +525,9 @@ struct GetLinkRoutingRuleRequest:
     str linkId
     str ruleId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkRoutingRuleResponse:
     str gatewayId
     str linkId
@@ -536,8 +545,9 @@ struct GetOutboundExternalLinkRequest:
     str gatewayId
     str linkId
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutboundExternalLinkResponse:
     str gatewayId
     str linkId
@@ -557,8 +567,9 @@ struct GetOutboundExternalLinkResponse:
 struct GetRequesterGatewayRequest:
     str gatewayId
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRequesterGatewayResponse:
     RequesterGatewayStatus status
     str domainName
@@ -578,8 +589,9 @@ struct GetRequesterGatewayResponse:
 struct GetResponderGatewayRequest:
     str gatewayId
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], listenerConfig: ListenerConfig, trustStoreConfiguration: TrustStoreConfiguration, managedEndpointConfiguration: ManagedEndpointConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], listenerConfig: ListenerConfig, trustStoreConfiguration: TrustStoreConfiguration, managedEndpointConfiguration: ManagedEndpointConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResponderGatewayResponse:
     str vpcId
     list[str] subnetIds
@@ -632,8 +644,9 @@ struct LinkApplicationLogSampling:
     float64 errorLog
     float64 filterLog
 
-# no @derive(Json): member(s) responderErrorMasking: list[ResponderErrorMaskingForHttpCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responderErrorMasking: list[ResponderErrorMaskingForHttpCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkAttributes:
     Optional[list[ResponderErrorMaskingForHttpCode]] responderErrorMasking
     Optional[str] customerProvidedId
@@ -658,8 +671,9 @@ struct ListCertificateAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) certificateAssociations: list[CertificateAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAssociations: list[CertificateAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificateAssociationsResponse:
     list[CertificateAssociationSummary] certificateAssociations
     Optional[str] nextToken
@@ -672,8 +686,9 @@ struct ListLinkRoutingRulesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) rules: list[LinkRoutingRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[LinkRoutingRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinkRoutingRulesResponse:
     Optional[list[LinkRoutingRuleSummary]] rules
     Optional[str] nextToken
@@ -685,14 +700,16 @@ struct ListLinksRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) links: list[ListLinksResponseStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) links: list[ListLinksResponseStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinksResponse:
     Optional[list[ListLinksResponseStructure]] links
     Optional[str] nextToken
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinksResponseStructure:
     str gatewayId
     str peerGatewayId
@@ -715,8 +732,9 @@ struct ListRequesterGatewaysRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gatewayIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRequesterGatewaysResponse:
     Optional[list[str]] gatewayIds
     Optional[str] nextToken
@@ -727,8 +745,9 @@ struct ListResponderGatewaysRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gatewayIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResponderGatewaysResponse:
     Optional[list[str]] gatewayIds
     Optional[str] nextToken
@@ -738,32 +757,37 @@ struct ListResponderGatewaysResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) protocols: list[Protocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protocols: list[Protocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListenerConfig:
     list[Protocol] protocols
 
-# no @derive(Json): member(s) autoScalingGroups: AutoScalingGroupsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoScalingGroups: AutoScalingGroupsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedEndpointConfiguration:
     Optional[AutoScalingGroupsConfiguration] autoScalingGroups
     Optional[EksEndpointsConfiguration] eksEndpoints
 
-# no @derive(Json): member(s) dependsOn: list[str], moduleParameters: ModuleParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependsOn: list[str], moduleParameters: ModuleParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModuleConfiguration:
     Optional[str] version
     str name
     Optional[list[str]] dependsOn
     Optional[ModuleParameters] moduleParameters
 
-# no @derive(Json): member(s) openRtbAttribute: OpenRtbAttributeModuleParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) openRtbAttribute: OpenRtbAttributeModuleParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModuleParameters:
     Optional[NoBidModuleParameters] noBid
     Optional[OpenRtbAttributeModuleParameters] openRtbAttribute
@@ -779,8 +803,9 @@ struct NoBidModuleParameters:
     Optional[int64] reasonCode
     Optional[float64] passThroughPercentage
 
-# no @derive(Json): member(s) filterConfiguration: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterConfiguration: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenRtbAttributeModuleParameters:
     FilterType filterType
     list[Filter] filterConfiguration
@@ -802,8 +827,9 @@ struct RejectLinkRequest:
     str gatewayId
     str linkId
 
-# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowModules: list[ModuleConfiguration], pendingFlowModules: list[ModuleConfiguration], attributes: LinkAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectLinkResponse:
     str gatewayId
     str peerGatewayId
@@ -822,8 +848,9 @@ struct RejectLinkResponse:
 struct ResourceNotFoundException:
     str message
 
-# no @derive(Json): member(s) loggingTypes: list[ResponderErrorMaskingLoggingType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loggingTypes: list[ResponderErrorMaskingLoggingType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponderErrorMaskingForHttpCode:
     str httpCode
     ResponderErrorMaskingAction action
@@ -858,8 +885,9 @@ struct TagResourceResponse:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) certificateAuthorityCertificates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAuthorityCertificates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustStoreConfiguration:
     list[str] certificateAuthorityCertificates
 
@@ -990,17 +1018,7 @@ def rtbfabric_error_from_code(str code) -> RTBFabricError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AcceptLink (document member `attributes: LinkAttributes` is not serializable by derive)
-#   CreateInboundExternalLink (document member `attributes: LinkAttributes` is not serializable by derive)
-#   CreateLink (document member `attributes: LinkAttributes` is not serializable by derive)
-#   CreateLinkRoutingRule (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateOutboundExternalLink (document member `attributes: LinkAttributes` is not serializable by derive)
-#   CreateRequesterGateway (document member `subnetIds: list[str]` is not serializable by derive)
-#   CreateResponderGateway (document member `subnetIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateLinkModuleFlow (document member `modules: list[ModuleConfiguration]` is not serializable by derive)
-#   UpdateResponderGateway (document member `listenerConfig: ListenerConfig` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1029,10 +1047,192 @@ struct UpdateRequesterGatewayDocument:
     str clientToken
     Optional[str] description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def rtbfabric_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def rtbfabric_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def rtbfabric_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AutoScalingGroupsConfiguration to a compact JSON object (declaration order).
+def auto_scaling_groups_configuration_to_json(AutoScalingGroupsConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.autoScalingGroupNames:
+        e0.append(rtbfabric_json_str(x0))
+    parts.append("\"autoScalingGroupNames\":" + rtbfabric_json_arr(e0))
+    parts.append("\"roleArn\":" + rtbfabric_json_str(v.roleArn))
+    if v.healthCheckConfig.is_some():
+        auto u1 = v.healthCheckConfig.unwrap()
+        parts.append("\"healthCheckConfig\":" + u1.to_json())
+    return rtbfabric_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.criteria:
+        e0.append(filter_criterion_to_json(x0))
+    parts.append("\"criteria\":" + rtbfabric_json_arr(e0))
+    return rtbfabric_json_obj(parts)
+
+# Serialize FilterCriterion to a compact JSON object (declaration order).
+def filter_criterion_to_json(FilterCriterion v) -> str:
+    list[str] parts = []
+    parts.append("\"path\":" + rtbfabric_json_str(v.path))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(rtbfabric_json_str(x0))
+    parts.append("\"values\":" + rtbfabric_json_arr(e0))
+    return rtbfabric_json_obj(parts)
+
+# Serialize LinkAttributes to a compact JSON object (declaration order).
+def link_attributes_to_json(LinkAttributes v) -> str:
+    list[str] parts = []
+    if v.responderErrorMasking.is_some():
+        auto u0 = v.responderErrorMasking.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(responder_error_masking_for_http_code_to_json(x1))
+        parts.append("\"responderErrorMasking\":" + rtbfabric_json_arr(e1))
+    if v.customerProvidedId.is_some():
+        auto u2 = v.customerProvidedId.unwrap()
+        parts.append("\"customerProvidedId\":" + rtbfabric_json_str(u2))
+    return rtbfabric_json_obj(parts)
+
+# Serialize ListenerConfig to a compact JSON object (declaration order).
+def listener_config_to_json(ListenerConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.protocols:
+        e0.append(x0.to_json())
+    parts.append("\"protocols\":" + rtbfabric_json_arr(e0))
+    return rtbfabric_json_obj(parts)
+
+# Serialize ManagedEndpointConfiguration to a compact JSON object (declaration order).
+def managed_endpoint_configuration_to_json(ManagedEndpointConfiguration v) -> str:
+    list[str] parts = []
+    if v.autoScalingGroups.is_some():
+        auto u0 = v.autoScalingGroups.unwrap()
+        parts.append("\"autoScalingGroups\":" + auto_scaling_groups_configuration_to_json(u0))
+    if v.eksEndpoints.is_some():
+        auto u1 = v.eksEndpoints.unwrap()
+        parts.append("\"eksEndpoints\":" + u1.to_json())
+    return rtbfabric_json_obj(parts)
+
+# Serialize ModuleConfiguration to a compact JSON object (declaration order).
+def module_configuration_to_json(ModuleConfiguration v) -> str:
+    list[str] parts = []
+    if v.version.is_some():
+        auto u0 = v.version.unwrap()
+        parts.append("\"version\":" + rtbfabric_json_str(u0))
+    parts.append("\"name\":" + rtbfabric_json_str(v.name))
+    if v.dependsOn.is_some():
+        auto u1 = v.dependsOn.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(rtbfabric_json_str(x2))
+        parts.append("\"dependsOn\":" + rtbfabric_json_arr(e2))
+    if v.moduleParameters.is_some():
+        auto u3 = v.moduleParameters.unwrap()
+        parts.append("\"moduleParameters\":" + module_parameters_to_json(u3))
+    return rtbfabric_json_obj(parts)
+
+# Serialize ModuleParameters to a compact JSON object (declaration order).
+def module_parameters_to_json(ModuleParameters v) -> str:
+    list[str] parts = []
+    if v.noBid.is_some():
+        auto u0 = v.noBid.unwrap()
+        parts.append("\"noBid\":" + u0.to_json())
+    if v.openRtbAttribute.is_some():
+        auto u1 = v.openRtbAttribute.unwrap()
+        parts.append("\"openRtbAttribute\":" + open_rtb_attribute_module_parameters_to_json(u1))
+    if v.rateLimiter.is_some():
+        auto u2 = v.rateLimiter.unwrap()
+        parts.append("\"rateLimiter\":" + u2.to_json())
+    return rtbfabric_json_obj(parts)
+
+# Serialize OpenRtbAttributeModuleParameters to a compact JSON object (declaration order).
+def open_rtb_attribute_module_parameters_to_json(OpenRtbAttributeModuleParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"filterType\":" + v.filterType.to_json())
+    list[str] e0 = []
+    for x0 in v.filterConfiguration:
+        e0.append(filter_to_json(x0))
+    parts.append("\"filterConfiguration\":" + rtbfabric_json_arr(e0))
+    parts.append("\"action\":" + v.action.to_json())
+    parts.append("\"holdbackPercentage\":" + str(v.holdbackPercentage))
+    return rtbfabric_json_obj(parts)
+
+# Serialize ResponderErrorMaskingForHttpCode to a compact JSON object (declaration order).
+def responder_error_masking_for_http_code_to_json(ResponderErrorMaskingForHttpCode v) -> str:
+    list[str] parts = []
+    parts.append("\"httpCode\":" + rtbfabric_json_str(v.httpCode))
+    parts.append("\"action\":" + v.action.to_json())
+    list[str] e0 = []
+    for x0 in v.loggingTypes:
+        e0.append(x0.to_json())
+    parts.append("\"loggingTypes\":" + rtbfabric_json_arr(e0))
+    if v.responseLoggingPercentage.is_some():
+        auto u1 = v.responseLoggingPercentage.unwrap()
+        parts.append("\"responseLoggingPercentage\":" + str(u1))
+    return rtbfabric_json_obj(parts)
+
+# Serialize TrustStoreConfiguration to a compact JSON object (declaration order).
+def trust_store_configuration_to_json(TrustStoreConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.certificateAuthorityCertificates:
+        e0.append(rtbfabric_json_str(x0))
+    parts.append("\"certificateAuthorityCertificates\":" + rtbfabric_json_arr(e0))
+    return rtbfabric_json_obj(parts)
+
 # A bound RTBFabric client: credentials + region, threaded into every operation.
 struct RTBFabricClient:
     core.Credentials creds
     str region
+
+    # AcceptLink  POST /gateway/{gatewayId}/link/{linkId}/accept
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def accept_link(self, AcceptLinkRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        labels["linkId"] = input.linkId
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.attributes.is_some():
+            auto u0 = input.attributes.unwrap()
+            parts.append("\"attributes\":" + link_attributes_to_json(u0))
+        parts.append("\"logSettings\":" + input.logSettings.to_json())
+        if input.timeoutInMillis.is_some():
+            auto u1 = input.timeoutInMillis.unwrap()
+            parts.append("\"timeoutInMillis\":" + str(u1))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
 
     # AssociateCertificate  POST /responder-gateway/{gatewayId}/certificate
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -1043,6 +1243,176 @@ struct RTBFabricClient:
         auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateCertificateDocument(acmCertificateArn=input.acmCertificateArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # CreateInboundExternalLink  POST /responder-gateway/{gatewayId}/inbound-external-link
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_inbound_external_link(self, CreateInboundExternalLinkRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/inbound-external-link", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        if input.attributes.is_some():
+            auto u0 = input.attributes.unwrap()
+            parts.append("\"attributes\":" + link_attributes_to_json(u0))
+        parts.append("\"logSettings\":" + input.logSettings.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(rtbfabric_json_str(k2) + ":" + rtbfabric_json_str(u1[k2]))
+            parts.append("\"tags\":" + rtbfabric_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # CreateLink  POST /gateway/{gatewayId}/create-link
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_link(self, CreateLinkRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/create-link", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"peerGatewayId\":" + rtbfabric_json_str(input.peerGatewayId))
+        if input.attributes.is_some():
+            auto u0 = input.attributes.unwrap()
+            parts.append("\"attributes\":" + link_attributes_to_json(u0))
+        if input.httpResponderAllowed.is_some():
+            auto u1 = input.httpResponderAllowed.unwrap()
+            parts.append("\"httpResponderAllowed\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(rtbfabric_json_str(k3) + ":" + rtbfabric_json_str(u2[k3]))
+            parts.append("\"tags\":" + rtbfabric_json_obj(m3))
+        parts.append("\"logSettings\":" + input.logSettings.to_json())
+        if input.timeoutInMillis.is_some():
+            auto u4 = input.timeoutInMillis.unwrap()
+            parts.append("\"timeoutInMillis\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # CreateLinkRoutingRule  POST /responder-gateway/{gatewayId}/link/{linkId}/routing-rule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_link_routing_rule(self, CreateLinkRoutingRuleRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        labels["linkId"] = input.linkId
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        parts.append("\"priority\":" + str(input.priority))
+        parts.append("\"conditions\":" + input.conditions.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(rtbfabric_json_str(k1) + ":" + rtbfabric_json_str(u0[k1]))
+            parts.append("\"tags\":" + rtbfabric_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # CreateOutboundExternalLink  POST /requester-gateway/{gatewayId}/outbound-external-link
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_outbound_external_link(self, CreateOutboundExternalLinkRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway/{gatewayId}/outbound-external-link", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        if input.attributes.is_some():
+            auto u0 = input.attributes.unwrap()
+            parts.append("\"attributes\":" + link_attributes_to_json(u0))
+        parts.append("\"publicEndpoint\":" + rtbfabric_json_str(input.publicEndpoint))
+        parts.append("\"logSettings\":" + input.logSettings.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(rtbfabric_json_str(k2) + ":" + rtbfabric_json_str(u1[k2]))
+            parts.append("\"tags\":" + rtbfabric_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # CreateRequesterGateway  POST /requester-gateway
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_requester_gateway(self, CreateRequesterGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"vpcId\":" + rtbfabric_json_str(input.vpcId))
+        list[str] e0 = []
+        for x0 in input.subnetIds:
+            e0.append(rtbfabric_json_str(x0))
+        parts.append("\"subnetIds\":" + rtbfabric_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.securityGroupIds:
+            e1.append(rtbfabric_json_str(x1))
+        parts.append("\"securityGroupIds\":" + rtbfabric_json_arr(e1))
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + rtbfabric_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(rtbfabric_json_str(k4) + ":" + rtbfabric_json_str(u3[k4]))
+            parts.append("\"tags\":" + rtbfabric_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # CreateResponderGateway  POST /responder-gateway
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_responder_gateway(self, CreateResponderGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"vpcId\":" + rtbfabric_json_str(input.vpcId))
+        list[str] e0 = []
+        for x0 in input.subnetIds:
+            e0.append(rtbfabric_json_str(x0))
+        parts.append("\"subnetIds\":" + rtbfabric_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.securityGroupIds:
+            e1.append(rtbfabric_json_str(x1))
+        parts.append("\"securityGroupIds\":" + rtbfabric_json_arr(e1))
+        if input.domainName.is_some():
+            auto u2 = input.domainName.unwrap()
+            parts.append("\"domainName\":" + rtbfabric_json_str(u2))
+        parts.append("\"port\":" + str(input.port))
+        parts.append("\"protocol\":" + input.protocol.to_json())
+        if input.listenerConfig.is_some():
+            auto u3 = input.listenerConfig.unwrap()
+            parts.append("\"listenerConfig\":" + listener_config_to_json(u3))
+        if input.trustStoreConfiguration.is_some():
+            auto u4 = input.trustStoreConfiguration.unwrap()
+            parts.append("\"trustStoreConfiguration\":" + trust_store_configuration_to_json(u4))
+        if input.managedEndpointConfiguration.is_some():
+            auto u5 = input.managedEndpointConfiguration.unwrap()
+            parts.append("\"managedEndpointConfiguration\":" + managed_endpoint_configuration_to_json(u5))
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        if input.description.is_some():
+            auto u6 = input.description.unwrap()
+            parts.append("\"description\":" + rtbfabric_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(rtbfabric_json_str(k8) + ":" + rtbfabric_json_str(u7[k8]))
+            parts.append("\"tags\":" + rtbfabric_json_obj(m8))
+        if input.gatewayType.is_some():
+            auto u9 = input.gatewayType.unwrap()
+            parts.append("\"gatewayType\":" + u9.to_json())
+        if input.clientRoutingPolicy.is_some():
+            auto u10 = input.clientRoutingPolicy.unwrap()
+            parts.append("\"clientRoutingPolicy\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
 
     # DeleteInboundExternalLink  DELETE /responder-gateway/{gatewayId}/inbound-external-link/{linkId}
@@ -1271,6 +1641,21 @@ struct RTBFabricClient:
         auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(rtbfabric_json_str(k0) + ":" + rtbfabric_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + rtbfabric_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
     # UpdateLink  PATCH /gateway/{gatewayId}/link/{linkId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_link(self, UpdateLinkRequest input) -> str:
@@ -1281,6 +1666,23 @@ struct RTBFabricClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLinkDocument(logSettings=input.logSettings, timeoutInMillis=input.timeoutInMillis)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # UpdateLinkModuleFlow  POST /gateway/{gatewayId}/link/{linkId}/module-flow
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_link_module_flow(self, UpdateLinkModuleFlowRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        labels["linkId"] = input.linkId
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/module-flow", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        list[str] e0 = []
+        for x0 in input.modules:
+            e0.append(module_configuration_to_json(x0))
+        parts.append("\"modules\":" + rtbfabric_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
 
     # UpdateLinkRoutingRule  PUT /responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}
@@ -1305,6 +1707,38 @@ struct RTBFabricClient:
         auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway/{gatewayId}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRequesterGatewayDocument(clientToken=input.clientToken, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
+
+    # UpdateResponderGateway  POST /responder-gateway/{gatewayId}/update
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_responder_gateway(self, UpdateResponderGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayId"] = input.gatewayId
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.domainName.is_some():
+            auto u0 = input.domainName.unwrap()
+            parts.append("\"domainName\":" + rtbfabric_json_str(u0))
+        parts.append("\"port\":" + str(input.port))
+        parts.append("\"protocol\":" + input.protocol.to_json())
+        if input.listenerConfig.is_some():
+            auto u1 = input.listenerConfig.unwrap()
+            parts.append("\"listenerConfig\":" + listener_config_to_json(u1))
+        if input.trustStoreConfiguration.is_some():
+            auto u2 = input.trustStoreConfiguration.unwrap()
+            parts.append("\"trustStoreConfiguration\":" + trust_store_configuration_to_json(u2))
+        if input.managedEndpointConfiguration.is_some():
+            auto u3 = input.managedEndpointConfiguration.unwrap()
+            parts.append("\"managedEndpointConfiguration\":" + managed_endpoint_configuration_to_json(u3))
+        parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + rtbfabric_json_str(u4))
+        if input.clientRoutingPolicy.is_some():
+            auto u5 = input.clientRoutingPolicy.unwrap()
+            parts.append("\"clientRoutingPolicy\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
 
     # Paginator for ListCertificateAssociations — yields each Response page, threading the

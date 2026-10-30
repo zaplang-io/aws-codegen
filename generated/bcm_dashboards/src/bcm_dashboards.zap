@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 15 operations — 9 with a generated method,
-#   6 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 15 operations — 15 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   63 structs (34 @derive(Json)), 10 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -162,8 +162,9 @@ struct AccessDeniedException:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) metrics: list[MetricName], groupBy: list[GroupDefinition], filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metrics: list[MetricName], groupBy: list[GroupDefinition], filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostAndUsageQuery:
     list[MetricName] metrics
     DateTimeRange timeRange
@@ -171,15 +172,17 @@ struct CostAndUsageQuery:
     Optional[list[GroupDefinition]] groupBy
     Optional[Expression] filter
 
-# no @derive(Json): member(s) values: list[str], matchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str], matchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategoryValues:
     Optional[str] key
     Optional[list[str]] values
     Optional[list[MatchOption]] matchOptions
 
-# no @derive(Json): member(s) widgets: list[Widget], resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) widgets: list[Widget], resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDashboardRequest:
     str name
     Optional[str] description
@@ -190,8 +193,9 @@ struct CreateDashboardRequest:
 struct CreateDashboardResponse:
     str arn
 
-# no @derive(Json): member(s) scheduledReport: ScheduledReportInput, resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledReport: ScheduledReportInput, resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScheduledReportRequest:
     ScheduledReportInput scheduledReport
     Optional[list[ResourceTag]] resourceTags
@@ -236,15 +240,17 @@ struct DeleteScheduledReportRequest:
 struct DeleteScheduledReportResponse:
     str arn
 
-# no @derive(Json): member(s) values: list[str], matchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str], matchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DimensionValues:
     Dimension key
     list[str] values
     Optional[list[MatchOption]] matchOptions
 
-# no @derive(Json): member(s) graph: dict[str, GraphDisplayConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graph: dict[str, GraphDisplayConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisplayConfig:
     Optional[dict[str, GraphDisplayConfig]] graph
     Optional[TableDisplayConfigStruct] table
@@ -255,14 +261,16 @@ struct ExecuteScheduledReportRequest:
     Optional[str] clientToken
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) healthStatus: HealthStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) healthStatus: HealthStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteScheduledReportResponse:
     Optional[HealthStatus] healthStatus
     Optional[bool] executionTriggered
 
-# no @derive(Json): member(s) or: list[Expression], and: list[Expression], not: Expression, dimensions: DimensionValues, tags: TagValues, costCategories: CostCategoryValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) or: list[Expression], and: list[Expression], not: Expression, dimensions: DimensionValues, tags: TagValues, costCategories: CostCategoryValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     # wire name "or" differs from field; derive rename is a #346 follow-up
     Optional[list[Expression]] or_
@@ -278,8 +286,9 @@ struct Expression:
 struct GetDashboardRequest:
     str arn
 
-# no @derive(Json): member(s) widgets: list[Widget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) widgets: list[Widget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDashboardResponse:
     str arn
     str name
@@ -302,8 +311,9 @@ struct GetResourcePolicyResponse:
 struct GetScheduledReportRequest:
     str arn
 
-# no @derive(Json): member(s) scheduledReport: ScheduledReport not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledReport: ScheduledReport not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScheduledReportResponse:
     ScheduledReport scheduledReport
 
@@ -316,8 +326,9 @@ struct GroupDefinition:
     str key
     Optional[GroupDefinitionType] type
 
-# no @derive(Json): member(s) statusReasons: list[StatusReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[StatusReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HealthStatus:
     HealthStatusCode statusCode
     Optional[DateTime] lastRefreshedAt
@@ -332,8 +343,9 @@ struct ListDashboardsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dashboards: list[DashboardReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dashboards: list[DashboardReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDashboardsResponse:
     list[DashboardReference] dashboards
     Optional[str] nextToken
@@ -343,8 +355,9 @@ struct ListScheduledReportsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scheduledReports: list[ScheduledReportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledReports: list[ScheduledReportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduledReportsResponse:
     list[ScheduledReportSummary] scheduledReports
     Optional[str] nextToken
@@ -353,13 +366,15 @@ struct ListScheduledReportsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[ResourceTag]] resourceTags
 
-# no @derive(Json): member(s) costAndUsage: CostAndUsageQuery, savingsPlansCoverage: SavingsPlansCoverageQuery, savingsPlansUtilization: SavingsPlansUtilizationQuery, reservationCoverage: ReservationCoverageQuery, reservationUtilization: ReservationUtilizationQuery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costAndUsage: CostAndUsageQuery, savingsPlansCoverage: SavingsPlansCoverageQuery, savingsPlansUtilization: SavingsPlansUtilizationQuery, reservationCoverage: ReservationCoverageQuery, reservationUtilization: ReservationUtilizationQuery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryParameters:
     Optional[CostAndUsageQuery] costAndUsage
     Optional[SavingsPlansCoverageQuery] savingsPlansCoverage
@@ -367,8 +382,9 @@ struct QueryParameters:
     Optional[ReservationCoverageQuery] reservationCoverage
     Optional[ReservationUtilizationQuery] reservationUtilization
 
-# no @derive(Json): member(s) groupBy: list[GroupDefinition], filter: Expression, metrics: list[MetricName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groupBy: list[GroupDefinition], filter: Expression, metrics: list[MetricName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservationCoverageQuery:
     DateTimeRange timeRange
     Optional[list[GroupDefinition]] groupBy
@@ -376,8 +392,9 @@ struct ReservationCoverageQuery:
     Optional[Expression] filter
     Optional[list[MetricName]] metrics
 
-# no @derive(Json): member(s) groupBy: list[GroupDefinition], filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groupBy: list[GroupDefinition], filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservationUtilizationQuery:
     DateTimeRange timeRange
     Optional[list[GroupDefinition]] groupBy
@@ -393,8 +410,9 @@ struct ResourceTag:
     str key
     str value
 
-# no @derive(Json): member(s) metrics: list[MetricName], groupBy: list[GroupDefinition], filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metrics: list[MetricName], groupBy: list[GroupDefinition], filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansCoverageQuery:
     DateTimeRange timeRange
     Optional[list[MetricName]] metrics
@@ -402,8 +420,9 @@ struct SavingsPlansCoverageQuery:
     Optional[list[GroupDefinition]] groupBy
     Optional[Expression] filter
 
-# no @derive(Json): member(s) filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansUtilizationQuery:
     DateTimeRange timeRange
     Optional[Granularity] granularity
@@ -421,8 +440,9 @@ struct SchedulePeriod:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) widgetIds: list[str], healthStatus: HealthStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) widgetIds: list[str], healthStatus: HealthStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledReport:
     Optional[str] arn
     str name
@@ -437,8 +457,9 @@ struct ScheduledReport:
     Optional[DateTime] lastExecutionAt
     Optional[HealthStatus] healthStatus
 
-# no @derive(Json): member(s) widgetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) widgetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledReportInput:
     str name
     str dashboardArn
@@ -448,8 +469,9 @@ struct ScheduledReportInput:
     Optional[list[str]] widgetIds
     Optional[DateTimeRange] widgetDateRangeOverride
 
-# no @derive(Json): member(s) healthStatus: HealthStatus, widgetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) healthStatus: HealthStatus, widgetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledReportSummary:
     str arn
     str name
@@ -469,8 +491,9 @@ struct TableDisplayConfigStruct:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[ResourceTag] resourceTags
@@ -480,8 +503,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) values: list[str], matchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str], matchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagValues:
     Optional[str] key
     Optional[list[str]] values
@@ -491,8 +515,9 @@ struct TagValues:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) resourceTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] resourceTagKeys
@@ -502,8 +527,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) widgets: list[Widget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) widgets: list[Widget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDashboardRequest:
     str arn
     str name
@@ -514,8 +540,9 @@ struct UpdateDashboardRequest:
 struct UpdateDashboardResponse:
     str arn
 
-# no @derive(Json): member(s) widgetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) widgetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScheduledReportRequest:
     str arn
     Optional[str] name
@@ -536,8 +563,9 @@ struct UpdateScheduledReportResponse:
 struct ValidationException:
     str message
 
-# no @derive(Json): member(s) configs: list[WidgetConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configs: list[WidgetConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Widget:
     Optional[str] id
     str title
@@ -547,8 +575,9 @@ struct Widget:
     Optional[int64] horizontalOffset
     list[WidgetConfig] configs
 
-# no @derive(Json): member(s) queryParameters: QueryParameters, displayConfig: DisplayConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queryParameters: QueryParameters, displayConfig: DisplayConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WidgetConfig:
     QueryParameters queryParameters
     DisplayConfig displayConfig
@@ -587,19 +616,428 @@ def bcm_dashboards_error_from_code(str code) -> BCM_DashboardsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDashboard (input CreateDashboardRequest)
-#   CreateScheduledReport (input CreateScheduledReportRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDashboard (input UpdateDashboardRequest)
-#   UpdateScheduledReport (input UpdateScheduledReportRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bcm_dashboards_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bcm_dashboards_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bcm_dashboards_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CostAndUsageQuery to a compact JSON object (declaration order).
+def cost_and_usage_query_to_json(CostAndUsageQuery v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.metrics:
+        e0.append(x0.to_json())
+    parts.append("\"metrics\":" + bcm_dashboards_json_arr(e0))
+    parts.append("\"timeRange\":" + v.timeRange.to_json())
+    parts.append("\"granularity\":" + v.granularity.to_json())
+    if v.groupBy.is_some():
+        auto u1 = v.groupBy.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"groupBy\":" + bcm_dashboards_json_arr(e2))
+    if v.filter.is_some():
+        auto u3 = v.filter.unwrap()
+        parts.append("\"filter\":" + expression_to_json(u3))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize CostCategoryValues to a compact JSON object (declaration order).
+def cost_category_values_to_json(CostCategoryValues v) -> str:
+    list[str] parts = []
+    if v.key.is_some():
+        auto u0 = v.key.unwrap()
+        parts.append("\"key\":" + bcm_dashboards_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bcm_dashboards_json_str(x2))
+        parts.append("\"values\":" + bcm_dashboards_json_arr(e2))
+    if v.matchOptions.is_some():
+        auto u3 = v.matchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"matchOptions\":" + bcm_dashboards_json_arr(e4))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize CreateDashboardRequest to a compact JSON object (declaration order).
+def create_dashboard_request_to_json(CreateDashboardRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bcm_dashboards_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bcm_dashboards_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.widgets:
+        e1.append(widget_to_json(x1))
+    parts.append("\"widgets\":" + bcm_dashboards_json_arr(e1))
+    if v.resourceTags.is_some():
+        auto u2 = v.resourceTags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"resourceTags\":" + bcm_dashboards_json_arr(e3))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize CreateScheduledReportRequest to a compact JSON object (declaration order).
+def create_scheduled_report_request_to_json(CreateScheduledReportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"scheduledReport\":" + scheduled_report_input_to_json(v.scheduledReport))
+    if v.resourceTags.is_some():
+        auto u0 = v.resourceTags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceTags\":" + bcm_dashboards_json_arr(e1))
+    if v.clientToken.is_some():
+        auto u2 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bcm_dashboards_json_str(u2))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize DimensionValues to a compact JSON object (declaration order).
+def dimension_values_to_json(DimensionValues v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + v.key.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_dashboards_json_str(x0))
+    parts.append("\"values\":" + bcm_dashboards_json_arr(e0))
+    if v.matchOptions.is_some():
+        auto u1 = v.matchOptions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"matchOptions\":" + bcm_dashboards_json_arr(e2))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize DisplayConfig to a compact JSON object (declaration order).
+def display_config_to_json(DisplayConfig v) -> str:
+    list[str] parts = []
+    if v.graph.is_some():
+        auto u0 = v.graph.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bcm_dashboards_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"graph\":" + bcm_dashboards_json_obj(m1))
+    if v.table.is_some():
+        auto u2 = v.table.unwrap()
+        parts.append("\"table\":" + u2.to_json())
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.or_.is_some():
+        auto u0 = v.or_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(expression_to_json(x1))
+        parts.append("\"or\":" + bcm_dashboards_json_arr(e1))
+    if v.and_.is_some():
+        auto u2 = v.and_.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(expression_to_json(x3))
+        parts.append("\"and\":" + bcm_dashboards_json_arr(e3))
+    if v.not_.is_some():
+        auto u4 = v.not_.unwrap()
+        parts.append("\"not\":" + expression_to_json(u4))
+    if v.dimensions.is_some():
+        auto u5 = v.dimensions.unwrap()
+        parts.append("\"dimensions\":" + dimension_values_to_json(u5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        parts.append("\"tags\":" + tag_values_to_json(u6))
+    if v.costCategories.is_some():
+        auto u7 = v.costCategories.unwrap()
+        parts.append("\"costCategories\":" + cost_category_values_to_json(u7))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize QueryParameters to a compact JSON object (declaration order).
+def query_parameters_to_json(QueryParameters v) -> str:
+    list[str] parts = []
+    if v.costAndUsage.is_some():
+        auto u0 = v.costAndUsage.unwrap()
+        parts.append("\"costAndUsage\":" + cost_and_usage_query_to_json(u0))
+    if v.savingsPlansCoverage.is_some():
+        auto u1 = v.savingsPlansCoverage.unwrap()
+        parts.append("\"savingsPlansCoverage\":" + savings_plans_coverage_query_to_json(u1))
+    if v.savingsPlansUtilization.is_some():
+        auto u2 = v.savingsPlansUtilization.unwrap()
+        parts.append("\"savingsPlansUtilization\":" + savings_plans_utilization_query_to_json(u2))
+    if v.reservationCoverage.is_some():
+        auto u3 = v.reservationCoverage.unwrap()
+        parts.append("\"reservationCoverage\":" + reservation_coverage_query_to_json(u3))
+    if v.reservationUtilization.is_some():
+        auto u4 = v.reservationUtilization.unwrap()
+        parts.append("\"reservationUtilization\":" + reservation_utilization_query_to_json(u4))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize ReservationCoverageQuery to a compact JSON object (declaration order).
+def reservation_coverage_query_to_json(ReservationCoverageQuery v) -> str:
+    list[str] parts = []
+    parts.append("\"timeRange\":" + v.timeRange.to_json())
+    if v.groupBy.is_some():
+        auto u0 = v.groupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"groupBy\":" + bcm_dashboards_json_arr(e1))
+    if v.granularity.is_some():
+        auto u2 = v.granularity.unwrap()
+        parts.append("\"granularity\":" + u2.to_json())
+    if v.filter.is_some():
+        auto u3 = v.filter.unwrap()
+        parts.append("\"filter\":" + expression_to_json(u3))
+    if v.metrics.is_some():
+        auto u4 = v.metrics.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"metrics\":" + bcm_dashboards_json_arr(e5))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize ReservationUtilizationQuery to a compact JSON object (declaration order).
+def reservation_utilization_query_to_json(ReservationUtilizationQuery v) -> str:
+    list[str] parts = []
+    parts.append("\"timeRange\":" + v.timeRange.to_json())
+    if v.groupBy.is_some():
+        auto u0 = v.groupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"groupBy\":" + bcm_dashboards_json_arr(e1))
+    if v.granularity.is_some():
+        auto u2 = v.granularity.unwrap()
+        parts.append("\"granularity\":" + u2.to_json())
+    if v.filter.is_some():
+        auto u3 = v.filter.unwrap()
+        parts.append("\"filter\":" + expression_to_json(u3))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize SavingsPlansCoverageQuery to a compact JSON object (declaration order).
+def savings_plans_coverage_query_to_json(SavingsPlansCoverageQuery v) -> str:
+    list[str] parts = []
+    parts.append("\"timeRange\":" + v.timeRange.to_json())
+    if v.metrics.is_some():
+        auto u0 = v.metrics.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"metrics\":" + bcm_dashboards_json_arr(e1))
+    if v.granularity.is_some():
+        auto u2 = v.granularity.unwrap()
+        parts.append("\"granularity\":" + u2.to_json())
+    if v.groupBy.is_some():
+        auto u3 = v.groupBy.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"groupBy\":" + bcm_dashboards_json_arr(e4))
+    if v.filter.is_some():
+        auto u5 = v.filter.unwrap()
+        parts.append("\"filter\":" + expression_to_json(u5))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize SavingsPlansUtilizationQuery to a compact JSON object (declaration order).
+def savings_plans_utilization_query_to_json(SavingsPlansUtilizationQuery v) -> str:
+    list[str] parts = []
+    parts.append("\"timeRange\":" + v.timeRange.to_json())
+    if v.granularity.is_some():
+        auto u0 = v.granularity.unwrap()
+        parts.append("\"granularity\":" + u0.to_json())
+    if v.filter.is_some():
+        auto u1 = v.filter.unwrap()
+        parts.append("\"filter\":" + expression_to_json(u1))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize ScheduledReportInput to a compact JSON object (declaration order).
+def scheduled_report_input_to_json(ScheduledReportInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bcm_dashboards_json_str(v.name))
+    parts.append("\"dashboardArn\":" + bcm_dashboards_json_str(v.dashboardArn))
+    parts.append("\"scheduledReportExecutionRoleArn\":" + bcm_dashboards_json_str(v.scheduledReportExecutionRoleArn))
+    parts.append("\"scheduleConfig\":" + v.scheduleConfig.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bcm_dashboards_json_str(u0))
+    if v.widgetIds.is_some():
+        auto u1 = v.widgetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bcm_dashboards_json_str(x2))
+        parts.append("\"widgetIds\":" + bcm_dashboards_json_arr(e2))
+    if v.widgetDateRangeOverride.is_some():
+        auto u3 = v.widgetDateRangeOverride.unwrap()
+        parts.append("\"widgetDateRangeOverride\":" + u3.to_json())
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + bcm_dashboards_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.resourceTags:
+        e0.append(x0.to_json())
+    parts.append("\"resourceTags\":" + bcm_dashboards_json_arr(e0))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize TagValues to a compact JSON object (declaration order).
+def tag_values_to_json(TagValues v) -> str:
+    list[str] parts = []
+    if v.key.is_some():
+        auto u0 = v.key.unwrap()
+        parts.append("\"key\":" + bcm_dashboards_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bcm_dashboards_json_str(x2))
+        parts.append("\"values\":" + bcm_dashboards_json_arr(e2))
+    if v.matchOptions.is_some():
+        auto u3 = v.matchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"matchOptions\":" + bcm_dashboards_json_arr(e4))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + bcm_dashboards_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.resourceTagKeys:
+        e0.append(bcm_dashboards_json_str(x0))
+    parts.append("\"resourceTagKeys\":" + bcm_dashboards_json_arr(e0))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize UpdateDashboardRequest to a compact JSON object (declaration order).
+def update_dashboard_request_to_json(UpdateDashboardRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + bcm_dashboards_json_str(v.arn))
+    parts.append("\"name\":" + bcm_dashboards_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bcm_dashboards_json_str(u0))
+    if v.widgets.is_some():
+        auto u1 = v.widgets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(widget_to_json(x2))
+        parts.append("\"widgets\":" + bcm_dashboards_json_arr(e2))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize UpdateScheduledReportRequest to a compact JSON object (declaration order).
+def update_scheduled_report_request_to_json(UpdateScheduledReportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + bcm_dashboards_json_str(v.arn))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + bcm_dashboards_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + bcm_dashboards_json_str(u1))
+    if v.dashboardArn.is_some():
+        auto u2 = v.dashboardArn.unwrap()
+        parts.append("\"dashboardArn\":" + bcm_dashboards_json_str(u2))
+    if v.scheduledReportExecutionRoleArn.is_some():
+        auto u3 = v.scheduledReportExecutionRoleArn.unwrap()
+        parts.append("\"scheduledReportExecutionRoleArn\":" + bcm_dashboards_json_str(u3))
+    if v.scheduleConfig.is_some():
+        auto u4 = v.scheduleConfig.unwrap()
+        parts.append("\"scheduleConfig\":" + u4.to_json())
+    if v.widgetIds.is_some():
+        auto u5 = v.widgetIds.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(bcm_dashboards_json_str(x6))
+        parts.append("\"widgetIds\":" + bcm_dashboards_json_arr(e6))
+    if v.widgetDateRangeOverride.is_some():
+        auto u7 = v.widgetDateRangeOverride.unwrap()
+        parts.append("\"widgetDateRangeOverride\":" + u7.to_json())
+    if v.clearWidgetIds.is_some():
+        auto u8 = v.clearWidgetIds.unwrap()
+        parts.append("\"clearWidgetIds\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.clearWidgetDateRangeOverride.is_some():
+        auto u9 = v.clearWidgetDateRangeOverride.unwrap()
+        parts.append("\"clearWidgetDateRangeOverride\":" + json.dumps(JsonValue.Bool(u9)))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize Widget to a compact JSON object (declaration order).
+def widget_to_json(Widget v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + bcm_dashboards_json_str(u0))
+    parts.append("\"title\":" + bcm_dashboards_json_str(v.title))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + bcm_dashboards_json_str(u1))
+    if v.width.is_some():
+        auto u2 = v.width.unwrap()
+        parts.append("\"width\":" + str(u2))
+    if v.height.is_some():
+        auto u3 = v.height.unwrap()
+        parts.append("\"height\":" + str(u3))
+    if v.horizontalOffset.is_some():
+        auto u4 = v.horizontalOffset.unwrap()
+        parts.append("\"horizontalOffset\":" + str(u4))
+    list[str] e5 = []
+    for x5 in v.configs:
+        e5.append(widget_config_to_json(x5))
+    parts.append("\"configs\":" + bcm_dashboards_json_arr(e5))
+    return bcm_dashboards_json_obj(parts)
+
+# Serialize WidgetConfig to a compact JSON object (declaration order).
+def widget_config_to_json(WidgetConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"queryParameters\":" + query_parameters_to_json(v.queryParameters))
+    parts.append("\"displayConfig\":" + display_config_to_json(v.displayConfig))
+    return bcm_dashboards_json_obj(parts)
 
 # A bound BCM_Dashboards client: credentials + region, threaded into every operation.
 struct BCM_DashboardsClient:
     core.Credentials creds
     str region
+
+    # CreateDashboard
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_dashboard(self, CreateDashboardRequest input) -> str:
+        auto body = create_dashboard_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "CreateDashboard", body)
+
+    # CreateScheduledReport
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scheduled_report(self, CreateScheduledReportRequest input) -> str:
+        auto body = create_scheduled_report_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "CreateScheduledReport", body)
 
     # DeleteDashboard
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -654,6 +1092,30 @@ struct BCM_DashboardsClient:
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # TagResource
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDashboard
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_dashboard(self, UpdateDashboardRequest input) -> str:
+        auto body = update_dashboard_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "UpdateDashboard", body)
+
+    # UpdateScheduledReport
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_scheduled_report(self, UpdateScheduledReportRequest input) -> str:
+        auto body = update_scheduled_report_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_dashboards_protocol(), self.creds, self.region, "UpdateScheduledReport", body)
 
     # Paginator for ListDashboards — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: dashboards).

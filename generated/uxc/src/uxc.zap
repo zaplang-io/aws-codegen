@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 3 operations — 2 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 3 operations — 3 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   11 structs (6 @derive(Json)), 1 enums, 4 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -67,8 +67,9 @@ struct GetAccountCustomizationsInput:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) visibleServices: list[str], visibleRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) visibleServices: list[str], visibleRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccountCustomizationsOutput:
     Optional[AccountColor] accountColor
     Optional[list[str]] visibleServices
@@ -84,8 +85,9 @@ struct ListServicesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) services: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesOutput:
     Optional[str] nextToken
     Optional[list[str]] services
@@ -101,15 +103,17 @@ struct UpdateAccountCustomizationsInput:
     Optional[list[str]] visibleServices
     Optional[list[str]] visibleRegions
 
-# no @derive(Json): member(s) visibleServices: list[str], visibleRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) visibleServices: list[str], visibleRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAccountCustomizationsOutput:
     Optional[AccountColor] accountColor
     Optional[list[str]] visibleServices
     Optional[list[str]] visibleRegions
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -145,11 +149,6 @@ def uxc_error_from_code(str code) -> uxcError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UpdateAccountCustomizations (document member `visibleServices: list[str]` is not serializable by derive)
-
 # A bound uxc client: credentials + region, threaded into every operation.
 struct uxcClient:
     core.Credentials creds
@@ -173,6 +172,30 @@ struct uxcClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         auto b = binding.HttpBinding(method="GET", path_template="/v1/services", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, uxc_service(), self.region, host)
+
+    # UpdateAccountCustomizations  PATCH /v1/account-customizations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_account_customizations(self, UpdateAccountCustomizationsInput input) -> str:
+        auto host = endpoints.regional_host(uxc_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/account-customizations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountColor.is_some():
+            auto u0 = input.accountColor.unwrap()
+            parts.append("\"accountColor\":" + u0.to_json())
+        if input.visibleServices.is_some():
+            auto u1 = input.visibleServices.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(uxc_json_str(x2))
+            parts.append("\"visibleServices\":" + uxc_json_arr(e2))
+        if input.visibleRegions.is_some():
+            auto u3 = input.visibleRegions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(uxc_json_str(x4))
+            parts.append("\"visibleRegions\":" + uxc_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, uxc_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, uxc_service(), self.region, host)
 
     # Paginator for ListServices — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: services).

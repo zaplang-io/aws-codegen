@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 32 operations — 21 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 32 operations — 31 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   87 structs (49 @derive(Json)), 5 enums, 8 error variants.
-#   8 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -105,8 +105,9 @@ struct BatchGetViewError:
 struct BatchGetViewInput:
     Optional[list[str]] ViewArns
 
-# no @derive(Json): member(s) Views: list[View], Errors: list[BatchGetViewError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Views: list[View], Errors: list[BatchGetViewError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetViewOutput:
     Optional[list[View]] Views
     Optional[list[BatchGetViewError]] Errors
@@ -149,8 +150,9 @@ struct CreateViewInput:
     Optional[SearchFilter] Filters
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateViewOutput:
     Optional[View] View
 
@@ -203,8 +205,9 @@ struct GetAccountLevelServiceConfigurationOutput:
 struct GetDefaultViewOutput:
     Optional[str] ViewArn
 
-# no @derive(Json): member(s) ReplicatingFrom: list[str], ReplicatingTo: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicatingFrom: list[str], ReplicatingTo: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIndexOutput:
     Optional[str] Arn
     Optional[IndexType] Type
@@ -220,8 +223,9 @@ struct GetIndexOutput:
 struct GetManagedViewInput:
     str ManagedViewArn
 
-# no @derive(Json): member(s) ManagedView: ManagedView not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedView: ManagedView not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedViewOutput:
     Optional[ManagedView] ManagedView
 
@@ -232,8 +236,9 @@ struct GetResourceExplorerSetupInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Regions: list[RegionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[RegionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceExplorerSetupOutput:
     Optional[list[RegionStatus]] Regions
     Optional[str] NextToken
@@ -248,8 +253,9 @@ struct GetServiceIndexOutput:
 struct GetServiceViewInput:
     str ServiceViewArn
 
-# no @derive(Json): member(s) View: ServiceView not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: ServiceView not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceViewOutput:
     ServiceView View
 
@@ -258,8 +264,9 @@ struct GetServiceViewOutput:
 struct GetViewInput:
     str ViewArn
 
-# no @derive(Json): member(s) View: View, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetViewOutput:
     Optional[View] View
     Optional[dict[str, str]] Tags
@@ -291,8 +298,9 @@ struct ListIndexesForMembersInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Indexes: list[MemberIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Indexes: list[MemberIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndexesForMembersOutput:
     Optional[list[MemberIndex]] Indexes
     Optional[str] NextToken
@@ -305,8 +313,9 @@ struct ListIndexesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Indexes: list[Index] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Indexes: list[Index] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndexesOutput:
     Optional[list[Index]] Indexes
     Optional[str] NextToken
@@ -318,8 +327,9 @@ struct ListManagedViewsInput:
     Optional[str] NextToken
     Optional[str] ServicePrincipal
 
-# no @derive(Json): member(s) ManagedViews: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedViews: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedViewsOutput:
     Optional[str] NextToken
     Optional[list[str]] ManagedViews
@@ -332,8 +342,9 @@ struct ListResourcesInput:
     Optional[str] ViewArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesOutput:
     Optional[list[Resource]] Resources
     Optional[str] NextToken
@@ -346,8 +357,9 @@ struct ListServiceIndexesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Indexes: list[Index] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Indexes: list[Index] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceIndexesOutput:
     Optional[list[Index]] Indexes
     Optional[str] NextToken
@@ -358,8 +370,9 @@ struct ListServiceViewsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceViews: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceViews: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceViewsOutput:
     Optional[str] NextToken
     Optional[list[str]] ServiceViews
@@ -370,8 +383,9 @@ struct ListStreamingAccessForServicesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) StreamingAccessForServices: list[StreamingAccessDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingAccessForServices: list[StreamingAccessDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamingAccessForServicesOutput:
     list[StreamingAccessDetails] StreamingAccessForServices
     Optional[str] NextToken
@@ -382,8 +396,9 @@ struct ListSupportedResourceTypesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResourceTypes: list[SupportedResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[SupportedResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupportedResourceTypesOutput:
     Optional[list[SupportedResourceType]] ResourceTypes
     Optional[str] NextToken
@@ -393,8 +408,9 @@ struct ListSupportedResourceTypesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] Tags
 
@@ -404,14 +420,16 @@ struct ListViewsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Views: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Views: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListViewsOutput:
     Optional[list[str]] Views
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IncludedProperties: list[IncludedProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedProperties: list[IncludedProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedView:
     Optional[str] ManagedViewArn
     Optional[str] ManagedViewName
@@ -436,15 +454,17 @@ struct OrgConfiguration:
     AWSServiceAccessStatus AWSServiceAccessStatus
     Optional[str] ServiceLinkedRole
 
-# no @derive(Json): member(s) View: ViewStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: ViewStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionStatus:
     Optional[str] Region
     Optional[IndexStatus] Index
     Optional[ViewStatus] View
 
-# no @derive(Json): member(s) Properties: list[ResourceProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[ResourceProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[str] Arn
     Optional[str] OwningAccountId
@@ -483,8 +503,9 @@ struct SearchInput:
     Optional[str] ViewArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchOutput:
     Optional[list[Resource]] Resources
     Optional[str] NextToken
@@ -503,8 +524,9 @@ struct ServiceQuotaExceededException:
     str Name
     str Value
 
-# no @derive(Json): member(s) IncludedProperties: list[IncludedProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedProperties: list[IncludedProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceView:
     str ServiceViewArn
     Optional[str] ServiceViewName
@@ -520,8 +542,9 @@ struct StreamingAccessDetails:
     @json(timestamp="iso8601")
     DateTime CreatedAt
 
-# no @derive(Json): member(s) CFNResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CFNResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportedResourceType:
     Optional[str] Service
     Optional[str] ResourceType
@@ -578,13 +601,15 @@ struct UpdateViewInput:
     Optional[list[IncludedProperty]] IncludedProperties
     Optional[SearchFilter] Filters
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateViewOutput:
     Optional[View] View
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[list[ValidationExceptionField]] FieldList
@@ -594,8 +619,9 @@ struct ValidationExceptionField:
     str Name
     str ValidationIssue
 
-# no @derive(Json): member(s) IncludedProperties: list[IncludedProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedProperties: list[IncludedProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct View:
     Optional[str] ViewArn
     Optional[str] ViewName
@@ -605,8 +631,9 @@ struct View:
     Optional[list[IncludedProperty]] IncludedProperties
     Optional[SearchFilter] Filters
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewStatus:
     Optional[OperationStatus] Status
     Optional[View] View
@@ -653,23 +680,7 @@ def resource_explorer_2_error_from_code(str code) -> Resource_Explorer_2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetView (document member `ViewArns: list[str]` is not serializable by derive)
-#   CreateIndex (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateResourceExplorerSetup (document member `RegionList: list[str]` is not serializable by derive)
-#   CreateView (document member `IncludedProperties: list[IncludedProperty]` is not serializable by derive)
-#   DeleteResourceExplorerSetup (document member `RegionList: list[str]` is not serializable by derive)
-#   ListIndexes (document member `Regions: list[str]` is not serializable by derive)
-#   ListIndexesForMembers (document member `AccountIdList: list[str]` is not serializable by derive)
-#   ListServiceIndexes (document member `Regions: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateView (document member `IncludedProperties: list[IncludedProperty]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListIndexes (operation not generated)
-#   ListIndexesForMembers (operation not generated)
-#   ListServiceIndexes (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -778,6 +789,90 @@ struct Resource_Explorer_2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
+    # BatchGetView  POST /BatchGetView
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_get_view(self, BatchGetViewInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ViewArns.is_some():
+            auto u0 = input.ViewArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_explorer_2_json_str(x1))
+            parts.append("\"ViewArns\":" + resource_explorer_2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
+    # CreateIndex  POST /CreateIndex
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_index(self, CreateIndexInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + resource_explorer_2_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(resource_explorer_2_json_str(k2) + ":" + resource_explorer_2_json_str(u1[k2]))
+            parts.append("\"Tags\":" + resource_explorer_2_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
+    # CreateResourceExplorerSetup  POST /CreateResourceExplorerSetup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_resource_explorer_setup(self, CreateResourceExplorerSetupInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateResourceExplorerSetup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.RegionList:
+            e0.append(resource_explorer_2_json_str(x0))
+        parts.append("\"RegionList\":" + resource_explorer_2_json_arr(e0))
+        if input.AggregatorRegions.is_some():
+            auto u1 = input.AggregatorRegions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_explorer_2_json_str(x2))
+            parts.append("\"AggregatorRegions\":" + resource_explorer_2_json_arr(e2))
+        parts.append("\"ViewName\":" + resource_explorer_2_json_str(input.ViewName))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
+    # CreateView  POST /CreateView
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_view(self, CreateViewInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + resource_explorer_2_json_str(u0))
+        parts.append("\"ViewName\":" + resource_explorer_2_json_str(input.ViewName))
+        if input.IncludedProperties.is_some():
+            auto u1 = input.IncludedProperties.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"IncludedProperties\":" + resource_explorer_2_json_arr(e2))
+        if input.Scope.is_some():
+            auto u3 = input.Scope.unwrap()
+            parts.append("\"Scope\":" + resource_explorer_2_json_str(u3))
+        if input.Filters.is_some():
+            auto u4 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + u4.to_json())
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(resource_explorer_2_json_str(k6) + ":" + resource_explorer_2_json_str(u5[k6]))
+            parts.append("\"Tags\":" + resource_explorer_2_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
     # DeleteIndex  POST /DeleteIndex
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_index(self, DeleteIndexInput input) -> str:
@@ -785,6 +880,24 @@ struct Resource_Explorer_2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/DeleteIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIndexDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
+    # DeleteResourceExplorerSetup  POST /DeleteResourceExplorerSetup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def delete_resource_explorer_setup(self, DeleteResourceExplorerSetupInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteResourceExplorerSetup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RegionList.is_some():
+            auto u0 = input.RegionList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_explorer_2_json_str(x1))
+            parts.append("\"RegionList\":" + resource_explorer_2_json_arr(e1))
+        if input.DeleteInAllRegions.is_some():
+            auto u2 = input.DeleteInAllRegions.unwrap()
+            parts.append("\"DeleteInAllRegions\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
     # DeleteView  POST /DeleteView
@@ -867,6 +980,49 @@ struct Resource_Explorer_2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
+    # ListIndexes  POST /ListIndexes
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_indexes(self, ListIndexesInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Type.is_some():
+            auto u0 = input.Type.unwrap()
+            parts.append("\"Type\":" + u0.to_json())
+        if input.Regions.is_some():
+            auto u1 = input.Regions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_explorer_2_json_str(x2))
+            parts.append("\"Regions\":" + resource_explorer_2_json_arr(e2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + resource_explorer_2_json_str(u4))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
+    # ListIndexesForMembers  POST /ListIndexesForMembers
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_indexes_for_members(self, ListIndexesForMembersInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexesForMembers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIdList:
+            e0.append(resource_explorer_2_json_str(x0))
+        parts.append("\"AccountIdList\":" + resource_explorer_2_json_arr(e0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + resource_explorer_2_json_str(u2))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
     # ListManagedViews  POST /ListManagedViews
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
     def list_managed_views(self, ListManagedViewsInput input) -> str:
@@ -883,6 +1039,27 @@ struct Resource_Explorer_2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/ListResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourcesDocument(Filters=input.Filters, MaxResults=input.MaxResults, ViewArn=input.ViewArn, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
+    # ListServiceIndexes  POST /ListServiceIndexes
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_service_indexes(self, ListServiceIndexesInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListServiceIndexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Regions.is_some():
+            auto u0 = input.Regions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_explorer_2_json_str(x1))
+            parts.append("\"Regions\":" + resource_explorer_2_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + resource_explorer_2_json_str(u3))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
     # ListServiceViews  POST /ListServiceViews
@@ -939,6 +1116,23 @@ struct Resource_Explorer_2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(resource_explorer_2_json_str(k1) + ":" + resource_explorer_2_json_str(u0[k1]))
+            parts.append("\"Tags\":" + resource_explorer_2_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
     # UpdateIndexType  POST /UpdateIndexType
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_index_type(self, UpdateIndexTypeInput input) -> str:
@@ -948,12 +1142,57 @@ struct Resource_Explorer_2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
+    # UpdateView  POST /UpdateView
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_view(self, UpdateViewInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ViewArn\":" + resource_explorer_2_json_str(input.ViewArn))
+        if input.IncludedProperties.is_some():
+            auto u0 = input.IncludedProperties.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"IncludedProperties\":" + resource_explorer_2_json_arr(e1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
+
     # Paginator for GetResourceExplorerSetup — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Regions).
     def paginate_get_resource_explorer_setup(self, GetResourceExplorerSetupInput input):
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
         while True:
             auto raw = self.get_resource_explorer_setup(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListIndexes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Indexes).
+    def paginate_list_indexes(self, ListIndexesInput input):
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        while True:
+            auto raw = self.list_indexes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListIndexesForMembers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Indexes).
+    def paginate_list_indexes_for_members(self, ListIndexesForMembersInput input):
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        while True:
+            auto raw = self.list_indexes_for_members(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -980,6 +1219,19 @@ struct Resource_Explorer_2Client:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
         while True:
             auto raw = self.list_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceIndexes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Indexes).
+    def paginate_list_service_indexes(self, ListServiceIndexesInput input):
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        while True:
+            auto raw = self.list_service_indexes(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

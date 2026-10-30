@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 63 operations — 53 with a generated method,
-#   10 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 63 operations — 63 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   180 structs (132 @derive(Json)), 21 enums, 50 error variants.
-#   17 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   18 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Organizations awsJson protocol: version 1.1, API id "AWSOrganizationsV20161128".
 def organizations_protocol() -> awsjson.AwsJson:
@@ -357,8 +358,9 @@ struct AWSOrganizationsNotInUseException:
 struct AcceptHandshakeRequest:
     str HandshakeId
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptHandshakeResponse:
     Optional[Handshake] Handshake
 
@@ -371,8 +373,9 @@ struct AccessDeniedForDependencyException:
     Optional[str] Message
     Optional[str] Reason
 
-# no @derive(Json): member(s) Paths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Account:
     Optional[str] Id
     Optional[str] Arn
@@ -417,8 +420,9 @@ struct AttachPolicyRequest:
 struct CancelHandshakeRequest:
     str HandshakeId
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelHandshakeResponse:
     Optional[Handshake] Handshake
 
@@ -448,8 +452,9 @@ struct ConstraintViolationException:
     Optional[str] Message
     Optional[ConstraintViolationExceptionReason] Reason
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccountRequest:
     str Email
     str AccountName
@@ -476,8 +481,9 @@ struct CreateAccountStatus:
 struct CreateAccountStatusNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGovCloudAccountRequest:
     str Email
     str AccountName
@@ -493,13 +499,15 @@ struct CreateGovCloudAccountResponse:
 struct CreateOrganizationRequest:
     Optional[OrganizationFeatureSet] FeatureSet
 
-# no @derive(Json): member(s) Organization: Organization not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Organization: Organization not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOrganizationResponse:
     Optional[Organization] Organization
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOrganizationalUnitRequest:
     str ParentId
     str Name
@@ -509,8 +517,9 @@ struct CreateOrganizationalUnitRequest:
 struct CreateOrganizationalUnitResponse:
     Optional[OrganizationalUnit] OrganizationalUnit
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicyRequest:
     str Content
     str Description
@@ -526,8 +535,9 @@ struct CreatePolicyResponse:
 struct DeclineHandshakeRequest:
     str HandshakeId
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeclineHandshakeResponse:
     Optional[Handshake] Handshake
 
@@ -565,8 +575,9 @@ struct DeregisterDelegatedAdministratorRequest:
 struct DescribeAccountRequest:
     str AccountId
 
-# no @derive(Json): member(s) Account: Account not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Account: Account not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountResponse:
     Optional[Account] Account
 
@@ -591,13 +602,15 @@ struct DescribeEffectivePolicyResponse:
 struct DescribeHandshakeRequest:
     str HandshakeId
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHandshakeResponse:
     Optional[Handshake] Handshake
 
-# no @derive(Json): member(s) Organization: Organization not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Organization: Organization not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationResponse:
     Optional[Organization] Organization
 
@@ -647,8 +660,9 @@ struct DisablePolicyTypeRequest:
     str RootId
     PolicyType PolicyType
 
-# no @derive(Json): member(s) Root: Root not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Root: Root not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisablePolicyTypeResponse:
     Optional[Root] Root
 
@@ -683,8 +697,9 @@ struct EffectivePolicy:
 struct EffectivePolicyNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ContributingPolicies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContributingPolicies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EffectivePolicyValidationError:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
@@ -700,8 +715,9 @@ struct EnableAllFeaturesRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableAllFeaturesResponse:
     Optional[Handshake] Handshake
 
@@ -710,8 +726,9 @@ struct EnablePolicyTypeRequest:
     str RootId
     PolicyType PolicyType
 
-# no @derive(Json): member(s) Root: Root not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Root: Root not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnablePolicyTypeResponse:
     Optional[Root] Root
 
@@ -724,8 +741,9 @@ struct EnabledServicePrincipal:
 struct FinalizingOrganizationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Parties: list[HandshakeParty], Resources: list[HandshakeResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parties: list[HandshakeParty], Resources: list[HandshakeResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Handshake:
     Optional[str] Id
     Optional[str] Arn
@@ -759,8 +777,9 @@ struct HandshakeParty:
     str Id
     HandshakePartyType Type
 
-# no @derive(Json): member(s) Resources: list[HandshakeResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[HandshakeResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HandshakeResource:
     Optional[str] Value
     Optional[HandshakeResourceType] Type
@@ -779,20 +798,23 @@ struct InvalidInputException:
 struct InvalidResponsibilityTransferTransitionException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteAccountToOrganizationRequest:
     HandshakeParty Target
     Optional[str] Notes
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteAccountToOrganizationResponse:
     Optional[Handshake] Handshake
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteOrganizationToTransferResponsibilityRequest:
     str Type
     HandshakeParty Target
@@ -801,8 +823,9 @@ struct InviteOrganizationToTransferResponsibilityRequest:
     str SourceName
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Handshake: Handshake not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshake: Handshake not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteOrganizationToTransferResponsibilityResponse:
     Optional[Handshake] Handshake
 
@@ -811,8 +834,9 @@ struct ListAWSServiceAccessForOrganizationRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EnabledServicePrincipals: list[EnabledServicePrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledServicePrincipals: list[EnabledServicePrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAWSServiceAccessForOrganizationResponse:
     Optional[list[EnabledServicePrincipal]] EnabledServicePrincipals
     Optional[str] NextToken
@@ -823,8 +847,9 @@ struct ListAccountsForParentRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Accounts: list[Account] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[Account] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountsForParentResponse:
     Optional[list[Account]] Accounts
     Optional[str] NextToken
@@ -834,8 +859,9 @@ struct ListAccountsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Accounts: list[Account] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[Account] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountsResponse:
     Optional[list[Account]] Accounts
     Optional[str] NextToken
@@ -846,8 +872,9 @@ struct ListAccountsWithInvalidEffectivePolicyRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Accounts: list[Account] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[Account] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountsWithInvalidEffectivePolicyResponse:
     Optional[list[Account]] Accounts
     Optional[EffectivePolicyType] PolicyType
@@ -860,21 +887,24 @@ struct ListChildrenRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Children: list[Child] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Children: list[Child] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChildrenResponse:
     Optional[list[Child]] Children
     Optional[str] NextToken
 
-# no @derive(Json): member(s) States: list[CreateAccountState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) States: list[CreateAccountState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCreateAccountStatusRequest:
     Optional[list[CreateAccountState]] States
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CreateAccountStatuses: list[CreateAccountStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreateAccountStatuses: list[CreateAccountStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCreateAccountStatusResponse:
     Optional[list[CreateAccountStatus]] CreateAccountStatuses
     Optional[str] NextToken
@@ -885,8 +915,9 @@ struct ListDelegatedAdministratorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DelegatedAdministrators: list[DelegatedAdministrator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DelegatedAdministrators: list[DelegatedAdministrator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDelegatedAdministratorsResponse:
     Optional[list[DelegatedAdministrator]] DelegatedAdministrators
     Optional[str] NextToken
@@ -897,8 +928,9 @@ struct ListDelegatedServicesForAccountRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DelegatedServices: list[DelegatedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DelegatedServices: list[DelegatedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDelegatedServicesForAccountResponse:
     Optional[list[DelegatedService]] DelegatedServices
     Optional[str] NextToken
@@ -910,8 +942,9 @@ struct ListEffectivePolicyValidationErrorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EffectivePolicyValidationErrors: list[EffectivePolicyValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EffectivePolicyValidationErrors: list[EffectivePolicyValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEffectivePolicyValidationErrorsResponse:
     Optional[str] AccountId
     Optional[EffectivePolicyType] PolicyType
@@ -926,8 +959,9 @@ struct ListHandshakesForAccountRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Handshakes: list[Handshake] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshakes: list[Handshake] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHandshakesForAccountResponse:
     Optional[list[Handshake]] Handshakes
     Optional[str] NextToken
@@ -938,8 +972,9 @@ struct ListHandshakesForOrganizationRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Handshakes: list[Handshake] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Handshakes: list[Handshake] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHandshakesForOrganizationResponse:
     Optional[list[Handshake]] Handshakes
     Optional[str] NextToken
@@ -951,8 +986,9 @@ struct ListInboundResponsibilityTransfersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResponsibilityTransfers: list[ResponsibilityTransfer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponsibilityTransfers: list[ResponsibilityTransfer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInboundResponsibilityTransfersResponse:
     Optional[list[ResponsibilityTransfer]] ResponsibilityTransfers
     Optional[str] NextToken
@@ -963,8 +999,9 @@ struct ListOrganizationalUnitsForParentRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) OrganizationalUnits: list[OrganizationalUnit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationalUnits: list[OrganizationalUnit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationalUnitsForParentResponse:
     Optional[list[OrganizationalUnit]] OrganizationalUnits
     Optional[str] NextToken
@@ -975,8 +1012,9 @@ struct ListOutboundResponsibilityTransfersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResponsibilityTransfers: list[ResponsibilityTransfer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponsibilityTransfers: list[ResponsibilityTransfer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutboundResponsibilityTransfersResponse:
     Optional[list[ResponsibilityTransfer]] ResponsibilityTransfers
     Optional[str] NextToken
@@ -987,8 +1025,9 @@ struct ListParentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Parents: list[Parent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parents: list[Parent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListParentsResponse:
     Optional[list[Parent]] Parents
     Optional[str] NextToken
@@ -1000,8 +1039,9 @@ struct ListPoliciesForTargetRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Policies: list[PolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[PolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesForTargetResponse:
     Optional[list[PolicySummary]] Policies
     Optional[str] NextToken
@@ -1012,8 +1052,9 @@ struct ListPoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Policies: list[PolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[PolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesResponse:
     Optional[list[PolicySummary]] Policies
     Optional[str] NextToken
@@ -1023,8 +1064,9 @@ struct ListRootsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Roots: list[Root] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roots: list[Root] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRootsResponse:
     Optional[list[Root]] Roots
     Optional[str] NextToken
@@ -1034,8 +1076,9 @@ struct ListTagsForResourceRequest:
     str ResourceId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -1046,8 +1089,9 @@ struct ListTargetsForPolicyRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Targets: list[PolicyTargetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[PolicyTargetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetsForPolicyResponse:
     Optional[list[PolicyTargetSummary]] Targets
     Optional[str] NextToken
@@ -1066,8 +1110,9 @@ struct MoveAccountRequest:
     str SourceParentId
     str DestinationParentId
 
-# no @derive(Json): member(s) AvailablePolicyTypes: list[PolicyTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailablePolicyTypes: list[PolicyTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Organization:
     Optional[str] Id
     Optional[str] Arn
@@ -1159,8 +1204,9 @@ struct PolicyTypeSummary:
     Optional[PolicyType] Type
     Optional[PolicyTypeStatus] Status
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutResourcePolicyRequest:
     str Content
     Optional[list[Tag]] Tags
@@ -1213,8 +1259,9 @@ struct ResponsibilityTransferAlreadyInStatusException:
 struct ResponsibilityTransferNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) PolicyTypes: list[PolicyTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyTypes: list[PolicyTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Root:
     Optional[str] Id
     Optional[str] Arn
@@ -1238,8 +1285,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceId
     list[Tag] Tags
@@ -1271,8 +1319,9 @@ struct TransferParticipant:
 struct UnsupportedAPIEndpointException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceId
     list[str] TagKeys
@@ -1469,22 +1518,183 @@ def organizations_error_from_code(str code) -> OrganizationsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAccount (input CreateAccountRequest)
-#   CreateGovCloudAccount (input CreateGovCloudAccountRequest)
-#   CreateOrganizationalUnit (input CreateOrganizationalUnitRequest)
-#   CreatePolicy (input CreatePolicyRequest)
-#   InviteAccountToOrganization (input InviteAccountToOrganizationRequest)
-#   InviteOrganizationToTransferResponsibility (input InviteOrganizationToTransferResponsibilityRequest)
-#   ListCreateAccountStatus (input ListCreateAccountStatusRequest)
-#   PutResourcePolicy (input PutResourcePolicyRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def organizations_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListCreateAccountStatus (input not derivable (no generated method))
+def organizations_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def organizations_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateAccountRequest to a compact JSON object (declaration order).
+def create_account_request_to_json(CreateAccountRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Email\":" + organizations_json_str(v.Email))
+    parts.append("\"AccountName\":" + organizations_json_str(v.AccountName))
+    if v.RoleName.is_some():
+        auto u0 = v.RoleName.unwrap()
+        parts.append("\"RoleName\":" + organizations_json_str(u0))
+    if v.IamUserAccessToBilling.is_some():
+        auto u1 = v.IamUserAccessToBilling.unwrap()
+        parts.append("\"IamUserAccessToBilling\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e3))
+    return organizations_json_obj(parts)
+
+# Serialize CreateGovCloudAccountRequest to a compact JSON object (declaration order).
+def create_gov_cloud_account_request_to_json(CreateGovCloudAccountRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Email\":" + organizations_json_str(v.Email))
+    parts.append("\"AccountName\":" + organizations_json_str(v.AccountName))
+    if v.RoleName.is_some():
+        auto u0 = v.RoleName.unwrap()
+        parts.append("\"RoleName\":" + organizations_json_str(u0))
+    if v.IamUserAccessToBilling.is_some():
+        auto u1 = v.IamUserAccessToBilling.unwrap()
+        parts.append("\"IamUserAccessToBilling\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e3))
+    return organizations_json_obj(parts)
+
+# Serialize CreateOrganizationalUnitRequest to a compact JSON object (declaration order).
+def create_organizational_unit_request_to_json(CreateOrganizationalUnitRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ParentId\":" + organizations_json_str(v.ParentId))
+    parts.append("\"Name\":" + organizations_json_str(v.Name))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e1))
+    return organizations_json_obj(parts)
+
+# Serialize CreatePolicyRequest to a compact JSON object (declaration order).
+def create_policy_request_to_json(CreatePolicyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Content\":" + organizations_json_str(v.Content))
+    parts.append("\"Description\":" + organizations_json_str(v.Description))
+    parts.append("\"Name\":" + organizations_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e1))
+    return organizations_json_obj(parts)
+
+# Serialize InviteAccountToOrganizationRequest to a compact JSON object (declaration order).
+def invite_account_to_organization_request_to_json(InviteAccountToOrganizationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Target\":" + v.Target.to_json())
+    if v.Notes.is_some():
+        auto u0 = v.Notes.unwrap()
+        parts.append("\"Notes\":" + organizations_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e2))
+    return organizations_json_obj(parts)
+
+# Serialize InviteOrganizationToTransferResponsibilityRequest to a compact JSON object (declaration order).
+def invite_organization_to_transfer_responsibility_request_to_json(InviteOrganizationToTransferResponsibilityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + organizations_json_str(v.Type))
+    parts.append("\"Target\":" + v.Target.to_json())
+    if v.Notes.is_some():
+        auto u0 = v.Notes.unwrap()
+        parts.append("\"Notes\":" + organizations_json_str(u0))
+    parts.append("\"StartTimestamp\":" + str(datetime.to_timestamp(v.StartTimestamp)))
+    parts.append("\"SourceName\":" + organizations_json_str(v.SourceName))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e2))
+    return organizations_json_obj(parts)
+
+# Serialize ListCreateAccountStatusRequest to a compact JSON object (declaration order).
+def list_create_account_status_request_to_json(ListCreateAccountStatusRequest v) -> str:
+    list[str] parts = []
+    if v.States.is_some():
+        auto u0 = v.States.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"States\":" + organizations_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + organizations_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return organizations_json_obj(parts)
+
+# Serialize PutResourcePolicyRequest to a compact JSON object (declaration order).
+def put_resource_policy_request_to_json(PutResourcePolicyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Content\":" + organizations_json_str(v.Content))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + organizations_json_arr(e1))
+    return organizations_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + organizations_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + organizations_json_arr(e0))
+    return organizations_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + organizations_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(organizations_json_str(x0))
+    parts.append("\"TagKeys\":" + organizations_json_arr(e0))
+    return organizations_json_obj(parts)
 
 # A bound Organizations client: credentials + region, threaded into every operation.
 struct OrganizationsClient:
@@ -1515,11 +1725,35 @@ struct OrganizationsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "CloseAccount", body)
 
+    # CreateAccount
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, FinalizingOrganizationException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
+    def create_account(self, CreateAccountRequest input) -> str:
+        auto body = create_account_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "CreateAccount", body)
+
+    # CreateGovCloudAccount
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, FinalizingOrganizationException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
+    def create_gov_cloud_account(self, CreateGovCloudAccountRequest input) -> str:
+        auto body = create_gov_cloud_account_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "CreateGovCloudAccount", body)
+
     # CreateOrganization
     # errors: AccessDeniedException, AccessDeniedForDependencyException, AlreadyInOrganizationException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, ServiceException, TooManyRequestsException
     def create_organization(self, CreateOrganizationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "CreateOrganization", body)
+
+    # CreateOrganizationalUnit
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, DuplicateOrganizationalUnitException, InvalidInputException, ParentNotFoundException, ServiceException, TooManyRequestsException
+    def create_organizational_unit(self, CreateOrganizationalUnitRequest input) -> str:
+        auto body = create_organizational_unit_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "CreateOrganizationalUnit", body)
+
+    # CreatePolicy
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, DuplicatePolicyException, InvalidInputException, MalformedPolicyDocumentException, PolicyTypeNotAvailableForOrganizationException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
+    def create_policy(self, CreatePolicyRequest input) -> str:
+        auto body = create_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "CreatePolicy", body)
 
     # DeclineHandshake
     # errors: AccessDeniedException, ConcurrentModificationException, HandshakeAlreadyInStateException, HandshakeNotFoundException, InvalidHandshakeTransitionException, InvalidInputException, ServiceException, TooManyRequestsException
@@ -1647,6 +1881,18 @@ struct OrganizationsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "EnablePolicyType", body)
 
+    # InviteAccountToOrganization
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, AccountOwnerNotVerifiedException, ConcurrentModificationException, ConstraintViolationException, DuplicateHandshakeException, FinalizingOrganizationException, HandshakeConstraintViolationException, InvalidInputException, ServiceException, TooManyRequestsException
+    def invite_account_to_organization(self, InviteAccountToOrganizationRequest input) -> str:
+        auto body = invite_account_to_organization_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "InviteAccountToOrganization", body)
+
+    # InviteOrganizationToTransferResponsibility
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, DuplicateHandshakeException, HandshakeConstraintViolationException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
+    def invite_organization_to_transfer_responsibility(self, InviteOrganizationToTransferResponsibilityRequest input) -> str:
+        auto body = invite_organization_to_transfer_responsibility_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "InviteOrganizationToTransferResponsibility", body)
+
     # LeaveOrganization
     # errors: AWSOrganizationsNotInUseException, AccessDeniedException, AccountNotFoundException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, MasterCannotLeaveOrganizationException, ServiceException, TooManyRequestsException
     def leave_organization(self) -> str:
@@ -1682,6 +1928,12 @@ struct OrganizationsClient:
     def list_children(self, ListChildrenRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "ListChildren", body)
+
+    # ListCreateAccountStatus
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
+    def list_create_account_status(self, ListCreateAccountStatusRequest input) -> str:
+        auto body = list_create_account_status_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "ListCreateAccountStatus", body)
 
     # ListDelegatedAdministrators
     # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConstraintViolationException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
@@ -1773,6 +2025,12 @@ struct OrganizationsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "MoveAccount", body)
 
+    # PutResourcePolicy
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
+    def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
+        auto body = put_resource_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+
     # RegisterDelegatedAdministrator
     # errors: AWSOrganizationsNotInUseException, AccessDeniedException, AccountAlreadyRegisteredException, AccountNotFoundException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
     def register_delegated_administrator(self, RegisterDelegatedAdministratorRequest input) -> str:
@@ -1785,11 +2043,23 @@ struct OrganizationsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "RemoveAccountFromOrganization", body)
 
+    # TagResource
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, ServiceException, TargetNotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "TagResource", body)
+
     # TerminateResponsibilityTransfer
     # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, InvalidResponsibilityTransferTransitionException, ResponsibilityTransferAlreadyInStatusException, ResponsibilityTransferNotFoundException, ServiceException, TooManyRequestsException, UnsupportedAPIEndpointException
     def terminate_responsibility_transfer(self, TerminateResponsibilityTransferRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "TerminateResponsibilityTransfer", body)
+
+    # UntagResource
+    # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, ConstraintViolationException, InvalidInputException, ServiceException, TargetNotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateOrganizationalUnit
     # errors: AWSOrganizationsNotInUseException, AccessDeniedException, ConcurrentModificationException, DuplicateOrganizationalUnitException, InvalidInputException, OrganizationalUnitNotFoundException, ServiceException, TooManyRequestsException
@@ -1872,6 +2142,20 @@ struct OrganizationsClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "ListChildren", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCreateAccountStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CreateAccountStatuses).
+    def paginate_list_create_account_status(self, ListCreateAccountStatusRequest input):
+        auto host = endpoints.regional_host(organizations_protocol().service, self.region)
+        while True:
+            auto body = list_create_account_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(organizations_protocol(), self.creds, self.region, "ListCreateAccountStatus", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

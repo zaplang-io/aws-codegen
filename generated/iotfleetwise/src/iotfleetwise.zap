@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 57 operations — 37 with a generated method,
-#   20 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 57 operations — 57 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   196 structs (137 @derive(Json)), 30 enums, 10 error variants.
-#   13 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,8 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
+import datetime
 
 # The IoTFleetWise awsJson protocol: version 1.0, API id "IoTAutobahnControlPlane".
 def iotfleetwise_protocol() -> awsjson.AwsJson:
@@ -338,8 +340,9 @@ enum VehicleState:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Actuator:
     str fullyQualifiedName
     NodeDataType dataType
@@ -363,8 +366,9 @@ struct AssociateVehicleFleetResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Attribute:
     str fullyQualifiedName
     NodeDataType dataType
@@ -378,24 +382,28 @@ struct Attribute:
     Optional[str] deprecationMessage
     Optional[str] comment
 
-# no @derive(Json): member(s) vehicles: list[CreateVehicleRequestItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vehicles: list[CreateVehicleRequestItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateVehicleRequest:
     list[CreateVehicleRequestItem] vehicles
 
-# no @derive(Json): member(s) vehicles: list[CreateVehicleResponseItem], errors: list[CreateVehicleError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vehicles: list[CreateVehicleResponseItem], errors: list[CreateVehicleError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateVehicleResponse:
     Optional[list[CreateVehicleResponseItem]] vehicles
     Optional[list[CreateVehicleError]] errors
 
-# no @derive(Json): member(s) vehicles: list[UpdateVehicleRequestItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vehicles: list[UpdateVehicleRequestItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateVehicleRequest:
     list[UpdateVehicleRequestItem] vehicles
 
-# no @derive(Json): member(s) vehicles: list[UpdateVehicleResponseItem], errors: list[UpdateVehicleError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vehicles: list[UpdateVehicleResponseItem], errors: list[UpdateVehicleError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateVehicleResponse:
     Optional[list[UpdateVehicleResponseItem]] vehicles
     Optional[list[UpdateVehicleError]] errors
@@ -418,8 +426,9 @@ struct CampaignSummary:
     DateTime creationTime
     DateTime lastModificationTime
 
-# no @derive(Json): member(s) canDbcFiles: list[bytes], signalsMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) canDbcFiles: list[bytes], signalsMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CanDbcDefinition:
     str networkInterface
     list[bytes] canDbcFiles
@@ -471,8 +480,9 @@ struct ConflictException:
     str resource
     str resourceType
 
-# no @derive(Json): member(s) signalsToCollect: list[SignalInformation], dataExtraDimensions: list[str], tags: list[Tag], dataDestinationConfigs: list[DataDestinationConfig], dataPartitions: list[DataPartition], signalsToFetch: list[SignalFetchInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signalsToCollect: list[SignalInformation], dataExtraDimensions: list[str], tags: list[Tag], dataDestinationConfigs: list[DataDestinationConfig], dataPartitions: list[DataPartition], signalsToFetch: list[SignalFetchInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCampaignRequest:
     str name
     Optional[str] description
@@ -498,8 +508,9 @@ struct CreateCampaignResponse:
     Optional[str] name
     Optional[str] arn
 
-# no @derive(Json): member(s) signalDecoders: list[SignalDecoder], networkInterfaces: list[NetworkInterface], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signalDecoders: list[SignalDecoder], networkInterfaces: list[NetworkInterface], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDecoderManifestRequest:
     str name
     Optional[str] description
@@ -514,8 +525,9 @@ struct CreateDecoderManifestResponse:
     str name
     str arn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFleetRequest:
     str fleetId
     Optional[str] description
@@ -527,8 +539,9 @@ struct CreateFleetResponse:
     str id
     str arn
 
-# no @derive(Json): member(s) nodes: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodes: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelManifestRequest:
     str name
     Optional[str] description
@@ -541,8 +554,9 @@ struct CreateModelManifestResponse:
     str name
     str arn
 
-# no @derive(Json): member(s) nodes: list[Node], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodes: list[Node], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSignalCatalogRequest:
     str name
     Optional[str] description
@@ -554,8 +568,9 @@ struct CreateSignalCatalogResponse:
     str name
     str arn
 
-# no @derive(Json): member(s) stateTemplateProperties: list[str], dataExtraDimensions: list[str], metadataExtraDimensions: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateTemplateProperties: list[str], dataExtraDimensions: list[str], metadataExtraDimensions: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStateTemplateRequest:
     str name
     Optional[str] description
@@ -577,8 +592,9 @@ struct CreateVehicleError:
     Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) attributes: dict[str, str], tags: list[Tag], stateTemplates: list[StateTemplateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], tags: list[Tag], stateTemplates: list[StateTemplateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVehicleRequest:
     str vehicleName
     str modelManifestArn
@@ -588,8 +604,9 @@ struct CreateVehicleRequest:
     Optional[list[Tag]] tags
     Optional[list[StateTemplateAssociation]] stateTemplates
 
-# no @derive(Json): member(s) attributes: dict[str, str], tags: list[Tag], stateTemplates: list[StateTemplateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], tags: list[Tag], stateTemplates: list[StateTemplateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVehicleRequestItem:
     str vehicleName
     str modelManifestArn
@@ -670,8 +687,9 @@ struct DecoderManifestSummary:
     DateTime lastModificationTime
     Optional[str] message
 
-# no @derive(Json): member(s) invalidSignals: list[InvalidSignalDecoder], invalidNetworkInterfaces: list[InvalidNetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invalidSignals: list[InvalidSignalDecoder], invalidNetworkInterfaces: list[InvalidNetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecoderManifestValidationException:
     Optional[list[InvalidSignalDecoder]] invalidSignals
     Optional[list[InvalidNetworkInterface]] invalidNetworkInterfaces
@@ -768,8 +786,9 @@ struct FormattedVss:
 struct GetCampaignRequest:
     str name
 
-# no @derive(Json): member(s) signalsToCollect: list[SignalInformation], dataExtraDimensions: list[str], dataDestinationConfigs: list[DataDestinationConfig], dataPartitions: list[DataPartition], signalsToFetch: list[SignalFetchInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signalsToCollect: list[SignalInformation], dataExtraDimensions: list[str], dataDestinationConfigs: list[DataDestinationConfig], dataPartitions: list[DataPartition], signalsToFetch: list[SignalFetchInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignResponse:
     Optional[str] name
     Optional[str] arn
@@ -889,8 +908,9 @@ struct GetSignalCatalogResponse:
 struct GetStateTemplateRequest:
     str identifier
 
-# no @derive(Json): member(s) stateTemplateProperties: list[str], dataExtraDimensions: list[str], metadataExtraDimensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateTemplateProperties: list[str], dataExtraDimensions: list[str], metadataExtraDimensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStateTemplateResponse:
     Optional[str] name
     Optional[str] arn
@@ -907,8 +927,9 @@ struct GetStateTemplateResponse:
 struct GetVehicleRequest:
     str vehicleName
 
-# no @derive(Json): member(s) attributes: dict[str, str], stateTemplates: list[StateTemplateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], stateTemplates: list[StateTemplateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVehicleResponse:
     Optional[str] vehicleName
     Optional[str] arn
@@ -925,8 +946,9 @@ struct GetVehicleStatusRequest:
     Optional[int64] maxResults
     str vehicleName
 
-# no @derive(Json): member(s) campaigns: list[VehicleStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaigns: list[VehicleStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVehicleStatusResponse:
     Optional[list[VehicleStatus]] campaigns
     Optional[str] nextToken
@@ -941,8 +963,9 @@ struct IamRegistrationResponse:
 struct IamResources:
     str roleArn
 
-# no @derive(Json): member(s) networkFileDefinitions: list[NetworkFileDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkFileDefinitions: list[NetworkFileDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportDecoderManifestRequest:
     str name
     list[NetworkFileDefinition] networkFileDefinitions
@@ -952,8 +975,9 @@ struct ImportDecoderManifestResponse:
     str name
     str arn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportSignalCatalogRequest:
     str name
     Optional[str] description
@@ -975,8 +999,9 @@ struct InvalidNetworkInterface:
     Optional[str] interfaceId
     Optional[NetworkInterfaceFailureReason] reason
 
-# no @derive(Json): member(s) invalidNodes: list[Node] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invalidNodes: list[Node] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidNodeException:
     Optional[list[Node]] invalidNodes
     Optional[str] reason
@@ -993,8 +1018,9 @@ struct InvalidSignalDecoder:
     Optional[SignalDecoderFailureReason] reason
     Optional[str] hint
 
-# no @derive(Json): member(s) invalidSignals: list[InvalidSignal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invalidSignals: list[InvalidSignal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidSignalsException:
     Optional[str] message
     Optional[list[InvalidSignal]] invalidSignals
@@ -1012,8 +1038,9 @@ struct ListCampaignsRequest:
     Optional[str] status
     Optional[str] listResponseScope
 
-# no @derive(Json): member(s) campaignSummaries: list[CampaignSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignSummaries: list[CampaignSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCampaignsResponse:
     Optional[list[CampaignSummary]] campaignSummaries
     Optional[str] nextToken
@@ -1024,8 +1051,9 @@ struct ListDecoderManifestNetworkInterfacesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDecoderManifestNetworkInterfacesResponse:
     Optional[list[NetworkInterface]] networkInterfaces
     Optional[str] nextToken
@@ -1036,8 +1064,9 @@ struct ListDecoderManifestSignalsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) signalDecoders: list[SignalDecoder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signalDecoders: list[SignalDecoder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDecoderManifestSignalsResponse:
     Optional[list[SignalDecoder]] signalDecoders
     Optional[str] nextToken
@@ -1049,8 +1078,9 @@ struct ListDecoderManifestsRequest:
     Optional[int64] maxResults
     Optional[str] listResponseScope
 
-# no @derive(Json): member(s) summaries: list[DecoderManifestSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[DecoderManifestSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDecoderManifestsResponse:
     Optional[list[DecoderManifestSummary]] summaries
     Optional[str] nextToken
@@ -1061,8 +1091,9 @@ struct ListFleetsForVehicleRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) fleets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFleetsForVehicleResponse:
     Optional[list[str]] fleets
     Optional[str] nextToken
@@ -1073,8 +1104,9 @@ struct ListFleetsRequest:
     Optional[int64] maxResults
     Optional[str] listResponseScope
 
-# no @derive(Json): member(s) fleetSummaries: list[FleetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleetSummaries: list[FleetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFleetsResponse:
     Optional[list[FleetSummary]] fleetSummaries
     Optional[str] nextToken
@@ -1085,8 +1117,9 @@ struct ListModelManifestNodesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) nodes: list[Node] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodes: list[Node] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelManifestNodesResponse:
     Optional[list[Node]] nodes
     Optional[str] nextToken
@@ -1098,8 +1131,9 @@ struct ListModelManifestsRequest:
     Optional[int64] maxResults
     Optional[str] listResponseScope
 
-# no @derive(Json): member(s) summaries: list[ModelManifestSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[ModelManifestSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelManifestsResponse:
     Optional[list[ModelManifestSummary]] summaries
     Optional[str] nextToken
@@ -1111,8 +1145,9 @@ struct ListSignalCatalogNodesRequest:
     Optional[int64] maxResults
     Optional[SignalNodeType] signalNodeType
 
-# no @derive(Json): member(s) nodes: list[Node] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodes: list[Node] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSignalCatalogNodesResponse:
     Optional[list[Node]] nodes
     Optional[str] nextToken
@@ -1122,8 +1157,9 @@ struct ListSignalCatalogsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[SignalCatalogSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[SignalCatalogSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSignalCatalogsResponse:
     Optional[list[SignalCatalogSummary]] summaries
     Optional[str] nextToken
@@ -1134,8 +1170,9 @@ struct ListStateTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] listResponseScope
 
-# no @derive(Json): member(s) summaries: list[StateTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[StateTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStateTemplatesResponse:
     Optional[list[StateTemplateSummary]] summaries
     Optional[str] nextToken
@@ -1144,8 +1181,9 @@ struct ListStateTemplatesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1155,14 +1193,16 @@ struct ListVehiclesInFleetRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) vehicles: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vehicles: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVehiclesInFleetResponse:
     Optional[list[str]] vehicles
     Optional[str] nextToken
 
-# no @derive(Json): member(s) attributeNames: list[str], attributeValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributeNames: list[str], attributeValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVehiclesRequest:
     Optional[str] modelManifestArn
     Optional[list[str]] attributeNames
@@ -1171,14 +1211,16 @@ struct ListVehiclesRequest:
     Optional[int64] maxResults
     Optional[str] listResponseScope
 
-# no @derive(Json): member(s) vehicleSummaries: list[VehicleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vehicleSummaries: list[VehicleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVehiclesResponse:
     Optional[list[VehicleSummary]] vehicleSummaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) structuredMessage: StructuredMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) structuredMessage: StructuredMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageSignal:
     str topicName
     StructuredMessage structuredMessage
@@ -1198,8 +1240,9 @@ struct MqttTopicConfig:
     str mqttTopicArn
     str executionRoleArn
 
-# no @derive(Json): member(s) canDbc: CanDbcDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) canDbc: CanDbcDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkFileDefinition:
     Optional[CanDbcDefinition] canDbc
 
@@ -1212,8 +1255,9 @@ struct NetworkInterface:
     Optional[VehicleMiddleware] vehicleMiddleware
     Optional[CustomDecodingInterface] customDecodingInterface
 
-# no @derive(Json): member(s) sensor: Sensor, actuator: Actuator, attribute: Attribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensor: Sensor, actuator: Actuator, attribute: Attribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Node:
     Optional[Branch] branch
     Optional[Sensor] sensor
@@ -1323,8 +1367,9 @@ struct S3Config:
     Optional[StorageCompressionFormat] storageCompressionFormat
     Optional[str] prefix
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Sensor:
     str fullyQualifiedName
     NodeDataType dataType
@@ -1344,8 +1389,9 @@ struct SignalCatalogSummary:
     Optional[DateTime] creationTime
     Optional[DateTime] lastModificationTime
 
-# no @derive(Json): member(s) messageSignal: MessageSignal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageSignal: MessageSignal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignalDecoder:
     str fullyQualifiedName
     SignalDecoderType type
@@ -1360,8 +1406,9 @@ struct SignalFetchConfig:
     Optional[TimeBasedSignalFetchConfig] timeBased
     Optional[ConditionBasedSignalFetchConfig] conditionBased
 
-# no @derive(Json): member(s) actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignalFetchInformation:
     str fullyQualifiedName
     SignalFetchConfig signalFetchConfig
@@ -1405,21 +1452,24 @@ struct StorageMinimumTimeToLive:
     StorageMinimumTimeToLiveUnit unit
     int64 value
 
-# no @derive(Json): member(s) structuredMessageListDefinition: StructuredMessageListDefinition, structuredMessageDefinition: list[StructuredMessageFieldNameAndDataTypePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) structuredMessageListDefinition: StructuredMessageListDefinition, structuredMessageDefinition: list[StructuredMessageFieldNameAndDataTypePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StructuredMessage:
     Optional[PrimitiveMessageDefinition] primitiveMessageDefinition
     Optional[StructuredMessageListDefinition] structuredMessageListDefinition
     Optional[list[StructuredMessageFieldNameAndDataTypePair]] structuredMessageDefinition
 
-# no @derive(Json): member(s) dataType: StructuredMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataType: StructuredMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StructuredMessageFieldNameAndDataTypePair:
     str fieldName
     StructuredMessage dataType
 
-# no @derive(Json): member(s) memberType: StructuredMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberType: StructuredMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StructuredMessageListDefinition:
     str name
     StructuredMessage memberType
@@ -1431,8 +1481,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -1481,8 +1532,9 @@ struct TimestreamResources:
     str timestreamDatabaseName
     str timestreamTableName
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -1492,8 +1544,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) dataExtraDimensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataExtraDimensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCampaignRequest:
     str name
     Optional[str] description
@@ -1506,8 +1559,9 @@ struct UpdateCampaignResponse:
     Optional[str] name
     Optional[CampaignStatus] status
 
-# no @derive(Json): member(s) signalDecodersToAdd: list[SignalDecoder], signalDecodersToUpdate: list[SignalDecoder], signalDecodersToRemove: list[str], networkInterfacesToAdd: list[NetworkInterface], networkInterfacesToUpdate: list[NetworkInterface], networkInterfacesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signalDecodersToAdd: list[SignalDecoder], signalDecodersToUpdate: list[SignalDecoder], signalDecodersToRemove: list[str], networkInterfacesToAdd: list[NetworkInterface], networkInterfacesToUpdate: list[NetworkInterface], networkInterfacesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDecoderManifestRequest:
     str name
     Optional[str] description
@@ -1535,8 +1589,9 @@ struct UpdateFleetResponse:
     Optional[str] id
     Optional[str] arn
 
-# no @derive(Json): member(s) nodesToAdd: list[str], nodesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodesToAdd: list[str], nodesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateModelManifestRequest:
     str name
     Optional[str] description
@@ -1549,8 +1604,9 @@ struct UpdateModelManifestResponse:
     str name
     str arn
 
-# no @derive(Json): member(s) nodesToAdd: list[Node], nodesToUpdate: list[Node], nodesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodesToAdd: list[Node], nodesToUpdate: list[Node], nodesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSignalCatalogRequest:
     str name
     Optional[str] description
@@ -1563,8 +1619,9 @@ struct UpdateSignalCatalogResponse:
     str name
     str arn
 
-# no @derive(Json): member(s) stateTemplatePropertiesToAdd: list[str], stateTemplatePropertiesToRemove: list[str], dataExtraDimensions: list[str], metadataExtraDimensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateTemplatePropertiesToAdd: list[str], stateTemplatePropertiesToRemove: list[str], dataExtraDimensions: list[str], metadataExtraDimensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStateTemplateRequest:
     str identifier
     Optional[str] description
@@ -1585,8 +1642,9 @@ struct UpdateVehicleError:
     Optional[int64] code
     Optional[str] message
 
-# no @derive(Json): member(s) attributes: dict[str, str], stateTemplatesToAdd: list[StateTemplateAssociation], stateTemplatesToRemove: list[str], stateTemplatesToUpdate: list[StateTemplateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], stateTemplatesToAdd: list[StateTemplateAssociation], stateTemplatesToRemove: list[str], stateTemplatesToUpdate: list[StateTemplateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVehicleRequest:
     str vehicleName
     Optional[str] modelManifestArn
@@ -1597,8 +1655,9 @@ struct UpdateVehicleRequest:
     Optional[list[str]] stateTemplatesToRemove
     Optional[list[StateTemplateAssociation]] stateTemplatesToUpdate
 
-# no @derive(Json): member(s) attributes: dict[str, str], stateTemplatesToAdd: list[StateTemplateAssociation], stateTemplatesToRemove: list[str], stateTemplatesToUpdate: list[StateTemplateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], stateTemplatesToAdd: list[StateTemplateAssociation], stateTemplatesToRemove: list[str], stateTemplatesToUpdate: list[StateTemplateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVehicleRequestItem:
     str vehicleName
     Optional[str] modelManifestArn
@@ -1619,8 +1678,9 @@ struct UpdateVehicleResponseItem:
     Optional[str] vehicleName
     Optional[str] arn
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -1642,8 +1702,9 @@ struct VehicleStatus:
     Optional[str] vehicleName
     Optional[VehicleState] status
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VehicleSummary:
     str vehicleName
     str arn
@@ -1696,32 +1757,837 @@ def iotfleetwise_error_from_code(str code) -> IoTFleetWiseError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchCreateVehicle (input BatchCreateVehicleRequest)
-#   BatchUpdateVehicle (input BatchUpdateVehicleRequest)
-#   CreateCampaign (input CreateCampaignRequest)
-#   CreateDecoderManifest (input CreateDecoderManifestRequest)
-#   CreateFleet (input CreateFleetRequest)
-#   CreateModelManifest (input CreateModelManifestRequest)
-#   CreateSignalCatalog (input CreateSignalCatalogRequest)
-#   CreateStateTemplate (input CreateStateTemplateRequest)
-#   CreateVehicle (input CreateVehicleRequest)
-#   ImportDecoderManifest (input ImportDecoderManifestRequest)
-#   ImportSignalCatalog (input ImportSignalCatalogRequest)
-#   ListVehicles (input ListVehiclesRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCampaign (input UpdateCampaignRequest)
-#   UpdateDecoderManifest (input UpdateDecoderManifestRequest)
-#   UpdateModelManifest (input UpdateModelManifestRequest)
-#   UpdateSignalCatalog (input UpdateSignalCatalogRequest)
-#   UpdateStateTemplate (input UpdateStateTemplateRequest)
-#   UpdateVehicle (input UpdateVehicleRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def iotfleetwise_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListVehicles (input not derivable (no generated method))
+def iotfleetwise_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def iotfleetwise_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Actuator to a compact JSON object (declaration order).
+def actuator_to_json(Actuator v) -> str:
+    list[str] parts = []
+    parts.append("\"fullyQualifiedName\":" + iotfleetwise_json_str(v.fullyQualifiedName))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.unit.is_some():
+        auto u1 = v.unit.unwrap()
+        parts.append("\"unit\":" + iotfleetwise_json_str(u1))
+    if v.allowedValues.is_some():
+        auto u2 = v.allowedValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(iotfleetwise_json_str(x3))
+        parts.append("\"allowedValues\":" + iotfleetwise_json_arr(e3))
+    if v.min.is_some():
+        auto u4 = v.min.unwrap()
+        parts.append("\"min\":" + str(u4))
+    if v.max.is_some():
+        auto u5 = v.max.unwrap()
+        parts.append("\"max\":" + str(u5))
+    if v.assignedValue.is_some():
+        auto u6 = v.assignedValue.unwrap()
+        parts.append("\"assignedValue\":" + iotfleetwise_json_str(u6))
+    if v.deprecationMessage.is_some():
+        auto u7 = v.deprecationMessage.unwrap()
+        parts.append("\"deprecationMessage\":" + iotfleetwise_json_str(u7))
+    if v.comment.is_some():
+        auto u8 = v.comment.unwrap()
+        parts.append("\"comment\":" + iotfleetwise_json_str(u8))
+    if v.structFullyQualifiedName.is_some():
+        auto u9 = v.structFullyQualifiedName.unwrap()
+        parts.append("\"structFullyQualifiedName\":" + iotfleetwise_json_str(u9))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize Attribute to a compact JSON object (declaration order).
+def attribute_to_json(Attribute v) -> str:
+    list[str] parts = []
+    parts.append("\"fullyQualifiedName\":" + iotfleetwise_json_str(v.fullyQualifiedName))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.unit.is_some():
+        auto u1 = v.unit.unwrap()
+        parts.append("\"unit\":" + iotfleetwise_json_str(u1))
+    if v.allowedValues.is_some():
+        auto u2 = v.allowedValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(iotfleetwise_json_str(x3))
+        parts.append("\"allowedValues\":" + iotfleetwise_json_arr(e3))
+    if v.min.is_some():
+        auto u4 = v.min.unwrap()
+        parts.append("\"min\":" + str(u4))
+    if v.max.is_some():
+        auto u5 = v.max.unwrap()
+        parts.append("\"max\":" + str(u5))
+    if v.assignedValue.is_some():
+        auto u6 = v.assignedValue.unwrap()
+        parts.append("\"assignedValue\":" + iotfleetwise_json_str(u6))
+    if v.defaultValue.is_some():
+        auto u7 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + iotfleetwise_json_str(u7))
+    if v.deprecationMessage.is_some():
+        auto u8 = v.deprecationMessage.unwrap()
+        parts.append("\"deprecationMessage\":" + iotfleetwise_json_str(u8))
+    if v.comment.is_some():
+        auto u9 = v.comment.unwrap()
+        parts.append("\"comment\":" + iotfleetwise_json_str(u9))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize BatchCreateVehicleRequest to a compact JSON object (declaration order).
+def batch_create_vehicle_request_to_json(BatchCreateVehicleRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.vehicles:
+        e0.append(create_vehicle_request_item_to_json(x0))
+    parts.append("\"vehicles\":" + iotfleetwise_json_arr(e0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize BatchUpdateVehicleRequest to a compact JSON object (declaration order).
+def batch_update_vehicle_request_to_json(BatchUpdateVehicleRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.vehicles:
+        e0.append(update_vehicle_request_item_to_json(x0))
+    parts.append("\"vehicles\":" + iotfleetwise_json_arr(e0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CanDbcDefinition to a compact JSON object (declaration order).
+def can_dbc_definition_to_json(CanDbcDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"networkInterface\":" + iotfleetwise_json_str(v.networkInterface))
+    list[str] e0 = []
+    for x0 in v.canDbcFiles:
+        e0.append(iotfleetwise_json_str(base64.encode(x0)))
+    parts.append("\"canDbcFiles\":" + iotfleetwise_json_arr(e0))
+    if v.signalsMap.is_some():
+        auto u1 = v.signalsMap.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(iotfleetwise_json_str(k2) + ":" + iotfleetwise_json_str(u1[k2]))
+        parts.append("\"signalsMap\":" + iotfleetwise_json_obj(m2))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateCampaignRequest to a compact JSON object (declaration order).
+def create_campaign_request_to_json(CreateCampaignRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    parts.append("\"signalCatalogArn\":" + iotfleetwise_json_str(v.signalCatalogArn))
+    parts.append("\"targetArn\":" + iotfleetwise_json_str(v.targetArn))
+    if v.startTime.is_some():
+        auto u1 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(u1)))
+    if v.expiryTime.is_some():
+        auto u2 = v.expiryTime.unwrap()
+        parts.append("\"expiryTime\":" + str(datetime.to_timestamp(u2)))
+    if v.postTriggerCollectionDuration.is_some():
+        auto u3 = v.postTriggerCollectionDuration.unwrap()
+        parts.append("\"postTriggerCollectionDuration\":" + str(u3))
+    if v.diagnosticsMode.is_some():
+        auto u4 = v.diagnosticsMode.unwrap()
+        parts.append("\"diagnosticsMode\":" + u4.to_json())
+    if v.spoolingMode.is_some():
+        auto u5 = v.spoolingMode.unwrap()
+        parts.append("\"spoolingMode\":" + u5.to_json())
+    if v.compression.is_some():
+        auto u6 = v.compression.unwrap()
+        parts.append("\"compression\":" + u6.to_json())
+    if v.priority.is_some():
+        auto u7 = v.priority.unwrap()
+        parts.append("\"priority\":" + str(u7))
+    if v.signalsToCollect.is_some():
+        auto u8 = v.signalsToCollect.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"signalsToCollect\":" + iotfleetwise_json_arr(e9))
+    parts.append("\"collectionScheme\":" + v.collectionScheme.to_json())
+    if v.dataExtraDimensions.is_some():
+        auto u10 = v.dataExtraDimensions.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(iotfleetwise_json_str(x11))
+        parts.append("\"dataExtraDimensions\":" + iotfleetwise_json_arr(e11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e13))
+    if v.dataDestinationConfigs.is_some():
+        auto u14 = v.dataDestinationConfigs.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"dataDestinationConfigs\":" + iotfleetwise_json_arr(e15))
+    if v.dataPartitions.is_some():
+        auto u16 = v.dataPartitions.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"dataPartitions\":" + iotfleetwise_json_arr(e17))
+    if v.signalsToFetch.is_some():
+        auto u18 = v.signalsToFetch.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(signal_fetch_information_to_json(x19))
+        parts.append("\"signalsToFetch\":" + iotfleetwise_json_arr(e19))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateDecoderManifestRequest to a compact JSON object (declaration order).
+def create_decoder_manifest_request_to_json(CreateDecoderManifestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    parts.append("\"modelManifestArn\":" + iotfleetwise_json_str(v.modelManifestArn))
+    if v.signalDecoders.is_some():
+        auto u1 = v.signalDecoders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(signal_decoder_to_json(x2))
+        parts.append("\"signalDecoders\":" + iotfleetwise_json_arr(e2))
+    if v.networkInterfaces.is_some():
+        auto u3 = v.networkInterfaces.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"networkInterfaces\":" + iotfleetwise_json_arr(e4))
+    if v.defaultForUnmappedSignals.is_some():
+        auto u5 = v.defaultForUnmappedSignals.unwrap()
+        parts.append("\"defaultForUnmappedSignals\":" + iotfleetwise_json_str(u5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e7))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateFleetRequest to a compact JSON object (declaration order).
+def create_fleet_request_to_json(CreateFleetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"fleetId\":" + iotfleetwise_json_str(v.fleetId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    parts.append("\"signalCatalogArn\":" + iotfleetwise_json_str(v.signalCatalogArn))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e2))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateModelManifestRequest to a compact JSON object (declaration order).
+def create_model_manifest_request_to_json(CreateModelManifestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.nodes:
+        e1.append(iotfleetwise_json_str(x1))
+    parts.append("\"nodes\":" + iotfleetwise_json_arr(e1))
+    parts.append("\"signalCatalogArn\":" + iotfleetwise_json_str(v.signalCatalogArn))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e3))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateSignalCatalogRequest to a compact JSON object (declaration order).
+def create_signal_catalog_request_to_json(CreateSignalCatalogRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.nodes.is_some():
+        auto u1 = v.nodes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(node_to_json(x2))
+        parts.append("\"nodes\":" + iotfleetwise_json_arr(e2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e4))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateStateTemplateRequest to a compact JSON object (declaration order).
+def create_state_template_request_to_json(CreateStateTemplateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    parts.append("\"signalCatalogArn\":" + iotfleetwise_json_str(v.signalCatalogArn))
+    list[str] e1 = []
+    for x1 in v.stateTemplateProperties:
+        e1.append(iotfleetwise_json_str(x1))
+    parts.append("\"stateTemplateProperties\":" + iotfleetwise_json_arr(e1))
+    if v.dataExtraDimensions.is_some():
+        auto u2 = v.dataExtraDimensions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(iotfleetwise_json_str(x3))
+        parts.append("\"dataExtraDimensions\":" + iotfleetwise_json_arr(e3))
+    if v.metadataExtraDimensions.is_some():
+        auto u4 = v.metadataExtraDimensions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(iotfleetwise_json_str(x5))
+        parts.append("\"metadataExtraDimensions\":" + iotfleetwise_json_arr(e5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e7))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateVehicleRequest to a compact JSON object (declaration order).
+def create_vehicle_request_to_json(CreateVehicleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"vehicleName\":" + iotfleetwise_json_str(v.vehicleName))
+    parts.append("\"modelManifestArn\":" + iotfleetwise_json_str(v.modelManifestArn))
+    parts.append("\"decoderManifestArn\":" + iotfleetwise_json_str(v.decoderManifestArn))
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(iotfleetwise_json_str(k1) + ":" + iotfleetwise_json_str(u0[k1]))
+        parts.append("\"attributes\":" + iotfleetwise_json_obj(m1))
+    if v.associationBehavior.is_some():
+        auto u2 = v.associationBehavior.unwrap()
+        parts.append("\"associationBehavior\":" + u2.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e4))
+    if v.stateTemplates.is_some():
+        auto u5 = v.stateTemplates.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"stateTemplates\":" + iotfleetwise_json_arr(e6))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize CreateVehicleRequestItem to a compact JSON object (declaration order).
+def create_vehicle_request_item_to_json(CreateVehicleRequestItem v) -> str:
+    list[str] parts = []
+    parts.append("\"vehicleName\":" + iotfleetwise_json_str(v.vehicleName))
+    parts.append("\"modelManifestArn\":" + iotfleetwise_json_str(v.modelManifestArn))
+    parts.append("\"decoderManifestArn\":" + iotfleetwise_json_str(v.decoderManifestArn))
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(iotfleetwise_json_str(k1) + ":" + iotfleetwise_json_str(u0[k1]))
+        parts.append("\"attributes\":" + iotfleetwise_json_obj(m1))
+    if v.associationBehavior.is_some():
+        auto u2 = v.associationBehavior.unwrap()
+        parts.append("\"associationBehavior\":" + u2.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e4))
+    if v.stateTemplates.is_some():
+        auto u5 = v.stateTemplates.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"stateTemplates\":" + iotfleetwise_json_arr(e6))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize ImportDecoderManifestRequest to a compact JSON object (declaration order).
+def import_decoder_manifest_request_to_json(ImportDecoderManifestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.networkFileDefinitions:
+        e0.append(network_file_definition_to_json(x0))
+    parts.append("\"networkFileDefinitions\":" + iotfleetwise_json_arr(e0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize ImportSignalCatalogRequest to a compact JSON object (declaration order).
+def import_signal_catalog_request_to_json(ImportSignalCatalogRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.vss.is_some():
+        auto u1 = v.vss.unwrap()
+        parts.append("\"vss\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + iotfleetwise_json_arr(e3))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize ListVehiclesRequest to a compact JSON object (declaration order).
+def list_vehicles_request_to_json(ListVehiclesRequest v) -> str:
+    list[str] parts = []
+    if v.modelManifestArn.is_some():
+        auto u0 = v.modelManifestArn.unwrap()
+        parts.append("\"modelManifestArn\":" + iotfleetwise_json_str(u0))
+    if v.attributeNames.is_some():
+        auto u1 = v.attributeNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotfleetwise_json_str(x2))
+        parts.append("\"attributeNames\":" + iotfleetwise_json_arr(e2))
+    if v.attributeValues.is_some():
+        auto u3 = v.attributeValues.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(iotfleetwise_json_str(x4))
+        parts.append("\"attributeValues\":" + iotfleetwise_json_arr(e4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + iotfleetwise_json_str(u5))
+    if v.maxResults.is_some():
+        auto u6 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u6))
+    if v.listResponseScope.is_some():
+        auto u7 = v.listResponseScope.unwrap()
+        parts.append("\"listResponseScope\":" + iotfleetwise_json_str(u7))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize MessageSignal to a compact JSON object (declaration order).
+def message_signal_to_json(MessageSignal v) -> str:
+    list[str] parts = []
+    parts.append("\"topicName\":" + iotfleetwise_json_str(v.topicName))
+    parts.append("\"structuredMessage\":" + structured_message_to_json(v.structuredMessage))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize NetworkFileDefinition to a compact JSON object (declaration order).
+def network_file_definition_to_json(NetworkFileDefinition v) -> str:
+    list[str] parts = []
+    if v.canDbc.is_some():
+        auto u0 = v.canDbc.unwrap()
+        parts.append("\"canDbc\":" + can_dbc_definition_to_json(u0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize Node to a compact JSON object (declaration order).
+def node_to_json(Node v) -> str:
+    list[str] parts = []
+    if v.branch.is_some():
+        auto u0 = v.branch.unwrap()
+        parts.append("\"branch\":" + u0.to_json())
+    if v.sensor.is_some():
+        auto u1 = v.sensor.unwrap()
+        parts.append("\"sensor\":" + sensor_to_json(u1))
+    if v.actuator.is_some():
+        auto u2 = v.actuator.unwrap()
+        parts.append("\"actuator\":" + actuator_to_json(u2))
+    if v.attribute.is_some():
+        auto u3 = v.attribute.unwrap()
+        parts.append("\"attribute\":" + attribute_to_json(u3))
+    if v.struct_.is_some():
+        auto u4 = v.struct_.unwrap()
+        parts.append("\"struct\":" + u4.to_json())
+    if v.property.is_some():
+        auto u5 = v.property.unwrap()
+        parts.append("\"property\":" + u5.to_json())
+    return iotfleetwise_json_obj(parts)
+
+# Serialize Sensor to a compact JSON object (declaration order).
+def sensor_to_json(Sensor v) -> str:
+    list[str] parts = []
+    parts.append("\"fullyQualifiedName\":" + iotfleetwise_json_str(v.fullyQualifiedName))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.unit.is_some():
+        auto u1 = v.unit.unwrap()
+        parts.append("\"unit\":" + iotfleetwise_json_str(u1))
+    if v.allowedValues.is_some():
+        auto u2 = v.allowedValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(iotfleetwise_json_str(x3))
+        parts.append("\"allowedValues\":" + iotfleetwise_json_arr(e3))
+    if v.min.is_some():
+        auto u4 = v.min.unwrap()
+        parts.append("\"min\":" + str(u4))
+    if v.max.is_some():
+        auto u5 = v.max.unwrap()
+        parts.append("\"max\":" + str(u5))
+    if v.deprecationMessage.is_some():
+        auto u6 = v.deprecationMessage.unwrap()
+        parts.append("\"deprecationMessage\":" + iotfleetwise_json_str(u6))
+    if v.comment.is_some():
+        auto u7 = v.comment.unwrap()
+        parts.append("\"comment\":" + iotfleetwise_json_str(u7))
+    if v.structFullyQualifiedName.is_some():
+        auto u8 = v.structFullyQualifiedName.unwrap()
+        parts.append("\"structFullyQualifiedName\":" + iotfleetwise_json_str(u8))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize SignalDecoder to a compact JSON object (declaration order).
+def signal_decoder_to_json(SignalDecoder v) -> str:
+    list[str] parts = []
+    parts.append("\"fullyQualifiedName\":" + iotfleetwise_json_str(v.fullyQualifiedName))
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"interfaceId\":" + iotfleetwise_json_str(v.interfaceId))
+    if v.canSignal.is_some():
+        auto u0 = v.canSignal.unwrap()
+        parts.append("\"canSignal\":" + u0.to_json())
+    if v.obdSignal.is_some():
+        auto u1 = v.obdSignal.unwrap()
+        parts.append("\"obdSignal\":" + u1.to_json())
+    if v.messageSignal.is_some():
+        auto u2 = v.messageSignal.unwrap()
+        parts.append("\"messageSignal\":" + message_signal_to_json(u2))
+    if v.customDecodingSignal.is_some():
+        auto u3 = v.customDecodingSignal.unwrap()
+        parts.append("\"customDecodingSignal\":" + u3.to_json())
+    return iotfleetwise_json_obj(parts)
+
+# Serialize SignalFetchInformation to a compact JSON object (declaration order).
+def signal_fetch_information_to_json(SignalFetchInformation v) -> str:
+    list[str] parts = []
+    parts.append("\"fullyQualifiedName\":" + iotfleetwise_json_str(v.fullyQualifiedName))
+    parts.append("\"signalFetchConfig\":" + v.signalFetchConfig.to_json())
+    if v.conditionLanguageVersion.is_some():
+        auto u0 = v.conditionLanguageVersion.unwrap()
+        parts.append("\"conditionLanguageVersion\":" + str(u0))
+    list[str] e1 = []
+    for x1 in v.actions:
+        e1.append(iotfleetwise_json_str(x1))
+    parts.append("\"actions\":" + iotfleetwise_json_arr(e1))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize StructuredMessage to a compact JSON object (declaration order).
+def structured_message_to_json(StructuredMessage v) -> str:
+    list[str] parts = []
+    if v.primitiveMessageDefinition.is_some():
+        auto u0 = v.primitiveMessageDefinition.unwrap()
+        parts.append("\"primitiveMessageDefinition\":" + u0.to_json())
+    if v.structuredMessageListDefinition.is_some():
+        auto u1 = v.structuredMessageListDefinition.unwrap()
+        parts.append("\"structuredMessageListDefinition\":" + structured_message_list_definition_to_json(u1))
+    if v.structuredMessageDefinition.is_some():
+        auto u2 = v.structuredMessageDefinition.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(structured_message_field_name_and_data_type_pair_to_json(x3))
+        parts.append("\"structuredMessageDefinition\":" + iotfleetwise_json_arr(e3))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize StructuredMessageFieldNameAndDataTypePair to a compact JSON object (declaration order).
+def structured_message_field_name_and_data_type_pair_to_json(StructuredMessageFieldNameAndDataTypePair v) -> str:
+    list[str] parts = []
+    parts.append("\"fieldName\":" + iotfleetwise_json_str(v.fieldName))
+    parts.append("\"dataType\":" + structured_message_to_json(v.dataType))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize StructuredMessageListDefinition to a compact JSON object (declaration order).
+def structured_message_list_definition_to_json(StructuredMessageListDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    parts.append("\"memberType\":" + structured_message_to_json(v.memberType))
+    parts.append("\"listType\":" + v.listType.to_json())
+    if v.capacity.is_some():
+        auto u0 = v.capacity.unwrap()
+        parts.append("\"capacity\":" + str(u0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + iotfleetwise_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + iotfleetwise_json_arr(e0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + iotfleetwise_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(iotfleetwise_json_str(x0))
+    parts.append("\"TagKeys\":" + iotfleetwise_json_arr(e0))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateCampaignRequest to a compact JSON object (declaration order).
+def update_campaign_request_to_json(UpdateCampaignRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.dataExtraDimensions.is_some():
+        auto u1 = v.dataExtraDimensions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotfleetwise_json_str(x2))
+        parts.append("\"dataExtraDimensions\":" + iotfleetwise_json_arr(e2))
+    parts.append("\"action\":" + v.action.to_json())
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateDecoderManifestRequest to a compact JSON object (declaration order).
+def update_decoder_manifest_request_to_json(UpdateDecoderManifestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.signalDecodersToAdd.is_some():
+        auto u1 = v.signalDecodersToAdd.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(signal_decoder_to_json(x2))
+        parts.append("\"signalDecodersToAdd\":" + iotfleetwise_json_arr(e2))
+    if v.signalDecodersToUpdate.is_some():
+        auto u3 = v.signalDecodersToUpdate.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(signal_decoder_to_json(x4))
+        parts.append("\"signalDecodersToUpdate\":" + iotfleetwise_json_arr(e4))
+    if v.signalDecodersToRemove.is_some():
+        auto u5 = v.signalDecodersToRemove.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(iotfleetwise_json_str(x6))
+        parts.append("\"signalDecodersToRemove\":" + iotfleetwise_json_arr(e6))
+    if v.networkInterfacesToAdd.is_some():
+        auto u7 = v.networkInterfacesToAdd.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"networkInterfacesToAdd\":" + iotfleetwise_json_arr(e8))
+    if v.networkInterfacesToUpdate.is_some():
+        auto u9 = v.networkInterfacesToUpdate.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"networkInterfacesToUpdate\":" + iotfleetwise_json_arr(e10))
+    if v.networkInterfacesToRemove.is_some():
+        auto u11 = v.networkInterfacesToRemove.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(iotfleetwise_json_str(x12))
+        parts.append("\"networkInterfacesToRemove\":" + iotfleetwise_json_arr(e12))
+    if v.status.is_some():
+        auto u13 = v.status.unwrap()
+        parts.append("\"status\":" + u13.to_json())
+    if v.defaultForUnmappedSignals.is_some():
+        auto u14 = v.defaultForUnmappedSignals.unwrap()
+        parts.append("\"defaultForUnmappedSignals\":" + iotfleetwise_json_str(u14))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateModelManifestRequest to a compact JSON object (declaration order).
+def update_model_manifest_request_to_json(UpdateModelManifestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.nodesToAdd.is_some():
+        auto u1 = v.nodesToAdd.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotfleetwise_json_str(x2))
+        parts.append("\"nodesToAdd\":" + iotfleetwise_json_arr(e2))
+    if v.nodesToRemove.is_some():
+        auto u3 = v.nodesToRemove.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(iotfleetwise_json_str(x4))
+        parts.append("\"nodesToRemove\":" + iotfleetwise_json_arr(e4))
+    if v.status.is_some():
+        auto u5 = v.status.unwrap()
+        parts.append("\"status\":" + u5.to_json())
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateSignalCatalogRequest to a compact JSON object (declaration order).
+def update_signal_catalog_request_to_json(UpdateSignalCatalogRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotfleetwise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.nodesToAdd.is_some():
+        auto u1 = v.nodesToAdd.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(node_to_json(x2))
+        parts.append("\"nodesToAdd\":" + iotfleetwise_json_arr(e2))
+    if v.nodesToUpdate.is_some():
+        auto u3 = v.nodesToUpdate.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(node_to_json(x4))
+        parts.append("\"nodesToUpdate\":" + iotfleetwise_json_arr(e4))
+    if v.nodesToRemove.is_some():
+        auto u5 = v.nodesToRemove.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(iotfleetwise_json_str(x6))
+        parts.append("\"nodesToRemove\":" + iotfleetwise_json_arr(e6))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateStateTemplateRequest to a compact JSON object (declaration order).
+def update_state_template_request_to_json(UpdateStateTemplateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"identifier\":" + iotfleetwise_json_str(v.identifier))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotfleetwise_json_str(u0))
+    if v.stateTemplatePropertiesToAdd.is_some():
+        auto u1 = v.stateTemplatePropertiesToAdd.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotfleetwise_json_str(x2))
+        parts.append("\"stateTemplatePropertiesToAdd\":" + iotfleetwise_json_arr(e2))
+    if v.stateTemplatePropertiesToRemove.is_some():
+        auto u3 = v.stateTemplatePropertiesToRemove.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(iotfleetwise_json_str(x4))
+        parts.append("\"stateTemplatePropertiesToRemove\":" + iotfleetwise_json_arr(e4))
+    if v.dataExtraDimensions.is_some():
+        auto u5 = v.dataExtraDimensions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(iotfleetwise_json_str(x6))
+        parts.append("\"dataExtraDimensions\":" + iotfleetwise_json_arr(e6))
+    if v.metadataExtraDimensions.is_some():
+        auto u7 = v.metadataExtraDimensions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(iotfleetwise_json_str(x8))
+        parts.append("\"metadataExtraDimensions\":" + iotfleetwise_json_arr(e8))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateVehicleRequest to a compact JSON object (declaration order).
+def update_vehicle_request_to_json(UpdateVehicleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"vehicleName\":" + iotfleetwise_json_str(v.vehicleName))
+    if v.modelManifestArn.is_some():
+        auto u0 = v.modelManifestArn.unwrap()
+        parts.append("\"modelManifestArn\":" + iotfleetwise_json_str(u0))
+    if v.decoderManifestArn.is_some():
+        auto u1 = v.decoderManifestArn.unwrap()
+        parts.append("\"decoderManifestArn\":" + iotfleetwise_json_str(u1))
+    if v.attributes.is_some():
+        auto u2 = v.attributes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(iotfleetwise_json_str(k3) + ":" + iotfleetwise_json_str(u2[k3]))
+        parts.append("\"attributes\":" + iotfleetwise_json_obj(m3))
+    if v.attributeUpdateMode.is_some():
+        auto u4 = v.attributeUpdateMode.unwrap()
+        parts.append("\"attributeUpdateMode\":" + u4.to_json())
+    if v.stateTemplatesToAdd.is_some():
+        auto u5 = v.stateTemplatesToAdd.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"stateTemplatesToAdd\":" + iotfleetwise_json_arr(e6))
+    if v.stateTemplatesToRemove.is_some():
+        auto u7 = v.stateTemplatesToRemove.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(iotfleetwise_json_str(x8))
+        parts.append("\"stateTemplatesToRemove\":" + iotfleetwise_json_arr(e8))
+    if v.stateTemplatesToUpdate.is_some():
+        auto u9 = v.stateTemplatesToUpdate.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"stateTemplatesToUpdate\":" + iotfleetwise_json_arr(e10))
+    return iotfleetwise_json_obj(parts)
+
+# Serialize UpdateVehicleRequestItem to a compact JSON object (declaration order).
+def update_vehicle_request_item_to_json(UpdateVehicleRequestItem v) -> str:
+    list[str] parts = []
+    parts.append("\"vehicleName\":" + iotfleetwise_json_str(v.vehicleName))
+    if v.modelManifestArn.is_some():
+        auto u0 = v.modelManifestArn.unwrap()
+        parts.append("\"modelManifestArn\":" + iotfleetwise_json_str(u0))
+    if v.decoderManifestArn.is_some():
+        auto u1 = v.decoderManifestArn.unwrap()
+        parts.append("\"decoderManifestArn\":" + iotfleetwise_json_str(u1))
+    if v.attributes.is_some():
+        auto u2 = v.attributes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(iotfleetwise_json_str(k3) + ":" + iotfleetwise_json_str(u2[k3]))
+        parts.append("\"attributes\":" + iotfleetwise_json_obj(m3))
+    if v.attributeUpdateMode.is_some():
+        auto u4 = v.attributeUpdateMode.unwrap()
+        parts.append("\"attributeUpdateMode\":" + u4.to_json())
+    if v.stateTemplatesToAdd.is_some():
+        auto u5 = v.stateTemplatesToAdd.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"stateTemplatesToAdd\":" + iotfleetwise_json_arr(e6))
+    if v.stateTemplatesToRemove.is_some():
+        auto u7 = v.stateTemplatesToRemove.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(iotfleetwise_json_str(x8))
+        parts.append("\"stateTemplatesToRemove\":" + iotfleetwise_json_arr(e8))
+    if v.stateTemplatesToUpdate.is_some():
+        auto u9 = v.stateTemplatesToUpdate.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"stateTemplatesToUpdate\":" + iotfleetwise_json_arr(e10))
+    return iotfleetwise_json_obj(parts)
 
 # A bound IoTFleetWise client: credentials + region, threaded into every operation.
 struct IoTFleetWiseClient:
@@ -1733,6 +2599,60 @@ struct IoTFleetWiseClient:
     def associate_vehicle_fleet(self, AssociateVehicleFleetRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "AssociateVehicleFleet", body)
+
+    # BatchCreateVehicle
+    # errors: AccessDeniedException, InternalServerException, LimitExceededException, ThrottlingException, ValidationException
+    def batch_create_vehicle(self, BatchCreateVehicleRequest input) -> str:
+        auto body = batch_create_vehicle_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "BatchCreateVehicle", body)
+
+    # BatchUpdateVehicle
+    # errors: AccessDeniedException, InternalServerException, LimitExceededException, ThrottlingException, ValidationException
+    def batch_update_vehicle(self, BatchUpdateVehicleRequest input) -> str:
+        auto body = batch_update_vehicle_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "BatchUpdateVehicle", body)
+
+    # CreateCampaign
+    # errors: AccessDeniedException, ConflictException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_campaign(self, CreateCampaignRequest input) -> str:
+        auto body = create_campaign_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateCampaign", body)
+
+    # CreateDecoderManifest
+    # errors: AccessDeniedException, ConflictException, DecoderManifestValidationException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_decoder_manifest(self, CreateDecoderManifestRequest input) -> str:
+        auto body = create_decoder_manifest_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateDecoderManifest", body)
+
+    # CreateFleet
+    # errors: AccessDeniedException, ConflictException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_fleet(self, CreateFleetRequest input) -> str:
+        auto body = create_fleet_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateFleet", body)
+
+    # CreateModelManifest
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidSignalsException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_model_manifest(self, CreateModelManifestRequest input) -> str:
+        auto body = create_model_manifest_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateModelManifest", body)
+
+    # CreateSignalCatalog
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidNodeException, InvalidSignalsException, LimitExceededException, ThrottlingException, ValidationException
+    def create_signal_catalog(self, CreateSignalCatalogRequest input) -> str:
+        auto body = create_signal_catalog_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateSignalCatalog", body)
+
+    # CreateStateTemplate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidSignalsException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_state_template(self, CreateStateTemplateRequest input) -> str:
+        auto body = create_state_template_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateStateTemplate", body)
+
+    # CreateVehicle
+    # errors: AccessDeniedException, ConflictException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_vehicle(self, CreateVehicleRequest input) -> str:
+        auto body = create_vehicle_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "CreateVehicle", body)
 
     # DeleteCampaign
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1848,6 +2768,18 @@ struct IoTFleetWiseClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "GetVehicleStatus", body)
 
+    # ImportDecoderManifest
+    # errors: AccessDeniedException, ConflictException, DecoderManifestValidationException, InternalServerException, InvalidSignalsException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def import_decoder_manifest(self, ImportDecoderManifestRequest input) -> str:
+        auto body = import_decoder_manifest_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "ImportDecoderManifest", body)
+
+    # ImportSignalCatalog
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidSignalsException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def import_signal_catalog(self, ImportSignalCatalogRequest input) -> str:
+        auto body = import_signal_catalog_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "ImportSignalCatalog", body)
+
     # ListCampaigns
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_campaigns(self, ListCampaignsRequest input) -> str:
@@ -1920,6 +2852,12 @@ struct IoTFleetWiseClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # ListVehicles
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_vehicles(self, ListVehiclesRequest input) -> str:
+        auto body = list_vehicles_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "ListVehicles", body)
+
     # ListVehiclesInFleet
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_vehicles_in_fleet(self, ListVehiclesInFleetRequest input) -> str:
@@ -1944,11 +2882,59 @@ struct IoTFleetWiseClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "RegisterAccount", body)
 
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateCampaign
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_campaign(self, UpdateCampaignRequest input) -> str:
+        auto body = update_campaign_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateCampaign", body)
+
+    # UpdateDecoderManifest
+    # errors: AccessDeniedException, ConflictException, DecoderManifestValidationException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_decoder_manifest(self, UpdateDecoderManifestRequest input) -> str:
+        auto body = update_decoder_manifest_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateDecoderManifest", body)
+
     # UpdateFleet
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_fleet(self, UpdateFleetRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateFleet", body)
+
+    # UpdateModelManifest
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidSignalsException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_model_manifest(self, UpdateModelManifestRequest input) -> str:
+        auto body = update_model_manifest_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateModelManifest", body)
+
+    # UpdateSignalCatalog
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidNodeException, InvalidSignalsException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_signal_catalog(self, UpdateSignalCatalogRequest input) -> str:
+        auto body = update_signal_catalog_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateSignalCatalog", body)
+
+    # UpdateStateTemplate
+    # errors: AccessDeniedException, InternalServerException, InvalidSignalsException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_state_template(self, UpdateStateTemplateRequest input) -> str:
+        auto body = update_state_template_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateStateTemplate", body)
+
+    # UpdateVehicle
+    # errors: AccessDeniedException, ConflictException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_vehicle(self, UpdateVehicleRequest input) -> str:
+        auto body = update_vehicle_request_to_json(input)
+        return awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "UpdateVehicle", body)
 
     # Paginator for GetVehicleStatus — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: campaigns).
@@ -2111,6 +3097,20 @@ struct IoTFleetWiseClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "ListStateTemplates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListVehicles — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: vehicleSummaries).
+    def paginate_list_vehicles(self, ListVehiclesRequest input):
+        auto host = endpoints.regional_host(iotfleetwise_protocol().service, self.region)
+        while True:
+            auto body = list_vehicles_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(iotfleetwise_protocol(), self.creds, self.region, "ListVehicles", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 79 operations — 69 with a generated method,
-#   10 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 79 operations — 79 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   208 structs (160 @derive(Json)), 17 enums, 7 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -165,14 +165,16 @@ enum ValidationExceptionReason:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Value: AccessControlAttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: AccessControlAttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessControlAttribute:
     str Key
     AccessControlAttributeValue Value
 
-# no @derive(Json): member(s) Source: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessControlAttributeValue:
     list[str] Source
 
@@ -253,8 +255,9 @@ struct ApplicationAssignmentForPrincipal:
     Optional[str] PrincipalId
     Optional[PrincipalType] PrincipalType
 
-# no @derive(Json): member(s) ResourceServerConfig: ResourceServerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceServerConfig: ResourceServerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationProvider:
     str ApplicationProviderArn
     Optional[FederationProtocol] FederationProtocol
@@ -297,13 +300,15 @@ struct AuthenticationMethodItem:
     Optional[str] AuthenticationMethodType
     Optional[AuthenticationMethod] AuthenticationMethod
 
-# no @derive(Json): member(s) RedirectUris: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RedirectUris: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizationCodeGrant:
     Optional[list[str]] RedirectUris
 
-# no @derive(Json): member(s) AuthorizedAudiences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedAudiences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizedTokenIssuer:
     Optional[str] TrustedTokenIssuerArn
     Optional[list[str]] AuthorizedAudiences
@@ -336,8 +341,9 @@ struct CreateApplicationAssignmentResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationRequest:
     str InstanceArn
     str ApplicationProviderArn
@@ -354,8 +360,9 @@ struct CreateApplicationResponse:
     Optional[str] InstanceArn
     Optional[str] IdentityStoreArn
 
-# no @derive(Json): member(s) InstanceAccessControlAttributeConfiguration: InstanceAccessControlAttributeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceAccessControlAttributeConfiguration: InstanceAccessControlAttributeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceAccessControlAttributeConfigurationRequest:
     str InstanceArn
     InstanceAccessControlAttributeConfiguration InstanceAccessControlAttributeConfiguration
@@ -365,8 +372,9 @@ struct CreateInstanceAccessControlAttributeConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceRequest:
     Optional[str] Name
     Optional[str] ClientToken
@@ -376,8 +384,9 @@ struct CreateInstanceRequest:
 struct CreateInstanceResponse:
     Optional[str] InstanceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePermissionSetRequest:
     str Name
     Optional[str] Description
@@ -390,8 +399,9 @@ struct CreatePermissionSetRequest:
 struct CreatePermissionSetResponse:
     Optional[PermissionSet] PermissionSet
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrustedTokenIssuerRequest:
     str InstanceArn
     str Name
@@ -548,8 +558,9 @@ struct DescribeApplicationAssignmentResponse:
 struct DescribeApplicationProviderRequest:
     str ApplicationProviderArn
 
-# no @derive(Json): member(s) ResourceServerConfig: ResourceServerConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceServerConfig: ResourceServerConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationProviderResponse:
     str ApplicationProviderArn
     Optional[FederationProtocol] FederationProtocol
@@ -578,8 +589,9 @@ struct DescribeApplicationResponse:
 struct DescribeInstanceAccessControlAttributeConfigurationRequest:
     str InstanceArn
 
-# no @derive(Json): member(s) InstanceAccessControlAttributeConfiguration: InstanceAccessControlAttributeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceAccessControlAttributeConfiguration: InstanceAccessControlAttributeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceAccessControlAttributeConfigurationResponse:
     Optional[InstanceAccessControlAttributeConfigurationStatus] Status
     Optional[str] StatusReason
@@ -589,8 +601,9 @@ struct DescribeInstanceAccessControlAttributeConfigurationResponse:
 struct DescribeInstanceRequest:
     str InstanceArn
 
-# no @derive(Json): member(s) Regions: list[RegionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[RegionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceResponse:
     Optional[str] InstanceArn
     Optional[str] IdentityStoreId
@@ -691,8 +704,9 @@ struct GetApplicationAccessScopeRequest:
     str ApplicationArn
     str Scope
 
-# no @derive(Json): member(s) AuthorizedTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationAccessScopeResponse:
     str Scope
     Optional[list[str]] AuthorizedTargets
@@ -719,8 +733,9 @@ struct GetApplicationGrantRequest:
     str ApplicationArn
     GrantType GrantType
 
-# no @derive(Json): member(s) Grant: Grant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grant: Grant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationGrantResponse:
     Grant Grant
 
@@ -750,16 +765,18 @@ struct GetPermissionsBoundaryForPermissionSetRequest:
 struct GetPermissionsBoundaryForPermissionSetResponse:
     Optional[PermissionsBoundary] PermissionsBoundary
 
-# no @derive(Json): member(s) AuthorizationCode: AuthorizationCodeGrant, JwtBearer: JwtBearerGrant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationCode: AuthorizationCodeGrant, JwtBearer: JwtBearerGrant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Grant:
     Optional[AuthorizationCodeGrant] AuthorizationCode
     Optional[JwtBearerGrant] JwtBearer
     Optional[RefreshTokenGrant] RefreshToken
     Optional[TokenExchangeGrant] TokenExchange
 
-# no @derive(Json): member(s) Grant: Grant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grant: Grant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantItem:
     GrantType GrantType
     Grant Grant
@@ -768,13 +785,15 @@ struct GrantItem:
 struct IamAuthenticationMethod:
     ActorPolicyDocument ActorPolicy
 
-# no @derive(Json): member(s) AccessControlAttributes: list[AccessControlAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlAttributes: list[AccessControlAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceAccessControlAttributeConfiguration:
     list[AccessControlAttribute] AccessControlAttributes
 
-# no @derive(Json): member(s) Regions: list[RegionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[RegionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceMetadata:
     Optional[str] InstanceArn
     Optional[str] IdentityStoreId
@@ -791,8 +810,9 @@ struct InstanceMetadata:
 struct InternalServerException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AuthorizedTokenIssuers: list[AuthorizedTokenIssuer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedTokenIssuers: list[AuthorizedTokenIssuer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JwtBearerGrant:
     Optional[list[AuthorizedTokenIssuer]] AuthorizedTokenIssuers
 
@@ -803,8 +823,9 @@ struct ListAccountAssignmentCreationStatusRequest:
     Optional[str] NextToken
     Optional[OperationStatusFilter] Filter
 
-# no @derive(Json): member(s) AccountAssignmentsCreationStatus: list[AccountAssignmentOperationStatusMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAssignmentsCreationStatus: list[AccountAssignmentOperationStatusMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssignmentCreationStatusResponse:
     Optional[list[AccountAssignmentOperationStatusMetadata]] AccountAssignmentsCreationStatus
     Optional[str] NextToken
@@ -816,8 +837,9 @@ struct ListAccountAssignmentDeletionStatusRequest:
     Optional[str] NextToken
     Optional[OperationStatusFilter] Filter
 
-# no @derive(Json): member(s) AccountAssignmentsDeletionStatus: list[AccountAssignmentOperationStatusMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAssignmentsDeletionStatus: list[AccountAssignmentOperationStatusMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssignmentDeletionStatusResponse:
     Optional[list[AccountAssignmentOperationStatusMetadata]] AccountAssignmentsDeletionStatus
     Optional[str] NextToken
@@ -835,8 +857,9 @@ struct ListAccountAssignmentsForPrincipalRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AccountAssignments: list[AccountAssignmentForPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAssignments: list[AccountAssignmentForPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssignmentsForPrincipalResponse:
     Optional[list[AccountAssignmentForPrincipal]] AccountAssignments
     Optional[str] NextToken
@@ -849,8 +872,9 @@ struct ListAccountAssignmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AccountAssignments: list[AccountAssignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAssignments: list[AccountAssignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssignmentsResponse:
     Optional[list[AccountAssignment]] AccountAssignments
     Optional[str] NextToken
@@ -863,8 +887,9 @@ struct ListAccountsForProvisionedPermissionSetRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountsForProvisionedPermissionSetResponse:
     Optional[list[str]] AccountIds
     Optional[str] NextToken
@@ -875,8 +900,9 @@ struct ListApplicationAccessScopesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Scopes: list[ScopeDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[ScopeDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationAccessScopesResponse:
     list[ScopeDetails] Scopes
     Optional[str] NextToken
@@ -894,8 +920,9 @@ struct ListApplicationAssignmentsForPrincipalRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ApplicationAssignments: list[ApplicationAssignmentForPrincipal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationAssignments: list[ApplicationAssignmentForPrincipal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationAssignmentsForPrincipalResponse:
     Optional[list[ApplicationAssignmentForPrincipal]] ApplicationAssignments
     Optional[str] NextToken
@@ -906,8 +933,9 @@ struct ListApplicationAssignmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationAssignments: list[ApplicationAssignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationAssignments: list[ApplicationAssignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationAssignmentsResponse:
     Optional[list[ApplicationAssignment]] ApplicationAssignments
     Optional[str] NextToken
@@ -917,8 +945,9 @@ struct ListApplicationAuthenticationMethodsRequest:
     str ApplicationArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuthenticationMethods: list[AuthenticationMethodItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationMethods: list[AuthenticationMethodItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationAuthenticationMethodsResponse:
     Optional[list[AuthenticationMethodItem]] AuthenticationMethods
     Optional[str] NextToken
@@ -928,8 +957,9 @@ struct ListApplicationGrantsRequest:
     str ApplicationArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Grants: list[GrantItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grants: list[GrantItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationGrantsResponse:
     list[GrantItem] Grants
     Optional[str] NextToken
@@ -939,8 +969,9 @@ struct ListApplicationProvidersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationProviders: list[ApplicationProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationProviders: list[ApplicationProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationProvidersResponse:
     Optional[list[ApplicationProvider]] ApplicationProviders
     Optional[str] NextToken
@@ -957,8 +988,9 @@ struct ListApplicationsRequest:
     Optional[str] NextToken
     Optional[ListApplicationsFilter] Filter
 
-# no @derive(Json): member(s) Applications: list[Application] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[Application] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[list[Application]] Applications
     Optional[str] NextToken
@@ -970,8 +1002,9 @@ struct ListCustomerManagedPolicyReferencesInPermissionSetRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CustomerManagedPolicyReferences: list[CustomerManagedPolicyReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerManagedPolicyReferences: list[CustomerManagedPolicyReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomerManagedPolicyReferencesInPermissionSetResponse:
     Optional[list[CustomerManagedPolicyReference]] CustomerManagedPolicyReferences
     Optional[str] NextToken
@@ -982,8 +1015,9 @@ struct ListInstancesRequest:
     Optional[str] NextToken
     Optional[RegionScope] RegionScope
 
-# no @derive(Json): member(s) Instances: list[InstanceMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[InstanceMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesResponse:
     Optional[list[InstanceMetadata]] Instances
     Optional[str] NextToken
@@ -995,8 +1029,9 @@ struct ListManagedPoliciesInPermissionSetRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AttachedManagedPolicies: list[AttachedManagedPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedManagedPolicies: list[AttachedManagedPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedPoliciesInPermissionSetResponse:
     Optional[list[AttachedManagedPolicy]] AttachedManagedPolicies
     Optional[str] NextToken
@@ -1008,8 +1043,9 @@ struct ListPermissionSetProvisioningStatusRequest:
     Optional[str] NextToken
     Optional[OperationStatusFilter] Filter
 
-# no @derive(Json): member(s) PermissionSetsProvisioningStatus: list[PermissionSetProvisioningStatusMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PermissionSetsProvisioningStatus: list[PermissionSetProvisioningStatusMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionSetProvisioningStatusResponse:
     Optional[list[PermissionSetProvisioningStatusMetadata]] PermissionSetsProvisioningStatus
     Optional[str] NextToken
@@ -1022,8 +1058,9 @@ struct ListPermissionSetsProvisionedToAccountRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PermissionSets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PermissionSets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionSetsProvisionedToAccountResponse:
     Optional[str] NextToken
     Optional[list[str]] PermissionSets
@@ -1034,8 +1071,9 @@ struct ListPermissionSetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PermissionSets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PermissionSets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionSetsResponse:
     Optional[list[str]] PermissionSets
     Optional[str] NextToken
@@ -1046,8 +1084,9 @@ struct ListRegionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Regions: list[RegionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[RegionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegionsResponse:
     Optional[list[RegionMetadata]] Regions
     Optional[str] NextToken
@@ -1058,8 +1097,9 @@ struct ListTagsForResourceRequest:
     str ResourceArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -1070,8 +1110,9 @@ struct ListTrustedTokenIssuersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrustedTokenIssuers: list[TrustedTokenIssuerMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrustedTokenIssuers: list[TrustedTokenIssuerMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrustedTokenIssuersResponse:
     Optional[list[TrustedTokenIssuerMetadata]] TrustedTokenIssuers
     Optional[str] NextToken
@@ -1138,8 +1179,9 @@ struct ProvisionPermissionSetRequest:
 struct ProvisionPermissionSetResponse:
     Optional[PermissionSetProvisioningStatus] PermissionSetProvisioningStatus
 
-# no @derive(Json): member(s) AuthorizedTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutApplicationAccessScopeRequest:
     str Scope
     Optional[list[str]] AuthorizedTargets
@@ -1161,8 +1203,9 @@ struct PutApplicationAuthenticationMethodRequest:
     str AuthenticationMethodType
     AuthenticationMethod AuthenticationMethod
 
-# no @derive(Json): member(s) Grant: Grant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grant: Grant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutApplicationGrantRequest:
     str ApplicationArn
     GrantType GrantType
@@ -1226,8 +1269,9 @@ struct ResourceNotFoundException:
     Optional[str] Message
     Optional[str] Reason
 
-# no @derive(Json): member(s) Scopes: dict[str, ResourceServerScopeDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: dict[str, ResourceServerScopeDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceServerConfig:
     Optional[dict[str, ResourceServerScopeDetails]] Scopes
 
@@ -1236,8 +1280,9 @@ struct ResourceServerScopeDetails:
     Optional[str] LongDescription
     Optional[str] DetailedTitle
 
-# no @derive(Json): member(s) AuthorizedTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScopeDetails:
     str Scope
     Optional[list[str]] AuthorizedTargets
@@ -1256,8 +1301,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     Optional[str] InstanceArn
     str ResourceArn
@@ -1292,8 +1338,9 @@ struct TrustedTokenIssuerMetadata:
 struct TrustedTokenIssuerUpdateConfiguration:
     Optional[OidcJwtUpdateConfiguration] OidcJwtConfiguration
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     Optional[str] InstanceArn
     str ResourceArn
@@ -1321,8 +1368,9 @@ struct UpdateApplicationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) InstanceAccessControlAttributeConfiguration: InstanceAccessControlAttributeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceAccessControlAttributeConfiguration: InstanceAccessControlAttributeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInstanceAccessControlAttributeConfigurationRequest:
     str InstanceArn
     InstanceAccessControlAttributeConfiguration InstanceAccessControlAttributeConfiguration
@@ -1407,18 +1455,257 @@ def sso_error_from_code(str code) -> SSO_AdminError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateApplication (input CreateApplicationRequest)
-#   CreateInstance (input CreateInstanceRequest)
-#   CreateInstanceAccessControlAttributeConfiguration (input CreateInstanceAccessControlAttributeConfigurationRequest)
-#   CreatePermissionSet (input CreatePermissionSetRequest)
-#   CreateTrustedTokenIssuer (input CreateTrustedTokenIssuerRequest)
-#   PutApplicationAccessScope (input PutApplicationAccessScopeRequest)
-#   PutApplicationGrant (input PutApplicationGrantRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateInstanceAccessControlAttributeConfiguration (input UpdateInstanceAccessControlAttributeConfigurationRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def sso_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def sso_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def sso_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccessControlAttribute to a compact JSON object (declaration order).
+def access_control_attribute_to_json(AccessControlAttribute v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + sso_json_str(v.Key))
+    parts.append("\"Value\":" + access_control_attribute_value_to_json(v.Value))
+    return sso_json_obj(parts)
+
+# Serialize AccessControlAttributeValue to a compact JSON object (declaration order).
+def access_control_attribute_value_to_json(AccessControlAttributeValue v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Source:
+        e0.append(sso_json_str(x0))
+    parts.append("\"Source\":" + sso_json_arr(e0))
+    return sso_json_obj(parts)
+
+# Serialize AuthorizationCodeGrant to a compact JSON object (declaration order).
+def authorization_code_grant_to_json(AuthorizationCodeGrant v) -> str:
+    list[str] parts = []
+    if v.RedirectUris.is_some():
+        auto u0 = v.RedirectUris.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sso_json_str(x1))
+        parts.append("\"RedirectUris\":" + sso_json_arr(e1))
+    return sso_json_obj(parts)
+
+# Serialize AuthorizedTokenIssuer to a compact JSON object (declaration order).
+def authorized_token_issuer_to_json(AuthorizedTokenIssuer v) -> str:
+    list[str] parts = []
+    if v.TrustedTokenIssuerArn.is_some():
+        auto u0 = v.TrustedTokenIssuerArn.unwrap()
+        parts.append("\"TrustedTokenIssuerArn\":" + sso_json_str(u0))
+    if v.AuthorizedAudiences.is_some():
+        auto u1 = v.AuthorizedAudiences.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sso_json_str(x2))
+        parts.append("\"AuthorizedAudiences\":" + sso_json_arr(e2))
+    return sso_json_obj(parts)
+
+# Serialize CreateApplicationRequest to a compact JSON object (declaration order).
+def create_application_request_to_json(CreateApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
+    parts.append("\"ApplicationProviderArn\":" + sso_json_str(v.ApplicationProviderArn))
+    parts.append("\"Name\":" + sso_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + sso_json_str(u0))
+    if v.PortalOptions.is_some():
+        auto u1 = v.PortalOptions.unwrap()
+        parts.append("\"PortalOptions\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + sso_json_arr(e3))
+    if v.Status.is_some():
+        auto u4 = v.Status.unwrap()
+        parts.append("\"Status\":" + u4.to_json())
+    if v.ClientToken.is_some():
+        auto u5 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sso_json_str(u5))
+    return sso_json_obj(parts)
+
+# Serialize CreateInstanceAccessControlAttributeConfigurationRequest to a compact JSON object (declaration order).
+def create_instance_access_control_attribute_configuration_request_to_json(CreateInstanceAccessControlAttributeConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
+    parts.append("\"InstanceAccessControlAttributeConfiguration\":" + instance_access_control_attribute_configuration_to_json(v.InstanceAccessControlAttributeConfiguration))
+    return sso_json_obj(parts)
+
+# Serialize CreateInstanceRequest to a compact JSON object (declaration order).
+def create_instance_request_to_json(CreateInstanceRequest v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + sso_json_str(u0))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sso_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + sso_json_arr(e3))
+    return sso_json_obj(parts)
+
+# Serialize CreatePermissionSetRequest to a compact JSON object (declaration order).
+def create_permission_set_request_to_json(CreatePermissionSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + sso_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + sso_json_str(u0))
+    parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
+    if v.SessionDuration.is_some():
+        auto u1 = v.SessionDuration.unwrap()
+        parts.append("\"SessionDuration\":" + sso_json_str(u1))
+    if v.RelayState.is_some():
+        auto u2 = v.RelayState.unwrap()
+        parts.append("\"RelayState\":" + sso_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + sso_json_arr(e4))
+    return sso_json_obj(parts)
+
+# Serialize CreateTrustedTokenIssuerRequest to a compact JSON object (declaration order).
+def create_trusted_token_issuer_request_to_json(CreateTrustedTokenIssuerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
+    parts.append("\"Name\":" + sso_json_str(v.Name))
+    parts.append("\"TrustedTokenIssuerType\":" + sso_json_str(v.TrustedTokenIssuerType))
+    parts.append("\"TrustedTokenIssuerConfiguration\":" + v.TrustedTokenIssuerConfiguration.to_json())
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sso_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + sso_json_arr(e2))
+    return sso_json_obj(parts)
+
+# Serialize Grant to a compact JSON object (declaration order).
+def grant_to_json(Grant v) -> str:
+    list[str] parts = []
+    if v.AuthorizationCode.is_some():
+        auto u0 = v.AuthorizationCode.unwrap()
+        parts.append("\"AuthorizationCode\":" + authorization_code_grant_to_json(u0))
+    if v.JwtBearer.is_some():
+        auto u1 = v.JwtBearer.unwrap()
+        parts.append("\"JwtBearer\":" + jwt_bearer_grant_to_json(u1))
+    if v.RefreshToken.is_some():
+        auto u2 = v.RefreshToken.unwrap()
+        parts.append("\"RefreshToken\":" + u2.to_json())
+    if v.TokenExchange.is_some():
+        auto u3 = v.TokenExchange.unwrap()
+        parts.append("\"TokenExchange\":" + u3.to_json())
+    return sso_json_obj(parts)
+
+# Serialize InstanceAccessControlAttributeConfiguration to a compact JSON object (declaration order).
+def instance_access_control_attribute_configuration_to_json(InstanceAccessControlAttributeConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AccessControlAttributes:
+        e0.append(access_control_attribute_to_json(x0))
+    parts.append("\"AccessControlAttributes\":" + sso_json_arr(e0))
+    return sso_json_obj(parts)
+
+# Serialize JwtBearerGrant to a compact JSON object (declaration order).
+def jwt_bearer_grant_to_json(JwtBearerGrant v) -> str:
+    list[str] parts = []
+    if v.AuthorizedTokenIssuers.is_some():
+        auto u0 = v.AuthorizedTokenIssuers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(authorized_token_issuer_to_json(x1))
+        parts.append("\"AuthorizedTokenIssuers\":" + sso_json_arr(e1))
+    return sso_json_obj(parts)
+
+# Serialize PutApplicationAccessScopeRequest to a compact JSON object (declaration order).
+def put_application_access_scope_request_to_json(PutApplicationAccessScopeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Scope\":" + sso_json_str(v.Scope))
+    if v.AuthorizedTargets.is_some():
+        auto u0 = v.AuthorizedTargets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sso_json_str(x1))
+        parts.append("\"AuthorizedTargets\":" + sso_json_arr(e1))
+    parts.append("\"ApplicationArn\":" + sso_json_str(v.ApplicationArn))
+    return sso_json_obj(parts)
+
+# Serialize PutApplicationGrantRequest to a compact JSON object (declaration order).
+def put_application_grant_request_to_json(PutApplicationGrantRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationArn\":" + sso_json_str(v.ApplicationArn))
+    parts.append("\"GrantType\":" + v.GrantType.to_json())
+    parts.append("\"Grant\":" + grant_to_json(v.Grant))
+    return sso_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    if v.InstanceArn.is_some():
+        auto u0 = v.InstanceArn.unwrap()
+        parts.append("\"InstanceArn\":" + sso_json_str(u0))
+    parts.append("\"ResourceArn\":" + sso_json_str(v.ResourceArn))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + sso_json_arr(e1))
+    return sso_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    if v.InstanceArn.is_some():
+        auto u0 = v.InstanceArn.unwrap()
+        parts.append("\"InstanceArn\":" + sso_json_str(u0))
+    parts.append("\"ResourceArn\":" + sso_json_str(v.ResourceArn))
+    list[str] e1 = []
+    for x1 in v.TagKeys:
+        e1.append(sso_json_str(x1))
+    parts.append("\"TagKeys\":" + sso_json_arr(e1))
+    return sso_json_obj(parts)
+
+# Serialize UpdateInstanceAccessControlAttributeConfigurationRequest to a compact JSON object (declaration order).
+def update_instance_access_control_attribute_configuration_request_to_json(UpdateInstanceAccessControlAttributeConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
+    parts.append("\"InstanceAccessControlAttributeConfiguration\":" + instance_access_control_attribute_configuration_to_json(v.InstanceAccessControlAttributeConfiguration))
+    return sso_json_obj(parts)
 
 # A bound SSO_Admin client: credentials + region, threaded into every operation.
 struct SSO_AdminClient:
@@ -1449,11 +1736,41 @@ struct SSO_AdminClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreateAccountAssignment", body)
 
+    # CreateApplication
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto body = create_application_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreateApplication", body)
+
     # CreateApplicationAssignment
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_application_assignment(self, CreateApplicationAssignmentRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreateApplicationAssignment", body)
+
+    # CreateInstance
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_instance(self, CreateInstanceRequest input) -> str:
+        auto body = create_instance_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreateInstance", body)
+
+    # CreateInstanceAccessControlAttributeConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_instance_access_control_attribute_configuration(self, CreateInstanceAccessControlAttributeConfigurationRequest input) -> str:
+        auto body = create_instance_access_control_attribute_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreateInstanceAccessControlAttributeConfiguration", body)
+
+    # CreatePermissionSet
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_permission_set(self, CreatePermissionSetRequest input) -> str:
+        auto body = create_permission_set_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreatePermissionSet", body)
+
+    # CreateTrustedTokenIssuer
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_trusted_token_issuer(self, CreateTrustedTokenIssuerRequest input) -> str:
+        auto body = create_trusted_token_issuer_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "CreateTrustedTokenIssuer", body)
 
     # DeleteAccountAssignment
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1779,6 +2096,12 @@ struct SSO_AdminClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "ProvisionPermissionSet", body)
 
+    # PutApplicationAccessScope
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_application_access_scope(self, PutApplicationAccessScopeRequest input) -> str:
+        auto body = put_application_access_scope_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "PutApplicationAccessScope", body)
+
     # PutApplicationAssignmentConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_application_assignment_configuration(self, PutApplicationAssignmentConfigurationRequest input) -> str:
@@ -1790,6 +2113,12 @@ struct SSO_AdminClient:
     def put_application_authentication_method(self, PutApplicationAuthenticationMethodRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "PutApplicationAuthenticationMethod", body)
+
+    # PutApplicationGrant
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_application_grant(self, PutApplicationGrantRequest input) -> str:
+        auto body = put_application_grant_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "PutApplicationGrant", body)
 
     # PutApplicationSessionConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1815,6 +2144,18 @@ struct SSO_AdminClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "RemoveRegion", body)
 
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateApplication
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_application(self, UpdateApplicationRequest input) -> str:
@@ -1826,6 +2167,12 @@ struct SSO_AdminClient:
     def update_instance(self, UpdateInstanceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "UpdateInstance", body)
+
+    # UpdateInstanceAccessControlAttributeConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_instance_access_control_attribute_configuration(self, UpdateInstanceAccessControlAttributeConfigurationRequest input) -> str:
+        auto body = update_instance_access_control_attribute_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "UpdateInstanceAccessControlAttributeConfiguration", body)
 
     # UpdatePermissionSet
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

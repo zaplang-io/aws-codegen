@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 69 operations — 35 with a generated method,
-#   34 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 69 operations — 68 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   215 structs (120 @derive(Json)), 17 enums, 19 error variants.
-#   5 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The LakeFormation rest-json protocol: SigV4 service "lakeformation" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -215,13 +216,15 @@ struct AddLFTagsToResourceRequest:
     Resource Resource
     list[LFTagPair] LFTags
 
-# no @derive(Json): member(s) Failures: list[LFTagError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[LFTagError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddLFTagsToResourceResponse:
     Optional[list[LFTagError]] Failures
 
-# no @derive(Json): member(s) PartitionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddObjectInput:
     str Uri
     str ETag
@@ -276,19 +279,22 @@ struct BatchGrantPermissionsRequest:
     Optional[str] CatalogId
     list[BatchPermissionsRequestEntry] Entries
 
-# no @derive(Json): member(s) Failures: list[BatchPermissionsFailureEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[BatchPermissionsFailureEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGrantPermissionsResponse:
     Optional[list[BatchPermissionsFailureEntry]] Failures
 
-# no @derive(Json): member(s) RequestEntry: BatchPermissionsRequestEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestEntry: BatchPermissionsRequestEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPermissionsFailureEntry:
     Optional[BatchPermissionsRequestEntry] RequestEntry
     Optional[ErrorDetail] Error
 
-# no @derive(Json): member(s) Resource: Resource, Permissions: list[Permission], PermissionsWithGrantOption: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resource: Resource, Permissions: list[Permission], PermissionsWithGrantOption: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPermissionsRequestEntry:
     str Id
     Optional[DataLakePrincipal] Principal
@@ -303,8 +309,9 @@ struct BatchRevokePermissionsRequest:
     Optional[str] CatalogId
     list[BatchPermissionsRequestEntry] Entries
 
-# no @derive(Json): member(s) Failures: list[BatchPermissionsFailureEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[BatchPermissionsFailureEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRevokePermissionsResponse:
     Optional[list[BatchPermissionsFailureEntry]] Failures
 
@@ -327,14 +334,16 @@ struct Column:
     str Name
     Optional[str] Type
 
-# no @derive(Json): member(s) LFTags: list[LFTagPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTags: list[LFTagPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnLFTag:
     Optional[str] Name
     Optional[list[LFTagPair]] LFTags
 
-# no @derive(Json): member(s) ExcludedColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnWildcard:
     Optional[list[str]] ExcludedColumnNames
 
@@ -431,8 +440,9 @@ struct CreateRLSPolicyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ColumnNames: list[str], ColumnWildcard: ColumnWildcard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNames: list[str], ColumnWildcard: ColumnWildcard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataCellsFilter:
     str TableCatalogId
     str DatabaseName
@@ -454,8 +464,9 @@ struct DataCellsFilterResource:
 struct DataLakePrincipal:
     Optional[str] DataLakePrincipalIdentifier
 
-# no @derive(Json): member(s) DataLakeAdmins: list[DataLakePrincipal], ReadOnlyAdmins: list[DataLakePrincipal], CreateDatabaseDefaultPermissions: list[PrincipalPermissions], CreateTableDefaultPermissions: list[PrincipalPermissions], Parameters: dict[str, str], TrustedResourceOwners: list[str], ExternalDataFilteringAllowList: list[DataLakePrincipal], AuthorizedSessionTagValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataLakeAdmins: list[DataLakePrincipal], ReadOnlyAdmins: list[DataLakePrincipal], CreateDatabaseDefaultPermissions: list[PrincipalPermissions], CreateTableDefaultPermissions: list[PrincipalPermissions], Parameters: dict[str, str], TrustedResourceOwners: list[str], ExternalDataFilteringAllowList: list[DataLakePrincipal], AuthorizedSessionTagValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeSettings:
     Optional[list[DataLakePrincipal]] DataLakeAdmins
     Optional[list[DataLakePrincipal]] ReadOnlyAdmins
@@ -535,8 +546,9 @@ struct DeleteLakeFormationOptInResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PartitionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteObjectInput:
     str Uri
     Optional[str] ETag
@@ -581,8 +593,9 @@ struct DeregisterResourceResponse:
 struct DescribeLakeFormationIdentityCenterConfigurationRequest:
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) ExternalFiltering: ExternalFilteringConfiguration, ShareRecipients: list[DataLakePrincipal], ServiceIntegrations: list[ServiceIntegrationUnion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalFiltering: ExternalFilteringConfiguration, ShareRecipients: list[DataLakePrincipal], ServiceIntegrations: list[ServiceIntegrationUnion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLakeFormationIdentityCenterConfigurationResponse:
     Optional[str] CatalogId
     Optional[str] InstanceArn
@@ -624,8 +637,9 @@ struct DetachRLSPolicyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ResourceShare: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShare: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetailsMap:
     Optional[list[str]] ResourceShare
 
@@ -658,14 +672,16 @@ struct ExtendTransactionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AuthorizedTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalFilteringConfiguration:
     EnableStatus Status
     list[str] AuthorizedTargets
 
-# no @derive(Json): member(s) StringValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCondition:
     Optional[FieldNameString] Field
     Optional[ComparisonOperator] ComparisonOperator
@@ -679,8 +695,9 @@ struct GetDataCellsFilterRequest:
     str TableName
     str Name
 
-# no @derive(Json): member(s) DataCellsFilter: DataCellsFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataCellsFilter: DataCellsFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataCellsFilterResponse:
     Optional[DataCellsFilter] DataCellsFilter
 
@@ -699,8 +716,9 @@ struct GetDataLakePrincipalResponse:
 struct GetDataLakeSettingsRequest:
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) DataLakeSettings: DataLakeSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataLakeSettings: DataLakeSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataLakeSettingsResponse:
     Optional[DataLakeSettings] DataLakeSettings
 
@@ -712,8 +730,9 @@ struct GetEffectivePermissionsForPathRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Permissions: list[PrincipalResourcePermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[PrincipalResourcePermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEffectivePermissionsForPathResponse:
     Optional[list[PrincipalResourcePermissions]] Permissions
     Optional[str] NextToken
@@ -724,8 +743,9 @@ struct GetLFTagExpressionRequest:
     str Name
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) Expression: list[LFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLFTagExpressionResponse:
     Optional[str] Name
     Optional[str] Description
@@ -738,8 +758,9 @@ struct GetLFTagRequest:
     Optional[str] CatalogId
     str TagKey
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLFTagResponse:
     Optional[str] CatalogId
     Optional[str] TagKey
@@ -772,8 +793,9 @@ struct GetQueryStatisticsResponse:
 struct GetRLSPolicyRequest:
     str Name
 
-# no @derive(Json): member(s) RLSPolicy: RLSPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RLSPolicy: RLSPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRLSPolicyResponse:
     Optional[RLSPolicy] RLSPolicy
 
@@ -784,8 +806,9 @@ struct GetResourceLFTagsRequest:
     Resource Resource
     Optional[bool] ShowAssignedLFTags
 
-# no @derive(Json): member(s) LFTagOnDatabase: list[LFTagPair], LFTagsOnTable: list[LFTagPair], LFTagsOnColumns: list[ColumnLFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTagOnDatabase: list[LFTagPair], LFTagsOnTable: list[LFTagPair], LFTagsOnColumns: list[ColumnLFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceLFTagsResponse:
     Optional[list[LFTagPair]] LFTagOnDatabase
     Optional[list[LFTagPair]] LFTagsOnTable
@@ -803,8 +826,9 @@ struct GetTableObjectsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Objects: list[PartitionObjects] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Objects: list[PartitionObjects] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableObjectsResponse:
     Optional[list[PartitionObjects]] Objects
     Optional[str] NextToken
@@ -817,8 +841,9 @@ struct GetTemporaryDataLocationCredentialsRequest:
     Optional[list[str]] DataLocations
     Optional[CredentialsScope] CredentialsScope
 
-# no @derive(Json): member(s) AccessibleDataLocations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessibleDataLocations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemporaryDataLocationCredentialsResponse:
     Optional[TemporaryCredentials] Credentials
     Optional[list[str]] AccessibleDataLocations
@@ -852,8 +877,9 @@ struct GetTemporaryGlueTableCredentialsRequest:
     Optional[str] S3Path
     Optional[QuerySessionContext] QuerySessionContext
 
-# no @derive(Json): member(s) VendedS3Path: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VendedS3Path: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemporaryGlueTableCredentialsResponse:
     Optional[str] AccessKeyId
     Optional[str] SecretAccessKey
@@ -879,8 +905,9 @@ struct GetWorkUnitsRequest:
     Optional[int64] PageSize
     str QueryId
 
-# no @derive(Json): member(s) WorkUnitRanges: list[WorkUnitRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkUnitRanges: list[WorkUnitRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkUnitsResponse:
     Optional[str] NextToken
     str QueryId
@@ -913,20 +940,23 @@ struct InternalServiceException:
 struct InvalidInputException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTag:
     str TagKey
     list[str] TagValues
 
-# no @derive(Json): member(s) LFTag: LFTagPair not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTag: LFTagPair not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTagError:
     Optional[LFTagPair] LFTag
     Optional[ErrorDetail] Error
 
-# no @derive(Json): member(s) Expression: list[LFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTagExpression:
     Optional[str] Name
     Optional[str] Description
@@ -938,30 +968,34 @@ struct LFTagExpressionResource:
     Optional[str] CatalogId
     str Name
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTagKeyResource:
     Optional[str] CatalogId
     str TagKey
     list[str] TagValues
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTagPair:
     Optional[str] CatalogId
     str TagKey
     list[str] TagValues
 
-# no @derive(Json): member(s) Expression: list[LFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTagPolicyResource:
     Optional[str] CatalogId
     ResourceType ResourceType
     Optional[list[LFTag]] Expression
     Optional[str] ExpressionName
 
-# no @derive(Json): member(s) Resource: Resource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resource: Resource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LakeFormationOptInsInfo:
     Optional[Resource] Resource
     Optional[DataLakePrincipal] Principal
@@ -976,8 +1010,9 @@ struct ListDataCellsFilterRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataCellsFilters: list[DataCellsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataCellsFilters: list[DataCellsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataCellsFilterResponse:
     Optional[list[DataCellsFilter]] DataCellsFilters
     Optional[str] NextToken
@@ -989,8 +1024,9 @@ struct ListLFTagExpressionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LFTagExpressions: list[LFTagExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTagExpressions: list[LFTagExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLFTagExpressionsResponse:
     Optional[list[LFTagExpression]] LFTagExpressions
     Optional[str] NextToken
@@ -1003,8 +1039,9 @@ struct ListLFTagsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LFTags: list[LFTagPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTags: list[LFTagPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLFTagsResponse:
     Optional[list[LFTagPair]] LFTags
     Optional[str] NextToken
@@ -1017,8 +1054,9 @@ struct ListLakeFormationOptInsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LakeFormationOptInsInfoList: list[LakeFormationOptInsInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LakeFormationOptInsInfoList: list[LakeFormationOptInsInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLakeFormationOptInsResponse:
     Optional[list[LakeFormationOptInsInfo]] LakeFormationOptInsInfoList
     Optional[str] NextToken
@@ -1034,8 +1072,9 @@ struct ListPermissionsRequest:
     Optional[int64] MaxResults
     Optional[str] IncludeRelated
 
-# no @derive(Json): member(s) PrincipalResourcePermissions: list[PrincipalResourcePermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrincipalResourcePermissions: list[PrincipalResourcePermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionsResponse:
     Optional[list[PrincipalResourcePermissions]] PrincipalResourcePermissions
     Optional[str] NextToken
@@ -1046,8 +1085,9 @@ struct ListRLSPoliciesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RLSPolicies: list[RLSPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RLSPolicies: list[RLSPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRLSPoliciesResponse:
     Optional[list[RLSPolicy]] RLSPolicies
     Optional[str] NextToken
@@ -1061,8 +1101,9 @@ struct ListRLSPolicyAttachmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RLSPolicyAttachments: list[RLSPolicyAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RLSPolicyAttachments: list[RLSPolicyAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRLSPolicyAttachmentsResponse:
     Optional[list[RLSPolicyAttachment]] RLSPolicyAttachments
     Optional[str] NextToken
@@ -1074,8 +1115,9 @@ struct ListResourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceInfoList: list[ResourceInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceInfoList: list[ResourceInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesResponse:
     Optional[list[ResourceInfo]] ResourceInfoList
     Optional[str] NextToken
@@ -1090,8 +1132,9 @@ struct ListTableStorageOptimizersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) StorageOptimizerList: list[StorageOptimizer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageOptimizerList: list[StorageOptimizer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTableStorageOptimizersResponse:
     Optional[list[StorageOptimizer]] StorageOptimizerList
     Optional[str] NextToken
@@ -1104,8 +1147,9 @@ struct ListTransactionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Transactions: list[TransactionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transactions: list[TransactionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTransactionsResponse:
     Optional[list[TransactionDescription]] Transactions
     Optional[str] NextToken
@@ -1114,14 +1158,16 @@ struct ListTransactionsResponse:
 struct OperationTimeoutException:
     Optional[str] Message
 
-# no @derive(Json): member(s) PartitionValues: list[str], Objects: list[TableObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str], Objects: list[TableObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionObjects:
     Optional[list[str]] PartitionValues
     Optional[list[TableObject]] Objects
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionValueList:
     list[str] Values
 
@@ -1136,14 +1182,16 @@ struct PlanningStatistics:
     Optional[int64] QueueTimeMillis
     Optional[int64] WorkUnitsGeneratedCount
 
-# no @derive(Json): member(s) Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrincipalPermissions:
     Optional[DataLakePrincipal] Principal
     Optional[list[Permission]] Permissions
 
-# no @derive(Json): member(s) Resource: Resource, Permissions: list[Permission], PermissionsWithGrantOption: list[Permission], AdditionalDetails: DetailsMap not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resource: Resource, Permissions: list[Permission], PermissionsWithGrantOption: list[Permission], AdditionalDetails: DetailsMap not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrincipalResourcePermissions:
     Optional[DataLakePrincipal] Principal
     Optional[Resource] Resource
@@ -1165,8 +1213,9 @@ struct PutDataLakeSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) QueryParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryPlanningContext:
     Optional[str] CatalogId
     str DatabaseName
@@ -1174,8 +1223,9 @@ struct QueryPlanningContext:
     Optional[dict[str, str]] QueryParameters
     Optional[str] TransactionId
 
-# no @derive(Json): member(s) AdditionalContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySessionContext:
     Optional[str] QueryId
     Optional[DateTime] QueryStartTime
@@ -1183,16 +1233,18 @@ struct QuerySessionContext:
     Optional[str] QueryAuthorizationId
     Optional[dict[str, str]] AdditionalContext
 
-# no @derive(Json): member(s) AttachmentColumns: list[Column] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachmentColumns: list[Column] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RLSPolicy:
     Optional[str] CatalogId
     Optional[str] Name
     Optional[list[Column]] AttachmentColumns
     Optional[str] FilterExpression
 
-# no @derive(Json): member(s) Resource: Resource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resource: Resource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RLSPolicyAttachment:
     Optional[str] CatalogId
     Optional[str] PolicyName
@@ -1237,13 +1289,15 @@ struct RemoveLFTagsFromResourceRequest:
     Resource Resource
     list[LFTagPair] LFTags
 
-# no @derive(Json): member(s) Failures: list[LFTagError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[LFTagError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveLFTagsFromResourceResponse:
     Optional[list[LFTagError]] Failures
 
-# no @derive(Json): member(s) TableWithColumns: TableWithColumnsResource, LFTag: LFTagKeyResource, LFTagPolicy: LFTagPolicyResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableWithColumns: TableWithColumnsResource, LFTag: LFTagKeyResource, LFTagPolicy: LFTagPolicyResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[CatalogResource] Catalog
     Optional[DatabaseResource] Database
@@ -1303,8 +1357,9 @@ struct SearchDatabasesByLFTagsRequest:
     Optional[str] CatalogId
     list[LFTag] Expression
 
-# no @derive(Json): member(s) DatabaseList: list[TaggedDatabase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseList: list[TaggedDatabase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDatabasesByLFTagsResponse:
     Optional[str] NextToken
     Optional[list[TaggedDatabase]] DatabaseList
@@ -1317,14 +1372,16 @@ struct SearchTablesByLFTagsRequest:
     Optional[str] CatalogId
     list[LFTag] Expression
 
-# no @derive(Json): member(s) TableList: list[TaggedTable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableList: list[TaggedTable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTablesByLFTagsResponse:
     Optional[str] NextToken
     Optional[list[TaggedTable]] TableList
 
-# no @derive(Json): member(s) Redshift: list[RedshiftScopeUnion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Redshift: list[RedshiftScopeUnion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceIntegrationUnion:
     Optional[list[RedshiftScopeUnion]] Redshift
 
@@ -1351,8 +1408,9 @@ struct StartTransactionResponse:
 struct StatisticsNotReadyYetException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Config: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageOptimizer:
     Optional[OptimizerType] StorageOptimizerType
     Optional[dict[str, str]] Config
@@ -1378,8 +1436,9 @@ struct TableWildcard:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ColumnNames: list[str], ColumnWildcard: ColumnWildcard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNames: list[str], ColumnWildcard: ColumnWildcard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableWithColumnsResource:
     Optional[str] CatalogId
     str DatabaseName
@@ -1387,14 +1446,16 @@ struct TableWithColumnsResource:
     Optional[list[str]] ColumnNames
     Optional[ColumnWildcard] ColumnWildcard
 
-# no @derive(Json): member(s) LFTags: list[LFTagPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTags: list[LFTagPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaggedDatabase:
     Optional[DatabaseResource] Database
     Optional[list[LFTagPair]] LFTags
 
-# no @derive(Json): member(s) LFTagOnDatabase: list[LFTagPair], LFTagsOnTable: list[LFTagPair], LFTagsOnColumns: list[ColumnLFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTagOnDatabase: list[LFTagPair], LFTagsOnTable: list[LFTagPair], LFTagsOnColumns: list[ColumnLFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaggedTable:
     Optional[TableResource] Table
     Optional[list[LFTagPair]] LFTagOnDatabase
@@ -1547,8 +1608,9 @@ struct WorkUnitRange:
 struct WorkUnitsNotReadyYetException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AddObject: AddObjectInput, DeleteObject: DeleteObjectInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddObject: AddObjectInput, DeleteObject: DeleteObjectInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteOperation:
     Optional[AddObjectInput] AddObject
     Optional[DeleteObjectInput] DeleteObject
@@ -1627,46 +1689,7 @@ def lakeformation_error_from_code(str code) -> LakeFormationError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddLFTagsToResource (document member `Resource: Resource` is not serializable by derive)
-#   AttachRLSPolicy (document member `Resource: Resource` is not serializable by derive)
-#   BatchGrantPermissions (document member `Entries: list[BatchPermissionsRequestEntry]` is not serializable by derive)
-#   BatchRevokePermissions (document member `Entries: list[BatchPermissionsRequestEntry]` is not serializable by derive)
-#   CreateDataCellsFilter (document member `TableData: DataCellsFilter` is not serializable by derive)
-#   CreateLFTag (document member `TagValues: list[str]` is not serializable by derive)
-#   CreateLFTagExpression (document member `Expression: list[LFTag]` is not serializable by derive)
-#   CreateLakeFormationIdentityCenterConfiguration (document member `ExternalFiltering: ExternalFilteringConfiguration` is not serializable by derive)
-#   CreateLakeFormationOptIn (document member `Resource: Resource` is not serializable by derive)
-#   CreateRLSPolicy (document member `AttachmentColumns: list[Column]` is not serializable by derive)
-#   DeleteLakeFormationOptIn (document member `Resource: Resource` is not serializable by derive)
-#   DeleteObjectsOnCancel (document member `Objects: list[VirtualObject]` is not serializable by derive)
-#   DetachRLSPolicy (document member `Resource: Resource` is not serializable by derive)
-#   GetResourceLFTags (document member `Resource: Resource` is not serializable by derive)
-#   GetTemporaryDataLocationCredentials (document member `DataLocations: list[str]` is not serializable by derive)
-#   GetTemporaryGluePartitionCredentials (document member `Partition: PartitionValueList` is not serializable by derive)
-#   GetTemporaryGlueTableCredentials (document member `Permissions: list[Permission]` is not serializable by derive)
-#   GrantPermissions (document member `Resource: Resource` is not serializable by derive)
-#   ListLakeFormationOptIns (document member `Resource: Resource` is not serializable by derive)
-#   ListPermissions (document member `Resource: Resource` is not serializable by derive)
-#   ListRLSPolicyAttachments (document member `Resource: Resource` is not serializable by derive)
-#   ListResources (document member `FilterConditionList: list[FilterCondition]` is not serializable by derive)
-#   PutDataLakeSettings (document member `DataLakeSettings: DataLakeSettings` is not serializable by derive)
-#   RemoveLFTagsFromResource (document member `Resource: Resource` is not serializable by derive)
-#   RevokePermissions (document member `Resource: Resource` is not serializable by derive)
-#   SearchDatabasesByLFTags (document member `Expression: list[LFTag]` is not serializable by derive)
-#   SearchTablesByLFTags (document member `Expression: list[LFTag]` is not serializable by derive)
-#   StartQueryPlanning (document member `QueryPlanningContext: QueryPlanningContext` is not serializable by derive)
-#   UpdateDataCellsFilter (document member `TableData: DataCellsFilter` is not serializable by derive)
-#   UpdateLFTag (document member `TagValuesToDelete: list[str]` is not serializable by derive)
-#   UpdateLFTagExpression (document member `Expression: list[LFTag]` is not serializable by derive)
-#   UpdateLakeFormationIdentityCenterConfiguration (document member `ShareRecipients: list[DataLakePrincipal]` is not serializable by derive)
-#   UpdateTableObjects (document member `WriteOperations: list[WriteOperation]` is not serializable by derive)
-#   UpdateTableStorageOptimizer (document member `StorageOptimizerConfig: dict[OptimizerType, dict[str, str]]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListRLSPolicyAttachments (operation not generated)
-#   SearchDatabasesByLFTags (operation not generated)
-#   SearchTablesByLFTags (operation not generated)
+#   UpdateTableStorageOptimizer (document member `StorageOptimizerConfig: dict[OptimizerType, dict[str, str]]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1895,10 +1918,431 @@ struct UpdateResourceDocument:
     Optional[bool] HybridAccessEnabled
     Optional[str] ExpectedResourceOwnerAccount
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def lakeformation_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def lakeformation_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def lakeformation_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddObjectInput to a compact JSON object (declaration order).
+def add_object_input_to_json(AddObjectInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Uri\":" + lakeformation_json_str(v.Uri))
+    parts.append("\"ETag\":" + lakeformation_json_str(v.ETag))
+    parts.append("\"Size\":" + str(v.Size))
+    if v.PartitionValues.is_some():
+        auto u0 = v.PartitionValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lakeformation_json_str(x1))
+        parts.append("\"PartitionValues\":" + lakeformation_json_arr(e1))
+    return lakeformation_json_obj(parts)
+
+# Serialize BatchPermissionsRequestEntry to a compact JSON object (declaration order).
+def batch_permissions_request_entry_to_json(BatchPermissionsRequestEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + lakeformation_json_str(v.Id))
+    if v.Principal.is_some():
+        auto u0 = v.Principal.unwrap()
+        parts.append("\"Principal\":" + u0.to_json())
+    if v.Resource.is_some():
+        auto u1 = v.Resource.unwrap()
+        parts.append("\"Resource\":" + resource_to_json(u1))
+    if v.Permissions.is_some():
+        auto u2 = v.Permissions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Permissions\":" + lakeformation_json_arr(e3))
+    if v.Condition.is_some():
+        auto u4 = v.Condition.unwrap()
+        parts.append("\"Condition\":" + u4.to_json())
+    if v.PermissionsWithGrantOption.is_some():
+        auto u5 = v.PermissionsWithGrantOption.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"PermissionsWithGrantOption\":" + lakeformation_json_arr(e6))
+    return lakeformation_json_obj(parts)
+
+# Serialize ColumnWildcard to a compact JSON object (declaration order).
+def column_wildcard_to_json(ColumnWildcard v) -> str:
+    list[str] parts = []
+    if v.ExcludedColumnNames.is_some():
+        auto u0 = v.ExcludedColumnNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lakeformation_json_str(x1))
+        parts.append("\"ExcludedColumnNames\":" + lakeformation_json_arr(e1))
+    return lakeformation_json_obj(parts)
+
+# Serialize DataCellsFilter to a compact JSON object (declaration order).
+def data_cells_filter_to_json(DataCellsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"TableCatalogId\":" + lakeformation_json_str(v.TableCatalogId))
+    parts.append("\"DatabaseName\":" + lakeformation_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + lakeformation_json_str(v.TableName))
+    parts.append("\"Name\":" + lakeformation_json_str(v.Name))
+    if v.RowFilter.is_some():
+        auto u0 = v.RowFilter.unwrap()
+        parts.append("\"RowFilter\":" + u0.to_json())
+    if v.ColumnNames.is_some():
+        auto u1 = v.ColumnNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lakeformation_json_str(x2))
+        parts.append("\"ColumnNames\":" + lakeformation_json_arr(e2))
+    if v.ColumnWildcard.is_some():
+        auto u3 = v.ColumnWildcard.unwrap()
+        parts.append("\"ColumnWildcard\":" + column_wildcard_to_json(u3))
+    if v.VersionId.is_some():
+        auto u4 = v.VersionId.unwrap()
+        parts.append("\"VersionId\":" + lakeformation_json_str(u4))
+    return lakeformation_json_obj(parts)
+
+# Serialize DataLakeSettings to a compact JSON object (declaration order).
+def data_lake_settings_to_json(DataLakeSettings v) -> str:
+    list[str] parts = []
+    if v.DataLakeAdmins.is_some():
+        auto u0 = v.DataLakeAdmins.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DataLakeAdmins\":" + lakeformation_json_arr(e1))
+    if v.ReadOnlyAdmins.is_some():
+        auto u2 = v.ReadOnlyAdmins.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ReadOnlyAdmins\":" + lakeformation_json_arr(e3))
+    if v.CreateDatabaseDefaultPermissions.is_some():
+        auto u4 = v.CreateDatabaseDefaultPermissions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(principal_permissions_to_json(x5))
+        parts.append("\"CreateDatabaseDefaultPermissions\":" + lakeformation_json_arr(e5))
+    if v.CreateTableDefaultPermissions.is_some():
+        auto u6 = v.CreateTableDefaultPermissions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(principal_permissions_to_json(x7))
+        parts.append("\"CreateTableDefaultPermissions\":" + lakeformation_json_arr(e7))
+    if v.Parameters.is_some():
+        auto u8 = v.Parameters.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(lakeformation_json_str(k9) + ":" + lakeformation_json_str(u8[k9]))
+        parts.append("\"Parameters\":" + lakeformation_json_obj(m9))
+    if v.TrustedResourceOwners.is_some():
+        auto u10 = v.TrustedResourceOwners.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(lakeformation_json_str(x11))
+        parts.append("\"TrustedResourceOwners\":" + lakeformation_json_arr(e11))
+    if v.AllowExternalDataFiltering.is_some():
+        auto u12 = v.AllowExternalDataFiltering.unwrap()
+        parts.append("\"AllowExternalDataFiltering\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.AllowFullTableExternalDataAccess.is_some():
+        auto u13 = v.AllowFullTableExternalDataAccess.unwrap()
+        parts.append("\"AllowFullTableExternalDataAccess\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.ExternalDataFilteringAllowList.is_some():
+        auto u14 = v.ExternalDataFilteringAllowList.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"ExternalDataFilteringAllowList\":" + lakeformation_json_arr(e15))
+    if v.AuthorizedSessionTagValueList.is_some():
+        auto u16 = v.AuthorizedSessionTagValueList.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(lakeformation_json_str(x17))
+        parts.append("\"AuthorizedSessionTagValueList\":" + lakeformation_json_arr(e17))
+    return lakeformation_json_obj(parts)
+
+# Serialize DeleteObjectInput to a compact JSON object (declaration order).
+def delete_object_input_to_json(DeleteObjectInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Uri\":" + lakeformation_json_str(v.Uri))
+    if v.ETag.is_some():
+        auto u0 = v.ETag.unwrap()
+        parts.append("\"ETag\":" + lakeformation_json_str(u0))
+    if v.PartitionValues.is_some():
+        auto u1 = v.PartitionValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lakeformation_json_str(x2))
+        parts.append("\"PartitionValues\":" + lakeformation_json_arr(e2))
+    return lakeformation_json_obj(parts)
+
+# Serialize ExternalFilteringConfiguration to a compact JSON object (declaration order).
+def external_filtering_configuration_to_json(ExternalFilteringConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Status\":" + v.Status.to_json())
+    list[str] e0 = []
+    for x0 in v.AuthorizedTargets:
+        e0.append(lakeformation_json_str(x0))
+    parts.append("\"AuthorizedTargets\":" + lakeformation_json_arr(e0))
+    return lakeformation_json_obj(parts)
+
+# Serialize FilterCondition to a compact JSON object (declaration order).
+def filter_condition_to_json(FilterCondition v) -> str:
+    list[str] parts = []
+    if v.Field.is_some():
+        auto u0 = v.Field.unwrap()
+        parts.append("\"Field\":" + u0.to_json())
+    if v.ComparisonOperator.is_some():
+        auto u1 = v.ComparisonOperator.unwrap()
+        parts.append("\"ComparisonOperator\":" + u1.to_json())
+    if v.StringValueList.is_some():
+        auto u2 = v.StringValueList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lakeformation_json_str(x3))
+        parts.append("\"StringValueList\":" + lakeformation_json_arr(e3))
+    return lakeformation_json_obj(parts)
+
+# Serialize LFTag to a compact JSON object (declaration order).
+def lf_tag_to_json(LFTag v) -> str:
+    list[str] parts = []
+    parts.append("\"TagKey\":" + lakeformation_json_str(v.TagKey))
+    list[str] e0 = []
+    for x0 in v.TagValues:
+        e0.append(lakeformation_json_str(x0))
+    parts.append("\"TagValues\":" + lakeformation_json_arr(e0))
+    return lakeformation_json_obj(parts)
+
+# Serialize LFTagKeyResource to a compact JSON object (declaration order).
+def lf_tag_key_resource_to_json(LFTagKeyResource v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+    parts.append("\"TagKey\":" + lakeformation_json_str(v.TagKey))
+    list[str] e1 = []
+    for x1 in v.TagValues:
+        e1.append(lakeformation_json_str(x1))
+    parts.append("\"TagValues\":" + lakeformation_json_arr(e1))
+    return lakeformation_json_obj(parts)
+
+# Serialize LFTagPair to a compact JSON object (declaration order).
+def lf_tag_pair_to_json(LFTagPair v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+    parts.append("\"TagKey\":" + lakeformation_json_str(v.TagKey))
+    list[str] e1 = []
+    for x1 in v.TagValues:
+        e1.append(lakeformation_json_str(x1))
+    parts.append("\"TagValues\":" + lakeformation_json_arr(e1))
+    return lakeformation_json_obj(parts)
+
+# Serialize LFTagPolicyResource to a compact JSON object (declaration order).
+def lf_tag_policy_resource_to_json(LFTagPolicyResource v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    if v.Expression.is_some():
+        auto u1 = v.Expression.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lf_tag_to_json(x2))
+        parts.append("\"Expression\":" + lakeformation_json_arr(e2))
+    if v.ExpressionName.is_some():
+        auto u3 = v.ExpressionName.unwrap()
+        parts.append("\"ExpressionName\":" + lakeformation_json_str(u3))
+    return lakeformation_json_obj(parts)
+
+# Serialize PartitionValueList to a compact JSON object (declaration order).
+def partition_value_list_to_json(PartitionValueList v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(lakeformation_json_str(x0))
+    parts.append("\"Values\":" + lakeformation_json_arr(e0))
+    return lakeformation_json_obj(parts)
+
+# Serialize PrincipalPermissions to a compact JSON object (declaration order).
+def principal_permissions_to_json(PrincipalPermissions v) -> str:
+    list[str] parts = []
+    if v.Principal.is_some():
+        auto u0 = v.Principal.unwrap()
+        parts.append("\"Principal\":" + u0.to_json())
+    if v.Permissions.is_some():
+        auto u1 = v.Permissions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Permissions\":" + lakeformation_json_arr(e2))
+    return lakeformation_json_obj(parts)
+
+# Serialize QueryPlanningContext to a compact JSON object (declaration order).
+def query_planning_context_to_json(QueryPlanningContext v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+    parts.append("\"DatabaseName\":" + lakeformation_json_str(v.DatabaseName))
+    if v.QueryAsOfTime.is_some():
+        auto u1 = v.QueryAsOfTime.unwrap()
+        parts.append("\"QueryAsOfTime\":" + str(datetime.to_timestamp(u1)))
+    if v.QueryParameters.is_some():
+        auto u2 = v.QueryParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(lakeformation_json_str(k3) + ":" + lakeformation_json_str(u2[k3]))
+        parts.append("\"QueryParameters\":" + lakeformation_json_obj(m3))
+    if v.TransactionId.is_some():
+        auto u4 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + lakeformation_json_str(u4))
+    return lakeformation_json_obj(parts)
+
+# Serialize QuerySessionContext to a compact JSON object (declaration order).
+def query_session_context_to_json(QuerySessionContext v) -> str:
+    list[str] parts = []
+    if v.QueryId.is_some():
+        auto u0 = v.QueryId.unwrap()
+        parts.append("\"QueryId\":" + lakeformation_json_str(u0))
+    if v.QueryStartTime.is_some():
+        auto u1 = v.QueryStartTime.unwrap()
+        parts.append("\"QueryStartTime\":" + str(datetime.to_timestamp(u1)))
+    if v.ClusterId.is_some():
+        auto u2 = v.ClusterId.unwrap()
+        parts.append("\"ClusterId\":" + lakeformation_json_str(u2))
+    if v.QueryAuthorizationId.is_some():
+        auto u3 = v.QueryAuthorizationId.unwrap()
+        parts.append("\"QueryAuthorizationId\":" + lakeformation_json_str(u3))
+    if v.AdditionalContext.is_some():
+        auto u4 = v.AdditionalContext.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(lakeformation_json_str(k5) + ":" + lakeformation_json_str(u4[k5]))
+        parts.append("\"AdditionalContext\":" + lakeformation_json_obj(m5))
+    return lakeformation_json_obj(parts)
+
+# Serialize Resource to a compact JSON object (declaration order).
+def resource_to_json(Resource v) -> str:
+    list[str] parts = []
+    if v.Catalog.is_some():
+        auto u0 = v.Catalog.unwrap()
+        parts.append("\"Catalog\":" + u0.to_json())
+    if v.Database.is_some():
+        auto u1 = v.Database.unwrap()
+        parts.append("\"Database\":" + u1.to_json())
+    if v.Table.is_some():
+        auto u2 = v.Table.unwrap()
+        parts.append("\"Table\":" + u2.to_json())
+    if v.TableWithColumns.is_some():
+        auto u3 = v.TableWithColumns.unwrap()
+        parts.append("\"TableWithColumns\":" + table_with_columns_resource_to_json(u3))
+    if v.DataLocation.is_some():
+        auto u4 = v.DataLocation.unwrap()
+        parts.append("\"DataLocation\":" + u4.to_json())
+    if v.DataCellsFilter.is_some():
+        auto u5 = v.DataCellsFilter.unwrap()
+        parts.append("\"DataCellsFilter\":" + u5.to_json())
+    if v.LFTag.is_some():
+        auto u6 = v.LFTag.unwrap()
+        parts.append("\"LFTag\":" + lf_tag_key_resource_to_json(u6))
+    if v.LFTagPolicy.is_some():
+        auto u7 = v.LFTagPolicy.unwrap()
+        parts.append("\"LFTagPolicy\":" + lf_tag_policy_resource_to_json(u7))
+    if v.LFTagExpression.is_some():
+        auto u8 = v.LFTagExpression.unwrap()
+        parts.append("\"LFTagExpression\":" + u8.to_json())
+    if v.RLSPolicy.is_some():
+        auto u9 = v.RLSPolicy.unwrap()
+        parts.append("\"RLSPolicy\":" + u9.to_json())
+    return lakeformation_json_obj(parts)
+
+# Serialize ServiceIntegrationUnion to a compact JSON object (declaration order).
+def service_integration_union_to_json(ServiceIntegrationUnion v) -> str:
+    list[str] parts = []
+    if v.Redshift.is_some():
+        auto u0 = v.Redshift.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Redshift\":" + lakeformation_json_arr(e1))
+    return lakeformation_json_obj(parts)
+
+# Serialize TableWithColumnsResource to a compact JSON object (declaration order).
+def table_with_columns_resource_to_json(TableWithColumnsResource v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+    parts.append("\"DatabaseName\":" + lakeformation_json_str(v.DatabaseName))
+    parts.append("\"Name\":" + lakeformation_json_str(v.Name))
+    if v.ColumnNames.is_some():
+        auto u1 = v.ColumnNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lakeformation_json_str(x2))
+        parts.append("\"ColumnNames\":" + lakeformation_json_arr(e2))
+    if v.ColumnWildcard.is_some():
+        auto u3 = v.ColumnWildcard.unwrap()
+        parts.append("\"ColumnWildcard\":" + column_wildcard_to_json(u3))
+    return lakeformation_json_obj(parts)
+
+# Serialize WriteOperation to a compact JSON object (declaration order).
+def write_operation_to_json(WriteOperation v) -> str:
+    list[str] parts = []
+    if v.AddObject.is_some():
+        auto u0 = v.AddObject.unwrap()
+        parts.append("\"AddObject\":" + add_object_input_to_json(u0))
+    if v.DeleteObject.is_some():
+        auto u1 = v.DeleteObject.unwrap()
+        parts.append("\"DeleteObject\":" + delete_object_input_to_json(u1))
+    return lakeformation_json_obj(parts)
+
 # A bound LakeFormation client: credentials + region, threaded into every operation.
 struct LakeFormationClient:
     core.Credentials creds
     str region
+
+    # AddLFTagsToResource  POST /AddLFTagsToResource
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def add_lf_tags_to_resource(self, AddLFTagsToResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/AddLFTagsToResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        list[str] e1 = []
+        for x1 in input.LFTags:
+            e1.append(lf_tag_pair_to_json(x1))
+        parts.append("\"LFTags\":" + lakeformation_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # AssumeDecoratedRoleWithSAML  POST /AssumeDecoratedRoleWithSAML
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -1907,6 +2351,58 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/AssumeDecoratedRoleWithSAML", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssumeDecoratedRoleWithSAMLDocument(SAMLAssertion=input.SAMLAssertion, RoleArn=input.RoleArn, PrincipalArn=input.PrincipalArn, DurationSeconds=input.DurationSeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # AttachRLSPolicy  POST /AttachRLSPolicy
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def attach_rls_policy(self, AttachRLSPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/AttachRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lakeformation_json_str(input.Name))
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        if input.Principal.is_some():
+            auto u0 = input.Principal.unwrap()
+            parts.append("\"Principal\":" + u0.to_json())
+        if input.Condition.is_some():
+            auto u1 = input.Condition.unwrap()
+            parts.append("\"Condition\":" + u1.to_json())
+        if input.SetDefault.is_some():
+            auto u2 = input.SetDefault.unwrap()
+            parts.append("\"SetDefault\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # BatchGrantPermissions  POST /BatchGrantPermissions
+    # errors: InvalidInputException, OperationTimeoutException
+    def batch_grant_permissions(self, BatchGrantPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGrantPermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.Entries:
+            e1.append(batch_permissions_request_entry_to_json(x1))
+        parts.append("\"Entries\":" + lakeformation_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # BatchRevokePermissions  POST /BatchRevokePermissions
+    # errors: InvalidInputException, OperationTimeoutException
+    def batch_revoke_permissions(self, BatchRevokePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchRevokePermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.Entries:
+            e1.append(batch_permissions_request_entry_to_json(x1))
+        parts.append("\"Entries\":" + lakeformation_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # CancelTransaction  POST /CancelTransaction
@@ -1925,6 +2421,112 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/CommitTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CommitTransactionDocument(TransactionId=input.TransactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # CreateDataCellsFilter  POST /CreateDataCellsFilter
+    # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_data_cells_filter(self, CreateDataCellsFilterRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TableData\":" + data_cells_filter_to_json(input.TableData))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # CreateLFTag  POST /CreateLFTag
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_lf_tag(self, CreateLFTagRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLFTag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"TagKey\":" + lakeformation_json_str(input.TagKey))
+        list[str] e1 = []
+        for x1 in input.TagValues:
+            e1.append(lakeformation_json_str(x1))
+        parts.append("\"TagValues\":" + lakeformation_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # CreateLFTagExpression  POST /CreateLFTagExpression
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_lf_tag_expression(self, CreateLFTagExpressionRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLFTagExpression", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lakeformation_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + lakeformation_json_str(u0))
+        if input.CatalogId.is_some():
+            auto u1 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.Expression:
+            e2.append(lf_tag_to_json(x2))
+        parts.append("\"Expression\":" + lakeformation_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # CreateLakeFormationIdentityCenterConfiguration  POST /CreateLakeFormationIdentityCenterConfiguration
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def create_lake_formation_identity_center_configuration(self, CreateLakeFormationIdentityCenterConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        if input.InstanceArn.is_some():
+            auto u1 = input.InstanceArn.unwrap()
+            parts.append("\"InstanceArn\":" + lakeformation_json_str(u1))
+        if input.ExternalFiltering.is_some():
+            auto u2 = input.ExternalFiltering.unwrap()
+            parts.append("\"ExternalFiltering\":" + external_filtering_configuration_to_json(u2))
+        if input.ShareRecipients.is_some():
+            auto u3 = input.ShareRecipients.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"ShareRecipients\":" + lakeformation_json_arr(e4))
+        if input.ServiceIntegrations.is_some():
+            auto u5 = input.ServiceIntegrations.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(service_integration_union_to_json(x6))
+            parts.append("\"ServiceIntegrations\":" + lakeformation_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # CreateLakeFormationOptIn  POST /CreateLakeFormationOptIn
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_lake_formation_opt_in(self, CreateLakeFormationOptInRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLakeFormationOptIn", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Principal\":" + input.Principal.to_json())
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        if input.Condition.is_some():
+            auto u0 = input.Condition.unwrap()
+            parts.append("\"Condition\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # CreateRLSPolicy  POST /CreateRLSPolicy
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_rls_policy(self, CreateRLSPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lakeformation_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.AttachmentColumns:
+            e0.append(x0.to_json())
+        parts.append("\"AttachmentColumns\":" + lakeformation_json_arr(e0))
+        parts.append("\"FilterExpression\":" + lakeformation_json_str(input.FilterExpression))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # DeleteDataCellsFilter  POST /DeleteDataCellsFilter
@@ -1961,6 +2563,39 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/DeleteLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLakeFormationIdentityCenterConfigurationDocument(CatalogId=input.CatalogId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # DeleteLakeFormationOptIn  POST /DeleteLakeFormationOptIn
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def delete_lake_formation_opt_in(self, DeleteLakeFormationOptInRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLakeFormationOptIn", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Principal\":" + input.Principal.to_json())
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        if input.Condition.is_some():
+            auto u0 = input.Condition.unwrap()
+            parts.append("\"Condition\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # DeleteObjectsOnCancel  POST /DeleteObjectsOnCancel
+    # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, TransactionCanceledException, TransactionCommittedException
+    def delete_objects_on_cancel(self, DeleteObjectsOnCancelRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteObjectsOnCancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"DatabaseName\":" + lakeformation_json_str(input.DatabaseName))
+        parts.append("\"TableName\":" + lakeformation_json_str(input.TableName))
+        parts.append("\"TransactionId\":" + lakeformation_json_str(input.TransactionId))
+        list[str] e1 = []
+        for x1 in input.Objects:
+            e1.append(x1.to_json())
+        parts.append("\"Objects\":" + lakeformation_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # DeleteRLSPolicy  POST /DeleteRLSPolicy
@@ -2006,6 +2641,26 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/DescribeTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeTransactionDocument(TransactionId=input.TransactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # DetachRLSPolicy  POST /DetachRLSPolicy
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def detach_rls_policy(self, DetachRLSPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DetachRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lakeformation_json_str(input.Name))
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        if input.Principal.is_some():
+            auto u0 = input.Principal.unwrap()
+            parts.append("\"Principal\":" + u0.to_json())
+        if input.Condition.is_some():
+            auto u1 = input.Condition.unwrap()
+            parts.append("\"Condition\":" + u1.to_json())
+        if input.RemoveDefault.is_some():
+            auto u2 = input.RemoveDefault.unwrap()
+            parts.append("\"RemoveDefault\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # ExtendTransaction  POST /ExtendTransaction
@@ -2096,6 +2751,22 @@ struct LakeFormationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
+    # GetResourceLFTags  POST /GetResourceLFTags
+    # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_resource_lf_tags(self, GetResourceLFTagsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetResourceLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        if input.ShowAssignedLFTags.is_some():
+            auto u1 = input.ShowAssignedLFTags.unwrap()
+            parts.append("\"ShowAssignedLFTags\":" + json.dumps(JsonValue.Bool(u1)))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
     # GetTableObjects  POST /GetTableObjects
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, TransactionCanceledException, TransactionCommittedException
     def get_table_objects(self, GetTableObjectsRequest input) -> str:
@@ -2103,6 +2774,93 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/GetTableObjects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTableObjectsDocument(CatalogId=input.CatalogId, DatabaseName=input.DatabaseName, TableName=input.TableName, TransactionId=input.TransactionId, QueryAsOfTime=input.QueryAsOfTime, PartitionPredicate=input.PartitionPredicate, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # GetTemporaryDataLocationCredentials  POST /GetTemporaryDataLocationCredentials
+    # errors: AccessDeniedException, ConflictException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_temporary_data_location_credentials(self, GetTemporaryDataLocationCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryDataLocationCredentials", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DurationSeconds.is_some():
+            auto u0 = input.DurationSeconds.unwrap()
+            parts.append("\"DurationSeconds\":" + str(u0))
+        if input.AuditContext.is_some():
+            auto u1 = input.AuditContext.unwrap()
+            parts.append("\"AuditContext\":" + u1.to_json())
+        if input.DataLocations.is_some():
+            auto u2 = input.DataLocations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(lakeformation_json_str(x3))
+            parts.append("\"DataLocations\":" + lakeformation_json_arr(e3))
+        if input.CredentialsScope.is_some():
+            auto u4 = input.CredentialsScope.unwrap()
+            parts.append("\"CredentialsScope\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # GetTemporaryGluePartitionCredentials  POST /GetTemporaryGluePartitionCredentials
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
+    def get_temporary_glue_partition_credentials(self, GetTemporaryGluePartitionCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGluePartitionCredentials", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TableArn\":" + lakeformation_json_str(input.TableArn))
+        parts.append("\"Partition\":" + partition_value_list_to_json(input.Partition))
+        if input.Permissions.is_some():
+            auto u0 = input.Permissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Permissions\":" + lakeformation_json_arr(e1))
+        if input.DurationSeconds.is_some():
+            auto u2 = input.DurationSeconds.unwrap()
+            parts.append("\"DurationSeconds\":" + str(u2))
+        if input.AuditContext.is_some():
+            auto u3 = input.AuditContext.unwrap()
+            parts.append("\"AuditContext\":" + u3.to_json())
+        if input.SupportedPermissionTypes.is_some():
+            auto u4 = input.SupportedPermissionTypes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"SupportedPermissionTypes\":" + lakeformation_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # GetTemporaryGlueTableCredentials  POST /GetTemporaryGlueTableCredentials
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
+    def get_temporary_glue_table_credentials(self, GetTemporaryGlueTableCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGlueTableCredentials", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TableArn\":" + lakeformation_json_str(input.TableArn))
+        if input.Permissions.is_some():
+            auto u0 = input.Permissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Permissions\":" + lakeformation_json_arr(e1))
+        if input.DurationSeconds.is_some():
+            auto u2 = input.DurationSeconds.unwrap()
+            parts.append("\"DurationSeconds\":" + str(u2))
+        if input.AuditContext.is_some():
+            auto u3 = input.AuditContext.unwrap()
+            parts.append("\"AuditContext\":" + u3.to_json())
+        if input.SupportedPermissionTypes.is_some():
+            auto u4 = input.SupportedPermissionTypes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"SupportedPermissionTypes\":" + lakeformation_json_arr(e5))
+        if input.S3Path.is_some():
+            auto u6 = input.S3Path.unwrap()
+            parts.append("\"S3Path\":" + lakeformation_json_str(u6))
+        if input.QuerySessionContext.is_some():
+            auto u7 = input.QuerySessionContext.unwrap()
+            parts.append("\"QuerySessionContext\":" + query_session_context_to_json(u7))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # GetWorkUnitResults  POST /GetWorkUnitResults
@@ -2121,6 +2879,33 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/GetWorkUnits", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkUnitsDocument(NextToken=input.NextToken, PageSize=input.PageSize, QueryId=input.QueryId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # GrantPermissions  POST /GrantPermissions
+    # errors: ConcurrentModificationException, EntityNotFoundException, InvalidInputException
+    def grant_permissions(self, GrantPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GrantPermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"Principal\":" + input.Principal.to_json())
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        list[str] e1 = []
+        for x1 in input.Permissions:
+            e1.append(x1.to_json())
+        parts.append("\"Permissions\":" + lakeformation_json_arr(e1))
+        if input.Condition.is_some():
+            auto u2 = input.Condition.unwrap()
+            parts.append("\"Condition\":" + u2.to_json())
+        if input.PermissionsWithGrantOption.is_some():
+            auto u3 = input.PermissionsWithGrantOption.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"PermissionsWithGrantOption\":" + lakeformation_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # ListDataCellsFilter  POST /ListDataCellsFilter
@@ -2150,6 +2935,57 @@ struct LakeFormationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
+    # ListLakeFormationOptIns  POST /ListLakeFormationOptIns
+    # errors: AccessDeniedException, AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_lake_formation_opt_ins(self, ListLakeFormationOptInsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLakeFormationOptIns", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Principal.is_some():
+            auto u0 = input.Principal.unwrap()
+            parts.append("\"Principal\":" + u0.to_json())
+        if input.Resource.is_some():
+            auto u1 = input.Resource.unwrap()
+            parts.append("\"Resource\":" + resource_to_json(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + lakeformation_json_str(u3))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # ListPermissions  POST /ListPermissions
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_permissions(self, ListPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        if input.Principal.is_some():
+            auto u1 = input.Principal.unwrap()
+            parts.append("\"Principal\":" + u1.to_json())
+        if input.ResourceType.is_some():
+            auto u2 = input.ResourceType.unwrap()
+            parts.append("\"ResourceType\":" + u2.to_json())
+        if input.Resource.is_some():
+            auto u3 = input.Resource.unwrap()
+            parts.append("\"Resource\":" + resource_to_json(u3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + lakeformation_json_str(u4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        if input.IncludeRelated.is_some():
+            auto u6 = input.IncludeRelated.unwrap()
+            parts.append("\"IncludeRelated\":" + lakeformation_json_str(u6))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
     # ListRLSPolicies  POST /ListRLSPolicies
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_rls_policies(self, ListRLSPoliciesRequest input) -> str:
@@ -2157,6 +2993,51 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ListRLSPolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRLSPoliciesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # ListRLSPolicyAttachments  POST /ListRLSPolicyAttachments
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_rls_policy_attachments(self, ListRLSPolicyAttachmentsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRLSPolicyAttachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Resource.is_some():
+            auto u0 = input.Resource.unwrap()
+            parts.append("\"Resource\":" + resource_to_json(u0))
+        if input.Principal.is_some():
+            auto u1 = input.Principal.unwrap()
+            parts.append("\"Principal\":" + u1.to_json())
+        if input.PolicyName.is_some():
+            auto u2 = input.PolicyName.unwrap()
+            parts.append("\"PolicyName\":" + lakeformation_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + lakeformation_json_str(u4))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # ListResources  POST /ListResources
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_resources(self, ListResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FilterConditionList.is_some():
+            auto u0 = input.FilterConditionList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_condition_to_json(x1))
+            parts.append("\"FilterConditionList\":" + lakeformation_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + lakeformation_json_str(u3))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # ListTableStorageOptimizers  POST /ListTableStorageOptimizers
@@ -2177,6 +3058,19 @@ struct LakeFormationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
+    # PutDataLakeSettings  POST /PutDataLakeSettings
+    # errors: InternalServiceException, InvalidInputException
+    def put_data_lake_settings(self, PutDataLakeSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutDataLakeSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"DataLakeSettings\":" + data_lake_settings_to_json(input.DataLakeSettings))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
     # RegisterResource  POST /RegisterResource
     # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def register_resource(self, RegisterResourceRequest input) -> str:
@@ -2186,6 +3080,105 @@ struct LakeFormationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
+    # RemoveLFTagsFromResource  POST /RemoveLFTagsFromResource
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def remove_lf_tags_from_resource(self, RemoveLFTagsFromResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/RemoveLFTagsFromResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        list[str] e1 = []
+        for x1 in input.LFTags:
+            e1.append(lf_tag_pair_to_json(x1))
+        parts.append("\"LFTags\":" + lakeformation_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # RevokePermissions  POST /RevokePermissions
+    # errors: ConcurrentModificationException, EntityNotFoundException, InvalidInputException
+    def revoke_permissions(self, RevokePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/RevokePermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"Principal\":" + input.Principal.to_json())
+        parts.append("\"Resource\":" + resource_to_json(input.Resource))
+        list[str] e1 = []
+        for x1 in input.Permissions:
+            e1.append(x1.to_json())
+        parts.append("\"Permissions\":" + lakeformation_json_arr(e1))
+        if input.Condition.is_some():
+            auto u2 = input.Condition.unwrap()
+            parts.append("\"Condition\":" + u2.to_json())
+        if input.PermissionsWithGrantOption.is_some():
+            auto u3 = input.PermissionsWithGrantOption.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"PermissionsWithGrantOption\":" + lakeformation_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # SearchDatabasesByLFTags  POST /SearchDatabasesByLFTags
+    # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def search_databases_by_lf_tags(self, SearchDatabasesByLFTagsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/SearchDatabasesByLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + lakeformation_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.CatalogId.is_some():
+            auto u2 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.Expression:
+            e3.append(lf_tag_to_json(x3))
+        parts.append("\"Expression\":" + lakeformation_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # SearchTablesByLFTags  POST /SearchTablesByLFTags
+    # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def search_tables_by_lf_tags(self, SearchTablesByLFTagsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/SearchTablesByLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + lakeformation_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.CatalogId.is_some():
+            auto u2 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.Expression:
+            e3.append(lf_tag_to_json(x3))
+        parts.append("\"Expression\":" + lakeformation_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # StartQueryPlanning  POST /StartQueryPlanning
+    # errors: AccessDeniedException, InternalServiceException, InvalidInputException, ThrottledException
+    def start_query_planning(self, StartQueryPlanningRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartQueryPlanning", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"QueryPlanningContext\":" + query_planning_context_to_json(input.QueryPlanningContext))
+        parts.append("\"QueryString\":" + lakeformation_json_str(input.QueryString))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
     # StartTransaction  POST /StartTransaction
     # errors: InternalServiceException, OperationTimeoutException
     def start_transaction(self, StartTransactionRequest input) -> str:
@@ -2193,6 +3186,91 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/StartTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTransactionDocument(TransactionType=input.TransactionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # UpdateDataCellsFilter  POST /UpdateDataCellsFilter
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_data_cells_filter(self, UpdateDataCellsFilterRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TableData\":" + data_cells_filter_to_json(input.TableData))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # UpdateLFTag  POST /UpdateLFTag
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_lf_tag(self, UpdateLFTagRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLFTag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"TagKey\":" + lakeformation_json_str(input.TagKey))
+        if input.TagValuesToDelete.is_some():
+            auto u1 = input.TagValuesToDelete.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(lakeformation_json_str(x2))
+            parts.append("\"TagValuesToDelete\":" + lakeformation_json_arr(e2))
+        if input.TagValuesToAdd.is_some():
+            auto u3 = input.TagValuesToAdd.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(lakeformation_json_str(x4))
+            parts.append("\"TagValuesToAdd\":" + lakeformation_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # UpdateLFTagExpression  POST /UpdateLFTagExpression
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def update_lf_tag_expression(self, UpdateLFTagExpressionRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLFTagExpression", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lakeformation_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + lakeformation_json_str(u0))
+        if input.CatalogId.is_some():
+            auto u1 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.Expression:
+            e2.append(lf_tag_to_json(x2))
+        parts.append("\"Expression\":" + lakeformation_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # UpdateLakeFormationIdentityCenterConfiguration  POST /UpdateLakeFormationIdentityCenterConfiguration
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_lake_formation_identity_center_configuration(self, UpdateLakeFormationIdentityCenterConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        if input.ShareRecipients.is_some():
+            auto u1 = input.ShareRecipients.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"ShareRecipients\":" + lakeformation_json_arr(e2))
+        if input.ServiceIntegrations.is_some():
+            auto u3 = input.ServiceIntegrations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(service_integration_union_to_json(x4))
+            parts.append("\"ServiceIntegrations\":" + lakeformation_json_arr(e4))
+        if input.ApplicationStatus.is_some():
+            auto u5 = input.ApplicationStatus.unwrap()
+            parts.append("\"ApplicationStatus\":" + u5.to_json())
+        if input.ExternalFiltering.is_some():
+            auto u6 = input.ExternalFiltering.unwrap()
+            parts.append("\"ExternalFiltering\":" + external_filtering_configuration_to_json(u6))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # UpdateRLSPolicy  POST /UpdateRLSPolicy
@@ -2211,6 +3289,27 @@ struct LakeFormationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResourceDocument(RoleArn=input.RoleArn, ResourceArn=input.ResourceArn, WithFederation=input.WithFederation, HybridAccessEnabled=input.HybridAccessEnabled, ExpectedResourceOwnerAccount=input.ExpectedResourceOwnerAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # UpdateTableObjects  POST /UpdateTableObjects
+    # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, TransactionCanceledException, TransactionCommitInProgressException, TransactionCommittedException
+    def update_table_objects(self, UpdateTableObjectsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTableObjects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CatalogId.is_some():
+            auto u0 = input.CatalogId.unwrap()
+            parts.append("\"CatalogId\":" + lakeformation_json_str(u0))
+        parts.append("\"DatabaseName\":" + lakeformation_json_str(input.DatabaseName))
+        parts.append("\"TableName\":" + lakeformation_json_str(input.TableName))
+        if input.TransactionId.is_some():
+            auto u1 = input.TransactionId.unwrap()
+            parts.append("\"TransactionId\":" + lakeformation_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.WriteOperations:
+            e2.append(write_operation_to_json(x2))
+        parts.append("\"WriteOperations\":" + lakeformation_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # Paginator for GetWorkUnits — yields each Response page, threading the
@@ -2271,6 +3370,45 @@ struct LakeFormationClient:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
         while True:
             auto raw = self.list_rls_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRLSPolicyAttachments — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RLSPolicyAttachments).
+    def paginate_list_rls_policy_attachments(self, ListRLSPolicyAttachmentsRequest input):
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        while True:
+            auto raw = self.list_rls_policy_attachments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchDatabasesByLFTags — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: DatabaseList).
+    def paginate_search_databases_by_lf_tags(self, SearchDatabasesByLFTagsRequest input):
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        while True:
+            auto raw = self.search_databases_by_lf_tags(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchTablesByLFTags — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TableList).
+    def paginate_search_tables_by_lf_tags(self, SearchTablesByLFTagsRequest input):
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        while True:
+            auto raw = self.search_tables_by_lf_tags(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

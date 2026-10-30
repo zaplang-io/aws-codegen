@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 88 operations — 39 with a generated method,
-#   49 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 88 operations — 88 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   442 structs (230 @derive(Json)), 104 enums, 31 error variants.
-#   9 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The ECS awsJson protocol: version 1.1, API id "AmazonEC2ContainerServiceV20141113".
 def ecs_protocol() -> awsjson.AwsJson:
@@ -962,8 +963,9 @@ struct AssociateGatewayWithClusterResponse:
     Optional[str] clusterArn
     Optional[GatewayClusterAssociationStatus] status
 
-# no @derive(Json): member(s) details: list[KeyValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[KeyValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Attachment:
     Optional[str] id
     Optional[str] type
@@ -1003,8 +1005,9 @@ struct AutoScalingGroupProviderUpdate:
     Optional[ManagedTerminationProtection] managedTerminationProtection
     Optional[ManagedDraining] managedDraining
 
-# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsVpcConfiguration:
     list[str] subnets
     Optional[list[str]] securityGroups
@@ -1024,8 +1027,9 @@ struct CanaryConfiguration:
     Optional[float64] canaryPercent
     Optional[int64] canaryBakeTimeInMinutes
 
-# no @derive(Json): member(s) managedInstancesProvider: ManagedInstancesProvider, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedInstancesProvider: ManagedInstancesProvider, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityProvider:
     Optional[str] capacityProviderArn
     Optional[str] name
@@ -1053,8 +1057,9 @@ struct CapacityReservationRequest:
 struct ClientException:
     Optional[str] message
 
-# no @derive(Json): member(s) statistics: list[KeyValuePair], tags: list[Tag], settings: list[ClusterSetting], capacityProviders: list[str], defaultCapacityProviderStrategy: list[CapacityProviderStrategyItem], attachments: list[Attachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[KeyValuePair], tags: list[Tag], settings: list[ClusterSetting], capacityProviders: list[str], defaultCapacityProviderStrategy: list[CapacityProviderStrategyItem], attachments: list[Attachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] clusterArn
     Optional[str] clusterName
@@ -1111,14 +1116,16 @@ struct ClusterSetting:
     Optional[str] name
     Optional[str] value
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConflictException:
     Optional[list[str]] resourceIds
     Optional[str] message
 
-# no @derive(Json): member(s) networkBindings: list[NetworkBinding], networkInterfaces: list[NetworkInterface], managedAgents: list[ManagedAgent], gpuIds: list[str], neuronDeviceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkBindings: list[NetworkBinding], networkInterfaces: list[NetworkInterface], managedAgents: list[ManagedAgent], gpuIds: list[str], neuronDeviceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Container:
     Optional[str] containerArn
     Optional[str] taskArn
@@ -1140,8 +1147,9 @@ struct Container:
     Optional[list[str]] neuronDeviceIds
     Optional[SharingStrategy] gpuSharingStrategy
 
-# no @derive(Json): member(s) links: list[str], portMappings: list[PortMapping], restartPolicy: ContainerRestartPolicy, entryPoint: list[str], command: list[str], environment: list[KeyValuePair], environmentFiles: list[EnvironmentFile], mountPoints: list[MountPoint], volumesFrom: list[VolumeFrom], linuxParameters: LinuxParameters, secrets: list[Secret], dependsOn: list[ContainerDependency], dnsServers: list[str], dnsSearchDomains: list[str], extraHosts: list[HostEntry], dockerSecurityOptions: list[str], dockerLabels: dict[str, str], ulimits: list[Ulimit], logConfiguration: LogConfiguration, healthCheck: HealthCheck, systemControls: list[SystemControl], resourceRequirements: list[ResourceRequirement], firelensConfiguration: FirelensConfiguration, credentialSpecs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) links: list[str], portMappings: list[PortMapping], restartPolicy: ContainerRestartPolicy, entryPoint: list[str], command: list[str], environment: list[KeyValuePair], environmentFiles: list[EnvironmentFile], mountPoints: list[MountPoint], volumesFrom: list[VolumeFrom], linuxParameters: LinuxParameters, secrets: list[Secret], dependsOn: list[ContainerDependency], dnsServers: list[str], dnsSearchDomains: list[str], extraHosts: list[HostEntry], dockerSecurityOptions: list[str], dockerLabels: dict[str, str], ulimits: list[Ulimit], logConfiguration: LogConfiguration, healthCheck: HealthCheck, systemControls: list[SystemControl], resourceRequirements: list[ResourceRequirement], firelensConfiguration: FirelensConfiguration, credentialSpecs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerDefinition:
     Optional[str] name
     Optional[str] image
@@ -1197,8 +1205,9 @@ struct ContainerImage:
     Optional[str] imageDigest
     Optional[str] image
 
-# no @derive(Json): member(s) remainingResources: list[Resource], registeredResources: list[Resource], attributes: list[Attribute], attachments: list[Attachment], tags: list[Tag], healthStatus: ContainerInstanceHealthStatus, gpuDevices: list[GpuDevice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remainingResources: list[Resource], registeredResources: list[Resource], attributes: list[Attribute], attachments: list[Attachment], tags: list[Tag], healthStatus: ContainerInstanceHealthStatus, gpuDevices: list[GpuDevice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerInstance:
     Optional[str] containerInstanceArn
     Optional[str] ec2InstanceId
@@ -1220,14 +1229,16 @@ struct ContainerInstance:
     Optional[ContainerInstanceHealthStatus] healthStatus
     Optional[list[GpuDevice]] gpuDevices
 
-# no @derive(Json): member(s) details: list[InstanceHealthCheckResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[InstanceHealthCheckResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerInstanceHealthStatus:
     Optional[InstanceHealthCheckState] overallStatus
     Optional[list[InstanceHealthCheckResult]] details
 
-# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], environmentFiles: list[EnvironmentFile], resourceRequirements: list[ResourceRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], environmentFiles: list[EnvironmentFile], resourceRequirements: list[ResourceRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerOverride:
     Optional[str] name
     Optional[list[str]] command
@@ -1238,15 +1249,17 @@ struct ContainerOverride:
     Optional[int64] memoryReservation
     Optional[list[ResourceRequirement]] resourceRequirements
 
-# no @derive(Json): member(s) ignoredExitCodes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ignoredExitCodes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerRestartPolicy:
     bool enabled
     Optional[list[int64]] ignoredExitCodes
     Optional[int64] restartAttemptPeriod
 
-# no @derive(Json): member(s) networkBindings: list[NetworkBinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkBindings: list[NetworkBinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerStateChange:
     Optional[str] containerName
     Optional[str] imageDigest
@@ -1266,8 +1279,9 @@ struct ContinueServiceDeploymentRequest:
 struct ContinueServiceDeploymentResponse:
     Optional[str] serviceDeploymentArn
 
-# no @derive(Json): member(s) managedInstancesProvider: CreateManagedInstancesProviderConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedInstancesProvider: CreateManagedInstancesProviderConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapacityProviderRequest:
     str name
     Optional[str] cluster
@@ -1275,13 +1289,15 @@ struct CreateCapacityProviderRequest:
     Optional[CreateManagedInstancesProviderConfiguration] managedInstancesProvider
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) capacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapacityProviderResponse:
     Optional[CapacityProvider] capacityProvider
 
-# no @derive(Json): member(s) tags: list[Tag], settings: list[ClusterSetting], capacityProviders: list[str], defaultCapacityProviderStrategy: list[CapacityProviderStrategyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], settings: list[ClusterSetting], capacityProviders: list[str], defaultCapacityProviderStrategy: list[CapacityProviderStrategyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     Optional[str] clusterName
     Optional[list[Tag]] tags
@@ -1291,13 +1307,15 @@ struct CreateClusterRequest:
     Optional[list[CapacityProviderStrategyItem]] defaultCapacityProviderStrategy
     Optional[ClusterServiceConnectDefaultsRequest] serviceConnectDefaults
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) capacityProviderArns: list[str], deploymentConfiguration: DaemonDeploymentConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderArns: list[str], deploymentConfiguration: DaemonDeploymentConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDaemonRequest:
     str daemonName
     Optional[str] clusterArn
@@ -1318,8 +1336,9 @@ struct CreateDaemonResponse:
     Optional[DateTime] createdAt
     Optional[str] deploymentArn
 
-# no @derive(Json): member(s) primaryContainer: ExpressGatewayContainer, networkConfiguration: ExpressGatewayServiceNetworkConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) primaryContainer: ExpressGatewayContainer, networkConfiguration: ExpressGatewayServiceNetworkConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExpressGatewayServiceRequest:
     Optional[str] executionRoleArn
     str infrastructureRoleArn
@@ -1336,13 +1355,15 @@ struct CreateExpressGatewayServiceRequest:
     Optional[list[Tag]] tags
     Optional[str] taskDefinitionArn
 
-# no @derive(Json): member(s) service: ECSExpressGatewayService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: ECSExpressGatewayService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExpressGatewayServiceResponse:
     Optional[ECSExpressGatewayService] service
 
-# no @derive(Json): member(s) configuration: GatewayConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: GatewayConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayRequest:
     str name
     str infrastructureRoleArn
@@ -1358,8 +1379,9 @@ struct CreateGatewayResponse:
     Optional[str] name
     Optional[GatewayStatus] status
 
-# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateManagedInstancesProviderConfiguration:
     str infrastructureRoleArn
     InstanceLaunchTemplate instanceLaunchTemplate
@@ -1367,8 +1389,9 @@ struct CreateManagedInstancesProviderConfiguration:
     Optional[InfrastructureOptimization] infrastructureOptimization
     Optional[AutoRepairConfiguration] autoRepairConfiguration
 
-# no @derive(Json): member(s) loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], capacityProviderStrategy: list[CapacityProviderStrategyItem], deploymentConfiguration: DeploymentConfiguration, placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], networkConfiguration: NetworkConfiguration, tags: list[Tag], serviceConnectConfiguration: ServiceConnectConfiguration, volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration], gatewayConnectors: list[GatewayConnector], monitoring: MonitoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], capacityProviderStrategy: list[CapacityProviderStrategyItem], deploymentConfiguration: DeploymentConfiguration, placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], networkConfiguration: NetworkConfiguration, tags: list[Tag], serviceConnectConfiguration: ServiceConnectConfiguration, volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration], gatewayConnectors: list[GatewayConnector], monitoring: MonitoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceRequest:
     Optional[str] cluster
     str serviceName
@@ -1399,13 +1422,15 @@ struct CreateServiceRequest:
     Optional[list[GatewayConnector]] gatewayConnectors
     Optional[MonitoringConfiguration] monitoring
 
-# no @derive(Json): member(s) service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceResponse:
     Optional[Service] service
 
-# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], capacityProviderStrategy: list[CapacityProviderStrategyItem], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], capacityProviderStrategy: list[CapacityProviderStrategyItem], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTaskSetRequest:
     str service
     str cluster
@@ -1421,8 +1446,9 @@ struct CreateTaskSetRequest:
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) taskSet: TaskSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSet: TaskSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTaskSetResponse:
     Optional[TaskSet] taskSet
 
@@ -1431,8 +1457,9 @@ struct CreatedAt:
     Optional[DateTime] before
     Optional[DateTime] after
 
-# no @derive(Json): member(s) alarmNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarmNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonAlarmConfiguration:
     Optional[list[str]] alarmNames
     Optional[bool] enable
@@ -1449,8 +1476,9 @@ struct DaemonCircuitBreaker:
     Optional[DaemonDeploymentRollbackMonitorsStatus] status
     Optional[int64] threshold
 
-# no @derive(Json): member(s) healthCheck: HealthCheck, entryPoint: list[str], command: list[str], environmentFiles: list[EnvironmentFile], environment: list[KeyValuePair], secrets: list[Secret], mountPoints: list[MountPoint], logConfiguration: LogConfiguration, firelensConfiguration: FirelensConfiguration, ulimits: list[Ulimit], linuxParameters: DaemonLinuxParameters, dependsOn: list[ContainerDependency], systemControls: list[SystemControl], restartPolicy: ContainerRestartPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) healthCheck: HealthCheck, entryPoint: list[str], command: list[str], environmentFiles: list[EnvironmentFile], environment: list[KeyValuePair], secrets: list[Secret], mountPoints: list[MountPoint], logConfiguration: LogConfiguration, firelensConfiguration: FirelensConfiguration, ulimits: list[Ulimit], linuxParameters: DaemonLinuxParameters, dependsOn: list[ContainerDependency], systemControls: list[SystemControl], restartPolicy: ContainerRestartPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonContainerDefinition:
     Optional[str] name
     str image
@@ -1488,8 +1516,9 @@ struct DaemonContainerImage:
     Optional[str] imageDigest
     Optional[str] image
 
-# no @derive(Json): member(s) targetDaemonRevision: DaemonDeploymentRevisionDetail, sourceDaemonRevisions: list[DaemonDeploymentRevisionDetail], alarms: DaemonDeploymentAlarms, rollback: DaemonRollback, deploymentConfiguration: DaemonDeploymentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDaemonRevision: DaemonDeploymentRevisionDetail, sourceDaemonRevisions: list[DaemonDeploymentRevisionDetail], alarms: DaemonDeploymentAlarms, rollback: DaemonRollback, deploymentConfiguration: DaemonDeploymentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonDeployment:
     Optional[str] daemonDeploymentArn
     Optional[str] clusterArn
@@ -1506,8 +1535,9 @@ struct DaemonDeployment:
     Optional[DateTime] stoppedAt
     Optional[DateTime] finishedAt
 
-# no @derive(Json): member(s) alarmNames: list[str], triggeredAlarmNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarmNames: list[str], triggeredAlarmNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonDeploymentAlarms:
     Optional[DaemonDeploymentRollbackMonitorsStatus] status
     Optional[list[str]] alarmNames
@@ -1520,15 +1550,17 @@ struct DaemonDeploymentCapacityProvider:
     Optional[int64] withoutDaemonInstanceCount
     Optional[int64] drainingInstanceCount
 
-# no @derive(Json): member(s) alarms: DaemonAlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarms: DaemonAlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonDeploymentConfiguration:
     Optional[float64] drainPercent
     Optional[DaemonAlarmConfiguration] alarms
     Optional[int64] bakeTimeInMinutes
 
-# no @derive(Json): member(s) capacityProviders: list[DaemonDeploymentCapacityProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviders: list[DaemonDeploymentCapacityProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonDeploymentRevisionDetail:
     Optional[str] arn
     Optional[list[DaemonDeploymentCapacityProvider]] capacityProviders
@@ -1549,8 +1581,9 @@ struct DaemonDeploymentSummary:
     Optional[DateTime] stoppedAt
     Optional[DateTime] finishedAt
 
-# no @derive(Json): member(s) currentRevisions: list[DaemonRevisionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) currentRevisions: list[DaemonRevisionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonDetail:
     Optional[str] daemonArn
     Optional[str] clusterArn
@@ -1560,8 +1593,9 @@ struct DaemonDetail:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) capabilities: KernelCapabilities, devices: list[Device], tmpfs: list[Tmpfs] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: KernelCapabilities, devices: list[Device], tmpfs: list[Tmpfs] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonLinuxParameters:
     Optional[KernelCapabilities] capabilities
     Optional[list[Device]] devices
@@ -1576,8 +1610,9 @@ struct DaemonNotActiveException:
 struct DaemonNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) containerImages: list[DaemonContainerImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerImages: list[DaemonContainerImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonRevision:
     Optional[str] daemonRevisionArn
     Optional[str] clusterArn
@@ -1590,16 +1625,18 @@ struct DaemonRevision:
     Optional[bool] enableExecuteCommand
     Optional[bool] critical
 
-# no @derive(Json): member(s) capacityProviders: list[DaemonCapacityProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviders: list[DaemonCapacityProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonRevisionDetail:
     Optional[str] arn
     Optional[list[DaemonCapacityProvider]] capacityProviders
     Optional[int64] totalRunningCount
     Optional[int64] totalWithoutDaemonCount
 
-# no @derive(Json): member(s) rollbackCapacityProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rollbackCapacityProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonRollback:
     Optional[str] reason
     Optional[DateTime] startedAt
@@ -1613,8 +1650,9 @@ struct DaemonSummary:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) containerDefinitions: list[DaemonContainerDefinition], volumes: list[DaemonVolume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerDefinitions: list[DaemonContainerDefinition], volumes: list[DaemonVolume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DaemonTaskDefinition:
     Optional[str] daemonTaskDefinitionArn
     Optional[str] family
@@ -1654,14 +1692,16 @@ struct DeleteAccountSettingRequest:
 struct DeleteAccountSettingResponse:
     Optional[Setting] setting
 
-# no @derive(Json): member(s) attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAttributesRequest:
     Optional[str] cluster
     list[Attribute] attributes
 
-# no @derive(Json): member(s) attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAttributesResponse:
     Optional[list[Attribute]] attributes
 
@@ -1670,8 +1710,9 @@ struct DeleteCapacityProviderRequest:
     str capacityProvider
     Optional[str] cluster
 
-# no @derive(Json): member(s) capacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCapacityProviderResponse:
     Optional[CapacityProvider] capacityProvider
 
@@ -1679,8 +1720,9 @@ struct DeleteCapacityProviderResponse:
 struct DeleteClusterRequest:
     str cluster
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] cluster
 
@@ -1708,8 +1750,9 @@ struct DeleteDaemonTaskDefinitionResponse:
 struct DeleteExpressGatewayServiceRequest:
     str serviceArn
 
-# no @derive(Json): member(s) service: ECSExpressGatewayService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: ECSExpressGatewayService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteExpressGatewayServiceResponse:
     Optional[ECSExpressGatewayService] service
 
@@ -1729,18 +1772,21 @@ struct DeleteServiceRequest:
     str service
     Optional[bool] force
 
-# no @derive(Json): member(s) service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteServiceResponse:
     Optional[Service] service
 
-# no @derive(Json): member(s) taskDefinitions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDefinitions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTaskDefinitionsRequest:
     list[str] taskDefinitions
 
-# no @derive(Json): member(s) taskDefinitions: list[TaskDefinition], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDefinitions: list[TaskDefinition], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTaskDefinitionsResponse:
     Optional[list[TaskDefinition]] taskDefinitions
     Optional[list[Failure]] failures
@@ -1752,13 +1798,15 @@ struct DeleteTaskSetRequest:
     str taskSet
     Optional[bool] force
 
-# no @derive(Json): member(s) taskSet: TaskSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSet: TaskSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTaskSetResponse:
     Optional[TaskSet] taskSet
 
-# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], networkConfiguration: NetworkConfiguration, serviceConnectConfiguration: ServiceConnectConfiguration, serviceConnectResources: list[ServiceConnectServiceResource], volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], networkConfiguration: NetworkConfiguration, serviceConnectConfiguration: ServiceConnectConfiguration, serviceConnectResources: list[ServiceConnectServiceResource], volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployment:
     Optional[str] id
     Optional[str] status
@@ -1782,8 +1830,9 @@ struct Deployment:
     Optional[DeploymentEphemeralStorage] fargateEphemeralStorage
     Optional[list[VpcLatticeConfiguration]] vpcLatticeConfigurations
 
-# no @derive(Json): member(s) alarmNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarmNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentAlarms:
     list[str] alarmNames
     bool rollback
@@ -1796,8 +1845,9 @@ struct DeploymentCircuitBreaker:
     Optional[bool] resetOnHealthyTask
     Optional[ThresholdConfiguration] thresholdConfiguration
 
-# no @derive(Json): member(s) alarms: DeploymentAlarms, lifecycleHooks: list[DeploymentLifecycleHook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarms: DeploymentAlarms, lifecycleHooks: list[DeploymentLifecycleHook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentConfiguration:
     Optional[DeploymentCircuitBreaker] deploymentCircuitBreaker
     Optional[int64] maximumPercent
@@ -1824,8 +1874,9 @@ struct DeploymentEarlySuccessCriteria:
 struct DeploymentEphemeralStorage:
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) lifecycleStages: list[DeploymentLifecycleHookStage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleStages: list[DeploymentLifecycleHookStage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentLifecycleHook:
     Optional[DeploymentLifecycleHookTargetType] targetType
     Optional[str] hookTargetArn
@@ -1854,8 +1905,9 @@ struct DeregisterContainerInstanceRequest:
     str containerInstance
     Optional[bool] force
 
-# no @derive(Json): member(s) containerInstance: ContainerInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstance: ContainerInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeregisterContainerInstanceResponse:
     Optional[ContainerInstance] containerInstance
 
@@ -1863,13 +1915,15 @@ struct DeregisterContainerInstanceResponse:
 struct DeregisterTaskDefinitionRequest:
     str taskDefinition
 
-# no @derive(Json): member(s) taskDefinition: TaskDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDefinition: TaskDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeregisterTaskDefinitionResponse:
     Optional[TaskDefinition] taskDefinition
 
-# no @derive(Json): member(s) capacityProviders: list[str], include: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviders: list[str], include: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCapacityProvidersRequest:
     Optional[list[str]] capacityProviders
     Optional[str] cluster
@@ -1877,45 +1931,52 @@ struct DescribeCapacityProvidersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) capacityProviders: list[CapacityProvider], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviders: list[CapacityProvider], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCapacityProvidersResponse:
     Optional[list[CapacityProvider]] capacityProviders
     Optional[list[Failure]] failures
     Optional[str] nextToken
 
-# no @derive(Json): member(s) clusters: list[str], include: list[ClusterField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[str], include: list[ClusterField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersRequest:
     Optional[list[str]] clusters
     Optional[list[ClusterField]] include
 
-# no @derive(Json): member(s) clusters: list[Cluster], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[Cluster], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersResponse:
     Optional[list[Cluster]] clusters
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) containerInstances: list[str], include: list[ContainerInstanceField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstances: list[str], include: list[ContainerInstanceField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContainerInstancesRequest:
     Optional[str] cluster
     list[str] containerInstances
     Optional[list[ContainerInstanceField]] include
 
-# no @derive(Json): member(s) containerInstances: list[ContainerInstance], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstances: list[ContainerInstance], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContainerInstancesResponse:
     Optional[list[ContainerInstance]] containerInstances
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) daemonDeploymentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonDeploymentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDaemonDeploymentsRequest:
     list[str] daemonDeploymentArns
 
-# no @derive(Json): member(s) failures: list[Failure], daemonDeployments: list[DaemonDeployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failures: list[Failure], daemonDeployments: list[DaemonDeployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDaemonDeploymentsResponse:
     Optional[list[Failure]] failures
     Optional[list[DaemonDeployment]] daemonDeployments
@@ -1924,18 +1985,21 @@ struct DescribeDaemonDeploymentsResponse:
 struct DescribeDaemonRequest:
     str daemonArn
 
-# no @derive(Json): member(s) daemon: DaemonDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemon: DaemonDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDaemonResponse:
     Optional[DaemonDetail] daemon
 
-# no @derive(Json): member(s) daemonRevisionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonRevisionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDaemonRevisionsRequest:
     list[str] daemonRevisionArns
 
-# no @derive(Json): member(s) daemonRevisions: list[DaemonRevision], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonRevisions: list[DaemonRevision], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDaemonRevisionsResponse:
     Optional[list[DaemonRevision]] daemonRevisions
     Optional[list[Failure]] failures
@@ -1944,24 +2008,28 @@ struct DescribeDaemonRevisionsResponse:
 struct DescribeDaemonTaskDefinitionRequest:
     str daemonTaskDefinition
 
-# no @derive(Json): member(s) daemonTaskDefinition: DaemonTaskDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonTaskDefinition: DaemonTaskDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDaemonTaskDefinitionResponse:
     Optional[DaemonTaskDefinition] daemonTaskDefinition
 
-# no @derive(Json): member(s) include: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) include: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExpressGatewayServiceRequest:
     str serviceArn
     Optional[list[str]] include
 
-# no @derive(Json): member(s) service: ECSExpressGatewayService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: ECSExpressGatewayService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExpressGatewayServiceResponse:
     Optional[ECSExpressGatewayService] service
 
-# no @derive(Json): member(s) networkConfiguration: GatewayElbNetworkConfiguration, testTrafficRules: GatewayAlbTestTrafficRules not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: GatewayElbNetworkConfiguration, testTrafficRules: GatewayAlbTestTrafficRules not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayAlbConfiguration:
     Optional[GatewayElbNetworkConfiguration] networkConfiguration
     Optional[GatewayElbScheme] scheme
@@ -1974,8 +2042,9 @@ struct DescribeGatewayAlbConfiguration:
     Optional[GatewayAlbDesyncMitigationMode] httpDesync
     Optional[GatewayAlbTestTrafficRules] testTrafficRules
 
-# no @derive(Json): member(s) hostSharedAlb: DescribeGatewayAlbConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostSharedAlb: DescribeGatewayAlbConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayConfiguration:
     Optional[DescribeGatewayAlbConfiguration] hostSharedAlb
 
@@ -1989,14 +2058,16 @@ struct DescribeGatewayResourcesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gatewayResources: GatewayResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayResources: GatewayResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayResourcesResponse:
     Optional[GatewayResources] gatewayResources
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gateway: Gateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gateway: Gateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayResponse:
     Optional[Gateway] gateway
 
@@ -2004,87 +2075,101 @@ struct DescribeGatewayResponse:
 struct DescribeGatewayRouteRequest:
     str gatewayRouteArn
 
-# no @derive(Json): member(s) gatewayRoute: GatewayRoute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoute: GatewayRoute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayRouteResponse:
     Optional[GatewayRoute] gatewayRoute
 
-# no @derive(Json): member(s) serviceDeploymentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceDeploymentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceDeploymentsRequest:
     list[str] serviceDeploymentArns
 
-# no @derive(Json): member(s) serviceDeployments: list[ServiceDeployment], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceDeployments: list[ServiceDeployment], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceDeploymentsResponse:
     Optional[list[ServiceDeployment]] serviceDeployments
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) serviceRevisionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceRevisionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceRevisionsRequest:
     list[str] serviceRevisionArns
 
-# no @derive(Json): member(s) serviceRevisions: list[ServiceRevision], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceRevisions: list[ServiceRevision], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceRevisionsResponse:
     Optional[list[ServiceRevision]] serviceRevisions
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) services: list[str], include: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[str], include: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServicesRequest:
     Optional[str] cluster
     list[str] services
     Optional[list[str]] include
 
-# no @derive(Json): member(s) services: list[Service], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[Service], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServicesResponse:
     Optional[list[Service]] services
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) include: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) include: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskDefinitionRequest:
     str taskDefinition
     Optional[list[str]] include
 
-# no @derive(Json): member(s) taskDefinition: TaskDefinition, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDefinition: TaskDefinition, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskDefinitionResponse:
     Optional[TaskDefinition] taskDefinition
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) taskSets: list[str], include: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSets: list[str], include: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskSetsRequest:
     str cluster
     str service
     Optional[list[str]] taskSets
     Optional[list[str]] include
 
-# no @derive(Json): member(s) taskSets: list[TaskSet], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSets: list[TaskSet], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskSetsResponse:
     Optional[list[TaskSet]] taskSets
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) tasks: list[str], include: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[str], include: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTasksRequest:
     Optional[str] cluster
     list[str] tasks
     Optional[list[str]] include
 
-# no @derive(Json): member(s) tasks: list[Task], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[Task], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTasksResponse:
     Optional[list[Task]] tasks
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) permissions: list[DeviceCgroupPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[DeviceCgroupPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Device:
     str hostPath
     Optional[str] containerPath
@@ -2112,8 +2197,9 @@ struct DiscoverPollEndpointResponse:
     Optional[str] telemetryEndpoint
     Optional[str] serviceConnectEndpoint
 
-# no @derive(Json): member(s) driverOpts: dict[str, str], labels: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) driverOpts: dict[str, str], labels: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DockerVolumeConfiguration:
     # wire name "scope" differs from field; derive rename is a #346 follow-up
     Optional[Scope] scope_
@@ -2122,15 +2208,17 @@ struct DockerVolumeConfiguration:
     Optional[dict[str, str]] driverOpts
     Optional[dict[str, str]] labels
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EBSTagSpecification:
     str resourceType
     Optional[list[Tag]] tags
     Optional[PropagateTags] propagateTags
 
-# no @derive(Json): member(s) activeConfigurations: list[ExpressGatewayServiceConfiguration], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) activeConfigurations: list[ExpressGatewayServiceConfiguration], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ECSExpressGatewayService:
     Optional[str] cluster
     Optional[str] serviceName
@@ -2143,8 +2231,9 @@ struct ECSExpressGatewayService:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) ingressPaths: list[ManagedIngressPath], autoScaling: ManagedAutoScaling, metricAlarms: list[ManagedMetricAlarm], serviceSecurityGroups: list[ManagedSecurityGroup], logGroups: list[ManagedLogGroup], gatewayConnections: list[GatewayConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingressPaths: list[ManagedIngressPath], autoScaling: ManagedAutoScaling, metricAlarms: list[ManagedMetricAlarm], serviceSecurityGroups: list[ManagedSecurityGroup], logGroups: list[ManagedLogGroup], gatewayConnections: list[GatewayConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ECSManagedResources:
     Optional[list[ManagedIngressPath]] ingressPaths
     Optional[ManagedAutoScaling] autoScaling
@@ -2166,8 +2255,9 @@ struct EFSVolumeConfiguration:
     Optional[int64] transitEncryptionPort
     Optional[EFSAuthorizationConfig] authorizationConfig
 
-# no @derive(Json): member(s) gatewayRouteArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRouteArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElbGatewayResources:
     Optional[str] loadBalancerArn
     Optional[str] listenerArn
@@ -2214,8 +2304,9 @@ struct ExecuteCommandResponse:
     Optional[Session] session
     Optional[str] taskArn
 
-# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], secrets: list[Secret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], environment: list[KeyValuePair], secrets: list[Secret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressGatewayContainer:
     str image
     Optional[int64] containerPort
@@ -2241,8 +2332,9 @@ struct ExpressGatewayServiceAwsLogsConfiguration:
     str logGroup
     str logStreamPrefix
 
-# no @derive(Json): member(s) networkConfiguration: ExpressGatewayServiceNetworkConfiguration, primaryContainer: ExpressGatewayContainer, ingressPaths: list[IngressPathSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: ExpressGatewayServiceNetworkConfiguration, primaryContainer: ExpressGatewayContainer, ingressPaths: list[IngressPathSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressGatewayServiceConfiguration:
     Optional[str] serviceRevisionArn
     Optional[str] executionRoleArn
@@ -2258,8 +2350,9 @@ struct ExpressGatewayServiceConfiguration:
     Optional[list[IngressPathSummary]] ingressPaths
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressGatewayServiceNetworkConfiguration:
     Optional[list[str]] securityGroups
     Optional[list[str]] subnets
@@ -2286,14 +2379,16 @@ struct Failure:
     Optional[str] reason
     Optional[str] detail
 
-# no @derive(Json): member(s) options: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirelensConfiguration:
     FirelensConfigurationType type
     Optional[dict[str, str]] options
 
-# no @derive(Json): member(s) failures: list[GatewayResourceFailure], configuration: DescribeGatewayConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failures: list[GatewayResourceFailure], configuration: DescribeGatewayConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Gateway:
     Optional[str] gatewayArn
     Optional[str] name
@@ -2309,8 +2404,9 @@ struct Gateway:
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) header: GatewayTestTrafficHeader not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) header: GatewayTestTrafficHeader not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayAlbTestTrafficRules:
     Optional[GatewayTestTrafficHeader] header
 
@@ -2320,13 +2416,15 @@ struct GatewayClusterAssociationSummary:
     Optional[str] clusterArn
     Optional[GatewayClusterAssociationStatus] status
 
-# no @derive(Json): member(s) hostSharedAlb: HostSharedAlbConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostSharedAlb: HostSharedAlbConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayConfiguration:
     Optional[HostSharedAlbConfiguration] hostSharedAlb
 
-# no @derive(Json): member(s) resources: GatewayConnectionResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: GatewayConnectionResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayConnection:
     Optional[str] gatewayArn
     Optional[str] gatewayRouteArn
@@ -2336,8 +2434,9 @@ struct GatewayConnection:
     Optional[GatewayRouteStatus] status
     Optional[GatewayConnectionResources] resources
 
-# no @derive(Json): member(s) loadBalancerSecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancerSecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayConnectionAlbResources:
     Optional[str] acmCertificateArn
     Optional[str] loadBalancerArn
@@ -2348,20 +2447,23 @@ struct GatewayConnectionAlbResources:
     Optional[str] targetGroupArn
     Optional[str] alternateTargetGroupArn
 
-# no @derive(Json): member(s) hostSharedAlb: list[GatewayConnectionAlbResources] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostSharedAlb: list[GatewayConnectionAlbResources] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayConnectionResources:
     Optional[list[GatewayConnectionAlbResources]] hostSharedAlb
 
-# no @derive(Json): member(s) filters: GatewayConnectorFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: GatewayConnectorFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayConnector:
     str portName
     Optional[GatewayConnectorHealthCheck] healthCheck
     Optional[GatewayConnectorFilters] filters
 
-# no @derive(Json): member(s) accessTypes: list[AccessType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTypes: list[AccessType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayConnectorFilters:
     Optional[list[AccessType]] accessTypes
 
@@ -2394,15 +2496,17 @@ struct GatewayElbAccessLogS3Destination:
     str bucket
     Optional[str] prefix
 
-# no @derive(Json): member(s) subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayElbNetworkConfiguration:
     Optional[str] inboundSecurityGroup
     Optional[list[str]] subnets
     Optional[GatewayElbIpAddressType] ipAddressType
 
-# no @derive(Json): member(s) hostSharedAlb: list[ElbGatewayResources] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostSharedAlb: list[ElbGatewayResources] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayInfrastructureResources:
     Optional[list[ElbGatewayResources]] hostSharedAlb
 
@@ -2416,20 +2520,23 @@ struct GatewayOperationError:
     Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) errors: list[GatewayOperationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[GatewayOperationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayResourceFailure:
     Optional[str] arn
     Optional[list[GatewayOperationError]] errors
 
-# no @derive(Json): member(s) resources: GatewayInfrastructureResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: GatewayInfrastructureResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayResources:
     Optional[str] gatewayArn
     Optional[GatewayInfrastructureResources] resources
 
-# no @derive(Json): member(s) resources: GatewayRouteResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: GatewayRouteResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRoute:
     Optional[str] gatewayRouteArn
     Optional[str] serviceArn
@@ -2438,8 +2545,9 @@ struct GatewayRoute:
     Optional[str] serviceUrl
     Optional[GatewayRouteResources] resources
 
-# no @derive(Json): member(s) testListenerRuleArns: list[str], loadBalancerSecurityGroups: list[GatewayRouteLoadBalancerSecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testListenerRuleArns: list[str], loadBalancerSecurityGroups: list[GatewayRouteLoadBalancerSecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRouteAlbResources:
     Optional[str] acmCertificateArn
     Optional[str] loadBalancerArn
@@ -2449,14 +2557,16 @@ struct GatewayRouteAlbResources:
     Optional[list[GatewayRouteLoadBalancerSecurityGroup]] loadBalancerSecurityGroups
     Optional[str] serviceSecurityGroupArn
 
-# no @derive(Json): member(s) ruleArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRouteLoadBalancerSecurityGroup:
     Optional[str] arn
     Optional[list[str]] ruleArns
 
-# no @derive(Json): member(s) hostSharedAlb: list[GatewayRouteAlbResources] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostSharedAlb: list[GatewayRouteAlbResources] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRouteResources:
     Optional[list[GatewayRouteAlbResources]] hostSharedAlb
 
@@ -2476,20 +2586,23 @@ struct GatewaySummary:
     Optional[GatewayStatus] status
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayTestTrafficHeader:
     str name
     list[str] values
 
-# no @derive(Json): member(s) tasks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTaskProtectionRequest:
     str cluster
     Optional[list[str]] tasks
 
-# no @derive(Json): member(s) protectedTasks: list[ProtectedTask], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedTasks: list[ProtectedTask], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTaskProtectionResponse:
     Optional[list[ProtectedTask]] protectedTasks
     Optional[list[Failure]] failures
@@ -2502,8 +2615,9 @@ struct GpuDevice:
     Optional[int64] remainingMemoryInMiB
     Optional[int64] containerCount
 
-# no @derive(Json): member(s) command: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HealthCheck:
     list[str] command
     Optional[int64] interval
@@ -2521,8 +2635,9 @@ struct HostEntry:
     str hostname
     str ipAddress
 
-# no @derive(Json): member(s) networkConfiguration: GatewayElbNetworkConfiguration, testTrafficRules: GatewayAlbTestTrafficRules not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: GatewayElbNetworkConfiguration, testTrafficRules: GatewayAlbTestTrafficRules not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HostSharedAlbConfiguration:
     Optional[GatewayElbNetworkConfiguration] networkConfiguration
     Optional[GatewayElbScheme] scheme
@@ -2565,8 +2680,9 @@ struct InstanceHealthCheckResult:
     Optional[DateTime] lastUpdated
     Optional[DateTime] lastStatusChange
 
-# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceLaunchTemplate:
     str ec2InstanceProfileArn
     ManagedInstancesNetworkConfiguration networkConfiguration
@@ -2579,8 +2695,9 @@ struct InstanceLaunchTemplate:
     Optional[bool] fipsEnabled
     Optional[CapacityReservationRequest] capacityReservations
 
-# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceLaunchTemplateUpdate:
     Optional[str] ec2InstanceProfileArn
     Optional[ManagedInstancesNetworkConfiguration] networkConfiguration
@@ -2591,8 +2708,9 @@ struct InstanceLaunchTemplateUpdate:
     Optional[InstanceRequirementsRequest] instanceRequirements
     Optional[CapacityReservationRequest] capacityReservations
 
-# no @derive(Json): member(s) cpuManufacturers: list[CpuManufacturer], excludedInstanceTypes: list[str], instanceGenerations: list[InstanceGeneration], localStorageTypes: list[LocalStorageType], acceleratorTypes: list[AcceleratorType], acceleratorManufacturers: list[AcceleratorManufacturer], acceleratorNames: list[AcceleratorName], allowedInstanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cpuManufacturers: list[CpuManufacturer], excludedInstanceTypes: list[str], instanceGenerations: list[InstanceGeneration], localStorageTypes: list[LocalStorageType], acceleratorTypes: list[AcceleratorType], acceleratorManufacturers: list[AcceleratorManufacturer], acceleratorNames: list[AcceleratorName], allowedInstanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceRequirementsRequest:
     VCpuCountRangeRequest vCpuCount
     MemoryMiBRequest memoryMiB
@@ -2623,8 +2741,9 @@ struct InstanceRequirementsRequest:
 struct InvalidParameterException:
     Optional[str] message
 
-# no @derive(Json): member(s) add: list[str], drop: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) add: list[str], drop: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KernelCapabilities:
     Optional[list[str]] add
     Optional[list[str]] drop
@@ -2643,8 +2762,9 @@ struct LinearConfiguration:
     Optional[float64] stepPercent
     Optional[int64] stepBakeTimeInMinutes
 
-# no @derive(Json): member(s) capabilities: KernelCapabilities, devices: list[Device], tmpfs: list[Tmpfs] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: KernelCapabilities, devices: list[Device], tmpfs: list[Tmpfs] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinuxParameters:
     Optional[KernelCapabilities] capabilities
     Optional[list[Device]] devices
@@ -2663,8 +2783,9 @@ struct ListAccountSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) settings: list[Setting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[Setting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountSettingsResponse:
     Optional[list[Setting]] settings
     Optional[str] nextToken
@@ -2678,8 +2799,9 @@ struct ListAttributesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttributesResponse:
     Optional[list[Attribute]] attributes
     Optional[str] nextToken
@@ -2689,8 +2811,9 @@ struct ListClustersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) clusterArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusterArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     Optional[list[str]] clusterArns
     Optional[str] nextToken
@@ -2703,14 +2826,16 @@ struct ListContainerInstancesRequest:
     Optional[int64] maxResults
     Optional[ContainerInstanceStatus] status
 
-# no @derive(Json): member(s) containerInstanceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstanceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContainerInstancesResponse:
     Optional[list[str]] containerInstanceArns
     Optional[str] nextToken
 
-# no @derive(Json): member(s) status: list[DaemonDeploymentStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: list[DaemonDeploymentStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDaemonDeploymentsRequest:
     str daemonArn
     Optional[list[DaemonDeploymentStatus]] status
@@ -2718,8 +2843,9 @@ struct ListDaemonDeploymentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) daemonDeployments: list[DaemonDeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonDeployments: list[DaemonDeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDaemonDeploymentsResponse:
     Optional[str] nextToken
     Optional[list[DaemonDeploymentSummary]] daemonDeployments
@@ -2734,28 +2860,32 @@ struct ListDaemonTaskDefinitionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) daemonTaskDefinitions: list[DaemonTaskDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonTaskDefinitions: list[DaemonTaskDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDaemonTaskDefinitionsResponse:
     Optional[list[DaemonTaskDefinitionSummary]] daemonTaskDefinitions
     Optional[str] nextToken
 
-# no @derive(Json): member(s) capacityProviderArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDaemonsRequest:
     Optional[str] clusterArn
     Optional[list[str]] capacityProviderArns
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) daemonSummariesList: list[DaemonSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) daemonSummariesList: list[DaemonSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDaemonsResponse:
     Optional[list[DaemonSummary]] daemonSummariesList
     Optional[str] nextToken
 
-# no @derive(Json): member(s) status: list[GatewayClusterAssociationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: list[GatewayClusterAssociationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayClusterAssociationsRequest:
     Optional[str] gateway
     Optional[str] cluster
@@ -2763,14 +2893,16 @@ struct ListGatewayClusterAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gatewayClusterAssociations: list[GatewayClusterAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayClusterAssociations: list[GatewayClusterAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayClusterAssociationsResponse:
     Optional[list[GatewayClusterAssociationSummary]] gatewayClusterAssociations
     Optional[str] nextToken
 
-# no @derive(Json): member(s) status: list[GatewayRouteStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: list[GatewayRouteStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayRoutesRequest:
     Optional[str] gateway
     Optional[str] cluster
@@ -2780,28 +2912,32 @@ struct ListGatewayRoutesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gatewayRoutes: list[GatewayRouteSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoutes: list[GatewayRouteSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayRoutesResponse:
     Optional[list[GatewayRouteSummary]] gatewayRoutes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) names: list[str], status: list[GatewayStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) names: list[str], status: list[GatewayStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewaysRequest:
     Optional[list[str]] names
     Optional[list[GatewayStatus]] status
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gateways: list[GatewaySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gateways: list[GatewaySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewaysResponse:
     Optional[list[GatewaySummary]] gateways
     Optional[str] nextToken
 
-# no @derive(Json): member(s) status: list[ServiceDeploymentStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: list[ServiceDeploymentStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceDeploymentsRequest:
     str service
     Optional[str] cluster
@@ -2810,8 +2946,9 @@ struct ListServiceDeploymentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) serviceDeployments: list[ServiceDeploymentBrief] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceDeployments: list[ServiceDeploymentBrief] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceDeploymentsResponse:
     Optional[list[ServiceDeploymentBrief]] serviceDeployments
     Optional[str] nextToken
@@ -2822,8 +2959,9 @@ struct ListServicesByNamespaceRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) serviceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesByNamespaceResponse:
     Optional[list[str]] serviceArns
     Optional[str] nextToken
@@ -2837,8 +2975,9 @@ struct ListServicesRequest:
     Optional[SchedulingStrategy] schedulingStrategy
     Optional[ResourceManagementType] resourceManagementType
 
-# no @derive(Json): member(s) serviceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesResponse:
     Optional[list[str]] serviceArns
     Optional[str] nextToken
@@ -2847,8 +2986,9 @@ struct ListServicesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -2859,8 +2999,9 @@ struct ListTaskDefinitionFamiliesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) families: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) families: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaskDefinitionFamiliesResponse:
     Optional[list[str]] families
     Optional[str] nextToken
@@ -2873,8 +3014,9 @@ struct ListTaskDefinitionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) taskDefinitionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDefinitionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaskDefinitionsResponse:
     Optional[list[str]] taskDefinitionArns
     Optional[str] nextToken
@@ -2892,8 +3034,9 @@ struct ListTasksRequest:
     Optional[LaunchType] launchType
     Optional[str] daemonName
 
-# no @derive(Json): member(s) taskArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTasksResponse:
     Optional[list[str]] taskArns
     Optional[str] nextToken
@@ -2906,8 +3049,9 @@ struct LoadBalancer:
     Optional[int64] containerPort
     Optional[AdvancedConfiguration] advancedConfiguration
 
-# no @derive(Json): member(s) options: dict[str, str], secretOptions: list[Secret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: dict[str, str], secretOptions: list[Secret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogConfiguration:
     LogDriver logDriver
     Optional[dict[str, str]] options
@@ -2937,8 +3081,9 @@ struct ManagedApplicationAutoScalingPolicy:
     float64 targetValue
     str metric
 
-# no @derive(Json): member(s) applicationAutoScalingPolicies: list[ManagedApplicationAutoScalingPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationAutoScalingPolicies: list[ManagedApplicationAutoScalingPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedAutoScaling:
     Optional[ManagedScalableTarget] scalableTarget
     Optional[list[ManagedApplicationAutoScalingPolicy]] applicationAutoScalingPolicies
@@ -2951,8 +3096,9 @@ struct ManagedCertificate:
     DateTime updatedAt
     str domainName
 
-# no @derive(Json): member(s) loadBalancer: ManagedLoadBalancer, loadBalancerSecurityGroups: list[ManagedSecurityGroup], targetGroups: list[ManagedTargetGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancer: ManagedLoadBalancer, loadBalancerSecurityGroups: list[ManagedSecurityGroup], targetGroups: list[ManagedTargetGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedIngressPath:
     AccessType accessType
     str endpoint
@@ -2967,14 +3113,16 @@ struct ManagedIngressPath:
 struct ManagedInstancesLocalStorageConfiguration:
     Optional[bool] useLocalStorage
 
-# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedInstancesNetworkConfiguration:
     Optional[list[str]] subnets
     Optional[list[str]] securityGroups
 
-# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedInstancesProvider:
     Optional[str] infrastructureRoleArn
     Optional[InstanceLaunchTemplate] instanceLaunchTemplate
@@ -3000,8 +3148,9 @@ struct ManagedListenerRule:
     Optional[str] statusReason
     DateTime updatedAt
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedLoadBalancer:
     Optional[str] arn
     ManagedResourceStatus status
@@ -3075,8 +3224,9 @@ struct MemoryMiBRequest:
     int64 min
     Optional[int64] max
 
-# no @derive(Json): member(s) metricNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricConfiguration:
     list[str] metricNames
     int64 resolutionSeconds
@@ -3085,8 +3235,9 @@ struct MetricConfiguration:
 struct MissingVersionException:
     Optional[str] message
 
-# no @derive(Json): member(s) metricConfigurations: list[MetricConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricConfigurations: list[MetricConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringConfiguration:
     Optional[list[MetricConfiguration]] metricConfigurations
 
@@ -3114,8 +3265,9 @@ struct NetworkBinding:
     Optional[str] containerPortRange
     Optional[str] hostPortRange
 
-# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[AwsVpcConfiguration] awsvpcConfiguration
 
@@ -3177,8 +3329,9 @@ struct ProtectedTask:
     Optional[bool] protectionEnabled
     Optional[DateTime] expirationDate
 
-# no @derive(Json): member(s) properties: list[KeyValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[KeyValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyConfiguration:
     Optional[str] type
     str containerName
@@ -3203,31 +3356,36 @@ struct PutAccountSettingRequest:
 struct PutAccountSettingResponse:
     Optional[Setting] setting
 
-# no @derive(Json): member(s) attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAttributesRequest:
     Optional[str] cluster
     list[Attribute] attributes
 
-# no @derive(Json): member(s) attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAttributesResponse:
     Optional[list[Attribute]] attributes
 
-# no @derive(Json): member(s) capacityProviders: list[str], defaultCapacityProviderStrategy: list[CapacityProviderStrategyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviders: list[str], defaultCapacityProviderStrategy: list[CapacityProviderStrategyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutClusterCapacityProvidersRequest:
     str cluster
     list[str] capacityProviders
     list[CapacityProviderStrategyItem] defaultCapacityProviderStrategy
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutClusterCapacityProvidersResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) totalResources: list[Resource], attributes: list[Attribute], platformDevices: list[PlatformDevice], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) totalResources: list[Resource], attributes: list[Attribute], platformDevices: list[PlatformDevice], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterContainerInstanceRequest:
     Optional[str] cluster
     Optional[str] instanceIdentityDocument
@@ -3239,13 +3397,15 @@ struct RegisterContainerInstanceRequest:
     Optional[list[PlatformDevice]] platformDevices
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) containerInstance: ContainerInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstance: ContainerInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterContainerInstanceResponse:
     Optional[ContainerInstance] containerInstance
 
-# no @derive(Json): member(s) containerDefinitions: list[DaemonContainerDefinition], volumes: list[DaemonVolume], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerDefinitions: list[DaemonContainerDefinition], volumes: list[DaemonVolume], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterDaemonTaskDefinitionRequest:
     str family
     Optional[str] taskRoleArn
@@ -3262,8 +3422,9 @@ struct RegisterDaemonTaskDefinitionRequest:
 struct RegisterDaemonTaskDefinitionResponse:
     Optional[str] daemonTaskDefinitionArn
 
-# no @derive(Json): member(s) containerDefinitions: list[ContainerDefinition], volumes: list[Volume], placementConstraints: list[TaskDefinitionPlacementConstraint], requiresCompatibilities: list[Compatibility], tags: list[Tag], proxyConfiguration: ProxyConfiguration, inferenceAccelerators: list[InferenceAccelerator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerDefinitions: list[ContainerDefinition], volumes: list[Volume], placementConstraints: list[TaskDefinitionPlacementConstraint], requiresCompatibilities: list[Compatibility], tags: list[Tag], proxyConfiguration: ProxyConfiguration, inferenceAccelerators: list[InferenceAccelerator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterTaskDefinitionRequest:
     str family
     Optional[str] taskRoleArn
@@ -3284,8 +3445,9 @@ struct RegisterTaskDefinitionRequest:
     Optional[RuntimePlatform] runtimePlatform
     Optional[bool] enableFaultInjection
 
-# no @derive(Json): member(s) taskDefinition: TaskDefinition, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskDefinition: TaskDefinition, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterTaskDefinitionResponse:
     Optional[TaskDefinition] taskDefinition
     Optional[list[Tag]] tags
@@ -3294,14 +3456,16 @@ struct RegisterTaskDefinitionResponse:
 struct RepositoryCredentials:
     str credentialsParameter
 
-# no @derive(Json): member(s) loadBalancers: list[ServiceRevisionLoadBalancer], vpcLatticeConfigurations: list[ServiceRevisionVpcLatticeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancers: list[ServiceRevisionLoadBalancer], vpcLatticeConfigurations: list[ServiceRevisionVpcLatticeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolvedConfiguration:
     Optional[list[ServiceRevisionLoadBalancer]] loadBalancers
     Optional[list[ServiceRevisionVpcLatticeConfiguration]] vpcLatticeConfigurations
 
-# no @derive(Json): member(s) stringSetValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringSetValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[str] name
     Optional[str] type
@@ -3330,8 +3494,9 @@ struct Rollback:
     Optional[DateTime] startedAt
     Optional[str] serviceRevisionArn
 
-# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], networkConfiguration: NetworkConfiguration, overrides: TaskOverride, placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], tags: list[Tag], volumeConfigurations: list[TaskVolumeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], networkConfiguration: NetworkConfiguration, overrides: TaskOverride, placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], tags: list[Tag], volumeConfigurations: list[TaskVolumeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunTaskRequest:
     Optional[list[CapacityProviderStrategyItem]] capacityProviderStrategy
     Optional[str] cluster
@@ -3353,8 +3518,9 @@ struct RunTaskRequest:
     Optional[str] clientToken
     Optional[list[TaskVolumeConfiguration]] volumeConfigurations
 
-# no @derive(Json): member(s) tasks: list[Task], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[Task], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunTaskResponse:
     Optional[list[Task]] tasks
     Optional[list[Failure]] failures
@@ -3389,8 +3555,9 @@ struct Secret:
 struct ServerException:
     Optional[str] message
 
-# no @derive(Json): member(s) loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], capacityProviderStrategy: list[CapacityProviderStrategyItem], deploymentConfiguration: DeploymentConfiguration, taskSets: list[TaskSet], deployments: list[Deployment], events: list[ServiceEvent], currentServiceRevisions: list[ServiceCurrentRevisionSummary], placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], networkConfiguration: NetworkConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], capacityProviderStrategy: list[CapacityProviderStrategyItem], deploymentConfiguration: DeploymentConfiguration, taskSets: list[TaskSet], deployments: list[Deployment], events: list[ServiceEvent], currentServiceRevisions: list[ServiceCurrentRevisionSummary], placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], networkConfiguration: NetworkConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     Optional[str] serviceArn
     Optional[str] serviceName
@@ -3439,8 +3606,9 @@ struct ServiceConnectClientAlias:
     Optional[str] dnsName
     Optional[ServiceConnectTestTrafficRules] testTrafficRules
 
-# no @derive(Json): member(s) services: list[ServiceConnectService], logConfiguration: LogConfiguration, containerConfigurations: list[ServiceConnectContainerConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[ServiceConnectService], logConfiguration: LogConfiguration, containerConfigurations: list[ServiceConnectContainerConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceConnectConfiguration:
     bool enabled
     Optional[str] namespace
@@ -3453,8 +3621,9 @@ struct ServiceConnectConfiguration:
 struct ServiceConnectContainerConfiguration:
     Optional[ServiceConnectContainerLogLevel] logLevel
 
-# no @derive(Json): member(s) clientAliases: list[ServiceConnectClientAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientAliases: list[ServiceConnectClientAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceConnectService:
     str portName
     Optional[str] discoveryName
@@ -3498,8 +3667,9 @@ struct ServiceCurrentRevisionSummary:
     Optional[int64] runningTaskCount
     Optional[int64] pendingTaskCount
 
-# no @derive(Json): member(s) sourceServiceRevisions: list[ServiceRevisionSummary], lifecycleHookDetails: list[DeploymentLifecycleHookDetail], deploymentConfiguration: DeploymentConfiguration, alarms: ServiceDeploymentAlarms not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServiceRevisions: list[ServiceRevisionSummary], lifecycleHookDetails: list[DeploymentLifecycleHookDetail], deploymentConfiguration: DeploymentConfiguration, alarms: ServiceDeploymentAlarms not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceDeployment:
     Optional[str] serviceDeploymentArn
     Optional[str] serviceArn
@@ -3520,8 +3690,9 @@ struct ServiceDeployment:
     Optional[ServiceDeploymentCircuitBreaker] deploymentCircuitBreaker
     Optional[ServiceDeploymentAlarms] alarms
 
-# no @derive(Json): member(s) alarmNames: list[str], triggeredAlarmNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarmNames: list[str], triggeredAlarmNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceDeploymentAlarms:
     Optional[ServiceDeploymentRollbackMonitorsStatus] status
     Optional[list[str]] alarmNames
@@ -3555,8 +3726,9 @@ struct ServiceEvent:
     Optional[DateTime] createdAt
     Optional[str] message
 
-# no @derive(Json): member(s) tagSpecifications: list[EBSTagSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagSpecifications: list[EBSTagSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceManagedEBSVolumeConfiguration:
     Optional[bool] encrypted
     Optional[str] kmsKeyId
@@ -3585,8 +3757,9 @@ struct ServiceRegistry:
     Optional[str] containerName
     Optional[int64] containerPort
 
-# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], networkConfiguration: NetworkConfiguration, containerImages: list[ContainerImage], serviceConnectConfiguration: ServiceConnectConfiguration, volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration], resolvedConfiguration: ResolvedConfiguration, ecsManagedResources: ECSManagedResources, gatewayConnectors: list[GatewayConnector], monitoring: MonitoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], networkConfiguration: NetworkConfiguration, containerImages: list[ContainerImage], serviceConnectConfiguration: ServiceConnectConfiguration, volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration], resolvedConfiguration: ResolvedConfiguration, ecsManagedResources: ECSManagedResources, gatewayConnectors: list[GatewayConnector], monitoring: MonitoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceRevision:
     Optional[str] serviceRevisionArn
     Optional[str] serviceArn
@@ -3635,8 +3808,9 @@ struct ServiceRevisionVpcLatticeConfiguration:
     Optional[str] targetGroupArn
     Optional[str] productionListenerRule
 
-# no @derive(Json): member(s) managedEBSVolume: ServiceManagedEBSVolumeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedEBSVolume: ServiceManagedEBSVolumeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceVolumeConfiguration:
     str name
     Optional[ServiceManagedEBSVolumeConfiguration] managedEBSVolume
@@ -3658,8 +3832,9 @@ struct Setting:
 struct SharingStrategy:
     Optional[NvidiaMpsAllocation] nvidiaMps
 
-# no @derive(Json): member(s) containerInstances: list[str], networkConfiguration: NetworkConfiguration, overrides: TaskOverride, tags: list[Tag], volumeConfigurations: list[TaskVolumeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstances: list[str], networkConfiguration: NetworkConfiguration, overrides: TaskOverride, tags: list[Tag], volumeConfigurations: list[TaskVolumeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTaskRequest:
     Optional[str] cluster
     list[str] containerInstances
@@ -3675,8 +3850,9 @@ struct StartTaskRequest:
     str taskDefinition
     Optional[list[TaskVolumeConfiguration]] volumeConfigurations
 
-# no @derive(Json): member(s) tasks: list[Task], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[Task], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTaskResponse:
     Optional[list[Task]] tasks
     Optional[list[Failure]] failures
@@ -3696,13 +3872,15 @@ struct StopTaskRequest:
     str task
     Optional[str] reason
 
-# no @derive(Json): member(s) task: Task not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) task: Task not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopTaskResponse:
     Optional[Task] task
 
-# no @derive(Json): member(s) attachments: list[AttachmentStateChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachments: list[AttachmentStateChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubmitAttachmentStateChangesRequest:
     Optional[str] cluster
     list[AttachmentStateChange] attachments
@@ -3711,8 +3889,9 @@ struct SubmitAttachmentStateChangesRequest:
 struct SubmitAttachmentStateChangesResponse:
     Optional[str] acknowledgment
 
-# no @derive(Json): member(s) networkBindings: list[NetworkBinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkBindings: list[NetworkBinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubmitContainerStateChangeRequest:
     Optional[str] cluster
     Optional[str] task
@@ -3727,8 +3906,9 @@ struct SubmitContainerStateChangeRequest:
 struct SubmitContainerStateChangeResponse:
     Optional[str] acknowledgment
 
-# no @derive(Json): member(s) containers: list[ContainerStateChange], attachments: list[AttachmentStateChange], managedAgents: list[ManagedAgentStateChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: list[ContainerStateChange], attachments: list[AttachmentStateChange], managedAgents: list[ManagedAgentStateChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubmitTaskStateChangeRequest:
     Optional[str] cluster
     Optional[str] task
@@ -3755,8 +3935,9 @@ struct Tag:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -3774,8 +3955,9 @@ struct TargetNotConnectedException:
 struct TargetNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) attachments: list[Attachment], attributes: list[Attribute], containers: list[Container], inferenceAccelerators: list[InferenceAccelerator], overrides: TaskOverride, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachments: list[Attachment], attributes: list[Attribute], containers: list[Container], inferenceAccelerators: list[InferenceAccelerator], overrides: TaskOverride, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Task:
     Optional[list[Attachment]] attachments
     Optional[list[Attribute]] attributes
@@ -3815,8 +3997,9 @@ struct Task:
     Optional[EphemeralStorage] ephemeralStorage
     Optional[TaskEphemeralStorage] fargateEphemeralStorage
 
-# no @derive(Json): member(s) containerDefinitions: list[ContainerDefinition], volumes: list[Volume], requiresAttributes: list[Attribute], placementConstraints: list[TaskDefinitionPlacementConstraint], compatibilities: list[Compatibility], requiresCompatibilities: list[Compatibility], inferenceAccelerators: list[InferenceAccelerator], proxyConfiguration: ProxyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerDefinitions: list[ContainerDefinition], volumes: list[Volume], requiresAttributes: list[Attribute], placementConstraints: list[TaskDefinitionPlacementConstraint], compatibilities: list[Compatibility], requiresCompatibilities: list[Compatibility], inferenceAccelerators: list[InferenceAccelerator], proxyConfiguration: ProxyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskDefinition:
     Optional[str] taskDefinitionArn
     Optional[list[ContainerDefinition]] containerDefinitions
@@ -3855,8 +4038,9 @@ struct TaskEphemeralStorage:
     Optional[int64] sizeInGiB
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) tagSpecifications: list[EBSTagSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagSpecifications: list[EBSTagSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskManagedEBSVolumeConfiguration:
     Optional[bool] encrypted
     Optional[str] kmsKeyId
@@ -3875,8 +4059,9 @@ struct TaskManagedEBSVolumeConfiguration:
 struct TaskManagedEBSVolumeTerminationPolicy:
     bool deleteOnTermination
 
-# no @derive(Json): member(s) containerOverrides: list[ContainerOverride], inferenceAcceleratorOverrides: list[InferenceAcceleratorOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerOverrides: list[ContainerOverride], inferenceAcceleratorOverrides: list[InferenceAcceleratorOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskOverride:
     Optional[list[ContainerOverride]] containerOverrides
     Optional[str] cpu
@@ -3886,8 +4071,9 @@ struct TaskOverride:
     Optional[str] taskRoleArn
     Optional[EphemeralStorage] ephemeralStorage
 
-# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], networkConfiguration: NetworkConfiguration, loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], networkConfiguration: NetworkConfiguration, loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskSet:
     Optional[str] id
     Optional[str] taskSetArn
@@ -3919,8 +4105,9 @@ struct TaskSet:
 struct TaskSetNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) managedEBSVolume: TaskManagedEBSVolumeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedEBSVolume: TaskManagedEBSVolumeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskVolumeConfiguration:
     str name
     Optional[TaskManagedEBSVolumeConfiguration] managedEBSVolume
@@ -3935,8 +4122,9 @@ struct TimeoutConfiguration:
     Optional[int64] idleTimeoutSeconds
     Optional[int64] perRequestTimeoutSeconds
 
-# no @derive(Json): member(s) mountOptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mountOptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tmpfs:
     str containerPath
     int64 size
@@ -3957,8 +4145,9 @@ struct Ulimit:
 struct UnsupportedFeatureException:
     Optional[str] message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -3968,40 +4157,46 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) managedInstancesProvider: UpdateManagedInstancesProviderConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedInstancesProvider: UpdateManagedInstancesProviderConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapacityProviderRequest:
     str name
     Optional[str] cluster
     Optional[AutoScalingGroupProviderUpdate] autoScalingGroupProvider
     Optional[UpdateManagedInstancesProviderConfiguration] managedInstancesProvider
 
-# no @derive(Json): member(s) capacityProvider: CapacityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProvider: CapacityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapacityProviderResponse:
     Optional[CapacityProvider] capacityProvider
 
-# no @derive(Json): member(s) settings: list[ClusterSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[ClusterSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterRequest:
     str cluster
     Optional[list[ClusterSetting]] settings
     Optional[ClusterConfiguration] configuration
     Optional[ClusterServiceConnectDefaultsRequest] serviceConnectDefaults
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) settings: list[ClusterSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[ClusterSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterSettingsRequest:
     str cluster
     list[ClusterSetting] settings
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterSettingsResponse:
     Optional[Cluster] cluster
 
@@ -4010,26 +4205,30 @@ struct UpdateContainerAgentRequest:
     Optional[str] cluster
     str containerInstance
 
-# no @derive(Json): member(s) containerInstance: ContainerInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstance: ContainerInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerAgentResponse:
     Optional[ContainerInstance] containerInstance
 
-# no @derive(Json): member(s) containerInstances: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstances: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerInstancesStateRequest:
     Optional[str] cluster
     list[str] containerInstances
     ContainerInstanceStatus status
 
-# no @derive(Json): member(s) containerInstances: list[ContainerInstance], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerInstances: list[ContainerInstance], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerInstancesStateResponse:
     Optional[list[ContainerInstance]] containerInstances
     Optional[list[Failure]] failures
 
-# no @derive(Json): member(s) capacityProviderArns: list[str], deploymentConfiguration: DaemonDeploymentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderArns: list[str], deploymentConfiguration: DaemonDeploymentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDaemonRequest:
     str daemonArn
     str daemonTaskDefinitionArn
@@ -4048,8 +4247,9 @@ struct UpdateDaemonResponse:
     Optional[DateTime] updatedAt
     Optional[str] deploymentArn
 
-# no @derive(Json): member(s) primaryContainer: ExpressGatewayContainer, networkConfiguration: ExpressGatewayServiceNetworkConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) primaryContainer: ExpressGatewayContainer, networkConfiguration: ExpressGatewayServiceNetworkConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExpressGatewayServiceRequest:
     str serviceArn
     Optional[str] executionRoleArn
@@ -4063,13 +4263,15 @@ struct UpdateExpressGatewayServiceRequest:
     Optional[ExpressGatewayScalingTarget] scalingTarget
     Optional[str] taskDefinitionArn
 
-# no @derive(Json): member(s) service: UpdatedExpressGatewayService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: UpdatedExpressGatewayService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateExpressGatewayServiceResponse:
     Optional[UpdatedExpressGatewayService] service
 
-# no @derive(Json): member(s) testTrafficRules: GatewayAlbTestTrafficRules not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testTrafficRules: GatewayAlbTestTrafficRules not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayAlbConfiguration:
     Optional[UpdateGatewayNetworkConfiguration] networkConfiguration
     Optional[int64] maxAlbCount
@@ -4078,8 +4280,9 @@ struct UpdateGatewayAlbConfiguration:
     Optional[GatewayAlbDesyncMitigationMode] httpDesync
     Optional[GatewayAlbTestTrafficRules] testTrafficRules
 
-# no @derive(Json): member(s) hostSharedAlb: UpdateGatewayAlbConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostSharedAlb: UpdateGatewayAlbConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayConfiguration:
     Optional[UpdateGatewayAlbConfiguration] hostSharedAlb
 
@@ -4087,8 +4290,9 @@ struct UpdateGatewayConfiguration:
 struct UpdateGatewayNetworkConfiguration:
     Optional[str] inboundSecurityGroup
 
-# no @derive(Json): member(s) configuration: UpdateGatewayConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: UpdateGatewayConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayRequest:
     str gateway
     Optional[str] infrastructureRoleArn
@@ -4106,8 +4310,9 @@ struct UpdateGatewayResponse:
 struct UpdateInProgressException:
     Optional[str] message
 
-# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplateUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceLaunchTemplate: InstanceLaunchTemplateUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateManagedInstancesProviderConfiguration:
     str infrastructureRoleArn
     InstanceLaunchTemplateUpdate instanceLaunchTemplate
@@ -4121,13 +4326,15 @@ struct UpdateServicePrimaryTaskSetRequest:
     str service
     str primaryTaskSet
 
-# no @derive(Json): member(s) taskSet: TaskSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSet: TaskSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServicePrimaryTaskSetResponse:
     Optional[TaskSet] taskSet
 
-# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], deploymentConfiguration: DeploymentConfiguration, networkConfiguration: NetworkConfiguration, placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], serviceConnectConfiguration: ServiceConnectConfiguration, volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration], gatewayConnectors: list[GatewayConnector], monitoring: MonitoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviderStrategy: list[CapacityProviderStrategyItem], deploymentConfiguration: DeploymentConfiguration, networkConfiguration: NetworkConfiguration, placementConstraints: list[PlacementConstraint], placementStrategy: list[PlacementStrategy], loadBalancers: list[LoadBalancer], serviceRegistries: list[ServiceRegistry], serviceConnectConfiguration: ServiceConnectConfiguration, volumeConfigurations: list[ServiceVolumeConfiguration], vpcLatticeConfigurations: list[VpcLatticeConfiguration], gatewayConnectors: list[GatewayConnector], monitoring: MonitoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceRequest:
     Optional[str] cluster
     str service
@@ -4154,21 +4361,24 @@ struct UpdateServiceRequest:
     Optional[list[GatewayConnector]] gatewayConnectors
     Optional[MonitoringConfiguration] monitoring
 
-# no @derive(Json): member(s) service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceResponse:
     Optional[Service] service
 
-# no @derive(Json): member(s) tasks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTaskProtectionRequest:
     str cluster
     list[str] tasks
     bool protectionEnabled
     Optional[int64] expiresInMinutes
 
-# no @derive(Json): member(s) protectedTasks: list[ProtectedTask], failures: list[Failure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedTasks: list[ProtectedTask], failures: list[Failure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTaskProtectionResponse:
     Optional[list[ProtectedTask]] protectedTasks
     Optional[list[Failure]] failures
@@ -4180,13 +4390,15 @@ struct UpdateTaskSetRequest:
     str taskSet
     Scale scale
 
-# no @derive(Json): member(s) taskSet: TaskSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSet: TaskSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTaskSetResponse:
     Optional[TaskSet] taskSet
 
-# no @derive(Json): member(s) targetConfiguration: ExpressGatewayServiceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetConfiguration: ExpressGatewayServiceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedExpressGatewayService:
     Optional[str] serviceArn
     Optional[str] cluster
@@ -4207,8 +4419,9 @@ struct VersionInfo:
     Optional[str] agentHash
     Optional[str] dockerVersion
 
-# no @derive(Json): member(s) dockerVolumeConfiguration: DockerVolumeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dockerVolumeConfiguration: DockerVolumeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Volume:
     Optional[str] name
     Optional[HostVolumeProperties] host
@@ -4342,63 +4555,2746 @@ def ecs_error_from_code(str code) -> ECSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCapacityProvider (input CreateCapacityProviderRequest)
-#   CreateCluster (input CreateClusterRequest)
-#   CreateDaemon (input CreateDaemonRequest)
-#   CreateExpressGatewayService (input CreateExpressGatewayServiceRequest)
-#   CreateGateway (input CreateGatewayRequest)
-#   CreateService (input CreateServiceRequest)
-#   CreateTaskSet (input CreateTaskSetRequest)
-#   DeleteAttributes (input DeleteAttributesRequest)
-#   DeleteTaskDefinitions (input DeleteTaskDefinitionsRequest)
-#   DescribeCapacityProviders (input DescribeCapacityProvidersRequest)
-#   DescribeClusters (input DescribeClustersRequest)
-#   DescribeContainerInstances (input DescribeContainerInstancesRequest)
-#   DescribeDaemonDeployments (input DescribeDaemonDeploymentsRequest)
-#   DescribeDaemonRevisions (input DescribeDaemonRevisionsRequest)
-#   DescribeExpressGatewayService (input DescribeExpressGatewayServiceRequest)
-#   DescribeServiceDeployments (input DescribeServiceDeploymentsRequest)
-#   DescribeServiceRevisions (input DescribeServiceRevisionsRequest)
-#   DescribeServices (input DescribeServicesRequest)
-#   DescribeTaskDefinition (input DescribeTaskDefinitionRequest)
-#   DescribeTaskSets (input DescribeTaskSetsRequest)
-#   DescribeTasks (input DescribeTasksRequest)
-#   GetTaskProtection (input GetTaskProtectionRequest)
-#   ListDaemonDeployments (input ListDaemonDeploymentsRequest)
-#   ListDaemons (input ListDaemonsRequest)
-#   ListGatewayClusterAssociations (input ListGatewayClusterAssociationsRequest)
-#   ListGatewayRoutes (input ListGatewayRoutesRequest)
-#   ListGateways (input ListGatewaysRequest)
-#   ListServiceDeployments (input ListServiceDeploymentsRequest)
-#   PutAttributes (input PutAttributesRequest)
-#   PutClusterCapacityProviders (input PutClusterCapacityProvidersRequest)
-#   RegisterContainerInstance (input RegisterContainerInstanceRequest)
-#   RegisterDaemonTaskDefinition (input RegisterDaemonTaskDefinitionRequest)
-#   RegisterTaskDefinition (input RegisterTaskDefinitionRequest)
-#   RunTask (input RunTaskRequest)
-#   StartTask (input StartTaskRequest)
-#   SubmitAttachmentStateChanges (input SubmitAttachmentStateChangesRequest)
-#   SubmitContainerStateChange (input SubmitContainerStateChangeRequest)
-#   SubmitTaskStateChange (input SubmitTaskStateChangeRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCapacityProvider (input UpdateCapacityProviderRequest)
-#   UpdateCluster (input UpdateClusterRequest)
-#   UpdateClusterSettings (input UpdateClusterSettingsRequest)
-#   UpdateContainerInstancesState (input UpdateContainerInstancesStateRequest)
-#   UpdateDaemon (input UpdateDaemonRequest)
-#   UpdateExpressGatewayService (input UpdateExpressGatewayServiceRequest)
-#   UpdateGateway (input UpdateGatewayRequest)
-#   UpdateService (input UpdateServiceRequest)
-#   UpdateTaskProtection (input UpdateTaskProtectionRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ecs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListGatewayClusterAssociations (input not derivable (no generated method))
-#   ListGatewayRoutes (input not derivable (no generated method))
-#   ListGateways (input not derivable (no generated method))
+def ecs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ecs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AwsVpcConfiguration to a compact JSON object (declaration order).
+def aws_vpc_configuration_to_json(AwsVpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnets:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"subnets\":" + ecs_json_arr(e0))
+    if v.securityGroups.is_some():
+        auto u1 = v.securityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ecs_json_str(x2))
+        parts.append("\"securityGroups\":" + ecs_json_arr(e2))
+    if v.assignPublicIp.is_some():
+        auto u3 = v.assignPublicIp.unwrap()
+        parts.append("\"assignPublicIp\":" + u3.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize ContainerDefinition to a compact JSON object (declaration order).
+def container_definition_to_json(ContainerDefinition v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ecs_json_str(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + ecs_json_str(u1))
+    if v.repositoryCredentials.is_some():
+        auto u2 = v.repositoryCredentials.unwrap()
+        parts.append("\"repositoryCredentials\":" + u2.to_json())
+    if v.cpu.is_some():
+        auto u3 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + str(u3))
+    if v.memory.is_some():
+        auto u4 = v.memory.unwrap()
+        parts.append("\"memory\":" + str(u4))
+    if v.memoryReservation.is_some():
+        auto u5 = v.memoryReservation.unwrap()
+        parts.append("\"memoryReservation\":" + str(u5))
+    if v.links.is_some():
+        auto u6 = v.links.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(ecs_json_str(x7))
+        parts.append("\"links\":" + ecs_json_arr(e7))
+    if v.portMappings.is_some():
+        auto u8 = v.portMappings.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"portMappings\":" + ecs_json_arr(e9))
+    if v.essential.is_some():
+        auto u10 = v.essential.unwrap()
+        parts.append("\"essential\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.restartPolicy.is_some():
+        auto u11 = v.restartPolicy.unwrap()
+        parts.append("\"restartPolicy\":" + container_restart_policy_to_json(u11))
+    if v.entryPoint.is_some():
+        auto u12 = v.entryPoint.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(ecs_json_str(x13))
+        parts.append("\"entryPoint\":" + ecs_json_arr(e13))
+    if v.command.is_some():
+        auto u14 = v.command.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(ecs_json_str(x15))
+        parts.append("\"command\":" + ecs_json_arr(e15))
+    if v.environment.is_some():
+        auto u16 = v.environment.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"environment\":" + ecs_json_arr(e17))
+    if v.environmentFiles.is_some():
+        auto u18 = v.environmentFiles.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"environmentFiles\":" + ecs_json_arr(e19))
+    if v.mountPoints.is_some():
+        auto u20 = v.mountPoints.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"mountPoints\":" + ecs_json_arr(e21))
+    if v.volumesFrom.is_some():
+        auto u22 = v.volumesFrom.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"volumesFrom\":" + ecs_json_arr(e23))
+    if v.linuxParameters.is_some():
+        auto u24 = v.linuxParameters.unwrap()
+        parts.append("\"linuxParameters\":" + linux_parameters_to_json(u24))
+    if v.secrets.is_some():
+        auto u25 = v.secrets.unwrap()
+        list[str] e26 = []
+        for x26 in u25:
+            e26.append(x26.to_json())
+        parts.append("\"secrets\":" + ecs_json_arr(e26))
+    if v.dependsOn.is_some():
+        auto u27 = v.dependsOn.unwrap()
+        list[str] e28 = []
+        for x28 in u27:
+            e28.append(x28.to_json())
+        parts.append("\"dependsOn\":" + ecs_json_arr(e28))
+    if v.startTimeout.is_some():
+        auto u29 = v.startTimeout.unwrap()
+        parts.append("\"startTimeout\":" + str(u29))
+    if v.stopTimeout.is_some():
+        auto u30 = v.stopTimeout.unwrap()
+        parts.append("\"stopTimeout\":" + str(u30))
+    if v.versionConsistency.is_some():
+        auto u31 = v.versionConsistency.unwrap()
+        parts.append("\"versionConsistency\":" + u31.to_json())
+    if v.hostname.is_some():
+        auto u32 = v.hostname.unwrap()
+        parts.append("\"hostname\":" + ecs_json_str(u32))
+    if v.user.is_some():
+        auto u33 = v.user.unwrap()
+        parts.append("\"user\":" + ecs_json_str(u33))
+    if v.workingDirectory.is_some():
+        auto u34 = v.workingDirectory.unwrap()
+        parts.append("\"workingDirectory\":" + ecs_json_str(u34))
+    if v.disableNetworking.is_some():
+        auto u35 = v.disableNetworking.unwrap()
+        parts.append("\"disableNetworking\":" + json.dumps(JsonValue.Bool(u35)))
+    if v.privileged.is_some():
+        auto u36 = v.privileged.unwrap()
+        parts.append("\"privileged\":" + json.dumps(JsonValue.Bool(u36)))
+    if v.readonlyRootFilesystem.is_some():
+        auto u37 = v.readonlyRootFilesystem.unwrap()
+        parts.append("\"readonlyRootFilesystem\":" + json.dumps(JsonValue.Bool(u37)))
+    if v.dnsServers.is_some():
+        auto u38 = v.dnsServers.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(ecs_json_str(x39))
+        parts.append("\"dnsServers\":" + ecs_json_arr(e39))
+    if v.dnsSearchDomains.is_some():
+        auto u40 = v.dnsSearchDomains.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(ecs_json_str(x41))
+        parts.append("\"dnsSearchDomains\":" + ecs_json_arr(e41))
+    if v.extraHosts.is_some():
+        auto u42 = v.extraHosts.unwrap()
+        list[str] e43 = []
+        for x43 in u42:
+            e43.append(x43.to_json())
+        parts.append("\"extraHosts\":" + ecs_json_arr(e43))
+    if v.dockerSecurityOptions.is_some():
+        auto u44 = v.dockerSecurityOptions.unwrap()
+        list[str] e45 = []
+        for x45 in u44:
+            e45.append(ecs_json_str(x45))
+        parts.append("\"dockerSecurityOptions\":" + ecs_json_arr(e45))
+    if v.interactive.is_some():
+        auto u46 = v.interactive.unwrap()
+        parts.append("\"interactive\":" + json.dumps(JsonValue.Bool(u46)))
+    if v.pseudoTerminal.is_some():
+        auto u47 = v.pseudoTerminal.unwrap()
+        parts.append("\"pseudoTerminal\":" + json.dumps(JsonValue.Bool(u47)))
+    if v.dockerLabels.is_some():
+        auto u48 = v.dockerLabels.unwrap()
+        list[str] m49 = []
+        for k49 in sorted(u48.keys()):
+            m49.append(ecs_json_str(k49) + ":" + ecs_json_str(u48[k49]))
+        parts.append("\"dockerLabels\":" + ecs_json_obj(m49))
+    if v.ulimits.is_some():
+        auto u50 = v.ulimits.unwrap()
+        list[str] e51 = []
+        for x51 in u50:
+            e51.append(x51.to_json())
+        parts.append("\"ulimits\":" + ecs_json_arr(e51))
+    if v.logConfiguration.is_some():
+        auto u52 = v.logConfiguration.unwrap()
+        parts.append("\"logConfiguration\":" + log_configuration_to_json(u52))
+    if v.healthCheck.is_some():
+        auto u53 = v.healthCheck.unwrap()
+        parts.append("\"healthCheck\":" + health_check_to_json(u53))
+    if v.systemControls.is_some():
+        auto u54 = v.systemControls.unwrap()
+        list[str] e55 = []
+        for x55 in u54:
+            e55.append(x55.to_json())
+        parts.append("\"systemControls\":" + ecs_json_arr(e55))
+    if v.resourceRequirements.is_some():
+        auto u56 = v.resourceRequirements.unwrap()
+        list[str] e57 = []
+        for x57 in u56:
+            e57.append(x57.to_json())
+        parts.append("\"resourceRequirements\":" + ecs_json_arr(e57))
+    if v.firelensConfiguration.is_some():
+        auto u58 = v.firelensConfiguration.unwrap()
+        parts.append("\"firelensConfiguration\":" + firelens_configuration_to_json(u58))
+    if v.credentialSpecs.is_some():
+        auto u59 = v.credentialSpecs.unwrap()
+        list[str] e60 = []
+        for x60 in u59:
+            e60.append(ecs_json_str(x60))
+        parts.append("\"credentialSpecs\":" + ecs_json_arr(e60))
+    return ecs_json_obj(parts)
+
+# Serialize ContainerOverride to a compact JSON object (declaration order).
+def container_override_to_json(ContainerOverride v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ecs_json_str(u0))
+    if v.command.is_some():
+        auto u1 = v.command.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ecs_json_str(x2))
+        parts.append("\"command\":" + ecs_json_arr(e2))
+    if v.environment.is_some():
+        auto u3 = v.environment.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"environment\":" + ecs_json_arr(e4))
+    if v.environmentFiles.is_some():
+        auto u5 = v.environmentFiles.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"environmentFiles\":" + ecs_json_arr(e6))
+    if v.cpu.is_some():
+        auto u7 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + str(u7))
+    if v.memory.is_some():
+        auto u8 = v.memory.unwrap()
+        parts.append("\"memory\":" + str(u8))
+    if v.memoryReservation.is_some():
+        auto u9 = v.memoryReservation.unwrap()
+        parts.append("\"memoryReservation\":" + str(u9))
+    if v.resourceRequirements.is_some():
+        auto u10 = v.resourceRequirements.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"resourceRequirements\":" + ecs_json_arr(e11))
+    return ecs_json_obj(parts)
+
+# Serialize ContainerRestartPolicy to a compact JSON object (declaration order).
+def container_restart_policy_to_json(ContainerRestartPolicy v) -> str:
+    list[str] parts = []
+    parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(v.enabled)))
+    if v.ignoredExitCodes.is_some():
+        auto u0 = v.ignoredExitCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"ignoredExitCodes\":" + ecs_json_arr(e1))
+    if v.restartAttemptPeriod.is_some():
+        auto u2 = v.restartAttemptPeriod.unwrap()
+        parts.append("\"restartAttemptPeriod\":" + str(u2))
+    return ecs_json_obj(parts)
+
+# Serialize ContainerStateChange to a compact JSON object (declaration order).
+def container_state_change_to_json(ContainerStateChange v) -> str:
+    list[str] parts = []
+    if v.containerName.is_some():
+        auto u0 = v.containerName.unwrap()
+        parts.append("\"containerName\":" + ecs_json_str(u0))
+    if v.imageDigest.is_some():
+        auto u1 = v.imageDigest.unwrap()
+        parts.append("\"imageDigest\":" + ecs_json_str(u1))
+    if v.runtimeId.is_some():
+        auto u2 = v.runtimeId.unwrap()
+        parts.append("\"runtimeId\":" + ecs_json_str(u2))
+    if v.exitCode.is_some():
+        auto u3 = v.exitCode.unwrap()
+        parts.append("\"exitCode\":" + str(u3))
+    if v.networkBindings.is_some():
+        auto u4 = v.networkBindings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"networkBindings\":" + ecs_json_arr(e5))
+    if v.reason.is_some():
+        auto u6 = v.reason.unwrap()
+        parts.append("\"reason\":" + ecs_json_str(u6))
+    if v.status.is_some():
+        auto u7 = v.status.unwrap()
+        parts.append("\"status\":" + ecs_json_str(u7))
+    return ecs_json_obj(parts)
+
+# Serialize CreateCapacityProviderRequest to a compact JSON object (declaration order).
+def create_capacity_provider_request_to_json(CreateCapacityProviderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + ecs_json_str(v.name))
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    if v.autoScalingGroupProvider.is_some():
+        auto u1 = v.autoScalingGroupProvider.unwrap()
+        parts.append("\"autoScalingGroupProvider\":" + u1.to_json())
+    if v.managedInstancesProvider.is_some():
+        auto u2 = v.managedInstancesProvider.unwrap()
+        parts.append("\"managedInstancesProvider\":" + create_managed_instances_provider_configuration_to_json(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e4))
+    return ecs_json_obj(parts)
+
+# Serialize CreateClusterRequest to a compact JSON object (declaration order).
+def create_cluster_request_to_json(CreateClusterRequest v) -> str:
+    list[str] parts = []
+    if v.clusterName.is_some():
+        auto u0 = v.clusterName.unwrap()
+        parts.append("\"clusterName\":" + ecs_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e2))
+    if v.settings.is_some():
+        auto u3 = v.settings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"settings\":" + ecs_json_arr(e4))
+    if v.configuration.is_some():
+        auto u5 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + u5.to_json())
+    if v.capacityProviders.is_some():
+        auto u6 = v.capacityProviders.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(ecs_json_str(x7))
+        parts.append("\"capacityProviders\":" + ecs_json_arr(e7))
+    if v.defaultCapacityProviderStrategy.is_some():
+        auto u8 = v.defaultCapacityProviderStrategy.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"defaultCapacityProviderStrategy\":" + ecs_json_arr(e9))
+    if v.serviceConnectDefaults.is_some():
+        auto u10 = v.serviceConnectDefaults.unwrap()
+        parts.append("\"serviceConnectDefaults\":" + u10.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize CreateDaemonRequest to a compact JSON object (declaration order).
+def create_daemon_request_to_json(CreateDaemonRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"daemonName\":" + ecs_json_str(v.daemonName))
+    if v.clusterArn.is_some():
+        auto u0 = v.clusterArn.unwrap()
+        parts.append("\"clusterArn\":" + ecs_json_str(u0))
+    parts.append("\"daemonTaskDefinitionArn\":" + ecs_json_str(v.daemonTaskDefinitionArn))
+    list[str] e1 = []
+    for x1 in v.capacityProviderArns:
+        e1.append(ecs_json_str(x1))
+    parts.append("\"capacityProviderArns\":" + ecs_json_arr(e1))
+    if v.deploymentConfiguration.is_some():
+        auto u2 = v.deploymentConfiguration.unwrap()
+        parts.append("\"deploymentConfiguration\":" + daemon_deployment_configuration_to_json(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e4))
+    if v.propagateTags.is_some():
+        auto u5 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u5.to_json())
+    if v.enableECSManagedTags.is_some():
+        auto u6 = v.enableECSManagedTags.unwrap()
+        parts.append("\"enableECSManagedTags\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.enableExecuteCommand.is_some():
+        auto u7 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.clientToken.is_some():
+        auto u8 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + ecs_json_str(u8))
+    if v.critical.is_some():
+        auto u9 = v.critical.unwrap()
+        parts.append("\"critical\":" + json.dumps(JsonValue.Bool(u9)))
+    return ecs_json_obj(parts)
+
+# Serialize CreateExpressGatewayServiceRequest to a compact JSON object (declaration order).
+def create_express_gateway_service_request_to_json(CreateExpressGatewayServiceRequest v) -> str:
+    list[str] parts = []
+    if v.executionRoleArn.is_some():
+        auto u0 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + ecs_json_str(u0))
+    parts.append("\"infrastructureRoleArn\":" + ecs_json_str(v.infrastructureRoleArn))
+    if v.serviceName.is_some():
+        auto u1 = v.serviceName.unwrap()
+        parts.append("\"serviceName\":" + ecs_json_str(u1))
+    if v.cluster.is_some():
+        auto u2 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u2))
+    if v.healthCheckPath.is_some():
+        auto u3 = v.healthCheckPath.unwrap()
+        parts.append("\"healthCheckPath\":" + ecs_json_str(u3))
+    if v.primaryContainer.is_some():
+        auto u4 = v.primaryContainer.unwrap()
+        parts.append("\"primaryContainer\":" + express_gateway_container_to_json(u4))
+    if v.taskRoleArn.is_some():
+        auto u5 = v.taskRoleArn.unwrap()
+        parts.append("\"taskRoleArn\":" + ecs_json_str(u5))
+    if v.networkConfiguration.is_some():
+        auto u6 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + express_gateway_service_network_configuration_to_json(u6))
+    if v.cpu.is_some():
+        auto u7 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + ecs_json_str(u7))
+    if v.memory.is_some():
+        auto u8 = v.memory.unwrap()
+        parts.append("\"memory\":" + ecs_json_str(u8))
+    if v.cpuArchitecture.is_some():
+        auto u9 = v.cpuArchitecture.unwrap()
+        parts.append("\"cpuArchitecture\":" + u9.to_json())
+    if v.scalingTarget.is_some():
+        auto u10 = v.scalingTarget.unwrap()
+        parts.append("\"scalingTarget\":" + u10.to_json())
+    if v.tags.is_some():
+        auto u11 = v.tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e12))
+    if v.taskDefinitionArn.is_some():
+        auto u13 = v.taskDefinitionArn.unwrap()
+        parts.append("\"taskDefinitionArn\":" + ecs_json_str(u13))
+    return ecs_json_obj(parts)
+
+# Serialize CreateGatewayRequest to a compact JSON object (declaration order).
+def create_gateway_request_to_json(CreateGatewayRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + ecs_json_str(v.name))
+    parts.append("\"infrastructureRoleArn\":" + ecs_json_str(v.infrastructureRoleArn))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + ecs_json_str(u0))
+    if v.deletionProtection.is_some():
+        auto u1 = v.deletionProtection.unwrap()
+        parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u1)))
+    parts.append("\"configuration\":" + gateway_configuration_to_json(v.configuration))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e3))
+    if v.propagateTags.is_some():
+        auto u4 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u4.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize CreateManagedInstancesProviderConfiguration to a compact JSON object (declaration order).
+def create_managed_instances_provider_configuration_to_json(CreateManagedInstancesProviderConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"infrastructureRoleArn\":" + ecs_json_str(v.infrastructureRoleArn))
+    parts.append("\"instanceLaunchTemplate\":" + instance_launch_template_to_json(v.instanceLaunchTemplate))
+    if v.propagateTags.is_some():
+        auto u0 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u0.to_json())
+    if v.infrastructureOptimization.is_some():
+        auto u1 = v.infrastructureOptimization.unwrap()
+        parts.append("\"infrastructureOptimization\":" + u1.to_json())
+    if v.autoRepairConfiguration.is_some():
+        auto u2 = v.autoRepairConfiguration.unwrap()
+        parts.append("\"autoRepairConfiguration\":" + u2.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize CreateServiceRequest to a compact JSON object (declaration order).
+def create_service_request_to_json(CreateServiceRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    parts.append("\"serviceName\":" + ecs_json_str(v.serviceName))
+    if v.taskDefinition.is_some():
+        auto u1 = v.taskDefinition.unwrap()
+        parts.append("\"taskDefinition\":" + ecs_json_str(u1))
+    if v.availabilityZoneRebalancing.is_some():
+        auto u2 = v.availabilityZoneRebalancing.unwrap()
+        parts.append("\"availabilityZoneRebalancing\":" + u2.to_json())
+    if v.loadBalancers.is_some():
+        auto u3 = v.loadBalancers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"loadBalancers\":" + ecs_json_arr(e4))
+    if v.serviceRegistries.is_some():
+        auto u5 = v.serviceRegistries.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"serviceRegistries\":" + ecs_json_arr(e6))
+    if v.desiredCount.is_some():
+        auto u7 = v.desiredCount.unwrap()
+        parts.append("\"desiredCount\":" + str(u7))
+    if v.clientToken.is_some():
+        auto u8 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + ecs_json_str(u8))
+    if v.launchType.is_some():
+        auto u9 = v.launchType.unwrap()
+        parts.append("\"launchType\":" + u9.to_json())
+    if v.capacityProviderStrategy.is_some():
+        auto u10 = v.capacityProviderStrategy.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"capacityProviderStrategy\":" + ecs_json_arr(e11))
+    if v.platformVersion.is_some():
+        auto u12 = v.platformVersion.unwrap()
+        parts.append("\"platformVersion\":" + ecs_json_str(u12))
+    if v.role.is_some():
+        auto u13 = v.role.unwrap()
+        parts.append("\"role\":" + ecs_json_str(u13))
+    if v.deploymentConfiguration.is_some():
+        auto u14 = v.deploymentConfiguration.unwrap()
+        parts.append("\"deploymentConfiguration\":" + deployment_configuration_to_json(u14))
+    if v.placementConstraints.is_some():
+        auto u15 = v.placementConstraints.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"placementConstraints\":" + ecs_json_arr(e16))
+    if v.placementStrategy.is_some():
+        auto u17 = v.placementStrategy.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"placementStrategy\":" + ecs_json_arr(e18))
+    if v.networkConfiguration.is_some():
+        auto u19 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + network_configuration_to_json(u19))
+    if v.healthCheckGracePeriodSeconds.is_some():
+        auto u20 = v.healthCheckGracePeriodSeconds.unwrap()
+        parts.append("\"healthCheckGracePeriodSeconds\":" + str(u20))
+    if v.schedulingStrategy.is_some():
+        auto u21 = v.schedulingStrategy.unwrap()
+        parts.append("\"schedulingStrategy\":" + u21.to_json())
+    if v.deploymentController.is_some():
+        auto u22 = v.deploymentController.unwrap()
+        parts.append("\"deploymentController\":" + u22.to_json())
+    if v.tags.is_some():
+        auto u23 = v.tags.unwrap()
+        list[str] e24 = []
+        for x24 in u23:
+            e24.append(x24.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e24))
+    if v.enableECSManagedTags.is_some():
+        auto u25 = v.enableECSManagedTags.unwrap()
+        parts.append("\"enableECSManagedTags\":" + json.dumps(JsonValue.Bool(u25)))
+    if v.propagateTags.is_some():
+        auto u26 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u26.to_json())
+    if v.enableExecuteCommand.is_some():
+        auto u27 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u27)))
+    if v.serviceConnectConfiguration.is_some():
+        auto u28 = v.serviceConnectConfiguration.unwrap()
+        parts.append("\"serviceConnectConfiguration\":" + service_connect_configuration_to_json(u28))
+    if v.volumeConfigurations.is_some():
+        auto u29 = v.volumeConfigurations.unwrap()
+        list[str] e30 = []
+        for x30 in u29:
+            e30.append(service_volume_configuration_to_json(x30))
+        parts.append("\"volumeConfigurations\":" + ecs_json_arr(e30))
+    if v.vpcLatticeConfigurations.is_some():
+        auto u31 = v.vpcLatticeConfigurations.unwrap()
+        list[str] e32 = []
+        for x32 in u31:
+            e32.append(x32.to_json())
+        parts.append("\"vpcLatticeConfigurations\":" + ecs_json_arr(e32))
+    if v.gatewayConnectors.is_some():
+        auto u33 = v.gatewayConnectors.unwrap()
+        list[str] e34 = []
+        for x34 in u33:
+            e34.append(gateway_connector_to_json(x34))
+        parts.append("\"gatewayConnectors\":" + ecs_json_arr(e34))
+    if v.monitoring.is_some():
+        auto u35 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + monitoring_configuration_to_json(u35))
+    return ecs_json_obj(parts)
+
+# Serialize CreateTaskSetRequest to a compact JSON object (declaration order).
+def create_task_set_request_to_json(CreateTaskSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"service\":" + ecs_json_str(v.service))
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    if v.externalId.is_some():
+        auto u0 = v.externalId.unwrap()
+        parts.append("\"externalId\":" + ecs_json_str(u0))
+    parts.append("\"taskDefinition\":" + ecs_json_str(v.taskDefinition))
+    if v.networkConfiguration.is_some():
+        auto u1 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + network_configuration_to_json(u1))
+    if v.loadBalancers.is_some():
+        auto u2 = v.loadBalancers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"loadBalancers\":" + ecs_json_arr(e3))
+    if v.serviceRegistries.is_some():
+        auto u4 = v.serviceRegistries.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"serviceRegistries\":" + ecs_json_arr(e5))
+    if v.launchType.is_some():
+        auto u6 = v.launchType.unwrap()
+        parts.append("\"launchType\":" + u6.to_json())
+    if v.capacityProviderStrategy.is_some():
+        auto u7 = v.capacityProviderStrategy.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"capacityProviderStrategy\":" + ecs_json_arr(e8))
+    if v.platformVersion.is_some():
+        auto u9 = v.platformVersion.unwrap()
+        parts.append("\"platformVersion\":" + ecs_json_str(u9))
+    if v.scale.is_some():
+        auto u10 = v.scale.unwrap()
+        parts.append("\"scale\":" + u10.to_json())
+    if v.clientToken.is_some():
+        auto u11 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + ecs_json_str(u11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e13))
+    return ecs_json_obj(parts)
+
+# Serialize DaemonAlarmConfiguration to a compact JSON object (declaration order).
+def daemon_alarm_configuration_to_json(DaemonAlarmConfiguration v) -> str:
+    list[str] parts = []
+    if v.alarmNames.is_some():
+        auto u0 = v.alarmNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"alarmNames\":" + ecs_json_arr(e1))
+    if v.enable.is_some():
+        auto u2 = v.enable.unwrap()
+        parts.append("\"enable\":" + json.dumps(JsonValue.Bool(u2)))
+    return ecs_json_obj(parts)
+
+# Serialize DaemonContainerDefinition to a compact JSON object (declaration order).
+def daemon_container_definition_to_json(DaemonContainerDefinition v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ecs_json_str(u0))
+    parts.append("\"image\":" + ecs_json_str(v.image))
+    if v.memory.is_some():
+        auto u1 = v.memory.unwrap()
+        parts.append("\"memory\":" + str(u1))
+    if v.memoryReservation.is_some():
+        auto u2 = v.memoryReservation.unwrap()
+        parts.append("\"memoryReservation\":" + str(u2))
+    if v.repositoryCredentials.is_some():
+        auto u3 = v.repositoryCredentials.unwrap()
+        parts.append("\"repositoryCredentials\":" + u3.to_json())
+    if v.healthCheck.is_some():
+        auto u4 = v.healthCheck.unwrap()
+        parts.append("\"healthCheck\":" + health_check_to_json(u4))
+    if v.cpu.is_some():
+        auto u5 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + str(u5))
+    if v.essential.is_some():
+        auto u6 = v.essential.unwrap()
+        parts.append("\"essential\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.entryPoint.is_some():
+        auto u7 = v.entryPoint.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(ecs_json_str(x8))
+        parts.append("\"entryPoint\":" + ecs_json_arr(e8))
+    if v.command.is_some():
+        auto u9 = v.command.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(ecs_json_str(x10))
+        parts.append("\"command\":" + ecs_json_arr(e10))
+    if v.workingDirectory.is_some():
+        auto u11 = v.workingDirectory.unwrap()
+        parts.append("\"workingDirectory\":" + ecs_json_str(u11))
+    if v.environmentFiles.is_some():
+        auto u12 = v.environmentFiles.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"environmentFiles\":" + ecs_json_arr(e13))
+    if v.environment.is_some():
+        auto u14 = v.environment.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"environment\":" + ecs_json_arr(e15))
+    if v.secrets.is_some():
+        auto u16 = v.secrets.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"secrets\":" + ecs_json_arr(e17))
+    if v.readonlyRootFilesystem.is_some():
+        auto u18 = v.readonlyRootFilesystem.unwrap()
+        parts.append("\"readonlyRootFilesystem\":" + json.dumps(JsonValue.Bool(u18)))
+    if v.mountPoints.is_some():
+        auto u19 = v.mountPoints.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"mountPoints\":" + ecs_json_arr(e20))
+    if v.logConfiguration.is_some():
+        auto u21 = v.logConfiguration.unwrap()
+        parts.append("\"logConfiguration\":" + log_configuration_to_json(u21))
+    if v.firelensConfiguration.is_some():
+        auto u22 = v.firelensConfiguration.unwrap()
+        parts.append("\"firelensConfiguration\":" + firelens_configuration_to_json(u22))
+    if v.privileged.is_some():
+        auto u23 = v.privileged.unwrap()
+        parts.append("\"privileged\":" + json.dumps(JsonValue.Bool(u23)))
+    if v.user.is_some():
+        auto u24 = v.user.unwrap()
+        parts.append("\"user\":" + ecs_json_str(u24))
+    if v.ulimits.is_some():
+        auto u25 = v.ulimits.unwrap()
+        list[str] e26 = []
+        for x26 in u25:
+            e26.append(x26.to_json())
+        parts.append("\"ulimits\":" + ecs_json_arr(e26))
+    if v.linuxParameters.is_some():
+        auto u27 = v.linuxParameters.unwrap()
+        parts.append("\"linuxParameters\":" + daemon_linux_parameters_to_json(u27))
+    if v.dependsOn.is_some():
+        auto u28 = v.dependsOn.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"dependsOn\":" + ecs_json_arr(e29))
+    if v.startTimeout.is_some():
+        auto u30 = v.startTimeout.unwrap()
+        parts.append("\"startTimeout\":" + str(u30))
+    if v.stopTimeout.is_some():
+        auto u31 = v.stopTimeout.unwrap()
+        parts.append("\"stopTimeout\":" + str(u31))
+    if v.systemControls.is_some():
+        auto u32 = v.systemControls.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"systemControls\":" + ecs_json_arr(e33))
+    if v.interactive.is_some():
+        auto u34 = v.interactive.unwrap()
+        parts.append("\"interactive\":" + json.dumps(JsonValue.Bool(u34)))
+    if v.pseudoTerminal.is_some():
+        auto u35 = v.pseudoTerminal.unwrap()
+        parts.append("\"pseudoTerminal\":" + json.dumps(JsonValue.Bool(u35)))
+    if v.restartPolicy.is_some():
+        auto u36 = v.restartPolicy.unwrap()
+        parts.append("\"restartPolicy\":" + container_restart_policy_to_json(u36))
+    return ecs_json_obj(parts)
+
+# Serialize DaemonDeploymentConfiguration to a compact JSON object (declaration order).
+def daemon_deployment_configuration_to_json(DaemonDeploymentConfiguration v) -> str:
+    list[str] parts = []
+    if v.drainPercent.is_some():
+        auto u0 = v.drainPercent.unwrap()
+        parts.append("\"drainPercent\":" + str(u0))
+    if v.alarms.is_some():
+        auto u1 = v.alarms.unwrap()
+        parts.append("\"alarms\":" + daemon_alarm_configuration_to_json(u1))
+    if v.bakeTimeInMinutes.is_some():
+        auto u2 = v.bakeTimeInMinutes.unwrap()
+        parts.append("\"bakeTimeInMinutes\":" + str(u2))
+    return ecs_json_obj(parts)
+
+# Serialize DaemonLinuxParameters to a compact JSON object (declaration order).
+def daemon_linux_parameters_to_json(DaemonLinuxParameters v) -> str:
+    list[str] parts = []
+    if v.capabilities.is_some():
+        auto u0 = v.capabilities.unwrap()
+        parts.append("\"capabilities\":" + kernel_capabilities_to_json(u0))
+    if v.devices.is_some():
+        auto u1 = v.devices.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(device_to_json(x2))
+        parts.append("\"devices\":" + ecs_json_arr(e2))
+    if v.initProcessEnabled.is_some():
+        auto u3 = v.initProcessEnabled.unwrap()
+        parts.append("\"initProcessEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.tmpfs.is_some():
+        auto u4 = v.tmpfs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(tmpfs_to_json(x5))
+        parts.append("\"tmpfs\":" + ecs_json_arr(e5))
+    return ecs_json_obj(parts)
+
+# Serialize DeleteAttributesRequest to a compact JSON object (declaration order).
+def delete_attributes_request_to_json(DeleteAttributesRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.attributes:
+        e1.append(x1.to_json())
+    parts.append("\"attributes\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize DeleteTaskDefinitionsRequest to a compact JSON object (declaration order).
+def delete_task_definitions_request_to_json(DeleteTaskDefinitionsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.taskDefinitions:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"taskDefinitions\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize DeploymentAlarms to a compact JSON object (declaration order).
+def deployment_alarms_to_json(DeploymentAlarms v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.alarmNames:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"alarmNames\":" + ecs_json_arr(e0))
+    parts.append("\"rollback\":" + json.dumps(JsonValue.Bool(v.rollback)))
+    parts.append("\"enable\":" + json.dumps(JsonValue.Bool(v.enable)))
+    return ecs_json_obj(parts)
+
+# Serialize DeploymentConfiguration to a compact JSON object (declaration order).
+def deployment_configuration_to_json(DeploymentConfiguration v) -> str:
+    list[str] parts = []
+    if v.deploymentCircuitBreaker.is_some():
+        auto u0 = v.deploymentCircuitBreaker.unwrap()
+        parts.append("\"deploymentCircuitBreaker\":" + u0.to_json())
+    if v.maximumPercent.is_some():
+        auto u1 = v.maximumPercent.unwrap()
+        parts.append("\"maximumPercent\":" + str(u1))
+    if v.minimumHealthyPercent.is_some():
+        auto u2 = v.minimumHealthyPercent.unwrap()
+        parts.append("\"minimumHealthyPercent\":" + str(u2))
+    if v.alarms.is_some():
+        auto u3 = v.alarms.unwrap()
+        parts.append("\"alarms\":" + deployment_alarms_to_json(u3))
+    if v.strategy.is_some():
+        auto u4 = v.strategy.unwrap()
+        parts.append("\"strategy\":" + u4.to_json())
+    if v.bakeTimeInMinutes.is_some():
+        auto u5 = v.bakeTimeInMinutes.unwrap()
+        parts.append("\"bakeTimeInMinutes\":" + str(u5))
+    if v.lifecycleHooks.is_some():
+        auto u6 = v.lifecycleHooks.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(deployment_lifecycle_hook_to_json(x7))
+        parts.append("\"lifecycleHooks\":" + ecs_json_arr(e7))
+    if v.linearConfiguration.is_some():
+        auto u8 = v.linearConfiguration.unwrap()
+        parts.append("\"linearConfiguration\":" + u8.to_json())
+    if v.canaryConfiguration.is_some():
+        auto u9 = v.canaryConfiguration.unwrap()
+        parts.append("\"canaryConfiguration\":" + u9.to_json())
+    if v.earlySuccessCriteria.is_some():
+        auto u10 = v.earlySuccessCriteria.unwrap()
+        parts.append("\"earlySuccessCriteria\":" + u10.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize DeploymentLifecycleHook to a compact JSON object (declaration order).
+def deployment_lifecycle_hook_to_json(DeploymentLifecycleHook v) -> str:
+    list[str] parts = []
+    if v.targetType.is_some():
+        auto u0 = v.targetType.unwrap()
+        parts.append("\"targetType\":" + u0.to_json())
+    if v.hookTargetArn.is_some():
+        auto u1 = v.hookTargetArn.unwrap()
+        parts.append("\"hookTargetArn\":" + ecs_json_str(u1))
+    if v.roleArn.is_some():
+        auto u2 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + ecs_json_str(u2))
+    if v.lifecycleStages.is_some():
+        auto u3 = v.lifecycleStages.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"lifecycleStages\":" + ecs_json_arr(e4))
+    if v.hookDetails.is_some():
+        auto u5 = v.hookDetails.unwrap()
+        parts.append("\"hookDetails\":" + u5.to_json())
+    if v.timeoutConfiguration.is_some():
+        auto u6 = v.timeoutConfiguration.unwrap()
+        parts.append("\"timeoutConfiguration\":" + u6.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize DescribeCapacityProvidersRequest to a compact JSON object (declaration order).
+def describe_capacity_providers_request_to_json(DescribeCapacityProvidersRequest v) -> str:
+    list[str] parts = []
+    if v.capacityProviders.is_some():
+        auto u0 = v.capacityProviders.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"capacityProviders\":" + ecs_json_arr(e1))
+    if v.cluster.is_some():
+        auto u2 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u2))
+    if v.include.is_some():
+        auto u3 = v.include.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ecs_json_str(x4))
+        parts.append("\"include\":" + ecs_json_arr(e4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    if v.nextToken.is_some():
+        auto u6 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u6))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeClustersRequest to a compact JSON object (declaration order).
+def describe_clusters_request_to_json(DescribeClustersRequest v) -> str:
+    list[str] parts = []
+    if v.clusters.is_some():
+        auto u0 = v.clusters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"clusters\":" + ecs_json_arr(e1))
+    if v.include.is_some():
+        auto u2 = v.include.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"include\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeContainerInstancesRequest to a compact JSON object (declaration order).
+def describe_container_instances_request_to_json(DescribeContainerInstancesRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.containerInstances:
+        e1.append(ecs_json_str(x1))
+    parts.append("\"containerInstances\":" + ecs_json_arr(e1))
+    if v.include.is_some():
+        auto u2 = v.include.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"include\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeDaemonDeploymentsRequest to a compact JSON object (declaration order).
+def describe_daemon_deployments_request_to_json(DescribeDaemonDeploymentsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.daemonDeploymentArns:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"daemonDeploymentArns\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeDaemonRevisionsRequest to a compact JSON object (declaration order).
+def describe_daemon_revisions_request_to_json(DescribeDaemonRevisionsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.daemonRevisionArns:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"daemonRevisionArns\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeExpressGatewayServiceRequest to a compact JSON object (declaration order).
+def describe_express_gateway_service_request_to_json(DescribeExpressGatewayServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceArn\":" + ecs_json_str(v.serviceArn))
+    if v.include.is_some():
+        auto u0 = v.include.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"include\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeServiceDeploymentsRequest to a compact JSON object (declaration order).
+def describe_service_deployments_request_to_json(DescribeServiceDeploymentsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.serviceDeploymentArns:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"serviceDeploymentArns\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeServiceRevisionsRequest to a compact JSON object (declaration order).
+def describe_service_revisions_request_to_json(DescribeServiceRevisionsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.serviceRevisionArns:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"serviceRevisionArns\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeServicesRequest to a compact JSON object (declaration order).
+def describe_services_request_to_json(DescribeServicesRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.services:
+        e1.append(ecs_json_str(x1))
+    parts.append("\"services\":" + ecs_json_arr(e1))
+    if v.include.is_some():
+        auto u2 = v.include.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ecs_json_str(x3))
+        parts.append("\"include\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeTaskDefinitionRequest to a compact JSON object (declaration order).
+def describe_task_definition_request_to_json(DescribeTaskDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"taskDefinition\":" + ecs_json_str(v.taskDefinition))
+    if v.include.is_some():
+        auto u0 = v.include.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"include\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeTaskSetsRequest to a compact JSON object (declaration order).
+def describe_task_sets_request_to_json(DescribeTaskSetsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    parts.append("\"service\":" + ecs_json_str(v.service))
+    if v.taskSets.is_some():
+        auto u0 = v.taskSets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"taskSets\":" + ecs_json_arr(e1))
+    if v.include.is_some():
+        auto u2 = v.include.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ecs_json_str(x3))
+        parts.append("\"include\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize DescribeTasksRequest to a compact JSON object (declaration order).
+def describe_tasks_request_to_json(DescribeTasksRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.tasks:
+        e1.append(ecs_json_str(x1))
+    parts.append("\"tasks\":" + ecs_json_arr(e1))
+    if v.include.is_some():
+        auto u2 = v.include.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ecs_json_str(x3))
+        parts.append("\"include\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize Device to a compact JSON object (declaration order).
+def device_to_json(Device v) -> str:
+    list[str] parts = []
+    parts.append("\"hostPath\":" + ecs_json_str(v.hostPath))
+    if v.containerPath.is_some():
+        auto u0 = v.containerPath.unwrap()
+        parts.append("\"containerPath\":" + ecs_json_str(u0))
+    if v.permissions.is_some():
+        auto u1 = v.permissions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"permissions\":" + ecs_json_arr(e2))
+    return ecs_json_obj(parts)
+
+# Serialize DockerVolumeConfiguration to a compact JSON object (declaration order).
+def docker_volume_configuration_to_json(DockerVolumeConfiguration v) -> str:
+    list[str] parts = []
+    if v.scope_.is_some():
+        auto u0 = v.scope_.unwrap()
+        parts.append("\"scope\":" + u0.to_json())
+    if v.autoprovision.is_some():
+        auto u1 = v.autoprovision.unwrap()
+        parts.append("\"autoprovision\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.driver.is_some():
+        auto u2 = v.driver.unwrap()
+        parts.append("\"driver\":" + ecs_json_str(u2))
+    if v.driverOpts.is_some():
+        auto u3 = v.driverOpts.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(ecs_json_str(k4) + ":" + ecs_json_str(u3[k4]))
+        parts.append("\"driverOpts\":" + ecs_json_obj(m4))
+    if v.labels.is_some():
+        auto u5 = v.labels.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(ecs_json_str(k6) + ":" + ecs_json_str(u5[k6]))
+        parts.append("\"labels\":" + ecs_json_obj(m6))
+    return ecs_json_obj(parts)
+
+# Serialize EBSTagSpecification to a compact JSON object (declaration order).
+def ebs_tag_specification_to_json(EBSTagSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceType\":" + ecs_json_str(v.resourceType))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e1))
+    if v.propagateTags.is_some():
+        auto u2 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u2.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize ExpressGatewayContainer to a compact JSON object (declaration order).
+def express_gateway_container_to_json(ExpressGatewayContainer v) -> str:
+    list[str] parts = []
+    parts.append("\"image\":" + ecs_json_str(v.image))
+    if v.containerPort.is_some():
+        auto u0 = v.containerPort.unwrap()
+        parts.append("\"containerPort\":" + str(u0))
+    if v.awsLogsConfiguration.is_some():
+        auto u1 = v.awsLogsConfiguration.unwrap()
+        parts.append("\"awsLogsConfiguration\":" + u1.to_json())
+    if v.repositoryCredentials.is_some():
+        auto u2 = v.repositoryCredentials.unwrap()
+        parts.append("\"repositoryCredentials\":" + u2.to_json())
+    if v.command.is_some():
+        auto u3 = v.command.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ecs_json_str(x4))
+        parts.append("\"command\":" + ecs_json_arr(e4))
+    if v.environment.is_some():
+        auto u5 = v.environment.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"environment\":" + ecs_json_arr(e6))
+    if v.secrets.is_some():
+        auto u7 = v.secrets.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"secrets\":" + ecs_json_arr(e8))
+    return ecs_json_obj(parts)
+
+# Serialize ExpressGatewayServiceNetworkConfiguration to a compact JSON object (declaration order).
+def express_gateway_service_network_configuration_to_json(ExpressGatewayServiceNetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.securityGroups.is_some():
+        auto u0 = v.securityGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"securityGroups\":" + ecs_json_arr(e1))
+    if v.subnets.is_some():
+        auto u2 = v.subnets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ecs_json_str(x3))
+        parts.append("\"subnets\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize FirelensConfiguration to a compact JSON object (declaration order).
+def firelens_configuration_to_json(FirelensConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(ecs_json_str(k1) + ":" + ecs_json_str(u0[k1]))
+        parts.append("\"options\":" + ecs_json_obj(m1))
+    return ecs_json_obj(parts)
+
+# Serialize GatewayAlbTestTrafficRules to a compact JSON object (declaration order).
+def gateway_alb_test_traffic_rules_to_json(GatewayAlbTestTrafficRules v) -> str:
+    list[str] parts = []
+    if v.header.is_some():
+        auto u0 = v.header.unwrap()
+        parts.append("\"header\":" + gateway_test_traffic_header_to_json(u0))
+    return ecs_json_obj(parts)
+
+# Serialize GatewayConfiguration to a compact JSON object (declaration order).
+def gateway_configuration_to_json(GatewayConfiguration v) -> str:
+    list[str] parts = []
+    if v.hostSharedAlb.is_some():
+        auto u0 = v.hostSharedAlb.unwrap()
+        parts.append("\"hostSharedAlb\":" + host_shared_alb_configuration_to_json(u0))
+    return ecs_json_obj(parts)
+
+# Serialize GatewayConnector to a compact JSON object (declaration order).
+def gateway_connector_to_json(GatewayConnector v) -> str:
+    list[str] parts = []
+    parts.append("\"portName\":" + ecs_json_str(v.portName))
+    if v.healthCheck.is_some():
+        auto u0 = v.healthCheck.unwrap()
+        parts.append("\"healthCheck\":" + u0.to_json())
+    if v.filters.is_some():
+        auto u1 = v.filters.unwrap()
+        parts.append("\"filters\":" + gateway_connector_filters_to_json(u1))
+    return ecs_json_obj(parts)
+
+# Serialize GatewayConnectorFilters to a compact JSON object (declaration order).
+def gateway_connector_filters_to_json(GatewayConnectorFilters v) -> str:
+    list[str] parts = []
+    if v.accessTypes.is_some():
+        auto u0 = v.accessTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"accessTypes\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize GatewayElbNetworkConfiguration to a compact JSON object (declaration order).
+def gateway_elb_network_configuration_to_json(GatewayElbNetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.inboundSecurityGroup.is_some():
+        auto u0 = v.inboundSecurityGroup.unwrap()
+        parts.append("\"inboundSecurityGroup\":" + ecs_json_str(u0))
+    if v.subnets.is_some():
+        auto u1 = v.subnets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ecs_json_str(x2))
+        parts.append("\"subnets\":" + ecs_json_arr(e2))
+    if v.ipAddressType.is_some():
+        auto u3 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u3.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize GatewayTestTrafficHeader to a compact JSON object (declaration order).
+def gateway_test_traffic_header_to_json(GatewayTestTrafficHeader v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + ecs_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"values\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize GetTaskProtectionRequest to a compact JSON object (declaration order).
+def get_task_protection_request_to_json(GetTaskProtectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    if v.tasks.is_some():
+        auto u0 = v.tasks.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"tasks\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize HealthCheck to a compact JSON object (declaration order).
+def health_check_to_json(HealthCheck v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.command:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"command\":" + ecs_json_arr(e0))
+    if v.interval.is_some():
+        auto u1 = v.interval.unwrap()
+        parts.append("\"interval\":" + str(u1))
+    if v.timeout.is_some():
+        auto u2 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + str(u2))
+    if v.retries.is_some():
+        auto u3 = v.retries.unwrap()
+        parts.append("\"retries\":" + str(u3))
+    if v.startPeriod.is_some():
+        auto u4 = v.startPeriod.unwrap()
+        parts.append("\"startPeriod\":" + str(u4))
+    return ecs_json_obj(parts)
+
+# Serialize HostSharedAlbConfiguration to a compact JSON object (declaration order).
+def host_shared_alb_configuration_to_json(HostSharedAlbConfiguration v) -> str:
+    list[str] parts = []
+    if v.networkConfiguration.is_some():
+        auto u0 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + gateway_elb_network_configuration_to_json(u0))
+    if v.scheme.is_some():
+        auto u1 = v.scheme.unwrap()
+        parts.append("\"scheme\":" + u1.to_json())
+    if v.webACLArn.is_some():
+        auto u2 = v.webACLArn.unwrap()
+        parts.append("\"webACLArn\":" + ecs_json_str(u2))
+    if v.accessLogs.is_some():
+        auto u3 = v.accessLogs.unwrap()
+        parts.append("\"accessLogs\":" + u3.to_json())
+    if v.port.is_some():
+        auto u4 = v.port.unwrap()
+        parts.append("\"port\":" + str(u4))
+    if v.protocol.is_some():
+        auto u5 = v.protocol.unwrap()
+        parts.append("\"protocol\":" + u5.to_json())
+    if v.maxAlbCount.is_some():
+        auto u6 = v.maxAlbCount.unwrap()
+        parts.append("\"maxAlbCount\":" + str(u6))
+    if v.httpDesync.is_some():
+        auto u7 = v.httpDesync.unwrap()
+        parts.append("\"httpDesync\":" + u7.to_json())
+    if v.testTrafficRules.is_some():
+        auto u8 = v.testTrafficRules.unwrap()
+        parts.append("\"testTrafficRules\":" + gateway_alb_test_traffic_rules_to_json(u8))
+    return ecs_json_obj(parts)
+
+# Serialize InstanceLaunchTemplate to a compact JSON object (declaration order).
+def instance_launch_template_to_json(InstanceLaunchTemplate v) -> str:
+    list[str] parts = []
+    parts.append("\"ec2InstanceProfileArn\":" + ecs_json_str(v.ec2InstanceProfileArn))
+    parts.append("\"networkConfiguration\":" + managed_instances_network_configuration_to_json(v.networkConfiguration))
+    if v.storageConfiguration.is_some():
+        auto u0 = v.storageConfiguration.unwrap()
+        parts.append("\"storageConfiguration\":" + u0.to_json())
+    if v.localStorageConfiguration.is_some():
+        auto u1 = v.localStorageConfiguration.unwrap()
+        parts.append("\"localStorageConfiguration\":" + u1.to_json())
+    if v.monitoring.is_some():
+        auto u2 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + u2.to_json())
+    if v.capacityOptionType.is_some():
+        auto u3 = v.capacityOptionType.unwrap()
+        parts.append("\"capacityOptionType\":" + u3.to_json())
+    if v.instanceMetadataTagsPropagation.is_some():
+        auto u4 = v.instanceMetadataTagsPropagation.unwrap()
+        parts.append("\"instanceMetadataTagsPropagation\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.instanceRequirements.is_some():
+        auto u5 = v.instanceRequirements.unwrap()
+        parts.append("\"instanceRequirements\":" + instance_requirements_request_to_json(u5))
+    if v.fipsEnabled.is_some():
+        auto u6 = v.fipsEnabled.unwrap()
+        parts.append("\"fipsEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.capacityReservations.is_some():
+        auto u7 = v.capacityReservations.unwrap()
+        parts.append("\"capacityReservations\":" + u7.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize InstanceLaunchTemplateUpdate to a compact JSON object (declaration order).
+def instance_launch_template_update_to_json(InstanceLaunchTemplateUpdate v) -> str:
+    list[str] parts = []
+    if v.ec2InstanceProfileArn.is_some():
+        auto u0 = v.ec2InstanceProfileArn.unwrap()
+        parts.append("\"ec2InstanceProfileArn\":" + ecs_json_str(u0))
+    if v.networkConfiguration.is_some():
+        auto u1 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + managed_instances_network_configuration_to_json(u1))
+    if v.storageConfiguration.is_some():
+        auto u2 = v.storageConfiguration.unwrap()
+        parts.append("\"storageConfiguration\":" + u2.to_json())
+    if v.instanceMetadataTagsPropagation.is_some():
+        auto u3 = v.instanceMetadataTagsPropagation.unwrap()
+        parts.append("\"instanceMetadataTagsPropagation\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.localStorageConfiguration.is_some():
+        auto u4 = v.localStorageConfiguration.unwrap()
+        parts.append("\"localStorageConfiguration\":" + u4.to_json())
+    if v.monitoring.is_some():
+        auto u5 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + u5.to_json())
+    if v.instanceRequirements.is_some():
+        auto u6 = v.instanceRequirements.unwrap()
+        parts.append("\"instanceRequirements\":" + instance_requirements_request_to_json(u6))
+    if v.capacityReservations.is_some():
+        auto u7 = v.capacityReservations.unwrap()
+        parts.append("\"capacityReservations\":" + u7.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize InstanceRequirementsRequest to a compact JSON object (declaration order).
+def instance_requirements_request_to_json(InstanceRequirementsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"vCpuCount\":" + v.vCpuCount.to_json())
+    parts.append("\"memoryMiB\":" + v.memoryMiB.to_json())
+    if v.cpuManufacturers.is_some():
+        auto u0 = v.cpuManufacturers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"cpuManufacturers\":" + ecs_json_arr(e1))
+    if v.memoryGiBPerVCpu.is_some():
+        auto u2 = v.memoryGiBPerVCpu.unwrap()
+        parts.append("\"memoryGiBPerVCpu\":" + u2.to_json())
+    if v.excludedInstanceTypes.is_some():
+        auto u3 = v.excludedInstanceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ecs_json_str(x4))
+        parts.append("\"excludedInstanceTypes\":" + ecs_json_arr(e4))
+    if v.instanceGenerations.is_some():
+        auto u5 = v.instanceGenerations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"instanceGenerations\":" + ecs_json_arr(e6))
+    if v.spotMaxPricePercentageOverLowestPrice.is_some():
+        auto u7 = v.spotMaxPricePercentageOverLowestPrice.unwrap()
+        parts.append("\"spotMaxPricePercentageOverLowestPrice\":" + str(u7))
+    if v.onDemandMaxPricePercentageOverLowestPrice.is_some():
+        auto u8 = v.onDemandMaxPricePercentageOverLowestPrice.unwrap()
+        parts.append("\"onDemandMaxPricePercentageOverLowestPrice\":" + str(u8))
+    if v.bareMetal.is_some():
+        auto u9 = v.bareMetal.unwrap()
+        parts.append("\"bareMetal\":" + u9.to_json())
+    if v.burstablePerformance.is_some():
+        auto u10 = v.burstablePerformance.unwrap()
+        parts.append("\"burstablePerformance\":" + u10.to_json())
+    if v.requireHibernateSupport.is_some():
+        auto u11 = v.requireHibernateSupport.unwrap()
+        parts.append("\"requireHibernateSupport\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.networkInterfaceCount.is_some():
+        auto u12 = v.networkInterfaceCount.unwrap()
+        parts.append("\"networkInterfaceCount\":" + u12.to_json())
+    if v.localStorage.is_some():
+        auto u13 = v.localStorage.unwrap()
+        parts.append("\"localStorage\":" + u13.to_json())
+    if v.localStorageTypes.is_some():
+        auto u14 = v.localStorageTypes.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"localStorageTypes\":" + ecs_json_arr(e15))
+    if v.totalLocalStorageGB.is_some():
+        auto u16 = v.totalLocalStorageGB.unwrap()
+        parts.append("\"totalLocalStorageGB\":" + u16.to_json())
+    if v.baselineEbsBandwidthMbps.is_some():
+        auto u17 = v.baselineEbsBandwidthMbps.unwrap()
+        parts.append("\"baselineEbsBandwidthMbps\":" + u17.to_json())
+    if v.acceleratorTypes.is_some():
+        auto u18 = v.acceleratorTypes.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"acceleratorTypes\":" + ecs_json_arr(e19))
+    if v.acceleratorCount.is_some():
+        auto u20 = v.acceleratorCount.unwrap()
+        parts.append("\"acceleratorCount\":" + u20.to_json())
+    if v.acceleratorManufacturers.is_some():
+        auto u21 = v.acceleratorManufacturers.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(x22.to_json())
+        parts.append("\"acceleratorManufacturers\":" + ecs_json_arr(e22))
+    if v.acceleratorNames.is_some():
+        auto u23 = v.acceleratorNames.unwrap()
+        list[str] e24 = []
+        for x24 in u23:
+            e24.append(x24.to_json())
+        parts.append("\"acceleratorNames\":" + ecs_json_arr(e24))
+    if v.acceleratorTotalMemoryMiB.is_some():
+        auto u25 = v.acceleratorTotalMemoryMiB.unwrap()
+        parts.append("\"acceleratorTotalMemoryMiB\":" + u25.to_json())
+    if v.networkBandwidthGbps.is_some():
+        auto u26 = v.networkBandwidthGbps.unwrap()
+        parts.append("\"networkBandwidthGbps\":" + u26.to_json())
+    if v.allowedInstanceTypes.is_some():
+        auto u27 = v.allowedInstanceTypes.unwrap()
+        list[str] e28 = []
+        for x28 in u27:
+            e28.append(ecs_json_str(x28))
+        parts.append("\"allowedInstanceTypes\":" + ecs_json_arr(e28))
+    if v.maxSpotPriceAsPercentageOfOptimalOnDemandPrice.is_some():
+        auto u29 = v.maxSpotPriceAsPercentageOfOptimalOnDemandPrice.unwrap()
+        parts.append("\"maxSpotPriceAsPercentageOfOptimalOnDemandPrice\":" + str(u29))
+    return ecs_json_obj(parts)
+
+# Serialize KernelCapabilities to a compact JSON object (declaration order).
+def kernel_capabilities_to_json(KernelCapabilities v) -> str:
+    list[str] parts = []
+    if v.add.is_some():
+        auto u0 = v.add.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"add\":" + ecs_json_arr(e1))
+    if v.drop.is_some():
+        auto u2 = v.drop.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ecs_json_str(x3))
+        parts.append("\"drop\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize LinuxParameters to a compact JSON object (declaration order).
+def linux_parameters_to_json(LinuxParameters v) -> str:
+    list[str] parts = []
+    if v.capabilities.is_some():
+        auto u0 = v.capabilities.unwrap()
+        parts.append("\"capabilities\":" + kernel_capabilities_to_json(u0))
+    if v.devices.is_some():
+        auto u1 = v.devices.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(device_to_json(x2))
+        parts.append("\"devices\":" + ecs_json_arr(e2))
+    if v.initProcessEnabled.is_some():
+        auto u3 = v.initProcessEnabled.unwrap()
+        parts.append("\"initProcessEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.sharedMemorySize.is_some():
+        auto u4 = v.sharedMemorySize.unwrap()
+        parts.append("\"sharedMemorySize\":" + str(u4))
+    if v.tmpfs.is_some():
+        auto u5 = v.tmpfs.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(tmpfs_to_json(x6))
+        parts.append("\"tmpfs\":" + ecs_json_arr(e6))
+    if v.maxSwap.is_some():
+        auto u7 = v.maxSwap.unwrap()
+        parts.append("\"maxSwap\":" + str(u7))
+    if v.swappiness.is_some():
+        auto u8 = v.swappiness.unwrap()
+        parts.append("\"swappiness\":" + str(u8))
+    return ecs_json_obj(parts)
+
+# Serialize ListDaemonDeploymentsRequest to a compact JSON object (declaration order).
+def list_daemon_deployments_request_to_json(ListDaemonDeploymentsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"daemonArn\":" + ecs_json_str(v.daemonArn))
+    if v.status.is_some():
+        auto u0 = v.status.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"status\":" + ecs_json_arr(e1))
+    if v.createdAt.is_some():
+        auto u2 = v.createdAt.unwrap()
+        parts.append("\"createdAt\":" + u2.to_json())
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u4))
+    return ecs_json_obj(parts)
+
+# Serialize ListDaemonsRequest to a compact JSON object (declaration order).
+def list_daemons_request_to_json(ListDaemonsRequest v) -> str:
+    list[str] parts = []
+    if v.clusterArn.is_some():
+        auto u0 = v.clusterArn.unwrap()
+        parts.append("\"clusterArn\":" + ecs_json_str(u0))
+    if v.capacityProviderArns.is_some():
+        auto u1 = v.capacityProviderArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ecs_json_str(x2))
+        parts.append("\"capacityProviderArns\":" + ecs_json_arr(e2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u4))
+    return ecs_json_obj(parts)
+
+# Serialize ListGatewayClusterAssociationsRequest to a compact JSON object (declaration order).
+def list_gateway_cluster_associations_request_to_json(ListGatewayClusterAssociationsRequest v) -> str:
+    list[str] parts = []
+    if v.gateway.is_some():
+        auto u0 = v.gateway.unwrap()
+        parts.append("\"gateway\":" + ecs_json_str(u0))
+    if v.cluster.is_some():
+        auto u1 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u1))
+    if v.status.is_some():
+        auto u2 = v.status.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"status\":" + ecs_json_arr(e3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u5))
+    return ecs_json_obj(parts)
+
+# Serialize ListGatewayRoutesRequest to a compact JSON object (declaration order).
+def list_gateway_routes_request_to_json(ListGatewayRoutesRequest v) -> str:
+    list[str] parts = []
+    if v.gateway.is_some():
+        auto u0 = v.gateway.unwrap()
+        parts.append("\"gateway\":" + ecs_json_str(u0))
+    if v.cluster.is_some():
+        auto u1 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u1))
+    if v.service.is_some():
+        auto u2 = v.service.unwrap()
+        parts.append("\"service\":" + ecs_json_str(u2))
+    if v.serviceContainerPortName.is_some():
+        auto u3 = v.serviceContainerPortName.unwrap()
+        parts.append("\"serviceContainerPortName\":" + ecs_json_str(u3))
+    if v.status.is_some():
+        auto u4 = v.status.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"status\":" + ecs_json_arr(e5))
+    if v.maxResults.is_some():
+        auto u6 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u6))
+    if v.nextToken.is_some():
+        auto u7 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u7))
+    return ecs_json_obj(parts)
+
+# Serialize ListGatewaysRequest to a compact JSON object (declaration order).
+def list_gateways_request_to_json(ListGatewaysRequest v) -> str:
+    list[str] parts = []
+    if v.names.is_some():
+        auto u0 = v.names.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"names\":" + ecs_json_arr(e1))
+    if v.status.is_some():
+        auto u2 = v.status.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"status\":" + ecs_json_arr(e3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u5))
+    return ecs_json_obj(parts)
+
+# Serialize ListServiceDeploymentsRequest to a compact JSON object (declaration order).
+def list_service_deployments_request_to_json(ListServiceDeploymentsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"service\":" + ecs_json_str(v.service))
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    if v.status.is_some():
+        auto u1 = v.status.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"status\":" + ecs_json_arr(e2))
+    if v.createdAt.is_some():
+        auto u3 = v.createdAt.unwrap()
+        parts.append("\"createdAt\":" + u3.to_json())
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + ecs_json_str(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    return ecs_json_obj(parts)
+
+# Serialize LogConfiguration to a compact JSON object (declaration order).
+def log_configuration_to_json(LogConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"logDriver\":" + v.logDriver.to_json())
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(ecs_json_str(k1) + ":" + ecs_json_str(u0[k1]))
+        parts.append("\"options\":" + ecs_json_obj(m1))
+    if v.secretOptions.is_some():
+        auto u2 = v.secretOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"secretOptions\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize ManagedInstancesNetworkConfiguration to a compact JSON object (declaration order).
+def managed_instances_network_configuration_to_json(ManagedInstancesNetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.subnets.is_some():
+        auto u0 = v.subnets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"subnets\":" + ecs_json_arr(e1))
+    if v.securityGroups.is_some():
+        auto u2 = v.securityGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ecs_json_str(x3))
+        parts.append("\"securityGroups\":" + ecs_json_arr(e3))
+    return ecs_json_obj(parts)
+
+# Serialize MetricConfiguration to a compact JSON object (declaration order).
+def metric_configuration_to_json(MetricConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.metricNames:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"metricNames\":" + ecs_json_arr(e0))
+    parts.append("\"resolutionSeconds\":" + str(v.resolutionSeconds))
+    return ecs_json_obj(parts)
+
+# Serialize MonitoringConfiguration to a compact JSON object (declaration order).
+def monitoring_configuration_to_json(MonitoringConfiguration v) -> str:
+    list[str] parts = []
+    if v.metricConfigurations.is_some():
+        auto u0 = v.metricConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(metric_configuration_to_json(x1))
+        parts.append("\"metricConfigurations\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.awsvpcConfiguration.is_some():
+        auto u0 = v.awsvpcConfiguration.unwrap()
+        parts.append("\"awsvpcConfiguration\":" + aws_vpc_configuration_to_json(u0))
+    return ecs_json_obj(parts)
+
+# Serialize ProxyConfiguration to a compact JSON object (declaration order).
+def proxy_configuration_to_json(ProxyConfiguration v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + ecs_json_str(u0))
+    parts.append("\"containerName\":" + ecs_json_str(v.containerName))
+    if v.properties.is_some():
+        auto u1 = v.properties.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"properties\":" + ecs_json_arr(e2))
+    return ecs_json_obj(parts)
+
+# Serialize PutAttributesRequest to a compact JSON object (declaration order).
+def put_attributes_request_to_json(PutAttributesRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.attributes:
+        e1.append(x1.to_json())
+    parts.append("\"attributes\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize PutClusterCapacityProvidersRequest to a compact JSON object (declaration order).
+def put_cluster_capacity_providers_request_to_json(PutClusterCapacityProvidersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    list[str] e0 = []
+    for x0 in v.capacityProviders:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"capacityProviders\":" + ecs_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.defaultCapacityProviderStrategy:
+        e1.append(x1.to_json())
+    parts.append("\"defaultCapacityProviderStrategy\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize RegisterContainerInstanceRequest to a compact JSON object (declaration order).
+def register_container_instance_request_to_json(RegisterContainerInstanceRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    if v.instanceIdentityDocument.is_some():
+        auto u1 = v.instanceIdentityDocument.unwrap()
+        parts.append("\"instanceIdentityDocument\":" + ecs_json_str(u1))
+    if v.instanceIdentityDocumentSignature.is_some():
+        auto u2 = v.instanceIdentityDocumentSignature.unwrap()
+        parts.append("\"instanceIdentityDocumentSignature\":" + ecs_json_str(u2))
+    if v.totalResources.is_some():
+        auto u3 = v.totalResources.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(resource_to_json(x4))
+        parts.append("\"totalResources\":" + ecs_json_arr(e4))
+    if v.versionInfo.is_some():
+        auto u5 = v.versionInfo.unwrap()
+        parts.append("\"versionInfo\":" + u5.to_json())
+    if v.containerInstanceArn.is_some():
+        auto u6 = v.containerInstanceArn.unwrap()
+        parts.append("\"containerInstanceArn\":" + ecs_json_str(u6))
+    if v.attributes.is_some():
+        auto u7 = v.attributes.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"attributes\":" + ecs_json_arr(e8))
+    if v.platformDevices.is_some():
+        auto u9 = v.platformDevices.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"platformDevices\":" + ecs_json_arr(e10))
+    if v.tags.is_some():
+        auto u11 = v.tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e12))
+    return ecs_json_obj(parts)
+
+# Serialize RegisterDaemonTaskDefinitionRequest to a compact JSON object (declaration order).
+def register_daemon_task_definition_request_to_json(RegisterDaemonTaskDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"family\":" + ecs_json_str(v.family))
+    if v.taskRoleArn.is_some():
+        auto u0 = v.taskRoleArn.unwrap()
+        parts.append("\"taskRoleArn\":" + ecs_json_str(u0))
+    if v.executionRoleArn.is_some():
+        auto u1 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + ecs_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.containerDefinitions:
+        e2.append(daemon_container_definition_to_json(x2))
+    parts.append("\"containerDefinitions\":" + ecs_json_arr(e2))
+    if v.cpu.is_some():
+        auto u3 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + ecs_json_str(u3))
+    if v.memory.is_some():
+        auto u4 = v.memory.unwrap()
+        parts.append("\"memory\":" + ecs_json_str(u4))
+    if v.volumes.is_some():
+        auto u5 = v.volumes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"volumes\":" + ecs_json_arr(e6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e8))
+    if v.pidMode.is_some():
+        auto u9 = v.pidMode.unwrap()
+        parts.append("\"pidMode\":" + u9.to_json())
+    if v.ipcMode.is_some():
+        auto u10 = v.ipcMode.unwrap()
+        parts.append("\"ipcMode\":" + u10.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize RegisterTaskDefinitionRequest to a compact JSON object (declaration order).
+def register_task_definition_request_to_json(RegisterTaskDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"family\":" + ecs_json_str(v.family))
+    if v.taskRoleArn.is_some():
+        auto u0 = v.taskRoleArn.unwrap()
+        parts.append("\"taskRoleArn\":" + ecs_json_str(u0))
+    if v.executionRoleArn.is_some():
+        auto u1 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + ecs_json_str(u1))
+    if v.networkMode.is_some():
+        auto u2 = v.networkMode.unwrap()
+        parts.append("\"networkMode\":" + u2.to_json())
+    list[str] e3 = []
+    for x3 in v.containerDefinitions:
+        e3.append(container_definition_to_json(x3))
+    parts.append("\"containerDefinitions\":" + ecs_json_arr(e3))
+    if v.volumes.is_some():
+        auto u4 = v.volumes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(volume_to_json(x5))
+        parts.append("\"volumes\":" + ecs_json_arr(e5))
+    if v.placementConstraints.is_some():
+        auto u6 = v.placementConstraints.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"placementConstraints\":" + ecs_json_arr(e7))
+    if v.requiresCompatibilities.is_some():
+        auto u8 = v.requiresCompatibilities.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"requiresCompatibilities\":" + ecs_json_arr(e9))
+    if v.cpu.is_some():
+        auto u10 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + ecs_json_str(u10))
+    if v.memory.is_some():
+        auto u11 = v.memory.unwrap()
+        parts.append("\"memory\":" + ecs_json_str(u11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e13))
+    if v.pidMode.is_some():
+        auto u14 = v.pidMode.unwrap()
+        parts.append("\"pidMode\":" + u14.to_json())
+    if v.ipcMode.is_some():
+        auto u15 = v.ipcMode.unwrap()
+        parts.append("\"ipcMode\":" + u15.to_json())
+    if v.proxyConfiguration.is_some():
+        auto u16 = v.proxyConfiguration.unwrap()
+        parts.append("\"proxyConfiguration\":" + proxy_configuration_to_json(u16))
+    if v.inferenceAccelerators.is_some():
+        auto u17 = v.inferenceAccelerators.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"inferenceAccelerators\":" + ecs_json_arr(e18))
+    if v.ephemeralStorage.is_some():
+        auto u19 = v.ephemeralStorage.unwrap()
+        parts.append("\"ephemeralStorage\":" + u19.to_json())
+    if v.runtimePlatform.is_some():
+        auto u20 = v.runtimePlatform.unwrap()
+        parts.append("\"runtimePlatform\":" + u20.to_json())
+    if v.enableFaultInjection.is_some():
+        auto u21 = v.enableFaultInjection.unwrap()
+        parts.append("\"enableFaultInjection\":" + json.dumps(JsonValue.Bool(u21)))
+    return ecs_json_obj(parts)
+
+# Serialize Resource to a compact JSON object (declaration order).
+def resource_to_json(Resource v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ecs_json_str(u0))
+    if v.type.is_some():
+        auto u1 = v.type.unwrap()
+        parts.append("\"type\":" + ecs_json_str(u1))
+    if v.doubleValue.is_some():
+        auto u2 = v.doubleValue.unwrap()
+        parts.append("\"doubleValue\":" + str(u2))
+    if v.longValue.is_some():
+        auto u3 = v.longValue.unwrap()
+        parts.append("\"longValue\":" + str(u3))
+    if v.integerValue.is_some():
+        auto u4 = v.integerValue.unwrap()
+        parts.append("\"integerValue\":" + str(u4))
+    if v.stringSetValue.is_some():
+        auto u5 = v.stringSetValue.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(ecs_json_str(x6))
+        parts.append("\"stringSetValue\":" + ecs_json_arr(e6))
+    return ecs_json_obj(parts)
+
+# Serialize RunTaskRequest to a compact JSON object (declaration order).
+def run_task_request_to_json(RunTaskRequest v) -> str:
+    list[str] parts = []
+    if v.capacityProviderStrategy.is_some():
+        auto u0 = v.capacityProviderStrategy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"capacityProviderStrategy\":" + ecs_json_arr(e1))
+    if v.cluster.is_some():
+        auto u2 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u2))
+    if v.count.is_some():
+        auto u3 = v.count.unwrap()
+        parts.append("\"count\":" + str(u3))
+    if v.enableECSManagedTags.is_some():
+        auto u4 = v.enableECSManagedTags.unwrap()
+        parts.append("\"enableECSManagedTags\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.enableExecuteCommand.is_some():
+        auto u5 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.group.is_some():
+        auto u6 = v.group.unwrap()
+        parts.append("\"group\":" + ecs_json_str(u6))
+    if v.launchType.is_some():
+        auto u7 = v.launchType.unwrap()
+        parts.append("\"launchType\":" + u7.to_json())
+    if v.networkConfiguration.is_some():
+        auto u8 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + network_configuration_to_json(u8))
+    if v.overrides.is_some():
+        auto u9 = v.overrides.unwrap()
+        parts.append("\"overrides\":" + task_override_to_json(u9))
+    if v.placementConstraints.is_some():
+        auto u10 = v.placementConstraints.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"placementConstraints\":" + ecs_json_arr(e11))
+    if v.placementStrategy.is_some():
+        auto u12 = v.placementStrategy.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"placementStrategy\":" + ecs_json_arr(e13))
+    if v.platformVersion.is_some():
+        auto u14 = v.platformVersion.unwrap()
+        parts.append("\"platformVersion\":" + ecs_json_str(u14))
+    if v.propagateTags.is_some():
+        auto u15 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u15.to_json())
+    if v.referenceId.is_some():
+        auto u16 = v.referenceId.unwrap()
+        parts.append("\"referenceId\":" + ecs_json_str(u16))
+    if v.startedBy.is_some():
+        auto u17 = v.startedBy.unwrap()
+        parts.append("\"startedBy\":" + ecs_json_str(u17))
+    if v.tags.is_some():
+        auto u18 = v.tags.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e19))
+    parts.append("\"taskDefinition\":" + ecs_json_str(v.taskDefinition))
+    if v.clientToken.is_some():
+        auto u20 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + ecs_json_str(u20))
+    if v.volumeConfigurations.is_some():
+        auto u21 = v.volumeConfigurations.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(task_volume_configuration_to_json(x22))
+        parts.append("\"volumeConfigurations\":" + ecs_json_arr(e22))
+    return ecs_json_obj(parts)
+
+# Serialize ServiceConnectConfiguration to a compact JSON object (declaration order).
+def service_connect_configuration_to_json(ServiceConnectConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(v.enabled)))
+    if v.namespace.is_some():
+        auto u0 = v.namespace.unwrap()
+        parts.append("\"namespace\":" + ecs_json_str(u0))
+    if v.services.is_some():
+        auto u1 = v.services.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(service_connect_service_to_json(x2))
+        parts.append("\"services\":" + ecs_json_arr(e2))
+    if v.logConfiguration.is_some():
+        auto u3 = v.logConfiguration.unwrap()
+        parts.append("\"logConfiguration\":" + log_configuration_to_json(u3))
+    if v.accessLogConfiguration.is_some():
+        auto u4 = v.accessLogConfiguration.unwrap()
+        parts.append("\"accessLogConfiguration\":" + u4.to_json())
+    if v.containerConfigurations.is_some():
+        auto u5 = v.containerConfigurations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"containerConfigurations\":" + ecs_json_arr(e6))
+    return ecs_json_obj(parts)
+
+# Serialize ServiceConnectService to a compact JSON object (declaration order).
+def service_connect_service_to_json(ServiceConnectService v) -> str:
+    list[str] parts = []
+    parts.append("\"portName\":" + ecs_json_str(v.portName))
+    if v.discoveryName.is_some():
+        auto u0 = v.discoveryName.unwrap()
+        parts.append("\"discoveryName\":" + ecs_json_str(u0))
+    if v.clientAliases.is_some():
+        auto u1 = v.clientAliases.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"clientAliases\":" + ecs_json_arr(e2))
+    if v.ingressPortOverride.is_some():
+        auto u3 = v.ingressPortOverride.unwrap()
+        parts.append("\"ingressPortOverride\":" + str(u3))
+    if v.timeout.is_some():
+        auto u4 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + u4.to_json())
+    if v.tls.is_some():
+        auto u5 = v.tls.unwrap()
+        parts.append("\"tls\":" + u5.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize ServiceManagedEBSVolumeConfiguration to a compact JSON object (declaration order).
+def service_managed_ebs_volume_configuration_to_json(ServiceManagedEBSVolumeConfiguration v) -> str:
+    list[str] parts = []
+    if v.encrypted.is_some():
+        auto u0 = v.encrypted.unwrap()
+        parts.append("\"encrypted\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.kmsKeyId.is_some():
+        auto u1 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + ecs_json_str(u1))
+    if v.volumeType.is_some():
+        auto u2 = v.volumeType.unwrap()
+        parts.append("\"volumeType\":" + ecs_json_str(u2))
+    if v.sizeInGiB.is_some():
+        auto u3 = v.sizeInGiB.unwrap()
+        parts.append("\"sizeInGiB\":" + str(u3))
+    if v.snapshotId.is_some():
+        auto u4 = v.snapshotId.unwrap()
+        parts.append("\"snapshotId\":" + ecs_json_str(u4))
+    if v.volumeInitializationRate.is_some():
+        auto u5 = v.volumeInitializationRate.unwrap()
+        parts.append("\"volumeInitializationRate\":" + str(u5))
+    if v.iops.is_some():
+        auto u6 = v.iops.unwrap()
+        parts.append("\"iops\":" + str(u6))
+    if v.throughput.is_some():
+        auto u7 = v.throughput.unwrap()
+        parts.append("\"throughput\":" + str(u7))
+    if v.tagSpecifications.is_some():
+        auto u8 = v.tagSpecifications.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(ebs_tag_specification_to_json(x9))
+        parts.append("\"tagSpecifications\":" + ecs_json_arr(e9))
+    parts.append("\"roleArn\":" + ecs_json_str(v.roleArn))
+    if v.filesystemType.is_some():
+        auto u10 = v.filesystemType.unwrap()
+        parts.append("\"filesystemType\":" + u10.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize ServiceVolumeConfiguration to a compact JSON object (declaration order).
+def service_volume_configuration_to_json(ServiceVolumeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + ecs_json_str(v.name))
+    if v.managedEBSVolume.is_some():
+        auto u0 = v.managedEBSVolume.unwrap()
+        parts.append("\"managedEBSVolume\":" + service_managed_ebs_volume_configuration_to_json(u0))
+    return ecs_json_obj(parts)
+
+# Serialize StartTaskRequest to a compact JSON object (declaration order).
+def start_task_request_to_json(StartTaskRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.containerInstances:
+        e1.append(ecs_json_str(x1))
+    parts.append("\"containerInstances\":" + ecs_json_arr(e1))
+    if v.enableECSManagedTags.is_some():
+        auto u2 = v.enableECSManagedTags.unwrap()
+        parts.append("\"enableECSManagedTags\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.enableExecuteCommand.is_some():
+        auto u3 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.group.is_some():
+        auto u4 = v.group.unwrap()
+        parts.append("\"group\":" + ecs_json_str(u4))
+    if v.networkConfiguration.is_some():
+        auto u5 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + network_configuration_to_json(u5))
+    if v.overrides.is_some():
+        auto u6 = v.overrides.unwrap()
+        parts.append("\"overrides\":" + task_override_to_json(u6))
+    if v.propagateTags.is_some():
+        auto u7 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u7.to_json())
+    if v.referenceId.is_some():
+        auto u8 = v.referenceId.unwrap()
+        parts.append("\"referenceId\":" + ecs_json_str(u8))
+    if v.startedBy.is_some():
+        auto u9 = v.startedBy.unwrap()
+        parts.append("\"startedBy\":" + ecs_json_str(u9))
+    if v.tags.is_some():
+        auto u10 = v.tags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"tags\":" + ecs_json_arr(e11))
+    parts.append("\"taskDefinition\":" + ecs_json_str(v.taskDefinition))
+    if v.volumeConfigurations.is_some():
+        auto u12 = v.volumeConfigurations.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(task_volume_configuration_to_json(x13))
+        parts.append("\"volumeConfigurations\":" + ecs_json_arr(e13))
+    return ecs_json_obj(parts)
+
+# Serialize SubmitAttachmentStateChangesRequest to a compact JSON object (declaration order).
+def submit_attachment_state_changes_request_to_json(SubmitAttachmentStateChangesRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.attachments:
+        e1.append(x1.to_json())
+    parts.append("\"attachments\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize SubmitContainerStateChangeRequest to a compact JSON object (declaration order).
+def submit_container_state_change_request_to_json(SubmitContainerStateChangeRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    if v.task.is_some():
+        auto u1 = v.task.unwrap()
+        parts.append("\"task\":" + ecs_json_str(u1))
+    if v.containerName.is_some():
+        auto u2 = v.containerName.unwrap()
+        parts.append("\"containerName\":" + ecs_json_str(u2))
+    if v.runtimeId.is_some():
+        auto u3 = v.runtimeId.unwrap()
+        parts.append("\"runtimeId\":" + ecs_json_str(u3))
+    if v.status.is_some():
+        auto u4 = v.status.unwrap()
+        parts.append("\"status\":" + ecs_json_str(u4))
+    if v.exitCode.is_some():
+        auto u5 = v.exitCode.unwrap()
+        parts.append("\"exitCode\":" + str(u5))
+    if v.reason.is_some():
+        auto u6 = v.reason.unwrap()
+        parts.append("\"reason\":" + ecs_json_str(u6))
+    if v.networkBindings.is_some():
+        auto u7 = v.networkBindings.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"networkBindings\":" + ecs_json_arr(e8))
+    return ecs_json_obj(parts)
+
+# Serialize SubmitTaskStateChangeRequest to a compact JSON object (declaration order).
+def submit_task_state_change_request_to_json(SubmitTaskStateChangeRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    if v.task.is_some():
+        auto u1 = v.task.unwrap()
+        parts.append("\"task\":" + ecs_json_str(u1))
+    if v.status.is_some():
+        auto u2 = v.status.unwrap()
+        parts.append("\"status\":" + ecs_json_str(u2))
+    if v.reason.is_some():
+        auto u3 = v.reason.unwrap()
+        parts.append("\"reason\":" + ecs_json_str(u3))
+    if v.containers.is_some():
+        auto u4 = v.containers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(container_state_change_to_json(x5))
+        parts.append("\"containers\":" + ecs_json_arr(e5))
+    if v.attachments.is_some():
+        auto u6 = v.attachments.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"attachments\":" + ecs_json_arr(e7))
+    if v.managedAgents.is_some():
+        auto u8 = v.managedAgents.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"managedAgents\":" + ecs_json_arr(e9))
+    if v.pullStartedAt.is_some():
+        auto u10 = v.pullStartedAt.unwrap()
+        parts.append("\"pullStartedAt\":" + str(datetime.to_timestamp(u10)))
+    if v.pullStoppedAt.is_some():
+        auto u11 = v.pullStoppedAt.unwrap()
+        parts.append("\"pullStoppedAt\":" + str(datetime.to_timestamp(u11)))
+    if v.executionStoppedAt.is_some():
+        auto u12 = v.executionStoppedAt.unwrap()
+        parts.append("\"executionStoppedAt\":" + str(datetime.to_timestamp(u12)))
+    return ecs_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + ecs_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize TaskManagedEBSVolumeConfiguration to a compact JSON object (declaration order).
+def task_managed_ebs_volume_configuration_to_json(TaskManagedEBSVolumeConfiguration v) -> str:
+    list[str] parts = []
+    if v.encrypted.is_some():
+        auto u0 = v.encrypted.unwrap()
+        parts.append("\"encrypted\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.kmsKeyId.is_some():
+        auto u1 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + ecs_json_str(u1))
+    if v.volumeType.is_some():
+        auto u2 = v.volumeType.unwrap()
+        parts.append("\"volumeType\":" + ecs_json_str(u2))
+    if v.sizeInGiB.is_some():
+        auto u3 = v.sizeInGiB.unwrap()
+        parts.append("\"sizeInGiB\":" + str(u3))
+    if v.snapshotId.is_some():
+        auto u4 = v.snapshotId.unwrap()
+        parts.append("\"snapshotId\":" + ecs_json_str(u4))
+    if v.volumeInitializationRate.is_some():
+        auto u5 = v.volumeInitializationRate.unwrap()
+        parts.append("\"volumeInitializationRate\":" + str(u5))
+    if v.iops.is_some():
+        auto u6 = v.iops.unwrap()
+        parts.append("\"iops\":" + str(u6))
+    if v.throughput.is_some():
+        auto u7 = v.throughput.unwrap()
+        parts.append("\"throughput\":" + str(u7))
+    if v.tagSpecifications.is_some():
+        auto u8 = v.tagSpecifications.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(ebs_tag_specification_to_json(x9))
+        parts.append("\"tagSpecifications\":" + ecs_json_arr(e9))
+    parts.append("\"roleArn\":" + ecs_json_str(v.roleArn))
+    if v.terminationPolicy.is_some():
+        auto u10 = v.terminationPolicy.unwrap()
+        parts.append("\"terminationPolicy\":" + u10.to_json())
+    if v.filesystemType.is_some():
+        auto u11 = v.filesystemType.unwrap()
+        parts.append("\"filesystemType\":" + u11.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize TaskOverride to a compact JSON object (declaration order).
+def task_override_to_json(TaskOverride v) -> str:
+    list[str] parts = []
+    if v.containerOverrides.is_some():
+        auto u0 = v.containerOverrides.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(container_override_to_json(x1))
+        parts.append("\"containerOverrides\":" + ecs_json_arr(e1))
+    if v.cpu.is_some():
+        auto u2 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + ecs_json_str(u2))
+    if v.inferenceAcceleratorOverrides.is_some():
+        auto u3 = v.inferenceAcceleratorOverrides.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"inferenceAcceleratorOverrides\":" + ecs_json_arr(e4))
+    if v.executionRoleArn.is_some():
+        auto u5 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + ecs_json_str(u5))
+    if v.memory.is_some():
+        auto u6 = v.memory.unwrap()
+        parts.append("\"memory\":" + ecs_json_str(u6))
+    if v.taskRoleArn.is_some():
+        auto u7 = v.taskRoleArn.unwrap()
+        parts.append("\"taskRoleArn\":" + ecs_json_str(u7))
+    if v.ephemeralStorage.is_some():
+        auto u8 = v.ephemeralStorage.unwrap()
+        parts.append("\"ephemeralStorage\":" + u8.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize TaskVolumeConfiguration to a compact JSON object (declaration order).
+def task_volume_configuration_to_json(TaskVolumeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + ecs_json_str(v.name))
+    if v.managedEBSVolume.is_some():
+        auto u0 = v.managedEBSVolume.unwrap()
+        parts.append("\"managedEBSVolume\":" + task_managed_ebs_volume_configuration_to_json(u0))
+    return ecs_json_obj(parts)
+
+# Serialize Tmpfs to a compact JSON object (declaration order).
+def tmpfs_to_json(Tmpfs v) -> str:
+    list[str] parts = []
+    parts.append("\"containerPath\":" + ecs_json_str(v.containerPath))
+    parts.append("\"size\":" + str(v.size))
+    if v.mountOptions.is_some():
+        auto u0 = v.mountOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_json_str(x1))
+        parts.append("\"mountOptions\":" + ecs_json_arr(e1))
+    return ecs_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + ecs_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"tagKeys\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateCapacityProviderRequest to a compact JSON object (declaration order).
+def update_capacity_provider_request_to_json(UpdateCapacityProviderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + ecs_json_str(v.name))
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    if v.autoScalingGroupProvider.is_some():
+        auto u1 = v.autoScalingGroupProvider.unwrap()
+        parts.append("\"autoScalingGroupProvider\":" + u1.to_json())
+    if v.managedInstancesProvider.is_some():
+        auto u2 = v.managedInstancesProvider.unwrap()
+        parts.append("\"managedInstancesProvider\":" + update_managed_instances_provider_configuration_to_json(u2))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateClusterRequest to a compact JSON object (declaration order).
+def update_cluster_request_to_json(UpdateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    if v.settings.is_some():
+        auto u0 = v.settings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"settings\":" + ecs_json_arr(e1))
+    if v.configuration.is_some():
+        auto u2 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + u2.to_json())
+    if v.serviceConnectDefaults.is_some():
+        auto u3 = v.serviceConnectDefaults.unwrap()
+        parts.append("\"serviceConnectDefaults\":" + u3.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize UpdateClusterSettingsRequest to a compact JSON object (declaration order).
+def update_cluster_settings_request_to_json(UpdateClusterSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    list[str] e0 = []
+    for x0 in v.settings:
+        e0.append(x0.to_json())
+    parts.append("\"settings\":" + ecs_json_arr(e0))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateContainerInstancesStateRequest to a compact JSON object (declaration order).
+def update_container_instances_state_request_to_json(UpdateContainerInstancesStateRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.containerInstances:
+        e1.append(ecs_json_str(x1))
+    parts.append("\"containerInstances\":" + ecs_json_arr(e1))
+    parts.append("\"status\":" + v.status.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize UpdateDaemonRequest to a compact JSON object (declaration order).
+def update_daemon_request_to_json(UpdateDaemonRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"daemonArn\":" + ecs_json_str(v.daemonArn))
+    parts.append("\"daemonTaskDefinitionArn\":" + ecs_json_str(v.daemonTaskDefinitionArn))
+    list[str] e0 = []
+    for x0 in v.capacityProviderArns:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"capacityProviderArns\":" + ecs_json_arr(e0))
+    if v.deploymentConfiguration.is_some():
+        auto u1 = v.deploymentConfiguration.unwrap()
+        parts.append("\"deploymentConfiguration\":" + daemon_deployment_configuration_to_json(u1))
+    if v.propagateTags.is_some():
+        auto u2 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u2.to_json())
+    if v.enableECSManagedTags.is_some():
+        auto u3 = v.enableECSManagedTags.unwrap()
+        parts.append("\"enableECSManagedTags\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.enableExecuteCommand.is_some():
+        auto u4 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.critical.is_some():
+        auto u5 = v.critical.unwrap()
+        parts.append("\"critical\":" + json.dumps(JsonValue.Bool(u5)))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateExpressGatewayServiceRequest to a compact JSON object (declaration order).
+def update_express_gateway_service_request_to_json(UpdateExpressGatewayServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceArn\":" + ecs_json_str(v.serviceArn))
+    if v.executionRoleArn.is_some():
+        auto u0 = v.executionRoleArn.unwrap()
+        parts.append("\"executionRoleArn\":" + ecs_json_str(u0))
+    if v.healthCheckPath.is_some():
+        auto u1 = v.healthCheckPath.unwrap()
+        parts.append("\"healthCheckPath\":" + ecs_json_str(u1))
+    if v.primaryContainer.is_some():
+        auto u2 = v.primaryContainer.unwrap()
+        parts.append("\"primaryContainer\":" + express_gateway_container_to_json(u2))
+    if v.taskRoleArn.is_some():
+        auto u3 = v.taskRoleArn.unwrap()
+        parts.append("\"taskRoleArn\":" + ecs_json_str(u3))
+    if v.networkConfiguration.is_some():
+        auto u4 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + express_gateway_service_network_configuration_to_json(u4))
+    if v.cpu.is_some():
+        auto u5 = v.cpu.unwrap()
+        parts.append("\"cpu\":" + ecs_json_str(u5))
+    if v.memory.is_some():
+        auto u6 = v.memory.unwrap()
+        parts.append("\"memory\":" + ecs_json_str(u6))
+    if v.cpuArchitecture.is_some():
+        auto u7 = v.cpuArchitecture.unwrap()
+        parts.append("\"cpuArchitecture\":" + u7.to_json())
+    if v.scalingTarget.is_some():
+        auto u8 = v.scalingTarget.unwrap()
+        parts.append("\"scalingTarget\":" + u8.to_json())
+    if v.taskDefinitionArn.is_some():
+        auto u9 = v.taskDefinitionArn.unwrap()
+        parts.append("\"taskDefinitionArn\":" + ecs_json_str(u9))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateGatewayAlbConfiguration to a compact JSON object (declaration order).
+def update_gateway_alb_configuration_to_json(UpdateGatewayAlbConfiguration v) -> str:
+    list[str] parts = []
+    if v.networkConfiguration.is_some():
+        auto u0 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + u0.to_json())
+    if v.maxAlbCount.is_some():
+        auto u1 = v.maxAlbCount.unwrap()
+        parts.append("\"maxAlbCount\":" + str(u1))
+    if v.webACLArn.is_some():
+        auto u2 = v.webACLArn.unwrap()
+        parts.append("\"webACLArn\":" + ecs_json_str(u2))
+    if v.accessLogs.is_some():
+        auto u3 = v.accessLogs.unwrap()
+        parts.append("\"accessLogs\":" + u3.to_json())
+    if v.httpDesync.is_some():
+        auto u4 = v.httpDesync.unwrap()
+        parts.append("\"httpDesync\":" + u4.to_json())
+    if v.testTrafficRules.is_some():
+        auto u5 = v.testTrafficRules.unwrap()
+        parts.append("\"testTrafficRules\":" + gateway_alb_test_traffic_rules_to_json(u5))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateGatewayConfiguration to a compact JSON object (declaration order).
+def update_gateway_configuration_to_json(UpdateGatewayConfiguration v) -> str:
+    list[str] parts = []
+    if v.hostSharedAlb.is_some():
+        auto u0 = v.hostSharedAlb.unwrap()
+        parts.append("\"hostSharedAlb\":" + update_gateway_alb_configuration_to_json(u0))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateGatewayRequest to a compact JSON object (declaration order).
+def update_gateway_request_to_json(UpdateGatewayRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"gateway\":" + ecs_json_str(v.gateway))
+    if v.infrastructureRoleArn.is_some():
+        auto u0 = v.infrastructureRoleArn.unwrap()
+        parts.append("\"infrastructureRoleArn\":" + ecs_json_str(u0))
+    if v.deletionProtection.is_some():
+        auto u1 = v.deletionProtection.unwrap()
+        parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.configuration.is_some():
+        auto u2 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + update_gateway_configuration_to_json(u2))
+    if v.propagateTags.is_some():
+        auto u3 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u3.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize UpdateManagedInstancesProviderConfiguration to a compact JSON object (declaration order).
+def update_managed_instances_provider_configuration_to_json(UpdateManagedInstancesProviderConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"infrastructureRoleArn\":" + ecs_json_str(v.infrastructureRoleArn))
+    parts.append("\"instanceLaunchTemplate\":" + instance_launch_template_update_to_json(v.instanceLaunchTemplate))
+    if v.propagateTags.is_some():
+        auto u0 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u0.to_json())
+    if v.infrastructureOptimization.is_some():
+        auto u1 = v.infrastructureOptimization.unwrap()
+        parts.append("\"infrastructureOptimization\":" + u1.to_json())
+    if v.autoRepairConfiguration.is_some():
+        auto u2 = v.autoRepairConfiguration.unwrap()
+        parts.append("\"autoRepairConfiguration\":" + u2.to_json())
+    return ecs_json_obj(parts)
+
+# Serialize UpdateServiceRequest to a compact JSON object (declaration order).
+def update_service_request_to_json(UpdateServiceRequest v) -> str:
+    list[str] parts = []
+    if v.cluster.is_some():
+        auto u0 = v.cluster.unwrap()
+        parts.append("\"cluster\":" + ecs_json_str(u0))
+    parts.append("\"service\":" + ecs_json_str(v.service))
+    if v.desiredCount.is_some():
+        auto u1 = v.desiredCount.unwrap()
+        parts.append("\"desiredCount\":" + str(u1))
+    if v.taskDefinition.is_some():
+        auto u2 = v.taskDefinition.unwrap()
+        parts.append("\"taskDefinition\":" + ecs_json_str(u2))
+    if v.capacityProviderStrategy.is_some():
+        auto u3 = v.capacityProviderStrategy.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"capacityProviderStrategy\":" + ecs_json_arr(e4))
+    if v.deploymentConfiguration.is_some():
+        auto u5 = v.deploymentConfiguration.unwrap()
+        parts.append("\"deploymentConfiguration\":" + deployment_configuration_to_json(u5))
+    if v.availabilityZoneRebalancing.is_some():
+        auto u6 = v.availabilityZoneRebalancing.unwrap()
+        parts.append("\"availabilityZoneRebalancing\":" + u6.to_json())
+    if v.networkConfiguration.is_some():
+        auto u7 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + network_configuration_to_json(u7))
+    if v.placementConstraints.is_some():
+        auto u8 = v.placementConstraints.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"placementConstraints\":" + ecs_json_arr(e9))
+    if v.placementStrategy.is_some():
+        auto u10 = v.placementStrategy.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"placementStrategy\":" + ecs_json_arr(e11))
+    if v.platformVersion.is_some():
+        auto u12 = v.platformVersion.unwrap()
+        parts.append("\"platformVersion\":" + ecs_json_str(u12))
+    if v.forceNewDeployment.is_some():
+        auto u13 = v.forceNewDeployment.unwrap()
+        parts.append("\"forceNewDeployment\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.healthCheckGracePeriodSeconds.is_some():
+        auto u14 = v.healthCheckGracePeriodSeconds.unwrap()
+        parts.append("\"healthCheckGracePeriodSeconds\":" + str(u14))
+    if v.deploymentController.is_some():
+        auto u15 = v.deploymentController.unwrap()
+        parts.append("\"deploymentController\":" + u15.to_json())
+    if v.enableExecuteCommand.is_some():
+        auto u16 = v.enableExecuteCommand.unwrap()
+        parts.append("\"enableExecuteCommand\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.enableECSManagedTags.is_some():
+        auto u17 = v.enableECSManagedTags.unwrap()
+        parts.append("\"enableECSManagedTags\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.loadBalancers.is_some():
+        auto u18 = v.loadBalancers.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"loadBalancers\":" + ecs_json_arr(e19))
+    if v.propagateTags.is_some():
+        auto u20 = v.propagateTags.unwrap()
+        parts.append("\"propagateTags\":" + u20.to_json())
+    if v.serviceRegistries.is_some():
+        auto u21 = v.serviceRegistries.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(x22.to_json())
+        parts.append("\"serviceRegistries\":" + ecs_json_arr(e22))
+    if v.serviceConnectConfiguration.is_some():
+        auto u23 = v.serviceConnectConfiguration.unwrap()
+        parts.append("\"serviceConnectConfiguration\":" + service_connect_configuration_to_json(u23))
+    if v.volumeConfigurations.is_some():
+        auto u24 = v.volumeConfigurations.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(service_volume_configuration_to_json(x25))
+        parts.append("\"volumeConfigurations\":" + ecs_json_arr(e25))
+    if v.vpcLatticeConfigurations.is_some():
+        auto u26 = v.vpcLatticeConfigurations.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"vpcLatticeConfigurations\":" + ecs_json_arr(e27))
+    if v.gatewayConnectors.is_some():
+        auto u28 = v.gatewayConnectors.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(gateway_connector_to_json(x29))
+        parts.append("\"gatewayConnectors\":" + ecs_json_arr(e29))
+    if v.monitoring.is_some():
+        auto u30 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + monitoring_configuration_to_json(u30))
+    return ecs_json_obj(parts)
+
+# Serialize UpdateTaskProtectionRequest to a compact JSON object (declaration order).
+def update_task_protection_request_to_json(UpdateTaskProtectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"cluster\":" + ecs_json_str(v.cluster))
+    list[str] e0 = []
+    for x0 in v.tasks:
+        e0.append(ecs_json_str(x0))
+    parts.append("\"tasks\":" + ecs_json_arr(e0))
+    parts.append("\"protectionEnabled\":" + json.dumps(JsonValue.Bool(v.protectionEnabled)))
+    if v.expiresInMinutes.is_some():
+        auto u1 = v.expiresInMinutes.unwrap()
+        parts.append("\"expiresInMinutes\":" + str(u1))
+    return ecs_json_obj(parts)
+
+# Serialize Volume to a compact JSON object (declaration order).
+def volume_to_json(Volume v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ecs_json_str(u0))
+    if v.host.is_some():
+        auto u1 = v.host.unwrap()
+        parts.append("\"host\":" + u1.to_json())
+    if v.dockerVolumeConfiguration.is_some():
+        auto u2 = v.dockerVolumeConfiguration.unwrap()
+        parts.append("\"dockerVolumeConfiguration\":" + docker_volume_configuration_to_json(u2))
+    if v.efsVolumeConfiguration.is_some():
+        auto u3 = v.efsVolumeConfiguration.unwrap()
+        parts.append("\"efsVolumeConfiguration\":" + u3.to_json())
+    if v.s3filesVolumeConfiguration.is_some():
+        auto u4 = v.s3filesVolumeConfiguration.unwrap()
+        parts.append("\"s3filesVolumeConfiguration\":" + u4.to_json())
+    if v.fsxWindowsFileServerVolumeConfiguration.is_some():
+        auto u5 = v.fsxWindowsFileServerVolumeConfiguration.unwrap()
+        parts.append("\"fsxWindowsFileServerVolumeConfiguration\":" + u5.to_json())
+    if v.configuredAtLaunch.is_some():
+        auto u6 = v.configuredAtLaunch.unwrap()
+        parts.append("\"configuredAtLaunch\":" + json.dumps(JsonValue.Bool(u6)))
+    return ecs_json_obj(parts)
 
 # A bound ECS client: credentials + region, threaded into every operation.
 struct ECSClient:
@@ -4417,11 +7313,59 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ContinueServiceDeployment", body)
 
+    # CreateCapacityProvider
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, LimitExceededException, ServerException, UnsupportedFeatureException, UpdateInProgressException
+    def create_capacity_provider(self, CreateCapacityProviderRequest input) -> str:
+        auto body = create_capacity_provider_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateCapacityProvider", body)
+
+    # CreateCluster
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, NamespaceNotFoundException, ServerException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto body = create_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateCluster", body)
+
+    # CreateDaemon
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, PlatformUnknownException, ServerException, UnsupportedFeatureException
+    def create_daemon(self, CreateDaemonRequest input) -> str:
+        auto body = create_daemon_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateDaemon", body)
+
+    # CreateExpressGatewayService
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, PlatformTaskDefinitionIncompatibilityException, PlatformUnknownException, ServerException, UnsupportedFeatureException
+    def create_express_gateway_service(self, CreateExpressGatewayServiceRequest input) -> str:
+        auto body = create_express_gateway_service_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateExpressGatewayService", body)
+
+    # CreateGateway
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def create_gateway(self, CreateGatewayRequest input) -> str:
+        auto body = create_gateway_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateGateway", body)
+
+    # CreateService
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, NamespaceNotFoundException, PlatformTaskDefinitionIncompatibilityException, PlatformUnknownException, ServerException, UnsupportedFeatureException
+    def create_service(self, CreateServiceRequest input) -> str:
+        auto body = create_service_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateService", body)
+
+    # CreateTaskSet
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, LimitExceededException, NamespaceNotFoundException, PlatformTaskDefinitionIncompatibilityException, PlatformUnknownException, ServerException, ServiceNotActiveException, ServiceNotFoundException, UnsupportedFeatureException
+    def create_task_set(self, CreateTaskSetRequest input) -> str:
+        auto body = create_task_set_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "CreateTaskSet", body)
+
     # DeleteAccountSetting
     # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
     def delete_account_setting(self, DeleteAccountSettingRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DeleteAccountSetting", body)
+
+    # DeleteAttributes
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, TargetNotFoundException
+    def delete_attributes(self, DeleteAttributesRequest input) -> str:
+        auto body = delete_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DeleteAttributes", body)
 
     # DeleteCapacityProvider
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException, UpdateInProgressException
@@ -4465,6 +7409,12 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DeleteService", body)
 
+    # DeleteTaskDefinitions
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
+    def delete_task_definitions(self, DeleteTaskDefinitionsRequest input) -> str:
+        auto body = delete_task_definitions_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DeleteTaskDefinitions", body)
+
     # DeleteTaskSet
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, LimitExceededException, ServerException, ServiceNotActiveException, ServiceNotFoundException, TaskSetNotFoundException, UnsupportedFeatureException
     def delete_task_set(self, DeleteTaskSetRequest input) -> str:
@@ -4483,17 +7433,53 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DeregisterTaskDefinition", body)
 
+    # DescribeCapacityProviders
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def describe_capacity_providers(self, DescribeCapacityProvidersRequest input) -> str:
+        auto body = describe_capacity_providers_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeCapacityProviders", body)
+
+    # DescribeClusters
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
+    def describe_clusters(self, DescribeClustersRequest input) -> str:
+        auto body = describe_clusters_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeClusters", body)
+
+    # DescribeContainerInstances
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def describe_container_instances(self, DescribeContainerInstancesRequest input) -> str:
+        auto body = describe_container_instances_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeContainerInstances", body)
+
     # DescribeDaemon
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, DaemonNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
     def describe_daemon(self, DescribeDaemonRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeDaemon", body)
 
+    # DescribeDaemonDeployments
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def describe_daemon_deployments(self, DescribeDaemonDeploymentsRequest input) -> str:
+        auto body = describe_daemon_deployments_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeDaemonDeployments", body)
+
+    # DescribeDaemonRevisions
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def describe_daemon_revisions(self, DescribeDaemonRevisionsRequest input) -> str:
+        auto body = describe_daemon_revisions_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeDaemonRevisions", body)
+
     # DescribeDaemonTaskDefinition
     # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
     def describe_daemon_task_definition(self, DescribeDaemonTaskDefinitionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeDaemonTaskDefinition", body)
+
+    # DescribeExpressGatewayService
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ResourceNotFoundException, ServerException, UnsupportedFeatureException
+    def describe_express_gateway_service(self, DescribeExpressGatewayServiceRequest input) -> str:
+        auto body = describe_express_gateway_service_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeExpressGatewayService", body)
 
     # DescribeGateway
     # errors: AccessDeniedException, ClientException, GatewayNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
@@ -4513,6 +7499,42 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeGatewayRoute", body)
 
+    # DescribeServiceDeployments
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, ServiceNotFoundException, UnsupportedFeatureException
+    def describe_service_deployments(self, DescribeServiceDeploymentsRequest input) -> str:
+        auto body = describe_service_deployments_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeServiceDeployments", body)
+
+    # DescribeServiceRevisions
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, ServiceNotFoundException, UnsupportedFeatureException
+    def describe_service_revisions(self, DescribeServiceRevisionsRequest input) -> str:
+        auto body = describe_service_revisions_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeServiceRevisions", body)
+
+    # DescribeServices
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def describe_services(self, DescribeServicesRequest input) -> str:
+        auto body = describe_services_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeServices", body)
+
+    # DescribeTaskDefinition
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
+    def describe_task_definition(self, DescribeTaskDefinitionRequest input) -> str:
+        auto body = describe_task_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeTaskDefinition", body)
+
+    # DescribeTaskSets
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, ServiceNotActiveException, ServiceNotFoundException, UnsupportedFeatureException
+    def describe_task_sets(self, DescribeTaskSetsRequest input) -> str:
+        auto body = describe_task_sets_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeTaskSets", body)
+
+    # DescribeTasks
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def describe_tasks(self, DescribeTasksRequest input) -> str:
+        auto body = describe_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "DescribeTasks", body)
+
     # DisassociateGatewayFromCluster
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, GatewayNotFoundException, InvalidParameterException, ResourceNotFoundException, ServerException, UnsupportedFeatureException
     def disassociate_gateway_from_cluster(self, DisassociateGatewayFromClusterRequest input) -> str:
@@ -4530,6 +7552,12 @@ struct ECSClient:
     def execute_command(self, ExecuteCommandRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ExecuteCommand", body)
+
+    # GetTaskProtection
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ResourceNotFoundException, ServerException, UnsupportedFeatureException
+    def get_task_protection(self, GetTaskProtectionRequest input) -> str:
+        auto body = get_task_protection_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "GetTaskProtection", body)
 
     # ListAccountSettings
     # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
@@ -4555,11 +7583,47 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListContainerInstances", body)
 
+    # ListDaemonDeployments
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def list_daemon_deployments(self, ListDaemonDeploymentsRequest input) -> str:
+        auto body = list_daemon_deployments_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListDaemonDeployments", body)
+
     # ListDaemonTaskDefinitions
     # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException
     def list_daemon_task_definitions(self, ListDaemonTaskDefinitionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListDaemonTaskDefinitions", body)
+
+    # ListDaemons
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def list_daemons(self, ListDaemonsRequest input) -> str:
+        auto body = list_daemons_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListDaemons", body)
+
+    # ListGatewayClusterAssociations
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def list_gateway_cluster_associations(self, ListGatewayClusterAssociationsRequest input) -> str:
+        auto body = list_gateway_cluster_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListGatewayClusterAssociations", body)
+
+    # ListGatewayRoutes
+    # errors: AccessDeniedException, ClientException, GatewayNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def list_gateway_routes(self, ListGatewayRoutesRequest input) -> str:
+        auto body = list_gateway_routes_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListGatewayRoutes", body)
+
+    # ListGateways
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def list_gateways(self, ListGatewaysRequest input) -> str:
+        auto body = list_gateways_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListGateways", body)
+
+    # ListServiceDeployments
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, ServiceNotFoundException, UnsupportedFeatureException
+    def list_service_deployments(self, ListServiceDeploymentsRequest input) -> str:
+        auto body = list_service_deployments_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListServiceDeployments", body)
 
     # ListServices
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
@@ -4609,6 +7673,48 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "PutAccountSettingDefault", body)
 
+    # PutAttributes
+    # errors: AccessDeniedException, AttributeLimitExceededException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, TargetNotFoundException
+    def put_attributes(self, PutAttributesRequest input) -> str:
+        auto body = put_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "PutAttributes", body)
+
+    # PutClusterCapacityProviders
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ResourceInUseException, ServerException, UpdateInProgressException
+    def put_cluster_capacity_providers(self, PutClusterCapacityProvidersRequest input) -> str:
+        auto body = put_cluster_capacity_providers_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "PutClusterCapacityProviders", body)
+
+    # RegisterContainerInstance
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def register_container_instance(self, RegisterContainerInstanceRequest input) -> str:
+        auto body = register_container_instance_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "RegisterContainerInstance", body)
+
+    # RegisterDaemonTaskDefinition
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, LimitExceededException, ServerException
+    def register_daemon_task_definition(self, RegisterDaemonTaskDefinitionRequest input) -> str:
+        auto body = register_daemon_task_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "RegisterDaemonTaskDefinition", body)
+
+    # RegisterTaskDefinition
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, LimitExceededException, ServerException
+    def register_task_definition(self, RegisterTaskDefinitionRequest input) -> str:
+        auto body = register_task_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "RegisterTaskDefinition", body)
+
+    # RunTask
+    # errors: AccessDeniedException, BlockedException, ClientException, ClusterNotFoundException, ConflictException, InvalidParameterException, PlatformTaskDefinitionIncompatibilityException, PlatformUnknownException, ServerException, UnsupportedFeatureException
+    def run_task(self, RunTaskRequest input) -> str:
+        auto body = run_task_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "RunTask", body)
+
+    # StartTask
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, NamespaceNotFoundException, ServerException, UnsupportedFeatureException
+    def start_task(self, StartTaskRequest input) -> str:
+        auto body = start_task_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "StartTask", body)
+
     # StopServiceDeployment
     # errors: AccessDeniedException, ClientException, ConflictException, InvalidParameterException, ServerException, ServiceDeploymentNotFoundException, UnsupportedFeatureException
     def stop_service_deployment(self, StopServiceDeploymentRequest input) -> str:
@@ -4621,17 +7727,101 @@ struct ECSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "StopTask", body)
 
+    # SubmitAttachmentStateChanges
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def submit_attachment_state_changes(self, SubmitAttachmentStateChangesRequest input) -> str:
+        auto body = submit_attachment_state_changes_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "SubmitAttachmentStateChanges", body)
+
+    # SubmitContainerStateChange
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def submit_container_state_change(self, SubmitContainerStateChangeRequest input) -> str:
+        auto body = submit_container_state_change_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "SubmitContainerStateChange", body)
+
+    # SubmitTaskStateChange
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def submit_task_state_change(self, SubmitTaskStateChangeRequest input) -> str:
+        auto body = submit_task_state_change_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "SubmitTaskStateChange", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, LimitExceededException, ResourceNotFoundException, ServerException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ResourceNotFoundException, ServerException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateCapacityProvider
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def update_capacity_provider(self, UpdateCapacityProviderRequest input) -> str:
+        auto body = update_capacity_provider_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateCapacityProvider", body)
+
+    # UpdateCluster
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, NamespaceNotFoundException, ServerException
+    def update_cluster(self, UpdateClusterRequest input) -> str:
+        auto body = update_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateCluster", body)
+
+    # UpdateClusterSettings
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, UpdateInProgressException
+    def update_cluster_settings(self, UpdateClusterSettingsRequest input) -> str:
+        auto body = update_cluster_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateClusterSettings", body)
+
     # UpdateContainerAgent
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, MissingVersionException, NoUpdateAvailableException, ServerException, UpdateInProgressException
     def update_container_agent(self, UpdateContainerAgentRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateContainerAgent", body)
 
+    # UpdateContainerInstancesState
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException
+    def update_container_instances_state(self, UpdateContainerInstancesStateRequest input) -> str:
+        auto body = update_container_instances_state_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateContainerInstancesState", body)
+
+    # UpdateDaemon
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, DaemonNotActiveException, DaemonNotFoundException, InvalidParameterException, PlatformUnknownException, ServerException, UnsupportedFeatureException
+    def update_daemon(self, UpdateDaemonRequest input) -> str:
+        auto body = update_daemon_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateDaemon", body)
+
+    # UpdateExpressGatewayService
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, ServiceNotActiveException, ServiceNotFoundException, UnsupportedFeatureException
+    def update_express_gateway_service(self, UpdateExpressGatewayServiceRequest input) -> str:
+        auto body = update_express_gateway_service_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateExpressGatewayService", body)
+
+    # UpdateGateway
+    # errors: AccessDeniedException, ClientException, GatewayNotFoundException, InvalidParameterException, ServerException, UnsupportedFeatureException
+    def update_gateway(self, UpdateGatewayRequest input) -> str:
+        auto body = update_gateway_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateGateway", body)
+
+    # UpdateService
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, NamespaceNotFoundException, PlatformTaskDefinitionIncompatibilityException, PlatformUnknownException, ServerException, ServiceNotActiveException, ServiceNotFoundException, UnsupportedFeatureException
+    def update_service(self, UpdateServiceRequest input) -> str:
+        auto body = update_service_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateService", body)
+
     # UpdateServicePrimaryTaskSet
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ServerException, ServiceNotActiveException, ServiceNotFoundException, TaskSetNotFoundException, UnsupportedFeatureException
     def update_service_primary_task_set(self, UpdateServicePrimaryTaskSetRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateServicePrimaryTaskSet", body)
+
+    # UpdateTaskProtection
+    # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, ResourceNotFoundException, ServerException, UnsupportedFeatureException
+    def update_task_protection(self, UpdateTaskProtectionRequest input) -> str:
+        auto body = update_task_protection_request_to_json(input)
+        return awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "UpdateTaskProtection", body)
 
     # UpdateTaskSet
     # errors: AccessDeniedException, ClientException, ClusterNotFoundException, InvalidParameterException, LimitExceededException, ServerException, ServiceNotActiveException, ServiceNotFoundException, TaskSetNotFoundException, UnsupportedFeatureException
@@ -4688,6 +7878,48 @@ struct ECSClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListContainerInstances", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListGatewayClusterAssociations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: gatewayClusterAssociations).
+    def paginate_list_gateway_cluster_associations(self, ListGatewayClusterAssociationsRequest input):
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        while True:
+            auto body = list_gateway_cluster_associations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListGatewayClusterAssociations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListGatewayRoutes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: gatewayRoutes).
+    def paginate_list_gateway_routes(self, ListGatewayRoutesRequest input):
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        while True:
+            auto body = list_gateway_routes_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListGatewayRoutes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListGateways — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: gateways).
+    def paginate_list_gateways(self, ListGatewaysRequest input):
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        while True:
+            auto body = list_gateways_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ecs_protocol(), self.creds, self.region, "ListGateways", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

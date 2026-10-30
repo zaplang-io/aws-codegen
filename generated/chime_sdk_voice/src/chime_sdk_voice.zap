@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 96 operations — 65 with a generated method,
-#   31 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 96 operations — 95 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   227 structs (127 @derive(Json)), 24 enums, 12 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -287,8 +287,9 @@ struct AssociatePhoneNumbersWithVoiceConnectorGroupRequest:
     list[str] E164PhoneNumbers
     Optional[bool] ForceAssociate
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatePhoneNumbersWithVoiceConnectorGroupResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -299,8 +300,9 @@ struct AssociatePhoneNumbersWithVoiceConnectorRequest:
     list[str] E164PhoneNumbers
     Optional[bool] ForceAssociate
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatePhoneNumbersWithVoiceConnectorResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -314,8 +316,9 @@ struct BadRequestException:
 struct BatchDeletePhoneNumberRequest:
     list[str] PhoneNumberIds
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeletePhoneNumberResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -324,8 +327,9 @@ struct BatchDeletePhoneNumberResponse:
 struct BatchUpdatePhoneNumberRequest:
     list[UpdatePhoneNumberRequestItem] UpdatePhoneNumberRequestItems
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdatePhoneNumberResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -357,8 +361,9 @@ struct CreatePhoneNumberOrderRequest:
     list[str] E164PhoneNumbers
     Optional[str] Name
 
-# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePhoneNumberOrderResponse:
     Optional[PhoneNumberOrder] PhoneNumberOrder
 
@@ -374,8 +379,9 @@ struct CreateProxySessionRequest:
     Optional[GeoMatchLevel] GeoMatchLevel
     Optional[GeoMatchParams] GeoMatchParams
 
-# no @derive(Json): member(s) ProxySession: ProxySession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxySession: ProxySession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxySessionResponse:
     Optional[ProxySession] ProxySession
 
@@ -400,8 +406,9 @@ struct CreateSipMediaApplicationRequest:
     list[SipMediaApplicationEndpoint] Endpoints
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) SipMediaApplication: SipMediaApplication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipMediaApplication: SipMediaApplication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSipMediaApplicationResponse:
     Optional[SipMediaApplication] SipMediaApplication
 
@@ -414,8 +421,9 @@ struct CreateSipRuleRequest:
     Optional[bool] Disabled
     list[SipRuleTargetApplication] TargetApplications
 
-# no @derive(Json): member(s) SipRule: SipRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipRule: SipRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSipRuleResponse:
     Optional[SipRule] SipRule
 
@@ -426,8 +434,9 @@ struct CreateVoiceConnectorGroupRequest:
     Optional[list[VoiceConnectorItem]] VoiceConnectorItems
     Optional[CallDistributionType] CallDistributionType
 
-# no @derive(Json): member(s) VoiceConnectorGroup: VoiceConnectorGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectorGroup: VoiceConnectorGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVoiceConnectorGroupResponse:
     Optional[VoiceConnectorGroup] VoiceConnectorGroup
 
@@ -561,8 +570,9 @@ struct DisassociatePhoneNumbersFromVoiceConnectorGroupRequest:
     str VoiceConnectorGroupId
     list[str] E164PhoneNumbers
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociatePhoneNumbersFromVoiceConnectorGroupResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -572,18 +582,21 @@ struct DisassociatePhoneNumbersFromVoiceConnectorRequest:
     str VoiceConnectorId
     list[str] E164PhoneNumbers
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociatePhoneNumbersFromVoiceConnectorResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
-# no @derive(Json): member(s) DNIS: list[DNISEmergencyCallingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DNIS: list[DNISEmergencyCallingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmergencyCallingConfiguration:
     Optional[list[DNISEmergencyCallingConfiguration]] DNIS
 
-# no @derive(Json): member(s) SessionBorderControllerTypes: list[SessionBorderControllerType], ContactCenterSystemTypes: list[ContactCenterSystemType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SessionBorderControllerTypes: list[SessionBorderControllerType], ContactCenterSystemTypes: list[ContactCenterSystemType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalSystemsConfiguration:
     Optional[list[SessionBorderControllerType]] SessionBorderControllerTypes
     Optional[list[ContactCenterSystemType]] ContactCenterSystemTypes
@@ -607,8 +620,9 @@ struct GetGlobalSettingsResponse:
 struct GetPhoneNumberOrderRequest:
     str PhoneNumberOrderId
 
-# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPhoneNumberOrderResponse:
     Optional[PhoneNumberOrder] PhoneNumberOrder
 
@@ -617,8 +631,9 @@ struct GetPhoneNumberOrderResponse:
 struct GetPhoneNumberRequest:
     str PhoneNumberId
 
-# no @derive(Json): member(s) PhoneNumber: PhoneNumber not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumber: PhoneNumber not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPhoneNumberResponse:
     Optional[PhoneNumber] PhoneNumber
 
@@ -634,8 +649,9 @@ struct GetProxySessionRequest:
     str VoiceConnectorId
     str ProxySessionId
 
-# no @derive(Json): member(s) ProxySession: ProxySession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxySession: ProxySession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProxySessionResponse:
     Optional[ProxySession] ProxySession
 
@@ -644,8 +660,9 @@ struct GetProxySessionResponse:
 struct GetSipMediaApplicationAlexaSkillConfigurationRequest:
     str SipMediaApplicationId
 
-# no @derive(Json): member(s) SipMediaApplicationAlexaSkillConfiguration: SipMediaApplicationAlexaSkillConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipMediaApplicationAlexaSkillConfiguration: SipMediaApplicationAlexaSkillConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSipMediaApplicationAlexaSkillConfigurationResponse:
     Optional[SipMediaApplicationAlexaSkillConfiguration] SipMediaApplicationAlexaSkillConfiguration
 
@@ -663,8 +680,9 @@ struct GetSipMediaApplicationLoggingConfigurationResponse:
 struct GetSipMediaApplicationRequest:
     str SipMediaApplicationId
 
-# no @derive(Json): member(s) SipMediaApplication: SipMediaApplication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipMediaApplication: SipMediaApplication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSipMediaApplicationResponse:
     Optional[SipMediaApplication] SipMediaApplication
 
@@ -673,8 +691,9 @@ struct GetSipMediaApplicationResponse:
 struct GetSipRuleRequest:
     str SipRuleId
 
-# no @derive(Json): member(s) SipRule: SipRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipRule: SipRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSipRuleResponse:
     Optional[SipRule] SipRule
 
@@ -684,8 +703,9 @@ struct GetSpeakerSearchTaskRequest:
     str VoiceConnectorId
     str SpeakerSearchTaskId
 
-# no @derive(Json): member(s) SpeakerSearchTask: SpeakerSearchTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpeakerSearchTask: SpeakerSearchTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSpeakerSearchTaskResponse:
     Optional[SpeakerSearchTask] SpeakerSearchTask
 
@@ -694,8 +714,9 @@ struct GetSpeakerSearchTaskResponse:
 struct GetVoiceConnectorEmergencyCallingConfigurationRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) EmergencyCallingConfiguration: EmergencyCallingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmergencyCallingConfiguration: EmergencyCallingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorEmergencyCallingConfigurationResponse:
     Optional[EmergencyCallingConfiguration] EmergencyCallingConfiguration
 
@@ -704,8 +725,9 @@ struct GetVoiceConnectorEmergencyCallingConfigurationResponse:
 struct GetVoiceConnectorExternalSystemsConfigurationRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) ExternalSystemsConfiguration: ExternalSystemsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalSystemsConfiguration: ExternalSystemsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorExternalSystemsConfigurationResponse:
     Optional[ExternalSystemsConfiguration] ExternalSystemsConfiguration
 
@@ -714,8 +736,9 @@ struct GetVoiceConnectorExternalSystemsConfigurationResponse:
 struct GetVoiceConnectorGroupRequest:
     str VoiceConnectorGroupId
 
-# no @derive(Json): member(s) VoiceConnectorGroup: VoiceConnectorGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectorGroup: VoiceConnectorGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorGroupResponse:
     Optional[VoiceConnectorGroup] VoiceConnectorGroup
 
@@ -733,8 +756,9 @@ struct GetVoiceConnectorLoggingConfigurationResponse:
 struct GetVoiceConnectorOriginationRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) Origination: Origination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Origination: Origination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorOriginationResponse:
     Optional[Origination] Origination
 
@@ -743,8 +767,9 @@ struct GetVoiceConnectorOriginationResponse:
 struct GetVoiceConnectorProxyRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) Proxy: Proxy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proxy: Proxy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorProxyResponse:
     Optional[Proxy] Proxy
 
@@ -762,8 +787,9 @@ struct GetVoiceConnectorResponse:
 struct GetVoiceConnectorStreamingConfigurationRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) StreamingConfiguration: StreamingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingConfiguration: StreamingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorStreamingConfigurationResponse:
     Optional[StreamingConfiguration] StreamingConfiguration
 
@@ -781,8 +807,9 @@ struct GetVoiceConnectorTerminationHealthResponse:
 struct GetVoiceConnectorTerminationRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) Termination: Termination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Termination: Termination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceConnectorTerminationResponse:
     Optional[Termination] Termination
 
@@ -820,8 +847,9 @@ struct GoneException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VoiceConnectorRegions: list[VoiceConnectorAwsRegion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectorRegions: list[VoiceConnectorAwsRegion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailableVoiceConnectorRegionsResponse:
     Optional[list[VoiceConnectorAwsRegion]] VoiceConnectorRegions
 
@@ -831,8 +859,9 @@ struct ListPhoneNumberOrdersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PhoneNumberOrders: list[PhoneNumberOrder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberOrders: list[PhoneNumberOrder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPhoneNumberOrdersResponse:
     Optional[list[PhoneNumberOrder]] PhoneNumberOrders
     Optional[str] NextToken
@@ -849,8 +878,9 @@ struct ListPhoneNumbersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PhoneNumbers: list[PhoneNumber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumbers: list[PhoneNumber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPhoneNumbersResponse:
     Optional[list[PhoneNumber]] PhoneNumbers
     Optional[str] NextToken
@@ -864,8 +894,9 @@ struct ListProxySessionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProxySessions: list[ProxySession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxySessions: list[ProxySession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProxySessionsResponse:
     Optional[list[ProxySession]] ProxySessions
     Optional[str] NextToken
@@ -876,8 +907,9 @@ struct ListSipMediaApplicationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SipMediaApplications: list[SipMediaApplication] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipMediaApplications: list[SipMediaApplication] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSipMediaApplicationsResponse:
     Optional[list[SipMediaApplication]] SipMediaApplications
     Optional[str] NextToken
@@ -889,8 +921,9 @@ struct ListSipRulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SipRules: list[SipRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipRules: list[SipRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSipRulesResponse:
     Optional[list[SipRule]] SipRules
     Optional[str] NextToken
@@ -901,8 +934,9 @@ struct ListSupportedPhoneNumberCountriesRequest:
     # wire string of the PhoneNumberProductType enum (querystring binding)
     str ProductType
 
-# no @derive(Json): member(s) PhoneNumberCountries: list[PhoneNumberCountry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberCountries: list[PhoneNumberCountry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupportedPhoneNumberCountriesResponse:
     Optional[list[PhoneNumberCountry]] PhoneNumberCountries
 
@@ -911,8 +945,9 @@ struct ListSupportedPhoneNumberCountriesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -922,8 +957,9 @@ struct ListVoiceConnectorGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) VoiceConnectorGroups: list[VoiceConnectorGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectorGroups: list[VoiceConnectorGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVoiceConnectorGroupsResponse:
     Optional[list[VoiceConnectorGroup]] VoiceConnectorGroups
     Optional[str] NextToken
@@ -933,8 +969,9 @@ struct ListVoiceConnectorGroupsResponse:
 struct ListVoiceConnectorTerminationCredentialsRequest:
     str VoiceConnectorId
 
-# no @derive(Json): member(s) Usernames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Usernames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVoiceConnectorTerminationCredentialsResponse:
     Optional[list[str]] Usernames
 
@@ -944,8 +981,9 @@ struct ListVoiceConnectorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) VoiceConnectors: list[VoiceConnector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectors: list[VoiceConnector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVoiceConnectorsResponse:
     Optional[list[VoiceConnector]] VoiceConnectors
     Optional[str] NextToken
@@ -956,8 +994,9 @@ struct ListVoiceProfileDomainsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) VoiceProfileDomains: list[VoiceProfileDomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceProfileDomains: list[VoiceProfileDomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVoiceProfileDomainsResponse:
     Optional[list[VoiceProfileDomainSummary]] VoiceProfileDomains
     Optional[str] NextToken
@@ -969,8 +1008,9 @@ struct ListVoiceProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) VoiceProfiles: list[VoiceProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceProfiles: list[VoiceProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVoiceProfilesResponse:
     Optional[list[VoiceProfileSummary]] VoiceProfiles
     Optional[str] NextToken
@@ -995,8 +1035,9 @@ struct OrderedPhoneNumber:
     Optional[str] E164PhoneNumber
     Optional[OrderedPhoneNumberStatus] Status
 
-# no @derive(Json): member(s) Routes: list[OriginationRoute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Routes: list[OriginationRoute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Origination:
     Optional[list[OriginationRoute]] Routes
     Optional[bool] Disabled
@@ -1014,8 +1055,9 @@ struct Participant:
     Optional[str] PhoneNumber
     Optional[str] ProxyPhoneNumber
 
-# no @derive(Json): member(s) Associations: list[PhoneNumberAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[PhoneNumberAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumber:
     Optional[str] PhoneNumberId
     Optional[str] E164PhoneNumber
@@ -1050,8 +1092,9 @@ struct PhoneNumberCapabilities:
     Optional[bool] InboundMMS
     Optional[bool] OutboundMMS
 
-# no @derive(Json): member(s) SupportedPhoneNumberTypes: list[PhoneNumberType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedPhoneNumberTypes: list[PhoneNumberType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumberCountry:
     Optional[str] CountryCode
     Optional[list[PhoneNumberType]] SupportedPhoneNumberTypes
@@ -1062,8 +1105,9 @@ struct PhoneNumberError:
     Optional[ErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) OrderedPhoneNumbers: list[OrderedPhoneNumber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrderedPhoneNumbers: list[OrderedPhoneNumber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumberOrder:
     Optional[str] PhoneNumberOrderId
     Optional[PhoneNumberProductType] ProductType
@@ -1074,16 +1118,18 @@ struct PhoneNumberOrder:
     Optional[DateTime] UpdatedTimestamp
     Optional[str] FocDate
 
-# no @derive(Json): member(s) PhoneNumberCountries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberCountries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Proxy:
     Optional[int64] DefaultSessionExpiryMinutes
     Optional[bool] Disabled
     Optional[str] FallBackPhoneNumber
     Optional[list[str]] PhoneNumberCountries
 
-# no @derive(Json): member(s) Capabilities: list[Capability], Participants: list[Participant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Capabilities: list[Capability], Participants: list[Participant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxySession:
     Optional[str] VoiceConnectorId
     Optional[str] ProxySessionId
@@ -1105,8 +1151,9 @@ struct PutSipMediaApplicationAlexaSkillConfigurationRequest:
     str SipMediaApplicationId
     Optional[SipMediaApplicationAlexaSkillConfiguration] SipMediaApplicationAlexaSkillConfiguration
 
-# no @derive(Json): member(s) SipMediaApplicationAlexaSkillConfiguration: SipMediaApplicationAlexaSkillConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipMediaApplicationAlexaSkillConfiguration: SipMediaApplicationAlexaSkillConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutSipMediaApplicationAlexaSkillConfigurationResponse:
     Optional[SipMediaApplicationAlexaSkillConfiguration] SipMediaApplicationAlexaSkillConfiguration
 
@@ -1126,8 +1173,9 @@ struct PutVoiceConnectorEmergencyCallingConfigurationRequest:
     str VoiceConnectorId
     EmergencyCallingConfiguration EmergencyCallingConfiguration
 
-# no @derive(Json): member(s) EmergencyCallingConfiguration: EmergencyCallingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmergencyCallingConfiguration: EmergencyCallingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutVoiceConnectorEmergencyCallingConfigurationResponse:
     Optional[EmergencyCallingConfiguration] EmergencyCallingConfiguration
 
@@ -1138,8 +1186,9 @@ struct PutVoiceConnectorExternalSystemsConfigurationRequest:
     Optional[list[SessionBorderControllerType]] SessionBorderControllerTypes
     Optional[list[ContactCenterSystemType]] ContactCenterSystemTypes
 
-# no @derive(Json): member(s) ExternalSystemsConfiguration: ExternalSystemsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalSystemsConfiguration: ExternalSystemsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutVoiceConnectorExternalSystemsConfigurationResponse:
     Optional[ExternalSystemsConfiguration] ExternalSystemsConfiguration
 
@@ -1159,8 +1208,9 @@ struct PutVoiceConnectorOriginationRequest:
     str VoiceConnectorId
     Origination Origination
 
-# no @derive(Json): member(s) Origination: Origination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Origination: Origination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutVoiceConnectorOriginationResponse:
     Optional[Origination] Origination
 
@@ -1173,8 +1223,9 @@ struct PutVoiceConnectorProxyRequest:
     Optional[str] FallBackPhoneNumber
     Optional[bool] Disabled
 
-# no @derive(Json): member(s) Proxy: Proxy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proxy: Proxy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutVoiceConnectorProxyResponse:
     Optional[Proxy] Proxy
 
@@ -1184,8 +1235,9 @@ struct PutVoiceConnectorStreamingConfigurationRequest:
     str VoiceConnectorId
     StreamingConfiguration StreamingConfiguration
 
-# no @derive(Json): member(s) StreamingConfiguration: StreamingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingConfiguration: StreamingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutVoiceConnectorStreamingConfigurationResponse:
     Optional[StreamingConfiguration] StreamingConfiguration
 
@@ -1201,8 +1253,9 @@ struct PutVoiceConnectorTerminationRequest:
     str VoiceConnectorId
     Termination Termination
 
-# no @derive(Json): member(s) Termination: Termination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Termination: Termination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutVoiceConnectorTerminationResponse:
     Optional[Termination] Termination
 
@@ -1216,8 +1269,9 @@ struct ResourceLimitExceededException:
 struct RestorePhoneNumberRequest:
     str PhoneNumberId
 
-# no @derive(Json): member(s) PhoneNumber: PhoneNumber not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumber: PhoneNumber not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestorePhoneNumberResponse:
     Optional[PhoneNumber] PhoneNumber
 
@@ -1234,8 +1288,9 @@ struct SearchAvailablePhoneNumbersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) E164PhoneNumbers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) E164PhoneNumbers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAvailablePhoneNumbersResponse:
     Optional[list[str]] E164PhoneNumbers
     Optional[str] NextToken
@@ -1254,8 +1309,9 @@ struct ServiceUnavailableException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Endpoints: list[SipMediaApplicationEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[SipMediaApplicationEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SipMediaApplication:
     Optional[str] SipMediaApplicationId
     Optional[str] AwsRegion
@@ -1265,8 +1321,9 @@ struct SipMediaApplication:
     Optional[DateTime] UpdatedTimestamp
     Optional[str] SipMediaApplicationArn
 
-# no @derive(Json): member(s) AlexaSkillIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlexaSkillIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SipMediaApplicationAlexaSkillConfiguration:
     AlexaSkillStatus AlexaSkillStatus
     list[str] AlexaSkillIds
@@ -1283,8 +1340,9 @@ struct SipMediaApplicationEndpoint:
 struct SipMediaApplicationLoggingConfiguration:
     Optional[bool] EnableSipMediaApplicationMessageLogs
 
-# no @derive(Json): member(s) TargetApplications: list[SipRuleTargetApplication] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetApplications: list[SipRuleTargetApplication] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SipRule:
     Optional[str] SipRuleId
     Optional[str] Name
@@ -1301,8 +1359,9 @@ struct SipRuleTargetApplication:
     Optional[int64] Priority
     Optional[str] AwsRegion
 
-# no @derive(Json): member(s) Results: list[SpeakerSearchResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[SpeakerSearchResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpeakerSearchDetails:
     Optional[list[SpeakerSearchResult]] Results
     Optional[str] VoiceprintGenerationStatus
@@ -1312,8 +1371,9 @@ struct SpeakerSearchResult:
     Optional[float64] ConfidenceScore
     Optional[str] VoiceProfileId
 
-# no @derive(Json): member(s) SpeakerSearchDetails: SpeakerSearchDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpeakerSearchDetails: SpeakerSearchDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpeakerSearchTask:
     Optional[str] SpeakerSearchTaskId
     Optional[str] SpeakerSearchTaskStatus
@@ -1333,8 +1393,9 @@ struct StartSpeakerSearchTaskRequest:
     Optional[str] ClientRequestToken
     Optional[CallLegType] CallLeg
 
-# no @derive(Json): member(s) SpeakerSearchTask: SpeakerSearchTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpeakerSearchTask: SpeakerSearchTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSpeakerSearchTaskResponse:
     Optional[SpeakerSearchTask] SpeakerSearchTask
 
@@ -1362,8 +1423,9 @@ struct StopVoiceToneAnalysisTaskRequest:
     str VoiceConnectorId
     str VoiceToneAnalysisTaskId
 
-# no @derive(Json): member(s) StreamingNotificationTargets: list[StreamingNotificationTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingNotificationTargets: list[StreamingNotificationTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamingConfiguration:
     int64 DataRetentionInHours
     bool Disabled
@@ -1385,8 +1447,9 @@ struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
 
-# no @derive(Json): member(s) CallingRegions: list[str], CidrAllowedList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallingRegions: list[str], CidrAllowedList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Termination:
     Optional[int64] CpsLimit
     Optional[str] DefaultPhoneNumber
@@ -1441,8 +1504,9 @@ struct UpdatePhoneNumberRequestItem:
     Optional[str] CallingName
     Optional[str] Name
 
-# no @derive(Json): member(s) PhoneNumber: PhoneNumber not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumber: PhoneNumber not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePhoneNumberResponse:
     Optional[PhoneNumber] PhoneNumber
 
@@ -1459,8 +1523,9 @@ struct UpdateProxySessionRequest:
     list[Capability] Capabilities
     Optional[int64] ExpiryMinutes
 
-# no @derive(Json): member(s) ProxySession: ProxySession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxySession: ProxySession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxySessionResponse:
     Optional[ProxySession] ProxySession
 
@@ -1482,8 +1547,9 @@ struct UpdateSipMediaApplicationRequest:
     Optional[str] Name
     Optional[list[SipMediaApplicationEndpoint]] Endpoints
 
-# no @derive(Json): member(s) SipMediaApplication: SipMediaApplication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipMediaApplication: SipMediaApplication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSipMediaApplicationResponse:
     Optional[SipMediaApplication] SipMediaApplication
 
@@ -1495,8 +1561,9 @@ struct UpdateSipRuleRequest:
     Optional[bool] Disabled
     Optional[list[SipRuleTargetApplication]] TargetApplications
 
-# no @derive(Json): member(s) SipRule: SipRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SipRule: SipRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSipRuleResponse:
     Optional[SipRule] SipRule
 
@@ -1508,8 +1575,9 @@ struct UpdateVoiceConnectorGroupRequest:
     list[VoiceConnectorItem] VoiceConnectorItems
     Optional[CallDistributionType] CallDistributionType
 
-# no @derive(Json): member(s) VoiceConnectorGroup: VoiceConnectorGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectorGroup: VoiceConnectorGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVoiceConnectorGroupResponse:
     Optional[VoiceConnectorGroup] VoiceConnectorGroup
 
@@ -1556,8 +1624,9 @@ struct ValidateE911AddressRequest:
     str Country
     str PostalCode
 
-# no @derive(Json): member(s) CandidateAddressList: list[CandidateAddress] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CandidateAddressList: list[CandidateAddress] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateE911AddressResponse:
     Optional[int64] ValidationResult
     Optional[str] AddressExternalId
@@ -1579,8 +1648,9 @@ struct VoiceConnector:
     Optional[VoiceConnectorIntegrationType] IntegrationType
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) VoiceConnectorItems: list[VoiceConnectorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceConnectorItems: list[VoiceConnectorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VoiceConnectorGroup:
     Optional[str] VoiceConnectorGroupId
     Optional[str] Name
@@ -1712,37 +1782,7 @@ def voice_chime_error_from_code(str code) -> Chime_SDK_VoiceError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociatePhoneNumbersWithVoiceConnector (document member `E164PhoneNumbers: list[str]` is not serializable by derive)
-#   AssociatePhoneNumbersWithVoiceConnectorGroup (document member `E164PhoneNumbers: list[str]` is not serializable by derive)
-#   BatchDeletePhoneNumber (document member `PhoneNumberIds: list[str]` is not serializable by derive)
-#   BatchUpdatePhoneNumber (document member `UpdatePhoneNumberRequestItems: list[UpdatePhoneNumberRequestItem]` is not serializable by derive)
-#   CreatePhoneNumberOrder (document member `E164PhoneNumbers: list[str]` is not serializable by derive)
-#   CreateProxySession (document member `ParticipantPhoneNumbers: list[str]` is not serializable by derive)
-#   CreateSipMediaApplication (document member `Endpoints: list[SipMediaApplicationEndpoint]` is not serializable by derive)
-#   CreateSipMediaApplicationCall (document member `SipHeaders: dict[str, str]` is not serializable by derive)
-#   CreateSipRule (document member `TargetApplications: list[SipRuleTargetApplication]` is not serializable by derive)
-#   CreateVoiceConnector (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateVoiceConnectorGroup (document member `VoiceConnectorItems: list[VoiceConnectorItem]` is not serializable by derive)
-#   CreateVoiceProfileDomain (document member `Tags: list[Tag]` is not serializable by derive)
-#   DeleteVoiceConnectorTerminationCredentials (document member `Usernames: list[str]` is not serializable by derive)
-#   DisassociatePhoneNumbersFromVoiceConnector (document member `E164PhoneNumbers: list[str]` is not serializable by derive)
-#   DisassociatePhoneNumbersFromVoiceConnectorGroup (document member `E164PhoneNumbers: list[str]` is not serializable by derive)
 #   GetVoiceToneAnalysisTask (httpQuery `IsCaller` has unsupported type bool)
-#   PutSipMediaApplicationAlexaSkillConfiguration (document member `SipMediaApplicationAlexaSkillConfiguration: SipMediaApplicationAlexaSkillConfiguration` is not serializable by derive)
-#   PutVoiceConnectorEmergencyCallingConfiguration (document member `EmergencyCallingConfiguration: EmergencyCallingConfiguration` is not serializable by derive)
-#   PutVoiceConnectorExternalSystemsConfiguration (document member `SessionBorderControllerTypes: list[SessionBorderControllerType]` is not serializable by derive)
-#   PutVoiceConnectorOrigination (document member `Origination: Origination` is not serializable by derive)
-#   PutVoiceConnectorProxy (document member `PhoneNumberPoolCountries: list[str]` is not serializable by derive)
-#   PutVoiceConnectorStreamingConfiguration (document member `StreamingConfiguration: StreamingConfiguration` is not serializable by derive)
-#   PutVoiceConnectorTermination (document member `Termination: Termination` is not serializable by derive)
-#   PutVoiceConnectorTerminationCredentials (document member `Credentials: list[Credential]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateProxySession (document member `Capabilities: list[Capability]` is not serializable by derive)
-#   UpdateSipMediaApplication (document member `Endpoints: list[SipMediaApplicationEndpoint]` is not serializable by derive)
-#   UpdateSipMediaApplicationCall (document member `Arguments: dict[str, str]` is not serializable by derive)
-#   UpdateSipRule (document member `TargetApplications: list[SipRuleTargetApplication]` is not serializable by derive)
-#   UpdateVoiceConnectorGroup (document member `VoiceConnectorItems: list[VoiceConnectorItem]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1822,10 +1862,340 @@ struct ValidateE911AddressDocument:
     str Country
     str PostalCode
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def voice_chime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def voice_chime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def voice_chime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EmergencyCallingConfiguration to a compact JSON object (declaration order).
+def emergency_calling_configuration_to_json(EmergencyCallingConfiguration v) -> str:
+    list[str] parts = []
+    if v.DNIS.is_some():
+        auto u0 = v.DNIS.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DNIS\":" + voice_chime_json_arr(e1))
+    return voice_chime_json_obj(parts)
+
+# Serialize Origination to a compact JSON object (declaration order).
+def origination_to_json(Origination v) -> str:
+    list[str] parts = []
+    if v.Routes.is_some():
+        auto u0 = v.Routes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Routes\":" + voice_chime_json_arr(e1))
+    if v.Disabled.is_some():
+        auto u2 = v.Disabled.unwrap()
+        parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u2)))
+    return voice_chime_json_obj(parts)
+
+# Serialize SipMediaApplicationAlexaSkillConfiguration to a compact JSON object (declaration order).
+def sip_media_application_alexa_skill_configuration_to_json(SipMediaApplicationAlexaSkillConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"AlexaSkillStatus\":" + v.AlexaSkillStatus.to_json())
+    list[str] e0 = []
+    for x0 in v.AlexaSkillIds:
+        e0.append(voice_chime_json_str(x0))
+    parts.append("\"AlexaSkillIds\":" + voice_chime_json_arr(e0))
+    return voice_chime_json_obj(parts)
+
+# Serialize StreamingConfiguration to a compact JSON object (declaration order).
+def streaming_configuration_to_json(StreamingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DataRetentionInHours\":" + str(v.DataRetentionInHours))
+    parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(v.Disabled)))
+    if v.StreamingNotificationTargets.is_some():
+        auto u0 = v.StreamingNotificationTargets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StreamingNotificationTargets\":" + voice_chime_json_arr(e1))
+    if v.MediaInsightsConfiguration.is_some():
+        auto u2 = v.MediaInsightsConfiguration.unwrap()
+        parts.append("\"MediaInsightsConfiguration\":" + u2.to_json())
+    return voice_chime_json_obj(parts)
+
+# Serialize Termination to a compact JSON object (declaration order).
+def termination_to_json(Termination v) -> str:
+    list[str] parts = []
+    if v.CpsLimit.is_some():
+        auto u0 = v.CpsLimit.unwrap()
+        parts.append("\"CpsLimit\":" + str(u0))
+    if v.DefaultPhoneNumber.is_some():
+        auto u1 = v.DefaultPhoneNumber.unwrap()
+        parts.append("\"DefaultPhoneNumber\":" + voice_chime_json_str(u1))
+    if v.CallingRegions.is_some():
+        auto u2 = v.CallingRegions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(voice_chime_json_str(x3))
+        parts.append("\"CallingRegions\":" + voice_chime_json_arr(e3))
+    if v.CidrAllowedList.is_some():
+        auto u4 = v.CidrAllowedList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(voice_chime_json_str(x5))
+        parts.append("\"CidrAllowedList\":" + voice_chime_json_arr(e5))
+    if v.Disabled.is_some():
+        auto u6 = v.Disabled.unwrap()
+        parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u6)))
+    return voice_chime_json_obj(parts)
+
 # A bound Chime_SDK_Voice client: credentials + region, threaded into every operation.
 struct Chime_SDK_VoiceClient:
     core.Credentials creds
     str region
+
+    # AssociatePhoneNumbersWithVoiceConnector  POST /voice-connectors/{voiceConnectorId}?operation=associate-phone-numbers
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def associate_phone_numbers_with_voice_connector(self, AssociatePhoneNumbersWithVoiceConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}?operation=associate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.E164PhoneNumbers:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"E164PhoneNumbers\":" + voice_chime_json_arr(e0))
+        if input.ForceAssociate.is_some():
+            auto u1 = input.ForceAssociate.unwrap()
+            parts.append("\"ForceAssociate\":" + json.dumps(JsonValue.Bool(u1)))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # AssociatePhoneNumbersWithVoiceConnectorGroup  POST /voice-connector-groups/{voiceConnectorGroupId}?operation=associate-phone-numbers
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def associate_phone_numbers_with_voice_connector_group(self, AssociatePhoneNumbersWithVoiceConnectorGroupRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups/{voiceConnectorGroupId}?operation=associate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.E164PhoneNumbers:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"E164PhoneNumbers\":" + voice_chime_json_arr(e0))
+        if input.ForceAssociate.is_some():
+            auto u1 = input.ForceAssociate.unwrap()
+            parts.append("\"ForceAssociate\":" + json.dumps(JsonValue.Bool(u1)))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # BatchDeletePhoneNumber  POST /phone-numbers?operation=batch-delete
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_delete_phone_number(self, BatchDeletePhoneNumberRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.PhoneNumberIds:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"PhoneNumberIds\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # BatchUpdatePhoneNumber  POST /phone-numbers?operation=batch-update
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_update_phone_number(self, BatchUpdatePhoneNumberRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UpdatePhoneNumberRequestItems:
+            e0.append(x0.to_json())
+        parts.append("\"UpdatePhoneNumberRequestItems\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreatePhoneNumberOrder  POST /phone-number-orders
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_phone_number_order(self, CreatePhoneNumberOrderRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number-orders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProductType\":" + input.ProductType.to_json())
+        list[str] e0 = []
+        for x0 in input.E164PhoneNumbers:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"E164PhoneNumbers\":" + voice_chime_json_arr(e0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + voice_chime_json_str(u1))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateProxySession  POST /voice-connectors/{voiceConnectorId}/proxy-sessions
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_proxy_session(self, CreateProxySessionRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ParticipantPhoneNumbers:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"ParticipantPhoneNumbers\":" + voice_chime_json_arr(e0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + voice_chime_json_str(u1))
+        if input.ExpiryMinutes.is_some():
+            auto u2 = input.ExpiryMinutes.unwrap()
+            parts.append("\"ExpiryMinutes\":" + str(u2))
+        list[str] e3 = []
+        for x3 in input.Capabilities:
+            e3.append(x3.to_json())
+        parts.append("\"Capabilities\":" + voice_chime_json_arr(e3))
+        if input.NumberSelectionBehavior.is_some():
+            auto u4 = input.NumberSelectionBehavior.unwrap()
+            parts.append("\"NumberSelectionBehavior\":" + u4.to_json())
+        if input.GeoMatchLevel.is_some():
+            auto u5 = input.GeoMatchLevel.unwrap()
+            parts.append("\"GeoMatchLevel\":" + u5.to_json())
+        if input.GeoMatchParams.is_some():
+            auto u6 = input.GeoMatchParams.unwrap()
+            parts.append("\"GeoMatchParams\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateSipMediaApplication  POST /sip-media-applications
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_sip_media_application(self, CreateSipMediaApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AwsRegion\":" + voice_chime_json_str(input.AwsRegion))
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.Endpoints:
+            e0.append(x0.to_json())
+        parts.append("\"Endpoints\":" + voice_chime_json_arr(e0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + voice_chime_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateSipMediaApplicationCall  POST /sip-media-applications/{sipMediaApplicationId}/calls
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_sip_media_application_call(self, CreateSipMediaApplicationCallRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sipMediaApplicationId"] = input.SipMediaApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications/{sipMediaApplicationId}/calls", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FromPhoneNumber\":" + voice_chime_json_str(input.FromPhoneNumber))
+        parts.append("\"ToPhoneNumber\":" + voice_chime_json_str(input.ToPhoneNumber))
+        if input.SipHeaders.is_some():
+            auto u0 = input.SipHeaders.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(voice_chime_json_str(k1) + ":" + voice_chime_json_str(u0[k1]))
+            parts.append("\"SipHeaders\":" + voice_chime_json_obj(m1))
+        if input.ArgumentsMap.is_some():
+            auto u2 = input.ArgumentsMap.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(voice_chime_json_str(k3) + ":" + voice_chime_json_str(u2[k3]))
+            parts.append("\"ArgumentsMap\":" + voice_chime_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateSipRule  POST /sip-rules
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_sip_rule(self, CreateSipRuleRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        parts.append("\"TriggerType\":" + input.TriggerType.to_json())
+        parts.append("\"TriggerValue\":" + voice_chime_json_str(input.TriggerValue))
+        if input.Disabled.is_some():
+            auto u0 = input.Disabled.unwrap()
+            parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u0)))
+        list[str] e1 = []
+        for x1 in input.TargetApplications:
+            e1.append(x1.to_json())
+        parts.append("\"TargetApplications\":" + voice_chime_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateVoiceConnector  POST /voice-connectors
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_voice_connector(self, CreateVoiceConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        if input.AwsRegion.is_some():
+            auto u0 = input.AwsRegion.unwrap()
+            parts.append("\"AwsRegion\":" + u0.to_json())
+        parts.append("\"RequireEncryption\":" + json.dumps(JsonValue.Bool(input.RequireEncryption)))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + voice_chime_json_arr(e2))
+        if input.IntegrationType.is_some():
+            auto u3 = input.IntegrationType.unwrap()
+            parts.append("\"IntegrationType\":" + u3.to_json())
+        if input.NetworkType.is_some():
+            auto u4 = input.NetworkType.unwrap()
+            parts.append("\"NetworkType\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateVoiceConnectorGroup  POST /voice-connector-groups
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_voice_connector_group(self, CreateVoiceConnectorGroupRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        if input.VoiceConnectorItems.is_some():
+            auto u0 = input.VoiceConnectorItems.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"VoiceConnectorItems\":" + voice_chime_json_arr(e1))
+        if input.CallDistributionType.is_some():
+            auto u2 = input.CallDistributionType.unwrap()
+            parts.append("\"CallDistributionType\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
     # CreateVoiceProfile  POST /voice-profiles
     # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, GoneException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
@@ -1834,6 +2204,29 @@ struct Chime_SDK_VoiceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/voice-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateVoiceProfileDocument(SpeakerSearchTaskId=input.SpeakerSearchTaskId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # CreateVoiceProfileDomain  POST /voice-profile-domains
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_voice_profile_domain(self, CreateVoiceProfileDomainRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-profile-domains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + voice_chime_json_str(u0))
+        parts.append("\"ServerSideEncryptionConfiguration\":" + input.ServerSideEncryptionConfiguration.to_json())
+        if input.ClientRequestToken.is_some():
+            auto u1 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + voice_chime_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + voice_chime_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
     # DeletePhoneNumber  DELETE /phone-numbers/{phoneNumberId}
@@ -1945,6 +2338,21 @@ struct Chime_SDK_VoiceClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
+    # DeleteVoiceConnectorTerminationCredentials  POST /voice-connectors/{voiceConnectorId}/termination/credentials?operation=delete
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def delete_voice_connector_termination_credentials(self, DeleteVoiceConnectorTerminationCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials?operation=delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Usernames:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"Usernames\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
     # DeleteVoiceProfile  DELETE /voice-profiles/{VoiceProfileId}
     # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def delete_voice_profile(self, DeleteVoiceProfileRequest input) -> str:
@@ -1962,6 +2370,36 @@ struct Chime_SDK_VoiceClient:
         labels["VoiceProfileDomainId"] = input.VoiceProfileDomainId
         auto b = binding.HttpBinding(method="DELETE", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
+
+    # DisassociatePhoneNumbersFromVoiceConnector  POST /voice-connectors/{voiceConnectorId}?operation=disassociate-phone-numbers
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def disassociate_phone_numbers_from_voice_connector(self, DisassociatePhoneNumbersFromVoiceConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}?operation=disassociate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.E164PhoneNumbers:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"E164PhoneNumbers\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # DisassociatePhoneNumbersFromVoiceConnectorGroup  POST /voice-connector-groups/{voiceConnectorGroupId}?operation=disassociate-phone-numbers
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def disassociate_phone_numbers_from_voice_connector_group(self, DisassociatePhoneNumbersFromVoiceConnectorGroupRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups/{voiceConnectorGroupId}?operation=disassociate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.E164PhoneNumbers:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"E164PhoneNumbers\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
     # GetGlobalSettings  GET /settings
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
@@ -2316,6 +2754,20 @@ struct Chime_SDK_VoiceClient:
         auto b = binding.HttpBinding(method="GET", path_template="/voice-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
+    # PutSipMediaApplicationAlexaSkillConfiguration  PUT /sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration
+    # errors: BadRequestException, ForbiddenException, GoneException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_sip_media_application_alexa_skill_configuration(self, PutSipMediaApplicationAlexaSkillConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sipMediaApplicationId"] = input.SipMediaApplicationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SipMediaApplicationAlexaSkillConfiguration.is_some():
+            auto u0 = input.SipMediaApplicationAlexaSkillConfiguration.unwrap()
+            parts.append("\"SipMediaApplicationAlexaSkillConfiguration\":" + sip_media_application_alexa_skill_configuration_to_json(u0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
     # PutSipMediaApplicationLoggingConfiguration  PUT /sip-media-applications/{sipMediaApplicationId}/logging-configuration
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def put_sip_media_application_logging_configuration(self, PutSipMediaApplicationLoggingConfigurationRequest input) -> str:
@@ -2327,6 +2779,41 @@ struct Chime_SDK_VoiceClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
+    # PutVoiceConnectorEmergencyCallingConfiguration  PUT /voice-connectors/{voiceConnectorId}/emergency-calling-configuration
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_emergency_calling_configuration(self, PutVoiceConnectorEmergencyCallingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"EmergencyCallingConfiguration\":" + emergency_calling_configuration_to_json(input.EmergencyCallingConfiguration))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # PutVoiceConnectorExternalSystemsConfiguration  PUT /voice-connectors/{voiceConnectorId}/external-systems-configuration
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_external_systems_configuration(self, PutVoiceConnectorExternalSystemsConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SessionBorderControllerTypes.is_some():
+            auto u0 = input.SessionBorderControllerTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"SessionBorderControllerTypes\":" + voice_chime_json_arr(e1))
+        if input.ContactCenterSystemTypes.is_some():
+            auto u2 = input.ContactCenterSystemTypes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ContactCenterSystemTypes\":" + voice_chime_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
     # PutVoiceConnectorLoggingConfiguration  PUT /voice-connectors/{voiceConnectorId}/logging-configuration
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def put_voice_connector_logging_configuration(self, PutVoiceConnectorLoggingConfigurationRequest input) -> str:
@@ -2336,6 +2823,81 @@ struct Chime_SDK_VoiceClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutVoiceConnectorLoggingConfigurationDocument(LoggingConfiguration=input.LoggingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # PutVoiceConnectorOrigination  PUT /voice-connectors/{voiceConnectorId}/origination
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_origination(self, PutVoiceConnectorOriginationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Origination\":" + origination_to_json(input.Origination))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # PutVoiceConnectorProxy  PUT /voice-connectors/{voiceConnectorId}/programmable-numbers/proxy
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_proxy(self, PutVoiceConnectorProxyRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DefaultSessionExpiryMinutes\":" + str(input.DefaultSessionExpiryMinutes))
+        list[str] e0 = []
+        for x0 in input.PhoneNumberPoolCountries:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"PhoneNumberPoolCountries\":" + voice_chime_json_arr(e0))
+        if input.FallBackPhoneNumber.is_some():
+            auto u1 = input.FallBackPhoneNumber.unwrap()
+            parts.append("\"FallBackPhoneNumber\":" + voice_chime_json_str(u1))
+        if input.Disabled.is_some():
+            auto u2 = input.Disabled.unwrap()
+            parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # PutVoiceConnectorStreamingConfiguration  PUT /voice-connectors/{voiceConnectorId}/streaming-configuration
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_streaming_configuration(self, PutVoiceConnectorStreamingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StreamingConfiguration\":" + streaming_configuration_to_json(input.StreamingConfiguration))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # PutVoiceConnectorTermination  PUT /voice-connectors/{voiceConnectorId}/termination
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_termination(self, PutVoiceConnectorTerminationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Termination\":" + termination_to_json(input.Termination))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # PutVoiceConnectorTerminationCredentials  POST /voice-connectors/{voiceConnectorId}/termination/credentials?operation=put
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_voice_connector_termination_credentials(self, PutVoiceConnectorTerminationCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials?operation=put", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Credentials.is_some():
+            auto u0 = input.Credentials.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Credentials\":" + voice_chime_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
     # RestorePhoneNumber  POST /phone-numbers/{phoneNumberId}?operation=restore
@@ -2413,6 +2975,34 @@ struct Chime_SDK_VoiceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks/{VoiceToneAnalysisTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
+    # TagResource  POST /tags?operation=tag-resource
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, UnauthorizedClientException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + voice_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # UntagResource  POST /tags?operation=untag-resource
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, UnauthorizedClientException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + voice_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(voice_chime_json_str(x0))
+        parts.append("\"TagKeys\":" + voice_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
     # UpdateGlobalSettings  PUT /settings
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_global_settings(self, UpdateGlobalSettingsRequest input) -> str:
@@ -2442,6 +3032,82 @@ struct Chime_SDK_VoiceClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
+    # UpdateProxySession  POST /voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_proxy_session(self, UpdateProxySessionRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorId"] = input.VoiceConnectorId
+        labels["proxySessionId"] = input.ProxySessionId
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Capabilities:
+            e0.append(x0.to_json())
+        parts.append("\"Capabilities\":" + voice_chime_json_arr(e0))
+        if input.ExpiryMinutes.is_some():
+            auto u1 = input.ExpiryMinutes.unwrap()
+            parts.append("\"ExpiryMinutes\":" + str(u1))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # UpdateSipMediaApplication  PUT /sip-media-applications/{sipMediaApplicationId}
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_sip_media_application(self, UpdateSipMediaApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sipMediaApplicationId"] = input.SipMediaApplicationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + voice_chime_json_str(u0))
+        if input.Endpoints.is_some():
+            auto u1 = input.Endpoints.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Endpoints\":" + voice_chime_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # UpdateSipMediaApplicationCall  POST /sip-media-applications/{sipMediaApplicationId}/calls/{transactionId}
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_sip_media_application_call(self, UpdateSipMediaApplicationCallRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sipMediaApplicationId"] = input.SipMediaApplicationId
+        labels["transactionId"] = input.TransactionId
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications/{sipMediaApplicationId}/calls/{transactionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Arguments.keys()):
+            m0.append(voice_chime_json_str(k0) + ":" + voice_chime_json_str(input.Arguments[k0]))
+        parts.append("\"Arguments\":" + voice_chime_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # UpdateSipRule  PUT /sip-rules/{sipRuleId}
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_sip_rule(self, UpdateSipRuleRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["sipRuleId"] = input.SipRuleId
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        if input.Disabled.is_some():
+            auto u0 = input.Disabled.unwrap()
+            parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.TargetApplications.is_some():
+            auto u1 = input.TargetApplications.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"TargetApplications\":" + voice_chime_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
     # UpdateVoiceConnector  PUT /voice-connectors/{voiceConnectorId}
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_voice_connector(self, UpdateVoiceConnectorRequest input) -> str:
@@ -2451,6 +3117,25 @@ struct Chime_SDK_VoiceClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVoiceConnectorDocument(Name=input.Name, RequireEncryption=input.RequireEncryption)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
+
+    # UpdateVoiceConnectorGroup  PUT /voice-connector-groups/{voiceConnectorGroupId}
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_voice_connector_group(self, UpdateVoiceConnectorGroupRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + voice_chime_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.VoiceConnectorItems:
+            e0.append(x0.to_json())
+        parts.append("\"VoiceConnectorItems\":" + voice_chime_json_arr(e0))
+        if input.CallDistributionType.is_some():
+            auto u1 = input.CallDistributionType.unwrap()
+            parts.append("\"CallDistributionType\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
 
     # UpdateVoiceProfile  PUT /voice-profiles/{VoiceProfileId}

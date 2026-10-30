@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 84 operations — 41 with a generated method,
-#   43 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 84 operations — 83 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   400 structs (221 @derive(Json)), 114 enums, 8 error variants.
-#   5 paginators generated (14 paginated ops skipped) from paginators-1.json.
+#   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -1199,8 +1199,9 @@ struct AccountState:
     State state
     ResourceState resourceState
 
-# no @derive(Json): member(s) amiAggregation: AmiAggregation, awsEcrContainerAggregation: AwsEcrContainerAggregation, ec2InstanceAggregation: Ec2InstanceAggregation, imageLayerAggregation: ImageLayerAggregation, packageAggregation: PackageAggregation, repositoryAggregation: RepositoryAggregation, titleAggregation: TitleAggregation, lambdaLayerAggregation: LambdaLayerAggregation, lambdaFunctionAggregation: LambdaFunctionAggregation, codeRepositoryAggregation: CodeRepositoryAggregation, vmInstanceAggregation: VmInstanceAggregation, containerImageAggregation: ContainerImageAggregation, serverlessFunctionAggregation: ServerlessFunctionAggregation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amiAggregation: AmiAggregation, awsEcrContainerAggregation: AwsEcrContainerAggregation, ec2InstanceAggregation: Ec2InstanceAggregation, imageLayerAggregation: ImageLayerAggregation, packageAggregation: PackageAggregation, repositoryAggregation: RepositoryAggregation, titleAggregation: TitleAggregation, lambdaLayerAggregation: LambdaLayerAggregation, lambdaFunctionAggregation: LambdaFunctionAggregation, codeRepositoryAggregation: CodeRepositoryAggregation, vmInstanceAggregation: VmInstanceAggregation, containerImageAggregation: ContainerImageAggregation, serverlessFunctionAggregation: ServerlessFunctionAggregation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationRequest:
     Optional[AccountAggregation] accountAggregation
     Optional[AmiAggregation] amiAggregation
@@ -1218,8 +1219,9 @@ struct AggregationRequest:
     Optional[ContainerImageAggregation] containerImageAggregation
     Optional[ServerlessFunctionAggregation] serverlessFunctionAggregation
 
-# no @derive(Json): member(s) awsEcrContainerAggregation: AwsEcrContainerAggregationResponse, ec2InstanceAggregation: Ec2InstanceAggregationResponse, lambdaFunctionAggregation: LambdaFunctionAggregationResponse, vmInstanceAggregation: VmInstanceAggregationResponse, containerImageAggregation: ContainerImageAggregationResponse, serverlessFunctionAggregation: ServerlessFunctionAggregationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsEcrContainerAggregation: AwsEcrContainerAggregationResponse, ec2InstanceAggregation: Ec2InstanceAggregationResponse, lambdaFunctionAggregation: LambdaFunctionAggregationResponse, vmInstanceAggregation: VmInstanceAggregationResponse, containerImageAggregation: ContainerImageAggregationResponse, serverlessFunctionAggregation: ServerlessFunctionAggregationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationResponse:
     Optional[AccountAggregationResponse] accountAggregation
     Optional[AmiAggregationResponse] amiAggregation
@@ -1237,8 +1239,9 @@ struct AggregationResponse:
     Optional[ContainerImageAggregationResponse] containerImageAggregation
     Optional[ServerlessFunctionAggregationResponse] serverlessFunctionAggregation
 
-# no @derive(Json): member(s) amis: list[StringFilter], scanSources: list[ScanSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amis: list[StringFilter], scanSources: list[ScanSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiAggregation:
     Optional[list[StringFilter]] amis
     Optional[SortOrder] sortOrder
@@ -1258,15 +1261,17 @@ struct AmiAggregationResponse:
     Optional[int64] affectedInstances
     Optional[ScanSource] scanSource
 
-# no @derive(Json): member(s) scanModeConfiguration: AmiScanModeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanModeConfiguration: AmiScanModeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiConfiguration:
     Optional[AmiScanDuration] lastLaunchedWithin
     Optional[AmiScanDuration] createdWithin
     AmiScanModeConfiguration scanModeConfiguration
 
-# no @derive(Json): member(s) scanModeConfiguration: AmiScanModeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanModeConfiguration: AmiScanModeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiConfigurationState:
     Optional[AmiScanDuration] lastLaunchedWithin
     Optional[AmiScanDuration] createdWithin
@@ -1274,8 +1279,9 @@ struct AmiConfigurationState:
     Optional[AmiConfigurationStatus] status
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) tags: list[AmiTagFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[AmiTagFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiScanModeConfiguration:
     AmiScanMode scanMode
     Optional[list[AmiTagFilter]] tags
@@ -1301,8 +1307,9 @@ struct AssociateMemberRequest:
 struct AssociateMemberResponse:
     str accountId
 
-# no @derive(Json): member(s) targets: list[str], ttps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[str], ttps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AtigData:
     Optional[DateTime] firstSeen
     Optional[DateTime] lastSeen
@@ -1324,8 +1331,9 @@ struct AwsConfigConnectorArnFilter:
     str comparison
     str value
 
-# no @derive(Json): member(s) ipV4Addresses: list[str], ipV6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipV4Addresses: list[str], ipV6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2InstanceDetails:
     Optional[str] type
     Optional[str] imageId
@@ -1338,8 +1346,9 @@ struct AwsEc2InstanceDetails:
     Optional[DateTime] launchedAt
     Optional[str] platform
 
-# no @derive(Json): member(s) resourceIds: list[StringFilter], imageShas: list[StringFilter], repositories: list[StringFilter], architectures: list[StringFilter], imageTags: list[StringFilter], lastInUseAt: list[DateFilter], inUseCount: list[NumberFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[StringFilter], imageShas: list[StringFilter], repositories: list[StringFilter], architectures: list[StringFilter], imageTags: list[StringFilter], lastInUseAt: list[DateFilter], inUseCount: list[NumberFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcrContainerAggregation:
     Optional[list[StringFilter]] resourceIds
     Optional[list[StringFilter]] imageShas
@@ -1351,8 +1360,9 @@ struct AwsEcrContainerAggregation:
     Optional[list[DateFilter]] lastInUseAt
     Optional[list[NumberFilter]] inUseCount
 
-# no @derive(Json): member(s) imageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcrContainerAggregationResponse:
     str resourceId
     Optional[str] imageSha
@@ -1364,8 +1374,9 @@ struct AwsEcrContainerAggregationResponse:
     Optional[DateTime] lastInUseAt
     Optional[int64] inUseCount
 
-# no @derive(Json): member(s) imageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcrContainerImageDetails:
     str repositoryName
     Optional[list[str]] imageTags
@@ -1383,8 +1394,9 @@ struct AwsEcsMetadataDetails:
     str detailsGroup
     str taskDefinitionArn
 
-# no @derive(Json): member(s) workloadInfoList: list[AwsEksWorkloadInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workloadInfoList: list[AwsEksWorkloadInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEksMetadataDetails:
     Optional[str] namespace
     Optional[list[AwsEksWorkloadInfo]] workloadInfoList
@@ -1394,8 +1406,9 @@ struct AwsEksWorkloadInfo:
     str name
     str type
 
-# no @derive(Json): member(s) layers: list[str], vpcConfig: LambdaVpcConfig, architectures: list[Architecture] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) layers: list[str], vpcConfig: LambdaVpcConfig, architectures: list[Architecture] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsLambdaFunctionDetails:
     str functionName
     Runtime runtime
@@ -1408,30 +1421,34 @@ struct AwsLambdaFunctionDetails:
     Optional[list[Architecture]] architectures
     Optional[DateTime] lastModifiedAt
 
-# no @derive(Json): member(s) scopeConfiguration: AzureScopeConfigurationInput, azureRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeConfiguration: AzureScopeConfigurationInput, azureRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureProviderDetailCreate:
     str awsConfigConnectorArn
     AzureScopeConfigurationInput scopeConfiguration
     list[str] azureRegions
     Optional[bool] autoInstallVMScanner
 
-# no @derive(Json): member(s) azureRegions: list[str], scopeConfiguration: AzureScopeConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azureRegions: list[str], scopeConfiguration: AzureScopeConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureProviderDetailUpdate:
     Optional[list[str]] azureRegions
     Optional[AzureScopeConfigurationInput] scopeConfiguration
     Optional[bool] autoInstallVMScanner
 
-# no @derive(Json): member(s) vmScanning: ScopeConfiguration, containerImageScanning: ScopeConfiguration, serverlessScanning: ScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vmScanning: ScopeConfiguration, containerImageScanning: ScopeConfiguration, serverlessScanning: ScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureScopeConfiguration:
     Optional[ScopeConfiguration] vmScanning
     Optional[ScopeConfiguration] containerImageScanning
     Optional[ScopeConfiguration] serverlessScanning
 
-# no @derive(Json): member(s) vmScanning: ScopeConfigurationInput, containerImageScanning: ScopeConfigurationInput, serverlessScanning: ScopeConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vmScanning: ScopeConfigurationInput, containerImageScanning: ScopeConfigurationInput, serverlessScanning: ScopeConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureScopeConfigurationInput:
     Optional[ScopeConfigurationInput] vmScanning
     Optional[ScopeConfigurationInput] containerImageScanning
@@ -1446,8 +1463,9 @@ struct BadRequestException:
 struct BatchAssociateCodeSecurityScanConfigurationRequest:
     list[AssociateConfigurationRequest] associateConfigurationRequests
 
-# no @derive(Json): member(s) failedAssociations: list[FailedAssociationResult], successfulAssociations: list[SuccessfulAssociationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedAssociations: list[FailedAssociationResult], successfulAssociations: list[SuccessfulAssociationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateCodeSecurityScanConfigurationResponse:
     Optional[list[FailedAssociationResult]] failedAssociations
     Optional[list[SuccessfulAssociationResult]] successfulAssociations
@@ -1457,8 +1475,9 @@ struct BatchAssociateCodeSecurityScanConfigurationResponse:
 struct BatchDisassociateCodeSecurityScanConfigurationRequest:
     list[DisassociateConfigurationRequest] disassociateConfigurationRequests
 
-# no @derive(Json): member(s) failedAssociations: list[FailedAssociationResult], successfulAssociations: list[SuccessfulAssociationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedAssociations: list[FailedAssociationResult], successfulAssociations: list[SuccessfulAssociationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateCodeSecurityScanConfigurationResponse:
     Optional[list[FailedAssociationResult]] failedAssociations
     Optional[list[SuccessfulAssociationResult]] successfulAssociations
@@ -1468,8 +1487,9 @@ struct BatchDisassociateCodeSecurityScanConfigurationResponse:
 struct BatchGetAccountStatusRequest:
     Optional[list[str]] accountIds
 
-# no @derive(Json): member(s) accounts: list[AccountState], failedAccounts: list[FailedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[AccountState], failedAccounts: list[FailedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAccountStatusResponse:
     list[AccountState] accounts
     Optional[list[FailedAccount]] failedAccounts
@@ -1479,8 +1499,9 @@ struct BatchGetAccountStatusResponse:
 struct BatchGetCodeSnippetRequest:
     list[str] findingArns
 
-# no @derive(Json): member(s) codeSnippetResults: list[CodeSnippetResult], errors: list[CodeSnippetError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeSnippetResults: list[CodeSnippetResult], errors: list[CodeSnippetError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCodeSnippetResponse:
     Optional[list[CodeSnippetResult]] codeSnippetResults
     Optional[list[CodeSnippetError]] errors
@@ -1490,8 +1511,9 @@ struct BatchGetCodeSnippetResponse:
 struct BatchGetFindingDetailsRequest:
     list[str] findingArns
 
-# no @derive(Json): member(s) findingDetails: list[FindingDetail], errors: list[FindingDetailsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingDetails: list[FindingDetail], errors: list[FindingDetailsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFindingDetailsResponse:
     Optional[list[FindingDetail]] findingDetails
     Optional[list[FindingDetailsError]] errors
@@ -1501,8 +1523,9 @@ struct BatchGetFindingDetailsResponse:
 struct BatchGetFreeTrialInfoRequest:
     list[str] accountIds
 
-# no @derive(Json): member(s) accounts: list[FreeTrialAccountInfo], failedAccounts: list[FreeTrialInfoError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[FreeTrialAccountInfo], failedAccounts: list[FreeTrialInfoError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFreeTrialInfoResponse:
     list[FreeTrialAccountInfo] accounts
     list[FreeTrialInfoError] failedAccounts
@@ -1512,8 +1535,9 @@ struct BatchGetFreeTrialInfoResponse:
 struct BatchGetMemberEc2DeepInspectionStatusRequest:
     Optional[list[str]] accountIds
 
-# no @derive(Json): member(s) accountIds: list[MemberAccountEc2DeepInspectionStatusState], failedAccountIds: list[FailedMemberAccountEc2DeepInspectionStatusState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[MemberAccountEc2DeepInspectionStatusState], failedAccountIds: list[FailedMemberAccountEc2DeepInspectionStatusState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetMemberEc2DeepInspectionStatusResponse:
     Optional[list[MemberAccountEc2DeepInspectionStatusState]] accountIds
     Optional[list[FailedMemberAccountEc2DeepInspectionStatusState]] failedAccountIds
@@ -1523,8 +1547,9 @@ struct BatchGetMemberEc2DeepInspectionStatusResponse:
 struct BatchUpdateMemberEc2DeepInspectionStatusRequest:
     list[MemberAccountEc2DeepInspectionStatus] accountIds
 
-# no @derive(Json): member(s) accountIds: list[MemberAccountEc2DeepInspectionStatusState], failedAccountIds: list[FailedMemberAccountEc2DeepInspectionStatusState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[MemberAccountEc2DeepInspectionStatusState], failedAccountIds: list[FailedMemberAccountEc2DeepInspectionStatusState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateMemberEc2DeepInspectionStatusResponse:
     Optional[list[MemberAccountEc2DeepInspectionStatusState]] accountIds
     Optional[list[FailedMemberAccountEc2DeepInspectionStatusState]] failedAccountIds
@@ -1578,8 +1603,9 @@ struct CisResultStatusFilter:
     str comparison
     CisResultStatus value
 
-# no @derive(Json): member(s) targets: CisTargets not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: CisTargets not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisScan:
     str scanArn
     str scanConfigurationArn
@@ -1592,8 +1618,9 @@ struct CisScan:
     Optional[str] scheduledBy
     Optional[CisSecurityLevel] securityLevel
 
-# no @derive(Json): member(s) schedule: Schedule, targets: CisTargets, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schedule: Schedule, targets: CisTargets, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisScanConfiguration:
     str scanConfigurationArn
     Optional[str] ownerId
@@ -1618,8 +1645,9 @@ struct CisScanResultDetails:
     Optional[CisSecurityLevel] level
     Optional[str] findingArn
 
-# no @derive(Json): member(s) findingStatusFilters: list[CisFindingStatusFilter], checkIdFilters: list[CisStringFilter], titleFilters: list[CisStringFilter], securityLevelFilters: list[CisSecurityLevelFilter], findingArnFilters: list[CisStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingStatusFilters: list[CisFindingStatusFilter], checkIdFilters: list[CisStringFilter], titleFilters: list[CisStringFilter], securityLevelFilters: list[CisSecurityLevelFilter], findingArnFilters: list[CisStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisScanResultDetailsFilterCriteria:
     Optional[list[CisFindingStatusFilter]] findingStatusFilters
     Optional[list[CisStringFilter]] checkIdFilters
@@ -1627,8 +1655,9 @@ struct CisScanResultDetailsFilterCriteria:
     Optional[list[CisSecurityLevelFilter]] securityLevelFilters
     Optional[list[CisStringFilter]] findingArnFilters
 
-# no @derive(Json): member(s) accountIdFilters: list[CisStringFilter], checkIdFilters: list[CisStringFilter], titleFilters: list[CisStringFilter], platformFilters: list[CisStringFilter], failedResourcesFilters: list[CisNumberFilter], securityLevelFilters: list[CisSecurityLevelFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIdFilters: list[CisStringFilter], checkIdFilters: list[CisStringFilter], titleFilters: list[CisStringFilter], platformFilters: list[CisStringFilter], failedResourcesFilters: list[CisNumberFilter], securityLevelFilters: list[CisSecurityLevelFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisScanResultsAggregatedByChecksFilterCriteria:
     Optional[list[CisStringFilter]] accountIdFilters
     Optional[list[CisStringFilter]] checkIdFilters
@@ -1637,8 +1666,9 @@ struct CisScanResultsAggregatedByChecksFilterCriteria:
     Optional[list[CisNumberFilter]] failedResourcesFilters
     Optional[list[CisSecurityLevelFilter]] securityLevelFilters
 
-# no @derive(Json): member(s) accountIdFilters: list[CisStringFilter], statusFilters: list[CisResultStatusFilter], checkIdFilters: list[CisStringFilter], targetResourceIdFilters: list[CisStringFilter], targetResourceTagFilters: list[TagFilter], platformFilters: list[CisStringFilter], targetStatusFilters: list[CisTargetStatusFilter], targetStatusReasonFilters: list[CisTargetStatusReasonFilter], failedChecksFilters: list[CisNumberFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIdFilters: list[CisStringFilter], statusFilters: list[CisResultStatusFilter], checkIdFilters: list[CisStringFilter], targetResourceIdFilters: list[CisStringFilter], targetResourceTagFilters: list[TagFilter], platformFilters: list[CisStringFilter], targetStatusFilters: list[CisTargetStatusFilter], targetStatusReasonFilters: list[CisTargetStatusReasonFilter], failedChecksFilters: list[CisNumberFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisScanResultsAggregatedByTargetResourceFilterCriteria:
     Optional[list[CisStringFilter]] accountIdFilters
     Optional[list[CisResultStatusFilter]] statusFilters
@@ -1671,8 +1701,9 @@ struct CisStringFilter:
     CisStringComparison comparison
     str value
 
-# no @derive(Json): member(s) targetResourceTags: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetResourceTags: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisTargetResourceAggregation:
     str scanArn
     Optional[str] targetResourceId
@@ -1693,8 +1724,9 @@ struct CisTargetStatusReasonFilter:
     str comparison
     CisTargetStatusReason value
 
-# no @derive(Json): member(s) accountIds: list[str], targetResourceTags: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], targetResourceTags: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CisTargets:
     Optional[list[str]] accountIds
     Optional[dict[str, list[str]]] targetResourceTags
@@ -1705,8 +1737,9 @@ struct CisaData:
     Optional[DateTime] dateDue
     Optional[str] action
 
-# no @derive(Json): member(s) clusterMetadata: ClusterMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusterMetadata: ClusterMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterDetails:
     DateTime lastInUse
     Optional[int64] runningUnitCount
@@ -1717,14 +1750,16 @@ struct ClusterDetails:
 struct ClusterForImageFilterCriteria:
     str resourceId
 
-# no @derive(Json): member(s) clusterDetails: list[ClusterDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusterDetails: list[ClusterDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterInformation:
     str clusterArn
     Optional[list[ClusterDetails]] clusterDetails
 
-# no @derive(Json): member(s) awsEksMetadataDetails: AwsEksMetadataDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsEksMetadataDetails: AwsEksMetadataDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterMetadata:
     Optional[AwsEcsMetadataDetails] awsEcsMetadataDetails
     Optional[AwsEksMetadataDetails] awsEksMetadataDetails
@@ -1741,8 +1776,9 @@ struct CodeLine:
     str content
     int64 lineNumber
 
-# no @derive(Json): member(s) projectNames: list[StringFilter], providerTypes: list[StringFilter], resourceIds: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projectNames: list[StringFilter], providerTypes: list[StringFilter], resourceIds: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeRepositoryAggregation:
     Optional[list[StringFilter]] projectNames
     Optional[list[StringFilter]] providerTypes
@@ -1766,8 +1802,9 @@ struct CodeRepositoryDetails:
     Optional[str] integrationArn
     Optional[CodeRepositoryProviderType] providerType
 
-# no @derive(Json): member(s) scanConfiguration: ProjectCodeSecurityScanConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanConfiguration: ProjectCodeSecurityScanConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeRepositoryMetadata:
     str projectName
     Optional[str] integrationArn
@@ -1797,8 +1834,9 @@ struct CodeSecurityIntegrationSummary:
 struct CodeSecurityResource:
     Optional[str] projectId
 
-# no @derive(Json): member(s) continuousIntegrationScanConfiguration: ContinuousIntegrationScanConfiguration, ruleSetCategories: list[RuleSetCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) continuousIntegrationScanConfiguration: ContinuousIntegrationScanConfiguration, ruleSetCategories: list[RuleSetCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeSecurityScanConfiguration:
     Optional[PeriodicScanConfiguration] periodicScanConfiguration
     Optional[ContinuousIntegrationScanConfiguration] continuousIntegrationScanConfiguration
@@ -1808,8 +1846,9 @@ struct CodeSecurityScanConfiguration:
 struct CodeSecurityScanConfigurationAssociationSummary:
     Optional[CodeSecurityResource] resource
 
-# no @derive(Json): member(s) continuousIntegrationScanSupportedEvents: list[ContinuousIntegrationScanEvent], ruleSetCategories: list[RuleSetCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) continuousIntegrationScanSupportedEvents: list[ContinuousIntegrationScanEvent], ruleSetCategories: list[RuleSetCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeSecurityScanConfigurationSummary:
     str scanConfigurationArn
     str name
@@ -1826,8 +1865,9 @@ struct CodeSnippetError:
     CodeSnippetErrorCode errorCode
     str errorMessage
 
-# no @derive(Json): member(s) codeSnippet: list[CodeLine], suggestedFixes: list[SuggestedFix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeSnippet: list[CodeLine], suggestedFixes: list[SuggestedFix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeSnippetResult:
     Optional[str] findingArn
     Optional[int64] startLine
@@ -1835,8 +1875,9 @@ struct CodeSnippetResult:
     Optional[list[CodeLine]] codeSnippet
     Optional[list[SuggestedFix]] suggestedFixes
 
-# no @derive(Json): member(s) detectorTags: list[str], referenceUrls: list[str], cwes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detectorTags: list[str], referenceUrls: list[str], cwes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeVulnerabilityDetails:
     CodeFilePath filePath
     Optional[list[str]] detectorTags
@@ -1859,8 +1900,9 @@ struct ConflictException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) azureRegions: list[str], scopeConfiguration: AzureScopeConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azureRegions: list[str], scopeConfiguration: AzureScopeConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connector:
     str connectorArn
     Optional[str] name
@@ -1887,8 +1929,9 @@ struct ConnectorContainerImageScanConfiguration:
     Optional[ContainerImageRescanDuration] pushDuration
     Optional[ContainerImagePullDateRescanDuration] pullDuration
 
-# no @derive(Json): member(s) connectorArns: list[ConnectorArnFilter], accounts: list[StringFilter], awsConfigConnectorArns: list[AwsConfigConnectorArnFilter], connectorType: list[ConnectorTypeFilter], provider: list[ProviderFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorArns: list[ConnectorArnFilter], accounts: list[StringFilter], awsConfigConnectorArns: list[AwsConfigConnectorArnFilter], connectorType: list[ConnectorTypeFilter], provider: list[ProviderFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorFilterCriteria:
     Optional[list[ConnectorArnFilter]] connectorArns
     Optional[list[StringFilter]] accounts
@@ -1907,8 +1950,9 @@ struct ConnectorHealth:
 struct ConnectorScanConfiguration:
     Optional[ConnectorContainerImageScanConfiguration] containerImageScanning
 
-# no @derive(Json): member(s) connectorArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorScanConfigurationItem:
     str awsConfigConnectorArn
     list[str] connectorArns
@@ -1919,8 +1963,9 @@ struct ConnectorTypeFilter:
     str comparison
     ConnectorType value
 
-# no @derive(Json): member(s) resourceIds: list[StringFilter], imageDigests: list[StringFilter], repositories: list[StringFilter], registries: list[StringFilter], architectures: list[StringFilter], imageTags: list[StringFilter], cloudProviders: list[StringFilter], cloudPartitions: list[StringFilter], cloudRegions: list[StringFilter], cloudOrgIds: list[StringFilter], cloudAccountIds: list[StringFilter], lastInUseAt: list[DateFilter], inUseCount: list[NumberFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[StringFilter], imageDigests: list[StringFilter], repositories: list[StringFilter], registries: list[StringFilter], architectures: list[StringFilter], imageTags: list[StringFilter], cloudProviders: list[StringFilter], cloudPartitions: list[StringFilter], cloudRegions: list[StringFilter], cloudOrgIds: list[StringFilter], cloudAccountIds: list[StringFilter], lastInUseAt: list[DateFilter], inUseCount: list[NumberFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerImageAggregation:
     Optional[list[StringFilter]] resourceIds
     Optional[list[StringFilter]] imageDigests
@@ -1938,8 +1983,9 @@ struct ContainerImageAggregation:
     Optional[SortOrder] sortOrder
     Optional[ContainerImageSortBy] sortBy
 
-# no @derive(Json): member(s) imageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerImageAggregationResponse:
     str resourceId
     Optional[Provider] cloudProvider
@@ -1959,8 +2005,9 @@ struct ContainerImageAggregationResponse:
     Optional[int64] exploitAvailableActiveFindingsCount
     Optional[int64] fixAvailableActiveFindingsCount
 
-# no @derive(Json): member(s) imageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerImageMetadata:
     Optional[list[str]] imageTags
     Optional[DateTime] imagePulledAt
@@ -1976,8 +2023,9 @@ struct ContainerRepositoryMetadata:
     Optional[str] name
     Optional[str] scanFrequency
 
-# no @derive(Json): member(s) supportedEvents: list[ContinuousIntegrationScanEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedEvents: list[ContinuousIntegrationScanEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContinuousIntegrationScanConfiguration:
     list[ContinuousIntegrationScanEvent] supportedEvents
 
@@ -1991,8 +2039,9 @@ struct CoverageDateFilter:
     Optional[DateTime] startInclusive
     Optional[DateTime] endInclusive
 
-# no @derive(Json): member(s) scanStatusCode: list[CoverageStringFilter], scanStatusReason: list[CoverageStringFilter], accountId: list[CoverageStringFilter], resourceId: list[CoverageStringFilter], resourceType: list[CoverageStringFilter], scanType: list[CoverageStringFilter], ecrRepositoryName: list[CoverageStringFilter], ecrImageTags: list[CoverageStringFilter], ec2InstanceTags: list[CoverageMapFilter], lambdaFunctionName: list[CoverageStringFilter], lambdaFunctionTags: list[CoverageMapFilter], lambdaFunctionRuntime: list[CoverageStringFilter], machineImageTags: list[CoverageMapFilter], lastScannedAt: list[CoverageDateFilter], scanMode: list[CoverageStringFilter], imagePulledAt: list[CoverageDateFilter], ecrImageLastInUseAt: list[CoverageDateFilter], ecrImageInUseCount: list[CoverageNumberFilter], codeRepositoryProjectName: list[CoverageStringFilter], codeRepositoryProviderType: list[CoverageStringFilter], codeRepositoryProviderTypeVisibility: list[CoverageStringFilter], lastScannedCommitId: list[CoverageStringFilter], cloudProvider: list[CoverageStringFilter], cloudProviderAccountId: list[CoverageStringFilter], cloudProviderRegion: list[CoverageStringFilter], cloudVmInstanceTags: list[CoverageMapFilter], cloudContainerImageTags: list[CoverageStringFilter], cloudContainerRepositoryName: list[CoverageStringFilter], cloudContainerRegistryName: list[CoverageStringFilter], cloudServerlessFunctionName: list[CoverageStringFilter], cloudServerlessFunctionRuntime: list[CoverageStringFilter], cloudServerlessFunctionTags: list[CoverageMapFilter], cloudProviderOrgId: list[CoverageStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanStatusCode: list[CoverageStringFilter], scanStatusReason: list[CoverageStringFilter], accountId: list[CoverageStringFilter], resourceId: list[CoverageStringFilter], resourceType: list[CoverageStringFilter], scanType: list[CoverageStringFilter], ecrRepositoryName: list[CoverageStringFilter], ecrImageTags: list[CoverageStringFilter], ec2InstanceTags: list[CoverageMapFilter], lambdaFunctionName: list[CoverageStringFilter], lambdaFunctionTags: list[CoverageMapFilter], lambdaFunctionRuntime: list[CoverageStringFilter], machineImageTags: list[CoverageMapFilter], lastScannedAt: list[CoverageDateFilter], scanMode: list[CoverageStringFilter], imagePulledAt: list[CoverageDateFilter], ecrImageLastInUseAt: list[CoverageDateFilter], ecrImageInUseCount: list[CoverageNumberFilter], codeRepositoryProjectName: list[CoverageStringFilter], codeRepositoryProviderType: list[CoverageStringFilter], codeRepositoryProviderTypeVisibility: list[CoverageStringFilter], lastScannedCommitId: list[CoverageStringFilter], cloudProvider: list[CoverageStringFilter], cloudProviderAccountId: list[CoverageStringFilter], cloudProviderRegion: list[CoverageStringFilter], cloudVmInstanceTags: list[CoverageMapFilter], cloudContainerImageTags: list[CoverageStringFilter], cloudContainerRepositoryName: list[CoverageStringFilter], cloudContainerRegistryName: list[CoverageStringFilter], cloudServerlessFunctionName: list[CoverageStringFilter], cloudServerlessFunctionRuntime: list[CoverageStringFilter], cloudServerlessFunctionTags: list[CoverageMapFilter], cloudProviderOrgId: list[CoverageStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageFilterCriteria:
     Optional[list[CoverageStringFilter]] scanStatusCode
     Optional[list[CoverageStringFilter]] scanStatusReason
@@ -2044,8 +2093,9 @@ struct CoverageStringFilter:
     CoverageStringComparison comparison
     str value
 
-# no @derive(Json): member(s) resourceMetadata: ResourceScanMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceMetadata: ResourceScanMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoveredResource:
     CoverageResourceType resourceType
     str resourceId
@@ -2074,8 +2124,9 @@ struct CreateCisScanConfigurationRequest:
 struct CreateCisScanConfigurationResponse:
     Optional[str] scanConfigurationArn
 
-# no @derive(Json): member(s) accountIds: list[str], targetResourceTags: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], targetResourceTags: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCisTargets:
     list[str] accountIds
     dict[str, list[str]] targetResourceTags
@@ -2193,8 +2244,9 @@ struct CvssScoreAdjustment:
     str metric
     str reason
 
-# no @derive(Json): member(s) adjustments: list[CvssScoreAdjustment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adjustments: list[CvssScoreAdjustment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CvssScoreDetails:
     str scoreSource
     Optional[str] cvssSource
@@ -2301,8 +2353,9 @@ struct DisableRequest:
     Optional[list[str]] accountIds
     Optional[list[ResourceScanType]] resourceTypes
 
-# no @derive(Json): member(s) accounts: list[Account], failedAccounts: list[FailedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[Account], failedAccounts: list[FailedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisableResponse:
     list[Account] accounts
     Optional[list[FailedAccount]] failedAccounts
@@ -2331,8 +2384,9 @@ struct Ec2ConfigurationState:
     Optional[Ec2ScanModeState] scanModeState
     Optional[VMScannerState] vmScannerState
 
-# no @derive(Json): member(s) amis: list[StringFilter], operatingSystems: list[StringFilter], instanceIds: list[StringFilter], instanceTags: list[MapFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amis: list[StringFilter], operatingSystems: list[StringFilter], instanceIds: list[StringFilter], instanceTags: list[MapFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2InstanceAggregation:
     Optional[list[StringFilter]] amis
     Optional[list[StringFilter]] operatingSystems
@@ -2341,8 +2395,9 @@ struct Ec2InstanceAggregation:
     Optional[SortOrder] sortOrder
     Optional[Ec2InstanceSortBy] sortBy
 
-# no @derive(Json): member(s) instanceTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2InstanceAggregationResponse:
     str instanceId
     Optional[str] ami
@@ -2352,8 +2407,9 @@ struct Ec2InstanceAggregationResponse:
     Optional[SeverityCounts] severityCounts
     Optional[int64] networkFindings
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Metadata:
     Optional[dict[str, str]] tags
     Optional[str] amiId
@@ -2374,8 +2430,9 @@ struct EcrConfiguration:
 struct EcrConfigurationState:
     Optional[EcrRescanDurationState] rescanDurationState
 
-# no @derive(Json): member(s) tags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcrContainerImageMetadata:
     Optional[list[str]] tags
     Optional[DateTime] imagePulledAt
@@ -2412,8 +2469,9 @@ struct EnableRequest:
     list[ResourceScanType] resourceTypes
     Optional[str] clientToken
 
-# no @derive(Json): member(s) accounts: list[Account], failedAccounts: list[FailedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[Account], failedAccounts: list[FailedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableResponse:
     list[Account] accounts
     Optional[list[FailedAccount]] failedAccounts
@@ -2462,8 +2520,9 @@ struct FailedMemberAccountEc2DeepInspectionStatusState:
     Optional[Status] ec2ScanStatus
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) criteria: FilterCriteria, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criteria: FilterCriteria, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str arn
     str ownerId
@@ -2476,8 +2535,9 @@ struct Filter:
     Optional[str] reason
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) findingArn: list[StringFilter], awsAccountId: list[StringFilter], findingType: list[StringFilter], severity: list[StringFilter], firstObservedAt: list[DateFilter], lastObservedAt: list[DateFilter], updatedAt: list[DateFilter], findingStatus: list[StringFilter], title: list[StringFilter], inspectorScore: list[NumberFilter], resourceType: list[StringFilter], resourceId: list[StringFilter], resourceTags: list[MapFilter], ec2InstanceImageId: list[StringFilter], ec2InstanceVpcId: list[StringFilter], ec2InstanceSubnetId: list[StringFilter], ecrImagePushedAt: list[DateFilter], ecrImageArchitecture: list[StringFilter], ecrImageRegistry: list[StringFilter], ecrImageRepositoryName: list[StringFilter], ecrImageTags: list[StringFilter], ecrImageHash: list[StringFilter], ecrImageLastInUseAt: list[DateFilter], ecrImageInUseCount: list[NumberFilter], portRange: list[PortRangeFilter], networkProtocol: list[StringFilter], componentId: list[StringFilter], componentType: list[StringFilter], vulnerabilityId: list[StringFilter], vulnerabilitySource: list[StringFilter], vendorSeverity: list[StringFilter], vulnerablePackages: list[PackageFilter], relatedVulnerabilities: list[StringFilter], fixAvailable: list[StringFilter], lambdaFunctionName: list[StringFilter], lambdaFunctionLayers: list[StringFilter], lambdaFunctionRuntime: list[StringFilter], lambdaFunctionLastModifiedAt: list[DateFilter], lambdaFunctionExecutionRoleArn: list[StringFilter], exploitAvailable: list[StringFilter], codeVulnerabilityDetectorName: list[StringFilter], codeVulnerabilityDetectorTags: list[StringFilter], codeVulnerabilityFilePath: list[StringFilter], epssScore: list[NumberFilter], codeRepositoryProjectName: list[StringFilter], codeRepositoryProviderType: list[StringFilter], machineImageId: list[StringFilter], machineImageName: list[StringFilter], machineImageOwnerAccountId: list[StringFilter], machineImagePlatform: list[StringFilter], cloudProvider: list[StringFilter], cloudProviderRegion: list[StringFilter], cloudProviderAccountId: list[StringFilter], cloudProviderOrgId: list[StringFilter], cloudVmImageReference: list[StringFilter], cloudVmNetworkId: list[StringFilter], cloudVmSubnetIds: list[StringFilter], cloudImageRepositoryName: list[StringFilter], cloudImageRegistry: list[StringFilter], cloudImageDigest: list[StringFilter], cloudImageTags: list[StringFilter], cloudImagePushedAt: list[DateFilter], cloudImageArchitecture: list[StringFilter], cloudImageLastInUseAt: list[DateFilter], cloudImageInUseCount: list[NumberFilter], cloudServerlessFunctionName: list[StringFilter], cloudServerlessFunctionRuntime: list[StringFilter], cloudServerlessFunctionLastModifiedAt: list[DateFilter], cloudServerlessFunctionExecutionRole: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingArn: list[StringFilter], awsAccountId: list[StringFilter], findingType: list[StringFilter], severity: list[StringFilter], firstObservedAt: list[DateFilter], lastObservedAt: list[DateFilter], updatedAt: list[DateFilter], findingStatus: list[StringFilter], title: list[StringFilter], inspectorScore: list[NumberFilter], resourceType: list[StringFilter], resourceId: list[StringFilter], resourceTags: list[MapFilter], ec2InstanceImageId: list[StringFilter], ec2InstanceVpcId: list[StringFilter], ec2InstanceSubnetId: list[StringFilter], ecrImagePushedAt: list[DateFilter], ecrImageArchitecture: list[StringFilter], ecrImageRegistry: list[StringFilter], ecrImageRepositoryName: list[StringFilter], ecrImageTags: list[StringFilter], ecrImageHash: list[StringFilter], ecrImageLastInUseAt: list[DateFilter], ecrImageInUseCount: list[NumberFilter], portRange: list[PortRangeFilter], networkProtocol: list[StringFilter], componentId: list[StringFilter], componentType: list[StringFilter], vulnerabilityId: list[StringFilter], vulnerabilitySource: list[StringFilter], vendorSeverity: list[StringFilter], vulnerablePackages: list[PackageFilter], relatedVulnerabilities: list[StringFilter], fixAvailable: list[StringFilter], lambdaFunctionName: list[StringFilter], lambdaFunctionLayers: list[StringFilter], lambdaFunctionRuntime: list[StringFilter], lambdaFunctionLastModifiedAt: list[DateFilter], lambdaFunctionExecutionRoleArn: list[StringFilter], exploitAvailable: list[StringFilter], codeVulnerabilityDetectorName: list[StringFilter], codeVulnerabilityDetectorTags: list[StringFilter], codeVulnerabilityFilePath: list[StringFilter], epssScore: list[NumberFilter], codeRepositoryProjectName: list[StringFilter], codeRepositoryProviderType: list[StringFilter], machineImageId: list[StringFilter], machineImageName: list[StringFilter], machineImageOwnerAccountId: list[StringFilter], machineImagePlatform: list[StringFilter], cloudProvider: list[StringFilter], cloudProviderRegion: list[StringFilter], cloudProviderAccountId: list[StringFilter], cloudProviderOrgId: list[StringFilter], cloudVmImageReference: list[StringFilter], cloudVmNetworkId: list[StringFilter], cloudVmSubnetIds: list[StringFilter], cloudImageRepositoryName: list[StringFilter], cloudImageRegistry: list[StringFilter], cloudImageDigest: list[StringFilter], cloudImageTags: list[StringFilter], cloudImagePushedAt: list[DateFilter], cloudImageArchitecture: list[StringFilter], cloudImageLastInUseAt: list[DateFilter], cloudImageInUseCount: list[NumberFilter], cloudServerlessFunctionName: list[StringFilter], cloudServerlessFunctionRuntime: list[StringFilter], cloudServerlessFunctionLastModifiedAt: list[DateFilter], cloudServerlessFunctionExecutionRole: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCriteria:
     Optional[list[StringFilter]] findingArn
     Optional[list[StringFilter]] awsAccountId
@@ -2549,8 +2609,9 @@ struct FilterCriteria:
     Optional[list[DateFilter]] cloudServerlessFunctionLastModifiedAt
     Optional[list[StringFilter]] cloudServerlessFunctionExecutionRole
 
-# no @derive(Json): member(s) resources: list[Resource], inspectorScoreDetails: InspectorScoreDetails, networkReachabilityDetails: NetworkReachabilityDetails, packageVulnerabilityDetails: PackageVulnerabilityDetails, codeVulnerabilityDetails: CodeVulnerabilityDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[Resource], inspectorScoreDetails: InspectorScoreDetails, networkReachabilityDetails: NetworkReachabilityDetails, packageVulnerabilityDetails: PackageVulnerabilityDetails, codeVulnerabilityDetails: CodeVulnerabilityDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     str findingArn
     str awsAccountId
@@ -2574,8 +2635,9 @@ struct Finding:
     Optional[CodeVulnerabilityDetails] codeVulnerabilityDetails
     Optional[EpssDetails] epss
 
-# no @derive(Json): member(s) evidences: list[Evidence], ttps: list[str], tools: list[str], referenceUrls: list[str], cwes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidences: list[Evidence], ttps: list[str], tools: list[str], referenceUrls: list[str], cwes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingDetail:
     Optional[str] findingArn
     Optional[CisaData] cisaData
@@ -2613,8 +2675,9 @@ struct FindingTypeAggregationResponse:
     Optional[str] cloudRegion
     Optional[str] cloudPartition
 
-# no @derive(Json): member(s) freeTrialInfo: list[FreeTrialInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) freeTrialInfo: list[FreeTrialInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FreeTrialAccountInfo:
     str accountId
     list[FreeTrialInfo] freeTrialInfo
@@ -2657,8 +2720,9 @@ struct GetCisScanResultDetailsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scanResultDetails: list[CisScanResultDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanResultDetails: list[CisScanResultDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCisScanResultDetailsResponse:
     Optional[list[CisScanResultDetails]] scanResultDetails
     Optional[str] nextToken
@@ -2670,8 +2734,9 @@ struct GetClustersForImageRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) cluster: list[ClusterInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: list[ClusterInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClustersForImageResponse:
     list[ClusterInformation] cluster
     Optional[str] nextToken
@@ -2682,8 +2747,9 @@ struct GetCodeSecurityIntegrationRequest:
     str integrationArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeSecurityIntegrationResponse:
     str integrationArn
     str name
@@ -2700,8 +2766,9 @@ struct GetCodeSecurityIntegrationResponse:
 struct GetCodeSecurityScanConfigurationRequest:
     str scanConfigurationArn
 
-# no @derive(Json): member(s) configuration: CodeSecurityScanConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: CodeSecurityScanConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeSecurityScanConfigurationResponse:
     Optional[str] scanConfigurationArn
     Optional[str] name
@@ -2734,8 +2801,9 @@ struct GetCodeSecurityScanResponse:
 struct GetConfigurationRequest:
     Optional[str] accountId
 
-# no @derive(Json): member(s) amiConfiguration: AmiConfigurationState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amiConfiguration: AmiConfigurationState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationResponse:
     Optional[EcrConfigurationState] ecrConfiguration
     Optional[Ec2ConfigurationState] ec2Configuration
@@ -2757,8 +2825,9 @@ struct GetEc2DeepInspectionConfigurationRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) packagePaths: list[str], orgPackagePaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packagePaths: list[str], orgPackagePaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEc2DeepInspectionConfigurationResponse:
     Optional[list[str]] packagePaths
     Optional[list[str]] orgPackagePaths
@@ -2782,8 +2851,9 @@ struct GetEncryptionKeyResponse:
 struct GetFindingsReportStatusRequest:
     Optional[str] reportId
 
-# no @derive(Json): member(s) filterCriteria: FilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterCriteria: FilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsReportStatusResponse:
     Optional[str] reportId
     Optional[ExternalReportStatus] status
@@ -2825,8 +2895,9 @@ struct GetOnDemandScanStatusResponse:
 struct GetSbomExportRequest:
     str reportId
 
-# no @derive(Json): member(s) filterCriteria: ResourceFilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterCriteria: ResourceFilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSbomExportResponse:
     Optional[str] reportId
     Optional[SbomReportFormat] format
@@ -2836,8 +2907,9 @@ struct GetSbomExportResponse:
     Optional[Destination] s3Destination
     Optional[ResourceFilterCriteria] filterCriteria
 
-# no @derive(Json): member(s) imageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Image:
     Optional[str] repositoryName
     Optional[str] registry
@@ -2850,8 +2922,9 @@ struct Image:
     Optional[DateTime] lastInUseAt
     Optional[str] platform
 
-# no @derive(Json): member(s) repositories: list[StringFilter], resourceIds: list[StringFilter], layerHashes: list[StringFilter], cloudProviders: list[StringFilter], cloudAccountIds: list[StringFilter], cloudOrgIds: list[StringFilter], cloudRegions: list[StringFilter], cloudPartitions: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[StringFilter], resourceIds: list[StringFilter], layerHashes: list[StringFilter], cloudProviders: list[StringFilter], cloudAccountIds: list[StringFilter], cloudOrgIds: list[StringFilter], cloudRegions: list[StringFilter], cloudPartitions: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageLayerAggregation:
     Optional[list[StringFilter]] repositories
     Optional[list[StringFilter]] resourceIds
@@ -2877,8 +2950,9 @@ struct ImageLayerAggregationResponse:
     Optional[str] cloudPartition
     Optional[SeverityCounts] severityCounts
 
-# no @derive(Json): member(s) adjustedCvss: CvssScoreDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adjustedCvss: CvssScoreDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InspectorScoreDetails:
     Optional[CvssScoreDetails] adjustedCvss
 
@@ -2887,8 +2961,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) resourceIds: list[StringFilter], functionNames: list[StringFilter], runtimes: list[StringFilter], functionTags: list[MapFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[StringFilter], functionNames: list[StringFilter], runtimes: list[StringFilter], functionTags: list[MapFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaFunctionAggregation:
     Optional[list[StringFilter]] resourceIds
     Optional[list[StringFilter]] functionNames
@@ -2897,8 +2972,9 @@ struct LambdaFunctionAggregation:
     Optional[SortOrder] sortOrder
     Optional[LambdaFunctionSortBy] sortBy
 
-# no @derive(Json): member(s) lambdaTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lambdaTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaFunctionAggregationResponse:
     str resourceId
     Optional[str] functionName
@@ -2908,16 +2984,18 @@ struct LambdaFunctionAggregationResponse:
     Optional[SeverityCounts] severityCounts
     Optional[DateTime] lastModifiedAt
 
-# no @derive(Json): member(s) functionTags: dict[str, str], layers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) functionTags: dict[str, str], layers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaFunctionMetadata:
     Optional[dict[str, str]] functionTags
     Optional[list[str]] layers
     Optional[str] functionName
     Optional[Runtime] runtime
 
-# no @derive(Json): member(s) functionNames: list[StringFilter], resourceIds: list[StringFilter], layerArns: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) functionNames: list[StringFilter], resourceIds: list[StringFilter], layerArns: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaLayerAggregation:
     Optional[list[StringFilter]] functionNames
     Optional[list[StringFilter]] resourceIds
@@ -2933,8 +3011,9 @@ struct LambdaLayerAggregationResponse:
     str accountId
     Optional[SeverityCounts] severityCounts
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaVpcConfig:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
@@ -2947,14 +3026,16 @@ struct ListAccountPermissionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountPermissionsResponse:
     list[Permission] permissions
     Optional[str] nextToken
 
-# no @derive(Json): member(s) scanNameFilters: list[CisStringFilter], targetResourceTagFilters: list[TagFilter], scanConfigurationArnFilters: list[CisStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanNameFilters: list[CisStringFilter], targetResourceTagFilters: list[TagFilter], scanConfigurationArnFilters: list[CisStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCisScanConfigurationsFilterCriteria:
     Optional[list[CisStringFilter]] scanNameFilters
     Optional[list[TagFilter]] targetResourceTagFilters
@@ -2969,8 +3050,9 @@ struct ListCisScanConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scanConfigurations: list[CisScanConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanConfigurations: list[CisScanConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCisScanConfigurationsResponse:
     Optional[list[CisScanConfiguration]] scanConfigurations
     Optional[str] nextToken
@@ -2985,8 +3067,9 @@ struct ListCisScanResultsAggregatedByChecksRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) checkAggregations: list[CisCheckAggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) checkAggregations: list[CisCheckAggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCisScanResultsAggregatedByChecksResponse:
     Optional[list[CisCheckAggregation]] checkAggregations
     Optional[str] nextToken
@@ -3001,14 +3084,16 @@ struct ListCisScanResultsAggregatedByTargetResourceRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) targetResourceAggregations: list[CisTargetResourceAggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetResourceAggregations: list[CisTargetResourceAggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCisScanResultsAggregatedByTargetResourceResponse:
     Optional[list[CisTargetResourceAggregation]] targetResourceAggregations
     Optional[str] nextToken
 
-# no @derive(Json): member(s) scanNameFilters: list[CisStringFilter], targetResourceTagFilters: list[TagFilter], targetResourceIdFilters: list[CisStringFilter], scanStatusFilters: list[CisScanStatusFilter], scanAtFilters: list[CisDateFilter], scanConfigurationArnFilters: list[CisStringFilter], scanArnFilters: list[CisStringFilter], scheduledByFilters: list[CisStringFilter], failedChecksFilters: list[CisNumberFilter], targetAccountIdFilters: list[CisStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanNameFilters: list[CisStringFilter], targetResourceTagFilters: list[TagFilter], targetResourceIdFilters: list[CisStringFilter], scanStatusFilters: list[CisScanStatusFilter], scanAtFilters: list[CisDateFilter], scanConfigurationArnFilters: list[CisStringFilter], scanArnFilters: list[CisStringFilter], scheduledByFilters: list[CisStringFilter], failedChecksFilters: list[CisNumberFilter], targetAccountIdFilters: list[CisStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCisScansFilterCriteria:
     Optional[list[CisStringFilter]] scanNameFilters
     Optional[list[TagFilter]] targetResourceTagFilters
@@ -3031,8 +3116,9 @@ struct ListCisScansRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scans: list[CisScan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scans: list[CisScan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCisScansResponse:
     Optional[list[CisScan]] scans
     Optional[str] nextToken
@@ -3043,8 +3129,9 @@ struct ListCodeSecurityIntegrationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) integrations: list[CodeSecurityIntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integrations: list[CodeSecurityIntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeSecurityIntegrationsResponse:
     Optional[list[CodeSecurityIntegrationSummary]] integrations
     Optional[str] nextToken
@@ -3056,8 +3143,9 @@ struct ListCodeSecurityScanConfigurationAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) associations: list[CodeSecurityScanConfigurationAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associations: list[CodeSecurityScanConfigurationAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeSecurityScanConfigurationAssociationsResponse:
     Optional[list[CodeSecurityScanConfigurationAssociationSummary]] associations
     Optional[str] nextToken
@@ -3068,8 +3156,9 @@ struct ListCodeSecurityScanConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) configurations: list[CodeSecurityScanConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[CodeSecurityScanConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeSecurityScanConfigurationsResponse:
     Optional[list[CodeSecurityScanConfigurationSummary]] configurations
     Optional[str] nextToken
@@ -3081,8 +3170,9 @@ struct ListConnectorScanConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) scanConfigurations: list[ConnectorScanConfigurationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scanConfigurations: list[ConnectorScanConfigurationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorScanConfigurationsResponse:
     list[ConnectorScanConfigurationItem] scanConfigurations
     Optional[str] nextToken
@@ -3094,8 +3184,9 @@ struct ListConnectorsRequest:
     Optional[str] nextToken
     Optional[ConnectorFilterCriteria] filterCriteria
 
-# no @derive(Json): member(s) items: list[Connector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Connector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     list[Connector] items
     Optional[str] nextToken
@@ -3107,8 +3198,9 @@ struct ListCoverageRequest:
     Optional[str] nextToken
     Optional[CoverageFilterCriteria] filterCriteria
 
-# no @derive(Json): member(s) coveredResources: list[CoveredResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) coveredResources: list[CoveredResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoverageResponse:
     Optional[str] nextToken
     Optional[list[CoveredResource]] coveredResources
@@ -3120,8 +3212,9 @@ struct ListCoverageStatisticsRequest:
     Optional[GroupKey] groupBy
     Optional[str] nextToken
 
-# no @derive(Json): member(s) countsByGroup: list[Counts] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) countsByGroup: list[Counts] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoverageStatisticsResponse:
     Optional[list[Counts]] countsByGroup
     int64 totalCounts
@@ -3133,8 +3226,9 @@ struct ListDelegatedAdminAccountsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) delegatedAdminAccounts: list[DelegatedAdminAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delegatedAdminAccounts: list[DelegatedAdminAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDelegatedAdminAccountsResponse:
     Optional[list[DelegatedAdminAccount]] delegatedAdminAccounts
     Optional[str] nextToken
@@ -3147,8 +3241,9 @@ struct ListFiltersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFiltersResponse:
     list[Filter] filters
     Optional[str] nextToken
@@ -3162,8 +3257,9 @@ struct ListFindingAggregationsRequest:
     Optional[list[StringFilter]] accountIds
     Optional[AggregationRequest] aggregationRequest
 
-# no @derive(Json): member(s) responses: list[AggregationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responses: list[AggregationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingAggregationsResponse:
     AggregationType aggregationType
     Optional[list[AggregationResponse]] responses
@@ -3177,8 +3273,9 @@ struct ListFindingsRequest:
     Optional[FilterCriteria] filterCriteria
     Optional[SortCriteria] sortCriteria
 
-# no @derive(Json): member(s) findings: list[Finding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsResponse:
     Optional[str] nextToken
     Optional[list[Finding]] findings
@@ -3190,8 +3287,9 @@ struct ListMembersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) members: list[Member] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) members: list[Member] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersResponse:
     Optional[list[Member]] members
     Optional[str] nextToken
@@ -3204,8 +3302,9 @@ struct ListOnDemandScansRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[OnDemandScan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[OnDemandScan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOnDemandScansResponse:
     list[OnDemandScan] items
     Optional[str] nextToken
@@ -3215,8 +3314,9 @@ struct ListOnDemandScansResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -3227,8 +3327,9 @@ struct ListUsageTotalsRequest:
     Optional[str] nextToken
     Optional[list[str]] accountIds
 
-# no @derive(Json): member(s) totals: list[UsageTotal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) totals: list[UsageTotal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsageTotalsResponse:
     Optional[str] nextToken
     Optional[list[UsageTotal]] totals
@@ -3247,8 +3348,9 @@ struct MachineImageDetails:
     Optional[str] virtualizationType
     Optional[str] sourceResourceId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MachineImageMetadata:
     Optional[dict[str, str]] tags
     Optional[MachineImagePlatform] platform
@@ -3282,13 +3384,15 @@ struct MonthlySchedule:
     Time startTime
     Day day
 
-# no @derive(Json): member(s) steps: list[Step] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[Step] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkPath:
     Optional[list[Step]] steps
 
-# no @derive(Json): member(s) networkPath: NetworkPath not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkPath: NetworkPath not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkReachabilityDetails:
     PortRange openPortRange
     NetworkProtocol protocol
@@ -3316,8 +3420,9 @@ struct OneTimeSchedule:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) packageNames: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageNames: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageAggregation:
     Optional[list[StringFilter]] packageNames
     Optional[SortOrder] sortOrder
@@ -3340,8 +3445,9 @@ struct PackageFilter:
     Optional[StringFilter] sourceLambdaLayerArn
     Optional[StringFilter] filePath
 
-# no @derive(Json): member(s) vulnerablePackages: list[VulnerablePackage], cvss: list[CvssScore], relatedVulnerabilities: list[str], referenceUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vulnerablePackages: list[VulnerablePackage], cvss: list[CvssScore], relatedVulnerabilities: list[str], referenceUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageVulnerabilityDetails:
     str vulnerabilityId
     Optional[list[VulnerablePackage]] vulnerablePackages
@@ -3374,31 +3480,36 @@ struct PortRangeFilter:
     Optional[int64] beginInclusive
     Optional[int64] endInclusive
 
-# no @derive(Json): member(s) periodicScanConfigurations: list[ProjectPeriodicScanConfiguration], continuousIntegrationScanConfigurations: list[ProjectContinuousIntegrationScanConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) periodicScanConfigurations: list[ProjectPeriodicScanConfiguration], continuousIntegrationScanConfigurations: list[ProjectContinuousIntegrationScanConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectCodeSecurityScanConfiguration:
     Optional[list[ProjectPeriodicScanConfiguration]] periodicScanConfigurations
     Optional[list[ProjectContinuousIntegrationScanConfiguration]] continuousIntegrationScanConfigurations
 
-# no @derive(Json): member(s) ruleSetCategories: list[RuleSetCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleSetCategories: list[RuleSetCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectContinuousIntegrationScanConfiguration:
     Optional[ContinuousIntegrationScanEvent] supportedEvent
     Optional[list[RuleSetCategory]] ruleSetCategories
 
-# no @derive(Json): member(s) ruleSetCategories: list[RuleSetCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleSetCategories: list[RuleSetCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectPeriodicScanConfiguration:
     Optional[str] frequencyExpression
     Optional[list[RuleSetCategory]] ruleSetCategories
 
-# no @derive(Json): member(s) azure: AzureProviderDetailCreate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azure: AzureProviderDetailCreate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderDetailCreate:
     Optional[AzureProviderDetailCreate] azure
 
-# no @derive(Json): member(s) azure: AzureProviderDetailUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azure: AzureProviderDetailUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderDetailUpdate:
     Optional[AzureProviderDetailUpdate] azure
 
@@ -3416,8 +3527,9 @@ struct Recommendation:
 struct Remediation:
     Optional[Recommendation] recommendation
 
-# no @derive(Json): member(s) repositories: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositoryAggregation:
     Optional[list[StringFilter]] repositories
     Optional[SortOrder] sortOrder
@@ -3446,8 +3558,9 @@ struct ResetEncryptionKeyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: dict[str, str], details: ResourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], details: ResourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     ResourceType type
     str id
@@ -3459,8 +3572,9 @@ struct Resource:
     Optional[str] providerAccountId
     Optional[str] providerOrgId
 
-# no @derive(Json): member(s) awsEc2Instance: AwsEc2InstanceDetails, awsEcrContainerImage: AwsEcrContainerImageDetails, awsLambdaFunction: AwsLambdaFunctionDetails, vm: Vm, image: Image, serverlessFunction: ServerlessFunction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsEc2Instance: AwsEc2InstanceDetails, awsEcrContainerImage: AwsEcrContainerImageDetails, awsLambdaFunction: AwsLambdaFunctionDetails, vm: Vm, image: Image, serverlessFunction: ServerlessFunction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDetails:
     Optional[AwsEc2InstanceDetails] awsEc2Instance
     Optional[AwsEcrContainerImageDetails] awsEcrContainerImage
@@ -3471,8 +3585,9 @@ struct ResourceDetails:
     Optional[Image] image
     Optional[ServerlessFunction] serverlessFunction
 
-# no @derive(Json): member(s) accountId: list[ResourceStringFilter], resourceId: list[ResourceStringFilter], resourceType: list[ResourceStringFilter], ecrRepositoryName: list[ResourceStringFilter], lambdaFunctionName: list[ResourceStringFilter], ecrImageTags: list[ResourceStringFilter], ec2InstanceTags: list[ResourceMapFilter], lambdaFunctionTags: list[ResourceMapFilter], cloudProvider: list[ResourceStringFilter], cloudProviderAccountId: list[ResourceStringFilter], cloudProviderOrgId: list[ResourceStringFilter], cloudProviderRegion: list[ResourceStringFilter], cloudVmInstanceTags: list[ResourceMapFilter], cloudContainerImageTags: list[ResourceStringFilter], cloudContainerRepositoryName: list[ResourceStringFilter], cloudContainerRegistryName: list[ResourceStringFilter], cloudServerlessFunctionName: list[ResourceStringFilter], cloudServerlessFunctionRuntime: list[ResourceStringFilter], cloudServerlessFunctionTags: list[ResourceMapFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountId: list[ResourceStringFilter], resourceId: list[ResourceStringFilter], resourceType: list[ResourceStringFilter], ecrRepositoryName: list[ResourceStringFilter], lambdaFunctionName: list[ResourceStringFilter], ecrImageTags: list[ResourceStringFilter], ec2InstanceTags: list[ResourceMapFilter], lambdaFunctionTags: list[ResourceMapFilter], cloudProvider: list[ResourceStringFilter], cloudProviderAccountId: list[ResourceStringFilter], cloudProviderOrgId: list[ResourceStringFilter], cloudProviderRegion: list[ResourceStringFilter], cloudVmInstanceTags: list[ResourceMapFilter], cloudContainerImageTags: list[ResourceStringFilter], cloudContainerRepositoryName: list[ResourceStringFilter], cloudContainerRegistryName: list[ResourceStringFilter], cloudServerlessFunctionName: list[ResourceStringFilter], cloudServerlessFunctionRuntime: list[ResourceStringFilter], cloudServerlessFunctionTags: list[ResourceMapFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceFilterCriteria:
     Optional[list[ResourceStringFilter]] accountId
     Optional[list[ResourceStringFilter]] resourceId
@@ -3504,8 +3619,9 @@ struct ResourceMapFilter:
 struct ResourceNotFoundException:
     str message
 
-# no @derive(Json): member(s) ecrImage: EcrContainerImageMetadata, ec2: Ec2Metadata, lambdaFunction: LambdaFunctionMetadata, codeRepository: CodeRepositoryMetadata, vmInstance: VmInstanceMetadata, containerImage: ContainerImageMetadata, serverlessFunction: ServerlessFunctionMetadata, machineImage: MachineImageMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ecrImage: EcrContainerImageMetadata, ec2: Ec2Metadata, lambdaFunction: LambdaFunctionMetadata, codeRepository: CodeRepositoryMetadata, vmInstance: VmInstanceMetadata, containerImage: ContainerImageMetadata, serverlessFunction: ServerlessFunctionMetadata, machineImage: MachineImageMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceScanMetadata:
     Optional[EcrRepositoryMetadata] ecrRepository
     Optional[EcrContainerImageMetadata] ecrImage
@@ -3549,24 +3665,27 @@ struct ScanStatus:
     ScanStatusCode statusCode
     ScanStatusReason reason
 
-# no @derive(Json): member(s) weekly: WeeklySchedule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) weekly: WeeklySchedule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schedule:
     Optional[OneTimeSchedule] oneTime
     Optional[DailySchedule] daily
     Optional[WeeklySchedule] weekly
     Optional[MonthlySchedule] monthly
 
-# no @derive(Json): member(s) scopeValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScopeConfiguration:
     ScopeType scopeType
     Optional[list[str]] scopeValues
     Optional[ScopeState] state
     Optional[str] stateReason
 
-# no @derive(Json): member(s) scopeValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScopeConfigurationInput:
     ScopeType scopeType
     Optional[list[str]] scopeValues
@@ -3575,8 +3694,9 @@ struct ScopeConfigurationInput:
 struct ScopeSettings:
     Optional[str] projectSelectionScope
 
-# no @derive(Json): member(s) vulnerabilityIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vulnerabilityIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchVulnerabilitiesFilterCriteria:
     list[str] vulnerabilityIds
 
@@ -3586,8 +3706,9 @@ struct SearchVulnerabilitiesRequest:
     SearchVulnerabilitiesFilterCriteria filterCriteria
     Optional[str] nextToken
 
-# no @derive(Json): member(s) vulnerabilities: list[Vulnerability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vulnerabilities: list[Vulnerability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchVulnerabilitiesResponse:
     list[Vulnerability] vulnerabilities
     Optional[str] nextToken
@@ -3615,8 +3736,9 @@ struct SendCisSessionTelemetryResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], architectures: list[Architecture], layers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], architectures: list[Architecture], layers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerlessFunction:
     Optional[str] serverlessFunctionName
     Optional[str] runtime
@@ -3631,8 +3753,9 @@ struct ServerlessFunction:
     Optional[list[Architecture]] architectures
     Optional[list[str]] layers
 
-# no @derive(Json): member(s) resourceIds: list[StringFilter], functionNames: list[StringFilter], runtimes: list[StringFilter], functionTags: list[MapFilter], cloudProviders: list[StringFilter], cloudPartitions: list[StringFilter], cloudRegions: list[StringFilter], cloudOrgIds: list[StringFilter], cloudAccountIds: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[StringFilter], functionNames: list[StringFilter], runtimes: list[StringFilter], functionTags: list[MapFilter], cloudProviders: list[StringFilter], cloudPartitions: list[StringFilter], cloudRegions: list[StringFilter], cloudOrgIds: list[StringFilter], cloudAccountIds: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerlessFunctionAggregation:
     Optional[list[StringFilter]] resourceIds
     Optional[list[StringFilter]] functionNames
@@ -3646,8 +3769,9 @@ struct ServerlessFunctionAggregation:
     Optional[SortOrder] sortOrder
     Optional[ServerlessFunctionSortBy] sortBy
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerlessFunctionAggregationResponse:
     str resourceId
     Optional[Provider] cloudProvider
@@ -3664,8 +3788,9 @@ struct ServerlessFunctionAggregationResponse:
     Optional[int64] exploitAvailableActiveFindingsCount
     Optional[int64] fixAvailableActiveFindingsCount
 
-# no @derive(Json): member(s) functionTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) functionTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerlessFunctionMetadata:
     Optional[str] serverlessFunctionName
     Optional[str] runtime
@@ -3820,8 +3945,9 @@ struct Time:
     str timeOfDay
     str timezone
 
-# no @derive(Json): member(s) titles: list[StringFilter], vulnerabilityIds: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) titles: list[StringFilter], vulnerabilityIds: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TitleAggregation:
     Optional[list[StringFilter]] titles
     Optional[list[StringFilter]] vulnerabilityIds
@@ -3861,8 +3987,9 @@ struct UpdateCisScanConfigurationRequest:
 struct UpdateCisScanConfigurationResponse:
     str scanConfigurationArn
 
-# no @derive(Json): member(s) accountIds: list[str], targetResourceTags: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], targetResourceTags: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCisTargets:
     Optional[list[str]] accountIds
     Optional[dict[str, list[str]]] targetResourceTags
@@ -3936,8 +4063,9 @@ struct UpdateEc2DeepInspectionConfigurationRequest:
     Optional[bool] activateDeepInspection
     Optional[list[str]] packagePaths
 
-# no @derive(Json): member(s) packagePaths: list[str], orgPackagePaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packagePaths: list[str], orgPackagePaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEc2DeepInspectionConfigurationResponse:
     Optional[list[str]] packagePaths
     Optional[list[str]] orgPackagePaths
@@ -4011,8 +4139,9 @@ struct Usage:
     Optional[str] currency
     Optional[CloudProvider] cloudProvider
 
-# no @derive(Json): member(s) usage: list[Usage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usage: list[Usage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageTotal:
     Optional[str] accountId
     Optional[list[Usage]] usage
@@ -4023,8 +4152,9 @@ struct VMScannerState:
     Optional[DateTime] activatedAt
     Optional[VMScannerStatus] status
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -4035,8 +4165,9 @@ struct ValidationExceptionField:
     str name
     str message
 
-# no @derive(Json): member(s) ipV4Addresses: list[str], ipV6Addresses: list[str], subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipV4Addresses: list[str], ipV6Addresses: list[str], subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vm:
     Optional[str] type
     Optional[str] vmName
@@ -4051,8 +4182,9 @@ struct Vm:
     Optional[str] executionRole
     Optional[str] keyName
 
-# no @derive(Json): member(s) resourceIds: list[StringFilter], operatingSystems: list[StringFilter], instanceTags: list[MapFilter], vmImageReferences: list[StringFilter], cloudProviders: list[StringFilter], cloudPartitions: list[StringFilter], cloudRegions: list[StringFilter], cloudOrgIds: list[StringFilter], cloudAccountIds: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[StringFilter], operatingSystems: list[StringFilter], instanceTags: list[MapFilter], vmImageReferences: list[StringFilter], cloudProviders: list[StringFilter], cloudPartitions: list[StringFilter], cloudRegions: list[StringFilter], cloudOrgIds: list[StringFilter], cloudAccountIds: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VmInstanceAggregation:
     Optional[list[StringFilter]] resourceIds
     Optional[list[StringFilter]] operatingSystems
@@ -4066,8 +4198,9 @@ struct VmInstanceAggregation:
     Optional[SortOrder] sortOrder
     Optional[VmInstanceSortBy] sortBy
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VmInstanceAggregationResponse:
     str resourceId
     Optional[Provider] cloudProvider
@@ -4084,16 +4217,18 @@ struct VmInstanceAggregationResponse:
     Optional[int64] exploitAvailableActiveFindingsCount
     Optional[int64] fixAvailableActiveFindingsCount
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VmInstanceMetadata:
     Optional[dict[str, str]] tags
     Optional[VmPlatform] platform
     Optional[str] inventoryHash
     Optional[str] vmImageReference
 
-# no @derive(Json): member(s) cwes: list[str], atigData: AtigData, relatedVulnerabilities: list[str], referenceUrls: list[str], detectionPlatforms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cwes: list[str], atigData: AtigData, relatedVulnerabilities: list[str], referenceUrls: list[str], detectionPlatforms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vulnerability:
     str id
     Optional[list[str]] cwes
@@ -4128,8 +4263,9 @@ struct VulnerablePackage:
     Optional[str] remediation
     Optional[str] sourceLambdaLayerArn
 
-# no @derive(Json): member(s) days: list[Day] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) days: list[Day] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WeeklySchedule:
     Time startTime
     list[Day] days
@@ -4175,66 +4311,7 @@ def inspector2_error_from_code(str code) -> Inspector2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchAssociateCodeSecurityScanConfiguration (document member `associateConfigurationRequests: list[AssociateConfigurationRequest]` is not serializable by derive)
-#   BatchDisassociateCodeSecurityScanConfiguration (document member `disassociateConfigurationRequests: list[DisassociateConfigurationRequest]` is not serializable by derive)
-#   BatchGetAccountStatus (document member `accountIds: list[str]` is not serializable by derive)
-#   BatchGetCodeSnippet (document member `findingArns: list[str]` is not serializable by derive)
-#   BatchGetFindingDetails (document member `findingArns: list[str]` is not serializable by derive)
-#   BatchGetFreeTrialInfo (document member `accountIds: list[str]` is not serializable by derive)
-#   BatchGetMemberEc2DeepInspectionStatus (document member `accountIds: list[str]` is not serializable by derive)
-#   BatchUpdateMemberEc2DeepInspectionStatus (document member `accountIds: list[MemberAccountEc2DeepInspectionStatus]` is not serializable by derive)
-#   CreateCisScanConfiguration (document member `schedule: Schedule` is not serializable by derive)
-#   CreateCodeSecurityIntegration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateCodeSecurityScanConfiguration (document member `configuration: CodeSecurityScanConfiguration` is not serializable by derive)
-#   CreateConnector (document member `providerDetail: ProviderDetailCreate` is not serializable by derive)
-#   CreateFilter (document member `filterCriteria: FilterCriteria` is not serializable by derive)
-#   CreateFindingsReport (document member `filterCriteria: FilterCriteria` is not serializable by derive)
-#   CreateSbomExport (document member `resourceFilterCriteria: ResourceFilterCriteria` is not serializable by derive)
-#   Disable (document member `accountIds: list[str]` is not serializable by derive)
-#   Enable (document member `accountIds: list[str]` is not serializable by derive)
-#   GetCisScanReport (document member `targetAccounts: list[str]` is not serializable by derive)
-#   GetCisScanResultDetails (document member `filterCriteria: CisScanResultDetailsFilterCriteria` is not serializable by derive)
-#   GetCodeSecurityIntegration (document member `tags: dict[str, str]` is not serializable by derive)
-#   ListCisScanConfigurations (document member `filterCriteria: ListCisScanConfigurationsFilterCriteria` is not serializable by derive)
-#   ListCisScanResultsAggregatedByChecks (document member `filterCriteria: CisScanResultsAggregatedByChecksFilterCriteria` is not serializable by derive)
-#   ListCisScanResultsAggregatedByTargetResource (document member `filterCriteria: CisScanResultsAggregatedByTargetResourceFilterCriteria` is not serializable by derive)
-#   ListCisScans (document member `filterCriteria: ListCisScansFilterCriteria` is not serializable by derive)
-#   ListConnectorScanConfigurations (document member `awsConfigConnectorArns: list[str]` is not serializable by derive)
-#   ListConnectors (document member `filterCriteria: ConnectorFilterCriteria` is not serializable by derive)
-#   ListCoverage (document member `filterCriteria: CoverageFilterCriteria` is not serializable by derive)
-#   ListCoverageStatistics (document member `filterCriteria: CoverageFilterCriteria` is not serializable by derive)
-#   ListFilters (document member `arns: list[str]` is not serializable by derive)
-#   ListFindingAggregations (document member `accountIds: list[StringFilter]` is not serializable by derive)
-#   ListFindings (document member `filterCriteria: FilterCriteria` is not serializable by derive)
-#   ListUsageTotals (document member `accountIds: list[str]` is not serializable by derive)
-#   SearchVulnerabilities (document member `filterCriteria: SearchVulnerabilitiesFilterCriteria` is not serializable by derive)
-#   SendCisSessionTelemetry (document member `messages: list[CisSessionMessage]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateCisScanConfiguration (document member `schedule: Schedule` is not serializable by derive)
-#   UpdateCodeSecurityScanConfiguration (document member `configuration: CodeSecurityScanConfiguration` is not serializable by derive)
-#   UpdateConfiguration (document member `amiConfiguration: AmiConfiguration` is not serializable by derive)
-#   UpdateConnector (document member `providerDetail: ProviderDetailUpdate` is not serializable by derive)
-#   UpdateEc2DeepInspectionConfiguration (document member `packagePaths: list[str]` is not serializable by derive)
-#   UpdateFilter (document member `filterCriteria: FilterCriteria` is not serializable by derive)
-#   UpdateOrgEc2DeepInspectionConfiguration (document member `orgPackagePaths: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   GetCisScanResultDetails (operation not generated)
-#   ListCisScanConfigurations (operation not generated)
-#   ListCisScanResultsAggregatedByChecks (operation not generated)
-#   ListCisScanResultsAggregatedByTargetResource (operation not generated)
-#   ListCisScans (operation not generated)
-#   ListConnectorScanConfigurations (operation not generated)
-#   ListConnectors (operation not generated)
-#   ListCoverage (operation not generated)
-#   ListCoverageStatistics (operation not generated)
-#   ListFilters (operation not generated)
-#   ListFindingAggregations (operation not generated)
-#   ListFindings (operation not generated)
-#   ListUsageTotals (operation not generated)
-#   SearchVulnerabilities (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -4435,6 +4512,1829 @@ struct UpdateOrganizationConfigurationDocument:
     # document members of UpdateOrganizationConfiguration
     AutoEnable autoEnable
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def inspector2_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def inspector2_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def inspector2_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AggregationRequest to a compact JSON object (declaration order).
+def aggregation_request_to_json(AggregationRequest v) -> str:
+    list[str] parts = []
+    if v.accountAggregation.is_some():
+        auto u0 = v.accountAggregation.unwrap()
+        parts.append("\"accountAggregation\":" + u0.to_json())
+    if v.amiAggregation.is_some():
+        auto u1 = v.amiAggregation.unwrap()
+        parts.append("\"amiAggregation\":" + ami_aggregation_to_json(u1))
+    if v.awsEcrContainerAggregation.is_some():
+        auto u2 = v.awsEcrContainerAggregation.unwrap()
+        parts.append("\"awsEcrContainerAggregation\":" + aws_ecr_container_aggregation_to_json(u2))
+    if v.ec2InstanceAggregation.is_some():
+        auto u3 = v.ec2InstanceAggregation.unwrap()
+        parts.append("\"ec2InstanceAggregation\":" + ec2_instance_aggregation_to_json(u3))
+    if v.findingTypeAggregation.is_some():
+        auto u4 = v.findingTypeAggregation.unwrap()
+        parts.append("\"findingTypeAggregation\":" + u4.to_json())
+    if v.imageLayerAggregation.is_some():
+        auto u5 = v.imageLayerAggregation.unwrap()
+        parts.append("\"imageLayerAggregation\":" + image_layer_aggregation_to_json(u5))
+    if v.packageAggregation.is_some():
+        auto u6 = v.packageAggregation.unwrap()
+        parts.append("\"packageAggregation\":" + package_aggregation_to_json(u6))
+    if v.repositoryAggregation.is_some():
+        auto u7 = v.repositoryAggregation.unwrap()
+        parts.append("\"repositoryAggregation\":" + repository_aggregation_to_json(u7))
+    if v.titleAggregation.is_some():
+        auto u8 = v.titleAggregation.unwrap()
+        parts.append("\"titleAggregation\":" + title_aggregation_to_json(u8))
+    if v.lambdaLayerAggregation.is_some():
+        auto u9 = v.lambdaLayerAggregation.unwrap()
+        parts.append("\"lambdaLayerAggregation\":" + lambda_layer_aggregation_to_json(u9))
+    if v.lambdaFunctionAggregation.is_some():
+        auto u10 = v.lambdaFunctionAggregation.unwrap()
+        parts.append("\"lambdaFunctionAggregation\":" + lambda_function_aggregation_to_json(u10))
+    if v.codeRepositoryAggregation.is_some():
+        auto u11 = v.codeRepositoryAggregation.unwrap()
+        parts.append("\"codeRepositoryAggregation\":" + code_repository_aggregation_to_json(u11))
+    if v.vmInstanceAggregation.is_some():
+        auto u12 = v.vmInstanceAggregation.unwrap()
+        parts.append("\"vmInstanceAggregation\":" + vm_instance_aggregation_to_json(u12))
+    if v.containerImageAggregation.is_some():
+        auto u13 = v.containerImageAggregation.unwrap()
+        parts.append("\"containerImageAggregation\":" + container_image_aggregation_to_json(u13))
+    if v.serverlessFunctionAggregation.is_some():
+        auto u14 = v.serverlessFunctionAggregation.unwrap()
+        parts.append("\"serverlessFunctionAggregation\":" + serverless_function_aggregation_to_json(u14))
+    return inspector2_json_obj(parts)
+
+# Serialize AmiAggregation to a compact JSON object (declaration order).
+def ami_aggregation_to_json(AmiAggregation v) -> str:
+    list[str] parts = []
+    if v.amis.is_some():
+        auto u0 = v.amis.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"amis\":" + inspector2_json_arr(e1))
+    if v.sortOrder.is_some():
+        auto u2 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u2.to_json())
+    if v.sortBy.is_some():
+        auto u3 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u3.to_json())
+    if v.scanSources.is_some():
+        auto u4 = v.scanSources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"scanSources\":" + inspector2_json_arr(e5))
+    return inspector2_json_obj(parts)
+
+# Serialize AmiConfiguration to a compact JSON object (declaration order).
+def ami_configuration_to_json(AmiConfiguration v) -> str:
+    list[str] parts = []
+    if v.lastLaunchedWithin.is_some():
+        auto u0 = v.lastLaunchedWithin.unwrap()
+        parts.append("\"lastLaunchedWithin\":" + u0.to_json())
+    if v.createdWithin.is_some():
+        auto u1 = v.createdWithin.unwrap()
+        parts.append("\"createdWithin\":" + u1.to_json())
+    parts.append("\"scanModeConfiguration\":" + ami_scan_mode_configuration_to_json(v.scanModeConfiguration))
+    return inspector2_json_obj(parts)
+
+# Serialize AmiScanModeConfiguration to a compact JSON object (declaration order).
+def ami_scan_mode_configuration_to_json(AmiScanModeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"scanMode\":" + v.scanMode.to_json())
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + inspector2_json_arr(e1))
+    if v.excludeCopiedAmis.is_some():
+        auto u2 = v.excludeCopiedAmis.unwrap()
+        parts.append("\"excludeCopiedAmis\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.excludeBackupDlmAmis.is_some():
+        auto u3 = v.excludeBackupDlmAmis.unwrap()
+        parts.append("\"excludeBackupDlmAmis\":" + json.dumps(JsonValue.Bool(u3)))
+    return inspector2_json_obj(parts)
+
+# Serialize AwsEcrContainerAggregation to a compact JSON object (declaration order).
+def aws_ecr_container_aggregation_to_json(AwsEcrContainerAggregation v) -> str:
+    list[str] parts = []
+    if v.resourceIds.is_some():
+        auto u0 = v.resourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e1))
+    if v.imageShas.is_some():
+        auto u2 = v.imageShas.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"imageShas\":" + inspector2_json_arr(e3))
+    if v.repositories.is_some():
+        auto u4 = v.repositories.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"repositories\":" + inspector2_json_arr(e5))
+    if v.architectures.is_some():
+        auto u6 = v.architectures.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"architectures\":" + inspector2_json_arr(e7))
+    if v.imageTags.is_some():
+        auto u8 = v.imageTags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"imageTags\":" + inspector2_json_arr(e9))
+    if v.sortOrder.is_some():
+        auto u10 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u10.to_json())
+    if v.sortBy.is_some():
+        auto u11 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u11.to_json())
+    if v.lastInUseAt.is_some():
+        auto u12 = v.lastInUseAt.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"lastInUseAt\":" + inspector2_json_arr(e13))
+    if v.inUseCount.is_some():
+        auto u14 = v.inUseCount.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"inUseCount\":" + inspector2_json_arr(e15))
+    return inspector2_json_obj(parts)
+
+# Serialize AzureProviderDetailCreate to a compact JSON object (declaration order).
+def azure_provider_detail_create_to_json(AzureProviderDetailCreate v) -> str:
+    list[str] parts = []
+    parts.append("\"awsConfigConnectorArn\":" + inspector2_json_str(v.awsConfigConnectorArn))
+    parts.append("\"scopeConfiguration\":" + azure_scope_configuration_input_to_json(v.scopeConfiguration))
+    list[str] e0 = []
+    for x0 in v.azureRegions:
+        e0.append(inspector2_json_str(x0))
+    parts.append("\"azureRegions\":" + inspector2_json_arr(e0))
+    if v.autoInstallVMScanner.is_some():
+        auto u1 = v.autoInstallVMScanner.unwrap()
+        parts.append("\"autoInstallVMScanner\":" + json.dumps(JsonValue.Bool(u1)))
+    return inspector2_json_obj(parts)
+
+# Serialize AzureProviderDetailUpdate to a compact JSON object (declaration order).
+def azure_provider_detail_update_to_json(AzureProviderDetailUpdate v) -> str:
+    list[str] parts = []
+    if v.azureRegions.is_some():
+        auto u0 = v.azureRegions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector2_json_str(x1))
+        parts.append("\"azureRegions\":" + inspector2_json_arr(e1))
+    if v.scopeConfiguration.is_some():
+        auto u2 = v.scopeConfiguration.unwrap()
+        parts.append("\"scopeConfiguration\":" + azure_scope_configuration_input_to_json(u2))
+    if v.autoInstallVMScanner.is_some():
+        auto u3 = v.autoInstallVMScanner.unwrap()
+        parts.append("\"autoInstallVMScanner\":" + json.dumps(JsonValue.Bool(u3)))
+    return inspector2_json_obj(parts)
+
+# Serialize AzureScopeConfigurationInput to a compact JSON object (declaration order).
+def azure_scope_configuration_input_to_json(AzureScopeConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.vmScanning.is_some():
+        auto u0 = v.vmScanning.unwrap()
+        parts.append("\"vmScanning\":" + scope_configuration_input_to_json(u0))
+    if v.containerImageScanning.is_some():
+        auto u1 = v.containerImageScanning.unwrap()
+        parts.append("\"containerImageScanning\":" + scope_configuration_input_to_json(u1))
+    if v.serverlessScanning.is_some():
+        auto u2 = v.serverlessScanning.unwrap()
+        parts.append("\"serverlessScanning\":" + scope_configuration_input_to_json(u2))
+    return inspector2_json_obj(parts)
+
+# Serialize CisScanResultDetailsFilterCriteria to a compact JSON object (declaration order).
+def cis_scan_result_details_filter_criteria_to_json(CisScanResultDetailsFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.findingStatusFilters.is_some():
+        auto u0 = v.findingStatusFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"findingStatusFilters\":" + inspector2_json_arr(e1))
+    if v.checkIdFilters.is_some():
+        auto u2 = v.checkIdFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"checkIdFilters\":" + inspector2_json_arr(e3))
+    if v.titleFilters.is_some():
+        auto u4 = v.titleFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"titleFilters\":" + inspector2_json_arr(e5))
+    if v.securityLevelFilters.is_some():
+        auto u6 = v.securityLevelFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"securityLevelFilters\":" + inspector2_json_arr(e7))
+    if v.findingArnFilters.is_some():
+        auto u8 = v.findingArnFilters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"findingArnFilters\":" + inspector2_json_arr(e9))
+    return inspector2_json_obj(parts)
+
+# Serialize CisScanResultsAggregatedByChecksFilterCriteria to a compact JSON object (declaration order).
+def cis_scan_results_aggregated_by_checks_filter_criteria_to_json(CisScanResultsAggregatedByChecksFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.accountIdFilters.is_some():
+        auto u0 = v.accountIdFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"accountIdFilters\":" + inspector2_json_arr(e1))
+    if v.checkIdFilters.is_some():
+        auto u2 = v.checkIdFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"checkIdFilters\":" + inspector2_json_arr(e3))
+    if v.titleFilters.is_some():
+        auto u4 = v.titleFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"titleFilters\":" + inspector2_json_arr(e5))
+    if v.platformFilters.is_some():
+        auto u6 = v.platformFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"platformFilters\":" + inspector2_json_arr(e7))
+    if v.failedResourcesFilters.is_some():
+        auto u8 = v.failedResourcesFilters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"failedResourcesFilters\":" + inspector2_json_arr(e9))
+    if v.securityLevelFilters.is_some():
+        auto u10 = v.securityLevelFilters.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"securityLevelFilters\":" + inspector2_json_arr(e11))
+    return inspector2_json_obj(parts)
+
+# Serialize CisScanResultsAggregatedByTargetResourceFilterCriteria to a compact JSON object (declaration order).
+def cis_scan_results_aggregated_by_target_resource_filter_criteria_to_json(CisScanResultsAggregatedByTargetResourceFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.accountIdFilters.is_some():
+        auto u0 = v.accountIdFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"accountIdFilters\":" + inspector2_json_arr(e1))
+    if v.statusFilters.is_some():
+        auto u2 = v.statusFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"statusFilters\":" + inspector2_json_arr(e3))
+    if v.checkIdFilters.is_some():
+        auto u4 = v.checkIdFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"checkIdFilters\":" + inspector2_json_arr(e5))
+    if v.targetResourceIdFilters.is_some():
+        auto u6 = v.targetResourceIdFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"targetResourceIdFilters\":" + inspector2_json_arr(e7))
+    if v.targetResourceTagFilters.is_some():
+        auto u8 = v.targetResourceTagFilters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"targetResourceTagFilters\":" + inspector2_json_arr(e9))
+    if v.platformFilters.is_some():
+        auto u10 = v.platformFilters.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"platformFilters\":" + inspector2_json_arr(e11))
+    if v.targetStatusFilters.is_some():
+        auto u12 = v.targetStatusFilters.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"targetStatusFilters\":" + inspector2_json_arr(e13))
+    if v.targetStatusReasonFilters.is_some():
+        auto u14 = v.targetStatusReasonFilters.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"targetStatusReasonFilters\":" + inspector2_json_arr(e15))
+    if v.failedChecksFilters.is_some():
+        auto u16 = v.failedChecksFilters.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"failedChecksFilters\":" + inspector2_json_arr(e17))
+    return inspector2_json_obj(parts)
+
+# Serialize CodeRepositoryAggregation to a compact JSON object (declaration order).
+def code_repository_aggregation_to_json(CodeRepositoryAggregation v) -> str:
+    list[str] parts = []
+    if v.projectNames.is_some():
+        auto u0 = v.projectNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"projectNames\":" + inspector2_json_arr(e1))
+    if v.providerTypes.is_some():
+        auto u2 = v.providerTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"providerTypes\":" + inspector2_json_arr(e3))
+    if v.sortOrder.is_some():
+        auto u4 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u4.to_json())
+    if v.sortBy.is_some():
+        auto u5 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u5.to_json())
+    if v.resourceIds.is_some():
+        auto u6 = v.resourceIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e7))
+    return inspector2_json_obj(parts)
+
+# Serialize CodeSecurityScanConfiguration to a compact JSON object (declaration order).
+def code_security_scan_configuration_to_json(CodeSecurityScanConfiguration v) -> str:
+    list[str] parts = []
+    if v.periodicScanConfiguration.is_some():
+        auto u0 = v.periodicScanConfiguration.unwrap()
+        parts.append("\"periodicScanConfiguration\":" + u0.to_json())
+    if v.continuousIntegrationScanConfiguration.is_some():
+        auto u1 = v.continuousIntegrationScanConfiguration.unwrap()
+        parts.append("\"continuousIntegrationScanConfiguration\":" + continuous_integration_scan_configuration_to_json(u1))
+    list[str] e2 = []
+    for x2 in v.ruleSetCategories:
+        e2.append(x2.to_json())
+    parts.append("\"ruleSetCategories\":" + inspector2_json_arr(e2))
+    return inspector2_json_obj(parts)
+
+# Serialize ConnectorFilterCriteria to a compact JSON object (declaration order).
+def connector_filter_criteria_to_json(ConnectorFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.connectorArns.is_some():
+        auto u0 = v.connectorArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"connectorArns\":" + inspector2_json_arr(e1))
+    if v.accounts.is_some():
+        auto u2 = v.accounts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"accounts\":" + inspector2_json_arr(e3))
+    if v.awsConfigConnectorArns.is_some():
+        auto u4 = v.awsConfigConnectorArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"awsConfigConnectorArns\":" + inspector2_json_arr(e5))
+    if v.connectorType.is_some():
+        auto u6 = v.connectorType.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"connectorType\":" + inspector2_json_arr(e7))
+    if v.provider.is_some():
+        auto u8 = v.provider.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"provider\":" + inspector2_json_arr(e9))
+    return inspector2_json_obj(parts)
+
+# Serialize ContainerImageAggregation to a compact JSON object (declaration order).
+def container_image_aggregation_to_json(ContainerImageAggregation v) -> str:
+    list[str] parts = []
+    if v.resourceIds.is_some():
+        auto u0 = v.resourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e1))
+    if v.imageDigests.is_some():
+        auto u2 = v.imageDigests.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"imageDigests\":" + inspector2_json_arr(e3))
+    if v.repositories.is_some():
+        auto u4 = v.repositories.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"repositories\":" + inspector2_json_arr(e5))
+    if v.registries.is_some():
+        auto u6 = v.registries.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"registries\":" + inspector2_json_arr(e7))
+    if v.architectures.is_some():
+        auto u8 = v.architectures.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"architectures\":" + inspector2_json_arr(e9))
+    if v.imageTags.is_some():
+        auto u10 = v.imageTags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"imageTags\":" + inspector2_json_arr(e11))
+    if v.cloudProviders.is_some():
+        auto u12 = v.cloudProviders.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"cloudProviders\":" + inspector2_json_arr(e13))
+    if v.cloudPartitions.is_some():
+        auto u14 = v.cloudPartitions.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"cloudPartitions\":" + inspector2_json_arr(e15))
+    if v.cloudRegions.is_some():
+        auto u16 = v.cloudRegions.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"cloudRegions\":" + inspector2_json_arr(e17))
+    if v.cloudOrgIds.is_some():
+        auto u18 = v.cloudOrgIds.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"cloudOrgIds\":" + inspector2_json_arr(e19))
+    if v.cloudAccountIds.is_some():
+        auto u20 = v.cloudAccountIds.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"cloudAccountIds\":" + inspector2_json_arr(e21))
+    if v.lastInUseAt.is_some():
+        auto u22 = v.lastInUseAt.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"lastInUseAt\":" + inspector2_json_arr(e23))
+    if v.inUseCount.is_some():
+        auto u24 = v.inUseCount.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"inUseCount\":" + inspector2_json_arr(e25))
+    if v.sortOrder.is_some():
+        auto u26 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u26.to_json())
+    if v.sortBy.is_some():
+        auto u27 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u27.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize ContinuousIntegrationScanConfiguration to a compact JSON object (declaration order).
+def continuous_integration_scan_configuration_to_json(ContinuousIntegrationScanConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.supportedEvents:
+        e0.append(x0.to_json())
+    parts.append("\"supportedEvents\":" + inspector2_json_arr(e0))
+    return inspector2_json_obj(parts)
+
+# Serialize CoverageFilterCriteria to a compact JSON object (declaration order).
+def coverage_filter_criteria_to_json(CoverageFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.scanStatusCode.is_some():
+        auto u0 = v.scanStatusCode.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"scanStatusCode\":" + inspector2_json_arr(e1))
+    if v.scanStatusReason.is_some():
+        auto u2 = v.scanStatusReason.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"scanStatusReason\":" + inspector2_json_arr(e3))
+    if v.accountId.is_some():
+        auto u4 = v.accountId.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"accountId\":" + inspector2_json_arr(e5))
+    if v.resourceId.is_some():
+        auto u6 = v.resourceId.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"resourceId\":" + inspector2_json_arr(e7))
+    if v.resourceType.is_some():
+        auto u8 = v.resourceType.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"resourceType\":" + inspector2_json_arr(e9))
+    if v.scanType.is_some():
+        auto u10 = v.scanType.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"scanType\":" + inspector2_json_arr(e11))
+    if v.ecrRepositoryName.is_some():
+        auto u12 = v.ecrRepositoryName.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"ecrRepositoryName\":" + inspector2_json_arr(e13))
+    if v.ecrImageTags.is_some():
+        auto u14 = v.ecrImageTags.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"ecrImageTags\":" + inspector2_json_arr(e15))
+    if v.ec2InstanceTags.is_some():
+        auto u16 = v.ec2InstanceTags.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"ec2InstanceTags\":" + inspector2_json_arr(e17))
+    if v.lambdaFunctionName.is_some():
+        auto u18 = v.lambdaFunctionName.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"lambdaFunctionName\":" + inspector2_json_arr(e19))
+    if v.lambdaFunctionTags.is_some():
+        auto u20 = v.lambdaFunctionTags.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"lambdaFunctionTags\":" + inspector2_json_arr(e21))
+    if v.lambdaFunctionRuntime.is_some():
+        auto u22 = v.lambdaFunctionRuntime.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"lambdaFunctionRuntime\":" + inspector2_json_arr(e23))
+    if v.machineImageTags.is_some():
+        auto u24 = v.machineImageTags.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"machineImageTags\":" + inspector2_json_arr(e25))
+    if v.lastScannedAt.is_some():
+        auto u26 = v.lastScannedAt.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"lastScannedAt\":" + inspector2_json_arr(e27))
+    if v.scanMode.is_some():
+        auto u28 = v.scanMode.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"scanMode\":" + inspector2_json_arr(e29))
+    if v.imagePulledAt.is_some():
+        auto u30 = v.imagePulledAt.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"imagePulledAt\":" + inspector2_json_arr(e31))
+    if v.ecrImageLastInUseAt.is_some():
+        auto u32 = v.ecrImageLastInUseAt.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"ecrImageLastInUseAt\":" + inspector2_json_arr(e33))
+    if v.ecrImageInUseCount.is_some():
+        auto u34 = v.ecrImageInUseCount.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"ecrImageInUseCount\":" + inspector2_json_arr(e35))
+    if v.codeRepositoryProjectName.is_some():
+        auto u36 = v.codeRepositoryProjectName.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"codeRepositoryProjectName\":" + inspector2_json_arr(e37))
+    if v.codeRepositoryProviderType.is_some():
+        auto u38 = v.codeRepositoryProviderType.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(x39.to_json())
+        parts.append("\"codeRepositoryProviderType\":" + inspector2_json_arr(e39))
+    if v.codeRepositoryProviderTypeVisibility.is_some():
+        auto u40 = v.codeRepositoryProviderTypeVisibility.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(x41.to_json())
+        parts.append("\"codeRepositoryProviderTypeVisibility\":" + inspector2_json_arr(e41))
+    if v.lastScannedCommitId.is_some():
+        auto u42 = v.lastScannedCommitId.unwrap()
+        list[str] e43 = []
+        for x43 in u42:
+            e43.append(x43.to_json())
+        parts.append("\"lastScannedCommitId\":" + inspector2_json_arr(e43))
+    if v.cloudProvider.is_some():
+        auto u44 = v.cloudProvider.unwrap()
+        list[str] e45 = []
+        for x45 in u44:
+            e45.append(x45.to_json())
+        parts.append("\"cloudProvider\":" + inspector2_json_arr(e45))
+    if v.cloudProviderAccountId.is_some():
+        auto u46 = v.cloudProviderAccountId.unwrap()
+        list[str] e47 = []
+        for x47 in u46:
+            e47.append(x47.to_json())
+        parts.append("\"cloudProviderAccountId\":" + inspector2_json_arr(e47))
+    if v.cloudProviderRegion.is_some():
+        auto u48 = v.cloudProviderRegion.unwrap()
+        list[str] e49 = []
+        for x49 in u48:
+            e49.append(x49.to_json())
+        parts.append("\"cloudProviderRegion\":" + inspector2_json_arr(e49))
+    if v.cloudVmInstanceTags.is_some():
+        auto u50 = v.cloudVmInstanceTags.unwrap()
+        list[str] e51 = []
+        for x51 in u50:
+            e51.append(x51.to_json())
+        parts.append("\"cloudVmInstanceTags\":" + inspector2_json_arr(e51))
+    if v.cloudContainerImageTags.is_some():
+        auto u52 = v.cloudContainerImageTags.unwrap()
+        list[str] e53 = []
+        for x53 in u52:
+            e53.append(x53.to_json())
+        parts.append("\"cloudContainerImageTags\":" + inspector2_json_arr(e53))
+    if v.cloudContainerRepositoryName.is_some():
+        auto u54 = v.cloudContainerRepositoryName.unwrap()
+        list[str] e55 = []
+        for x55 in u54:
+            e55.append(x55.to_json())
+        parts.append("\"cloudContainerRepositoryName\":" + inspector2_json_arr(e55))
+    if v.cloudContainerRegistryName.is_some():
+        auto u56 = v.cloudContainerRegistryName.unwrap()
+        list[str] e57 = []
+        for x57 in u56:
+            e57.append(x57.to_json())
+        parts.append("\"cloudContainerRegistryName\":" + inspector2_json_arr(e57))
+    if v.cloudServerlessFunctionName.is_some():
+        auto u58 = v.cloudServerlessFunctionName.unwrap()
+        list[str] e59 = []
+        for x59 in u58:
+            e59.append(x59.to_json())
+        parts.append("\"cloudServerlessFunctionName\":" + inspector2_json_arr(e59))
+    if v.cloudServerlessFunctionRuntime.is_some():
+        auto u60 = v.cloudServerlessFunctionRuntime.unwrap()
+        list[str] e61 = []
+        for x61 in u60:
+            e61.append(x61.to_json())
+        parts.append("\"cloudServerlessFunctionRuntime\":" + inspector2_json_arr(e61))
+    if v.cloudServerlessFunctionTags.is_some():
+        auto u62 = v.cloudServerlessFunctionTags.unwrap()
+        list[str] e63 = []
+        for x63 in u62:
+            e63.append(x63.to_json())
+        parts.append("\"cloudServerlessFunctionTags\":" + inspector2_json_arr(e63))
+    if v.cloudProviderOrgId.is_some():
+        auto u64 = v.cloudProviderOrgId.unwrap()
+        list[str] e65 = []
+        for x65 in u64:
+            e65.append(x65.to_json())
+        parts.append("\"cloudProviderOrgId\":" + inspector2_json_arr(e65))
+    return inspector2_json_obj(parts)
+
+# Serialize CreateCisTargets to a compact JSON object (declaration order).
+def create_cis_targets_to_json(CreateCisTargets v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.accountIds:
+        e0.append(inspector2_json_str(x0))
+    parts.append("\"accountIds\":" + inspector2_json_arr(e0))
+    list[str] m1 = []
+    for k1 in sorted(v.targetResourceTags.keys()):
+        list[str] e2 = []
+        for x2 in v.targetResourceTags[k1]:
+            e2.append(inspector2_json_str(x2))
+        m1.append(inspector2_json_str(k1) + ":" + inspector2_json_arr(e2))
+    parts.append("\"targetResourceTags\":" + inspector2_json_obj(m1))
+    return inspector2_json_obj(parts)
+
+# Serialize Ec2InstanceAggregation to a compact JSON object (declaration order).
+def ec2_instance_aggregation_to_json(Ec2InstanceAggregation v) -> str:
+    list[str] parts = []
+    if v.amis.is_some():
+        auto u0 = v.amis.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"amis\":" + inspector2_json_arr(e1))
+    if v.operatingSystems.is_some():
+        auto u2 = v.operatingSystems.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"operatingSystems\":" + inspector2_json_arr(e3))
+    if v.instanceIds.is_some():
+        auto u4 = v.instanceIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"instanceIds\":" + inspector2_json_arr(e5))
+    if v.instanceTags.is_some():
+        auto u6 = v.instanceTags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"instanceTags\":" + inspector2_json_arr(e7))
+    if v.sortOrder.is_some():
+        auto u8 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u8.to_json())
+    if v.sortBy.is_some():
+        auto u9 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u9.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize FilterCriteria to a compact JSON object (declaration order).
+def filter_criteria_to_json(FilterCriteria v) -> str:
+    list[str] parts = []
+    if v.findingArn.is_some():
+        auto u0 = v.findingArn.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"findingArn\":" + inspector2_json_arr(e1))
+    if v.awsAccountId.is_some():
+        auto u2 = v.awsAccountId.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"awsAccountId\":" + inspector2_json_arr(e3))
+    if v.findingType.is_some():
+        auto u4 = v.findingType.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"findingType\":" + inspector2_json_arr(e5))
+    if v.severity.is_some():
+        auto u6 = v.severity.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"severity\":" + inspector2_json_arr(e7))
+    if v.firstObservedAt.is_some():
+        auto u8 = v.firstObservedAt.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"firstObservedAt\":" + inspector2_json_arr(e9))
+    if v.lastObservedAt.is_some():
+        auto u10 = v.lastObservedAt.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"lastObservedAt\":" + inspector2_json_arr(e11))
+    if v.updatedAt.is_some():
+        auto u12 = v.updatedAt.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"updatedAt\":" + inspector2_json_arr(e13))
+    if v.findingStatus.is_some():
+        auto u14 = v.findingStatus.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"findingStatus\":" + inspector2_json_arr(e15))
+    if v.title.is_some():
+        auto u16 = v.title.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"title\":" + inspector2_json_arr(e17))
+    if v.inspectorScore.is_some():
+        auto u18 = v.inspectorScore.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"inspectorScore\":" + inspector2_json_arr(e19))
+    if v.resourceType.is_some():
+        auto u20 = v.resourceType.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"resourceType\":" + inspector2_json_arr(e21))
+    if v.resourceId.is_some():
+        auto u22 = v.resourceId.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"resourceId\":" + inspector2_json_arr(e23))
+    if v.resourceTags.is_some():
+        auto u24 = v.resourceTags.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"resourceTags\":" + inspector2_json_arr(e25))
+    if v.ec2InstanceImageId.is_some():
+        auto u26 = v.ec2InstanceImageId.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"ec2InstanceImageId\":" + inspector2_json_arr(e27))
+    if v.ec2InstanceVpcId.is_some():
+        auto u28 = v.ec2InstanceVpcId.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"ec2InstanceVpcId\":" + inspector2_json_arr(e29))
+    if v.ec2InstanceSubnetId.is_some():
+        auto u30 = v.ec2InstanceSubnetId.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"ec2InstanceSubnetId\":" + inspector2_json_arr(e31))
+    if v.ecrImagePushedAt.is_some():
+        auto u32 = v.ecrImagePushedAt.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"ecrImagePushedAt\":" + inspector2_json_arr(e33))
+    if v.ecrImageArchitecture.is_some():
+        auto u34 = v.ecrImageArchitecture.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"ecrImageArchitecture\":" + inspector2_json_arr(e35))
+    if v.ecrImageRegistry.is_some():
+        auto u36 = v.ecrImageRegistry.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"ecrImageRegistry\":" + inspector2_json_arr(e37))
+    if v.ecrImageRepositoryName.is_some():
+        auto u38 = v.ecrImageRepositoryName.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(x39.to_json())
+        parts.append("\"ecrImageRepositoryName\":" + inspector2_json_arr(e39))
+    if v.ecrImageTags.is_some():
+        auto u40 = v.ecrImageTags.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(x41.to_json())
+        parts.append("\"ecrImageTags\":" + inspector2_json_arr(e41))
+    if v.ecrImageHash.is_some():
+        auto u42 = v.ecrImageHash.unwrap()
+        list[str] e43 = []
+        for x43 in u42:
+            e43.append(x43.to_json())
+        parts.append("\"ecrImageHash\":" + inspector2_json_arr(e43))
+    if v.ecrImageLastInUseAt.is_some():
+        auto u44 = v.ecrImageLastInUseAt.unwrap()
+        list[str] e45 = []
+        for x45 in u44:
+            e45.append(x45.to_json())
+        parts.append("\"ecrImageLastInUseAt\":" + inspector2_json_arr(e45))
+    if v.ecrImageInUseCount.is_some():
+        auto u46 = v.ecrImageInUseCount.unwrap()
+        list[str] e47 = []
+        for x47 in u46:
+            e47.append(x47.to_json())
+        parts.append("\"ecrImageInUseCount\":" + inspector2_json_arr(e47))
+    if v.portRange.is_some():
+        auto u48 = v.portRange.unwrap()
+        list[str] e49 = []
+        for x49 in u48:
+            e49.append(x49.to_json())
+        parts.append("\"portRange\":" + inspector2_json_arr(e49))
+    if v.networkProtocol.is_some():
+        auto u50 = v.networkProtocol.unwrap()
+        list[str] e51 = []
+        for x51 in u50:
+            e51.append(x51.to_json())
+        parts.append("\"networkProtocol\":" + inspector2_json_arr(e51))
+    if v.componentId.is_some():
+        auto u52 = v.componentId.unwrap()
+        list[str] e53 = []
+        for x53 in u52:
+            e53.append(x53.to_json())
+        parts.append("\"componentId\":" + inspector2_json_arr(e53))
+    if v.componentType.is_some():
+        auto u54 = v.componentType.unwrap()
+        list[str] e55 = []
+        for x55 in u54:
+            e55.append(x55.to_json())
+        parts.append("\"componentType\":" + inspector2_json_arr(e55))
+    if v.vulnerabilityId.is_some():
+        auto u56 = v.vulnerabilityId.unwrap()
+        list[str] e57 = []
+        for x57 in u56:
+            e57.append(x57.to_json())
+        parts.append("\"vulnerabilityId\":" + inspector2_json_arr(e57))
+    if v.vulnerabilitySource.is_some():
+        auto u58 = v.vulnerabilitySource.unwrap()
+        list[str] e59 = []
+        for x59 in u58:
+            e59.append(x59.to_json())
+        parts.append("\"vulnerabilitySource\":" + inspector2_json_arr(e59))
+    if v.vendorSeverity.is_some():
+        auto u60 = v.vendorSeverity.unwrap()
+        list[str] e61 = []
+        for x61 in u60:
+            e61.append(x61.to_json())
+        parts.append("\"vendorSeverity\":" + inspector2_json_arr(e61))
+    if v.vulnerablePackages.is_some():
+        auto u62 = v.vulnerablePackages.unwrap()
+        list[str] e63 = []
+        for x63 in u62:
+            e63.append(x63.to_json())
+        parts.append("\"vulnerablePackages\":" + inspector2_json_arr(e63))
+    if v.relatedVulnerabilities.is_some():
+        auto u64 = v.relatedVulnerabilities.unwrap()
+        list[str] e65 = []
+        for x65 in u64:
+            e65.append(x65.to_json())
+        parts.append("\"relatedVulnerabilities\":" + inspector2_json_arr(e65))
+    if v.fixAvailable.is_some():
+        auto u66 = v.fixAvailable.unwrap()
+        list[str] e67 = []
+        for x67 in u66:
+            e67.append(x67.to_json())
+        parts.append("\"fixAvailable\":" + inspector2_json_arr(e67))
+    if v.lambdaFunctionName.is_some():
+        auto u68 = v.lambdaFunctionName.unwrap()
+        list[str] e69 = []
+        for x69 in u68:
+            e69.append(x69.to_json())
+        parts.append("\"lambdaFunctionName\":" + inspector2_json_arr(e69))
+    if v.lambdaFunctionLayers.is_some():
+        auto u70 = v.lambdaFunctionLayers.unwrap()
+        list[str] e71 = []
+        for x71 in u70:
+            e71.append(x71.to_json())
+        parts.append("\"lambdaFunctionLayers\":" + inspector2_json_arr(e71))
+    if v.lambdaFunctionRuntime.is_some():
+        auto u72 = v.lambdaFunctionRuntime.unwrap()
+        list[str] e73 = []
+        for x73 in u72:
+            e73.append(x73.to_json())
+        parts.append("\"lambdaFunctionRuntime\":" + inspector2_json_arr(e73))
+    if v.lambdaFunctionLastModifiedAt.is_some():
+        auto u74 = v.lambdaFunctionLastModifiedAt.unwrap()
+        list[str] e75 = []
+        for x75 in u74:
+            e75.append(x75.to_json())
+        parts.append("\"lambdaFunctionLastModifiedAt\":" + inspector2_json_arr(e75))
+    if v.lambdaFunctionExecutionRoleArn.is_some():
+        auto u76 = v.lambdaFunctionExecutionRoleArn.unwrap()
+        list[str] e77 = []
+        for x77 in u76:
+            e77.append(x77.to_json())
+        parts.append("\"lambdaFunctionExecutionRoleArn\":" + inspector2_json_arr(e77))
+    if v.exploitAvailable.is_some():
+        auto u78 = v.exploitAvailable.unwrap()
+        list[str] e79 = []
+        for x79 in u78:
+            e79.append(x79.to_json())
+        parts.append("\"exploitAvailable\":" + inspector2_json_arr(e79))
+    if v.codeVulnerabilityDetectorName.is_some():
+        auto u80 = v.codeVulnerabilityDetectorName.unwrap()
+        list[str] e81 = []
+        for x81 in u80:
+            e81.append(x81.to_json())
+        parts.append("\"codeVulnerabilityDetectorName\":" + inspector2_json_arr(e81))
+    if v.codeVulnerabilityDetectorTags.is_some():
+        auto u82 = v.codeVulnerabilityDetectorTags.unwrap()
+        list[str] e83 = []
+        for x83 in u82:
+            e83.append(x83.to_json())
+        parts.append("\"codeVulnerabilityDetectorTags\":" + inspector2_json_arr(e83))
+    if v.codeVulnerabilityFilePath.is_some():
+        auto u84 = v.codeVulnerabilityFilePath.unwrap()
+        list[str] e85 = []
+        for x85 in u84:
+            e85.append(x85.to_json())
+        parts.append("\"codeVulnerabilityFilePath\":" + inspector2_json_arr(e85))
+    if v.epssScore.is_some():
+        auto u86 = v.epssScore.unwrap()
+        list[str] e87 = []
+        for x87 in u86:
+            e87.append(x87.to_json())
+        parts.append("\"epssScore\":" + inspector2_json_arr(e87))
+    if v.codeRepositoryProjectName.is_some():
+        auto u88 = v.codeRepositoryProjectName.unwrap()
+        list[str] e89 = []
+        for x89 in u88:
+            e89.append(x89.to_json())
+        parts.append("\"codeRepositoryProjectName\":" + inspector2_json_arr(e89))
+    if v.codeRepositoryProviderType.is_some():
+        auto u90 = v.codeRepositoryProviderType.unwrap()
+        list[str] e91 = []
+        for x91 in u90:
+            e91.append(x91.to_json())
+        parts.append("\"codeRepositoryProviderType\":" + inspector2_json_arr(e91))
+    if v.machineImageId.is_some():
+        auto u92 = v.machineImageId.unwrap()
+        list[str] e93 = []
+        for x93 in u92:
+            e93.append(x93.to_json())
+        parts.append("\"machineImageId\":" + inspector2_json_arr(e93))
+    if v.machineImageName.is_some():
+        auto u94 = v.machineImageName.unwrap()
+        list[str] e95 = []
+        for x95 in u94:
+            e95.append(x95.to_json())
+        parts.append("\"machineImageName\":" + inspector2_json_arr(e95))
+    if v.machineImageOwnerAccountId.is_some():
+        auto u96 = v.machineImageOwnerAccountId.unwrap()
+        list[str] e97 = []
+        for x97 in u96:
+            e97.append(x97.to_json())
+        parts.append("\"machineImageOwnerAccountId\":" + inspector2_json_arr(e97))
+    if v.machineImagePlatform.is_some():
+        auto u98 = v.machineImagePlatform.unwrap()
+        list[str] e99 = []
+        for x99 in u98:
+            e99.append(x99.to_json())
+        parts.append("\"machineImagePlatform\":" + inspector2_json_arr(e99))
+    if v.cloudProvider.is_some():
+        auto u100 = v.cloudProvider.unwrap()
+        list[str] e101 = []
+        for x101 in u100:
+            e101.append(x101.to_json())
+        parts.append("\"cloudProvider\":" + inspector2_json_arr(e101))
+    if v.cloudProviderRegion.is_some():
+        auto u102 = v.cloudProviderRegion.unwrap()
+        list[str] e103 = []
+        for x103 in u102:
+            e103.append(x103.to_json())
+        parts.append("\"cloudProviderRegion\":" + inspector2_json_arr(e103))
+    if v.cloudProviderAccountId.is_some():
+        auto u104 = v.cloudProviderAccountId.unwrap()
+        list[str] e105 = []
+        for x105 in u104:
+            e105.append(x105.to_json())
+        parts.append("\"cloudProviderAccountId\":" + inspector2_json_arr(e105))
+    if v.cloudProviderOrgId.is_some():
+        auto u106 = v.cloudProviderOrgId.unwrap()
+        list[str] e107 = []
+        for x107 in u106:
+            e107.append(x107.to_json())
+        parts.append("\"cloudProviderOrgId\":" + inspector2_json_arr(e107))
+    if v.cloudVmImageReference.is_some():
+        auto u108 = v.cloudVmImageReference.unwrap()
+        list[str] e109 = []
+        for x109 in u108:
+            e109.append(x109.to_json())
+        parts.append("\"cloudVmImageReference\":" + inspector2_json_arr(e109))
+    if v.cloudVmNetworkId.is_some():
+        auto u110 = v.cloudVmNetworkId.unwrap()
+        list[str] e111 = []
+        for x111 in u110:
+            e111.append(x111.to_json())
+        parts.append("\"cloudVmNetworkId\":" + inspector2_json_arr(e111))
+    if v.cloudVmSubnetIds.is_some():
+        auto u112 = v.cloudVmSubnetIds.unwrap()
+        list[str] e113 = []
+        for x113 in u112:
+            e113.append(x113.to_json())
+        parts.append("\"cloudVmSubnetIds\":" + inspector2_json_arr(e113))
+    if v.cloudImageRepositoryName.is_some():
+        auto u114 = v.cloudImageRepositoryName.unwrap()
+        list[str] e115 = []
+        for x115 in u114:
+            e115.append(x115.to_json())
+        parts.append("\"cloudImageRepositoryName\":" + inspector2_json_arr(e115))
+    if v.cloudImageRegistry.is_some():
+        auto u116 = v.cloudImageRegistry.unwrap()
+        list[str] e117 = []
+        for x117 in u116:
+            e117.append(x117.to_json())
+        parts.append("\"cloudImageRegistry\":" + inspector2_json_arr(e117))
+    if v.cloudImageDigest.is_some():
+        auto u118 = v.cloudImageDigest.unwrap()
+        list[str] e119 = []
+        for x119 in u118:
+            e119.append(x119.to_json())
+        parts.append("\"cloudImageDigest\":" + inspector2_json_arr(e119))
+    if v.cloudImageTags.is_some():
+        auto u120 = v.cloudImageTags.unwrap()
+        list[str] e121 = []
+        for x121 in u120:
+            e121.append(x121.to_json())
+        parts.append("\"cloudImageTags\":" + inspector2_json_arr(e121))
+    if v.cloudImagePushedAt.is_some():
+        auto u122 = v.cloudImagePushedAt.unwrap()
+        list[str] e123 = []
+        for x123 in u122:
+            e123.append(x123.to_json())
+        parts.append("\"cloudImagePushedAt\":" + inspector2_json_arr(e123))
+    if v.cloudImageArchitecture.is_some():
+        auto u124 = v.cloudImageArchitecture.unwrap()
+        list[str] e125 = []
+        for x125 in u124:
+            e125.append(x125.to_json())
+        parts.append("\"cloudImageArchitecture\":" + inspector2_json_arr(e125))
+    if v.cloudImageLastInUseAt.is_some():
+        auto u126 = v.cloudImageLastInUseAt.unwrap()
+        list[str] e127 = []
+        for x127 in u126:
+            e127.append(x127.to_json())
+        parts.append("\"cloudImageLastInUseAt\":" + inspector2_json_arr(e127))
+    if v.cloudImageInUseCount.is_some():
+        auto u128 = v.cloudImageInUseCount.unwrap()
+        list[str] e129 = []
+        for x129 in u128:
+            e129.append(x129.to_json())
+        parts.append("\"cloudImageInUseCount\":" + inspector2_json_arr(e129))
+    if v.cloudServerlessFunctionName.is_some():
+        auto u130 = v.cloudServerlessFunctionName.unwrap()
+        list[str] e131 = []
+        for x131 in u130:
+            e131.append(x131.to_json())
+        parts.append("\"cloudServerlessFunctionName\":" + inspector2_json_arr(e131))
+    if v.cloudServerlessFunctionRuntime.is_some():
+        auto u132 = v.cloudServerlessFunctionRuntime.unwrap()
+        list[str] e133 = []
+        for x133 in u132:
+            e133.append(x133.to_json())
+        parts.append("\"cloudServerlessFunctionRuntime\":" + inspector2_json_arr(e133))
+    if v.cloudServerlessFunctionLastModifiedAt.is_some():
+        auto u134 = v.cloudServerlessFunctionLastModifiedAt.unwrap()
+        list[str] e135 = []
+        for x135 in u134:
+            e135.append(x135.to_json())
+        parts.append("\"cloudServerlessFunctionLastModifiedAt\":" + inspector2_json_arr(e135))
+    if v.cloudServerlessFunctionExecutionRole.is_some():
+        auto u136 = v.cloudServerlessFunctionExecutionRole.unwrap()
+        list[str] e137 = []
+        for x137 in u136:
+            e137.append(x137.to_json())
+        parts.append("\"cloudServerlessFunctionExecutionRole\":" + inspector2_json_arr(e137))
+    return inspector2_json_obj(parts)
+
+# Serialize ImageLayerAggregation to a compact JSON object (declaration order).
+def image_layer_aggregation_to_json(ImageLayerAggregation v) -> str:
+    list[str] parts = []
+    if v.repositories.is_some():
+        auto u0 = v.repositories.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"repositories\":" + inspector2_json_arr(e1))
+    if v.resourceIds.is_some():
+        auto u2 = v.resourceIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e3))
+    if v.layerHashes.is_some():
+        auto u4 = v.layerHashes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"layerHashes\":" + inspector2_json_arr(e5))
+    if v.cloudProviders.is_some():
+        auto u6 = v.cloudProviders.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"cloudProviders\":" + inspector2_json_arr(e7))
+    if v.cloudAccountIds.is_some():
+        auto u8 = v.cloudAccountIds.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"cloudAccountIds\":" + inspector2_json_arr(e9))
+    if v.cloudOrgIds.is_some():
+        auto u10 = v.cloudOrgIds.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"cloudOrgIds\":" + inspector2_json_arr(e11))
+    if v.cloudRegions.is_some():
+        auto u12 = v.cloudRegions.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"cloudRegions\":" + inspector2_json_arr(e13))
+    if v.cloudPartitions.is_some():
+        auto u14 = v.cloudPartitions.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"cloudPartitions\":" + inspector2_json_arr(e15))
+    if v.sortOrder.is_some():
+        auto u16 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u16.to_json())
+    if v.sortBy.is_some():
+        auto u17 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u17.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize LambdaFunctionAggregation to a compact JSON object (declaration order).
+def lambda_function_aggregation_to_json(LambdaFunctionAggregation v) -> str:
+    list[str] parts = []
+    if v.resourceIds.is_some():
+        auto u0 = v.resourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e1))
+    if v.functionNames.is_some():
+        auto u2 = v.functionNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"functionNames\":" + inspector2_json_arr(e3))
+    if v.runtimes.is_some():
+        auto u4 = v.runtimes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"runtimes\":" + inspector2_json_arr(e5))
+    if v.functionTags.is_some():
+        auto u6 = v.functionTags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"functionTags\":" + inspector2_json_arr(e7))
+    if v.sortOrder.is_some():
+        auto u8 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u8.to_json())
+    if v.sortBy.is_some():
+        auto u9 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u9.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize LambdaLayerAggregation to a compact JSON object (declaration order).
+def lambda_layer_aggregation_to_json(LambdaLayerAggregation v) -> str:
+    list[str] parts = []
+    if v.functionNames.is_some():
+        auto u0 = v.functionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"functionNames\":" + inspector2_json_arr(e1))
+    if v.resourceIds.is_some():
+        auto u2 = v.resourceIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e3))
+    if v.layerArns.is_some():
+        auto u4 = v.layerArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"layerArns\":" + inspector2_json_arr(e5))
+    if v.sortOrder.is_some():
+        auto u6 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u6.to_json())
+    if v.sortBy.is_some():
+        auto u7 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u7.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize ListCisScanConfigurationsFilterCriteria to a compact JSON object (declaration order).
+def list_cis_scan_configurations_filter_criteria_to_json(ListCisScanConfigurationsFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.scanNameFilters.is_some():
+        auto u0 = v.scanNameFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"scanNameFilters\":" + inspector2_json_arr(e1))
+    if v.targetResourceTagFilters.is_some():
+        auto u2 = v.targetResourceTagFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"targetResourceTagFilters\":" + inspector2_json_arr(e3))
+    if v.scanConfigurationArnFilters.is_some():
+        auto u4 = v.scanConfigurationArnFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"scanConfigurationArnFilters\":" + inspector2_json_arr(e5))
+    return inspector2_json_obj(parts)
+
+# Serialize ListCisScansFilterCriteria to a compact JSON object (declaration order).
+def list_cis_scans_filter_criteria_to_json(ListCisScansFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.scanNameFilters.is_some():
+        auto u0 = v.scanNameFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"scanNameFilters\":" + inspector2_json_arr(e1))
+    if v.targetResourceTagFilters.is_some():
+        auto u2 = v.targetResourceTagFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"targetResourceTagFilters\":" + inspector2_json_arr(e3))
+    if v.targetResourceIdFilters.is_some():
+        auto u4 = v.targetResourceIdFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"targetResourceIdFilters\":" + inspector2_json_arr(e5))
+    if v.scanStatusFilters.is_some():
+        auto u6 = v.scanStatusFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"scanStatusFilters\":" + inspector2_json_arr(e7))
+    if v.scanAtFilters.is_some():
+        auto u8 = v.scanAtFilters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"scanAtFilters\":" + inspector2_json_arr(e9))
+    if v.scanConfigurationArnFilters.is_some():
+        auto u10 = v.scanConfigurationArnFilters.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"scanConfigurationArnFilters\":" + inspector2_json_arr(e11))
+    if v.scanArnFilters.is_some():
+        auto u12 = v.scanArnFilters.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"scanArnFilters\":" + inspector2_json_arr(e13))
+    if v.scheduledByFilters.is_some():
+        auto u14 = v.scheduledByFilters.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"scheduledByFilters\":" + inspector2_json_arr(e15))
+    if v.failedChecksFilters.is_some():
+        auto u16 = v.failedChecksFilters.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"failedChecksFilters\":" + inspector2_json_arr(e17))
+    if v.targetAccountIdFilters.is_some():
+        auto u18 = v.targetAccountIdFilters.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"targetAccountIdFilters\":" + inspector2_json_arr(e19))
+    return inspector2_json_obj(parts)
+
+# Serialize PackageAggregation to a compact JSON object (declaration order).
+def package_aggregation_to_json(PackageAggregation v) -> str:
+    list[str] parts = []
+    if v.packageNames.is_some():
+        auto u0 = v.packageNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"packageNames\":" + inspector2_json_arr(e1))
+    if v.sortOrder.is_some():
+        auto u2 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u2.to_json())
+    if v.sortBy.is_some():
+        auto u3 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u3.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize ProviderDetailCreate to a compact JSON object (declaration order).
+def provider_detail_create_to_json(ProviderDetailCreate v) -> str:
+    list[str] parts = []
+    if v.azure.is_some():
+        auto u0 = v.azure.unwrap()
+        parts.append("\"azure\":" + azure_provider_detail_create_to_json(u0))
+    return inspector2_json_obj(parts)
+
+# Serialize ProviderDetailUpdate to a compact JSON object (declaration order).
+def provider_detail_update_to_json(ProviderDetailUpdate v) -> str:
+    list[str] parts = []
+    if v.azure.is_some():
+        auto u0 = v.azure.unwrap()
+        parts.append("\"azure\":" + azure_provider_detail_update_to_json(u0))
+    return inspector2_json_obj(parts)
+
+# Serialize RepositoryAggregation to a compact JSON object (declaration order).
+def repository_aggregation_to_json(RepositoryAggregation v) -> str:
+    list[str] parts = []
+    if v.repositories.is_some():
+        auto u0 = v.repositories.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"repositories\":" + inspector2_json_arr(e1))
+    if v.sortOrder.is_some():
+        auto u2 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u2.to_json())
+    if v.sortBy.is_some():
+        auto u3 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u3.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize ResourceFilterCriteria to a compact JSON object (declaration order).
+def resource_filter_criteria_to_json(ResourceFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.accountId.is_some():
+        auto u0 = v.accountId.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"accountId\":" + inspector2_json_arr(e1))
+    if v.resourceId.is_some():
+        auto u2 = v.resourceId.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"resourceId\":" + inspector2_json_arr(e3))
+    if v.resourceType.is_some():
+        auto u4 = v.resourceType.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"resourceType\":" + inspector2_json_arr(e5))
+    if v.ecrRepositoryName.is_some():
+        auto u6 = v.ecrRepositoryName.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"ecrRepositoryName\":" + inspector2_json_arr(e7))
+    if v.lambdaFunctionName.is_some():
+        auto u8 = v.lambdaFunctionName.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"lambdaFunctionName\":" + inspector2_json_arr(e9))
+    if v.ecrImageTags.is_some():
+        auto u10 = v.ecrImageTags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"ecrImageTags\":" + inspector2_json_arr(e11))
+    if v.ec2InstanceTags.is_some():
+        auto u12 = v.ec2InstanceTags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"ec2InstanceTags\":" + inspector2_json_arr(e13))
+    if v.lambdaFunctionTags.is_some():
+        auto u14 = v.lambdaFunctionTags.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"lambdaFunctionTags\":" + inspector2_json_arr(e15))
+    if v.cloudProvider.is_some():
+        auto u16 = v.cloudProvider.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"cloudProvider\":" + inspector2_json_arr(e17))
+    if v.cloudProviderAccountId.is_some():
+        auto u18 = v.cloudProviderAccountId.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"cloudProviderAccountId\":" + inspector2_json_arr(e19))
+    if v.cloudProviderOrgId.is_some():
+        auto u20 = v.cloudProviderOrgId.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"cloudProviderOrgId\":" + inspector2_json_arr(e21))
+    if v.cloudProviderRegion.is_some():
+        auto u22 = v.cloudProviderRegion.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"cloudProviderRegion\":" + inspector2_json_arr(e23))
+    if v.cloudVmInstanceTags.is_some():
+        auto u24 = v.cloudVmInstanceTags.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"cloudVmInstanceTags\":" + inspector2_json_arr(e25))
+    if v.cloudContainerImageTags.is_some():
+        auto u26 = v.cloudContainerImageTags.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"cloudContainerImageTags\":" + inspector2_json_arr(e27))
+    if v.cloudContainerRepositoryName.is_some():
+        auto u28 = v.cloudContainerRepositoryName.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"cloudContainerRepositoryName\":" + inspector2_json_arr(e29))
+    if v.cloudContainerRegistryName.is_some():
+        auto u30 = v.cloudContainerRegistryName.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"cloudContainerRegistryName\":" + inspector2_json_arr(e31))
+    if v.cloudServerlessFunctionName.is_some():
+        auto u32 = v.cloudServerlessFunctionName.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"cloudServerlessFunctionName\":" + inspector2_json_arr(e33))
+    if v.cloudServerlessFunctionRuntime.is_some():
+        auto u34 = v.cloudServerlessFunctionRuntime.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"cloudServerlessFunctionRuntime\":" + inspector2_json_arr(e35))
+    if v.cloudServerlessFunctionTags.is_some():
+        auto u36 = v.cloudServerlessFunctionTags.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"cloudServerlessFunctionTags\":" + inspector2_json_arr(e37))
+    return inspector2_json_obj(parts)
+
+# Serialize Schedule to a compact JSON object (declaration order).
+def schedule_to_json(Schedule v) -> str:
+    list[str] parts = []
+    if v.oneTime.is_some():
+        auto u0 = v.oneTime.unwrap()
+        parts.append("\"oneTime\":" + u0.to_json())
+    if v.daily.is_some():
+        auto u1 = v.daily.unwrap()
+        parts.append("\"daily\":" + u1.to_json())
+    if v.weekly.is_some():
+        auto u2 = v.weekly.unwrap()
+        parts.append("\"weekly\":" + weekly_schedule_to_json(u2))
+    if v.monthly.is_some():
+        auto u3 = v.monthly.unwrap()
+        parts.append("\"monthly\":" + u3.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize ScopeConfigurationInput to a compact JSON object (declaration order).
+def scope_configuration_input_to_json(ScopeConfigurationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"scopeType\":" + v.scopeType.to_json())
+    if v.scopeValues.is_some():
+        auto u0 = v.scopeValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector2_json_str(x1))
+        parts.append("\"scopeValues\":" + inspector2_json_arr(e1))
+    return inspector2_json_obj(parts)
+
+# Serialize SearchVulnerabilitiesFilterCriteria to a compact JSON object (declaration order).
+def search_vulnerabilities_filter_criteria_to_json(SearchVulnerabilitiesFilterCriteria v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.vulnerabilityIds:
+        e0.append(inspector2_json_str(x0))
+    parts.append("\"vulnerabilityIds\":" + inspector2_json_arr(e0))
+    return inspector2_json_obj(parts)
+
+# Serialize ServerlessFunctionAggregation to a compact JSON object (declaration order).
+def serverless_function_aggregation_to_json(ServerlessFunctionAggregation v) -> str:
+    list[str] parts = []
+    if v.resourceIds.is_some():
+        auto u0 = v.resourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e1))
+    if v.functionNames.is_some():
+        auto u2 = v.functionNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"functionNames\":" + inspector2_json_arr(e3))
+    if v.runtimes.is_some():
+        auto u4 = v.runtimes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"runtimes\":" + inspector2_json_arr(e5))
+    if v.functionTags.is_some():
+        auto u6 = v.functionTags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"functionTags\":" + inspector2_json_arr(e7))
+    if v.cloudProviders.is_some():
+        auto u8 = v.cloudProviders.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"cloudProviders\":" + inspector2_json_arr(e9))
+    if v.cloudPartitions.is_some():
+        auto u10 = v.cloudPartitions.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"cloudPartitions\":" + inspector2_json_arr(e11))
+    if v.cloudRegions.is_some():
+        auto u12 = v.cloudRegions.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"cloudRegions\":" + inspector2_json_arr(e13))
+    if v.cloudOrgIds.is_some():
+        auto u14 = v.cloudOrgIds.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"cloudOrgIds\":" + inspector2_json_arr(e15))
+    if v.cloudAccountIds.is_some():
+        auto u16 = v.cloudAccountIds.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"cloudAccountIds\":" + inspector2_json_arr(e17))
+    if v.sortOrder.is_some():
+        auto u18 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u18.to_json())
+    if v.sortBy.is_some():
+        auto u19 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u19.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize TitleAggregation to a compact JSON object (declaration order).
+def title_aggregation_to_json(TitleAggregation v) -> str:
+    list[str] parts = []
+    if v.titles.is_some():
+        auto u0 = v.titles.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"titles\":" + inspector2_json_arr(e1))
+    if v.vulnerabilityIds.is_some():
+        auto u2 = v.vulnerabilityIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"vulnerabilityIds\":" + inspector2_json_arr(e3))
+    if v.resourceType.is_some():
+        auto u4 = v.resourceType.unwrap()
+        parts.append("\"resourceType\":" + u4.to_json())
+    if v.findingType.is_some():
+        auto u5 = v.findingType.unwrap()
+        parts.append("\"findingType\":" + u5.to_json())
+    if v.sortOrder.is_some():
+        auto u6 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u6.to_json())
+    if v.sortBy.is_some():
+        auto u7 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u7.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize UpdateCisTargets to a compact JSON object (declaration order).
+def update_cis_targets_to_json(UpdateCisTargets v) -> str:
+    list[str] parts = []
+    if v.accountIds.is_some():
+        auto u0 = v.accountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector2_json_str(x1))
+        parts.append("\"accountIds\":" + inspector2_json_arr(e1))
+    if v.targetResourceTags.is_some():
+        auto u2 = v.targetResourceTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(inspector2_json_str(x4))
+            m3.append(inspector2_json_str(k3) + ":" + inspector2_json_arr(e4))
+        parts.append("\"targetResourceTags\":" + inspector2_json_obj(m3))
+    return inspector2_json_obj(parts)
+
+# Serialize VmInstanceAggregation to a compact JSON object (declaration order).
+def vm_instance_aggregation_to_json(VmInstanceAggregation v) -> str:
+    list[str] parts = []
+    if v.resourceIds.is_some():
+        auto u0 = v.resourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceIds\":" + inspector2_json_arr(e1))
+    if v.operatingSystems.is_some():
+        auto u2 = v.operatingSystems.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"operatingSystems\":" + inspector2_json_arr(e3))
+    if v.instanceTags.is_some():
+        auto u4 = v.instanceTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"instanceTags\":" + inspector2_json_arr(e5))
+    if v.vmImageReferences.is_some():
+        auto u6 = v.vmImageReferences.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"vmImageReferences\":" + inspector2_json_arr(e7))
+    if v.cloudProviders.is_some():
+        auto u8 = v.cloudProviders.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"cloudProviders\":" + inspector2_json_arr(e9))
+    if v.cloudPartitions.is_some():
+        auto u10 = v.cloudPartitions.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"cloudPartitions\":" + inspector2_json_arr(e11))
+    if v.cloudRegions.is_some():
+        auto u12 = v.cloudRegions.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"cloudRegions\":" + inspector2_json_arr(e13))
+    if v.cloudOrgIds.is_some():
+        auto u14 = v.cloudOrgIds.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"cloudOrgIds\":" + inspector2_json_arr(e15))
+    if v.cloudAccountIds.is_some():
+        auto u16 = v.cloudAccountIds.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"cloudAccountIds\":" + inspector2_json_arr(e17))
+    if v.sortOrder.is_some():
+        auto u18 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u18.to_json())
+    if v.sortBy.is_some():
+        auto u19 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u19.to_json())
+    return inspector2_json_obj(parts)
+
+# Serialize WeeklySchedule to a compact JSON object (declaration order).
+def weekly_schedule_to_json(WeeklySchedule v) -> str:
+    list[str] parts = []
+    parts.append("\"startTime\":" + v.startTime.to_json())
+    list[str] e0 = []
+    for x0 in v.days:
+        e0.append(x0.to_json())
+    parts.append("\"days\":" + inspector2_json_arr(e0))
+    return inspector2_json_obj(parts)
+
 # A bound Inspector2 client: credentials + region, threaded into every operation.
 struct Inspector2Client:
     core.Credentials creds
@@ -4447,6 +6347,114 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/members/associate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMemberDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchAssociateCodeSecurityScanConfiguration  POST /codesecurity/scan-configuration/batch/associate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_associate_code_security_scan_configuration(self, BatchAssociateCodeSecurityScanConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/batch/associate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.associateConfigurationRequests:
+            e0.append(x0.to_json())
+        parts.append("\"associateConfigurationRequests\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchDisassociateCodeSecurityScanConfiguration  POST /codesecurity/scan-configuration/batch/disassociate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_disassociate_code_security_scan_configuration(self, BatchDisassociateCodeSecurityScanConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/batch/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.disassociateConfigurationRequests:
+            e0.append(x0.to_json())
+        parts.append("\"disassociateConfigurationRequests\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchGetAccountStatus  POST /status/batch/get
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_account_status(self, BatchGetAccountStatusRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/status/batch/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountIds.is_some():
+            auto u0 = input.accountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"accountIds\":" + inspector2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchGetCodeSnippet  POST /codesnippet/batchget
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_code_snippet(self, BatchGetCodeSnippetRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesnippet/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.findingArns:
+            e0.append(inspector2_json_str(x0))
+        parts.append("\"findingArns\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchGetFindingDetails  POST /findings/details/batch/get
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_finding_details(self, BatchGetFindingDetailsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/details/batch/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.findingArns:
+            e0.append(inspector2_json_str(x0))
+        parts.append("\"findingArns\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchGetFreeTrialInfo  POST /freetrialinfo/batchget
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_free_trial_info(self, BatchGetFreeTrialInfoRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/freetrialinfo/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(inspector2_json_str(x0))
+        parts.append("\"accountIds\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchGetMemberEc2DeepInspectionStatus  POST /ec2deepinspectionstatus/member/batch/get
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_member_ec2_deep_inspection_status(self, BatchGetMemberEc2DeepInspectionStatusRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionstatus/member/batch/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountIds.is_some():
+            auto u0 = input.accountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"accountIds\":" + inspector2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # BatchUpdateMemberEc2DeepInspectionStatus  POST /ec2deepinspectionstatus/member/batch/update
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_update_member_ec2_deep_inspection_status(self, BatchUpdateMemberEc2DeepInspectionStatusRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionstatus/member/batch/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(x0.to_json())
+        parts.append("\"accountIds\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # CancelFindingsReport  POST /reporting/cancel
@@ -4465,6 +6473,142 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/cancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelSbomExportDocument(reportId=input.reportId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateCisScanConfiguration  POST /cis/scan-configuration/create
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_cis_scan_configuration(self, CreateCisScanConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanName\":" + inspector2_json_str(input.scanName))
+        parts.append("\"securityLevel\":" + input.securityLevel.to_json())
+        parts.append("\"schedule\":" + schedule_to_json(input.schedule))
+        parts.append("\"targets\":" + create_cis_targets_to_json(input.targets))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(inspector2_json_str(k1) + ":" + inspector2_json_str(u0[k1]))
+            parts.append("\"tags\":" + inspector2_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateCodeSecurityIntegration  POST /codesecurity/integration/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_code_security_integration(self, CreateCodeSecurityIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + inspector2_json_str(input.name))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.details.is_some():
+            auto u0 = input.details.unwrap()
+            parts.append("\"details\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(inspector2_json_str(k2) + ":" + inspector2_json_str(u1[k2]))
+            parts.append("\"tags\":" + inspector2_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateCodeSecurityScanConfiguration  POST /codesecurity/scan-configuration/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_code_security_scan_configuration(self, CreateCodeSecurityScanConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + inspector2_json_str(input.name))
+        parts.append("\"level\":" + input.level.to_json())
+        parts.append("\"configuration\":" + code_security_scan_configuration_to_json(input.configuration))
+        if input.scopeSettings.is_some():
+            auto u0 = input.scopeSettings.unwrap()
+            parts.append("\"scopeSettings\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(inspector2_json_str(k2) + ":" + inspector2_json_str(u1[k2]))
+            parts.append("\"tags\":" + inspector2_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateConnector  POST /connector/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + inspector2_json_str(u0))
+        parts.append("\"name\":" + inspector2_json_str(input.name))
+        parts.append("\"provider\":" + inspector2_json_str(input.provider))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + inspector2_json_str(u1))
+        parts.append("\"providerDetail\":" + provider_detail_create_to_json(input.providerDetail))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(inspector2_json_str(k3) + ":" + inspector2_json_str(u2[k3]))
+            parts.append("\"tags\":" + inspector2_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateFilter  POST /filters/create
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_filter(self, CreateFilterRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"action\":" + input.action.to_json())
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + inspector2_json_str(u0))
+        parts.append("\"filterCriteria\":" + filter_criteria_to_json(input.filterCriteria))
+        parts.append("\"name\":" + inspector2_json_str(input.name))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(inspector2_json_str(k2) + ":" + inspector2_json_str(u1[k2]))
+            parts.append("\"tags\":" + inspector2_json_obj(m2))
+        if input.reason.is_some():
+            auto u3 = input.reason.unwrap()
+            parts.append("\"reason\":" + inspector2_json_str(u3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateFindingsReport  POST /reporting/create
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_findings_report(self, CreateFindingsReportRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/reporting/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + filter_criteria_to_json(u0))
+        parts.append("\"reportFormat\":" + input.reportFormat.to_json())
+        parts.append("\"s3Destination\":" + input.s3Destination.to_json())
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # CreateSbomExport  POST /sbomexport/create
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_sbom_export(self, CreateSbomExportRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceFilterCriteria.is_some():
+            auto u0 = input.resourceFilterCriteria.unwrap()
+            parts.append("\"resourceFilterCriteria\":" + resource_filter_criteria_to_json(u0))
+        parts.append("\"reportFormat\":" + input.reportFormat.to_json())
+        parts.append("\"s3Destination\":" + input.s3Destination.to_json())
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # DeleteCisScanConfiguration  POST /cis/scan-configuration/delete
@@ -4519,6 +6663,27 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/organizationconfiguration/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
+    # Disable  POST /disable
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disable(self, DisableRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/disable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountIds.is_some():
+            auto u0 = input.accountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"accountIds\":" + inspector2_json_arr(e1))
+        if input.resourceTypes.is_some():
+            auto u2 = input.resourceTypes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"resourceTypes\":" + inspector2_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # DisableDelegatedAdminAccount  POST /delegatedadminaccounts/disable
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def disable_delegated_admin_account(self, DisableDelegatedAdminAccountRequest input) -> str:
@@ -4537,6 +6702,28 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # Enable  POST /enable
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def enable(self, EnableRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/enable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountIds.is_some():
+            auto u0 = input.accountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"accountIds\":" + inspector2_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.resourceTypes:
+            e2.append(x2.to_json())
+        parts.append("\"resourceTypes\":" + inspector2_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + inspector2_json_str(u3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # EnableDelegatedAdminAccount  POST /delegatedadminaccounts/enable
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def enable_delegated_admin_account(self, EnableDelegatedAdminAccountRequest input) -> str:
@@ -4546,6 +6733,52 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # GetCisScanReport  POST /cis/scan/report/get
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_cis_scan_report(self, GetCisScanReportRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan/report/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
+        if input.targetAccounts.is_some():
+            auto u0 = input.targetAccounts.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"targetAccounts\":" + inspector2_json_arr(e1))
+        if input.reportFormat.is_some():
+            auto u2 = input.reportFormat.unwrap()
+            parts.append("\"reportFormat\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # GetCisScanResultDetails  POST /cis/scan-result/details/get
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_cis_scan_result_details(self, GetCisScanResultDetailsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/details/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
+        parts.append("\"targetResourceId\":" + inspector2_json_str(input.targetResourceId))
+        parts.append("\"accountId\":" + inspector2_json_str(input.accountId))
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + cis_scan_result_details_filter_criteria_to_json(u0))
+        if input.sortBy.is_some():
+            auto u1 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u1.to_json())
+        if input.sortOrder.is_some():
+            auto u2 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # GetClustersForImage  POST /cluster/get
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_clusters_for_image(self, GetClustersForImageRequest input) -> str:
@@ -4553,6 +6786,22 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/cluster/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetClustersForImageDocument(filter=input.filter, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # GetCodeSecurityIntegration  POST /codesecurity/integration/get
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_code_security_integration(self, GetCodeSecurityIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"integrationArn\":" + inspector2_json_str(input.integrationArn))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(inspector2_json_str(k1) + ":" + inspector2_json_str(u0[k1]))
+            parts.append("\"tags\":" + inspector2_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # GetCodeSecurityScan  POST /codesecurity/scan/get
@@ -4651,6 +6900,107 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # ListCisScanConfigurations  POST /cis/scan-configuration/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_cis_scan_configurations(self, ListCisScanConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + list_cis_scan_configurations_filter_criteria_to_json(u0))
+        if input.sortBy.is_some():
+            auto u1 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u1.to_json())
+        if input.sortOrder.is_some():
+            auto u2 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListCisScanResultsAggregatedByChecks  POST /cis/scan-result/check/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_cis_scan_results_aggregated_by_checks(self, ListCisScanResultsAggregatedByChecksRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/check/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + cis_scan_results_aggregated_by_checks_filter_criteria_to_json(u0))
+        if input.sortBy.is_some():
+            auto u1 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u1.to_json())
+        if input.sortOrder.is_some():
+            auto u2 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListCisScanResultsAggregatedByTargetResource  POST /cis/scan-result/resource/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_cis_scan_results_aggregated_by_target_resource(self, ListCisScanResultsAggregatedByTargetResourceRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/resource/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + cis_scan_results_aggregated_by_target_resource_filter_criteria_to_json(u0))
+        if input.sortBy.is_some():
+            auto u1 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u1.to_json())
+        if input.sortOrder.is_some():
+            auto u2 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListCisScans  POST /cis/scan/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_cis_scans(self, ListCisScansRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + list_cis_scans_filter_criteria_to_json(u0))
+        if input.detailLevel.is_some():
+            auto u1 = input.detailLevel.unwrap()
+            parts.append("\"detailLevel\":" + u1.to_json())
+        if input.sortBy.is_some():
+            auto u2 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u2.to_json())
+        if input.sortOrder.is_some():
+            auto u3 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u3.to_json())
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # ListCodeSecurityIntegrations  POST /codesecurity/integration/list
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_code_security_integrations(self, ListCodeSecurityIntegrationsRequest input) -> str:
@@ -4689,6 +7039,81 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
+    # ListConnectorScanConfigurations  POST /connectorscanconfigurations/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_connector_scan_configurations(self, ListConnectorScanConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connectorscanconfigurations/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.awsConfigConnectorArns.is_some():
+            auto u0 = input.awsConfigConnectorArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"awsConfigConnectorArns\":" + inspector2_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListConnectors  POST /connector/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_connectors(self, ListConnectorsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u1))
+        if input.filterCriteria.is_some():
+            auto u2 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + connector_filter_criteria_to_json(u2))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListCoverage  POST /coverage/list
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_coverage(self, ListCoverageRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/coverage/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u1))
+        if input.filterCriteria.is_some():
+            auto u2 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + coverage_filter_criteria_to_json(u2))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListCoverageStatistics  POST /coverage/statistics/list
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_coverage_statistics(self, ListCoverageStatisticsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/coverage/statistics/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + coverage_filter_criteria_to_json(u0))
+        if input.groupBy.is_some():
+            auto u1 = input.groupBy.unwrap()
+            parts.append("\"groupBy\":" + u1.to_json())
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u2))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # ListDelegatedAdminAccounts  POST /delegatedadminaccounts/list
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_delegated_admin_accounts(self, ListDelegatedAdminAccountsRequest input) -> str:
@@ -4696,6 +7121,76 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDelegatedAdminAccountsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListFilters  POST /filters/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_filters(self, ListFiltersRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.arns.is_some():
+            auto u0 = input.arns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(inspector2_json_str(x1))
+            parts.append("\"arns\":" + inspector2_json_arr(e1))
+        if input.action.is_some():
+            auto u2 = input.action.unwrap()
+            parts.append("\"action\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListFindingAggregations  POST /findings/aggregation/list
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_finding_aggregations(self, ListFindingAggregationsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/aggregation/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"aggregationType\":" + input.aggregationType.to_json())
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.accountIds.is_some():
+            auto u2 = input.accountIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"accountIds\":" + inspector2_json_arr(e3))
+        if input.aggregationRequest.is_some():
+            auto u4 = input.aggregationRequest.unwrap()
+            parts.append("\"aggregationRequest\":" + aggregation_request_to_json(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # ListFindings  POST /findings/list
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_findings(self, ListFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u1))
+        if input.filterCriteria.is_some():
+            auto u2 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + filter_criteria_to_json(u2))
+        if input.sortCriteria.is_some():
+            auto u3 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # ListMembers  POST /members/list
@@ -4725,6 +7220,27 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
+    # ListUsageTotals  POST /usage/list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_usage_totals(self, ListUsageTotalsRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/usage/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u1))
+        if input.accountIds.is_some():
+            auto u2 = input.accountIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(inspector2_json_str(x3))
+            parts.append("\"accountIds\":" + inspector2_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # ResetEncryptionKey  PUT /encryptionkey/reset
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reset_encryption_key(self, ResetEncryptionKeyRequest input) -> str:
@@ -4734,6 +7250,19 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # SearchVulnerabilities  POST /vulnerabilities/search
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_vulnerabilities(self, SearchVulnerabilitiesRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/vulnerabilities/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"filterCriteria\":" + search_vulnerabilities_filter_criteria_to_json(input.filterCriteria))
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + inspector2_json_str(u0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # SendCisSessionHealth  PUT /cissession/health/send
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def send_cis_session_health(self, SendCisSessionHealthRequest input) -> str:
@@ -4741,6 +7270,21 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="PUT", path_template="/cissession/health/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendCisSessionHealthDocument(scanJobId=input.scanJobId, sessionToken=input.sessionToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # SendCisSessionTelemetry  PUT /cissession/telemetry/send
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def send_cis_session_telemetry(self, SendCisSessionTelemetryRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/telemetry/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanJobId\":" + inspector2_json_str(input.scanJobId))
+        parts.append("\"sessionToken\":" + inspector2_json_str(input.sessionToken))
+        list[str] e0 = []
+        for x0 in input.messages:
+            e0.append(x0.to_json())
+        parts.append("\"messages\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # StartCisSession  PUT /cissession/start
@@ -4779,6 +7323,43 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(inspector2_json_str(k0) + ":" + inspector2_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + inspector2_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # UpdateCisScanConfiguration  POST /cis/scan-configuration/update
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cis_scan_configuration(self, UpdateCisScanConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanConfigurationArn\":" + inspector2_json_str(input.scanConfigurationArn))
+        if input.scanName.is_some():
+            auto u0 = input.scanName.unwrap()
+            parts.append("\"scanName\":" + inspector2_json_str(u0))
+        if input.securityLevel.is_some():
+            auto u1 = input.securityLevel.unwrap()
+            parts.append("\"securityLevel\":" + u1.to_json())
+        if input.schedule.is_some():
+            auto u2 = input.schedule.unwrap()
+            parts.append("\"schedule\":" + schedule_to_json(u2))
+        if input.targets.is_some():
+            auto u3 = input.targets.unwrap()
+            parts.append("\"targets\":" + update_cis_targets_to_json(u3))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # UpdateCodeSecurityIntegration  POST /codesecurity/integration/update
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_code_security_integration(self, UpdateCodeSecurityIntegrationRequest input) -> str:
@@ -4786,6 +7367,57 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCodeSecurityIntegrationDocument(integrationArn=input.integrationArn, details=input.details)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # UpdateCodeSecurityScanConfiguration  POST /codesecurity/scan-configuration/update
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_code_security_scan_configuration(self, UpdateCodeSecurityScanConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"scanConfigurationArn\":" + inspector2_json_str(input.scanConfigurationArn))
+        parts.append("\"configuration\":" + code_security_scan_configuration_to_json(input.configuration))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # UpdateConfiguration  POST /configuration/update
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def update_configuration(self, UpdateConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountId.is_some():
+            auto u0 = input.accountId.unwrap()
+            parts.append("\"accountId\":" + inspector2_json_str(u0))
+        if input.ecrConfiguration.is_some():
+            auto u1 = input.ecrConfiguration.unwrap()
+            parts.append("\"ecrConfiguration\":" + u1.to_json())
+        if input.ec2Configuration.is_some():
+            auto u2 = input.ec2Configuration.unwrap()
+            parts.append("\"ec2Configuration\":" + u2.to_json())
+        if input.amiConfiguration.is_some():
+            auto u3 = input.amiConfiguration.unwrap()
+            parts.append("\"amiConfiguration\":" + ami_configuration_to_json(u3))
+        if input.updateConfigurationInheritance.is_some():
+            auto u4 = input.updateConfigurationInheritance.unwrap()
+            parts.append("\"updateConfigurationInheritance\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # UpdateConnector  POST /connector/update
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_connector(self, UpdateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"connectorArn\":" + inspector2_json_str(input.connectorArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + inspector2_json_str(u0))
+        if input.providerDetail.is_some():
+            auto u1 = input.providerDetail.unwrap()
+            parts.append("\"providerDetail\":" + provider_detail_update_to_json(u1))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # UpdateConnectorScanConfiguration  POST /connectorscanconfiguration/update
@@ -4797,6 +7429,24 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # UpdateEc2DeepInspectionConfiguration  POST /ec2deepinspectionconfiguration/update
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_ec2_deep_inspection_configuration(self, UpdateEc2DeepInspectionConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.activateDeepInspection.is_some():
+            auto u0 = input.activateDeepInspection.unwrap()
+            parts.append("\"activateDeepInspection\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.packagePaths.is_some():
+            auto u1 = input.packagePaths.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(inspector2_json_str(x2))
+            parts.append("\"packagePaths\":" + inspector2_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
     # UpdateEncryptionKey  PUT /encryptionkey/update
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_encryption_key(self, UpdateEncryptionKeyRequest input) -> str:
@@ -4804,6 +7454,44 @@ struct Inspector2Client:
         auto b = binding.HttpBinding(method="PUT", path_template="/encryptionkey/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEncryptionKeyDocument(kmsKeyId=input.kmsKeyId, scanType=input.scanType, resourceType=input.resourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # UpdateFilter  POST /filters/update
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_filter(self, UpdateFilterRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.action.is_some():
+            auto u0 = input.action.unwrap()
+            parts.append("\"action\":" + u0.to_json())
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + inspector2_json_str(u1))
+        if input.filterCriteria.is_some():
+            auto u2 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + filter_criteria_to_json(u2))
+        if input.name.is_some():
+            auto u3 = input.name.unwrap()
+            parts.append("\"name\":" + inspector2_json_str(u3))
+        parts.append("\"filterArn\":" + inspector2_json_str(input.filterArn))
+        if input.reason.is_some():
+            auto u4 = input.reason.unwrap()
+            parts.append("\"reason\":" + inspector2_json_str(u4))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # UpdateOrgEc2DeepInspectionConfiguration  POST /ec2deepinspectionconfiguration/org/update
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_org_ec2_deep_inspection_configuration(self, UpdateOrgEc2DeepInspectionConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/org/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.orgPackagePaths:
+            e0.append(inspector2_json_str(x0))
+        parts.append("\"orgPackagePaths\":" + inspector2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
     # UpdateOrganizationConfiguration  POST /organizationconfiguration/update
@@ -4814,6 +7502,19 @@ struct Inspector2Client:
         auto doc = UpdateOrganizationConfigurationDocument(autoEnable=input.autoEnable)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
+
+    # Paginator for GetCisScanResultDetails — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: scanResultDetails).
+    def paginate_get_cis_scan_result_details(self, GetCisScanResultDetailsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.get_cis_scan_result_details(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for GetClustersForImage — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: cluster).
@@ -4841,12 +7542,155 @@ struct Inspector2Client:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListCisScanConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: scanConfigurations).
+    def paginate_list_cis_scan_configurations(self, ListCisScanConfigurationsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_cis_scan_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCisScanResultsAggregatedByChecks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: checkAggregations).
+    def paginate_list_cis_scan_results_aggregated_by_checks(self, ListCisScanResultsAggregatedByChecksRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_cis_scan_results_aggregated_by_checks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCisScanResultsAggregatedByTargetResource — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: targetResourceAggregations).
+    def paginate_list_cis_scan_results_aggregated_by_target_resource(self, ListCisScanResultsAggregatedByTargetResourceRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_cis_scan_results_aggregated_by_target_resource(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCisScans — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: scans).
+    def paginate_list_cis_scans(self, ListCisScansRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_cis_scans(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListConnectorScanConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: scanConfigurations).
+    def paginate_list_connector_scan_configurations(self, ListConnectorScanConfigurationsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_connector_scan_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListConnectors — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_connectors(self, ListConnectorsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_connectors(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCoverage — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: coveredResources).
+    def paginate_list_coverage(self, ListCoverageRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_coverage(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCoverageStatistics — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: countsByGroup).
+    def paginate_list_coverage_statistics(self, ListCoverageStatisticsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_coverage_statistics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListDelegatedAdminAccounts — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: delegatedAdminAccounts).
     def paginate_list_delegated_admin_accounts(self, ListDelegatedAdminAccountsRequest input):
         auto host = endpoints.regional_host(inspector2_service(), self.region)
         while True:
             auto raw = self.list_delegated_admin_accounts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFilters — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: filters).
+    def paginate_list_filters(self, ListFiltersRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_filters(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindingAggregations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: responses).
+    def paginate_list_finding_aggregations(self, ListFindingAggregationsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_finding_aggregations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findings).
+    def paginate_list_findings(self, ListFindingsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_findings(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -4873,6 +7717,32 @@ struct Inspector2Client:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
         while True:
             auto raw = self.list_on_demand_scans(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListUsageTotals — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: totals).
+    def paginate_list_usage_totals(self, ListUsageTotalsRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.list_usage_totals(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchVulnerabilities — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: vulnerabilities).
+    def paginate_search_vulnerabilities(self, SearchVulnerabilitiesRequest input):
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        while True:
+            auto raw = self.search_vulnerabilities(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

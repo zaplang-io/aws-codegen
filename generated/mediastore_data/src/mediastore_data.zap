@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 5 operations — 5 with a generated method,
-#   0 skipped (a member type is not yet bindable/serializable by derive).
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   15 structs (14 @derive(Json)), 2 enums, 4 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -120,8 +120,9 @@ struct ListItemsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Item] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Item] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListItemsResponse:
     Optional[list[Item]] Items
     Optional[str] NextToken

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 21 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 30 operations — 29 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   115 structs (67 @derive(Json)), 33 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The MediaPackageV2 rest-json protocol: SigV4 service "mediapackagev2" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -483,8 +484,9 @@ struct CancelHarvestJobResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CdnIdentifierSecretArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CdnIdentifierSecretArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CdnAuthConfiguration:
     list[str] CdnIdentifierSecretArns
     str SecretsRoleArn
@@ -497,8 +499,9 @@ struct ChannelGroupListConfiguration:
     DateTime ModifiedAt
     Optional[str] Description
 
-# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelListConfiguration:
     str Arn
     str ChannelName
@@ -528,8 +531,9 @@ struct CreateChannelGroupRequest:
     Optional[str] Description
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelGroupResponse:
     str ChannelGroupName
     str Arn
@@ -554,8 +558,9 @@ struct CreateChannelRequest:
     Optional[OutputLockingMode] OutputLockingMode
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str], IngestEndpoints: list[IngestEndpoint], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str], IngestEndpoints: list[IngestEndpoint], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelResponse:
     Optional[MultiviewConfiguration] MultiviewConfiguration
     Optional[list[str]] AttachedMultiviewChannels
@@ -573,8 +578,9 @@ struct CreateChannelResponse:
     Optional[OutputHeaderConfiguration] OutputHeaderConfiguration
     Optional[OutputLockingMode] OutputLockingMode
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration, PeriodTriggers: list[DashPeriodTrigger], Profiles: list[str], BaseUrls: list[DashBaseUrl], DvbSettings: DashDvbSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration, PeriodTriggers: list[DashPeriodTrigger], Profiles: list[str], BaseUrls: list[DashBaseUrl], DvbSettings: DashDvbSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDashManifestConfiguration:
     str ManifestName
     Optional[int64] ManifestWindowSeconds
@@ -611,8 +617,9 @@ struct CreateHarvestJobRequest:
     Optional[str] HarvestJobName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) HarvestedManifests: HarvestedManifests, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HarvestedManifests: HarvestedManifests, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHarvestJobResponse:
     str ChannelGroupName
     str ChannelName
@@ -630,8 +637,9 @@ struct CreateHarvestJobResponse:
     Optional[str] ETag
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHlsManifestConfiguration:
     str ManifestName
     Optional[str] ChildManifestName
@@ -643,8 +651,9 @@ struct CreateHlsManifestConfiguration:
     Optional[bool] UrlEncodeChildManifest
     Optional[UriPathType] UriPathType
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLowLatencyHlsManifestConfiguration:
     str ManifestName
     Optional[str] ChildManifestName
@@ -656,8 +665,9 @@ struct CreateLowLatencyHlsManifestConfiguration:
     Optional[bool] UrlEncodeChildManifest
     Optional[UriPathType] UriPathType
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMssManifestConfiguration:
     str ManifestName
     Optional[int64] ManifestWindowSeconds
@@ -684,8 +694,9 @@ struct CreateOriginEndpointRequest:
     Optional[StreamNameOutputMode] StreamNameOutputMode
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Segment: Segment, HlsManifests: list[GetHlsManifestConfiguration], LowLatencyHlsManifests: list[GetLowLatencyHlsManifestConfiguration], DashManifests: list[GetDashManifestConfiguration], MssManifests: list[GetMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segment: Segment, HlsManifests: list[GetHlsManifestConfiguration], LowLatencyHlsManifests: list[GetLowLatencyHlsManifestConfiguration], DashManifests: list[GetDashManifestConfiguration], MssManifests: list[GetMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOriginEndpointResponse:
     str Arn
     str ChannelGroupName
@@ -730,8 +741,9 @@ struct DashDvbMetricsReporting:
     str ReportingUrl
     Optional[int64] Probability
 
-# no @derive(Json): member(s) ErrorMetrics: list[DashDvbMetricsReporting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorMetrics: list[DashDvbMetricsReporting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashDvbSettings:
     Optional[DashDvbFontDownload] FontDownload
     Optional[list[DashDvbMetricsReporting]] ErrorMetrics
@@ -817,8 +829,9 @@ struct DeleteOriginEndpointResponse:
 struct Destination:
     S3DestinationConfig S3Destination
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Encryption:
     Optional[str] ConstantInitializationVector
     EncryptionMethod EncryptionMethod
@@ -837,8 +850,9 @@ struct EncryptionMethod:
     Optional[CmafEncryptionMethod] CmafEncryptionMethod
     Optional[str] IsmEncryptionMethod
 
-# no @derive(Json): member(s) Multiview: MultiviewFilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Multiview: MultiviewFilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterConfiguration:
     Optional[str] ManifestFilter
     Optional[str] DrmSettings
@@ -848,8 +862,9 @@ struct FilterConfiguration:
     Optional[DateTime] ClipStartTime
     Optional[MultiviewFilterConfiguration] Multiview
 
-# no @derive(Json): member(s) EndpointErrorConditions: list[EndpointErrorCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointErrorConditions: list[EndpointErrorCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForceEndpointErrorConfiguration:
     Optional[list[EndpointErrorCondition]] EndpointErrorConditions
 
@@ -858,8 +873,9 @@ struct ForceEndpointErrorConfiguration:
 struct GetChannelGroupRequest:
     str ChannelGroupName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelGroupResponse:
     str ChannelGroupName
     str Arn
@@ -888,8 +904,9 @@ struct GetChannelRequest:
     str ChannelGroupName
     str ChannelName
 
-# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str], IngestEndpoints: list[IngestEndpoint], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str], IngestEndpoints: list[IngestEndpoint], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelResponse:
     Optional[MultiviewConfiguration] MultiviewConfiguration
     Optional[list[str]] AttachedMultiviewChannels
@@ -908,8 +925,9 @@ struct GetChannelResponse:
     Optional[OutputHeaderConfiguration] OutputHeaderConfiguration
     Optional[OutputLockingMode] OutputLockingMode
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration, PeriodTriggers: list[DashPeriodTrigger], Profiles: list[str], BaseUrls: list[DashBaseUrl], DvbSettings: DashDvbSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration, PeriodTriggers: list[DashPeriodTrigger], Profiles: list[str], BaseUrls: list[DashBaseUrl], DvbSettings: DashDvbSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDashManifestConfiguration:
     str ManifestName
     str Url
@@ -941,8 +959,9 @@ struct GetHarvestJobRequest:
     str OriginEndpointName
     str HarvestJobName
 
-# no @derive(Json): member(s) HarvestedManifests: HarvestedManifests, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HarvestedManifests: HarvestedManifests, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetHarvestJobResponse:
     str ChannelGroupName
     str ChannelName
@@ -960,8 +979,9 @@ struct GetHarvestJobResponse:
     Optional[str] ETag
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetHlsManifestConfiguration:
     str ManifestName
     str Url
@@ -974,8 +994,9 @@ struct GetHlsManifestConfiguration:
     Optional[bool] UrlEncodeChildManifest
     Optional[UriPathType] UriPathType
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLowLatencyHlsManifestConfiguration:
     str ManifestName
     str Url
@@ -988,8 +1009,9 @@ struct GetLowLatencyHlsManifestConfiguration:
     Optional[bool] UrlEncodeChildManifest
     Optional[UriPathType] UriPathType
 
-# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMssManifestConfiguration:
     str ManifestName
     str Url
@@ -1004,8 +1026,9 @@ struct GetOriginEndpointPolicyRequest:
     str ChannelName
     str OriginEndpointName
 
-# no @derive(Json): member(s) CdnAuthConfiguration: CdnAuthConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CdnAuthConfiguration: CdnAuthConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOriginEndpointPolicyResponse:
     str ChannelGroupName
     str ChannelName
@@ -1020,8 +1043,9 @@ struct GetOriginEndpointRequest:
     str ChannelName
     str OriginEndpointName
 
-# no @derive(Json): member(s) Segment: Segment, HlsManifests: list[GetHlsManifestConfiguration], LowLatencyHlsManifests: list[GetLowLatencyHlsManifestConfiguration], DashManifests: list[GetDashManifestConfiguration], MssManifests: list[GetMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segment: Segment, HlsManifests: list[GetHlsManifestConfiguration], LowLatencyHlsManifests: list[GetLowLatencyHlsManifestConfiguration], DashManifests: list[GetDashManifestConfiguration], MssManifests: list[GetMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOriginEndpointResponse:
     str Arn
     str ChannelGroupName
@@ -1044,8 +1068,9 @@ struct GetOriginEndpointResponse:
     Optional[str] ETag
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) HarvestedManifests: HarvestedManifests not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HarvestedManifests: HarvestedManifests not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarvestJob:
     str ChannelGroupName
     str ChannelName
@@ -1074,8 +1099,9 @@ struct HarvestedHlsManifest:
 struct HarvestedLowLatencyHlsManifest:
     str ManifestName
 
-# no @derive(Json): member(s) HlsManifests: list[HarvestedHlsManifest], DashManifests: list[HarvestedDashManifest], LowLatencyHlsManifests: list[HarvestedLowLatencyHlsManifest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsManifests: list[HarvestedHlsManifest], DashManifests: list[HarvestedDashManifest], LowLatencyHlsManifests: list[HarvestedLowLatencyHlsManifest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarvestedManifests:
     Optional[list[HarvestedHlsManifest]] HlsManifests
     Optional[list[HarvestedDashManifest]] DashManifests
@@ -1106,8 +1132,9 @@ struct ListChannelGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ChannelGroupListConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ChannelGroupListConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelGroupsResponse:
     Optional[list[ChannelGroupListConfiguration]] Items
     Optional[str] NextToken
@@ -1119,8 +1146,9 @@ struct ListChannelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ChannelListConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ChannelListConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[list[ChannelListConfiguration]] Items
     Optional[str] NextToken
@@ -1141,8 +1169,9 @@ struct ListHarvestJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[HarvestJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[HarvestJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHarvestJobsResponse:
     Optional[list[HarvestJob]] Items
     Optional[str] NextToken
@@ -1172,8 +1201,9 @@ struct ListOriginEndpointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[OriginEndpointListConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[OriginEndpointListConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOriginEndpointsResponse:
     Optional[list[OriginEndpointListConfiguration]] Items
     Optional[str] NextToken
@@ -1183,25 +1213,29 @@ struct ListOriginEndpointsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) AvailableSources: list[str], AvailableLayouts: list[MultiviewLayoutType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailableSources: list[str], AvailableLayouts: list[MultiviewLayoutType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiviewConfiguration:
     list[str] AvailableSources
     list[MultiviewLayoutType] AvailableLayouts
 
-# no @derive(Json): member(s) Sources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiviewFilterConfiguration:
     MultiviewLayoutType Layout
     list[str] Sources
 
-# no @derive(Json): member(s) HlsManifests: list[ListHlsManifestConfiguration], LowLatencyHlsManifests: list[ListLowLatencyHlsManifestConfiguration], DashManifests: list[ListDashManifestConfiguration], MssManifests: list[ListMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HlsManifests: list[ListHlsManifestConfiguration], LowLatencyHlsManifests: list[ListLowLatencyHlsManifestConfiguration], DashManifests: list[ListDashManifestConfiguration], MssManifests: list[ListMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OriginEndpointListConfiguration:
     str Arn
     str ChannelGroupName
@@ -1287,8 +1321,9 @@ struct S3DestinationConfig:
     str BucketName
     str DestinationPath
 
-# no @derive(Json): member(s) ScteFilter: list[ScteFilter], CustomAdTypes: list[CustomAdType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScteFilter: list[ScteFilter], CustomAdTypes: list[CustomAdType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scte:
     Optional[list[ScteFilter]] ScteFilter
     Optional[ScteInSegments] ScteInSegments
@@ -1304,8 +1339,9 @@ struct ScteHls:
     Optional[AdMarkerHls] AdMarkerHls
     Optional[ScteInManifests] ScteInManifests
 
-# no @derive(Json): member(s) Scte: Scte, Encryption: Encryption not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scte: Scte, Encryption: Encryption not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Segment:
     Optional[int64] SegmentDurationSeconds
     Optional[str] SegmentName
@@ -1320,8 +1356,9 @@ struct Segment:
 struct ServiceQuotaExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) DrmSystems: list[DrmSystem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DrmSystems: list[DrmSystem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpekeKeyProvider:
     EncryptionContractConfiguration EncryptionContractConfiguration
     str ResourceId
@@ -1360,8 +1397,9 @@ struct UpdateChannelGroupRequest:
     Optional[str] ETag
     Optional[str] Description
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelGroupResponse:
     str ChannelGroupName
     str Arn
@@ -1383,8 +1421,9 @@ struct UpdateChannelRequest:
     Optional[OutputHeaderConfiguration] OutputHeaderConfiguration
     Optional[MultiviewConfiguration] MultiviewConfiguration
 
-# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str], IngestEndpoints: list[IngestEndpoint], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiviewConfiguration: MultiviewConfiguration, AttachedMultiviewChannels: list[str], IngestEndpoints: list[IngestEndpoint], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelResponse:
     Optional[MultiviewConfiguration] MultiviewConfiguration
     Optional[list[str]] AttachedMultiviewChannels
@@ -1421,8 +1460,9 @@ struct UpdateOriginEndpointRequest:
     Optional[StreamNameOutputMode] StreamNameOutputMode
     Optional[str] ETag
 
-# no @derive(Json): member(s) Segment: Segment, HlsManifests: list[GetHlsManifestConfiguration], LowLatencyHlsManifests: list[GetLowLatencyHlsManifestConfiguration], MssManifests: list[GetMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration, Tags: dict[str, str], DashManifests: list[GetDashManifestConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segment: Segment, HlsManifests: list[GetHlsManifestConfiguration], LowLatencyHlsManifests: list[GetLowLatencyHlsManifestConfiguration], MssManifests: list[GetMssManifestConfiguration], ForceEndpointErrorConfiguration: ForceEndpointErrorConfiguration, Tags: dict[str, str], DashManifests: list[GetDashManifestConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOriginEndpointResponse:
     str Arn
     str ChannelGroupName
@@ -1487,15 +1527,7 @@ def mediapackagev2_error_from_code(str code) -> MediaPackageV2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateChannel (document member `MultiviewConfiguration: MultiviewConfiguration` is not serializable by derive)
-#   CreateChannelGroup (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateHarvestJob (document member `HarvestedManifests: HarvestedManifests` is not serializable by derive)
-#   CreateOriginEndpoint (document member `Segment: Segment` is not serializable by derive)
-#   PutOriginEndpointPolicy (document member `CdnAuthConfiguration: CdnAuthConfiguration` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateChannel (document member `MultiviewConfiguration: MultiviewConfiguration` is not serializable by derive)
-#   UpdateOriginEndpoint (document member `Segment: Segment` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1509,6 +1541,377 @@ struct PutChannelPolicyDocument:
 struct UpdateChannelGroupDocument:
     # document members of UpdateChannelGroup
     Optional[str] Description
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mediapackagev2_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mediapackagev2_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mediapackagev2_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CdnAuthConfiguration to a compact JSON object (declaration order).
+def cdn_auth_configuration_to_json(CdnAuthConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CdnIdentifierSecretArns:
+        e0.append(mediapackagev2_json_str(x0))
+    parts.append("\"CdnIdentifierSecretArns\":" + mediapackagev2_json_arr(e0))
+    parts.append("\"SecretsRoleArn\":" + mediapackagev2_json_str(v.SecretsRoleArn))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize CreateDashManifestConfiguration to a compact JSON object (declaration order).
+def create_dash_manifest_configuration_to_json(CreateDashManifestConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ManifestName\":" + mediapackagev2_json_str(v.ManifestName))
+    if v.ManifestWindowSeconds.is_some():
+        auto u0 = v.ManifestWindowSeconds.unwrap()
+        parts.append("\"ManifestWindowSeconds\":" + str(u0))
+    if v.FilterConfiguration.is_some():
+        auto u1 = v.FilterConfiguration.unwrap()
+        parts.append("\"FilterConfiguration\":" + filter_configuration_to_json(u1))
+    if v.MinUpdatePeriodSeconds.is_some():
+        auto u2 = v.MinUpdatePeriodSeconds.unwrap()
+        parts.append("\"MinUpdatePeriodSeconds\":" + str(u2))
+    if v.MinBufferTimeSeconds.is_some():
+        auto u3 = v.MinBufferTimeSeconds.unwrap()
+        parts.append("\"MinBufferTimeSeconds\":" + str(u3))
+    if v.SuggestedPresentationDelaySeconds.is_some():
+        auto u4 = v.SuggestedPresentationDelaySeconds.unwrap()
+        parts.append("\"SuggestedPresentationDelaySeconds\":" + str(u4))
+    if v.SegmentTemplateFormat.is_some():
+        auto u5 = v.SegmentTemplateFormat.unwrap()
+        parts.append("\"SegmentTemplateFormat\":" + mediapackagev2_json_str(u5))
+    if v.PeriodTriggers.is_some():
+        auto u6 = v.PeriodTriggers.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"PeriodTriggers\":" + mediapackagev2_json_arr(e7))
+    if v.ScteDash.is_some():
+        auto u8 = v.ScteDash.unwrap()
+        parts.append("\"ScteDash\":" + u8.to_json())
+    if v.DrmSignaling.is_some():
+        auto u9 = v.DrmSignaling.unwrap()
+        parts.append("\"DrmSignaling\":" + u9.to_json())
+    if v.UtcTiming.is_some():
+        auto u10 = v.UtcTiming.unwrap()
+        parts.append("\"UtcTiming\":" + u10.to_json())
+    if v.Profiles.is_some():
+        auto u11 = v.Profiles.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(mediapackagev2_json_str(x12))
+        parts.append("\"Profiles\":" + mediapackagev2_json_arr(e12))
+    if v.BaseUrls.is_some():
+        auto u13 = v.BaseUrls.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"BaseUrls\":" + mediapackagev2_json_arr(e14))
+    if v.ProgramInformation.is_some():
+        auto u15 = v.ProgramInformation.unwrap()
+        parts.append("\"ProgramInformation\":" + u15.to_json())
+    if v.DvbSettings.is_some():
+        auto u16 = v.DvbSettings.unwrap()
+        parts.append("\"DvbSettings\":" + dash_dvb_settings_to_json(u16))
+    if v.Compactness.is_some():
+        auto u17 = v.Compactness.unwrap()
+        parts.append("\"Compactness\":" + u17.to_json())
+    if v.AudioTimelinePattern.is_some():
+        auto u18 = v.AudioTimelinePattern.unwrap()
+        parts.append("\"AudioTimelinePattern\":" + u18.to_json())
+    if v.SubtitleConfiguration.is_some():
+        auto u19 = v.SubtitleConfiguration.unwrap()
+        parts.append("\"SubtitleConfiguration\":" + u19.to_json())
+    if v.UriPathType.is_some():
+        auto u20 = v.UriPathType.unwrap()
+        parts.append("\"UriPathType\":" + u20.to_json())
+    if v.AvailabilityStartTimeConfiguration.is_some():
+        auto u21 = v.AvailabilityStartTimeConfiguration.unwrap()
+        parts.append("\"AvailabilityStartTimeConfiguration\":" + u21.to_json())
+    return mediapackagev2_json_obj(parts)
+
+# Serialize CreateHlsManifestConfiguration to a compact JSON object (declaration order).
+def create_hls_manifest_configuration_to_json(CreateHlsManifestConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ManifestName\":" + mediapackagev2_json_str(v.ManifestName))
+    if v.ChildManifestName.is_some():
+        auto u0 = v.ChildManifestName.unwrap()
+        parts.append("\"ChildManifestName\":" + mediapackagev2_json_str(u0))
+    if v.ScteHls.is_some():
+        auto u1 = v.ScteHls.unwrap()
+        parts.append("\"ScteHls\":" + u1.to_json())
+    if v.StartTag.is_some():
+        auto u2 = v.StartTag.unwrap()
+        parts.append("\"StartTag\":" + u2.to_json())
+    if v.ManifestWindowSeconds.is_some():
+        auto u3 = v.ManifestWindowSeconds.unwrap()
+        parts.append("\"ManifestWindowSeconds\":" + str(u3))
+    if v.ProgramDateTimeIntervalSeconds.is_some():
+        auto u4 = v.ProgramDateTimeIntervalSeconds.unwrap()
+        parts.append("\"ProgramDateTimeIntervalSeconds\":" + str(u4))
+    if v.FilterConfiguration.is_some():
+        auto u5 = v.FilterConfiguration.unwrap()
+        parts.append("\"FilterConfiguration\":" + filter_configuration_to_json(u5))
+    if v.UrlEncodeChildManifest.is_some():
+        auto u6 = v.UrlEncodeChildManifest.unwrap()
+        parts.append("\"UrlEncodeChildManifest\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.UriPathType.is_some():
+        auto u7 = v.UriPathType.unwrap()
+        parts.append("\"UriPathType\":" + u7.to_json())
+    return mediapackagev2_json_obj(parts)
+
+# Serialize CreateLowLatencyHlsManifestConfiguration to a compact JSON object (declaration order).
+def create_low_latency_hls_manifest_configuration_to_json(CreateLowLatencyHlsManifestConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ManifestName\":" + mediapackagev2_json_str(v.ManifestName))
+    if v.ChildManifestName.is_some():
+        auto u0 = v.ChildManifestName.unwrap()
+        parts.append("\"ChildManifestName\":" + mediapackagev2_json_str(u0))
+    if v.ScteHls.is_some():
+        auto u1 = v.ScteHls.unwrap()
+        parts.append("\"ScteHls\":" + u1.to_json())
+    if v.StartTag.is_some():
+        auto u2 = v.StartTag.unwrap()
+        parts.append("\"StartTag\":" + u2.to_json())
+    if v.ManifestWindowSeconds.is_some():
+        auto u3 = v.ManifestWindowSeconds.unwrap()
+        parts.append("\"ManifestWindowSeconds\":" + str(u3))
+    if v.ProgramDateTimeIntervalSeconds.is_some():
+        auto u4 = v.ProgramDateTimeIntervalSeconds.unwrap()
+        parts.append("\"ProgramDateTimeIntervalSeconds\":" + str(u4))
+    if v.FilterConfiguration.is_some():
+        auto u5 = v.FilterConfiguration.unwrap()
+        parts.append("\"FilterConfiguration\":" + filter_configuration_to_json(u5))
+    if v.UrlEncodeChildManifest.is_some():
+        auto u6 = v.UrlEncodeChildManifest.unwrap()
+        parts.append("\"UrlEncodeChildManifest\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.UriPathType.is_some():
+        auto u7 = v.UriPathType.unwrap()
+        parts.append("\"UriPathType\":" + u7.to_json())
+    return mediapackagev2_json_obj(parts)
+
+# Serialize CreateMssManifestConfiguration to a compact JSON object (declaration order).
+def create_mss_manifest_configuration_to_json(CreateMssManifestConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ManifestName\":" + mediapackagev2_json_str(v.ManifestName))
+    if v.ManifestWindowSeconds.is_some():
+        auto u0 = v.ManifestWindowSeconds.unwrap()
+        parts.append("\"ManifestWindowSeconds\":" + str(u0))
+    if v.FilterConfiguration.is_some():
+        auto u1 = v.FilterConfiguration.unwrap()
+        parts.append("\"FilterConfiguration\":" + filter_configuration_to_json(u1))
+    if v.ManifestLayout.is_some():
+        auto u2 = v.ManifestLayout.unwrap()
+        parts.append("\"ManifestLayout\":" + u2.to_json())
+    return mediapackagev2_json_obj(parts)
+
+# Serialize DashDvbSettings to a compact JSON object (declaration order).
+def dash_dvb_settings_to_json(DashDvbSettings v) -> str:
+    list[str] parts = []
+    if v.FontDownload.is_some():
+        auto u0 = v.FontDownload.unwrap()
+        parts.append("\"FontDownload\":" + u0.to_json())
+    if v.ErrorMetrics.is_some():
+        auto u1 = v.ErrorMetrics.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ErrorMetrics\":" + mediapackagev2_json_arr(e2))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize Encryption to a compact JSON object (declaration order).
+def encryption_to_json(Encryption v) -> str:
+    list[str] parts = []
+    if v.ConstantInitializationVector.is_some():
+        auto u0 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"ConstantInitializationVector\":" + mediapackagev2_json_str(u0))
+    parts.append("\"EncryptionMethod\":" + v.EncryptionMethod.to_json())
+    if v.KeyRotationIntervalSeconds.is_some():
+        auto u1 = v.KeyRotationIntervalSeconds.unwrap()
+        parts.append("\"KeyRotationIntervalSeconds\":" + str(u1))
+    if v.CmafExcludeSegmentDrmMetadata.is_some():
+        auto u2 = v.CmafExcludeSegmentDrmMetadata.unwrap()
+        parts.append("\"CmafExcludeSegmentDrmMetadata\":" + json.dumps(JsonValue.Bool(u2)))
+    parts.append("\"SpekeKeyProvider\":" + speke_key_provider_to_json(v.SpekeKeyProvider))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize FilterConfiguration to a compact JSON object (declaration order).
+def filter_configuration_to_json(FilterConfiguration v) -> str:
+    list[str] parts = []
+    if v.ManifestFilter.is_some():
+        auto u0 = v.ManifestFilter.unwrap()
+        parts.append("\"ManifestFilter\":" + mediapackagev2_json_str(u0))
+    if v.DrmSettings.is_some():
+        auto u1 = v.DrmSettings.unwrap()
+        parts.append("\"DrmSettings\":" + mediapackagev2_json_str(u1))
+    if v.Start.is_some():
+        auto u2 = v.Start.unwrap()
+        parts.append("\"Start\":" + str(datetime.to_timestamp(u2)))
+    if v.End.is_some():
+        auto u3 = v.End.unwrap()
+        parts.append("\"End\":" + str(datetime.to_timestamp(u3)))
+    if v.TimeDelaySeconds.is_some():
+        auto u4 = v.TimeDelaySeconds.unwrap()
+        parts.append("\"TimeDelaySeconds\":" + str(u4))
+    if v.ClipStartTime.is_some():
+        auto u5 = v.ClipStartTime.unwrap()
+        parts.append("\"ClipStartTime\":" + str(datetime.to_timestamp(u5)))
+    if v.Multiview.is_some():
+        auto u6 = v.Multiview.unwrap()
+        parts.append("\"Multiview\":" + multiview_filter_configuration_to_json(u6))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize ForceEndpointErrorConfiguration to a compact JSON object (declaration order).
+def force_endpoint_error_configuration_to_json(ForceEndpointErrorConfiguration v) -> str:
+    list[str] parts = []
+    if v.EndpointErrorConditions.is_some():
+        auto u0 = v.EndpointErrorConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EndpointErrorConditions\":" + mediapackagev2_json_arr(e1))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize HarvestedManifests to a compact JSON object (declaration order).
+def harvested_manifests_to_json(HarvestedManifests v) -> str:
+    list[str] parts = []
+    if v.HlsManifests.is_some():
+        auto u0 = v.HlsManifests.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"HlsManifests\":" + mediapackagev2_json_arr(e1))
+    if v.DashManifests.is_some():
+        auto u2 = v.DashManifests.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"DashManifests\":" + mediapackagev2_json_arr(e3))
+    if v.LowLatencyHlsManifests.is_some():
+        auto u4 = v.LowLatencyHlsManifests.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"LowLatencyHlsManifests\":" + mediapackagev2_json_arr(e5))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize MultiviewConfiguration to a compact JSON object (declaration order).
+def multiview_configuration_to_json(MultiviewConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AvailableSources:
+        e0.append(mediapackagev2_json_str(x0))
+    parts.append("\"AvailableSources\":" + mediapackagev2_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.AvailableLayouts:
+        e1.append(x1.to_json())
+    parts.append("\"AvailableLayouts\":" + mediapackagev2_json_arr(e1))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize MultiviewFilterConfiguration to a compact JSON object (declaration order).
+def multiview_filter_configuration_to_json(MultiviewFilterConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Layout\":" + v.Layout.to_json())
+    list[str] e0 = []
+    for x0 in v.Sources:
+        e0.append(mediapackagev2_json_str(x0))
+    parts.append("\"Sources\":" + mediapackagev2_json_arr(e0))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize Scte to a compact JSON object (declaration order).
+def scte_to_json(Scte v) -> str:
+    list[str] parts = []
+    if v.ScteFilter.is_some():
+        auto u0 = v.ScteFilter.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ScteFilter\":" + mediapackagev2_json_arr(e1))
+    if v.ScteInSegments.is_some():
+        auto u2 = v.ScteInSegments.unwrap()
+        parts.append("\"ScteInSegments\":" + u2.to_json())
+    if v.CustomAdTypes.is_some():
+        auto u3 = v.CustomAdTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"CustomAdTypes\":" + mediapackagev2_json_arr(e4))
+    return mediapackagev2_json_obj(parts)
+
+# Serialize Segment to a compact JSON object (declaration order).
+def segment_to_json(Segment v) -> str:
+    list[str] parts = []
+    if v.SegmentDurationSeconds.is_some():
+        auto u0 = v.SegmentDurationSeconds.unwrap()
+        parts.append("\"SegmentDurationSeconds\":" + str(u0))
+    if v.SegmentName.is_some():
+        auto u1 = v.SegmentName.unwrap()
+        parts.append("\"SegmentName\":" + mediapackagev2_json_str(u1))
+    if v.TsUseAudioRenditionGroup.is_some():
+        auto u2 = v.TsUseAudioRenditionGroup.unwrap()
+        parts.append("\"TsUseAudioRenditionGroup\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.IncludeIframeOnlyStreams.is_some():
+        auto u3 = v.IncludeIframeOnlyStreams.unwrap()
+        parts.append("\"IncludeIframeOnlyStreams\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.TsIncludeDvbSubtitles.is_some():
+        auto u4 = v.TsIncludeDvbSubtitles.unwrap()
+        parts.append("\"TsIncludeDvbSubtitles\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Scte.is_some():
+        auto u5 = v.Scte.unwrap()
+        parts.append("\"Scte\":" + scte_to_json(u5))
+    if v.Encryption.is_some():
+        auto u6 = v.Encryption.unwrap()
+        parts.append("\"Encryption\":" + encryption_to_json(u6))
+    if v.OutputTimestampMode.is_some():
+        auto u7 = v.OutputTimestampMode.unwrap()
+        parts.append("\"OutputTimestampMode\":" + u7.to_json())
+    return mediapackagev2_json_obj(parts)
+
+# Serialize SpekeKeyProvider to a compact JSON object (declaration order).
+def speke_key_provider_to_json(SpekeKeyProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"EncryptionContractConfiguration\":" + v.EncryptionContractConfiguration.to_json())
+    parts.append("\"ResourceId\":" + mediapackagev2_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.DrmSystems:
+        e0.append(x0.to_json())
+    parts.append("\"DrmSystems\":" + mediapackagev2_json_arr(e0))
+    parts.append("\"RoleArn\":" + mediapackagev2_json_str(v.RoleArn))
+    parts.append("\"Url\":" + mediapackagev2_json_str(v.Url))
+    if v.CertificateArn.is_some():
+        auto u1 = v.CertificateArn.unwrap()
+        parts.append("\"CertificateArn\":" + mediapackagev2_json_str(u1))
+    if v.SpekeVersion.is_some():
+        auto u2 = v.SpekeVersion.unwrap()
+        parts.append("\"SpekeVersion\":" + u2.to_json())
+    if v.ContentKeyPeriodConfiguration.is_some():
+        auto u3 = v.ContentKeyPeriodConfiguration.unwrap()
+        parts.append("\"ContentKeyPeriodConfiguration\":" + u3.to_json())
+    return mediapackagev2_json_obj(parts)
 
 # A bound MediaPackageV2 client: credentials + region, threaded into every operation.
 struct MediaPackageV2Client:
@@ -1529,6 +1932,163 @@ struct MediaPackageV2Client:
             headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
         auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
+
+    # CreateChannel  POST /channelGroup/{ChannelGroupName}/channel
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ChannelGroupName"] = input.ChannelGroupName
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChannelName\":" + mediapackagev2_json_str(input.ChannelName))
+        if input.InputType.is_some():
+            auto u0 = input.InputType.unwrap()
+            parts.append("\"InputType\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + mediapackagev2_json_str(u1))
+        if input.InputSwitchConfiguration.is_some():
+            auto u2 = input.InputSwitchConfiguration.unwrap()
+            parts.append("\"InputSwitchConfiguration\":" + u2.to_json())
+        if input.OutputHeaderConfiguration.is_some():
+            auto u3 = input.OutputHeaderConfiguration.unwrap()
+            parts.append("\"OutputHeaderConfiguration\":" + u3.to_json())
+        if input.MultiviewConfiguration.is_some():
+            auto u4 = input.MultiviewConfiguration.unwrap()
+            parts.append("\"MultiviewConfiguration\":" + multiview_configuration_to_json(u4))
+        if input.OutputLockingMode.is_some():
+            auto u5 = input.OutputLockingMode.unwrap()
+            parts.append("\"OutputLockingMode\":" + u5.to_json())
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(mediapackagev2_json_str(k7) + ":" + mediapackagev2_json_str(u6[k7]))
+            parts.append("\"tags\":" + mediapackagev2_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
+    # CreateChannelGroup  POST /channelGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_channel_group(self, CreateChannelGroupRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChannelGroupName\":" + mediapackagev2_json_str(input.ChannelGroupName))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + mediapackagev2_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mediapackagev2_json_str(k2) + ":" + mediapackagev2_json_str(u1[k2]))
+            parts.append("\"tags\":" + mediapackagev2_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
+    # CreateHarvestJob  POST /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_harvest_job(self, CreateHarvestJobRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ChannelGroupName"] = input.ChannelGroupName
+        labels["ChannelName"] = input.ChannelName
+        labels["OriginEndpointName"] = input.OriginEndpointName
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + mediapackagev2_json_str(u0))
+        parts.append("\"HarvestedManifests\":" + harvested_manifests_to_json(input.HarvestedManifests))
+        parts.append("\"ScheduleConfiguration\":" + input.ScheduleConfiguration.to_json())
+        parts.append("\"Destination\":" + input.Destination.to_json())
+        if input.HarvestJobName.is_some():
+            auto u1 = input.HarvestJobName.unwrap()
+            parts.append("\"HarvestJobName\":" + mediapackagev2_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(mediapackagev2_json_str(k3) + ":" + mediapackagev2_json_str(u2[k3]))
+            parts.append("\"Tags\":" + mediapackagev2_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
+    # CreateOriginEndpoint  POST /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_origin_endpoint(self, CreateOriginEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ChannelGroupName"] = input.ChannelGroupName
+        labels["ChannelName"] = input.ChannelName
+        dict[str, str] headers = {}
+        if input.ClientToken.is_some():
+            headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"OriginEndpointName\":" + mediapackagev2_json_str(input.OriginEndpointName))
+        parts.append("\"ContainerType\":" + input.ContainerType.to_json())
+        if input.Segment.is_some():
+            auto u0 = input.Segment.unwrap()
+            parts.append("\"Segment\":" + segment_to_json(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + mediapackagev2_json_str(u1))
+        if input.StartoverWindowSeconds.is_some():
+            auto u2 = input.StartoverWindowSeconds.unwrap()
+            parts.append("\"StartoverWindowSeconds\":" + str(u2))
+        if input.HlsManifests.is_some():
+            auto u3 = input.HlsManifests.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(create_hls_manifest_configuration_to_json(x4))
+            parts.append("\"HlsManifests\":" + mediapackagev2_json_arr(e4))
+        if input.LowLatencyHlsManifests.is_some():
+            auto u5 = input.LowLatencyHlsManifests.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(create_low_latency_hls_manifest_configuration_to_json(x6))
+            parts.append("\"LowLatencyHlsManifests\":" + mediapackagev2_json_arr(e6))
+        if input.DashManifests.is_some():
+            auto u7 = input.DashManifests.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(create_dash_manifest_configuration_to_json(x8))
+            parts.append("\"DashManifests\":" + mediapackagev2_json_arr(e8))
+        if input.MssManifests.is_some():
+            auto u9 = input.MssManifests.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(create_mss_manifest_configuration_to_json(x10))
+            parts.append("\"MssManifests\":" + mediapackagev2_json_arr(e10))
+        if input.ForceEndpointErrorConfiguration.is_some():
+            auto u11 = input.ForceEndpointErrorConfiguration.unwrap()
+            parts.append("\"ForceEndpointErrorConfiguration\":" + force_endpoint_error_configuration_to_json(u11))
+        if input.UriSeparator.is_some():
+            auto u12 = input.UriSeparator.unwrap()
+            parts.append("\"UriSeparator\":" + u12.to_json())
+        if input.StreamNameOutputMode.is_some():
+            auto u13 = input.StreamNameOutputMode.unwrap()
+            parts.append("\"StreamNameOutputMode\":" + u13.to_json())
+        if input.Tags.is_some():
+            auto u14 = input.Tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(mediapackagev2_json_str(k15) + ":" + mediapackagev2_json_str(u14[k15]))
+            parts.append("\"Tags\":" + mediapackagev2_json_obj(m15))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
 
     # DeleteChannel  DELETE /channelGroup/{ChannelGroupName}/channel/{ChannelName}/
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -1726,6 +2286,23 @@ struct MediaPackageV2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
 
+    # PutOriginEndpointPolicy  POST /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_origin_endpoint_policy(self, PutOriginEndpointPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ChannelGroupName"] = input.ChannelGroupName
+        labels["ChannelName"] = input.ChannelName
+        labels["OriginEndpointName"] = input.OriginEndpointName
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Policy\":" + mediapackagev2_json_str(input.Policy))
+        if input.CdnAuthConfiguration.is_some():
+            auto u0 = input.CdnAuthConfiguration.unwrap()
+            parts.append("\"CdnAuthConfiguration\":" + cdn_auth_configuration_to_json(u0))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
     # ResetChannelState  POST /channelGroup/{ChannelGroupName}/channel/{ChannelName}/reset
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reset_channel_state(self, ResetChannelStateRequest input) -> str:
@@ -1747,6 +2324,48 @@ struct MediaPackageV2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/reset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mediapackagev2_json_str(k0) + ":" + mediapackagev2_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + mediapackagev2_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
+    # UpdateChannel  PUT /channelGroup/{ChannelGroupName}/channel/{ChannelName}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_channel(self, UpdateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ChannelGroupName"] = input.ChannelGroupName
+        labels["ChannelName"] = input.ChannelName
+        dict[str, str] headers = {}
+        if input.ETag.is_some():
+            headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + mediapackagev2_json_str(u0))
+        if input.InputSwitchConfiguration.is_some():
+            auto u1 = input.InputSwitchConfiguration.unwrap()
+            parts.append("\"InputSwitchConfiguration\":" + u1.to_json())
+        if input.OutputHeaderConfiguration.is_some():
+            auto u2 = input.OutputHeaderConfiguration.unwrap()
+            parts.append("\"OutputHeaderConfiguration\":" + u2.to_json())
+        if input.MultiviewConfiguration.is_some():
+            auto u3 = input.MultiviewConfiguration.unwrap()
+            parts.append("\"MultiviewConfiguration\":" + multiview_configuration_to_json(u3))
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
     # UpdateChannelGroup  PUT /channelGroup/{ChannelGroupName}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_channel_group(self, UpdateChannelGroupRequest input) -> str:
@@ -1759,6 +2378,65 @@ struct MediaPackageV2Client:
         auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelGroupDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
+    # UpdateOriginEndpoint  PUT /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_origin_endpoint(self, UpdateOriginEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ChannelGroupName"] = input.ChannelGroupName
+        labels["ChannelName"] = input.ChannelName
+        labels["OriginEndpointName"] = input.OriginEndpointName
+        dict[str, str] headers = {}
+        if input.ETag.is_some():
+            headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ContainerType\":" + input.ContainerType.to_json())
+        if input.Segment.is_some():
+            auto u0 = input.Segment.unwrap()
+            parts.append("\"Segment\":" + segment_to_json(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + mediapackagev2_json_str(u1))
+        if input.StartoverWindowSeconds.is_some():
+            auto u2 = input.StartoverWindowSeconds.unwrap()
+            parts.append("\"StartoverWindowSeconds\":" + str(u2))
+        if input.HlsManifests.is_some():
+            auto u3 = input.HlsManifests.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(create_hls_manifest_configuration_to_json(x4))
+            parts.append("\"HlsManifests\":" + mediapackagev2_json_arr(e4))
+        if input.LowLatencyHlsManifests.is_some():
+            auto u5 = input.LowLatencyHlsManifests.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(create_low_latency_hls_manifest_configuration_to_json(x6))
+            parts.append("\"LowLatencyHlsManifests\":" + mediapackagev2_json_arr(e6))
+        if input.DashManifests.is_some():
+            auto u7 = input.DashManifests.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(create_dash_manifest_configuration_to_json(x8))
+            parts.append("\"DashManifests\":" + mediapackagev2_json_arr(e8))
+        if input.MssManifests.is_some():
+            auto u9 = input.MssManifests.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(create_mss_manifest_configuration_to_json(x10))
+            parts.append("\"MssManifests\":" + mediapackagev2_json_arr(e10))
+        if input.ForceEndpointErrorConfiguration.is_some():
+            auto u11 = input.ForceEndpointErrorConfiguration.unwrap()
+            parts.append("\"ForceEndpointErrorConfiguration\":" + force_endpoint_error_configuration_to_json(u11))
+        if input.UriSeparator.is_some():
+            auto u12 = input.UriSeparator.unwrap()
+            parts.append("\"UriSeparator\":" + u12.to_json())
+        if input.StreamNameOutputMode.is_some():
+            auto u13 = input.StreamNameOutputMode.unwrap()
+            parts.append("\"StreamNameOutputMode\":" + u13.to_json())
+        auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
 
     # Paginator for ListChannelGroups — yields each Response page, threading the

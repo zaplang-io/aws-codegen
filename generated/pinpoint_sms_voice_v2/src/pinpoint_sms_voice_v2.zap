@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 110 operations — 59 with a generated method,
-#   51 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 110 operations — 108 with a generated method,
+#   2 skipped (input has a non-string-keyed map or free-form document member).
 #   317 structs (159 @derive(Json)), 60 enums, 7 error variants.
-#   3 paginators generated (25 paginated ops skipped) from paginators-1.json.
+#   28 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The Pinpoint_SMS_Voice_V2 awsJson protocol: version 1.0, API id "PinpointSMSVoiceV2".
 def sms_voice_protocol() -> awsjson.AwsJson:
@@ -876,35 +877,40 @@ struct CloudWatchLogsDestination:
     str IamRoleArn
     str LogGroupArn
 
-# no @derive(Json): member(s) Rules: list[ConditionalRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ConditionalRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalBehavior:
     list[ConditionalRule] Rules
     str DefaultBehavior
 
-# no @derive(Json): member(s) Conditions: list[FieldCondition], ConditionalValidation: ConditionalValidation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[FieldCondition], ConditionalValidation: ConditionalValidation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalRule:
     list[FieldCondition] Conditions
     str RuleBehavior
     Optional[ConditionalValidation] ConditionalValidation
 
-# no @derive(Json): member(s) AllowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalValidation:
     Optional[int64] MinLength
     Optional[int64] MaxLength
     Optional[str] Pattern
     Optional[list[str]] AllowedValues
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationSetFilter:
     ConfigurationSetFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) EventDestinations: list[EventDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestinations: list[EventDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationSetInformation:
     str ConfigurationSetArn
     str ConfigurationSetName
@@ -922,14 +928,16 @@ struct ConflictException:
     Optional[ResourceType] ResourceType
     Optional[str] ResourceId
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CountryLaunchStatusFilter:
     str Name
     list[str] Values
 
-# no @derive(Json): member(s) CarrierStatus: list[CarrierStatusInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CarrierStatus: list[CarrierStatusInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CountryLaunchStatusInformation:
     str IsoCountryCode
     CountryLaunchStatus Status
@@ -937,23 +945,26 @@ struct CountryLaunchStatusInformation:
     str RegistrationId
     list[CarrierStatusInformation] CarrierStatus
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfigurationSetRequest:
     str ConfigurationSetName
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfigurationSetResult:
     Optional[str] ConfigurationSetArn
     Optional[str] ConfigurationSetName
     Optional[list[Tag]] Tags
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventDestinationRequest:
     str ConfigurationSetName
     str EventDestinationName
@@ -963,15 +974,17 @@ struct CreateEventDestinationRequest:
     Optional[SnsDestination] SnsDestination
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) EventDestination: EventDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestination: EventDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventDestinationResult:
     Optional[str] ConfigurationSetArn
     Optional[str] ConfigurationSetName
     Optional[EventDestination] EventDestination
 
-# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotifyConfigurationRequest:
     str DisplayName
     str UseCase
@@ -983,8 +996,9 @@ struct CreateNotifyConfigurationRequest:
     Optional[str] ClientToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotifyConfigurationResult:
     str NotifyConfigurationArn
     str NotifyConfigurationId
@@ -1002,23 +1016,26 @@ struct CreateNotifyConfigurationResult:
     Optional[list[Tag]] Tags
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOptOutListRequest:
     str OptOutListName
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOptOutListResult:
     Optional[str] OptOutListArn
     Optional[str] OptOutListName
     Optional[list[Tag]] Tags
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePoolRequest:
     str OriginationIdentity
     Optional[str] IsoCountryCode
@@ -1027,8 +1044,9 @@ struct CreatePoolRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePoolResult:
     Optional[str] PoolArn
     Optional[str] PoolId
@@ -1044,15 +1062,17 @@ struct CreatePoolResult:
     Optional[list[Tag]] Tags
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProtectConfigurationRequest:
     Optional[str] ClientToken
     Optional[bool] DeletionProtectionEnabled
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProtectConfigurationResult:
     str ProtectConfigurationArn
     str ProtectConfigurationId
@@ -1061,16 +1081,18 @@ struct CreateProtectConfigurationResult:
     bool DeletionProtectionEnabled
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRcsAgentRequest:
     Optional[bool] DeletionProtectionEnabled
     Optional[str] OptOutListName
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRcsAgentResult:
     str RcsAgentArn
     str RcsAgentId
@@ -1104,16 +1126,18 @@ struct CreateRegistrationAssociationResult:
     Optional[str] IsoCountryCode
     Optional[str] PhoneNumber
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistrationAttachmentRequest:
     Optional[bytes] AttachmentBody
     Optional[str] AttachmentUrl
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistrationAttachmentResult:
     str RegistrationAttachmentArn
     str RegistrationAttachmentId
@@ -1121,15 +1145,17 @@ struct CreateRegistrationAttachmentResult:
     Optional[list[Tag]] Tags
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistrationRequest:
     str RegistrationType
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) AdditionalAttributes: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAttributes: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistrationResult:
     str RegistrationArn
     str RegistrationId
@@ -1152,16 +1178,18 @@ struct CreateRegistrationVersionResult:
     RegistrationVersionStatus RegistrationVersionStatus
     RegistrationVersionStatusHistory RegistrationVersionStatusHistory
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVerifiedDestinationNumberRequest:
     str DestinationPhoneNumber
     Optional[str] RcsAgentId
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVerifiedDestinationNumberResult:
     str VerifiedDestinationNumberArn
     str VerifiedDestinationNumberId
@@ -1185,8 +1213,9 @@ struct DeleteAccountDefaultProtectConfigurationResult:
 struct DeleteConfigurationSetRequest:
     str ConfigurationSetName
 
-# no @derive(Json): member(s) EventDestinations: list[EventDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestinations: list[EventDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteConfigurationSetResult:
     Optional[str] ConfigurationSetArn
     Optional[str] ConfigurationSetName
@@ -1221,8 +1250,9 @@ struct DeleteEventDestinationRequest:
     str ConfigurationSetName
     str EventDestinationName
 
-# no @derive(Json): member(s) EventDestination: EventDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestination: EventDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEventDestinationResult:
     Optional[str] ConfigurationSetArn
     Optional[str] ConfigurationSetName
@@ -1254,8 +1284,9 @@ struct DeleteMediaMessageSpendLimitOverrideResult:
 struct DeleteNotifyConfigurationRequest:
     str NotifyConfigurationId
 
-# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteNotifyConfigurationResult:
     str NotifyConfigurationArn
     str NotifyConfigurationId
@@ -1353,8 +1384,9 @@ struct DeleteProtectConfigurationRuleSetNumberOverrideResult:
 struct DeleteRcsAgentRequest:
     str RcsAgentId
 
-# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRcsAgentResult:
     str RcsAgentArn
     str RcsAgentId
@@ -1394,8 +1426,9 @@ struct DeleteRegistrationFieldValueRequest:
     str RegistrationId
     str FieldPath
 
-# no @derive(Json): member(s) SelectChoices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectChoices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRegistrationFieldValueResult:
     str RegistrationArn
     str RegistrationId
@@ -1409,8 +1442,9 @@ struct DeleteRegistrationFieldValueResult:
 struct DeleteRegistrationRequest:
     str RegistrationId
 
-# no @derive(Json): member(s) AdditionalAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRegistrationResult:
     str RegistrationArn
     str RegistrationId
@@ -1466,8 +1500,9 @@ struct DescribeAccountAttributesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AccountAttributes: list[AccountAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAttributes: list[AccountAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountAttributesResult:
     Optional[list[AccountAttribute]] AccountAttributes
     Optional[str] NextToken
@@ -1477,28 +1512,32 @@ struct DescribeAccountLimitsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AccountLimits: list[AccountLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountLimits: list[AccountLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountLimitsResult:
     Optional[list[AccountLimit]] AccountLimits
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigurationSetNames: list[str], Filters: list[ConfigurationSetFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationSetNames: list[str], Filters: list[ConfigurationSetFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationSetsRequest:
     Optional[list[str]] ConfigurationSetNames
     Optional[list[ConfigurationSetFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ConfigurationSets: list[ConfigurationSetInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationSets: list[ConfigurationSetInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationSetsResult:
     Optional[list[ConfigurationSetInformation]] ConfigurationSets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Keywords: list[str], Filters: list[KeywordFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keywords: list[str], Filters: list[KeywordFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeywordsRequest:
     str OriginationIdentity
     Optional[list[str]] Keywords
@@ -1506,58 +1545,66 @@ struct DescribeKeywordsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Keywords: list[KeywordInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keywords: list[KeywordInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeywordsResult:
     Optional[str] OriginationIdentityArn
     Optional[str] OriginationIdentity
     Optional[list[KeywordInformation]] Keywords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NotifyConfigurationIds: list[str], Filters: list[NotifyConfigurationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotifyConfigurationIds: list[str], Filters: list[NotifyConfigurationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotifyConfigurationsRequest:
     Optional[list[str]] NotifyConfigurationIds
     Optional[list[NotifyConfigurationFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) NotifyConfigurations: list[NotifyConfigurationInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotifyConfigurations: list[NotifyConfigurationInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotifyConfigurationsResult:
     Optional[list[NotifyConfigurationInformation]] NotifyConfigurations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TemplateIds: list[str], Filters: list[NotifyTemplateFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateIds: list[str], Filters: list[NotifyTemplateFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotifyTemplatesRequest:
     Optional[list[str]] TemplateIds
     Optional[list[NotifyTemplateFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) NotifyTemplates: list[NotifyTemplateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotifyTemplates: list[NotifyTemplateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotifyTemplatesResult:
     Optional[list[NotifyTemplateInformation]] NotifyTemplates
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OptOutListNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptOutListNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOptOutListsRequest:
     Optional[list[str]] OptOutListNames
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[Owner] Owner
 
-# no @derive(Json): member(s) OptOutLists: list[OptOutListInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptOutLists: list[OptOutListInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOptOutListsResult:
     Optional[list[OptOutListInformation]] OptOutLists
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OptedOutNumbers: list[str], Filters: list[OptedOutFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptedOutNumbers: list[str], Filters: list[OptedOutFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOptedOutNumbersRequest:
     str OptOutListName
     Optional[list[str]] OptedOutNumbers
@@ -1565,16 +1612,18 @@ struct DescribeOptedOutNumbersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) OptedOutNumbers: list[OptedOutNumberInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OptedOutNumbers: list[OptedOutNumberInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOptedOutNumbersResult:
     Optional[str] OptOutListArn
     Optional[str] OptOutListName
     Optional[list[OptedOutNumberInformation]] OptedOutNumbers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PhoneNumberIds: list[str], Filters: list[PhoneNumberFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberIds: list[str], Filters: list[PhoneNumberFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePhoneNumbersRequest:
     Optional[list[str]] PhoneNumberIds
     Optional[list[PhoneNumberFilter]] Filters
@@ -1582,14 +1631,16 @@ struct DescribePhoneNumbersRequest:
     Optional[int64] MaxResults
     Optional[Owner] Owner
 
-# no @derive(Json): member(s) PhoneNumbers: list[PhoneNumberInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumbers: list[PhoneNumberInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePhoneNumbersResult:
     Optional[list[PhoneNumberInformation]] PhoneNumbers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PoolIds: list[str], Filters: list[PoolFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PoolIds: list[str], Filters: list[PoolFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePoolsRequest:
     Optional[list[str]] PoolIds
     Optional[list[PoolFilter]] Filters
@@ -1597,28 +1648,32 @@ struct DescribePoolsRequest:
     Optional[int64] MaxResults
     Optional[Owner] Owner
 
-# no @derive(Json): member(s) Pools: list[PoolInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pools: list[PoolInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePoolsResult:
     Optional[list[PoolInformation]] Pools
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ProtectConfigurationIds: list[str], Filters: list[ProtectConfigurationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectConfigurationIds: list[str], Filters: list[ProtectConfigurationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProtectConfigurationsRequest:
     Optional[list[str]] ProtectConfigurationIds
     Optional[list[ProtectConfigurationFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProtectConfigurations: list[ProtectConfigurationInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectConfigurations: list[ProtectConfigurationInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProtectConfigurationsResult:
     Optional[list[ProtectConfigurationInformation]] ProtectConfigurations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IsoCountryCodes: list[str], Filters: list[CountryLaunchStatusFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IsoCountryCodes: list[str], Filters: list[CountryLaunchStatusFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRcsAgentCountryLaunchStatusRequest:
     str RcsAgentId
     Optional[list[str]] IsoCountryCodes
@@ -1626,16 +1681,18 @@ struct DescribeRcsAgentCountryLaunchStatusRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CountryLaunchStatus: list[CountryLaunchStatusInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountryLaunchStatus: list[CountryLaunchStatusInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRcsAgentCountryLaunchStatusResult:
     str RcsAgentId
     str RcsAgentArn
     Optional[list[CountryLaunchStatusInformation]] CountryLaunchStatus
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RcsAgentIds: list[str], Filters: list[RcsAgentFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RcsAgentIds: list[str], Filters: list[RcsAgentFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRcsAgentsRequest:
     Optional[list[str]] RcsAgentIds
     Optional[Owner] Owner
@@ -1643,28 +1700,32 @@ struct DescribeRcsAgentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RcsAgents: list[RcsAgentInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RcsAgents: list[RcsAgentInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRcsAgentsResult:
     Optional[list[RcsAgentInformation]] RcsAgents
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RegistrationAttachmentIds: list[str], Filters: list[RegistrationAttachmentFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationAttachmentIds: list[str], Filters: list[RegistrationAttachmentFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationAttachmentsRequest:
     Optional[list[str]] RegistrationAttachmentIds
     Optional[list[RegistrationAttachmentFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationAttachments: list[RegistrationAttachmentsInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationAttachments: list[RegistrationAttachmentsInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationAttachmentsResult:
     list[RegistrationAttachmentsInformation] RegistrationAttachments
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FieldPaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldPaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationFieldDefinitionsRequest:
     str RegistrationType
     Optional[str] SectionPath
@@ -1672,15 +1733,17 @@ struct DescribeRegistrationFieldDefinitionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationFieldDefinitions: list[RegistrationFieldDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationFieldDefinitions: list[RegistrationFieldDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationFieldDefinitionsResult:
     str RegistrationType
     list[RegistrationFieldDefinition] RegistrationFieldDefinitions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FieldPaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldPaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationFieldValuesRequest:
     str RegistrationId
     Optional[int64] VersionNumber
@@ -1689,8 +1752,9 @@ struct DescribeRegistrationFieldValuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationFieldValues: list[RegistrationFieldValueInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationFieldValues: list[RegistrationFieldValueInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationFieldValuesResult:
     str RegistrationArn
     str RegistrationId
@@ -1698,37 +1762,42 @@ struct DescribeRegistrationFieldValuesResult:
     list[RegistrationFieldValueInformation] RegistrationFieldValues
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SectionPaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SectionPaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationSectionDefinitionsRequest:
     str RegistrationType
     Optional[list[str]] SectionPaths
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationSectionDefinitions: list[RegistrationSectionDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationSectionDefinitions: list[RegistrationSectionDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationSectionDefinitionsResult:
     str RegistrationType
     list[RegistrationSectionDefinition] RegistrationSectionDefinitions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RegistrationTypes: list[str], Filters: list[RegistrationTypeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationTypes: list[str], Filters: list[RegistrationTypeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationTypeDefinitionsRequest:
     Optional[list[str]] RegistrationTypes
     Optional[list[RegistrationTypeFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationTypeDefinitions: list[RegistrationTypeDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationTypeDefinitions: list[RegistrationTypeDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationTypeDefinitionsResult:
     list[RegistrationTypeDefinition] RegistrationTypeDefinitions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VersionNumbers: list[int64], Filters: list[RegistrationVersionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionNumbers: list[int64], Filters: list[RegistrationVersionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationVersionsRequest:
     str RegistrationId
     Optional[list[int64]] VersionNumbers
@@ -1736,30 +1805,34 @@ struct DescribeRegistrationVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationVersions: list[RegistrationVersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationVersions: list[RegistrationVersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationVersionsResult:
     str RegistrationArn
     str RegistrationId
     list[RegistrationVersionInformation] RegistrationVersions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RegistrationIds: list[str], Filters: list[RegistrationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationIds: list[str], Filters: list[RegistrationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationsRequest:
     Optional[list[str]] RegistrationIds
     Optional[list[RegistrationFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Registrations: list[RegistrationInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Registrations: list[RegistrationInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegistrationsResult:
     list[RegistrationInformation] Registrations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SenderIds: list[SenderIdAndCountry], Filters: list[SenderIdFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SenderIds: list[SenderIdAndCountry], Filters: list[SenderIdFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSenderIdsRequest:
     Optional[list[SenderIdAndCountry]] SenderIds
     Optional[list[SenderIdFilter]] Filters
@@ -1767,8 +1840,9 @@ struct DescribeSenderIdsRequest:
     Optional[int64] MaxResults
     Optional[Owner] Owner
 
-# no @derive(Json): member(s) SenderIds: list[SenderIdInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SenderIds: list[SenderIdInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSenderIdsResult:
     Optional[list[SenderIdInformation]] SenderIds
     Optional[str] NextToken
@@ -1778,14 +1852,16 @@ struct DescribeSpendLimitsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SpendLimits: list[SpendLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpendLimits: list[SpendLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSpendLimitsResult:
     Optional[list[SpendLimit]] SpendLimits
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VerifiedDestinationNumberIds: list[str], DestinationPhoneNumbers: list[str], Filters: list[VerifiedDestinationNumberFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VerifiedDestinationNumberIds: list[str], DestinationPhoneNumbers: list[str], Filters: list[VerifiedDestinationNumberFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVerifiedDestinationNumbersRequest:
     Optional[list[str]] VerifiedDestinationNumberIds
     Optional[list[str]] DestinationPhoneNumbers
@@ -1793,8 +1869,9 @@ struct DescribeVerifiedDestinationNumbersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) VerifiedDestinationNumbers: list[VerifiedDestinationNumberInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VerifiedDestinationNumbers: list[VerifiedDestinationNumberInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVerifiedDestinationNumbersResult:
     list[VerifiedDestinationNumberInformation] VerifiedDestinationNumbers
     Optional[str] NextToken
@@ -1838,8 +1915,9 @@ struct DiscardRegistrationVersionResult:
     RegistrationVersionStatus RegistrationVersionStatus
     RegistrationVersionStatusHistory RegistrationVersionStatusHistory
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDestination:
     str EventDestinationName
     bool Enabled
@@ -1848,8 +1926,9 @@ struct EventDestination:
     Optional[KinesisFirehoseDestination] KinesisFirehoseDestination
     Optional[SnsDestination] SnsDestination
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldCondition:
     str DependsOnFieldPath
     str Operator
@@ -1860,8 +1939,9 @@ struct GetProtectConfigurationCountryRuleSetRequest:
     str ProtectConfigurationId
     NumberCapability NumberCapability
 
-# no @derive(Json): member(s) CountryRuleSet: dict[str, ProtectConfigurationCountryRuleSetInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountryRuleSet: dict[str, ProtectConfigurationCountryRuleSetInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProtectConfigurationCountryRuleSetResult:
     str ProtectConfigurationArn
     str ProtectConfigurationId
@@ -1883,8 +1963,9 @@ struct InternalServerException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeywordFilter:
     str Name
     list[str] Values
@@ -1900,8 +1981,9 @@ struct KinesisFirehoseDestination:
     str IamRoleArn
     str DeliveryStreamArn
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], NumberPreference: list[NumberPreferenceItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], NumberPreference: list[NumberPreferenceItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailablePhoneNumbersRequest:
     str IsoCountryCode
     list[NumberCapability] NumberCapabilities
@@ -1911,14 +1993,16 @@ struct ListAvailablePhoneNumbersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AvailablePhoneNumbers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailablePhoneNumbers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailablePhoneNumbersResult:
     list[str] AvailablePhoneNumbers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[NumberCapability], UseCases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[NumberCapability], UseCases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotifyCountriesRequest:
     Optional[list[NumberCapability]] Channels
     Optional[list[str]] UseCases
@@ -1926,54 +2010,61 @@ struct ListNotifyCountriesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) NotifyCountries: list[NotifyCountryInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotifyCountries: list[NotifyCountryInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotifyCountriesResult:
     Optional[list[NotifyCountryInformation]] NotifyCountries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[PoolOriginationIdentitiesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[PoolOriginationIdentitiesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoolOriginationIdentitiesRequest:
     str PoolId
     Optional[list[PoolOriginationIdentitiesFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) OriginationIdentities: list[OriginationIdentityMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginationIdentities: list[OriginationIdentityMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoolOriginationIdentitiesResult:
     Optional[str] PoolArn
     Optional[str] PoolId
     Optional[list[OriginationIdentityMetadata]] OriginationIdentities
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ProtectConfigurationRuleSetNumberOverrideFilterItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ProtectConfigurationRuleSetNumberOverrideFilterItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectConfigurationRuleSetNumberOverridesRequest:
     str ProtectConfigurationId
     Optional[list[ProtectConfigurationRuleSetNumberOverrideFilterItem]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RuleSetNumberOverrides: list[ProtectConfigurationRuleSetNumberOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleSetNumberOverrides: list[ProtectConfigurationRuleSetNumberOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectConfigurationRuleSetNumberOverridesResult:
     str ProtectConfigurationArn
     str ProtectConfigurationId
     Optional[list[ProtectConfigurationRuleSetNumberOverride]] RuleSetNumberOverrides
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[RegistrationAssociationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[RegistrationAssociationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistrationAssociationsRequest:
     str RegistrationId
     Optional[list[RegistrationAssociationFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RegistrationAssociations: list[RegistrationAssociationMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationAssociations: list[RegistrationAssociationMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistrationAssociationsResult:
     str RegistrationArn
     str RegistrationId
@@ -1985,26 +2076,30 @@ struct ListRegistrationAssociationsResult:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[str] ResourceArn
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) RateLimits: dict[str, int64], DailyMessageCaps: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RateLimits: dict[str, int64], DailyMessageCaps: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessagingLimits:
     Optional[dict[str, int64]] RateLimits
     Optional[dict[str, int64]] DailyMessageCaps
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyConfigurationFilter:
     NotifyConfigurationFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyConfigurationInformation:
     str NotifyConfigurationArn
     str NotifyConfigurationId
@@ -2021,8 +2116,9 @@ struct NotifyConfigurationInformation:
     bool DeletionProtectionEnabled
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) SupportedChannels: list[NumberCapability], SupportedUseCases: list[str], SupportedTiers: list[NotifyConfigurationTier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedChannels: list[NumberCapability], SupportedUseCases: list[str], SupportedTiers: list[NotifyConfigurationTier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyCountryInformation:
     str IsoCountryCode
     str CountryName
@@ -2031,14 +2127,16 @@ struct NotifyCountryInformation:
     list[NotifyConfigurationTier] SupportedTiers
     bool CustomerOwnedIdentityRequired
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyTemplateFilter:
     NotifyTemplateFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) Channels: list[NumberCapability], TierAccess: list[NotifyConfigurationTier], SupportedCountries: list[str], Variables: dict[str, TemplateVariableMetadata], SupportedVoiceIds: list[VoiceId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[NumberCapability], TierAccess: list[NotifyConfigurationTier], SupportedCountries: list[str], Variables: dict[str, TemplateVariableMetadata], SupportedVoiceIds: list[VoiceId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyTemplateInformation:
     str TemplateId
     int64 Version
@@ -2053,8 +2151,9 @@ struct NotifyTemplateInformation:
     Optional[list[VoiceId]] SupportedVoiceIds
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) PreferenceType: list[PreferenceType], Filter: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreferenceType: list[PreferenceType], Filter: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NumberPreferenceItem:
     list[PreferenceType] PreferenceType
     list[str] Filter
@@ -2065,8 +2164,9 @@ struct OptOutListInformation:
     str OptOutListName
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OptedOutFilter:
     str Name
     list[str] Values
@@ -2077,8 +2177,9 @@ struct OptedOutNumberInformation:
     DateTime OptedOutTimestamp
     bool EndUserOptedOut
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OriginationIdentityMetadata:
     str OriginationIdentityArn
     str OriginationIdentity
@@ -2086,14 +2187,16 @@ struct OriginationIdentityMetadata:
     list[NumberCapability] NumberCapabilities
     Optional[str] PhoneNumber
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumberFilter:
     PhoneNumberFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], MessagingLimits: MessagingLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], MessagingLimits: MessagingLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumberInformation:
     str PhoneNumberArn
     Optional[str] PhoneNumberId
@@ -2117,8 +2220,9 @@ struct PhoneNumberInformation:
     Optional[str] PricingTier
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PoolFilter:
     PoolFilterName Name
     list[str] Values
@@ -2138,8 +2242,9 @@ struct PoolInformation:
     bool DeletionProtectionEnabled
     DateTime CreatedTimestamp
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PoolOriginationIdentitiesFilter:
     PoolOriginationIdentitiesFilterName Name
     list[str] Values
@@ -2148,8 +2253,9 @@ struct PoolOriginationIdentitiesFilter:
 struct ProtectConfigurationCountryRuleSetInformation:
     ProtectStatus ProtectStatus
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectConfigurationFilter:
     ProtectConfigurationFilterName Name
     list[str] Values
@@ -2170,8 +2276,9 @@ struct ProtectConfigurationRuleSetNumberOverride:
     Optional[str] IsoCountryCode
     Optional[DateTime] ExpirationTimestamp
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectConfigurationRuleSetNumberOverrideFilterItem:
     ProtectConfigurationRuleSetNumberOverrideFilterName Name
     list[str] Values
@@ -2232,8 +2339,9 @@ struct PutProtectConfigurationRuleSetNumberOverrideResult:
     Optional[str] IsoCountryCode
     Optional[DateTime] ExpirationTimestamp
 
-# no @derive(Json): member(s) SelectChoices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectChoices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRegistrationFieldValueRequest:
     str RegistrationId
     str FieldPath
@@ -2241,8 +2349,9 @@ struct PutRegistrationFieldValueRequest:
     Optional[str] TextValue
     Optional[str] RegistrationAttachmentId
 
-# no @derive(Json): member(s) SelectChoices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectChoices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRegistrationFieldValueResult:
     str RegistrationArn
     str RegistrationId
@@ -2263,14 +2372,16 @@ struct PutResourcePolicyResult:
     Optional[str] Policy
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsAgentFilter:
     RcsAgentFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str], MessagingLimits: MessagingLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str], MessagingLimits: MessagingLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsAgentInformation:
     str RcsAgentArn
     str RcsAgentId
@@ -2290,8 +2401,9 @@ struct RcsAgentInformation:
     Optional[TestingAgentInformation] TestingAgent
     Optional[MessagingLimits] MessagingLimits
 
-# no @derive(Json): member(s) Suggestions: list[RcsSuggestedAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Suggestions: list[RcsSuggestedAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsCardContent:
     Optional[str] Title
     Optional[str] Description
@@ -2304,14 +2416,16 @@ struct RcsCardMedia:
     Optional[str] ThumbnailUrl
     Optional[str] Height
 
-# no @derive(Json): member(s) CardContents: list[RcsCarouselCardContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CardContents: list[RcsCarouselCardContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsCarousel:
     str CardWidth
     list[RcsCarouselCardContent] CardContents
 
-# no @derive(Json): member(s) Suggestions: list[RcsSuggestedAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Suggestions: list[RcsSuggestedAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsCarouselCardContent:
     Optional[str] Title
     Optional[str] Description
@@ -2324,8 +2438,9 @@ struct RcsCarouselCardMedia:
     Optional[str] ThumbnailUrl
     Optional[str] Height
 
-# no @derive(Json): member(s) RichCard: RcsStandaloneCard, Carousel: RcsCarousel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RichCard: RcsStandaloneCard, Carousel: RcsCarousel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsContent:
     Optional[RcsTextMessage] TextMessage
     Optional[RcsFileMessage] FileMessage
@@ -2347,8 +2462,9 @@ struct RcsDialPhoneAction:
     str PostbackData
     str PhoneNumber
 
-# no @derive(Json): member(s) MediaUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsFallbackConfiguration:
     RcsFallbackChannel Channel
     Optional[str] MessageBody
@@ -2360,8 +2476,9 @@ struct RcsFileMessage:
     str FileUrl
     Optional[str] ThumbnailUrl
 
-# no @derive(Json): member(s) Content: RcsContent, Suggestions: list[RcsSuggestedAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: RcsContent, Suggestions: list[RcsSuggestedAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsMessageContent:
     RcsContent Content
     Optional[list[RcsSuggestedAction]] Suggestions
@@ -2392,8 +2509,9 @@ struct RcsShowLocationAction:
     float64 Longitude
     Optional[str] Label
 
-# no @derive(Json): member(s) CardContent: RcsCardContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CardContent: RcsCardContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RcsStandaloneCard:
     str CardOrientation
     Optional[str] ThumbnailImageAlignment
@@ -2412,8 +2530,9 @@ struct RcsSuggestedAction:
 struct RcsTextMessage:
     str Body
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationAssociationFilter:
     RegistrationAssociationFilterName Name
     list[str] Values
@@ -2426,8 +2545,9 @@ struct RegistrationAssociationMetadata:
     Optional[str] IsoCountryCode
     Optional[str] PhoneNumber
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationAttachmentFilter:
     str Name
     list[str] Values
@@ -2449,8 +2569,9 @@ struct RegistrationDeniedReasonInformation:
     Optional[str] DocumentationTitle
     Optional[str] DocumentationLink
 
-# no @derive(Json): member(s) SelectValidation: SelectValidation, DisplayHints: RegistrationFieldDisplayHints, ConditionalBehavior: ConditionalBehavior not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectValidation: SelectValidation, DisplayHints: RegistrationFieldDisplayHints, ConditionalBehavior: ConditionalBehavior not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationFieldDefinition:
     str SectionPath
     str FieldPath
@@ -2461,8 +2582,9 @@ struct RegistrationFieldDefinition:
     RegistrationFieldDisplayHints DisplayHints
     Optional[ConditionalBehavior] ConditionalBehavior
 
-# no @derive(Json): member(s) SelectOptionDescriptions: list[SelectOptionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectOptionDescriptions: list[SelectOptionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationFieldDisplayHints:
     str Title
     str ShortDescription
@@ -2473,8 +2595,9 @@ struct RegistrationFieldDisplayHints:
     Optional[str] TextValidationDescription
     Optional[str] ExampleTextValue
 
-# no @derive(Json): member(s) SelectChoices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectChoices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationFieldValueInformation:
     str FieldPath
     Optional[list[str]] SelectChoices
@@ -2483,14 +2606,16 @@ struct RegistrationFieldValueInformation:
     Optional[str] DeniedReason
     Optional[str] Feedback
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationFilter:
     RegistrationFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) AdditionalAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationInformation:
     str RegistrationArn
     str RegistrationId
@@ -2515,8 +2640,9 @@ struct RegistrationSectionDisplayHints:
     Optional[str] DocumentationTitle
     Optional[str] DocumentationLink
 
-# no @derive(Json): member(s) SupportedAssociations: list[SupportedAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedAssociations: list[SupportedAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationTypeDefinition:
     str RegistrationType
     Optional[list[SupportedAssociation]] SupportedAssociations
@@ -2530,20 +2656,23 @@ struct RegistrationTypeDisplayHints:
     Optional[str] DocumentationTitle
     Optional[str] DocumentationLink
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationTypeFilter:
     RegistrationTypeFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationVersionFilter:
     str Name
     list[str] Values
 
-# no @derive(Json): member(s) DeniedReasons: list[RegistrationDeniedReasonInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeniedReasons: list[RegistrationDeniedReasonInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationVersionInformation:
     int64 VersionNumber
     RegistrationVersionStatus RegistrationVersionStatus
@@ -2568,8 +2697,9 @@ struct RegistrationVersionStatusHistory:
 struct ReleasePhoneNumberRequest:
     str PhoneNumberId
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReleasePhoneNumberResult:
     Optional[str] PhoneNumberArn
     Optional[str] PhoneNumberId
@@ -2593,8 +2723,9 @@ struct ReleaseSenderIdRequest:
     str SenderId
     str IsoCountryCode
 
-# no @derive(Json): member(s) MessageTypes: list[MessageType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageTypes: list[MessageType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReleaseSenderIdResult:
     str SenderIdArn
     str SenderId
@@ -2604,8 +2735,9 @@ struct ReleaseSenderIdResult:
     bool Registered
     Optional[str] RegistrationId
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], NumberPreference: list[NumberPreferenceItem], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], NumberPreference: list[NumberPreferenceItem], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestPhoneNumberRequest:
     str IsoCountryCode
     MessageType MessageType
@@ -2620,8 +2752,9 @@ struct RequestPhoneNumberRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestPhoneNumberResult:
     Optional[str] PhoneNumberArn
     Optional[str] PhoneNumberId
@@ -2644,8 +2777,9 @@ struct RequestPhoneNumberResult:
     Optional[list[Tag]] Tags
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) MessageTypes: list[MessageType], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageTypes: list[MessageType], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestSenderIdRequest:
     str SenderId
     str IsoCountryCode
@@ -2654,8 +2788,9 @@ struct RequestSenderIdRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) MessageTypes: list[MessageType], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageTypes: list[MessageType], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestSenderIdResult:
     str SenderIdArn
     str SenderId
@@ -2678,15 +2813,17 @@ struct SelectOptionDescription:
     Optional[str] Title
     Optional[str] Description
 
-# no @derive(Json): member(s) Options: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectValidation:
     int64 MinChoices
     int64 MaxChoices
     list[str] Options
 
-# no @derive(Json): member(s) Context: dict[str, str], DestinationCountryParameters: dict[DestinationCountryParameterKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str], DestinationCountryParameters: dict[DestinationCountryParameterKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendDestinationNumberVerificationCodeRequest:
     str VerifiedDestinationNumberId
     VerificationChannel VerificationChannel
@@ -2700,8 +2837,9 @@ struct SendDestinationNumberVerificationCodeRequest:
 struct SendDestinationNumberVerificationCodeResult:
     str MessageId
 
-# no @derive(Json): member(s) MediaUrls: list[str], Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaUrls: list[str], Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendMediaMessageRequest:
     str DestinationPhoneNumber
     str OriginationIdentity
@@ -2719,8 +2857,9 @@ struct SendMediaMessageRequest:
 struct SendMediaMessageResult:
     Optional[str] MessageId
 
-# no @derive(Json): member(s) TemplateVariables: dict[str, str], Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateVariables: dict[str, str], Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendNotifyTextMessageRequest:
     str NotifyConfigurationId
     str DestinationPhoneNumber
@@ -2738,8 +2877,9 @@ struct SendNotifyTextMessageResult:
     Optional[str] TemplateId
     Optional[str] ResolvedMessageBody
 
-# no @derive(Json): member(s) TemplateVariables: dict[str, str], Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateVariables: dict[str, str], Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendNotifyVoiceMessageRequest:
     str NotifyConfigurationId
     str DestinationPhoneNumber
@@ -2758,8 +2898,9 @@ struct SendNotifyVoiceMessageResult:
     Optional[str] TemplateId
     Optional[str] ResolvedMessageBody
 
-# no @derive(Json): member(s) RcsMessageContent: RcsMessageContent, FallbackConfiguration: RcsFallbackConfiguration, Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RcsMessageContent: RcsMessageContent, FallbackConfiguration: RcsFallbackConfiguration, Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendRcsMessageRequest:
     str DestinationPhoneNumber
     str OriginationIdentity
@@ -2778,8 +2919,9 @@ struct SendRcsMessageRequest:
 struct SendRcsMessageResult:
     Optional[str] MessageId
 
-# no @derive(Json): member(s) Context: dict[str, str], DestinationCountryParameters: dict[DestinationCountryParameterKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str], DestinationCountryParameters: dict[DestinationCountryParameterKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendTextMessageRequest:
     str DestinationPhoneNumber
     Optional[str] OriginationIdentity
@@ -2799,8 +2941,9 @@ struct SendTextMessageRequest:
 struct SendTextMessageResult:
     Optional[str] MessageId
 
-# no @derive(Json): member(s) Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendVoiceMessageRequest:
     str DestinationPhoneNumber
     str OriginationIdentity
@@ -2824,14 +2967,16 @@ struct SenderIdAndCountry:
     str SenderId
     str IsoCountryCode
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SenderIdFilter:
     SenderIdFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) MessageTypes: list[MessageType], MessagingLimits: MessagingLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageTypes: list[MessageType], MessagingLimits: MessagingLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SenderIdInformation:
     str SenderIdArn
     str SenderId
@@ -2968,8 +3113,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -3008,8 +3154,9 @@ struct TextValidation:
 struct ThrottlingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -3019,8 +3166,9 @@ struct UntagResourceResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventDestinationRequest:
     str ConfigurationSetName
     str EventDestinationName
@@ -3030,15 +3178,17 @@ struct UpdateEventDestinationRequest:
     Optional[KinesisFirehoseDestination] KinesisFirehoseDestination
     Optional[SnsDestination] SnsDestination
 
-# no @derive(Json): member(s) EventDestination: EventDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestination: EventDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventDestinationResult:
     Optional[str] ConfigurationSetArn
     Optional[str] ConfigurationSetName
     Optional[EventDestination] EventDestination
 
-# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotifyConfigurationRequest:
     str NotifyConfigurationId
     Optional[str] DefaultTemplateId
@@ -3047,8 +3197,9 @@ struct UpdateNotifyConfigurationRequest:
     Optional[list[NumberCapability]] EnabledChannels
     Optional[bool] DeletionProtectionEnabled
 
-# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledCountries: list[str], EnabledChannels: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotifyConfigurationResult:
     str NotifyConfigurationArn
     str NotifyConfigurationId
@@ -3076,8 +3227,9 @@ struct UpdatePhoneNumberRequest:
     Optional[bool] InternationalSendingEnabled
     Optional[bool] DeletionProtectionEnabled
 
-# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NumberCapabilities: list[NumberCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePhoneNumberResult:
     Optional[str] PhoneNumberArn
     Optional[str] PhoneNumberId
@@ -3124,15 +3276,17 @@ struct UpdatePoolResult:
     Optional[bool] DeletionProtectionEnabled
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) CountryRuleSetUpdates: dict[str, ProtectConfigurationCountryRuleSetInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountryRuleSetUpdates: dict[str, ProtectConfigurationCountryRuleSetInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProtectConfigurationCountryRuleSetRequest:
     str ProtectConfigurationId
     NumberCapability NumberCapability
     dict[str, ProtectConfigurationCountryRuleSetInformation] CountryRuleSetUpdates
 
-# no @derive(Json): member(s) CountryRuleSet: dict[str, ProtectConfigurationCountryRuleSetInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountryRuleSet: dict[str, ProtectConfigurationCountryRuleSetInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProtectConfigurationCountryRuleSetResult:
     str ProtectConfigurationArn
     str ProtectConfigurationId
@@ -3152,8 +3306,9 @@ struct UpdateProtectConfigurationResult:
     bool AccountDefault
     bool DeletionProtectionEnabled
 
-# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRcsAgentRequest:
     str RcsAgentId
     Optional[bool] DeletionProtectionEnabled
@@ -3167,8 +3322,9 @@ struct UpdateRcsAgentRequest:
     Optional[str] TwoWayMediaS3Role
     Optional[list[str]] TwoWayRcsEventsEnabled
 
-# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TwoWayRcsEventsEnabled: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRcsAgentResult:
     str RcsAgentArn
     str RcsAgentId
@@ -3191,8 +3347,9 @@ struct UpdateSenderIdRequest:
     str IsoCountryCode
     Optional[bool] DeletionProtectionEnabled
 
-# no @derive(Json): member(s) MessageTypes: list[MessageType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageTypes: list[MessageType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSenderIdResult:
     str SenderIdArn
     str SenderId
@@ -3203,8 +3360,9 @@ struct UpdateSenderIdResult:
     bool Registered
     Optional[str] RegistrationId
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] Message
     Optional[ValidationExceptionReason] Reason
@@ -3215,8 +3373,9 @@ struct ValidationExceptionField:
     str Name
     str Message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VerifiedDestinationNumberFilter:
     VerifiedDestinationNumberFilterName Name
     list[str] Values
@@ -3277,87 +3436,1524 @@ def sms_voice_error_from_code(str code) -> Pinpoint_SMS_Voice_V2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateConfigurationSet (input CreateConfigurationSetRequest)
-#   CreateEventDestination (input CreateEventDestinationRequest)
-#   CreateNotifyConfiguration (input CreateNotifyConfigurationRequest)
-#   CreateOptOutList (input CreateOptOutListRequest)
-#   CreatePool (input CreatePoolRequest)
-#   CreateProtectConfiguration (input CreateProtectConfigurationRequest)
-#   CreateRcsAgent (input CreateRcsAgentRequest)
-#   CreateRegistration (input CreateRegistrationRequest)
-#   CreateRegistrationAttachment (input CreateRegistrationAttachmentRequest)
-#   CreateVerifiedDestinationNumber (input CreateVerifiedDestinationNumberRequest)
-#   DescribeConfigurationSets (input DescribeConfigurationSetsRequest)
-#   DescribeKeywords (input DescribeKeywordsRequest)
-#   DescribeNotifyConfigurations (input DescribeNotifyConfigurationsRequest)
-#   DescribeNotifyTemplates (input DescribeNotifyTemplatesRequest)
-#   DescribeOptOutLists (input DescribeOptOutListsRequest)
-#   DescribeOptedOutNumbers (input DescribeOptedOutNumbersRequest)
-#   DescribePhoneNumbers (input DescribePhoneNumbersRequest)
-#   DescribePools (input DescribePoolsRequest)
-#   DescribeProtectConfigurations (input DescribeProtectConfigurationsRequest)
-#   DescribeRcsAgentCountryLaunchStatus (input DescribeRcsAgentCountryLaunchStatusRequest)
-#   DescribeRcsAgents (input DescribeRcsAgentsRequest)
-#   DescribeRegistrationAttachments (input DescribeRegistrationAttachmentsRequest)
-#   DescribeRegistrationFieldDefinitions (input DescribeRegistrationFieldDefinitionsRequest)
-#   DescribeRegistrationFieldValues (input DescribeRegistrationFieldValuesRequest)
-#   DescribeRegistrationSectionDefinitions (input DescribeRegistrationSectionDefinitionsRequest)
-#   DescribeRegistrationTypeDefinitions (input DescribeRegistrationTypeDefinitionsRequest)
-#   DescribeRegistrationVersions (input DescribeRegistrationVersionsRequest)
-#   DescribeRegistrations (input DescribeRegistrationsRequest)
-#   DescribeSenderIds (input DescribeSenderIdsRequest)
-#   DescribeVerifiedDestinationNumbers (input DescribeVerifiedDestinationNumbersRequest)
-#   ListAvailablePhoneNumbers (input ListAvailablePhoneNumbersRequest)
-#   ListNotifyCountries (input ListNotifyCountriesRequest)
-#   ListPoolOriginationIdentities (input ListPoolOriginationIdentitiesRequest)
-#   ListProtectConfigurationRuleSetNumberOverrides (input ListProtectConfigurationRuleSetNumberOverridesRequest)
-#   ListRegistrationAssociations (input ListRegistrationAssociationsRequest)
-#   PutRegistrationFieldValue (input PutRegistrationFieldValueRequest)
-#   RequestPhoneNumber (input RequestPhoneNumberRequest)
-#   RequestSenderId (input RequestSenderIdRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   SendDestinationNumberVerificationCode (input SendDestinationNumberVerificationCodeRequest)
-#   SendMediaMessage (input SendMediaMessageRequest)
-#   SendNotifyTextMessage (input SendNotifyTextMessageRequest)
-#   SendNotifyVoiceMessage (input SendNotifyVoiceMessageRequest)
-#   SendRcsMessage (input SendRcsMessageRequest)
 #   SendTextMessage (input SendTextMessageRequest)
-#   SendVoiceMessage (input SendVoiceMessageRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateEventDestination (input UpdateEventDestinationRequest)
-#   UpdateNotifyConfiguration (input UpdateNotifyConfigurationRequest)
-#   UpdateProtectConfigurationCountryRuleSet (input UpdateProtectConfigurationCountryRuleSetRequest)
-#   UpdateRcsAgent (input UpdateRcsAgentRequest)
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeConfigurationSets (input not derivable (no generated method))
-#   DescribeKeywords (input not derivable (no generated method))
-#   DescribeNotifyConfigurations (input not derivable (no generated method))
-#   DescribeNotifyTemplates (input not derivable (no generated method))
-#   DescribeOptOutLists (input not derivable (no generated method))
-#   DescribeOptedOutNumbers (input not derivable (no generated method))
-#   DescribePhoneNumbers (input not derivable (no generated method))
-#   DescribePools (input not derivable (no generated method))
-#   DescribeProtectConfigurations (input not derivable (no generated method))
-#   DescribeRcsAgentCountryLaunchStatus (input not derivable (no generated method))
-#   DescribeRcsAgents (input not derivable (no generated method))
-#   DescribeRegistrationAttachments (input not derivable (no generated method))
-#   DescribeRegistrationFieldDefinitions (input not derivable (no generated method))
-#   DescribeRegistrationFieldValues (input not derivable (no generated method))
-#   DescribeRegistrationSectionDefinitions (input not derivable (no generated method))
-#   DescribeRegistrationTypeDefinitions (input not derivable (no generated method))
-#   DescribeRegistrationVersions (input not derivable (no generated method))
-#   DescribeRegistrations (input not derivable (no generated method))
-#   DescribeSenderIds (input not derivable (no generated method))
-#   DescribeVerifiedDestinationNumbers (input not derivable (no generated method))
-#   ListAvailablePhoneNumbers (input not derivable (no generated method))
-#   ListNotifyCountries (input not derivable (no generated method))
-#   ListPoolOriginationIdentities (input not derivable (no generated method))
-#   ListProtectConfigurationRuleSetNumberOverrides (input not derivable (no generated method))
-#   ListRegistrationAssociations (input not derivable (no generated method))
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def sms_voice_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def sms_voice_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def sms_voice_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ConfigurationSetFilter to a compact JSON object (declaration order).
+def configuration_set_filter_to_json(ConfigurationSetFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize CountryLaunchStatusFilter to a compact JSON object (declaration order).
+def country_launch_status_filter_to_json(CountryLaunchStatusFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + sms_voice_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateConfigurationSetRequest to a compact JSON object (declaration order).
+def create_configuration_set_request_to_json(CreateConfigurationSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(v.ConfigurationSetName))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e1))
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u2))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateEventDestinationRequest to a compact JSON object (declaration order).
+def create_event_destination_request_to_json(CreateEventDestinationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(v.ConfigurationSetName))
+    parts.append("\"EventDestinationName\":" + sms_voice_json_str(v.EventDestinationName))
+    list[str] e0 = []
+    for x0 in v.MatchingEventTypes:
+        e0.append(x0.to_json())
+    parts.append("\"MatchingEventTypes\":" + sms_voice_json_arr(e0))
+    if v.CloudWatchLogsDestination.is_some():
+        auto u1 = v.CloudWatchLogsDestination.unwrap()
+        parts.append("\"CloudWatchLogsDestination\":" + u1.to_json())
+    if v.KinesisFirehoseDestination.is_some():
+        auto u2 = v.KinesisFirehoseDestination.unwrap()
+        parts.append("\"KinesisFirehoseDestination\":" + u2.to_json())
+    if v.SnsDestination.is_some():
+        auto u3 = v.SnsDestination.unwrap()
+        parts.append("\"SnsDestination\":" + u3.to_json())
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u4))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateNotifyConfigurationRequest to a compact JSON object (declaration order).
+def create_notify_configuration_request_to_json(CreateNotifyConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DisplayName\":" + sms_voice_json_str(v.DisplayName))
+    parts.append("\"UseCase\":" + sms_voice_json_str(v.UseCase))
+    if v.DefaultTemplateId.is_some():
+        auto u0 = v.DefaultTemplateId.unwrap()
+        parts.append("\"DefaultTemplateId\":" + sms_voice_json_str(u0))
+    if v.PoolId.is_some():
+        auto u1 = v.PoolId.unwrap()
+        parts.append("\"PoolId\":" + sms_voice_json_str(u1))
+    if v.EnabledCountries.is_some():
+        auto u2 = v.EnabledCountries.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sms_voice_json_str(x3))
+        parts.append("\"EnabledCountries\":" + sms_voice_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.EnabledChannels:
+        e4.append(x4.to_json())
+    parts.append("\"EnabledChannels\":" + sms_voice_json_arr(e4))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u5 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.ClientToken.is_some():
+        auto u6 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e8))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateOptOutListRequest to a compact JSON object (declaration order).
+def create_opt_out_list_request_to_json(CreateOptOutListRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OptOutListName\":" + sms_voice_json_str(v.OptOutListName))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e1))
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u2))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreatePoolRequest to a compact JSON object (declaration order).
+def create_pool_request_to_json(CreatePoolRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OriginationIdentity\":" + sms_voice_json_str(v.OriginationIdentity))
+    if v.IsoCountryCode.is_some():
+        auto u0 = v.IsoCountryCode.unwrap()
+        parts.append("\"IsoCountryCode\":" + sms_voice_json_str(u0))
+    parts.append("\"MessageType\":" + v.MessageType.to_json())
+    if v.DeletionProtectionEnabled.is_some():
+        auto u1 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u4))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateProtectConfigurationRequest to a compact JSON object (declaration order).
+def create_protect_configuration_request_to_json(CreateProtectConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u0))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u1 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e3))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateRcsAgentRequest to a compact JSON object (declaration order).
+def create_rcs_agent_request_to_json(CreateRcsAgentRequest v) -> str:
+    list[str] parts = []
+    if v.DeletionProtectionEnabled.is_some():
+        auto u0 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.OptOutListName.is_some():
+        auto u1 = v.OptOutListName.unwrap()
+        parts.append("\"OptOutListName\":" + sms_voice_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u4))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateRegistrationAttachmentRequest to a compact JSON object (declaration order).
+def create_registration_attachment_request_to_json(CreateRegistrationAttachmentRequest v) -> str:
+    list[str] parts = []
+    if v.AttachmentBody.is_some():
+        auto u0 = v.AttachmentBody.unwrap()
+        parts.append("\"AttachmentBody\":" + sms_voice_json_str(base64.encode(u0)))
+    if v.AttachmentUrl.is_some():
+        auto u1 = v.AttachmentUrl.unwrap()
+        parts.append("\"AttachmentUrl\":" + sms_voice_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u4))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateRegistrationRequest to a compact JSON object (declaration order).
+def create_registration_request_to_json(CreateRegistrationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationType\":" + sms_voice_json_str(v.RegistrationType))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e1))
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u2))
+    return sms_voice_json_obj(parts)
+
+# Serialize CreateVerifiedDestinationNumberRequest to a compact JSON object (declaration order).
+def create_verified_destination_number_request_to_json(CreateVerifiedDestinationNumberRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationPhoneNumber\":" + sms_voice_json_str(v.DestinationPhoneNumber))
+    if v.RcsAgentId.is_some():
+        auto u0 = v.RcsAgentId.unwrap()
+        parts.append("\"RcsAgentId\":" + sms_voice_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e2))
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeConfigurationSetsRequest to a compact JSON object (declaration order).
+def describe_configuration_sets_request_to_json(DescribeConfigurationSetsRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigurationSetNames.is_some():
+        auto u0 = v.ConfigurationSetNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"ConfigurationSetNames\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(configuration_set_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeKeywordsRequest to a compact JSON object (declaration order).
+def describe_keywords_request_to_json(DescribeKeywordsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OriginationIdentity\":" + sms_voice_json_str(v.OriginationIdentity))
+    if v.Keywords.is_some():
+        auto u0 = v.Keywords.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"Keywords\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(keyword_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeNotifyConfigurationsRequest to a compact JSON object (declaration order).
+def describe_notify_configurations_request_to_json(DescribeNotifyConfigurationsRequest v) -> str:
+    list[str] parts = []
+    if v.NotifyConfigurationIds.is_some():
+        auto u0 = v.NotifyConfigurationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"NotifyConfigurationIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(notify_configuration_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeNotifyTemplatesRequest to a compact JSON object (declaration order).
+def describe_notify_templates_request_to_json(DescribeNotifyTemplatesRequest v) -> str:
+    list[str] parts = []
+    if v.TemplateIds.is_some():
+        auto u0 = v.TemplateIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"TemplateIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(notify_template_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeOptOutListsRequest to a compact JSON object (declaration order).
+def describe_opt_out_lists_request_to_json(DescribeOptOutListsRequest v) -> str:
+    list[str] parts = []
+    if v.OptOutListNames.is_some():
+        auto u0 = v.OptOutListNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"OptOutListNames\":" + sms_voice_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    if v.Owner.is_some():
+        auto u4 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + u4.to_json())
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeOptedOutNumbersRequest to a compact JSON object (declaration order).
+def describe_opted_out_numbers_request_to_json(DescribeOptedOutNumbersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OptOutListName\":" + sms_voice_json_str(v.OptOutListName))
+    if v.OptedOutNumbers.is_some():
+        auto u0 = v.OptedOutNumbers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"OptedOutNumbers\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(opted_out_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribePhoneNumbersRequest to a compact JSON object (declaration order).
+def describe_phone_numbers_request_to_json(DescribePhoneNumbersRequest v) -> str:
+    list[str] parts = []
+    if v.PhoneNumberIds.is_some():
+        auto u0 = v.PhoneNumberIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"PhoneNumberIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(phone_number_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.Owner.is_some():
+        auto u6 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + u6.to_json())
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribePoolsRequest to a compact JSON object (declaration order).
+def describe_pools_request_to_json(DescribePoolsRequest v) -> str:
+    list[str] parts = []
+    if v.PoolIds.is_some():
+        auto u0 = v.PoolIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"PoolIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(pool_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.Owner.is_some():
+        auto u6 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + u6.to_json())
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeProtectConfigurationsRequest to a compact JSON object (declaration order).
+def describe_protect_configurations_request_to_json(DescribeProtectConfigurationsRequest v) -> str:
+    list[str] parts = []
+    if v.ProtectConfigurationIds.is_some():
+        auto u0 = v.ProtectConfigurationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"ProtectConfigurationIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(protect_configuration_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRcsAgentCountryLaunchStatusRequest to a compact JSON object (declaration order).
+def describe_rcs_agent_country_launch_status_request_to_json(DescribeRcsAgentCountryLaunchStatusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RcsAgentId\":" + sms_voice_json_str(v.RcsAgentId))
+    if v.IsoCountryCodes.is_some():
+        auto u0 = v.IsoCountryCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"IsoCountryCodes\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(country_launch_status_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRcsAgentsRequest to a compact JSON object (declaration order).
+def describe_rcs_agents_request_to_json(DescribeRcsAgentsRequest v) -> str:
+    list[str] parts = []
+    if v.RcsAgentIds.is_some():
+        auto u0 = v.RcsAgentIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"RcsAgentIds\":" + sms_voice_json_arr(e1))
+    if v.Owner.is_some():
+        auto u2 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + u2.to_json())
+    if v.Filters.is_some():
+        auto u3 = v.Filters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(rcs_agent_filter_to_json(x4))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationAttachmentsRequest to a compact JSON object (declaration order).
+def describe_registration_attachments_request_to_json(DescribeRegistrationAttachmentsRequest v) -> str:
+    list[str] parts = []
+    if v.RegistrationAttachmentIds.is_some():
+        auto u0 = v.RegistrationAttachmentIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"RegistrationAttachmentIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(registration_attachment_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationFieldDefinitionsRequest to a compact JSON object (declaration order).
+def describe_registration_field_definitions_request_to_json(DescribeRegistrationFieldDefinitionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationType\":" + sms_voice_json_str(v.RegistrationType))
+    if v.SectionPath.is_some():
+        auto u0 = v.SectionPath.unwrap()
+        parts.append("\"SectionPath\":" + sms_voice_json_str(u0))
+    if v.FieldPaths.is_some():
+        auto u1 = v.FieldPaths.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sms_voice_json_str(x2))
+        parts.append("\"FieldPaths\":" + sms_voice_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationFieldValuesRequest to a compact JSON object (declaration order).
+def describe_registration_field_values_request_to_json(DescribeRegistrationFieldValuesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationId\":" + sms_voice_json_str(v.RegistrationId))
+    if v.VersionNumber.is_some():
+        auto u0 = v.VersionNumber.unwrap()
+        parts.append("\"VersionNumber\":" + str(u0))
+    if v.SectionPath.is_some():
+        auto u1 = v.SectionPath.unwrap()
+        parts.append("\"SectionPath\":" + sms_voice_json_str(u1))
+    if v.FieldPaths.is_some():
+        auto u2 = v.FieldPaths.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sms_voice_json_str(x3))
+        parts.append("\"FieldPaths\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationSectionDefinitionsRequest to a compact JSON object (declaration order).
+def describe_registration_section_definitions_request_to_json(DescribeRegistrationSectionDefinitionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationType\":" + sms_voice_json_str(v.RegistrationType))
+    if v.SectionPaths.is_some():
+        auto u0 = v.SectionPaths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"SectionPaths\":" + sms_voice_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationTypeDefinitionsRequest to a compact JSON object (declaration order).
+def describe_registration_type_definitions_request_to_json(DescribeRegistrationTypeDefinitionsRequest v) -> str:
+    list[str] parts = []
+    if v.RegistrationTypes.is_some():
+        auto u0 = v.RegistrationTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"RegistrationTypes\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(registration_type_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationVersionsRequest to a compact JSON object (declaration order).
+def describe_registration_versions_request_to_json(DescribeRegistrationVersionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationId\":" + sms_voice_json_str(v.RegistrationId))
+    if v.VersionNumbers.is_some():
+        auto u0 = v.VersionNumbers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"VersionNumbers\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(registration_version_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeRegistrationsRequest to a compact JSON object (declaration order).
+def describe_registrations_request_to_json(DescribeRegistrationsRequest v) -> str:
+    list[str] parts = []
+    if v.RegistrationIds.is_some():
+        auto u0 = v.RegistrationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"RegistrationIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(registration_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeSenderIdsRequest to a compact JSON object (declaration order).
+def describe_sender_ids_request_to_json(DescribeSenderIdsRequest v) -> str:
+    list[str] parts = []
+    if v.SenderIds.is_some():
+        auto u0 = v.SenderIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SenderIds\":" + sms_voice_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sender_id_filter_to_json(x3))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.Owner.is_some():
+        auto u6 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + u6.to_json())
+    return sms_voice_json_obj(parts)
+
+# Serialize DescribeVerifiedDestinationNumbersRequest to a compact JSON object (declaration order).
+def describe_verified_destination_numbers_request_to_json(DescribeVerifiedDestinationNumbersRequest v) -> str:
+    list[str] parts = []
+    if v.VerifiedDestinationNumberIds.is_some():
+        auto u0 = v.VerifiedDestinationNumberIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"VerifiedDestinationNumberIds\":" + sms_voice_json_arr(e1))
+    if v.DestinationPhoneNumbers.is_some():
+        auto u2 = v.DestinationPhoneNumbers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sms_voice_json_str(x3))
+        parts.append("\"DestinationPhoneNumbers\":" + sms_voice_json_arr(e3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(verified_destination_number_filter_to_json(x5))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u6))
+    if v.MaxResults.is_some():
+        auto u7 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u7))
+    return sms_voice_json_obj(parts)
+
+# Serialize KeywordFilter to a compact JSON object (declaration order).
+def keyword_filter_to_json(KeywordFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + sms_voice_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize ListAvailablePhoneNumbersRequest to a compact JSON object (declaration order).
+def list_available_phone_numbers_request_to_json(ListAvailablePhoneNumbersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IsoCountryCode\":" + sms_voice_json_str(v.IsoCountryCode))
+    list[str] e0 = []
+    for x0 in v.NumberCapabilities:
+        e0.append(x0.to_json())
+    parts.append("\"NumberCapabilities\":" + sms_voice_json_arr(e0))
+    parts.append("\"NumberType\":" + sms_voice_json_str(v.NumberType))
+    if v.RegistrationId.is_some():
+        auto u1 = v.RegistrationId.unwrap()
+        parts.append("\"RegistrationId\":" + sms_voice_json_str(u1))
+    if v.NumberPreference.is_some():
+        auto u2 = v.NumberPreference.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(number_preference_item_to_json(x3))
+        parts.append("\"NumberPreference\":" + sms_voice_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize ListNotifyCountriesRequest to a compact JSON object (declaration order).
+def list_notify_countries_request_to_json(ListNotifyCountriesRequest v) -> str:
+    list[str] parts = []
+    if v.Channels.is_some():
+        auto u0 = v.Channels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Channels\":" + sms_voice_json_arr(e1))
+    if v.UseCases.is_some():
+        auto u2 = v.UseCases.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sms_voice_json_str(x3))
+        parts.append("\"UseCases\":" + sms_voice_json_arr(e3))
+    if v.Tier.is_some():
+        auto u4 = v.Tier.unwrap()
+        parts.append("\"Tier\":" + u4.to_json())
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    return sms_voice_json_obj(parts)
+
+# Serialize ListPoolOriginationIdentitiesRequest to a compact JSON object (declaration order).
+def list_pool_origination_identities_request_to_json(ListPoolOriginationIdentitiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PoolId\":" + sms_voice_json_str(v.PoolId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pool_origination_identities_filter_to_json(x1))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize ListProtectConfigurationRuleSetNumberOverridesRequest to a compact JSON object (declaration order).
+def list_protect_configuration_rule_set_number_overrides_request_to_json(ListProtectConfigurationRuleSetNumberOverridesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProtectConfigurationId\":" + sms_voice_json_str(v.ProtectConfigurationId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(protect_configuration_rule_set_number_override_filter_item_to_json(x1))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize ListRegistrationAssociationsRequest to a compact JSON object (declaration order).
+def list_registration_associations_request_to_json(ListRegistrationAssociationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationId\":" + sms_voice_json_str(v.RegistrationId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(registration_association_filter_to_json(x1))
+        parts.append("\"Filters\":" + sms_voice_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + sms_voice_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize NotifyConfigurationFilter to a compact JSON object (declaration order).
+def notify_configuration_filter_to_json(NotifyConfigurationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize NotifyTemplateFilter to a compact JSON object (declaration order).
+def notify_template_filter_to_json(NotifyTemplateFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize NumberPreferenceItem to a compact JSON object (declaration order).
+def number_preference_item_to_json(NumberPreferenceItem v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PreferenceType:
+        e0.append(x0.to_json())
+    parts.append("\"PreferenceType\":" + sms_voice_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Filter:
+        e1.append(sms_voice_json_str(x1))
+    parts.append("\"Filter\":" + sms_voice_json_arr(e1))
+    return sms_voice_json_obj(parts)
+
+# Serialize OptedOutFilter to a compact JSON object (declaration order).
+def opted_out_filter_to_json(OptedOutFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + sms_voice_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize PhoneNumberFilter to a compact JSON object (declaration order).
+def phone_number_filter_to_json(PhoneNumberFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize PoolFilter to a compact JSON object (declaration order).
+def pool_filter_to_json(PoolFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize PoolOriginationIdentitiesFilter to a compact JSON object (declaration order).
+def pool_origination_identities_filter_to_json(PoolOriginationIdentitiesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize ProtectConfigurationFilter to a compact JSON object (declaration order).
+def protect_configuration_filter_to_json(ProtectConfigurationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize ProtectConfigurationRuleSetNumberOverrideFilterItem to a compact JSON object (declaration order).
+def protect_configuration_rule_set_number_override_filter_item_to_json(ProtectConfigurationRuleSetNumberOverrideFilterItem v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize PutRegistrationFieldValueRequest to a compact JSON object (declaration order).
+def put_registration_field_value_request_to_json(PutRegistrationFieldValueRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistrationId\":" + sms_voice_json_str(v.RegistrationId))
+    parts.append("\"FieldPath\":" + sms_voice_json_str(v.FieldPath))
+    if v.SelectChoices.is_some():
+        auto u0 = v.SelectChoices.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sms_voice_json_str(x1))
+        parts.append("\"SelectChoices\":" + sms_voice_json_arr(e1))
+    if v.TextValue.is_some():
+        auto u2 = v.TextValue.unwrap()
+        parts.append("\"TextValue\":" + sms_voice_json_str(u2))
+    if v.RegistrationAttachmentId.is_some():
+        auto u3 = v.RegistrationAttachmentId.unwrap()
+        parts.append("\"RegistrationAttachmentId\":" + sms_voice_json_str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsAgentFilter to a compact JSON object (declaration order).
+def rcs_agent_filter_to_json(RcsAgentFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsCardContent to a compact JSON object (declaration order).
+def rcs_card_content_to_json(RcsCardContent v) -> str:
+    list[str] parts = []
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + sms_voice_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + sms_voice_json_str(u1))
+    if v.Media.is_some():
+        auto u2 = v.Media.unwrap()
+        parts.append("\"Media\":" + u2.to_json())
+    if v.Suggestions.is_some():
+        auto u3 = v.Suggestions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Suggestions\":" + sms_voice_json_arr(e4))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsCarousel to a compact JSON object (declaration order).
+def rcs_carousel_to_json(RcsCarousel v) -> str:
+    list[str] parts = []
+    parts.append("\"CardWidth\":" + sms_voice_json_str(v.CardWidth))
+    list[str] e0 = []
+    for x0 in v.CardContents:
+        e0.append(rcs_carousel_card_content_to_json(x0))
+    parts.append("\"CardContents\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsCarouselCardContent to a compact JSON object (declaration order).
+def rcs_carousel_card_content_to_json(RcsCarouselCardContent v) -> str:
+    list[str] parts = []
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + sms_voice_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + sms_voice_json_str(u1))
+    if v.Media.is_some():
+        auto u2 = v.Media.unwrap()
+        parts.append("\"Media\":" + u2.to_json())
+    if v.Suggestions.is_some():
+        auto u3 = v.Suggestions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Suggestions\":" + sms_voice_json_arr(e4))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsContent to a compact JSON object (declaration order).
+def rcs_content_to_json(RcsContent v) -> str:
+    list[str] parts = []
+    if v.TextMessage.is_some():
+        auto u0 = v.TextMessage.unwrap()
+        parts.append("\"TextMessage\":" + u0.to_json())
+    if v.FileMessage.is_some():
+        auto u1 = v.FileMessage.unwrap()
+        parts.append("\"FileMessage\":" + u1.to_json())
+    if v.RichCard.is_some():
+        auto u2 = v.RichCard.unwrap()
+        parts.append("\"RichCard\":" + rcs_standalone_card_to_json(u2))
+    if v.Carousel.is_some():
+        auto u3 = v.Carousel.unwrap()
+        parts.append("\"Carousel\":" + rcs_carousel_to_json(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsFallbackConfiguration to a compact JSON object (declaration order).
+def rcs_fallback_configuration_to_json(RcsFallbackConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Channel\":" + v.Channel.to_json())
+    if v.MessageBody.is_some():
+        auto u0 = v.MessageBody.unwrap()
+        parts.append("\"MessageBody\":" + sms_voice_json_str(u0))
+    if v.MediaUrls.is_some():
+        auto u1 = v.MediaUrls.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sms_voice_json_str(x2))
+        parts.append("\"MediaUrls\":" + sms_voice_json_arr(e2))
+    if v.OriginationIdentity.is_some():
+        auto u3 = v.OriginationIdentity.unwrap()
+        parts.append("\"OriginationIdentity\":" + sms_voice_json_str(u3))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsMessageContent to a compact JSON object (declaration order).
+def rcs_message_content_to_json(RcsMessageContent v) -> str:
+    list[str] parts = []
+    parts.append("\"Content\":" + rcs_content_to_json(v.Content))
+    if v.Suggestions.is_some():
+        auto u0 = v.Suggestions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Suggestions\":" + sms_voice_json_arr(e1))
+    return sms_voice_json_obj(parts)
+
+# Serialize RcsStandaloneCard to a compact JSON object (declaration order).
+def rcs_standalone_card_to_json(RcsStandaloneCard v) -> str:
+    list[str] parts = []
+    parts.append("\"CardOrientation\":" + sms_voice_json_str(v.CardOrientation))
+    if v.ThumbnailImageAlignment.is_some():
+        auto u0 = v.ThumbnailImageAlignment.unwrap()
+        parts.append("\"ThumbnailImageAlignment\":" + sms_voice_json_str(u0))
+    parts.append("\"CardContent\":" + rcs_card_content_to_json(v.CardContent))
+    return sms_voice_json_obj(parts)
+
+# Serialize RegistrationAssociationFilter to a compact JSON object (declaration order).
+def registration_association_filter_to_json(RegistrationAssociationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RegistrationAttachmentFilter to a compact JSON object (declaration order).
+def registration_attachment_filter_to_json(RegistrationAttachmentFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + sms_voice_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RegistrationFilter to a compact JSON object (declaration order).
+def registration_filter_to_json(RegistrationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RegistrationTypeFilter to a compact JSON object (declaration order).
+def registration_type_filter_to_json(RegistrationTypeFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RegistrationVersionFilter to a compact JSON object (declaration order).
+def registration_version_filter_to_json(RegistrationVersionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + sms_voice_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize RequestPhoneNumberRequest to a compact JSON object (declaration order).
+def request_phone_number_request_to_json(RequestPhoneNumberRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IsoCountryCode\":" + sms_voice_json_str(v.IsoCountryCode))
+    parts.append("\"MessageType\":" + v.MessageType.to_json())
+    list[str] e0 = []
+    for x0 in v.NumberCapabilities:
+        e0.append(x0.to_json())
+    parts.append("\"NumberCapabilities\":" + sms_voice_json_arr(e0))
+    parts.append("\"NumberType\":" + v.NumberType.to_json())
+    if v.OptOutListName.is_some():
+        auto u1 = v.OptOutListName.unwrap()
+        parts.append("\"OptOutListName\":" + sms_voice_json_str(u1))
+    if v.PoolId.is_some():
+        auto u2 = v.PoolId.unwrap()
+        parts.append("\"PoolId\":" + sms_voice_json_str(u2))
+    if v.RegistrationId.is_some():
+        auto u3 = v.RegistrationId.unwrap()
+        parts.append("\"RegistrationId\":" + sms_voice_json_str(u3))
+    if v.NumberPreference.is_some():
+        auto u4 = v.NumberPreference.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(number_preference_item_to_json(x5))
+        parts.append("\"NumberPreference\":" + sms_voice_json_arr(e5))
+    if v.InternationalSendingEnabled.is_some():
+        auto u6 = v.InternationalSendingEnabled.unwrap()
+        parts.append("\"InternationalSendingEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u7 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e9))
+    if v.ClientToken.is_some():
+        auto u10 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u10))
+    return sms_voice_json_obj(parts)
+
+# Serialize RequestSenderIdRequest to a compact JSON object (declaration order).
+def request_sender_id_request_to_json(RequestSenderIdRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SenderId\":" + sms_voice_json_str(v.SenderId))
+    parts.append("\"IsoCountryCode\":" + sms_voice_json_str(v.IsoCountryCode))
+    if v.MessageTypes.is_some():
+        auto u0 = v.MessageTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"MessageTypes\":" + sms_voice_json_arr(e1))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u2 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + sms_voice_json_arr(e4))
+    if v.ClientToken.is_some():
+        auto u5 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + sms_voice_json_str(u5))
+    return sms_voice_json_obj(parts)
+
+# Serialize SendMediaMessageRequest to a compact JSON object (declaration order).
+def send_media_message_request_to_json(SendMediaMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationPhoneNumber\":" + sms_voice_json_str(v.DestinationPhoneNumber))
+    parts.append("\"OriginationIdentity\":" + sms_voice_json_str(v.OriginationIdentity))
+    if v.MessageBody.is_some():
+        auto u0 = v.MessageBody.unwrap()
+        parts.append("\"MessageBody\":" + sms_voice_json_str(u0))
+    if v.MediaUrls.is_some():
+        auto u1 = v.MediaUrls.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sms_voice_json_str(x2))
+        parts.append("\"MediaUrls\":" + sms_voice_json_arr(e2))
+    if v.ConfigurationSetName.is_some():
+        auto u3 = v.ConfigurationSetName.unwrap()
+        parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(u3))
+    if v.MaxPrice.is_some():
+        auto u4 = v.MaxPrice.unwrap()
+        parts.append("\"MaxPrice\":" + sms_voice_json_str(u4))
+    if v.TimeToLive.is_some():
+        auto u5 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u5))
+    if v.Context.is_some():
+        auto u6 = v.Context.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(sms_voice_json_str(k7) + ":" + sms_voice_json_str(u6[k7]))
+        parts.append("\"Context\":" + sms_voice_json_obj(m7))
+    if v.DryRun.is_some():
+        auto u8 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.ProtectConfigurationId.is_some():
+        auto u9 = v.ProtectConfigurationId.unwrap()
+        parts.append("\"ProtectConfigurationId\":" + sms_voice_json_str(u9))
+    if v.MessageFeedbackEnabled.is_some():
+        auto u10 = v.MessageFeedbackEnabled.unwrap()
+        parts.append("\"MessageFeedbackEnabled\":" + json.dumps(JsonValue.Bool(u10)))
+    return sms_voice_json_obj(parts)
+
+# Serialize SendNotifyTextMessageRequest to a compact JSON object (declaration order).
+def send_notify_text_message_request_to_json(SendNotifyTextMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"NotifyConfigurationId\":" + sms_voice_json_str(v.NotifyConfigurationId))
+    parts.append("\"DestinationPhoneNumber\":" + sms_voice_json_str(v.DestinationPhoneNumber))
+    if v.TemplateId.is_some():
+        auto u0 = v.TemplateId.unwrap()
+        parts.append("\"TemplateId\":" + sms_voice_json_str(u0))
+    list[str] m1 = []
+    for k1 in sorted(v.TemplateVariables.keys()):
+        m1.append(sms_voice_json_str(k1) + ":" + sms_voice_json_str(v.TemplateVariables[k1]))
+    parts.append("\"TemplateVariables\":" + sms_voice_json_obj(m1))
+    if v.TimeToLive.is_some():
+        auto u2 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u2))
+    if v.Context.is_some():
+        auto u3 = v.Context.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(sms_voice_json_str(k4) + ":" + sms_voice_json_str(u3[k4]))
+        parts.append("\"Context\":" + sms_voice_json_obj(m4))
+    if v.ConfigurationSetName.is_some():
+        auto u5 = v.ConfigurationSetName.unwrap()
+        parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(u5))
+    if v.DryRun.is_some():
+        auto u6 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.MessageFeedbackEnabled.is_some():
+        auto u7 = v.MessageFeedbackEnabled.unwrap()
+        parts.append("\"MessageFeedbackEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+    return sms_voice_json_obj(parts)
+
+# Serialize SendNotifyVoiceMessageRequest to a compact JSON object (declaration order).
+def send_notify_voice_message_request_to_json(SendNotifyVoiceMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"NotifyConfigurationId\":" + sms_voice_json_str(v.NotifyConfigurationId))
+    parts.append("\"DestinationPhoneNumber\":" + sms_voice_json_str(v.DestinationPhoneNumber))
+    if v.TemplateId.is_some():
+        auto u0 = v.TemplateId.unwrap()
+        parts.append("\"TemplateId\":" + sms_voice_json_str(u0))
+    list[str] m1 = []
+    for k1 in sorted(v.TemplateVariables.keys()):
+        m1.append(sms_voice_json_str(k1) + ":" + sms_voice_json_str(v.TemplateVariables[k1]))
+    parts.append("\"TemplateVariables\":" + sms_voice_json_obj(m1))
+    if v.VoiceId.is_some():
+        auto u2 = v.VoiceId.unwrap()
+        parts.append("\"VoiceId\":" + u2.to_json())
+    if v.TimeToLive.is_some():
+        auto u3 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u3))
+    if v.Context.is_some():
+        auto u4 = v.Context.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(sms_voice_json_str(k5) + ":" + sms_voice_json_str(u4[k5]))
+        parts.append("\"Context\":" + sms_voice_json_obj(m5))
+    if v.ConfigurationSetName.is_some():
+        auto u6 = v.ConfigurationSetName.unwrap()
+        parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(u6))
+    if v.DryRun.is_some():
+        auto u7 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.MessageFeedbackEnabled.is_some():
+        auto u8 = v.MessageFeedbackEnabled.unwrap()
+        parts.append("\"MessageFeedbackEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+    return sms_voice_json_obj(parts)
+
+# Serialize SendRcsMessageRequest to a compact JSON object (declaration order).
+def send_rcs_message_request_to_json(SendRcsMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationPhoneNumber\":" + sms_voice_json_str(v.DestinationPhoneNumber))
+    parts.append("\"OriginationIdentity\":" + sms_voice_json_str(v.OriginationIdentity))
+    if v.RcsMessageContent.is_some():
+        auto u0 = v.RcsMessageContent.unwrap()
+        parts.append("\"RcsMessageContent\":" + rcs_message_content_to_json(u0))
+    if v.TimeToLive.is_some():
+        auto u1 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u1))
+    if v.MessageTrafficType.is_some():
+        auto u2 = v.MessageTrafficType.unwrap()
+        parts.append("\"MessageTrafficType\":" + sms_voice_json_str(u2))
+    if v.FallbackConfiguration.is_some():
+        auto u3 = v.FallbackConfiguration.unwrap()
+        parts.append("\"FallbackConfiguration\":" + rcs_fallback_configuration_to_json(u3))
+    if v.ProtectConfigurationId.is_some():
+        auto u4 = v.ProtectConfigurationId.unwrap()
+        parts.append("\"ProtectConfigurationId\":" + sms_voice_json_str(u4))
+    if v.ConfigurationSetName.is_some():
+        auto u5 = v.ConfigurationSetName.unwrap()
+        parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(u5))
+    if v.MaxPrice.is_some():
+        auto u6 = v.MaxPrice.unwrap()
+        parts.append("\"MaxPrice\":" + sms_voice_json_str(u6))
+    if v.DryRun.is_some():
+        auto u7 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Context.is_some():
+        auto u8 = v.Context.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(sms_voice_json_str(k9) + ":" + sms_voice_json_str(u8[k9]))
+        parts.append("\"Context\":" + sms_voice_json_obj(m9))
+    if v.MessageFeedbackEnabled.is_some():
+        auto u10 = v.MessageFeedbackEnabled.unwrap()
+        parts.append("\"MessageFeedbackEnabled\":" + json.dumps(JsonValue.Bool(u10)))
+    return sms_voice_json_obj(parts)
+
+# Serialize SendVoiceMessageRequest to a compact JSON object (declaration order).
+def send_voice_message_request_to_json(SendVoiceMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationPhoneNumber\":" + sms_voice_json_str(v.DestinationPhoneNumber))
+    parts.append("\"OriginationIdentity\":" + sms_voice_json_str(v.OriginationIdentity))
+    if v.MessageBody.is_some():
+        auto u0 = v.MessageBody.unwrap()
+        parts.append("\"MessageBody\":" + sms_voice_json_str(u0))
+    if v.MessageBodyTextType.is_some():
+        auto u1 = v.MessageBodyTextType.unwrap()
+        parts.append("\"MessageBodyTextType\":" + u1.to_json())
+    if v.VoiceId.is_some():
+        auto u2 = v.VoiceId.unwrap()
+        parts.append("\"VoiceId\":" + u2.to_json())
+    if v.ConfigurationSetName.is_some():
+        auto u3 = v.ConfigurationSetName.unwrap()
+        parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(u3))
+    if v.MaxPricePerMinute.is_some():
+        auto u4 = v.MaxPricePerMinute.unwrap()
+        parts.append("\"MaxPricePerMinute\":" + sms_voice_json_str(u4))
+    if v.TimeToLive.is_some():
+        auto u5 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u5))
+    if v.Context.is_some():
+        auto u6 = v.Context.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(sms_voice_json_str(k7) + ":" + sms_voice_json_str(u6[k7]))
+        parts.append("\"Context\":" + sms_voice_json_obj(m7))
+    if v.DryRun.is_some():
+        auto u8 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.ProtectConfigurationId.is_some():
+        auto u9 = v.ProtectConfigurationId.unwrap()
+        parts.append("\"ProtectConfigurationId\":" + sms_voice_json_str(u9))
+    if v.MessageFeedbackEnabled.is_some():
+        auto u10 = v.MessageFeedbackEnabled.unwrap()
+        parts.append("\"MessageFeedbackEnabled\":" + json.dumps(JsonValue.Bool(u10)))
+    return sms_voice_json_obj(parts)
+
+# Serialize SenderIdFilter to a compact JSON object (declaration order).
+def sender_id_filter_to_json(SenderIdFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + sms_voice_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + sms_voice_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"TagKeys\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
+
+# Serialize UpdateEventDestinationRequest to a compact JSON object (declaration order).
+def update_event_destination_request_to_json(UpdateEventDestinationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationSetName\":" + sms_voice_json_str(v.ConfigurationSetName))
+    parts.append("\"EventDestinationName\":" + sms_voice_json_str(v.EventDestinationName))
+    if v.Enabled.is_some():
+        auto u0 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.MatchingEventTypes.is_some():
+        auto u1 = v.MatchingEventTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"MatchingEventTypes\":" + sms_voice_json_arr(e2))
+    if v.CloudWatchLogsDestination.is_some():
+        auto u3 = v.CloudWatchLogsDestination.unwrap()
+        parts.append("\"CloudWatchLogsDestination\":" + u3.to_json())
+    if v.KinesisFirehoseDestination.is_some():
+        auto u4 = v.KinesisFirehoseDestination.unwrap()
+        parts.append("\"KinesisFirehoseDestination\":" + u4.to_json())
+    if v.SnsDestination.is_some():
+        auto u5 = v.SnsDestination.unwrap()
+        parts.append("\"SnsDestination\":" + u5.to_json())
+    return sms_voice_json_obj(parts)
+
+# Serialize UpdateNotifyConfigurationRequest to a compact JSON object (declaration order).
+def update_notify_configuration_request_to_json(UpdateNotifyConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"NotifyConfigurationId\":" + sms_voice_json_str(v.NotifyConfigurationId))
+    if v.DefaultTemplateId.is_some():
+        auto u0 = v.DefaultTemplateId.unwrap()
+        parts.append("\"DefaultTemplateId\":" + sms_voice_json_str(u0))
+    if v.PoolId.is_some():
+        auto u1 = v.PoolId.unwrap()
+        parts.append("\"PoolId\":" + sms_voice_json_str(u1))
+    if v.EnabledCountries.is_some():
+        auto u2 = v.EnabledCountries.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sms_voice_json_str(x3))
+        parts.append("\"EnabledCountries\":" + sms_voice_json_arr(e3))
+    if v.EnabledChannels.is_some():
+        auto u4 = v.EnabledChannels.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"EnabledChannels\":" + sms_voice_json_arr(e5))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u6 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    return sms_voice_json_obj(parts)
+
+# Serialize UpdateProtectConfigurationCountryRuleSetRequest to a compact JSON object (declaration order).
+def update_protect_configuration_country_rule_set_request_to_json(UpdateProtectConfigurationCountryRuleSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProtectConfigurationId\":" + sms_voice_json_str(v.ProtectConfigurationId))
+    parts.append("\"NumberCapability\":" + v.NumberCapability.to_json())
+    list[str] m0 = []
+    for k0 in sorted(v.CountryRuleSetUpdates.keys()):
+        m0.append(sms_voice_json_str(k0) + ":" + v.CountryRuleSetUpdates[k0].to_json())
+    parts.append("\"CountryRuleSetUpdates\":" + sms_voice_json_obj(m0))
+    return sms_voice_json_obj(parts)
+
+# Serialize UpdateRcsAgentRequest to a compact JSON object (declaration order).
+def update_rcs_agent_request_to_json(UpdateRcsAgentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RcsAgentId\":" + sms_voice_json_str(v.RcsAgentId))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u0 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.OptOutListName.is_some():
+        auto u1 = v.OptOutListName.unwrap()
+        parts.append("\"OptOutListName\":" + sms_voice_json_str(u1))
+    if v.SelfManagedOptOutsEnabled.is_some():
+        auto u2 = v.SelfManagedOptOutsEnabled.unwrap()
+        parts.append("\"SelfManagedOptOutsEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.TwoWayChannelArn.is_some():
+        auto u3 = v.TwoWayChannelArn.unwrap()
+        parts.append("\"TwoWayChannelArn\":" + sms_voice_json_str(u3))
+    if v.TwoWayChannelRole.is_some():
+        auto u4 = v.TwoWayChannelRole.unwrap()
+        parts.append("\"TwoWayChannelRole\":" + sms_voice_json_str(u4))
+    if v.TwoWayEnabled.is_some():
+        auto u5 = v.TwoWayEnabled.unwrap()
+        parts.append("\"TwoWayEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TwoWayMediaS3BucketName.is_some():
+        auto u6 = v.TwoWayMediaS3BucketName.unwrap()
+        parts.append("\"TwoWayMediaS3BucketName\":" + sms_voice_json_str(u6))
+    if v.TwoWayMediaS3KeyPrefix.is_some():
+        auto u7 = v.TwoWayMediaS3KeyPrefix.unwrap()
+        parts.append("\"TwoWayMediaS3KeyPrefix\":" + sms_voice_json_str(u7))
+    if v.TwoWayMediaS3Role.is_some():
+        auto u8 = v.TwoWayMediaS3Role.unwrap()
+        parts.append("\"TwoWayMediaS3Role\":" + sms_voice_json_str(u8))
+    if v.TwoWayRcsEventsEnabled.is_some():
+        auto u9 = v.TwoWayRcsEventsEnabled.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(sms_voice_json_str(x10))
+        parts.append("\"TwoWayRcsEventsEnabled\":" + sms_voice_json_arr(e10))
+    return sms_voice_json_obj(parts)
+
+# Serialize VerifiedDestinationNumberFilter to a compact JSON object (declaration order).
+def verified_destination_number_filter_to_json(VerifiedDestinationNumberFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(sms_voice_json_str(x0))
+    parts.append("\"Values\":" + sms_voice_json_arr(e0))
+    return sms_voice_json_obj(parts)
 
 # A bound Pinpoint_SMS_Voice_V2 client: credentials + region, threaded into every operation.
 struct Pinpoint_SMS_Voice_V2Client:
@@ -3382,17 +4978,77 @@ struct Pinpoint_SMS_Voice_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CarrierLookup", body)
 
+    # CreateConfigurationSet
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configuration_set(self, CreateConfigurationSetRequest input) -> str:
+        auto body = create_configuration_set_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateConfigurationSet", body)
+
+    # CreateEventDestination
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_event_destination(self, CreateEventDestinationRequest input) -> str:
+        auto body = create_event_destination_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateEventDestination", body)
+
+    # CreateNotifyConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_notify_configuration(self, CreateNotifyConfigurationRequest input) -> str:
+        auto body = create_notify_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateNotifyConfiguration", body)
+
+    # CreateOptOutList
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_opt_out_list(self, CreateOptOutListRequest input) -> str:
+        auto body = create_opt_out_list_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateOptOutList", body)
+
+    # CreatePool
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_pool(self, CreatePoolRequest input) -> str:
+        auto body = create_pool_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreatePool", body)
+
+    # CreateProtectConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_protect_configuration(self, CreateProtectConfigurationRequest input) -> str:
+        auto body = create_protect_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateProtectConfiguration", body)
+
+    # CreateRcsAgent
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_rcs_agent(self, CreateRcsAgentRequest input) -> str:
+        auto body = create_rcs_agent_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateRcsAgent", body)
+
+    # CreateRegistration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_registration(self, CreateRegistrationRequest input) -> str:
+        auto body = create_registration_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateRegistration", body)
+
     # CreateRegistrationAssociation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_registration_association(self, CreateRegistrationAssociationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateRegistrationAssociation", body)
 
+    # CreateRegistrationAttachment
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_registration_attachment(self, CreateRegistrationAttachmentRequest input) -> str:
+        auto body = create_registration_attachment_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateRegistrationAttachment", body)
+
     # CreateRegistrationVersion
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_registration_version(self, CreateRegistrationVersionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateRegistrationVersion", body)
+
+    # CreateVerifiedDestinationNumber
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_verified_destination_number(self, CreateVerifiedDestinationNumberRequest input) -> str:
+        auto body = create_verified_destination_number_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "CreateVerifiedDestinationNumber", body)
 
     # DeleteAccountDefaultProtectConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3544,11 +5200,131 @@ struct Pinpoint_SMS_Voice_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeAccountLimits", body)
 
+    # DescribeConfigurationSets
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_configuration_sets(self, DescribeConfigurationSetsRequest input) -> str:
+        auto body = describe_configuration_sets_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeConfigurationSets", body)
+
+    # DescribeKeywords
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_keywords(self, DescribeKeywordsRequest input) -> str:
+        auto body = describe_keywords_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeKeywords", body)
+
+    # DescribeNotifyConfigurations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_notify_configurations(self, DescribeNotifyConfigurationsRequest input) -> str:
+        auto body = describe_notify_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeNotifyConfigurations", body)
+
+    # DescribeNotifyTemplates
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_notify_templates(self, DescribeNotifyTemplatesRequest input) -> str:
+        auto body = describe_notify_templates_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeNotifyTemplates", body)
+
+    # DescribeOptOutLists
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_opt_out_lists(self, DescribeOptOutListsRequest input) -> str:
+        auto body = describe_opt_out_lists_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeOptOutLists", body)
+
+    # DescribeOptedOutNumbers
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_opted_out_numbers(self, DescribeOptedOutNumbersRequest input) -> str:
+        auto body = describe_opted_out_numbers_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeOptedOutNumbers", body)
+
+    # DescribePhoneNumbers
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_phone_numbers(self, DescribePhoneNumbersRequest input) -> str:
+        auto body = describe_phone_numbers_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribePhoneNumbers", body)
+
+    # DescribePools
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_pools(self, DescribePoolsRequest input) -> str:
+        auto body = describe_pools_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribePools", body)
+
+    # DescribeProtectConfigurations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_protect_configurations(self, DescribeProtectConfigurationsRequest input) -> str:
+        auto body = describe_protect_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeProtectConfigurations", body)
+
+    # DescribeRcsAgentCountryLaunchStatus
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_rcs_agent_country_launch_status(self, DescribeRcsAgentCountryLaunchStatusRequest input) -> str:
+        auto body = describe_rcs_agent_country_launch_status_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRcsAgentCountryLaunchStatus", body)
+
+    # DescribeRcsAgents
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_rcs_agents(self, DescribeRcsAgentsRequest input) -> str:
+        auto body = describe_rcs_agents_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRcsAgents", body)
+
+    # DescribeRegistrationAttachments
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_registration_attachments(self, DescribeRegistrationAttachmentsRequest input) -> str:
+        auto body = describe_registration_attachments_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationAttachments", body)
+
+    # DescribeRegistrationFieldDefinitions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def describe_registration_field_definitions(self, DescribeRegistrationFieldDefinitionsRequest input) -> str:
+        auto body = describe_registration_field_definitions_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationFieldDefinitions", body)
+
+    # DescribeRegistrationFieldValues
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_registration_field_values(self, DescribeRegistrationFieldValuesRequest input) -> str:
+        auto body = describe_registration_field_values_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationFieldValues", body)
+
+    # DescribeRegistrationSectionDefinitions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def describe_registration_section_definitions(self, DescribeRegistrationSectionDefinitionsRequest input) -> str:
+        auto body = describe_registration_section_definitions_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationSectionDefinitions", body)
+
+    # DescribeRegistrationTypeDefinitions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def describe_registration_type_definitions(self, DescribeRegistrationTypeDefinitionsRequest input) -> str:
+        auto body = describe_registration_type_definitions_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationTypeDefinitions", body)
+
+    # DescribeRegistrationVersions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_registration_versions(self, DescribeRegistrationVersionsRequest input) -> str:
+        auto body = describe_registration_versions_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationVersions", body)
+
+    # DescribeRegistrations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_registrations(self, DescribeRegistrationsRequest input) -> str:
+        auto body = describe_registrations_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrations", body)
+
+    # DescribeSenderIds
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_sender_ids(self, DescribeSenderIdsRequest input) -> str:
+        auto body = describe_sender_ids_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeSenderIds", body)
+
     # DescribeSpendLimits
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_spend_limits(self, DescribeSpendLimitsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeSpendLimits", body)
+
+    # DescribeVerifiedDestinationNumbers
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_verified_destination_numbers(self, DescribeVerifiedDestinationNumbersRequest input) -> str:
+        auto body = describe_verified_destination_numbers_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeVerifiedDestinationNumbers", body)
 
     # DisassociateOriginationIdentity
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3580,6 +5356,36 @@ struct Pinpoint_SMS_Voice_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "GetResourcePolicy", body)
 
+    # ListAvailablePhoneNumbers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_available_phone_numbers(self, ListAvailablePhoneNumbersRequest input) -> str:
+        auto body = list_available_phone_numbers_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListAvailablePhoneNumbers", body)
+
+    # ListNotifyCountries
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_notify_countries(self, ListNotifyCountriesRequest input) -> str:
+        auto body = list_notify_countries_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListNotifyCountries", body)
+
+    # ListPoolOriginationIdentities
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_pool_origination_identities(self, ListPoolOriginationIdentitiesRequest input) -> str:
+        auto body = list_pool_origination_identities_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListPoolOriginationIdentities", body)
+
+    # ListProtectConfigurationRuleSetNumberOverrides
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_protect_configuration_rule_set_number_overrides(self, ListProtectConfigurationRuleSetNumberOverridesRequest input) -> str:
+        auto body = list_protect_configuration_rule_set_number_overrides_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListProtectConfigurationRuleSetNumberOverrides", body)
+
+    # ListRegistrationAssociations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_registration_associations(self, ListRegistrationAssociationsRequest input) -> str:
+        auto body = list_registration_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListRegistrationAssociations", body)
+
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -3610,6 +5416,12 @@ struct Pinpoint_SMS_Voice_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "PutProtectConfigurationRuleSetNumberOverride", body)
 
+    # PutRegistrationFieldValue
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_registration_field_value(self, PutRegistrationFieldValueRequest input) -> str:
+        auto body = put_registration_field_value_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "PutRegistrationFieldValue", body)
+
     # PutResourcePolicy
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
@@ -3627,6 +5439,48 @@ struct Pinpoint_SMS_Voice_V2Client:
     def release_sender_id(self, ReleaseSenderIdRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ReleaseSenderId", body)
+
+    # RequestPhoneNumber
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def request_phone_number(self, RequestPhoneNumberRequest input) -> str:
+        auto body = request_phone_number_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "RequestPhoneNumber", body)
+
+    # RequestSenderId
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def request_sender_id(self, RequestSenderIdRequest input) -> str:
+        auto body = request_sender_id_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "RequestSenderId", body)
+
+    # SendMediaMessage
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_media_message(self, SendMediaMessageRequest input) -> str:
+        auto body = send_media_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "SendMediaMessage", body)
+
+    # SendNotifyTextMessage
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_notify_text_message(self, SendNotifyTextMessageRequest input) -> str:
+        auto body = send_notify_text_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "SendNotifyTextMessage", body)
+
+    # SendNotifyVoiceMessage
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_notify_voice_message(self, SendNotifyVoiceMessageRequest input) -> str:
+        auto body = send_notify_voice_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "SendNotifyVoiceMessage", body)
+
+    # SendRcsMessage
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_rcs_message(self, SendRcsMessageRequest input) -> str:
+        auto body = send_rcs_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "SendRcsMessage", body)
+
+    # SendVoiceMessage
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_voice_message(self, SendVoiceMessageRequest input) -> str:
+        auto body = send_voice_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "SendVoiceMessage", body)
 
     # SetAccountDefaultProtectConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3688,6 +5542,30 @@ struct Pinpoint_SMS_Voice_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "SubmitRegistrationVersion", body)
 
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateEventDestination
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_event_destination(self, UpdateEventDestinationRequest input) -> str:
+        auto body = update_event_destination_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "UpdateEventDestination", body)
+
+    # UpdateNotifyConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_notify_configuration(self, UpdateNotifyConfigurationRequest input) -> str:
+        auto body = update_notify_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "UpdateNotifyConfiguration", body)
+
     # UpdatePhoneNumber
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_phone_number(self, UpdatePhoneNumberRequest input) -> str:
@@ -3705,6 +5583,18 @@ struct Pinpoint_SMS_Voice_V2Client:
     def update_protect_configuration(self, UpdateProtectConfigurationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "UpdateProtectConfiguration", body)
+
+    # UpdateProtectConfigurationCountryRuleSet
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_protect_configuration_country_rule_set(self, UpdateProtectConfigurationCountryRuleSetRequest input) -> str:
+        auto body = update_protect_configuration_country_rule_set_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "UpdateProtectConfigurationCountryRuleSet", body)
+
+    # UpdateRcsAgent
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_rcs_agent(self, UpdateRcsAgentRequest input) -> str:
+        auto body = update_rcs_agent_request_to_json(input)
+        return awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "UpdateRcsAgent", body)
 
     # UpdateSenderId
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3746,6 +5636,272 @@ struct Pinpoint_SMS_Voice_V2Client:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeConfigurationSets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConfigurationSets).
+    def paginate_describe_configuration_sets(self, DescribeConfigurationSetsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_configuration_sets_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeConfigurationSets", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeKeywords — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Keywords).
+    def paginate_describe_keywords(self, DescribeKeywordsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_keywords_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeKeywords", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeNotifyConfigurations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: NotifyConfigurations).
+    def paginate_describe_notify_configurations(self, DescribeNotifyConfigurationsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_notify_configurations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeNotifyConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeNotifyTemplates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: NotifyTemplates).
+    def paginate_describe_notify_templates(self, DescribeNotifyTemplatesRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_notify_templates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeNotifyTemplates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOptOutLists — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OptOutLists).
+    def paginate_describe_opt_out_lists(self, DescribeOptOutListsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_opt_out_lists_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeOptOutLists", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOptedOutNumbers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OptedOutNumbers).
+    def paginate_describe_opted_out_numbers(self, DescribeOptedOutNumbersRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_opted_out_numbers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeOptedOutNumbers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribePhoneNumbers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: PhoneNumbers).
+    def paginate_describe_phone_numbers(self, DescribePhoneNumbersRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_phone_numbers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribePhoneNumbers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribePools — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Pools).
+    def paginate_describe_pools(self, DescribePoolsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_pools_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribePools", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeProtectConfigurations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ProtectConfigurations).
+    def paginate_describe_protect_configurations(self, DescribeProtectConfigurationsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_protect_configurations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeProtectConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRcsAgentCountryLaunchStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CountryLaunchStatus).
+    def paginate_describe_rcs_agent_country_launch_status(self, DescribeRcsAgentCountryLaunchStatusRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_rcs_agent_country_launch_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRcsAgentCountryLaunchStatus", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRcsAgents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RcsAgents).
+    def paginate_describe_rcs_agents(self, DescribeRcsAgentsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_rcs_agents_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRcsAgents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrationAttachments — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationAttachments).
+    def paginate_describe_registration_attachments(self, DescribeRegistrationAttachmentsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registration_attachments_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationAttachments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrationFieldDefinitions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationFieldDefinitions).
+    def paginate_describe_registration_field_definitions(self, DescribeRegistrationFieldDefinitionsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registration_field_definitions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationFieldDefinitions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrationFieldValues — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationFieldValues).
+    def paginate_describe_registration_field_values(self, DescribeRegistrationFieldValuesRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registration_field_values_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationFieldValues", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrationSectionDefinitions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationSectionDefinitions).
+    def paginate_describe_registration_section_definitions(self, DescribeRegistrationSectionDefinitionsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registration_section_definitions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationSectionDefinitions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrationTypeDefinitions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationTypeDefinitions).
+    def paginate_describe_registration_type_definitions(self, DescribeRegistrationTypeDefinitionsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registration_type_definitions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationTypeDefinitions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrationVersions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationVersions).
+    def paginate_describe_registration_versions(self, DescribeRegistrationVersionsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registration_versions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrationVersions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRegistrations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Registrations).
+    def paginate_describe_registrations(self, DescribeRegistrationsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_registrations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeRegistrations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSenderIds — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SenderIds).
+    def paginate_describe_sender_ids(self, DescribeSenderIdsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_sender_ids_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeSenderIds", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for DescribeSpendLimits — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: SpendLimits).
     def paginate_describe_spend_limits(self, DescribeSpendLimitsRequest input):
@@ -3753,6 +5909,90 @@ struct Pinpoint_SMS_Voice_V2Client:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeSpendLimits", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeVerifiedDestinationNumbers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: VerifiedDestinationNumbers).
+    def paginate_describe_verified_destination_numbers(self, DescribeVerifiedDestinationNumbersRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = describe_verified_destination_numbers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "DescribeVerifiedDestinationNumbers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListAvailablePhoneNumbers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AvailablePhoneNumbers).
+    def paginate_list_available_phone_numbers(self, ListAvailablePhoneNumbersRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = list_available_phone_numbers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListAvailablePhoneNumbers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListNotifyCountries — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: NotifyCountries).
+    def paginate_list_notify_countries(self, ListNotifyCountriesRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = list_notify_countries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListNotifyCountries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListPoolOriginationIdentities — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OriginationIdentities).
+    def paginate_list_pool_origination_identities(self, ListPoolOriginationIdentitiesRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = list_pool_origination_identities_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListPoolOriginationIdentities", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListProtectConfigurationRuleSetNumberOverrides — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RuleSetNumberOverrides).
+    def paginate_list_protect_configuration_rule_set_number_overrides(self, ListProtectConfigurationRuleSetNumberOverridesRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = list_protect_configuration_rule_set_number_overrides_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListProtectConfigurationRuleSetNumberOverrides", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRegistrationAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RegistrationAssociations).
+    def paginate_list_registration_associations(self, ListRegistrationAssociationsRequest input):
+        auto host = endpoints.regional_host(sms_voice_protocol().service, self.region)
+        while True:
+            auto body = list_registration_associations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(sms_voice_protocol(), self.creds, self.region, "ListRegistrationAssociations", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

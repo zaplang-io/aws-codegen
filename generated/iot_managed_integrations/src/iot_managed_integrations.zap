@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 83 operations — 66 with a generated method,
-#   17 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 83 operations — 81 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   224 structs (156 @derive(Json)), 29 enums, 12 error variants.
 #   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -329,14 +329,16 @@ struct AccountAssociationItem:
     Optional[str] Description
     Optional[str] Arn
 
-# no @derive(Json): member(s) GeneralAuthorization: list[AuthMaterial] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeneralAuthorization: list[AuthMaterial] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthConfig:
     Optional[OAuthConfig] oAuth
     Optional[list[AuthMaterial]] GeneralAuthorization
 
-# no @derive(Json): member(s) GeneralAuthorizationUpdate: GeneralAuthorizationUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeneralAuthorizationUpdate: GeneralAuthorizationUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthConfigUpdate:
     Optional[OAuthUpdate] oAuthUpdate
     Optional[GeneralAuthorizationUpdate] GeneralAuthorizationUpdate
@@ -358,15 +360,17 @@ struct CapabilityProperties:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) endpoints: list[CapabilityReportEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[CapabilityReportEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityReport:
     str version
     Optional[str] nodeId
     list[CapabilityReportEndpoint] endpoints
 
-# no @derive(Json): member(s) properties: list[str], actions: list[str], events: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[str], actions: list[str], events: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityReportCapability:
     str id
     str name
@@ -375,8 +379,9 @@ struct CapabilityReportCapability:
     list[str] actions
     list[str] events
 
-# no @derive(Json): member(s) deviceTypes: list[str], capabilities: list[CapabilityReportCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceTypes: list[str], capabilities: list[CapabilityReportCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityReportEndpoint:
     str id
     list[str] deviceTypes
@@ -390,16 +395,18 @@ struct CapabilitySchemaItem:
     int64 ExtrinsicVersion
     ValidationSchema Schema
 
-# no @derive(Json): member(s) actions: list[CapabilityAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[CapabilityAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommandCapability:
     str id
     str name
     str version
     list[CapabilityAction] actions
 
-# no @derive(Json): member(s) capabilities: list[CommandCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[CommandCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommandEndpoint:
     str endpointId
     list[CommandCapability] capabilities
@@ -690,8 +697,9 @@ struct DestinationSummary:
     Optional[str] Name
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) CapabilityReport: MatterCapabilityReport, CapabilitySchemas: list[CapabilitySchemaItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapabilityReport: MatterCapabilityReport, CapabilitySchemas: list[CapabilitySchemaItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Device:
     str ConnectorDeviceId
     Optional[str] ConnectorDeviceName
@@ -710,8 +718,9 @@ struct DeviceMetadata:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DeviceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoveredDeviceSummary:
     Optional[str] ConnectorDeviceId
     Optional[str] ConnectorDeviceName
@@ -745,8 +754,9 @@ struct ExponentialRolloutRate:
 struct GeneralAuthorizationName:
     Optional[str] AuthMaterialName
 
-# no @derive(Json): member(s) AuthMaterialsToAdd: list[AuthMaterial], AuthMaterialsToUpdate: list[AuthMaterial] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthMaterialsToAdd: list[AuthMaterial], AuthMaterialsToUpdate: list[AuthMaterial] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneralAuthorizationUpdate:
     Optional[list[AuthMaterial]] AuthMaterialsToAdd
     Optional[list[AuthMaterial]] AuthMaterialsToUpdate
@@ -756,8 +766,9 @@ struct GeneralAuthorizationUpdate:
 struct GetAccountAssociationRequest:
     str AccountAssociationId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccountAssociationResponse:
     str AccountAssociationId
     AssociationState AssociationState
@@ -789,8 +800,9 @@ struct GetCloudConnectorResponse:
 struct GetConnectorDestinationRequest:
     str Identifier
 
-# no @derive(Json): member(s) AuthConfig: AuthConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthConfig: AuthConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectorDestinationResponse:
     Optional[str] Name
     Optional[str] Description
@@ -806,8 +818,9 @@ struct GetConnectorDestinationResponse:
 struct GetCredentialLockerRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCredentialLockerResponse:
     Optional[str] Id
     Optional[str] Arn
@@ -842,8 +855,9 @@ struct GetDefaultEncryptionConfigurationResponse:
 struct GetDestinationRequest:
     str Name
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDestinationResponse:
     Optional[str] Description
     Optional[str] DeliveryDestinationArn
@@ -859,8 +873,9 @@ struct GetDestinationResponse:
 struct GetDeviceDiscoveryRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceDiscoveryResponse:
     str Id
     str Arn
@@ -901,8 +916,9 @@ struct GetHubConfigurationResponse:
 struct GetManagedThingCapabilitiesRequest:
     str Identifier
 
-# no @derive(Json): member(s) CapabilityReport: CapabilityReport not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapabilityReport: CapabilityReport not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedThingCapabilitiesResponse:
     Optional[str] ManagedThingId
     Optional[str] Capabilities
@@ -935,8 +951,9 @@ struct GetManagedThingConnectivityDataResponse:
 struct GetManagedThingMetaDataRequest:
     str Identifier
 
-# no @derive(Json): member(s) MetaData: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetaData: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedThingMetaDataResponse:
     Optional[str] ManagedThingId
     Optional[dict[str, str]] MetaData
@@ -946,8 +963,9 @@ struct GetManagedThingMetaDataResponse:
 struct GetManagedThingRequest:
     str Identifier
 
-# no @derive(Json): member(s) MetaData: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetaData: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedThingResponse:
     Optional[str] Id
     Optional[str] Arn
@@ -982,8 +1000,9 @@ struct GetManagedThingResponse:
 struct GetManagedThingStateRequest:
     str ManagedThingId
 
-# no @derive(Json): member(s) Endpoints: list[StateEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[StateEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedThingStateResponse:
     list[StateEndpoint] Endpoints
 
@@ -993,8 +1012,9 @@ struct GetNotificationConfigurationRequest:
     # wire string of the EventType enum (uri binding)
     str EventType
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNotificationConfigurationResponse:
     Optional[EventType] EventType
     Optional[str] DestinationName
@@ -1007,8 +1027,9 @@ struct GetNotificationConfigurationResponse:
 struct GetOtaTaskConfigurationRequest:
     str Identifier
 
-# no @derive(Json): member(s) PushConfig: PushConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PushConfig: PushConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOtaTaskConfigurationResponse:
     Optional[str] TaskConfigurationId
     Optional[str] Name
@@ -1021,8 +1042,9 @@ struct GetOtaTaskConfigurationResponse:
 struct GetOtaTaskRequest:
     str Identifier
 
-# no @derive(Json): member(s) Target: list[str], TaskProcessingDetails: TaskProcessingDetails, OtaSchedulingConfig: OtaTaskSchedulingConfig, OtaTaskExecutionRetryConfig: OtaTaskExecutionRetryConfig, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Target: list[str], TaskProcessingDetails: TaskProcessingDetails, OtaSchedulingConfig: OtaTaskSchedulingConfig, OtaTaskExecutionRetryConfig: OtaTaskExecutionRetryConfig, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOtaTaskResponse:
     Optional[str] TaskId
     Optional[str] TaskArn
@@ -1047,8 +1069,9 @@ struct GetOtaTaskResponse:
 struct GetProvisioningProfileRequest:
     str Identifier
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProvisioningProfileResponse:
     Optional[str] Arn
     Optional[str] Name
@@ -1114,8 +1137,9 @@ struct ListAccountAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[AccountAssociationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[AccountAssociationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountAssociationsResponse:
     Optional[list[AccountAssociationItem]] Items
     Optional[str] NextToken
@@ -1129,8 +1153,9 @@ struct ListCloudConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ConnectorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ConnectorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudConnectorsResponse:
     Optional[list[ConnectorItem]] Items
     Optional[str] NextToken
@@ -1142,8 +1167,9 @@ struct ListConnectorDestinationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ConnectorDestinationList: list[ConnectorDestinationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectorDestinationList: list[ConnectorDestinationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorDestinationsResponse:
     Optional[list[ConnectorDestinationSummary]] ConnectorDestinationList
     Optional[str] NextToken
@@ -1154,8 +1180,9 @@ struct ListCredentialLockersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[CredentialLockerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[CredentialLockerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCredentialLockersResponse:
     Optional[list[CredentialLockerSummary]] Items
     Optional[str] NextToken
@@ -1166,8 +1193,9 @@ struct ListDestinationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DestinationList: list[DestinationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationList: list[DestinationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDestinationsResponse:
     Optional[list[DestinationSummary]] DestinationList
     Optional[str] NextToken
@@ -1182,8 +1210,9 @@ struct ListDeviceDiscoveriesRequest:
     # wire string of the DeviceDiscoveryStatus enum (querystring binding)
     Optional[str] StatusFilter
 
-# no @derive(Json): member(s) Items: list[DeviceDiscoverySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DeviceDiscoverySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceDiscoveriesResponse:
     Optional[list[DeviceDiscoverySummary]] Items
     Optional[str] NextToken
@@ -1195,8 +1224,9 @@ struct ListDiscoveredDevicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[DiscoveredDeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DiscoveredDeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoveredDevicesResponse:
     Optional[list[DiscoveredDeviceSummary]] Items
     Optional[str] NextToken
@@ -1207,8 +1237,9 @@ struct ListEventLogConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventLogConfigurationList: list[EventLogConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventLogConfigurationList: list[EventLogConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventLogConfigurationsResponse:
     Optional[list[EventLogConfigurationSummary]] EventLogConfigurationList
     Optional[str] NextToken
@@ -1221,8 +1252,9 @@ struct ListManagedThingAccountAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ManagedThingAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ManagedThingAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedThingAccountAssociationsResponse:
     Optional[list[ManagedThingAssociation]] Items
     Optional[str] NextToken
@@ -1236,8 +1268,9 @@ struct ListManagedThingSchemasRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ManagedThingSchemaListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ManagedThingSchemaListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedThingSchemasResponse:
     Optional[list[ManagedThingSchemaListItem]] Items
     Optional[str] NextToken
@@ -1259,8 +1292,9 @@ struct ListManagedThingsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ManagedThingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ManagedThingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedThingsResponse:
     Optional[list[ManagedThingSummary]] Items
     Optional[str] NextToken
@@ -1271,8 +1305,9 @@ struct ListNotificationConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NotificationConfigurationList: list[NotificationConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationConfigurationList: list[NotificationConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationConfigurationsResponse:
     Optional[list[NotificationConfigurationSummary]] NotificationConfigurationList
     Optional[str] NextToken
@@ -1283,8 +1318,9 @@ struct ListOtaTaskConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[OtaTaskConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[OtaTaskConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOtaTaskConfigurationsResponse:
     Optional[list[OtaTaskConfigurationSummary]] Items
     Optional[str] NextToken
@@ -1296,8 +1332,9 @@ struct ListOtaTaskExecutionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ExecutionSummaries: list[OtaTaskExecutionSummaries] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionSummaries: list[OtaTaskExecutionSummaries] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOtaTaskExecutionsResponse:
     Optional[list[OtaTaskExecutionSummaries]] ExecutionSummaries
     Optional[str] NextToken
@@ -1308,8 +1345,9 @@ struct ListOtaTasksRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tasks: list[OtaTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tasks: list[OtaTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOtaTasksResponse:
     Optional[list[OtaTaskSummary]] Tasks
     Optional[str] NextToken
@@ -1320,8 +1358,9 @@ struct ListProvisioningProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ProvisioningProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ProvisioningProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisioningProfilesResponse:
     Optional[list[ProvisioningProfileSummary]] Items
     Optional[str] NextToken
@@ -1339,8 +1378,9 @@ struct ListSchemaVersionsRequest:
     Optional[str] Visibility
     Optional[str] SemanticVersion
 
-# no @derive(Json): member(s) Items: list[SchemaVersionListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[SchemaVersionListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemaVersionsResponse:
     Optional[list[SchemaVersionListItem]] Items
     Optional[str] NextToken
@@ -1350,8 +1390,9 @@ struct ListSchemaVersionsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1394,8 +1435,9 @@ struct MatterAttributes:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) endpoints: list[MatterCapabilityReportEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[MatterCapabilityReportEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatterCapabilityReport:
     str version
     Optional[str] nodeId
@@ -1412,8 +1454,9 @@ struct MatterCapabilityReportAttributeValue:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) attributes: list[MatterCapabilityReportAttribute], commands: list[str], events: list[str], generatedCommands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[MatterCapabilityReportAttribute], commands: list[str], events: list[str], generatedCommands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatterCapabilityReportCluster:
     str id
     int64 revision
@@ -1427,8 +1470,9 @@ struct MatterCapabilityReportCluster:
     Optional[list[str]] generatedCommands
     Optional[int64] fabricIndex
 
-# no @derive(Json): member(s) deviceTypes: list[str], clusters: list[MatterCapabilityReportCluster], parts: list[str], semanticTags: list[str], clientClusters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceTypes: list[str], clusters: list[MatterCapabilityReportCluster], parts: list[str], semanticTags: list[str], clientClusters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatterCapabilityReportEndpoint:
     str id
     list[str] deviceTypes
@@ -1437,16 +1481,18 @@ struct MatterCapabilityReportEndpoint:
     Optional[list[str]] semanticTags
     Optional[list[str]] clientClusters
 
-# no @derive(Json): member(s) commands: dict[str, MatterFields], events: dict[str, MatterFields] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commands: dict[str, MatterFields], events: dict[str, MatterFields] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatterCluster:
     Optional[str] id
     Optional[MatterAttributes] attributes
     Optional[dict[str, MatterFields]] commands
     Optional[dict[str, MatterFields]] events
 
-# no @derive(Json): member(s) clusters: list[MatterCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[MatterCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatterEndpoint:
     Optional[str] id
     Optional[list[MatterCluster]] clusters
@@ -1476,8 +1522,9 @@ struct OAuthUpdate:
     Optional[str] oAuthCompleteRedirectUrl
     Optional[ProactiveRefreshTokenRenewal] proactiveRefreshTokenRenewal
 
-# no @derive(Json): member(s) AbortConfigCriteriaList: list[AbortConfigCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AbortConfigCriteriaList: list[AbortConfigCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OtaTaskAbortConfig:
     Optional[list[AbortConfigCriteria]] AbortConfigCriteriaList
 
@@ -1487,8 +1534,9 @@ struct OtaTaskConfigurationSummary:
     Optional[str] Name
     Optional[DateTime] CreatedAt
 
-# no @derive(Json): member(s) RetryConfigCriteria: list[RetryConfigCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RetryConfigCriteria: list[RetryConfigCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OtaTaskExecutionRetryConfig:
     Optional[list[RetryConfigCriteria]] RetryConfigCriteria
 
@@ -1511,8 +1559,9 @@ struct OtaTaskExecutionSummary:
     Optional[DateTime] StartedAt
     Optional[OtaTaskExecutionStatus] Status
 
-# no @derive(Json): member(s) MaintenanceWindows: list[ScheduleMaintenanceWindow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MaintenanceWindows: list[ScheduleMaintenanceWindow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OtaTaskSchedulingConfig:
     Optional[SchedulingConfigEndBehavior] EndBehavior
     Optional[str] EndTime
@@ -1545,8 +1594,9 @@ struct ProvisioningProfileSummary:
     Optional[ProvisioningType] ProvisioningType
     Optional[ProvisioningProfileStatus] Status
 
-# no @derive(Json): member(s) AbortConfig: OtaTaskAbortConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AbortConfig: OtaTaskAbortConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PushConfig:
     Optional[OtaTaskAbortConfig] AbortConfig
     Optional[OtaTaskExecutionRolloutConfig] RolloutConfig
@@ -1734,8 +1784,9 @@ struct StateCapability:
     str version
     Optional[CapabilityProperties] properties
 
-# no @derive(Json): member(s) capabilities: list[StateCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[StateCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StateEndpoint:
     str endpointId
     list[StateCapability] capabilities
@@ -1751,8 +1802,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) processingTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) processingTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskProcessingDetails:
     Optional[int64] NumberOfCanceledThings
     Optional[int64] NumberOfFailedThings
@@ -1922,23 +1974,8 @@ def api_iotmanagedintegrations_error_from_code(str code) -> IoT_Managed_Integrat
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAccountAssociation (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateConnectorDestination (document member `AuthConfig: AuthConfig` is not serializable by derive)
-#   CreateCredentialLocker (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateDestination (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateManagedThing (document member `CapabilityReport: CapabilityReport` is not serializable by derive)
-#   CreateNotificationConfiguration (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateOtaTask (document member `Target: list[str]` is not serializable by derive)
-#   CreateOtaTaskConfiguration (document member `PushConfig: PushConfig` is not serializable by derive)
-#   CreateProvisioningProfile (document member `Tags: dict[str, str]` is not serializable by derive)
 #   DeleteManagedThing (httpQuery `Force` has unsupported type bool)
-#   SendConnectorEvent (document member `Devices: list[Device]` is not serializable by derive)
-#   SendManagedThingCommand (document member `Endpoints: list[CommandEndpoint]` is not serializable by derive)
-#   StartDeviceDiscovery (document member `CustomProtocolDetail: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateConnectorDestination (document member `AuthConfig: AuthConfigUpdate` is not serializable by derive)
-#   UpdateManagedThing (document member `CapabilityReport: CapabilityReport` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2025,10 +2062,382 @@ struct UpdateOtaTaskDocument:
     Optional[str] Description
     Optional[str] TaskConfigurationId
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_iotmanagedintegrations_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def api_iotmanagedintegrations_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_iotmanagedintegrations_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AuthConfig to a compact JSON object (declaration order).
+def auth_config_to_json(AuthConfig v) -> str:
+    list[str] parts = []
+    if v.oAuth.is_some():
+        auto u0 = v.oAuth.unwrap()
+        parts.append("\"oAuth\":" + u0.to_json())
+    if v.GeneralAuthorization.is_some():
+        auto u1 = v.GeneralAuthorization.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"GeneralAuthorization\":" + api_iotmanagedintegrations_json_arr(e2))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize AuthConfigUpdate to a compact JSON object (declaration order).
+def auth_config_update_to_json(AuthConfigUpdate v) -> str:
+    list[str] parts = []
+    if v.oAuthUpdate.is_some():
+        auto u0 = v.oAuthUpdate.unwrap()
+        parts.append("\"oAuthUpdate\":" + u0.to_json())
+    if v.GeneralAuthorizationUpdate.is_some():
+        auto u1 = v.GeneralAuthorizationUpdate.unwrap()
+        parts.append("\"GeneralAuthorizationUpdate\":" + general_authorization_update_to_json(u1))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize CapabilityReport to a compact JSON object (declaration order).
+def capability_report_to_json(CapabilityReport v) -> str:
+    list[str] parts = []
+    parts.append("\"version\":" + api_iotmanagedintegrations_json_str(v.version))
+    if v.nodeId.is_some():
+        auto u0 = v.nodeId.unwrap()
+        parts.append("\"nodeId\":" + api_iotmanagedintegrations_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.endpoints:
+        e1.append(capability_report_endpoint_to_json(x1))
+    parts.append("\"endpoints\":" + api_iotmanagedintegrations_json_arr(e1))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize CapabilityReportCapability to a compact JSON object (declaration order).
+def capability_report_capability_to_json(CapabilityReportCapability v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + api_iotmanagedintegrations_json_str(v.id))
+    parts.append("\"name\":" + api_iotmanagedintegrations_json_str(v.name))
+    parts.append("\"version\":" + api_iotmanagedintegrations_json_str(v.version))
+    list[str] e0 = []
+    for x0 in v.properties:
+        e0.append(api_iotmanagedintegrations_json_str(x0))
+    parts.append("\"properties\":" + api_iotmanagedintegrations_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.actions:
+        e1.append(api_iotmanagedintegrations_json_str(x1))
+    parts.append("\"actions\":" + api_iotmanagedintegrations_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.events:
+        e2.append(api_iotmanagedintegrations_json_str(x2))
+    parts.append("\"events\":" + api_iotmanagedintegrations_json_arr(e2))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize CapabilityReportEndpoint to a compact JSON object (declaration order).
+def capability_report_endpoint_to_json(CapabilityReportEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + api_iotmanagedintegrations_json_str(v.id))
+    list[str] e0 = []
+    for x0 in v.deviceTypes:
+        e0.append(api_iotmanagedintegrations_json_str(x0))
+    parts.append("\"deviceTypes\":" + api_iotmanagedintegrations_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.capabilities:
+        e1.append(capability_report_capability_to_json(x1))
+    parts.append("\"capabilities\":" + api_iotmanagedintegrations_json_arr(e1))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize CommandCapability to a compact JSON object (declaration order).
+def command_capability_to_json(CommandCapability v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + api_iotmanagedintegrations_json_str(v.id))
+    parts.append("\"name\":" + api_iotmanagedintegrations_json_str(v.name))
+    parts.append("\"version\":" + api_iotmanagedintegrations_json_str(v.version))
+    list[str] e0 = []
+    for x0 in v.actions:
+        e0.append(x0.to_json())
+    parts.append("\"actions\":" + api_iotmanagedintegrations_json_arr(e0))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize CommandEndpoint to a compact JSON object (declaration order).
+def command_endpoint_to_json(CommandEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"endpointId\":" + api_iotmanagedintegrations_json_str(v.endpointId))
+    list[str] e0 = []
+    for x0 in v.capabilities:
+        e0.append(command_capability_to_json(x0))
+    parts.append("\"capabilities\":" + api_iotmanagedintegrations_json_arr(e0))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize Device to a compact JSON object (declaration order).
+def device_to_json(Device v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectorDeviceId\":" + api_iotmanagedintegrations_json_str(v.ConnectorDeviceId))
+    if v.ConnectorDeviceName.is_some():
+        auto u0 = v.ConnectorDeviceName.unwrap()
+        parts.append("\"ConnectorDeviceName\":" + api_iotmanagedintegrations_json_str(u0))
+    parts.append("\"CapabilityReport\":" + matter_capability_report_to_json(v.CapabilityReport))
+    if v.CapabilitySchemas.is_some():
+        auto u1 = v.CapabilitySchemas.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CapabilitySchemas\":" + api_iotmanagedintegrations_json_arr(e2))
+    if v.DeviceMetadata.is_some():
+        auto u3 = v.DeviceMetadata.unwrap()
+        parts.append("\"DeviceMetadata\":" + u3.to_json())
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize GeneralAuthorizationUpdate to a compact JSON object (declaration order).
+def general_authorization_update_to_json(GeneralAuthorizationUpdate v) -> str:
+    list[str] parts = []
+    if v.AuthMaterialsToAdd.is_some():
+        auto u0 = v.AuthMaterialsToAdd.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AuthMaterialsToAdd\":" + api_iotmanagedintegrations_json_arr(e1))
+    if v.AuthMaterialsToUpdate.is_some():
+        auto u2 = v.AuthMaterialsToUpdate.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AuthMaterialsToUpdate\":" + api_iotmanagedintegrations_json_arr(e3))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize MatterCapabilityReport to a compact JSON object (declaration order).
+def matter_capability_report_to_json(MatterCapabilityReport v) -> str:
+    list[str] parts = []
+    parts.append("\"version\":" + api_iotmanagedintegrations_json_str(v.version))
+    if v.nodeId.is_some():
+        auto u0 = v.nodeId.unwrap()
+        parts.append("\"nodeId\":" + api_iotmanagedintegrations_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.endpoints:
+        e1.append(matter_capability_report_endpoint_to_json(x1))
+    parts.append("\"endpoints\":" + api_iotmanagedintegrations_json_arr(e1))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize MatterCapabilityReportCluster to a compact JSON object (declaration order).
+def matter_capability_report_cluster_to_json(MatterCapabilityReportCluster v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + api_iotmanagedintegrations_json_str(v.id))
+    parts.append("\"revision\":" + str(v.revision))
+    if v.publicId.is_some():
+        auto u0 = v.publicId.unwrap()
+        parts.append("\"publicId\":" + api_iotmanagedintegrations_json_str(u0))
+    if v.name.is_some():
+        auto u1 = v.name.unwrap()
+        parts.append("\"name\":" + api_iotmanagedintegrations_json_str(u1))
+    if v.specVersion.is_some():
+        auto u2 = v.specVersion.unwrap()
+        parts.append("\"specVersion\":" + api_iotmanagedintegrations_json_str(u2))
+    if v.attributes.is_some():
+        auto u3 = v.attributes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"attributes\":" + api_iotmanagedintegrations_json_arr(e4))
+    if v.commands.is_some():
+        auto u5 = v.commands.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(api_iotmanagedintegrations_json_str(x6))
+        parts.append("\"commands\":" + api_iotmanagedintegrations_json_arr(e6))
+    if v.events.is_some():
+        auto u7 = v.events.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(api_iotmanagedintegrations_json_str(x8))
+        parts.append("\"events\":" + api_iotmanagedintegrations_json_arr(e8))
+    if v.featureMap.is_some():
+        auto u9 = v.featureMap.unwrap()
+        parts.append("\"featureMap\":" + str(u9))
+    if v.generatedCommands.is_some():
+        auto u10 = v.generatedCommands.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(api_iotmanagedintegrations_json_str(x11))
+        parts.append("\"generatedCommands\":" + api_iotmanagedintegrations_json_arr(e11))
+    if v.fabricIndex.is_some():
+        auto u12 = v.fabricIndex.unwrap()
+        parts.append("\"fabricIndex\":" + str(u12))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize MatterCapabilityReportEndpoint to a compact JSON object (declaration order).
+def matter_capability_report_endpoint_to_json(MatterCapabilityReportEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + api_iotmanagedintegrations_json_str(v.id))
+    list[str] e0 = []
+    for x0 in v.deviceTypes:
+        e0.append(api_iotmanagedintegrations_json_str(x0))
+    parts.append("\"deviceTypes\":" + api_iotmanagedintegrations_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.clusters:
+        e1.append(matter_capability_report_cluster_to_json(x1))
+    parts.append("\"clusters\":" + api_iotmanagedintegrations_json_arr(e1))
+    if v.parts.is_some():
+        auto u2 = v.parts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_iotmanagedintegrations_json_str(x3))
+        parts.append("\"parts\":" + api_iotmanagedintegrations_json_arr(e3))
+    if v.semanticTags.is_some():
+        auto u4 = v.semanticTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(api_iotmanagedintegrations_json_str(x5))
+        parts.append("\"semanticTags\":" + api_iotmanagedintegrations_json_arr(e5))
+    if v.clientClusters.is_some():
+        auto u6 = v.clientClusters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(api_iotmanagedintegrations_json_str(x7))
+        parts.append("\"clientClusters\":" + api_iotmanagedintegrations_json_arr(e7))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize MatterCluster to a compact JSON object (declaration order).
+def matter_cluster_to_json(MatterCluster v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + api_iotmanagedintegrations_json_str(u0))
+    if v.attributes.is_some():
+        auto u1 = v.attributes.unwrap()
+        parts.append("\"attributes\":" + u1.to_json())
+    if v.commands.is_some():
+        auto u2 = v.commands.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(api_iotmanagedintegrations_json_str(k3) + ":" + u2[k3].to_json())
+        parts.append("\"commands\":" + api_iotmanagedintegrations_json_obj(m3))
+    if v.events.is_some():
+        auto u4 = v.events.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(api_iotmanagedintegrations_json_str(k5) + ":" + u4[k5].to_json())
+        parts.append("\"events\":" + api_iotmanagedintegrations_json_obj(m5))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize MatterEndpoint to a compact JSON object (declaration order).
+def matter_endpoint_to_json(MatterEndpoint v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + api_iotmanagedintegrations_json_str(u0))
+    if v.clusters.is_some():
+        auto u1 = v.clusters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(matter_cluster_to_json(x2))
+        parts.append("\"clusters\":" + api_iotmanagedintegrations_json_arr(e2))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize OtaTaskAbortConfig to a compact JSON object (declaration order).
+def ota_task_abort_config_to_json(OtaTaskAbortConfig v) -> str:
+    list[str] parts = []
+    if v.AbortConfigCriteriaList.is_some():
+        auto u0 = v.AbortConfigCriteriaList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AbortConfigCriteriaList\":" + api_iotmanagedintegrations_json_arr(e1))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize OtaTaskExecutionRetryConfig to a compact JSON object (declaration order).
+def ota_task_execution_retry_config_to_json(OtaTaskExecutionRetryConfig v) -> str:
+    list[str] parts = []
+    if v.RetryConfigCriteria.is_some():
+        auto u0 = v.RetryConfigCriteria.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RetryConfigCriteria\":" + api_iotmanagedintegrations_json_arr(e1))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize OtaTaskSchedulingConfig to a compact JSON object (declaration order).
+def ota_task_scheduling_config_to_json(OtaTaskSchedulingConfig v) -> str:
+    list[str] parts = []
+    if v.EndBehavior.is_some():
+        auto u0 = v.EndBehavior.unwrap()
+        parts.append("\"EndBehavior\":" + u0.to_json())
+    if v.EndTime.is_some():
+        auto u1 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + api_iotmanagedintegrations_json_str(u1))
+    if v.MaintenanceWindows.is_some():
+        auto u2 = v.MaintenanceWindows.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MaintenanceWindows\":" + api_iotmanagedintegrations_json_arr(e3))
+    if v.StartTime.is_some():
+        auto u4 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + api_iotmanagedintegrations_json_str(u4))
+    return api_iotmanagedintegrations_json_obj(parts)
+
+# Serialize PushConfig to a compact JSON object (declaration order).
+def push_config_to_json(PushConfig v) -> str:
+    list[str] parts = []
+    if v.AbortConfig.is_some():
+        auto u0 = v.AbortConfig.unwrap()
+        parts.append("\"AbortConfig\":" + ota_task_abort_config_to_json(u0))
+    if v.RolloutConfig.is_some():
+        auto u1 = v.RolloutConfig.unwrap()
+        parts.append("\"RolloutConfig\":" + u1.to_json())
+    if v.TimeoutConfig.is_some():
+        auto u2 = v.TimeoutConfig.unwrap()
+        parts.append("\"TimeoutConfig\":" + u2.to_json())
+    return api_iotmanagedintegrations_json_obj(parts)
+
 # A bound IoT_Managed_Integrations client: credentials + region, threaded into every operation.
 struct IoT_Managed_IntegrationsClient:
     core.Credentials creds
     str region
+
+    # CreateAccountAssociation  POST /account-associations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_account_association(self, CreateAccountAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/account-associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u0))
+        parts.append("\"ConnectorDestinationId\":" + api_iotmanagedintegrations_json_str(input.ConnectorDestinationId))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotmanagedintegrations_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(api_iotmanagedintegrations_json_str(k4) + ":" + api_iotmanagedintegrations_json_str(u3[k4]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m4))
+        if input.GeneralAuthorization.is_some():
+            auto u5 = input.GeneralAuthorization.unwrap()
+            parts.append("\"GeneralAuthorization\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
 
     # CreateCloudConnector  POST /cloud-connectors
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -2039,6 +2448,78 @@ struct IoT_Managed_IntegrationsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
 
+    # CreateConnectorDestination  POST /connector-destinations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_connector_destination(self, CreateConnectorDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connector-destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotmanagedintegrations_json_str(u1))
+        parts.append("\"CloudConnectorId\":" + api_iotmanagedintegrations_json_str(input.CloudConnectorId))
+        if input.AuthType.is_some():
+            auto u2 = input.AuthType.unwrap()
+            parts.append("\"AuthType\":" + api_iotmanagedintegrations_json_str(u2))
+        parts.append("\"AuthConfig\":" + auth_config_to_json(input.AuthConfig))
+        if input.SecretsManager.is_some():
+            auto u3 = input.SecretsManager.unwrap()
+            parts.append("\"SecretsManager\":" + u3.to_json())
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u4))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateCredentialLocker  POST /credential-lockers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def create_credential_locker(self, CreateCredentialLockerRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/credential-lockers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(api_iotmanagedintegrations_json_str(k3) + ":" + api_iotmanagedintegrations_json_str(u2[k3]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateDestination  POST /destinations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_destination(self, CreateDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DeliveryDestinationArn\":" + api_iotmanagedintegrations_json_str(input.DeliveryDestinationArn))
+        parts.append("\"DeliveryDestinationType\":" + api_iotmanagedintegrations_json_str(input.DeliveryDestinationType))
+        parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(input.Name))
+        parts.append("\"RoleArn\":" + api_iotmanagedintegrations_json_str(input.RoleArn))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(api_iotmanagedintegrations_json_str(k3) + ":" + api_iotmanagedintegrations_json_str(u2[k3]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
     # CreateEventLogConfiguration  POST /event-log-configurations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_event_log_configuration(self, CreateEventLogConfigurationRequest input) -> str:
@@ -2046,6 +2527,185 @@ struct IoT_Managed_IntegrationsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/event-log-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateEventLogConfigurationDocument(ResourceType=input.ResourceType, ResourceId=input.ResourceId, EventLogLevel=input.EventLogLevel, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateManagedThing  POST /managed-things
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_managed_thing(self, CreateManagedThingRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/managed-things", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Role\":" + input.Role.to_json())
+        if input.Owner.is_some():
+            auto u0 = input.Owner.unwrap()
+            parts.append("\"Owner\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.CredentialLockerId.is_some():
+            auto u1 = input.CredentialLockerId.unwrap()
+            parts.append("\"CredentialLockerId\":" + api_iotmanagedintegrations_json_str(u1))
+        parts.append("\"AuthenticationMaterial\":" + api_iotmanagedintegrations_json_str(input.AuthenticationMaterial))
+        parts.append("\"AuthenticationMaterialType\":" + input.AuthenticationMaterialType.to_json())
+        if input.WiFiSimpleSetupConfiguration.is_some():
+            auto u2 = input.WiFiSimpleSetupConfiguration.unwrap()
+            parts.append("\"WiFiSimpleSetupConfiguration\":" + u2.to_json())
+        if input.SerialNumber.is_some():
+            auto u3 = input.SerialNumber.unwrap()
+            parts.append("\"SerialNumber\":" + api_iotmanagedintegrations_json_str(u3))
+        if input.Brand.is_some():
+            auto u4 = input.Brand.unwrap()
+            parts.append("\"Brand\":" + api_iotmanagedintegrations_json_str(u4))
+        if input.Model.is_some():
+            auto u5 = input.Model.unwrap()
+            parts.append("\"Model\":" + api_iotmanagedintegrations_json_str(u5))
+        if input.Name.is_some():
+            auto u6 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u6))
+        if input.CapabilityReport.is_some():
+            auto u7 = input.CapabilityReport.unwrap()
+            parts.append("\"CapabilityReport\":" + capability_report_to_json(u7))
+        if input.CapabilitySchemas.is_some():
+            auto u8 = input.CapabilitySchemas.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"CapabilitySchemas\":" + api_iotmanagedintegrations_json_arr(e9))
+        if input.Capabilities.is_some():
+            auto u10 = input.Capabilities.unwrap()
+            parts.append("\"Capabilities\":" + api_iotmanagedintegrations_json_str(u10))
+        if input.ClientToken.is_some():
+            auto u11 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u11))
+        if input.Classification.is_some():
+            auto u12 = input.Classification.unwrap()
+            parts.append("\"Classification\":" + api_iotmanagedintegrations_json_str(u12))
+        if input.Tags.is_some():
+            auto u13 = input.Tags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(api_iotmanagedintegrations_json_str(k14) + ":" + api_iotmanagedintegrations_json_str(u13[k14]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m14))
+        if input.MetaData.is_some():
+            auto u15 = input.MetaData.unwrap()
+            list[str] m16 = []
+            for k16 in sorted(u15.keys()):
+                m16.append(api_iotmanagedintegrations_json_str(k16) + ":" + api_iotmanagedintegrations_json_str(u15[k16]))
+            parts.append("\"MetaData\":" + api_iotmanagedintegrations_json_obj(m16))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateNotificationConfiguration  POST /notification-configurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_notification_configuration(self, CreateNotificationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/notification-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"EventType\":" + input.EventType.to_json())
+        parts.append("\"DestinationName\":" + api_iotmanagedintegrations_json_str(input.DestinationName))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(api_iotmanagedintegrations_json_str(k2) + ":" + api_iotmanagedintegrations_json_str(u1[k2]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateOtaTask  POST /ota-tasks
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_ota_task(self, CreateOtaTaskRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ota-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotmanagedintegrations_json_str(u0))
+        parts.append("\"S3Url\":" + api_iotmanagedintegrations_json_str(input.S3Url))
+        if input.Protocol.is_some():
+            auto u1 = input.Protocol.unwrap()
+            parts.append("\"Protocol\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.Target.is_some():
+            auto u2 = input.Target.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(api_iotmanagedintegrations_json_str(x3))
+            parts.append("\"Target\":" + api_iotmanagedintegrations_json_arr(e3))
+        if input.TaskConfigurationId.is_some():
+            auto u4 = input.TaskConfigurationId.unwrap()
+            parts.append("\"TaskConfigurationId\":" + api_iotmanagedintegrations_json_str(u4))
+        if input.OtaMechanism.is_some():
+            auto u5 = input.OtaMechanism.unwrap()
+            parts.append("\"OtaMechanism\":" + api_iotmanagedintegrations_json_str(u5))
+        parts.append("\"OtaType\":" + input.OtaType.to_json())
+        if input.OtaTargetQueryString.is_some():
+            auto u6 = input.OtaTargetQueryString.unwrap()
+            parts.append("\"OtaTargetQueryString\":" + api_iotmanagedintegrations_json_str(u6))
+        if input.ClientToken.is_some():
+            auto u7 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u7))
+        if input.OtaSchedulingConfig.is_some():
+            auto u8 = input.OtaSchedulingConfig.unwrap()
+            parts.append("\"OtaSchedulingConfig\":" + ota_task_scheduling_config_to_json(u8))
+        if input.OtaTaskExecutionRetryConfig.is_some():
+            auto u9 = input.OtaTaskExecutionRetryConfig.unwrap()
+            parts.append("\"OtaTaskExecutionRetryConfig\":" + ota_task_execution_retry_config_to_json(u9))
+        if input.Tags.is_some():
+            auto u10 = input.Tags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(api_iotmanagedintegrations_json_str(k11) + ":" + api_iotmanagedintegrations_json_str(u10[k11]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m11))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateOtaTaskConfiguration  POST /ota-task-configurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_ota_task_configuration(self, CreateOtaTaskConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ota-task-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.PushConfig.is_some():
+            auto u2 = input.PushConfig.unwrap()
+            parts.append("\"PushConfig\":" + push_config_to_json(u2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u3))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # CreateProvisioningProfile  POST /provisioning-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_provisioning_profile(self, CreateProvisioningProfileRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProvisioningType\":" + input.ProvisioningType.to_json())
+        if input.CaCertificate.is_some():
+            auto u0 = input.CaCertificate.unwrap()
+            parts.append("\"CaCertificate\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.ClaimCertificate.is_some():
+            auto u1 = input.ClaimCertificate.unwrap()
+            parts.append("\"ClaimCertificate\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(api_iotmanagedintegrations_json_str(k5) + ":" + api_iotmanagedintegrations_json_str(u4[k5]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
 
     # DeleteAccountAssociation  DELETE /account-associations/{AccountAssociationId}
@@ -2664,6 +3324,69 @@ struct IoT_Managed_IntegrationsClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/runtime-log-configurations/{ManagedThingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotmanagedintegrations_service(), self.region, host)
 
+    # SendConnectorEvent  POST /connector-event/{ConnectorId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def send_connector_event(self, SendConnectorEventRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConnectorId"] = input.ConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/connector-event/{ConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.UserId.is_some():
+            auto u0 = input.UserId.unwrap()
+            parts.append("\"UserId\":" + api_iotmanagedintegrations_json_str(u0))
+        parts.append("\"Operation\":" + input.Operation.to_json())
+        if input.OperationVersion.is_some():
+            auto u1 = input.OperationVersion.unwrap()
+            parts.append("\"OperationVersion\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.StatusCode.is_some():
+            auto u2 = input.StatusCode.unwrap()
+            parts.append("\"StatusCode\":" + str(u2))
+        if input.Message.is_some():
+            auto u3 = input.Message.unwrap()
+            parts.append("\"Message\":" + api_iotmanagedintegrations_json_str(u3))
+        if input.DeviceDiscoveryId.is_some():
+            auto u4 = input.DeviceDiscoveryId.unwrap()
+            parts.append("\"DeviceDiscoveryId\":" + api_iotmanagedintegrations_json_str(u4))
+        if input.ConnectorDeviceId.is_some():
+            auto u5 = input.ConnectorDeviceId.unwrap()
+            parts.append("\"ConnectorDeviceId\":" + api_iotmanagedintegrations_json_str(u5))
+        if input.TraceId.is_some():
+            auto u6 = input.TraceId.unwrap()
+            parts.append("\"TraceId\":" + api_iotmanagedintegrations_json_str(u6))
+        if input.Devices.is_some():
+            auto u7 = input.Devices.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(device_to_json(x8))
+            parts.append("\"Devices\":" + api_iotmanagedintegrations_json_arr(e8))
+        if input.MatterEndpoint.is_some():
+            auto u9 = input.MatterEndpoint.unwrap()
+            parts.append("\"MatterEndpoint\":" + matter_endpoint_to_json(u9))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # SendManagedThingCommand  POST /managed-things-command/{ManagedThingId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, ValidationException
+    def send_managed_thing_command(self, SendManagedThingCommandRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ManagedThingId"] = input.ManagedThingId
+        auto b = binding.HttpBinding(method="POST", path_template="/managed-things-command/{ManagedThingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Endpoints:
+            e0.append(command_endpoint_to_json(x0))
+        parts.append("\"Endpoints\":" + api_iotmanagedintegrations_json_arr(e0))
+        if input.ConnectorAssociationId.is_some():
+            auto u1 = input.ConnectorAssociationId.unwrap()
+            parts.append("\"ConnectorAssociationId\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.AccountAssociationId.is_some():
+            auto u2 = input.AccountAssociationId.unwrap()
+            parts.append("\"AccountAssociationId\":" + api_iotmanagedintegrations_json_str(u2))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
     # StartAccountAssociationRefresh  POST /account-associations/{AccountAssociationId}/refresh
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
     def start_account_association_refresh(self, StartAccountAssociationRefreshRequest input) -> str:
@@ -2672,6 +3395,73 @@ struct IoT_Managed_IntegrationsClient:
         labels["AccountAssociationId"] = input.AccountAssociationId
         auto b = binding.HttpBinding(method="POST", path_template="/account-associations/{AccountAssociationId}/refresh", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotmanagedintegrations_service(), self.region, host)
+
+    # StartDeviceDiscovery  POST /device-discoveries
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_device_discovery(self, StartDeviceDiscoveryRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/device-discoveries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DiscoveryType\":" + input.DiscoveryType.to_json())
+        if input.CustomProtocolDetail.is_some():
+            auto u0 = input.CustomProtocolDetail.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(api_iotmanagedintegrations_json_str(k1) + ":" + api_iotmanagedintegrations_json_str(u0[k1]))
+            parts.append("\"CustomProtocolDetail\":" + api_iotmanagedintegrations_json_obj(m1))
+        if input.ControllerIdentifier.is_some():
+            auto u2 = input.ControllerIdentifier.unwrap()
+            parts.append("\"ControllerIdentifier\":" + api_iotmanagedintegrations_json_str(u2))
+        if input.ConnectorAssociationIdentifier.is_some():
+            auto u3 = input.ConnectorAssociationIdentifier.unwrap()
+            parts.append("\"ConnectorAssociationIdentifier\":" + api_iotmanagedintegrations_json_str(u3))
+        if input.AccountAssociationId.is_some():
+            auto u4 = input.AccountAssociationId.unwrap()
+            parts.append("\"AccountAssociationId\":" + api_iotmanagedintegrations_json_str(u4))
+        if input.AuthenticationMaterial.is_some():
+            auto u5 = input.AuthenticationMaterial.unwrap()
+            parts.append("\"AuthenticationMaterial\":" + api_iotmanagedintegrations_json_str(u5))
+        if input.AuthenticationMaterialType.is_some():
+            auto u6 = input.AuthenticationMaterialType.unwrap()
+            parts.append("\"AuthenticationMaterialType\":" + api_iotmanagedintegrations_json_str(u6))
+        if input.ClientToken.is_some():
+            auto u7 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + api_iotmanagedintegrations_json_str(u7))
+        if input.Tags.is_some():
+            auto u8 = input.Tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(api_iotmanagedintegrations_json_str(k9) + ":" + api_iotmanagedintegrations_json_str(u8[k9]))
+            parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m9))
+        if input.ConnectorDeviceIdList.is_some():
+            auto u10 = input.ConnectorDeviceIdList.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(api_iotmanagedintegrations_json_str(x11))
+            parts.append("\"ConnectorDeviceIdList\":" + api_iotmanagedintegrations_json_arr(e11))
+        if input.Protocol.is_some():
+            auto u12 = input.Protocol.unwrap()
+            parts.append("\"Protocol\":" + u12.to_json())
+        if input.EndDeviceIdentifier.is_some():
+            auto u13 = input.EndDeviceIdentifier.unwrap()
+            parts.append("\"EndDeviceIdentifier\":" + api_iotmanagedintegrations_json_str(u13))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: ConflictException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(api_iotmanagedintegrations_json_str(k0) + ":" + api_iotmanagedintegrations_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + api_iotmanagedintegrations_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
 
     # UpdateAccountAssociation  PUT /account-associations/{AccountAssociationId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
@@ -2695,6 +3485,32 @@ struct IoT_Managed_IntegrationsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
 
+    # UpdateConnectorDestination  PUT /connector-destinations/{Identifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_connector_destination(self, UpdateConnectorDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/connector-destinations/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.AuthType.is_some():
+            auto u2 = input.AuthType.unwrap()
+            parts.append("\"AuthType\":" + api_iotmanagedintegrations_json_str(u2))
+        if input.AuthConfig.is_some():
+            auto u3 = input.AuthConfig.unwrap()
+            parts.append("\"AuthConfig\":" + auth_config_update_to_json(u3))
+        if input.SecretsManager.is_some():
+            auto u4 = input.SecretsManager.unwrap()
+            parts.append("\"SecretsManager\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
     # UpdateDestination  PUT /destinations/{Name}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_destination(self, UpdateDestinationRequest input) -> str:
@@ -2715,6 +3531,62 @@ struct IoT_Managed_IntegrationsClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/event-log-configurations/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventLogConfigurationDocument(EventLogLevel=input.EventLogLevel)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
+
+    # UpdateManagedThing  PUT /managed-things/{Identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_managed_thing(self, UpdateManagedThingRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotmanagedintegrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/managed-things/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Owner.is_some():
+            auto u0 = input.Owner.unwrap()
+            parts.append("\"Owner\":" + api_iotmanagedintegrations_json_str(u0))
+        if input.CredentialLockerId.is_some():
+            auto u1 = input.CredentialLockerId.unwrap()
+            parts.append("\"CredentialLockerId\":" + api_iotmanagedintegrations_json_str(u1))
+        if input.SerialNumber.is_some():
+            auto u2 = input.SerialNumber.unwrap()
+            parts.append("\"SerialNumber\":" + api_iotmanagedintegrations_json_str(u2))
+        if input.WiFiSimpleSetupConfiguration.is_some():
+            auto u3 = input.WiFiSimpleSetupConfiguration.unwrap()
+            parts.append("\"WiFiSimpleSetupConfiguration\":" + u3.to_json())
+        if input.Brand.is_some():
+            auto u4 = input.Brand.unwrap()
+            parts.append("\"Brand\":" + api_iotmanagedintegrations_json_str(u4))
+        if input.Model.is_some():
+            auto u5 = input.Model.unwrap()
+            parts.append("\"Model\":" + api_iotmanagedintegrations_json_str(u5))
+        if input.Name.is_some():
+            auto u6 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotmanagedintegrations_json_str(u6))
+        if input.CapabilityReport.is_some():
+            auto u7 = input.CapabilityReport.unwrap()
+            parts.append("\"CapabilityReport\":" + capability_report_to_json(u7))
+        if input.CapabilitySchemas.is_some():
+            auto u8 = input.CapabilitySchemas.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"CapabilitySchemas\":" + api_iotmanagedintegrations_json_arr(e9))
+        if input.Capabilities.is_some():
+            auto u10 = input.Capabilities.unwrap()
+            parts.append("\"Capabilities\":" + api_iotmanagedintegrations_json_str(u10))
+        if input.Classification.is_some():
+            auto u11 = input.Classification.unwrap()
+            parts.append("\"Classification\":" + api_iotmanagedintegrations_json_str(u11))
+        if input.HubNetworkMode.is_some():
+            auto u12 = input.HubNetworkMode.unwrap()
+            parts.append("\"HubNetworkMode\":" + u12.to_json())
+        if input.MetaData.is_some():
+            auto u13 = input.MetaData.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(api_iotmanagedintegrations_json_str(k14) + ":" + api_iotmanagedintegrations_json_str(u13[k14]))
+            parts.append("\"MetaData\":" + api_iotmanagedintegrations_json_obj(m14))
+        auto bp = restjson.rest_json_document(b, api_iotmanagedintegrations_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotmanagedintegrations_service(), self.region, host)
 
     # UpdateNotificationConfiguration  PUT /notification-configurations/{EventType}

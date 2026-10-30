@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 29 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 40 operations — 39 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   128 structs (68 @derive(Json)), 20 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -239,8 +239,9 @@ struct AccessDeniedException:
     Optional[str] xAmznErrorType
     Optional[str] exceptionMessage
 
-# no @derive(Json): member(s) mediaTypes: list[ParticipantRecordingMediaType], thumbnailConfiguration: ParticipantThumbnailConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mediaTypes: list[ParticipantRecordingMediaType], thumbnailConfiguration: ParticipantThumbnailConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoParticipantRecordingConfiguration:
     str storageConfigurationArn
     Optional[list[ParticipantRecordingMediaType]] mediaTypes
@@ -254,8 +255,9 @@ struct ChannelDestinationConfiguration:
     str channelArn
     Optional[str] encoderConfigurationArn
 
-# no @derive(Json): member(s) destinations: list[Destination], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[Destination], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Composition:
     str arn
     str stageArn
@@ -270,8 +272,9 @@ struct Composition:
 struct CompositionRecordingHlsConfiguration:
     Optional[int64] targetSegmentDurationSeconds
 
-# no @derive(Json): member(s) destinations: list[DestinationSummary], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[DestinationSummary], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositionSummary:
     str arn
     str stageArn
@@ -281,8 +284,9 @@ struct CompositionSummary:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) storage: list[ThumbnailStorageType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storage: list[ThumbnailStorageType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositionThumbnailConfiguration:
     Optional[int64] targetIntervalSeconds
     Optional[list[ThumbnailStorageType]] storage
@@ -306,8 +310,9 @@ struct CreateEncoderConfigurationRequest:
     Optional[Video] video
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) encoderConfiguration: EncoderConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encoderConfiguration: EncoderConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEncoderConfigurationResponse:
     Optional[EncoderConfiguration] encoderConfiguration
 
@@ -323,8 +328,9 @@ struct CreateIngestConfigurationRequest:
     Optional[bool] redundantIngest
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) ingestConfiguration: IngestConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestConfiguration: IngestConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIngestConfigurationResponse:
     Optional[str] accessControlAllowOrigin
     Optional[str] accessControlExposeHeaders
@@ -344,8 +350,9 @@ struct CreateParticipantTokenRequest:
     Optional[dict[str, str]] attributes
     Optional[list[ParticipantTokenCapability]] capabilities
 
-# no @derive(Json): member(s) participantToken: ParticipantToken not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) participantToken: ParticipantToken not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateParticipantTokenResponse:
     Optional[ParticipantToken] participantToken
 
@@ -357,8 +364,9 @@ struct CreateStageRequest:
     Optional[dict[str, str]] tags
     Optional[AutoParticipantRecordingConfiguration] autoParticipantRecordingConfiguration
 
-# no @derive(Json): member(s) stage: Stage, participantTokens: list[ParticipantToken] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stage: Stage, participantTokens: list[ParticipantToken] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStageResponse:
     Optional[Stage] stage
     Optional[list[ParticipantToken]] participantTokens
@@ -370,8 +378,9 @@ struct CreateStorageConfigurationRequest:
     S3StorageConfiguration s3
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) storageConfiguration: StorageConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storageConfiguration: StorageConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStorageConfigurationResponse:
     Optional[StorageConfiguration] storageConfiguration
 
@@ -426,8 +435,9 @@ struct DeleteStorageConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) configuration: DestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: DestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Destination:
     str id
     DestinationState state
@@ -436,8 +446,9 @@ struct Destination:
     DestinationConfiguration configuration
     Optional[DestinationDetail] detail
 
-# no @derive(Json): member(s) s3: S3DestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3: S3DestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationConfiguration:
     Optional[str] name
     # wire name "channel" differs from field; derive rename is a #346 follow-up
@@ -469,23 +480,26 @@ struct DisconnectParticipantResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncoderConfiguration:
     str arn
     Optional[str] name
     Optional[Video] video
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncoderConfigurationSummary:
     str arn
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) previousToken: ExchangedParticipantToken, newToken: ExchangedParticipantToken not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) previousToken: ExchangedParticipantToken, newToken: ExchangedParticipantToken not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[EventName] name
     Optional[str] participantId
@@ -498,8 +512,9 @@ struct Event:
     Optional[ExchangedParticipantToken] previousToken
     Optional[ExchangedParticipantToken] newToken
 
-# no @derive(Json): member(s) capabilities: list[ParticipantTokenCapability], attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[ParticipantTokenCapability], attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExchangedParticipantToken:
     Optional[list[ParticipantTokenCapability]] capabilities
     Optional[dict[str, str]] attributes
@@ -511,8 +526,9 @@ struct ExchangedParticipantToken:
 struct GetCompositionRequest:
     str arn
 
-# no @derive(Json): member(s) composition: Composition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) composition: Composition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCompositionResponse:
     Optional[Composition] composition
 
@@ -521,8 +537,9 @@ struct GetCompositionResponse:
 struct GetEncoderConfigurationRequest:
     str arn
 
-# no @derive(Json): member(s) encoderConfiguration: EncoderConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encoderConfiguration: EncoderConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEncoderConfigurationResponse:
     Optional[EncoderConfiguration] encoderConfiguration
 
@@ -531,8 +548,9 @@ struct GetEncoderConfigurationResponse:
 struct GetIngestConfigurationRequest:
     str arn
 
-# no @derive(Json): member(s) ingestConfiguration: IngestConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestConfiguration: IngestConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIngestConfigurationResponse:
     Optional[IngestConfiguration] ingestConfiguration
 
@@ -543,8 +561,9 @@ struct GetParticipantRequest:
     str sessionId
     str participantId
 
-# no @derive(Json): member(s) participant: Participant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) participant: Participant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetParticipantResponse:
     Optional[Participant] participant
 
@@ -553,8 +572,9 @@ struct GetParticipantResponse:
 struct GetPublicKeyRequest:
     str arn
 
-# no @derive(Json): member(s) publicKey: PublicKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) publicKey: PublicKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPublicKeyResponse:
     Optional[PublicKey] publicKey
 
@@ -563,8 +583,9 @@ struct GetPublicKeyResponse:
 struct GetStageRequest:
     str arn
 
-# no @derive(Json): member(s) stage: Stage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stage: Stage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStageResponse:
     Optional[Stage] stage
 
@@ -583,8 +604,9 @@ struct GetStageSessionResponse:
 struct GetStorageConfigurationRequest:
     str arn
 
-# no @derive(Json): member(s) storageConfiguration: StorageConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storageConfiguration: StorageConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStorageConfigurationResponse:
     Optional[StorageConfiguration] storageConfiguration
 
@@ -604,13 +626,15 @@ struct ImportPublicKeyRequest:
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) publicKey: PublicKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) publicKey: PublicKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportPublicKeyResponse:
     Optional[PublicKey] publicKey
 
-# no @derive(Json): member(s) redundantIngestCredentials: list[RedundantIngestCredential], attributes: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) redundantIngestCredentials: list[RedundantIngestCredential], attributes: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestConfiguration:
     Optional[str] name
     str arn
@@ -661,8 +685,9 @@ struct ListCompositionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) compositions: list[CompositionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compositions: list[CompositionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCompositionsResponse:
     list[CompositionSummary] compositions
     Optional[str] nextToken
@@ -673,8 +698,9 @@ struct ListEncoderConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) encoderConfigurations: list[EncoderConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encoderConfigurations: list[EncoderConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEncoderConfigurationsResponse:
     list[EncoderConfigurationSummary] encoderConfigurations
     Optional[str] nextToken
@@ -687,8 +713,9 @@ struct ListIngestConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) ingestConfigurations: list[IngestConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestConfigurations: list[IngestConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIngestConfigurationsResponse:
     list[IngestConfigurationSummary] ingestConfigurations
     Optional[str] nextToken
@@ -702,8 +729,9 @@ struct ListParticipantEventsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListParticipantEventsResponse:
     list[Event] events
     Optional[str] nextToken
@@ -716,8 +744,9 @@ struct ListParticipantReplicasRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) replicas: list[ParticipantReplica] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicas: list[ParticipantReplica] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListParticipantReplicasResponse:
     list[ParticipantReplica] replicas
     Optional[str] nextToken
@@ -734,8 +763,9 @@ struct ListParticipantsRequest:
     Optional[int64] maxResults
     Optional[ParticipantRecordingFilterByRecordingState] filterByRecordingState
 
-# no @derive(Json): member(s) participants: list[ParticipantSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) participants: list[ParticipantSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListParticipantsResponse:
     list[ParticipantSummary] participants
     Optional[str] nextToken
@@ -746,8 +776,9 @@ struct ListPublicKeysRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) publicKeys: list[PublicKeySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) publicKeys: list[PublicKeySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPublicKeysResponse:
     list[PublicKeySummary] publicKeys
     Optional[str] nextToken
@@ -759,8 +790,9 @@ struct ListStageSessionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) stageSessions: list[StageSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stageSessions: list[StageSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStageSessionsResponse:
     list[StageSessionSummary] stageSessions
     Optional[str] nextToken
@@ -771,8 +803,9 @@ struct ListStagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) stages: list[StageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stages: list[StageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStagesResponse:
     list[StageSummary] stages
     Optional[str] nextToken
@@ -783,8 +816,9 @@ struct ListStorageConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) storageConfigurations: list[StorageConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storageConfigurations: list[StorageConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStorageConfigurationsResponse:
     list[StorageConfigurationSummary] storageConfigurations
     Optional[str] nextToken
@@ -794,13 +828,15 @@ struct ListStorageConfigurationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Participant:
     Optional[str] participantId
     Optional[str] userId
@@ -854,15 +890,17 @@ struct ParticipantSummary:
     Optional[bool] redundantIngest
     Optional[str] ingestConfigurationArn
 
-# no @derive(Json): member(s) storage: list[ThumbnailStorageType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storage: list[ThumbnailStorageType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipantThumbnailConfiguration:
     Optional[int64] targetIntervalSeconds
     Optional[list[ThumbnailStorageType]] storage
     Optional[ThumbnailRecordingMode] recordingMode
 
-# no @derive(Json): member(s) attributes: dict[str, str], capabilities: list[ParticipantTokenCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], capabilities: list[ParticipantTokenCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipantToken:
     Optional[str] participantId
     Optional[str] token
@@ -872,8 +910,9 @@ struct ParticipantToken:
     Optional[list[ParticipantTokenCapability]] capabilities
     Optional[DateTime] expirationTime
 
-# no @derive(Json): member(s) attributes: dict[str, str], capabilities: list[ParticipantTokenCapability] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str], capabilities: list[ParticipantTokenCapability] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipantTokenConfiguration:
     Optional[int64] duration
     Optional[str] userId
@@ -906,8 +945,9 @@ struct PipConfiguration:
     Optional[int64] pipHeight
     Optional[str] participantOrderAttribute
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicKey:
     Optional[str] arn
     Optional[str] name
@@ -915,8 +955,9 @@ struct PublicKey:
     Optional[str] fingerprint
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicKeySummary:
     Optional[str] arn
     Optional[str] name
@@ -954,8 +995,9 @@ struct RevokeConnectionTokenResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) encoderConfigurationArns: list[str], thumbnailConfigurations: list[CompositionThumbnailConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encoderConfigurationArns: list[str], thumbnailConfigurations: list[CompositionThumbnailConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DestinationConfiguration:
     str storageConfigurationArn
     list[str] encoderConfigurationArns
@@ -982,8 +1024,9 @@ struct ServiceQuotaExceededException:
     Optional[str] xAmznErrorType
     Optional[str] exceptionMessage
 
-# no @derive(Json): member(s) tags: dict[str, str], autoParticipantRecordingConfiguration: AutoParticipantRecordingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], autoParticipantRecordingConfiguration: AutoParticipantRecordingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Stage:
     str arn
     Optional[str] name
@@ -1015,8 +1058,9 @@ struct StageSessionSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StageSummary:
     str arn
     Optional[str] name
@@ -1032,8 +1076,9 @@ struct StartCompositionRequest:
     list[DestinationConfiguration] destinations
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) composition: Composition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) composition: Composition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCompositionResponse:
     Optional[Composition] composition
 
@@ -1083,16 +1128,18 @@ struct StopParticipantReplicationResponse:
     Optional[str] xContentTypeOptions
     Optional[str] xFrameOptions
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageConfiguration:
     str arn
     Optional[str] name
     Optional[S3StorageConfiguration] s3
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageConfigurationSummary:
     str arn
     Optional[str] name
@@ -1128,8 +1175,9 @@ struct UpdateIngestConfigurationRequest:
     Optional[str] stageArn
     Optional[bool] redundantIngest
 
-# no @derive(Json): member(s) ingestConfiguration: IngestConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingestConfiguration: IngestConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIngestConfigurationResponse:
     Optional[str] accessControlAllowOrigin
     Optional[str] accessControlExposeHeaders
@@ -1147,8 +1195,9 @@ struct UpdateStageRequest:
     Optional[str] name
     Optional[AutoParticipantRecordingConfiguration] autoParticipantRecordingConfiguration
 
-# no @derive(Json): member(s) stage: Stage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stage: Stage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStageResponse:
     Optional[Stage] stage
 
@@ -1209,17 +1258,7 @@ def ivsrealtime_error_from_code(str code) -> IVS_RealTimeError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateEncoderConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateIngestConfiguration (document member `attributes: dict[str, str]` is not serializable by derive)
-#   CreateParticipantToken (document member `attributes: dict[str, str]` is not serializable by derive)
-#   CreateStage (document member `participantTokenConfigurations: list[ParticipantTokenConfiguration]` is not serializable by derive)
-#   CreateStorageConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
-#   ImportPublicKey (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartComposition (document member `destinations: list[DestinationConfiguration]` is not serializable by derive)
-#   StartParticipantReplication (document member `attributes: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateStage (document member `autoParticipantRecordingConfiguration: AutoParticipantRecordingConfiguration` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1400,10 +1439,283 @@ struct UpdateIngestConfigurationDocument:
     Optional[str] stageArn
     Optional[bool] redundantIngest
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ivsrealtime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ivsrealtime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ivsrealtime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AutoParticipantRecordingConfiguration to a compact JSON object (declaration order).
+def auto_participant_recording_configuration_to_json(AutoParticipantRecordingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"storageConfigurationArn\":" + ivsrealtime_json_str(v.storageConfigurationArn))
+    if v.mediaTypes.is_some():
+        auto u0 = v.mediaTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"mediaTypes\":" + ivsrealtime_json_arr(e1))
+    if v.thumbnailConfiguration.is_some():
+        auto u2 = v.thumbnailConfiguration.unwrap()
+        parts.append("\"thumbnailConfiguration\":" + participant_thumbnail_configuration_to_json(u2))
+    if v.recordingReconnectWindowSeconds.is_some():
+        auto u3 = v.recordingReconnectWindowSeconds.unwrap()
+        parts.append("\"recordingReconnectWindowSeconds\":" + str(u3))
+    if v.hlsConfiguration.is_some():
+        auto u4 = v.hlsConfiguration.unwrap()
+        parts.append("\"hlsConfiguration\":" + u4.to_json())
+    if v.recordParticipantReplicas.is_some():
+        auto u5 = v.recordParticipantReplicas.unwrap()
+        parts.append("\"recordParticipantReplicas\":" + json.dumps(JsonValue.Bool(u5)))
+    return ivsrealtime_json_obj(parts)
+
+# Serialize CompositionThumbnailConfiguration to a compact JSON object (declaration order).
+def composition_thumbnail_configuration_to_json(CompositionThumbnailConfiguration v) -> str:
+    list[str] parts = []
+    if v.targetIntervalSeconds.is_some():
+        auto u0 = v.targetIntervalSeconds.unwrap()
+        parts.append("\"targetIntervalSeconds\":" + str(u0))
+    if v.storage.is_some():
+        auto u1 = v.storage.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"storage\":" + ivsrealtime_json_arr(e2))
+    return ivsrealtime_json_obj(parts)
+
+# Serialize DestinationConfiguration to a compact JSON object (declaration order).
+def destination_configuration_to_json(DestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ivsrealtime_json_str(u0))
+    if v.channel_.is_some():
+        auto u1 = v.channel_.unwrap()
+        parts.append("\"channel\":" + u1.to_json())
+    if v.s3.is_some():
+        auto u2 = v.s3.unwrap()
+        parts.append("\"s3\":" + s3_destination_configuration_to_json(u2))
+    return ivsrealtime_json_obj(parts)
+
+# Serialize ParticipantThumbnailConfiguration to a compact JSON object (declaration order).
+def participant_thumbnail_configuration_to_json(ParticipantThumbnailConfiguration v) -> str:
+    list[str] parts = []
+    if v.targetIntervalSeconds.is_some():
+        auto u0 = v.targetIntervalSeconds.unwrap()
+        parts.append("\"targetIntervalSeconds\":" + str(u0))
+    if v.storage.is_some():
+        auto u1 = v.storage.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"storage\":" + ivsrealtime_json_arr(e2))
+    if v.recordingMode.is_some():
+        auto u3 = v.recordingMode.unwrap()
+        parts.append("\"recordingMode\":" + u3.to_json())
+    return ivsrealtime_json_obj(parts)
+
+# Serialize ParticipantTokenConfiguration to a compact JSON object (declaration order).
+def participant_token_configuration_to_json(ParticipantTokenConfiguration v) -> str:
+    list[str] parts = []
+    if v.duration.is_some():
+        auto u0 = v.duration.unwrap()
+        parts.append("\"duration\":" + str(u0))
+    if v.userId.is_some():
+        auto u1 = v.userId.unwrap()
+        parts.append("\"userId\":" + ivsrealtime_json_str(u1))
+    if v.attributes.is_some():
+        auto u2 = v.attributes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(ivsrealtime_json_str(k3) + ":" + ivsrealtime_json_str(u2[k3]))
+        parts.append("\"attributes\":" + ivsrealtime_json_obj(m3))
+    if v.capabilities.is_some():
+        auto u4 = v.capabilities.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"capabilities\":" + ivsrealtime_json_arr(e5))
+    return ivsrealtime_json_obj(parts)
+
+# Serialize S3DestinationConfiguration to a compact JSON object (declaration order).
+def s3_destination_configuration_to_json(S3DestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"storageConfigurationArn\":" + ivsrealtime_json_str(v.storageConfigurationArn))
+    list[str] e0 = []
+    for x0 in v.encoderConfigurationArns:
+        e0.append(ivsrealtime_json_str(x0))
+    parts.append("\"encoderConfigurationArns\":" + ivsrealtime_json_arr(e0))
+    if v.recordingConfiguration.is_some():
+        auto u1 = v.recordingConfiguration.unwrap()
+        parts.append("\"recordingConfiguration\":" + u1.to_json())
+    if v.thumbnailConfigurations.is_some():
+        auto u2 = v.thumbnailConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(composition_thumbnail_configuration_to_json(x3))
+        parts.append("\"thumbnailConfigurations\":" + ivsrealtime_json_arr(e3))
+    return ivsrealtime_json_obj(parts)
+
 # A bound IVS_RealTime client: credentials + region, threaded into every operation.
 struct IVS_RealTimeClient:
     core.Credentials creds
     str region
+
+    # CreateEncoderConfiguration  POST /CreateEncoderConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_encoder_configuration(self, CreateEncoderConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateEncoderConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivsrealtime_json_str(u0))
+        if input.video.is_some():
+            auto u1 = input.video.unwrap()
+            parts.append("\"video\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(ivsrealtime_json_str(k3) + ":" + ivsrealtime_json_str(u2[k3]))
+            parts.append("\"tags\":" + ivsrealtime_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
+    # CreateIngestConfiguration  POST /CreateIngestConfiguration
+    # errors: AccessDeniedException, PendingVerification, ServiceQuotaExceededException, ValidationException
+    def create_ingest_configuration(self, CreateIngestConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIngestConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivsrealtime_json_str(u0))
+        if input.stageArn.is_some():
+            auto u1 = input.stageArn.unwrap()
+            parts.append("\"stageArn\":" + ivsrealtime_json_str(u1))
+        if input.userId.is_some():
+            auto u2 = input.userId.unwrap()
+            parts.append("\"userId\":" + ivsrealtime_json_str(u2))
+        if input.attributes.is_some():
+            auto u3 = input.attributes.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ivsrealtime_json_str(k4) + ":" + ivsrealtime_json_str(u3[k4]))
+            parts.append("\"attributes\":" + ivsrealtime_json_obj(m4))
+        parts.append("\"ingestProtocol\":" + input.ingestProtocol.to_json())
+        if input.insecureIngest.is_some():
+            auto u5 = input.insecureIngest.unwrap()
+            parts.append("\"insecureIngest\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.redundantIngest.is_some():
+            auto u6 = input.redundantIngest.unwrap()
+            parts.append("\"redundantIngest\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(ivsrealtime_json_str(k8) + ":" + ivsrealtime_json_str(u7[k8]))
+            parts.append("\"tags\":" + ivsrealtime_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
+    # CreateParticipantToken  POST /CreateParticipantToken
+    # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_participant_token(self, CreateParticipantTokenRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateParticipantToken", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"stageArn\":" + ivsrealtime_json_str(input.stageArn))
+        if input.duration.is_some():
+            auto u0 = input.duration.unwrap()
+            parts.append("\"duration\":" + str(u0))
+        if input.userId.is_some():
+            auto u1 = input.userId.unwrap()
+            parts.append("\"userId\":" + ivsrealtime_json_str(u1))
+        if input.attributes.is_some():
+            auto u2 = input.attributes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(ivsrealtime_json_str(k3) + ":" + ivsrealtime_json_str(u2[k3]))
+            parts.append("\"attributes\":" + ivsrealtime_json_obj(m3))
+        if input.capabilities.is_some():
+            auto u4 = input.capabilities.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"capabilities\":" + ivsrealtime_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
+    # CreateStage  POST /CreateStage
+    # errors: AccessDeniedException, PendingVerification, ServiceQuotaExceededException, ValidationException
+    def create_stage(self, CreateStageRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateStage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivsrealtime_json_str(u0))
+        if input.participantTokenConfigurations.is_some():
+            auto u1 = input.participantTokenConfigurations.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(participant_token_configuration_to_json(x2))
+            parts.append("\"participantTokenConfigurations\":" + ivsrealtime_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ivsrealtime_json_str(k4) + ":" + ivsrealtime_json_str(u3[k4]))
+            parts.append("\"tags\":" + ivsrealtime_json_obj(m4))
+        if input.autoParticipantRecordingConfiguration.is_some():
+            auto u5 = input.autoParticipantRecordingConfiguration.unwrap()
+            parts.append("\"autoParticipantRecordingConfiguration\":" + auto_participant_recording_configuration_to_json(u5))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
+    # CreateStorageConfiguration  POST /CreateStorageConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_storage_configuration(self, CreateStorageConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivsrealtime_json_str(u0))
+        parts.append("\"s3\":" + input.s3.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(ivsrealtime_json_str(k2) + ":" + ivsrealtime_json_str(u1[k2]))
+            parts.append("\"tags\":" + ivsrealtime_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
 
     # DeleteEncoderConfiguration  POST /DeleteEncoderConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
@@ -1531,6 +1843,25 @@ struct IVS_RealTimeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
 
+    # ImportPublicKey  POST /ImportPublicKey
+    # errors: AccessDeniedException, ConflictException, PendingVerification, ServiceQuotaExceededException, ValidationException
+    def import_public_key(self, ImportPublicKeyRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ImportPublicKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"publicKeyMaterial\":" + ivsrealtime_json_str(input.publicKeyMaterial))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivsrealtime_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(ivsrealtime_json_str(k2) + ":" + ivsrealtime_json_str(u1[k2]))
+            parts.append("\"tags\":" + ivsrealtime_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
     # ListCompositions  POST /ListCompositions
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def list_compositions(self, ListCompositionsRequest input) -> str:
@@ -1639,6 +1970,53 @@ struct IVS_RealTimeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
 
+    # StartComposition  POST /StartComposition
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def start_composition(self, StartCompositionRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartComposition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"stageArn\":" + ivsrealtime_json_str(input.stageArn))
+        if input.idempotencyToken.is_some():
+            auto u0 = input.idempotencyToken.unwrap()
+            parts.append("\"idempotencyToken\":" + ivsrealtime_json_str(u0))
+        if input.layout.is_some():
+            auto u1 = input.layout.unwrap()
+            parts.append("\"layout\":" + u1.to_json())
+        list[str] e2 = []
+        for x2 in input.destinations:
+            e2.append(destination_configuration_to_json(x2))
+        parts.append("\"destinations\":" + ivsrealtime_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ivsrealtime_json_str(k4) + ":" + ivsrealtime_json_str(u3[k4]))
+            parts.append("\"tags\":" + ivsrealtime_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
+    # StartParticipantReplication  POST /StartParticipantReplication
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def start_participant_replication(self, StartParticipantReplicationRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartParticipantReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceStageArn\":" + ivsrealtime_json_str(input.sourceStageArn))
+        parts.append("\"destinationStageArn\":" + ivsrealtime_json_str(input.destinationStageArn))
+        parts.append("\"participantId\":" + ivsrealtime_json_str(input.participantId))
+        if input.reconnectWindowSeconds.is_some():
+            auto u0 = input.reconnectWindowSeconds.unwrap()
+            parts.append("\"reconnectWindowSeconds\":" + str(u0))
+        if input.attributes.is_some():
+            auto u1 = input.attributes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(ivsrealtime_json_str(k2) + ":" + ivsrealtime_json_str(u1[k2]))
+            parts.append("\"attributes\":" + ivsrealtime_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
     # StopComposition  POST /StopComposition
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def stop_composition(self, StopCompositionRequest input) -> str:
@@ -1657,6 +2035,21 @@ struct IVS_RealTimeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(ivsrealtime_json_str(k0) + ":" + ivsrealtime_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + ivsrealtime_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
     # UpdateIngestConfiguration  POST /UpdateIngestConfiguration
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def update_ingest_configuration(self, UpdateIngestConfigurationRequest input) -> str:
@@ -1664,6 +2057,22 @@ struct IVS_RealTimeClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateIngestConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIngestConfigurationDocument(arn=input.arn, stageArn=input.stageArn, redundantIngest=input.redundantIngest)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
+
+    # UpdateStage  POST /UpdateStage
+    # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_stage(self, UpdateStageRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateStage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + ivsrealtime_json_str(input.arn))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivsrealtime_json_str(u0))
+        if input.autoParticipantRecordingConfiguration.is_some():
+            auto u1 = input.autoParticipantRecordingConfiguration.unwrap()
+            parts.append("\"autoParticipantRecordingConfiguration\":" + auto_participant_recording_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
 
     # Paginator for ListIngestConfigurations — yields each Response page, threading the

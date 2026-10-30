@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 26 operations — 19 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 26 operations — 26 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   92 structs (56 @derive(Json)), 19 enums, 12 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Budgets awsJson protocol: version 1.1, API id "AWSBudgetServiceGateway".
 def budgets_protocol() -> awsjson.AwsJson:
@@ -241,8 +242,9 @@ enum TimeUnit:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Definition: Definition, Subscribers: list[Subscriber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: Definition, Subscribers: list[Subscriber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     str ActionId
     str BudgetName
@@ -255,16 +257,18 @@ struct Action:
     ActionStatus Status
     list[Subscriber] Subscribers
 
-# no @derive(Json): member(s) ActionHistoryDetails: ActionHistoryDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionHistoryDetails: ActionHistoryDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionHistory:
     DateTime Timestamp
     ActionStatus Status
     EventType EventType
     ActionHistoryDetails ActionHistoryDetails
 
-# no @derive(Json): member(s) Action: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionHistoryDetails:
     str Message
     Action Action
@@ -284,8 +288,9 @@ struct AutoAdjustData:
 struct BillingViewHealthStatusException:
     Optional[str] Message
 
-# no @derive(Json): member(s) PlannedBudgetLimits: dict[str, Spend], CostFilters: dict[str, list[str]], FilterExpression: Expression, Metrics: list[Metric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PlannedBudgetLimits: dict[str, Spend], CostFilters: dict[str, list[str]], FilterExpression: Expression, Metrics: list[Metric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Budget:
     str BudgetName
     Optional[Spend] BudgetLimit
@@ -303,14 +308,16 @@ struct Budget:
     Optional[str] BillingViewArn
     Optional[HealthStatus] HealthStatus
 
-# no @derive(Json): member(s) Notifications: list[Notification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notifications: list[Notification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BudgetNotificationsForAccount:
     Optional[list[Notification]] Notifications
     Optional[str] BudgetName
 
-# no @derive(Json): member(s) CostFilters: dict[str, list[str]], BudgetedAndActualAmountsList: list[BudgetedAndActualAmounts], FilterExpression: Expression, Metrics: list[Metric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostFilters: dict[str, list[str]], BudgetedAndActualAmountsList: list[BudgetedAndActualAmounts], FilterExpression: Expression, Metrics: list[Metric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BudgetPerformanceHistory:
     Optional[str] BudgetName
     Optional[BudgetType] BudgetType
@@ -333,8 +340,9 @@ struct CalculatedSpend:
     Spend ActualSpend
     Optional[Spend] ForecastedSpend
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategoryValues:
     Optional[str] Key
     Optional[list[str]] Values
@@ -354,8 +362,9 @@ struct CostTypes:
     Optional[bool] IncludeDiscount
     Optional[bool] UseAmortized
 
-# no @derive(Json): member(s) Definition: Definition, Subscribers: list[Subscriber], ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: Definition, Subscribers: list[Subscriber], ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBudgetActionRequest:
     str AccountId
     str BudgetName
@@ -374,8 +383,9 @@ struct CreateBudgetActionResponse:
     str BudgetName
     str ActionId
 
-# no @derive(Json): member(s) Budget: Budget, NotificationsWithSubscribers: list[NotificationWithSubscribers], ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Budget: Budget, NotificationsWithSubscribers: list[NotificationWithSubscribers], ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBudgetRequest:
     str AccountId
     Budget Budget
@@ -387,8 +397,9 @@ struct CreateBudgetResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Subscribers: list[Subscriber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscribers: list[Subscriber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotificationRequest:
     str AccountId
     str BudgetName
@@ -416,8 +427,9 @@ struct CreateSubscriberResponse:
 struct CreationLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) IamActionDefinition: IamActionDefinition, ScpActionDefinition: ScpActionDefinition, SsmActionDefinition: SsmActionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IamActionDefinition: IamActionDefinition, ScpActionDefinition: ScpActionDefinition, SsmActionDefinition: SsmActionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Definition:
     Optional[IamActionDefinition] IamActionDefinition
     Optional[ScpActionDefinition] ScpActionDefinition
@@ -429,8 +441,9 @@ struct DeleteBudgetActionRequest:
     str BudgetName
     str ActionId
 
-# no @derive(Json): member(s) Action: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBudgetActionResponse:
     str AccountId
     str BudgetName
@@ -478,8 +491,9 @@ struct DescribeBudgetActionHistoriesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ActionHistories: list[ActionHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionHistories: list[ActionHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetActionHistoriesResponse:
     list[ActionHistory] ActionHistories
     Optional[str] NextToken
@@ -490,8 +504,9 @@ struct DescribeBudgetActionRequest:
     str BudgetName
     str ActionId
 
-# no @derive(Json): member(s) Action: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetActionResponse:
     str AccountId
     str BudgetName
@@ -503,8 +518,9 @@ struct DescribeBudgetActionsForAccountRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Actions: list[Action] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[Action] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetActionsForAccountResponse:
     list[Action] Actions
     Optional[str] NextToken
@@ -516,8 +532,9 @@ struct DescribeBudgetActionsForBudgetRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Actions: list[Action] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[Action] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetActionsForBudgetResponse:
     list[Action] Actions
     Optional[str] NextToken
@@ -528,8 +545,9 @@ struct DescribeBudgetNotificationsForAccountRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BudgetNotificationsForAccount: list[BudgetNotificationsForAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BudgetNotificationsForAccount: list[BudgetNotificationsForAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetNotificationsForAccountResponse:
     Optional[list[BudgetNotificationsForAccount]] BudgetNotificationsForAccount
     Optional[str] NextToken
@@ -542,8 +560,9 @@ struct DescribeBudgetPerformanceHistoryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BudgetPerformanceHistory: BudgetPerformanceHistory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BudgetPerformanceHistory: BudgetPerformanceHistory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetPerformanceHistoryResponse:
     Optional[BudgetPerformanceHistory] BudgetPerformanceHistory
     Optional[str] NextToken
@@ -554,8 +573,9 @@ struct DescribeBudgetRequest:
     str BudgetName
     Optional[bool] ShowFilterExpression
 
-# no @derive(Json): member(s) Budget: Budget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Budget: Budget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetResponse:
     Optional[Budget] Budget
 
@@ -566,8 +586,9 @@ struct DescribeBudgetsRequest:
     Optional[str] NextToken
     Optional[bool] ShowFilterExpression
 
-# no @derive(Json): member(s) Budgets: list[Budget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Budgets: list[Budget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBudgetsResponse:
     Optional[list[Budget]] Budgets
     Optional[str] NextToken
@@ -579,8 +600,9 @@ struct DescribeNotificationsForBudgetRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Notifications: list[Notification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notifications: list[Notification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotificationsForBudgetResponse:
     Optional[list[Notification]] Notifications
     Optional[str] NextToken
@@ -593,8 +615,9 @@ struct DescribeSubscribersForNotificationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Subscribers: list[Subscriber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscribers: list[Subscriber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSubscribersForNotificationResponse:
     Optional[list[Subscriber]] Subscribers
     Optional[str] NextToken
@@ -621,8 +644,9 @@ struct ExecuteBudgetActionResponse:
 struct ExpiredNextTokenException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Or: list[Expression], And: list[Expression], Not: Expression, Dimensions: ExpressionDimensionValues, Tags: TagValues, CostCategories: CostCategoryValues, ProductAttributes: ProductAttributeValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Or: list[Expression], And: list[Expression], Not: Expression, Dimensions: ExpressionDimensionValues, Tags: TagValues, CostCategories: CostCategoryValues, ProductAttributes: ProductAttributeValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     Optional[list[Expression]] Or
     Optional[list[Expression]] And
@@ -632,8 +656,9 @@ struct Expression:
     Optional[CostCategoryValues] CostCategories
     Optional[ProductAttributeValues] ProductAttributes
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressionDimensionValues:
     Dimension Key
     list[str] Values
@@ -650,8 +675,9 @@ struct HistoricalOptions:
     int64 BudgetAdjustmentPeriod
     Optional[int64] LookBackAvailablePeriods
 
-# no @derive(Json): member(s) Roles: list[str], Groups: list[str], Users: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: list[str], Groups: list[str], Users: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IamActionDefinition:
     str PolicyArn
     Optional[list[str]] Roles
@@ -674,8 +700,9 @@ struct InvalidParameterException:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[ResourceTag]] ResourceTags
 
@@ -691,14 +718,16 @@ struct Notification:
     Optional[ThresholdType] ThresholdType
     Optional[NotificationState] NotificationState
 
-# no @derive(Json): member(s) Subscribers: list[Subscriber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscribers: list[Subscriber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationWithSubscribers:
     Notification Notification
     list[Subscriber] Subscribers
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductAttributeValues:
     str Key
     Optional[list[str]] Values
@@ -713,8 +742,9 @@ struct ResourceTag:
     str Key
     str Value
 
-# no @derive(Json): member(s) TargetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScpActionDefinition:
     str PolicyId
     list[str] TargetIds
@@ -728,8 +758,9 @@ struct Spend:
     str Amount
     str Unit
 
-# no @derive(Json): member(s) InstanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SsmActionDefinition:
     ActionSubType ActionSubType
     str Region
@@ -740,8 +771,9 @@ struct Subscriber:
     SubscriptionType SubscriptionType
     str Address
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[ResourceTag] ResourceTags
@@ -751,8 +783,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagValues:
     Optional[str] Key
     Optional[list[str]] Values
@@ -767,8 +800,9 @@ struct TimePeriod:
     Optional[DateTime] Start
     Optional[DateTime] End
 
-# no @derive(Json): member(s) ResourceTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] ResourceTagKeys
@@ -778,8 +812,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Definition: Definition, Subscribers: list[Subscriber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: Definition, Subscribers: list[Subscriber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBudgetActionRequest:
     str AccountId
     str BudgetName
@@ -791,16 +826,18 @@ struct UpdateBudgetActionRequest:
     Optional[ApprovalModel] ApprovalModel
     Optional[list[Subscriber]] Subscribers
 
-# no @derive(Json): member(s) OldAction: Action, NewAction: Action not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OldAction: Action, NewAction: Action not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBudgetActionResponse:
     str AccountId
     str BudgetName
     Action OldAction
     Action NewAction
 
-# no @derive(Json): member(s) NewBudget: Budget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewBudget: Budget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBudgetRequest:
     str AccountId
     Budget NewBudget
@@ -884,20 +921,399 @@ def budgets_error_from_code(str code) -> BudgetsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateBudget (input CreateBudgetRequest)
-#   CreateBudgetAction (input CreateBudgetActionRequest)
-#   CreateNotification (input CreateNotificationRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateBudget (input UpdateBudgetRequest)
-#   UpdateBudgetAction (input UpdateBudgetActionRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def budgets_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def budgets_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def budgets_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Budget to a compact JSON object (declaration order).
+def budget_to_json(Budget v) -> str:
+    list[str] parts = []
+    parts.append("\"BudgetName\":" + budgets_json_str(v.BudgetName))
+    if v.BudgetLimit.is_some():
+        auto u0 = v.BudgetLimit.unwrap()
+        parts.append("\"BudgetLimit\":" + u0.to_json())
+    if v.PlannedBudgetLimits.is_some():
+        auto u1 = v.PlannedBudgetLimits.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(budgets_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"PlannedBudgetLimits\":" + budgets_json_obj(m2))
+    if v.CostFilters.is_some():
+        auto u3 = v.CostFilters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(budgets_json_str(x5))
+            m4.append(budgets_json_str(k4) + ":" + budgets_json_arr(e5))
+        parts.append("\"CostFilters\":" + budgets_json_obj(m4))
+    if v.CostTypes.is_some():
+        auto u6 = v.CostTypes.unwrap()
+        parts.append("\"CostTypes\":" + u6.to_json())
+    parts.append("\"TimeUnit\":" + v.TimeUnit.to_json())
+    if v.TimePeriod.is_some():
+        auto u7 = v.TimePeriod.unwrap()
+        parts.append("\"TimePeriod\":" + u7.to_json())
+    if v.CalculatedSpend.is_some():
+        auto u8 = v.CalculatedSpend.unwrap()
+        parts.append("\"CalculatedSpend\":" + u8.to_json())
+    parts.append("\"BudgetType\":" + v.BudgetType.to_json())
+    if v.LastUpdatedTime.is_some():
+        auto u9 = v.LastUpdatedTime.unwrap()
+        parts.append("\"LastUpdatedTime\":" + str(datetime.to_timestamp(u9)))
+    if v.AutoAdjustData.is_some():
+        auto u10 = v.AutoAdjustData.unwrap()
+        parts.append("\"AutoAdjustData\":" + u10.to_json())
+    if v.FilterExpression.is_some():
+        auto u11 = v.FilterExpression.unwrap()
+        parts.append("\"FilterExpression\":" + expression_to_json(u11))
+    if v.Metrics.is_some():
+        auto u12 = v.Metrics.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Metrics\":" + budgets_json_arr(e13))
+    if v.BillingViewArn.is_some():
+        auto u14 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + budgets_json_str(u14))
+    if v.HealthStatus.is_some():
+        auto u15 = v.HealthStatus.unwrap()
+        parts.append("\"HealthStatus\":" + u15.to_json())
+    return budgets_json_obj(parts)
+
+# Serialize CostCategoryValues to a compact JSON object (declaration order).
+def cost_category_values_to_json(CostCategoryValues v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + budgets_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(budgets_json_str(x2))
+        parts.append("\"Values\":" + budgets_json_arr(e2))
+    if v.MatchOptions.is_some():
+        auto u3 = v.MatchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MatchOptions\":" + budgets_json_arr(e4))
+    return budgets_json_obj(parts)
+
+# Serialize CreateBudgetActionRequest to a compact JSON object (declaration order).
+def create_budget_action_request_to_json(CreateBudgetActionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccountId\":" + budgets_json_str(v.AccountId))
+    parts.append("\"BudgetName\":" + budgets_json_str(v.BudgetName))
+    parts.append("\"NotificationType\":" + v.NotificationType.to_json())
+    parts.append("\"ActionType\":" + v.ActionType.to_json())
+    parts.append("\"ActionThreshold\":" + v.ActionThreshold.to_json())
+    parts.append("\"Definition\":" + definition_to_json(v.Definition))
+    parts.append("\"ExecutionRoleArn\":" + budgets_json_str(v.ExecutionRoleArn))
+    parts.append("\"ApprovalModel\":" + v.ApprovalModel.to_json())
+    list[str] e0 = []
+    for x0 in v.Subscribers:
+        e0.append(x0.to_json())
+    parts.append("\"Subscribers\":" + budgets_json_arr(e0))
+    if v.ResourceTags.is_some():
+        auto u1 = v.ResourceTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ResourceTags\":" + budgets_json_arr(e2))
+    return budgets_json_obj(parts)
+
+# Serialize CreateBudgetRequest to a compact JSON object (declaration order).
+def create_budget_request_to_json(CreateBudgetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccountId\":" + budgets_json_str(v.AccountId))
+    parts.append("\"Budget\":" + budget_to_json(v.Budget))
+    if v.NotificationsWithSubscribers.is_some():
+        auto u0 = v.NotificationsWithSubscribers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(notification_with_subscribers_to_json(x1))
+        parts.append("\"NotificationsWithSubscribers\":" + budgets_json_arr(e1))
+    if v.ResourceTags.is_some():
+        auto u2 = v.ResourceTags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ResourceTags\":" + budgets_json_arr(e3))
+    return budgets_json_obj(parts)
+
+# Serialize CreateNotificationRequest to a compact JSON object (declaration order).
+def create_notification_request_to_json(CreateNotificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccountId\":" + budgets_json_str(v.AccountId))
+    parts.append("\"BudgetName\":" + budgets_json_str(v.BudgetName))
+    parts.append("\"Notification\":" + v.Notification.to_json())
+    list[str] e0 = []
+    for x0 in v.Subscribers:
+        e0.append(x0.to_json())
+    parts.append("\"Subscribers\":" + budgets_json_arr(e0))
+    return budgets_json_obj(parts)
+
+# Serialize Definition to a compact JSON object (declaration order).
+def definition_to_json(Definition v) -> str:
+    list[str] parts = []
+    if v.IamActionDefinition.is_some():
+        auto u0 = v.IamActionDefinition.unwrap()
+        parts.append("\"IamActionDefinition\":" + iam_action_definition_to_json(u0))
+    if v.ScpActionDefinition.is_some():
+        auto u1 = v.ScpActionDefinition.unwrap()
+        parts.append("\"ScpActionDefinition\":" + scp_action_definition_to_json(u1))
+    if v.SsmActionDefinition.is_some():
+        auto u2 = v.SsmActionDefinition.unwrap()
+        parts.append("\"SsmActionDefinition\":" + ssm_action_definition_to_json(u2))
+    return budgets_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.Or.is_some():
+        auto u0 = v.Or.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(expression_to_json(x1))
+        parts.append("\"Or\":" + budgets_json_arr(e1))
+    if v.And.is_some():
+        auto u2 = v.And.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(expression_to_json(x3))
+        parts.append("\"And\":" + budgets_json_arr(e3))
+    if v.Not.is_some():
+        auto u4 = v.Not.unwrap()
+        parts.append("\"Not\":" + expression_to_json(u4))
+    if v.Dimensions.is_some():
+        auto u5 = v.Dimensions.unwrap()
+        parts.append("\"Dimensions\":" + expression_dimension_values_to_json(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        parts.append("\"Tags\":" + tag_values_to_json(u6))
+    if v.CostCategories.is_some():
+        auto u7 = v.CostCategories.unwrap()
+        parts.append("\"CostCategories\":" + cost_category_values_to_json(u7))
+    if v.ProductAttributes.is_some():
+        auto u8 = v.ProductAttributes.unwrap()
+        parts.append("\"ProductAttributes\":" + product_attribute_values_to_json(u8))
+    return budgets_json_obj(parts)
+
+# Serialize ExpressionDimensionValues to a compact JSON object (declaration order).
+def expression_dimension_values_to_json(ExpressionDimensionValues v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(budgets_json_str(x0))
+    parts.append("\"Values\":" + budgets_json_arr(e0))
+    if v.MatchOptions.is_some():
+        auto u1 = v.MatchOptions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"MatchOptions\":" + budgets_json_arr(e2))
+    return budgets_json_obj(parts)
+
+# Serialize IamActionDefinition to a compact JSON object (declaration order).
+def iam_action_definition_to_json(IamActionDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"PolicyArn\":" + budgets_json_str(v.PolicyArn))
+    if v.Roles.is_some():
+        auto u0 = v.Roles.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(budgets_json_str(x1))
+        parts.append("\"Roles\":" + budgets_json_arr(e1))
+    if v.Groups.is_some():
+        auto u2 = v.Groups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(budgets_json_str(x3))
+        parts.append("\"Groups\":" + budgets_json_arr(e3))
+    if v.Users.is_some():
+        auto u4 = v.Users.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(budgets_json_str(x5))
+        parts.append("\"Users\":" + budgets_json_arr(e5))
+    return budgets_json_obj(parts)
+
+# Serialize NotificationWithSubscribers to a compact JSON object (declaration order).
+def notification_with_subscribers_to_json(NotificationWithSubscribers v) -> str:
+    list[str] parts = []
+    parts.append("\"Notification\":" + v.Notification.to_json())
+    list[str] e0 = []
+    for x0 in v.Subscribers:
+        e0.append(x0.to_json())
+    parts.append("\"Subscribers\":" + budgets_json_arr(e0))
+    return budgets_json_obj(parts)
+
+# Serialize ProductAttributeValues to a compact JSON object (declaration order).
+def product_attribute_values_to_json(ProductAttributeValues v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + budgets_json_str(v.Key))
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(budgets_json_str(x1))
+        parts.append("\"Values\":" + budgets_json_arr(e1))
+    if v.MatchOptions.is_some():
+        auto u2 = v.MatchOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MatchOptions\":" + budgets_json_arr(e3))
+    return budgets_json_obj(parts)
+
+# Serialize ScpActionDefinition to a compact JSON object (declaration order).
+def scp_action_definition_to_json(ScpActionDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"PolicyId\":" + budgets_json_str(v.PolicyId))
+    list[str] e0 = []
+    for x0 in v.TargetIds:
+        e0.append(budgets_json_str(x0))
+    parts.append("\"TargetIds\":" + budgets_json_arr(e0))
+    return budgets_json_obj(parts)
+
+# Serialize SsmActionDefinition to a compact JSON object (declaration order).
+def ssm_action_definition_to_json(SsmActionDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"ActionSubType\":" + v.ActionSubType.to_json())
+    parts.append("\"Region\":" + budgets_json_str(v.Region))
+    list[str] e0 = []
+    for x0 in v.InstanceIds:
+        e0.append(budgets_json_str(x0))
+    parts.append("\"InstanceIds\":" + budgets_json_arr(e0))
+    return budgets_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + budgets_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.ResourceTags:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTags\":" + budgets_json_arr(e0))
+    return budgets_json_obj(parts)
+
+# Serialize TagValues to a compact JSON object (declaration order).
+def tag_values_to_json(TagValues v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + budgets_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(budgets_json_str(x2))
+        parts.append("\"Values\":" + budgets_json_arr(e2))
+    if v.MatchOptions.is_some():
+        auto u3 = v.MatchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MatchOptions\":" + budgets_json_arr(e4))
+    return budgets_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + budgets_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.ResourceTagKeys:
+        e0.append(budgets_json_str(x0))
+    parts.append("\"ResourceTagKeys\":" + budgets_json_arr(e0))
+    return budgets_json_obj(parts)
+
+# Serialize UpdateBudgetActionRequest to a compact JSON object (declaration order).
+def update_budget_action_request_to_json(UpdateBudgetActionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccountId\":" + budgets_json_str(v.AccountId))
+    parts.append("\"BudgetName\":" + budgets_json_str(v.BudgetName))
+    parts.append("\"ActionId\":" + budgets_json_str(v.ActionId))
+    if v.NotificationType.is_some():
+        auto u0 = v.NotificationType.unwrap()
+        parts.append("\"NotificationType\":" + u0.to_json())
+    if v.ActionThreshold.is_some():
+        auto u1 = v.ActionThreshold.unwrap()
+        parts.append("\"ActionThreshold\":" + u1.to_json())
+    if v.Definition.is_some():
+        auto u2 = v.Definition.unwrap()
+        parts.append("\"Definition\":" + definition_to_json(u2))
+    if v.ExecutionRoleArn.is_some():
+        auto u3 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + budgets_json_str(u3))
+    if v.ApprovalModel.is_some():
+        auto u4 = v.ApprovalModel.unwrap()
+        parts.append("\"ApprovalModel\":" + u4.to_json())
+    if v.Subscribers.is_some():
+        auto u5 = v.Subscribers.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Subscribers\":" + budgets_json_arr(e6))
+    return budgets_json_obj(parts)
+
+# Serialize UpdateBudgetRequest to a compact JSON object (declaration order).
+def update_budget_request_to_json(UpdateBudgetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AccountId\":" + budgets_json_str(v.AccountId))
+    parts.append("\"NewBudget\":" + budget_to_json(v.NewBudget))
+    return budgets_json_obj(parts)
 
 # A bound Budgets client: credentials + region, threaded into every operation.
 struct BudgetsClient:
     core.Credentials creds
     str region
+
+    # CreateBudget
+    # errors: AccessDeniedException, BillingViewHealthStatusException, CreationLimitExceededException, DuplicateRecordException, InternalErrorException, InvalidParameterException, NotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_budget(self, CreateBudgetRequest input) -> str:
+        auto body = create_budget_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "CreateBudget", body)
+
+    # CreateBudgetAction
+    # errors: AccessDeniedException, CreationLimitExceededException, DuplicateRecordException, InternalErrorException, InvalidParameterException, NotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_budget_action(self, CreateBudgetActionRequest input) -> str:
+        auto body = create_budget_action_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "CreateBudgetAction", body)
+
+    # CreateNotification
+    # errors: AccessDeniedException, CreationLimitExceededException, DuplicateRecordException, InternalErrorException, InvalidParameterException, NotFoundException, ThrottlingException
+    def create_notification(self, CreateNotificationRequest input) -> str:
+        auto body = create_notification_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "CreateNotification", body)
 
     # CreateSubscriber
     # errors: AccessDeniedException, CreationLimitExceededException, DuplicateRecordException, InternalErrorException, InvalidParameterException, NotFoundException, ThrottlingException
@@ -1000,6 +1416,30 @@ struct BudgetsClient:
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalErrorException, InvalidParameterException, NotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalErrorException, InvalidParameterException, NotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateBudget
+    # errors: AccessDeniedException, BillingViewHealthStatusException, InternalErrorException, InvalidParameterException, NotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def update_budget(self, UpdateBudgetRequest input) -> str:
+        auto body = update_budget_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "UpdateBudget", body)
+
+    # UpdateBudgetAction
+    # errors: AccessDeniedException, InternalErrorException, InvalidParameterException, NotFoundException, ResourceLockedException, ThrottlingException
+    def update_budget_action(self, UpdateBudgetActionRequest input) -> str:
+        auto body = update_budget_action_request_to_json(input)
+        return awsjson.awsjson_request_now(budgets_protocol(), self.creds, self.region, "UpdateBudgetAction", body)
 
     # UpdateNotification
     # errors: AccessDeniedException, DuplicateRecordException, InternalErrorException, InvalidParameterException, NotFoundException, ThrottlingException

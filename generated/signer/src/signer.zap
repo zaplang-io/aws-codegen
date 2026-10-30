@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 13 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 19 operations — 15 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   65 structs (44 @derive(Json)), 6 enums, 10 error variants.
 #   1 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -127,8 +127,9 @@ struct ConflictException:
 struct DescribeSigningJobRequest:
     str jobId
 
-# no @derive(Json): member(s) signingParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signingParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSigningJobResponse:
     Optional[str] jobId
     Optional[Source] source
@@ -154,8 +155,9 @@ struct DescribeSigningJobResponse:
 struct Destination:
     Optional[S3Destination] s3
 
-# no @derive(Json): member(s) allowedValues: list[EncryptionAlgorithm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[EncryptionAlgorithm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionAlgorithmOptions:
     list[EncryptionAlgorithm] allowedValues
     EncryptionAlgorithm defaultValue
@@ -169,8 +171,9 @@ struct GetRevocationStatusRequest:
     str jobArn
     list[str] certificateHashes
 
-# no @derive(Json): member(s) revokedEntities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revokedEntities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevocationStatusResponse:
     Optional[list[str]] revokedEntities
 
@@ -179,8 +182,9 @@ struct GetRevocationStatusResponse:
 struct GetSigningPlatformRequest:
     str platformId
 
-# no @derive(Json): member(s) signingConfiguration: SigningConfiguration, signingImageFormat: SigningImageFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signingConfiguration: SigningConfiguration, signingImageFormat: SigningImageFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSigningPlatformResponse:
     Optional[str] platformId
     Optional[str] displayName
@@ -198,8 +202,9 @@ struct GetSigningProfileRequest:
     str profileName
     Optional[str] profileOwner
 
-# no @derive(Json): member(s) signingParameters: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signingParameters: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSigningProfileResponse:
     Optional[str] profileName
     Optional[str] profileVersion
@@ -216,8 +221,9 @@ struct GetSigningProfileResponse:
     Optional[str] arn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) allowedValues: list[HashAlgorithm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[HashAlgorithm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HashAlgorithmOptions:
     list[HashAlgorithm] allowedValues
     HashAlgorithm defaultValue
@@ -233,8 +239,9 @@ struct ListProfilePermissionsRequest:
     str profileName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfilePermissionsResponse:
     Optional[str] revisionId
     Optional[int64] policySizeBytes
@@ -255,8 +262,9 @@ struct ListSigningJobsRequest:
     Optional[DateTime] signatureExpiresAfter
     Optional[str] jobInvoker
 
-# no @derive(Json): member(s) jobs: list[SigningJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[SigningJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSigningJobsResponse:
     Optional[list[SigningJob]] jobs
     Optional[str] nextToken
@@ -270,8 +278,9 @@ struct ListSigningPlatformsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) platforms: list[SigningPlatform] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) platforms: list[SigningPlatform] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSigningPlatformsResponse:
     Optional[list[SigningPlatform]] platforms
     Optional[str] nextToken
@@ -285,8 +294,9 @@ struct ListSigningProfilesRequest:
     Optional[str] platformId
     Optional[list[SigningProfileStatus]] statuses
 
-# no @derive(Json): member(s) profiles: list[SigningProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profiles: list[SigningProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSigningProfilesResponse:
     Optional[list[SigningProfile]] profiles
     Optional[str] nextToken
@@ -296,8 +306,9 @@ struct ListSigningProfilesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -390,8 +401,9 @@ struct SignPayloadRequest:
     bytes payload
     str payloadFormat
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignPayloadResponse:
     Optional[str] jobId
     Optional[str] jobOwner
@@ -407,8 +419,9 @@ struct SignatureValidityPeriod:
 struct SignedObject:
     Optional[S3SignedObject] s3
 
-# no @derive(Json): member(s) encryptionAlgorithmOptions: EncryptionAlgorithmOptions, hashAlgorithmOptions: HashAlgorithmOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionAlgorithmOptions: EncryptionAlgorithmOptions, hashAlgorithmOptions: HashAlgorithmOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SigningConfiguration:
     EncryptionAlgorithmOptions encryptionAlgorithmOptions
     HashAlgorithmOptions hashAlgorithmOptions
@@ -418,8 +431,9 @@ struct SigningConfigurationOverrides:
     Optional[EncryptionAlgorithm] encryptionAlgorithm
     Optional[HashAlgorithm] hashAlgorithm
 
-# no @derive(Json): member(s) supportedFormats: list[ImageFormat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedFormats: list[ImageFormat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SigningImageFormat:
     list[ImageFormat] supportedFormats
     ImageFormat defaultFormat
@@ -451,8 +465,9 @@ struct SigningJobRevocationRecord:
 struct SigningMaterial:
     str certificateArn
 
-# no @derive(Json): member(s) signingConfiguration: SigningConfiguration, signingImageFormat: SigningImageFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signingConfiguration: SigningConfiguration, signingImageFormat: SigningImageFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SigningPlatform:
     Optional[str] platformId
     Optional[str] displayName
@@ -469,8 +484,9 @@ struct SigningPlatformOverrides:
     Optional[SigningConfigurationOverrides] signingConfiguration
     Optional[ImageFormat] signingImageFormat
 
-# no @derive(Json): member(s) signingParameters: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signingParameters: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SigningProfile:
     Optional[str] profileName
     Optional[str] profileVersion
@@ -595,8 +611,6 @@ def signer_error_from_code(str code) -> signerError:
 #   GetRevocationStatus (httpQuery `signatureTimestamp` has unsupported type DateTime)
 #   ListSigningJobs (httpQuery `isRevoked` has unsupported type bool)
 #   ListSigningProfiles (httpQuery `includeCanceled` has unsupported type bool)
-#   PutSigningProfile (document member `signingParameters: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -740,6 +754,39 @@ struct signerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
+    # PutSigningProfile  PUT /signing-profiles/{profileName}
+    # errors: AccessDeniedException, InternalServiceErrorException, ResourceNotFoundException, TooManyRequestsException, ValidationException
+    def put_signing_profile(self, PutSigningProfileRequest input) -> str:
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileName"] = input.profileName
+        auto b = binding.HttpBinding(method="PUT", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.signingMaterial.is_some():
+            auto u0 = input.signingMaterial.unwrap()
+            parts.append("\"signingMaterial\":" + u0.to_json())
+        if input.signatureValidityPeriod.is_some():
+            auto u1 = input.signatureValidityPeriod.unwrap()
+            parts.append("\"signatureValidityPeriod\":" + u1.to_json())
+        parts.append("\"platformId\":" + signer_json_str(input.platformId))
+        if input.overrides.is_some():
+            auto u2 = input.overrides.unwrap()
+            parts.append("\"overrides\":" + u2.to_json())
+        if input.signingParameters.is_some():
+            auto u3 = input.signingParameters.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(signer_json_str(k4) + ":" + signer_json_str(u3[k4]))
+            parts.append("\"signingParameters\":" + signer_json_obj(m4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(signer_json_str(k6) + ":" + signer_json_str(u5[k6]))
+            parts.append("\"tags\":" + signer_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, signer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
+
     # RemoveProfilePermission  DELETE /signing-profiles/{profileName}/permissions/{statementId}
     # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def remove_profile_permission(self, RemoveProfilePermissionRequest input) -> str:
@@ -790,6 +837,21 @@ struct signerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/signing-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartSigningJobDocument(source=input.source, destination=input.destination, profileName=input.profileName, clientRequestToken=input.clientRequestToken, profileOwner=input.profileOwner)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: BadRequestException, InternalServiceErrorException, NotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(signer_json_str(k0) + ":" + signer_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + signer_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, signer_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
 
     # Paginator for ListSigningPlatforms — yields each Response page, threading the

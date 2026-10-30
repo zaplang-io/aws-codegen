@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 46 operations — 29 with a generated method,
-#   17 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 46 operations — 43 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   144 structs (72 @derive(Json)), 14 enums, 9 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -170,8 +170,9 @@ enum WAFConfigDataType:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) include: AccountSet, exclude: AccountSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) include: AccountSet, exclude: AccountSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountFilter:
     Optional[Unit] includeAll
     Optional[AccountSet] include
@@ -183,14 +184,16 @@ struct AccountReference:
     Optional[str] name
     Optional[str] email
 
-# no @derive(Json): member(s) accountIds: list[str], organizationalUnits: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], organizationalUnits: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountSet:
     Optional[list[str]] accountIds
     Optional[list[str]] organizationalUnits
 
-# no @derive(Json): member(s) adminScope: AdminScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adminScope: AdminScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminAccountDetails:
     str adminAccount
     int64 priority
@@ -204,46 +207,53 @@ struct AdminAccountSummary:
     Optional[str] name
     Optional[str] email
 
-# no @derive(Json): member(s) firewallTypes: list[PolicyFirewallType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) firewallTypes: list[PolicyFirewallType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminFirewallTypeScope:
     Optional[bool] allFirewallTypesEnabled
     Optional[list[PolicyFirewallType]] firewallTypes
 
-# no @derive(Json): member(s) scopeFilter: AdminScopeFilter, firewallTypeScope: AdminFirewallTypeScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeFilter: AdminScopeFilter, firewallTypeScope: AdminFirewallTypeScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminScope:
     Optional[AdminScopeFilter] scopeFilter
     Optional[AdminFirewallTypeScope] firewallTypeScope
 
-# no @derive(Json): member(s) includeOnly: AdminScopeSelection, excludeOnly: AdminScopeSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includeOnly: AdminScopeSelection, excludeOnly: AdminScopeSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminScopeFilter:
     Optional[Unit] includeAll
     Optional[AdminScopeSelection] includeOnly
     Optional[AdminScopeSelection] excludeOnly
 
-# no @derive(Json): member(s) includeOnly: AdminScopeSelectionInput, excludeOnly: AdminScopeSelectionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includeOnly: AdminScopeSelectionInput, excludeOnly: AdminScopeSelectionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminScopeFilterInput:
     Optional[Unit] includeAll
     Optional[AdminScopeSelectionInput] includeOnly
     Optional[AdminScopeSelectionInput] excludeOnly
 
-# no @derive(Json): member(s) scopeFilter: AdminScopeFilterInput, firewallTypeScope: AdminFirewallTypeScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeFilter: AdminScopeFilterInput, firewallTypeScope: AdminFirewallTypeScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminScopeInput:
     Optional[AdminScopeFilterInput] scopeFilter
     Optional[AdminFirewallTypeScope] firewallTypeScope
 
-# no @derive(Json): member(s) accounts: list[AccountReference], organizationalUnits: list[OrganizationalUnitReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[AccountReference], organizationalUnits: list[OrganizationalUnitReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminScopeSelection:
     Optional[list[AccountReference]] accounts
     Optional[list[OrganizationalUnitReference]] organizationalUnits
 
-# no @derive(Json): member(s) accounts: list[str], organizationalUnits: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[str], organizationalUnits: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminScopeSelectionInput:
     Optional[list[str]] accounts
     Optional[list[str]] organizationalUnits
@@ -294,8 +304,9 @@ struct CreateDeploymentInput:
     Optional[bool] isPublished
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope], deploymentCoverage: list[DeploymentCoverageEntry], warnings: list[DeploymentWarningEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope], deploymentCoverage: list[DeploymentCoverageEntry], warnings: list[DeploymentWarningEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeploymentOutput:
     str deploymentId
     str deploymentArn
@@ -320,8 +331,9 @@ struct CreateDeploymentSnapshotInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeploymentSnapshotOutput:
     str deploymentId
     str deploymentArn
@@ -350,8 +362,9 @@ struct CreatePolicyInput:
     Optional[bool] isPublished
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicyOutput:
     str policyId
     str policyArn
@@ -375,8 +388,9 @@ struct CreatePolicySnapshotInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicySnapshotOutput:
     str policyId
     str policyArn
@@ -456,8 +470,9 @@ struct CreateScopeInput:
     Optional[bool] isPublished
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScopeOutput:
     str scopeId
     str scopeArn
@@ -478,8 +493,9 @@ struct CreateScopeSnapshotInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScopeSnapshotOutput:
     str scopeId
     str scopeArn
@@ -504,8 +520,9 @@ struct CreateTemplateInput:
     Optional[bool] isPublished
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTemplateOutput:
     str templateId
     str templateArn
@@ -527,8 +544,9 @@ struct CreateTemplateSnapshotInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTemplateSnapshotOutput:
     str templateId
     str templateArn
@@ -577,8 +595,9 @@ struct DeleteTemplateInput:
 struct DeploymentConfiguration:
     bool enableCrossAccountVisibility
 
-# no @derive(Json): member(s) policyArns: list[str], inScopeResourceTypes: list[ScopeResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyArns: list[str], inScopeResourceTypes: list[ScopeResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentCoverageEntry:
     PolicyFirewallType firewallType
     list[str] policyArns
@@ -601,8 +620,9 @@ struct DeploymentWarningEntry:
     str policyArn
     str message
 
-# no @derive(Json): member(s) invalidFirewall: InvalidFirewallReasons not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invalidFirewall: InvalidFirewallReasons not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallSyncReason:
     Optional[str] missingFirewall
     Optional[InvalidFirewallReasons] invalidFirewall
@@ -627,8 +647,9 @@ struct GenerateRuleConfigurationResponse:
 struct GetAdminAccountRequest:
     str accountId
 
-# no @derive(Json): member(s) adminAccountDetails: AdminAccountDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adminAccountDetails: AdminAccountDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAdminAccountResponse:
     Optional[AdminAccountDetails] adminAccountDetails
 
@@ -637,8 +658,9 @@ struct GetAdminAccountResponse:
 struct GetDeploymentInput:
     str deploymentIdentifier
 
-# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope], deploymentCoverage: list[DeploymentCoverageEntry], warnings: list[DeploymentWarningEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope], deploymentCoverage: list[DeploymentCoverageEntry], warnings: list[DeploymentWarningEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentOutput:
     str deploymentId
     str deploymentArn
@@ -661,8 +683,9 @@ struct GetDeploymentOutput:
 struct GetPolicyInput:
     str policyIdentifier
 
-# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPolicyOutput:
     str policyId
     str policyArn
@@ -706,8 +729,9 @@ struct GetRuleOutput:
 struct GetScopeInput:
     str scopeIdentifier
 
-# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScopeOutput:
     str scopeId
     str scopeArn
@@ -726,8 +750,9 @@ struct GetScopeOutput:
 struct GetTemplateInput:
     str templateIdentifier
 
-# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemplateOutput:
     str templateId
     str templateArn
@@ -746,8 +771,9 @@ struct GetTemplateOutput:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) incorrectSingleValueConfigurations: list[ConfigurationIssue], missingAppendableConfigurationValues: list[ConfigurationIssue], unexpectedAppendableConfigurationValues: list[ConfigurationIssue], incorrectAppendableConfigurationOrder: list[ConfigurationIssue], missingMergeableConfigurationValues: list[ConfigurationIssue], unexpectedMergeableConfigurationValues: list[ConfigurationIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incorrectSingleValueConfigurations: list[ConfigurationIssue], missingAppendableConfigurationValues: list[ConfigurationIssue], unexpectedAppendableConfigurationValues: list[ConfigurationIssue], incorrectAppendableConfigurationOrder: list[ConfigurationIssue], missingMergeableConfigurationValues: list[ConfigurationIssue], unexpectedMergeableConfigurationValues: list[ConfigurationIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidFirewallReasons:
     Optional[list[ConfigurationIssue]] incorrectSingleValueConfigurations
     Optional[list[ConfigurationIssue]] missingAppendableConfigurationValues
@@ -767,8 +793,9 @@ struct ListAdminAccountsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) adminAccounts: list[AdminAccountSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adminAccounts: list[AdminAccountSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAdminAccountsResponse:
     Optional[str] nextToken
     list[AdminAccountSummary] adminAccounts
@@ -781,8 +808,9 @@ struct ListAggregateResourceSynchronizationStatusesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceSynchronizationStatuses: list[ResourceSynchronizationStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceSynchronizationStatuses: list[ResourceSynchronizationStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAggregateResourceSynchronizationStatusesOutput:
     Optional[str] nextToken
     list[ResourceSynchronizationStatusSummary] resourceSynchronizationStatuses
@@ -794,8 +822,9 @@ struct ListDeploymentSnapshotsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) snapshots: list[DeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[DeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentSnapshotsOutput:
     Optional[str] nextToken
     list[DeploymentSummary] snapshots
@@ -808,8 +837,9 @@ struct ListDeploymentsInput:
     # wire string of the EntityStatusFilter enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) deployments: list[DeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployments: list[DeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsOutput:
     Optional[str] nextToken
     list[DeploymentSummary] deployments
@@ -822,8 +852,9 @@ struct ListPoliciesInput:
     # wire string of the EntityStatusFilter enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) policies: list[PolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[PolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesOutput:
     Optional[str] nextToken
     list[PolicySummary] policies
@@ -835,8 +866,9 @@ struct ListPolicySnapshotsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) snapshots: list[PolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[PolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicySnapshotsOutput:
     Optional[str] nextToken
     list[PolicySummary] snapshots
@@ -848,8 +880,9 @@ struct ListResourceAssociationsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceAssociations: list[ResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceAssociations: list[ResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceAssociationsOutput:
     Optional[str] nextToken
     list[ResourceAssociation] resourceAssociations
@@ -863,8 +896,9 @@ struct ListResourceSynchronizationStatusesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceSynchronizationStatuses: list[ResourceSynchronizationStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceSynchronizationStatuses: list[ResourceSynchronizationStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceSynchronizationStatusesOutput:
     Optional[str] nextToken
     list[ResourceSynchronizationStatusSummary] resourceSynchronizationStatuses
@@ -876,8 +910,9 @@ struct ListRuleSnapshotsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) snapshots: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleSnapshotsOutput:
     Optional[str] nextToken
     list[RuleSummary] snapshots
@@ -890,8 +925,9 @@ struct ListRulesInput:
     # wire string of the EntityStatusFilter enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) rules: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesOutput:
     Optional[str] nextToken
     list[RuleSummary] rules
@@ -903,8 +939,9 @@ struct ListScopeSnapshotsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) snapshots: list[ScopeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[ScopeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScopeSnapshotsOutput:
     Optional[str] nextToken
     list[ScopeSummary] snapshots
@@ -917,8 +954,9 @@ struct ListScopesInput:
     # wire string of the EntityStatusFilter enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) scopes: list[ScopeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[ScopeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScopesOutput:
     Optional[str] nextToken
     list[ScopeSummary] scopes
@@ -928,8 +966,9 @@ struct ListScopesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -940,8 +979,9 @@ struct ListTemplateSnapshotsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) snapshots: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateSnapshotsOutput:
     Optional[str] nextToken
     list[TemplateSummary] snapshots
@@ -954,8 +994,9 @@ struct ListTemplatesInput:
     # wire string of the EntityStatusFilter enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) templates: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplatesOutput:
     Optional[str] nextToken
     list[TemplateSummary] templates
@@ -969,8 +1010,9 @@ struct OrganizationalUnitReference:
     str ouId
     Optional[str] name
 
-# no @derive(Json): member(s) reasons: dict[PolicyFirewallType, FirewallSyncReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: dict[PolicyFirewallType, FirewallSyncReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutOfSyncReasonsView:
     Optional[dict[PolicyFirewallType, FirewallSyncReason]] reasons
     Optional[NotVisibleMarker] notVisible
@@ -1005,8 +1047,9 @@ struct PutAdminAccountRequest:
     int64 priority
     Optional[AdminScopeInput] adminScope
 
-# no @derive(Json): member(s) adminAccountDetails: AdminAccountDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adminAccountDetails: AdminAccountDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAdminAccountResponse:
     Optional[AdminAccountDetails] adminAccountDetails
 
@@ -1016,8 +1059,9 @@ struct RemediationIssueDetails:
     Optional[str] message
     Optional[str] correctiveAction
 
-# no @derive(Json): member(s) issues: dict[PolicyFirewallType, RemediationIssueDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) issues: dict[PolicyFirewallType, RemediationIssueDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationIssuesView:
     Optional[dict[PolicyFirewallType, RemediationIssueDetails]] issues
     Optional[NotVisibleMarker] notVisible
@@ -1027,14 +1071,16 @@ struct ResourceAssociation:
     str arn
     ServiceResourceType resourceType
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceCriteria:
     Optional[dict[str, str]] tags
     Optional[AlbConfiguration] albConfig
 
-# no @derive(Json): member(s) criteria: ResourceCriteria, and: list[ResourceLogicalExpression], or: list[ResourceLogicalExpression], not: ResourceLogicalExpression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criteria: ResourceCriteria, and: list[ResourceLogicalExpression], or: list[ResourceLogicalExpression], not: ResourceLogicalExpression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceLogicalExpression:
     Optional[ResourceCriteria] criteria
     # wire name "and" differs from field; derive rename is a #346 follow-up
@@ -1050,21 +1096,24 @@ struct ResourceNotFoundException:
     Optional[str] resourceId
     Optional[str] resourceType
 
-# no @derive(Json): member(s) include: ResourceSet, exclude: ResourceSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) include: ResourceSet, exclude: ResourceSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceScope:
     Optional[bool] includeAll
     Optional[ResourceSet] include
     Optional[ResourceSet] exclude
 
-# no @derive(Json): member(s) explicitArns: list[str], expression: ResourceLogicalExpression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) explicitArns: list[str], expression: ResourceLogicalExpression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSet:
     Optional[list[str]] explicitArns
     Optional[ResourceLogicalExpression] expression
 
-# no @derive(Json): member(s) outOfSyncReasons: OutOfSyncReasonsView, remediationIssues: RemediationIssuesView not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outOfSyncReasons: OutOfSyncReasonsView, remediationIssues: RemediationIssuesView not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSynchronizationStatusSummary:
     SynchronizationStatus synchronizationStatus
     str accountId
@@ -1093,8 +1142,9 @@ struct RuleSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) accountFilter: AccountFilter, resourceScopes: dict[ScopeResourceType, ResourceScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountFilter: AccountFilter, resourceScopes: dict[ScopeResourceType, ResourceScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScopeConfiguration:
     Optional[AccountFilter] accountFilter
     dict[ScopeResourceType, ResourceScope] resourceScopes
@@ -1192,8 +1242,9 @@ struct UpdateDeploymentInput:
     bool isPublished
     Optional[str] clientToken
 
-# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope], deploymentCoverage: list[DeploymentCoverageEntry], warnings: list[DeploymentWarningEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPolicyList: list[AssociatedPolicy], associatedScopeList: list[AssociatedScope], deploymentCoverage: list[DeploymentCoverageEntry], warnings: list[DeploymentWarningEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeploymentOutput:
     str deploymentId
     str deploymentArn
@@ -1223,8 +1274,9 @@ struct UpdatePolicyInput:
     bool isPublished
     Optional[str] clientToken
 
-# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedTemplateAndRuleList: list[AssociatedTemplateOrRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePolicyOutput:
     str policyId
     str policyArn
@@ -1279,8 +1331,9 @@ struct UpdateScopeInput:
     bool isPublished
     Optional[str] clientToken
 
-# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeConfiguration: ScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScopeOutput:
     str scopeId
     str scopeArn
@@ -1304,8 +1357,9 @@ struct UpdateTemplateInput:
     bool isPublished
     Optional[str] clientToken
 
-# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedRuleList: list[AssociatedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTemplateOutput:
     str templateId
     str templateArn
@@ -1320,8 +1374,9 @@ struct UpdateTemplateOutput:
     str firewallType
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -1381,23 +1436,9 @@ def network_security_manager_error_from_code(str code) -> Network_Security_Manag
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateDeployment (document member `associatedPolicyList: list[PolicyReference]` is not serializable by derive)
-#   CreateDeploymentSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePolicy (document member `associatedTemplateAndRuleList: list[TemplateOrRuleReference]` is not serializable by derive)
-#   CreatePolicySnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRule (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRuleSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateScope (document member `scopeConfiguration: ScopeConfiguration` is not serializable by derive)
-#   CreateScopeSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateTemplate (document member `associatedRuleList: list[RuleReference]` is not serializable by derive)
-#   CreateTemplateSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   PutAdminAccount (document member `adminScope: AdminScopeInput` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
+#   CreateScope (document member `scopeConfiguration: ScopeConfiguration` is not serializable)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateDeployment (document member `associatedPolicyList: list[PolicyReference]` is not serializable by derive)
-#   UpdatePolicy (document member `associatedTemplateAndRuleList: list[TemplateOrRuleReference]` is not serializable by derive)
-#   UpdateScope (document member `scopeConfiguration: ScopeConfiguration` is not serializable by derive)
-#   UpdateTemplate (document member `associatedRuleList: list[RuleReference]` is not serializable by derive)
+#   UpdateScope (document member `scopeConfiguration: ScopeConfiguration` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1422,10 +1463,322 @@ struct UpdateRuleDocument:
     bool isPublished
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def network_security_manager_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def network_security_manager_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def network_security_manager_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdminFirewallTypeScope to a compact JSON object (declaration order).
+def admin_firewall_type_scope_to_json(AdminFirewallTypeScope v) -> str:
+    list[str] parts = []
+    if v.allFirewallTypesEnabled.is_some():
+        auto u0 = v.allFirewallTypesEnabled.unwrap()
+        parts.append("\"allFirewallTypesEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.firewallTypes.is_some():
+        auto u1 = v.firewallTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"firewallTypes\":" + network_security_manager_json_arr(e2))
+    return network_security_manager_json_obj(parts)
+
+# Serialize AdminScopeFilterInput to a compact JSON object (declaration order).
+def admin_scope_filter_input_to_json(AdminScopeFilterInput v) -> str:
+    list[str] parts = []
+    if v.includeAll.is_some():
+        auto u0 = v.includeAll.unwrap()
+        parts.append("\"includeAll\":" + u0.to_json())
+    if v.includeOnly.is_some():
+        auto u1 = v.includeOnly.unwrap()
+        parts.append("\"includeOnly\":" + admin_scope_selection_input_to_json(u1))
+    if v.excludeOnly.is_some():
+        auto u2 = v.excludeOnly.unwrap()
+        parts.append("\"excludeOnly\":" + admin_scope_selection_input_to_json(u2))
+    return network_security_manager_json_obj(parts)
+
+# Serialize AdminScopeInput to a compact JSON object (declaration order).
+def admin_scope_input_to_json(AdminScopeInput v) -> str:
+    list[str] parts = []
+    if v.scopeFilter.is_some():
+        auto u0 = v.scopeFilter.unwrap()
+        parts.append("\"scopeFilter\":" + admin_scope_filter_input_to_json(u0))
+    if v.firewallTypeScope.is_some():
+        auto u1 = v.firewallTypeScope.unwrap()
+        parts.append("\"firewallTypeScope\":" + admin_firewall_type_scope_to_json(u1))
+    return network_security_manager_json_obj(parts)
+
+# Serialize AdminScopeSelectionInput to a compact JSON object (declaration order).
+def admin_scope_selection_input_to_json(AdminScopeSelectionInput v) -> str:
+    list[str] parts = []
+    if v.accounts.is_some():
+        auto u0 = v.accounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(network_security_manager_json_str(x1))
+        parts.append("\"accounts\":" + network_security_manager_json_arr(e1))
+    if v.organizationalUnits.is_some():
+        auto u2 = v.organizationalUnits.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(network_security_manager_json_str(x3))
+        parts.append("\"organizationalUnits\":" + network_security_manager_json_arr(e3))
+    return network_security_manager_json_obj(parts)
+
 # A bound Network_Security_Manager client: credentials + region, threaded into every operation.
 struct Network_Security_ManagerClient:
     core.Credentials creds
     str region
+
+    # CreateDeployment  POST /deployments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
+    def create_deployment(self, CreateDeploymentInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/deployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        parts.append("\"deploymentName\":" + network_security_manager_json_str(input.deploymentName))
+        if input.deploymentDescription.is_some():
+            auto u1 = input.deploymentDescription.unwrap()
+            parts.append("\"deploymentDescription\":" + network_security_manager_json_str(u1))
+        parts.append("\"deploymentConfiguration\":" + input.deploymentConfiguration.to_json())
+        list[str] e2 = []
+        for x2 in input.associatedPolicyList:
+            e2.append(x2.to_json())
+        parts.append("\"associatedPolicyList\":" + network_security_manager_json_arr(e2))
+        list[str] e3 = []
+        for x3 in input.associatedScopeList:
+            e3.append(x3.to_json())
+        parts.append("\"associatedScopeList\":" + network_security_manager_json_arr(e3))
+        if input.isPublished.is_some():
+            auto u4 = input.isPublished.unwrap()
+            parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(network_security_manager_json_str(k6) + ":" + network_security_manager_json_str(u5[k6]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreateDeploymentSnapshot  POST /deployments/{deploymentIdentifier}/snapshots
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_deployment_snapshot(self, CreateDeploymentSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["deploymentIdentifier"] = input.deploymentIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/deployments/{deploymentIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(network_security_manager_json_str(k2) + ":" + network_security_manager_json_str(u1[k2]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreatePolicy  POST /policies
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
+    def create_policy(self, CreatePolicyInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        parts.append("\"policyName\":" + network_security_manager_json_str(input.policyName))
+        if input.policyDescription.is_some():
+            auto u1 = input.policyDescription.unwrap()
+            parts.append("\"policyDescription\":" + network_security_manager_json_str(u1))
+        parts.append("\"priority\":" + str(input.priority))
+        if input.associatedTemplateAndRuleList.is_some():
+            auto u2 = input.associatedTemplateAndRuleList.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"associatedTemplateAndRuleList\":" + network_security_manager_json_arr(e3))
+        parts.append("\"firewallType\":" + input.firewallType.to_json())
+        parts.append("\"policyConfiguration\":" + input.policyConfiguration.to_json())
+        if input.isPublished.is_some():
+            auto u4 = input.isPublished.unwrap()
+            parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(network_security_manager_json_str(k6) + ":" + network_security_manager_json_str(u5[k6]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreatePolicySnapshot  POST /policies/{policyIdentifier}/snapshots
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_policy_snapshot(self, CreatePolicySnapshotInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyIdentifier"] = input.policyIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(network_security_manager_json_str(k2) + ":" + network_security_manager_json_str(u1[k2]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreateRule  POST /rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
+    def create_rule(self, CreateRuleInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        parts.append("\"ruleName\":" + network_security_manager_json_str(input.ruleName))
+        parts.append("\"firewallType\":" + network_security_manager_json_str(input.firewallType))
+        parts.append("\"ruleType\":" + input.ruleType.to_json())
+        if input.ruleDescription.is_some():
+            auto u1 = input.ruleDescription.unwrap()
+            parts.append("\"ruleDescription\":" + network_security_manager_json_str(u1))
+        parts.append("\"configuration\":" + input.configuration.to_json())
+        if input.isPublished.is_some():
+            auto u2 = input.isPublished.unwrap()
+            parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(network_security_manager_json_str(k4) + ":" + network_security_manager_json_str(u3[k4]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreateRuleSnapshot  POST /rules/{ruleIdentifier}/snapshots
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_rule_snapshot(self, CreateRuleSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ruleIdentifier"] = input.ruleIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(network_security_manager_json_str(k2) + ":" + network_security_manager_json_str(u1[k2]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreateScopeSnapshot  POST /scopes/{scopeIdentifier}/snapshots
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scope_snapshot(self, CreateScopeSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["scopeIdentifier"] = input.scopeIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/scopes/{scopeIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(network_security_manager_json_str(k2) + ":" + network_security_manager_json_str(u1[k2]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreateTemplate  POST /templates
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
+    def create_template(self, CreateTemplateInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        parts.append("\"templateName\":" + network_security_manager_json_str(input.templateName))
+        if input.templateDescription.is_some():
+            auto u1 = input.templateDescription.unwrap()
+            parts.append("\"templateDescription\":" + network_security_manager_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.associatedRuleList:
+            e2.append(x2.to_json())
+        parts.append("\"associatedRuleList\":" + network_security_manager_json_arr(e2))
+        parts.append("\"firewallType\":" + network_security_manager_json_str(input.firewallType))
+        if input.isPublished.is_some():
+            auto u3 = input.isPublished.unwrap()
+            parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(network_security_manager_json_str(k5) + ":" + network_security_manager_json_str(u4[k5]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # CreateTemplateSnapshot  POST /templates/{templateIdentifier}/snapshots
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_template_snapshot(self, CreateTemplateSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["templateIdentifier"] = input.templateIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/templates/{templateIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(network_security_manager_json_str(k2) + ":" + network_security_manager_json_str(u1[k2]))
+            parts.append("\"tags\":" + network_security_manager_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
 
     # DeleteAdminAccount  DELETE /admin-account/{accountId}
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -1747,6 +2100,100 @@ struct Network_Security_ManagerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
+    # PutAdminAccount  PUT /admin-account
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def put_admin_account(self, PutAdminAccountRequest input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/admin-account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"accountId\":" + network_security_manager_json_str(input.accountId))
+        parts.append("\"priority\":" + str(input.priority))
+        if input.adminScope.is_some():
+            auto u0 = input.adminScope.unwrap()
+            parts.append("\"adminScope\":" + admin_scope_input_to_json(u0))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TagPolicyViolationException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(network_security_manager_json_str(k0) + ":" + network_security_manager_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + network_security_manager_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # UpdateDeployment  PATCH /deployments/{deploymentIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_deployment(self, UpdateDeploymentInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["deploymentIdentifier"] = input.deploymentIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"updateToken\":" + network_security_manager_json_str(input.updateToken))
+        if input.deploymentDescription.is_some():
+            auto u0 = input.deploymentDescription.unwrap()
+            parts.append("\"deploymentDescription\":" + network_security_manager_json_str(u0))
+        if input.deploymentConfiguration.is_some():
+            auto u1 = input.deploymentConfiguration.unwrap()
+            parts.append("\"deploymentConfiguration\":" + u1.to_json())
+        if input.associatedPolicyList.is_some():
+            auto u2 = input.associatedPolicyList.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"associatedPolicyList\":" + network_security_manager_json_arr(e3))
+        if input.associatedScopeList.is_some():
+            auto u4 = input.associatedScopeList.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"associatedScopeList\":" + network_security_manager_json_arr(e5))
+        parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(input.isPublished)))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u6))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # UpdatePolicy  PATCH /policies/{policyIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_policy(self, UpdatePolicyInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyIdentifier"] = input.policyIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"updateToken\":" + network_security_manager_json_str(input.updateToken))
+        if input.policyDescription.is_some():
+            auto u0 = input.policyDescription.unwrap()
+            parts.append("\"policyDescription\":" + network_security_manager_json_str(u0))
+        if input.priority.is_some():
+            auto u1 = input.priority.unwrap()
+            parts.append("\"priority\":" + str(u1))
+        if input.associatedTemplateAndRuleList.is_some():
+            auto u2 = input.associatedTemplateAndRuleList.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"associatedTemplateAndRuleList\":" + network_security_manager_json_arr(e3))
+        if input.policyConfiguration.is_some():
+            auto u4 = input.policyConfiguration.unwrap()
+            parts.append("\"policyConfiguration\":" + u4.to_json())
+        parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(input.isPublished)))
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u5))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
     # UpdateRule  PATCH /rules/{ruleIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_rule(self, UpdateRuleInput input) -> str:
@@ -1756,6 +2203,31 @@ struct Network_Security_ManagerClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRuleDocument(updateToken=input.updateToken, ruleType=input.ruleType, ruleDescription=input.ruleDescription, configuration=input.configuration, isPublished=input.isPublished, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
+
+    # UpdateTemplate  PATCH /templates/{templateIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_template(self, UpdateTemplateInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["templateIdentifier"] = input.templateIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"updateToken\":" + network_security_manager_json_str(input.updateToken))
+        if input.templateDescription.is_some():
+            auto u0 = input.templateDescription.unwrap()
+            parts.append("\"templateDescription\":" + network_security_manager_json_str(u0))
+        if input.associatedRuleList.is_some():
+            auto u1 = input.associatedRuleList.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"associatedRuleList\":" + network_security_manager_json_arr(e2))
+        parts.append("\"isPublished\":" + json.dumps(JsonValue.Bool(input.isPublished)))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + network_security_manager_json_str(u3))
+        auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
 
     # Paginator for ListAdminAccounts — yields each Response page, threading the

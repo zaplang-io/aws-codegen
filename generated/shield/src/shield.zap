@@ -13,19 +13,20 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 36 operations — 26 with a generated method,
-#   10 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 36 operations — 36 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   116 structs (81 @derive(Json)), 12 enums, 13 error variants.
-#   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
 
 # The Shield awsJson protocol: version 1.1, API id "AWSShield_20160616".
@@ -176,8 +177,9 @@ struct AssociateHealthCheckResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateProactiveEngagementDetailsRequest:
     list[EmergencyContact] EmergencyContactList
 
@@ -186,8 +188,9 @@ struct AssociateProactiveEngagementDetailsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SubResources: list[SubResourceSummary], AttackCounters: list[SummarizedCounter], AttackProperties: list[AttackProperty], Mitigations: list[Mitigation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubResources: list[SubResourceSummary], AttackCounters: list[SummarizedCounter], AttackProperties: list[AttackProperty], Mitigations: list[Mitigation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttackDetail:
     Optional[str] AttackId
     Optional[str] ResourceArn
@@ -198,8 +201,9 @@ struct AttackDetail:
     Optional[list[AttackProperty]] AttackProperties
     Optional[list[Mitigation]] Mitigations
 
-# no @derive(Json): member(s) TopContributors: list[Contributor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopContributors: list[Contributor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttackProperty:
     Optional[AttackLayer] AttackLayer
     Optional[AttackPropertyIdentifier] AttackPropertyIdentifier
@@ -212,8 +216,9 @@ struct AttackStatisticsDataItem:
     Optional[AttackVolume] AttackVolume
     int64 AttackCount
 
-# no @derive(Json): member(s) AttackVectors: list[AttackVectorDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttackVectors: list[AttackVectorDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttackSummary:
     Optional[str] AttackId
     Optional[str] ResourceArn
@@ -250,8 +255,9 @@ struct CountAction:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Members: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProtectionGroupRequest:
     str ProtectionGroupId
     ProtectionGroupAggregation Aggregation
@@ -265,8 +271,9 @@ struct CreateProtectionGroupResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProtectionRequest:
     str Name
     str ResourceArn
@@ -318,8 +325,9 @@ struct DeleteSubscriptionResponse:
 struct DescribeAttackRequest:
     str AttackId
 
-# no @derive(Json): member(s) Attack: AttackDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attack: AttackDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAttackResponse:
     Optional[AttackDetail] Attack
 
@@ -328,8 +336,9 @@ struct DescribeAttackStatisticsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DataItems: list[AttackStatisticsDataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataItems: list[AttackStatisticsDataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAttackStatisticsResponse:
     TimeRange TimeRange
     list[AttackStatisticsDataItem] DataItems
@@ -339,8 +348,9 @@ struct DescribeDRTAccessRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) LogBucketList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogBucketList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDRTAccessResponse:
     Optional[str] RoleArn
     Optional[list[str]] LogBucketList
@@ -350,8 +360,9 @@ struct DescribeEmergencyContactSettingsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEmergencyContactSettingsResponse:
     Optional[list[EmergencyContact]] EmergencyContactList
 
@@ -359,8 +370,9 @@ struct DescribeEmergencyContactSettingsResponse:
 struct DescribeProtectionGroupRequest:
     str ProtectionGroupId
 
-# no @derive(Json): member(s) ProtectionGroup: ProtectionGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectionGroup: ProtectionGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProtectionGroupResponse:
     ProtectionGroup ProtectionGroup
 
@@ -369,8 +381,9 @@ struct DescribeProtectionRequest:
     Optional[str] ProtectionId
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) Protection: Protection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protection: Protection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProtectionResponse:
     Optional[Protection] Protection
 
@@ -379,8 +392,9 @@ struct DescribeSubscriptionRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSubscriptionResponse:
     Optional[Subscription] Subscription
 
@@ -467,15 +481,17 @@ struct GetSubscriptionStateRequest:
 struct GetSubscriptionStateResponse:
     SubscriptionState SubscriptionState
 
-# no @derive(Json): member(s) ResourceArns: list[str], ProtectionNames: list[str], ResourceTypes: list[ProtectedResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArns: list[str], ProtectionNames: list[str], ResourceTypes: list[ProtectedResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InclusionProtectionFilters:
     Optional[list[str]] ResourceArns
     Optional[list[str]] ProtectionNames
     Optional[list[ProtectedResourceType]] ResourceTypes
 
-# no @derive(Json): member(s) ProtectionGroupIds: list[str], Patterns: list[ProtectionGroupPattern], ResourceTypes: list[ProtectedResourceType], Aggregations: list[ProtectionGroupAggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectionGroupIds: list[str], Patterns: list[ProtectionGroupPattern], ResourceTypes: list[ProtectedResourceType], Aggregations: list[ProtectionGroupAggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InclusionProtectionGroupFilters:
     Optional[list[str]] ProtectionGroupIds
     Optional[list[ProtectionGroupPattern]] Patterns
@@ -494,8 +510,9 @@ struct InvalidOperationException:
 struct InvalidPaginationTokenException:
     Optional[str] message
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidParameterException:
     Optional[str] message
     Optional[ValidationExceptionReason] reason
@@ -516,8 +533,9 @@ struct LimitsExceededException:
     Optional[str] Type
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttacksRequest:
     Optional[list[str]] ResourceArns
     Optional[TimeRange] StartTime
@@ -525,34 +543,39 @@ struct ListAttacksRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AttackSummaries: list[AttackSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttackSummaries: list[AttackSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttacksResponse:
     Optional[list[AttackSummary]] AttackSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InclusionFilters: InclusionProtectionGroupFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionFilters: InclusionProtectionGroupFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectionGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[InclusionProtectionGroupFilters] InclusionFilters
 
-# no @derive(Json): member(s) ProtectionGroups: list[ProtectionGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectionGroups: list[ProtectionGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectionGroupsResponse:
     list[ProtectionGroup] ProtectionGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InclusionFilters: InclusionProtectionFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionFilters: InclusionProtectionFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[InclusionProtectionFilters] InclusionFilters
 
-# no @derive(Json): member(s) Protections: list[Protection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protections: list[Protection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectionsResponse:
     Optional[list[Protection]] Protections
     Optional[str] NextToken
@@ -563,8 +586,9 @@ struct ListResourcesInProtectionGroupRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesInProtectionGroupResponse:
     list[str] ResourceArns
     Optional[str] NextToken
@@ -573,8 +597,9 @@ struct ListResourcesInProtectionGroupResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -594,8 +619,9 @@ struct NoAssociatedRoleException:
 struct OptimisticLockException:
     Optional[str] message
 
-# no @derive(Json): member(s) HealthCheckIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HealthCheckIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Protection:
     Optional[str] Id
     Optional[str] Name
@@ -604,8 +630,9 @@ struct Protection:
     Optional[str] ProtectionArn
     Optional[ApplicationLayerAutomaticResponseConfiguration] ApplicationLayerAutomaticResponseConfiguration
 
-# no @derive(Json): member(s) Members: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectionGroup:
     str ProtectionGroupId
     ProtectionGroupAggregation Aggregation
@@ -627,8 +654,9 @@ struct ProtectionGroupLimits:
 struct ProtectionGroupPatternTypeLimits:
     ProtectionGroupArbitraryPatternLimits ArbitraryPatternLimits
 
-# no @derive(Json): member(s) ProtectedResourceTypeLimits: list[Limit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectedResourceTypeLimits: list[Limit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectionLimits:
     list[Limit] ProtectedResourceTypeLimits
 
@@ -647,16 +675,18 @@ struct ResponseAction:
     Optional[BlockAction] Block
     Optional[CountAction] Count
 
-# no @derive(Json): member(s) AttackVectors: list[SummarizedAttackVector], Counters: list[SummarizedCounter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttackVectors: list[SummarizedAttackVector], Counters: list[SummarizedCounter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubResourceSummary:
     Optional[SubResourceType] Type
     Optional[str] Id
     Optional[list[SummarizedAttackVector]] AttackVectors
     Optional[list[SummarizedCounter]] Counters
 
-# no @derive(Json): member(s) Limits: list[Limit], SubscriptionLimits: SubscriptionLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Limits: list[Limit], SubscriptionLimits: SubscriptionLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subscription:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
@@ -667,14 +697,16 @@ struct Subscription:
     SubscriptionLimits SubscriptionLimits
     Optional[str] SubscriptionArn
 
-# no @derive(Json): member(s) ProtectionLimits: ProtectionLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectionLimits: ProtectionLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionLimits:
     ProtectionLimits ProtectionLimits
     ProtectionGroupLimits ProtectionGroupLimits
 
-# no @derive(Json): member(s) VectorCounters: list[SummarizedCounter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VectorCounters: list[SummarizedCounter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummarizedAttackVector:
     str VectorType
     Optional[list[SummarizedCounter]] VectorCounters
@@ -693,8 +725,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -709,8 +742,9 @@ struct TimeRange:
     Optional[DateTime] FromInclusive
     Optional[DateTime] ToExclusive
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -730,8 +764,9 @@ struct UpdateApplicationLayerAutomaticResponseResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEmergencyContactSettingsRequest:
     Optional[list[EmergencyContact]] EmergencyContactList
 
@@ -740,8 +775,9 @@ struct UpdateEmergencyContactSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Members: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProtectionGroupRequest:
     str ProtectionGroupId
     ProtectionGroupAggregation Aggregation
@@ -820,23 +856,231 @@ def shield_error_from_code(str code) -> ShieldError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateProactiveEngagementDetails (input AssociateProactiveEngagementDetailsRequest)
-#   CreateProtection (input CreateProtectionRequest)
-#   CreateProtectionGroup (input CreateProtectionGroupRequest)
-#   ListAttacks (input ListAttacksRequest)
-#   ListProtectionGroups (input ListProtectionGroupsRequest)
-#   ListProtections (input ListProtectionsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateEmergencyContactSettings (input UpdateEmergencyContactSettingsRequest)
-#   UpdateProtectionGroup (input UpdateProtectionGroupRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def shield_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListAttacks (input not derivable (no generated method))
-#   ListProtections (input not derivable (no generated method))
+def shield_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def shield_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateProactiveEngagementDetailsRequest to a compact JSON object (declaration order).
+def associate_proactive_engagement_details_request_to_json(AssociateProactiveEngagementDetailsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EmergencyContactList:
+        e0.append(x0.to_json())
+    parts.append("\"EmergencyContactList\":" + shield_json_arr(e0))
+    return shield_json_obj(parts)
+
+# Serialize CreateProtectionGroupRequest to a compact JSON object (declaration order).
+def create_protection_group_request_to_json(CreateProtectionGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProtectionGroupId\":" + shield_json_str(v.ProtectionGroupId))
+    parts.append("\"Aggregation\":" + v.Aggregation.to_json())
+    parts.append("\"Pattern\":" + v.Pattern.to_json())
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + u0.to_json())
+    if v.Members.is_some():
+        auto u1 = v.Members.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(shield_json_str(x2))
+        parts.append("\"Members\":" + shield_json_arr(e2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + shield_json_arr(e4))
+    return shield_json_obj(parts)
+
+# Serialize CreateProtectionRequest to a compact JSON object (declaration order).
+def create_protection_request_to_json(CreateProtectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + shield_json_str(v.Name))
+    parts.append("\"ResourceArn\":" + shield_json_str(v.ResourceArn))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + shield_json_arr(e1))
+    return shield_json_obj(parts)
+
+# Serialize InclusionProtectionFilters to a compact JSON object (declaration order).
+def inclusion_protection_filters_to_json(InclusionProtectionFilters v) -> str:
+    list[str] parts = []
+    if v.ResourceArns.is_some():
+        auto u0 = v.ResourceArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(shield_json_str(x1))
+        parts.append("\"ResourceArns\":" + shield_json_arr(e1))
+    if v.ProtectionNames.is_some():
+        auto u2 = v.ProtectionNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(shield_json_str(x3))
+        parts.append("\"ProtectionNames\":" + shield_json_arr(e3))
+    if v.ResourceTypes.is_some():
+        auto u4 = v.ResourceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ResourceTypes\":" + shield_json_arr(e5))
+    return shield_json_obj(parts)
+
+# Serialize InclusionProtectionGroupFilters to a compact JSON object (declaration order).
+def inclusion_protection_group_filters_to_json(InclusionProtectionGroupFilters v) -> str:
+    list[str] parts = []
+    if v.ProtectionGroupIds.is_some():
+        auto u0 = v.ProtectionGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(shield_json_str(x1))
+        parts.append("\"ProtectionGroupIds\":" + shield_json_arr(e1))
+    if v.Patterns.is_some():
+        auto u2 = v.Patterns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Patterns\":" + shield_json_arr(e3))
+    if v.ResourceTypes.is_some():
+        auto u4 = v.ResourceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ResourceTypes\":" + shield_json_arr(e5))
+    if v.Aggregations.is_some():
+        auto u6 = v.Aggregations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Aggregations\":" + shield_json_arr(e7))
+    return shield_json_obj(parts)
+
+# Serialize ListAttacksRequest to a compact JSON object (declaration order).
+def list_attacks_request_to_json(ListAttacksRequest v) -> str:
+    list[str] parts = []
+    if v.ResourceArns.is_some():
+        auto u0 = v.ResourceArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(shield_json_str(x1))
+        parts.append("\"ResourceArns\":" + shield_json_arr(e1))
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + u2.to_json())
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + u3.to_json())
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + shield_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return shield_json_obj(parts)
+
+# Serialize ListProtectionGroupsRequest to a compact JSON object (declaration order).
+def list_protection_groups_request_to_json(ListProtectionGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + shield_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.InclusionFilters.is_some():
+        auto u2 = v.InclusionFilters.unwrap()
+        parts.append("\"InclusionFilters\":" + inclusion_protection_group_filters_to_json(u2))
+    return shield_json_obj(parts)
+
+# Serialize ListProtectionsRequest to a compact JSON object (declaration order).
+def list_protections_request_to_json(ListProtectionsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + shield_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.InclusionFilters.is_some():
+        auto u2 = v.InclusionFilters.unwrap()
+        parts.append("\"InclusionFilters\":" + inclusion_protection_filters_to_json(u2))
+    return shield_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + shield_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + shield_json_arr(e0))
+    return shield_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + shield_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(shield_json_str(x0))
+    parts.append("\"TagKeys\":" + shield_json_arr(e0))
+    return shield_json_obj(parts)
+
+# Serialize UpdateEmergencyContactSettingsRequest to a compact JSON object (declaration order).
+def update_emergency_contact_settings_request_to_json(UpdateEmergencyContactSettingsRequest v) -> str:
+    list[str] parts = []
+    if v.EmergencyContactList.is_some():
+        auto u0 = v.EmergencyContactList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EmergencyContactList\":" + shield_json_arr(e1))
+    return shield_json_obj(parts)
+
+# Serialize UpdateProtectionGroupRequest to a compact JSON object (declaration order).
+def update_protection_group_request_to_json(UpdateProtectionGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProtectionGroupId\":" + shield_json_str(v.ProtectionGroupId))
+    parts.append("\"Aggregation\":" + v.Aggregation.to_json())
+    parts.append("\"Pattern\":" + v.Pattern.to_json())
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + u0.to_json())
+    if v.Members.is_some():
+        auto u1 = v.Members.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(shield_json_str(x2))
+        parts.append("\"Members\":" + shield_json_arr(e2))
+    return shield_json_obj(parts)
 
 # A bound Shield client: credentials + region, threaded into every operation.
 struct ShieldClient:
@@ -860,6 +1104,24 @@ struct ShieldClient:
     def associate_health_check(self, AssociateHealthCheckRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "AssociateHealthCheck", body)
+
+    # AssociateProactiveEngagementDetails
+    # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
+    def associate_proactive_engagement_details(self, AssociateProactiveEngagementDetailsRequest input) -> str:
+        auto body = associate_proactive_engagement_details_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "AssociateProactiveEngagementDetails", body)
+
+    # CreateProtection
+    # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, InvalidResourceException, LimitsExceededException, OptimisticLockException, ResourceAlreadyExistsException, ResourceNotFoundException
+    def create_protection(self, CreateProtectionRequest input) -> str:
+        auto body = create_protection_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "CreateProtection", body)
+
+    # CreateProtectionGroup
+    # errors: InternalErrorException, InvalidParameterException, LimitsExceededException, OptimisticLockException, ResourceAlreadyExistsException, ResourceNotFoundException
+    def create_protection_group(self, CreateProtectionGroupRequest input) -> str:
+        auto body = create_protection_group_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "CreateProtectionGroup", body)
 
     # CreateSubscription
     # errors: InternalErrorException, ResourceAlreadyExistsException
@@ -975,6 +1237,24 @@ struct ShieldClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "GetSubscriptionState", body)
 
+    # ListAttacks
+    # errors: InternalErrorException, InvalidOperationException, InvalidParameterException
+    def list_attacks(self, ListAttacksRequest input) -> str:
+        auto body = list_attacks_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListAttacks", body)
+
+    # ListProtectionGroups
+    # errors: InternalErrorException, InvalidPaginationTokenException, ResourceNotFoundException
+    def list_protection_groups(self, ListProtectionGroupsRequest input) -> str:
+        auto body = list_protection_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListProtectionGroups", body)
+
+    # ListProtections
+    # errors: InternalErrorException, InvalidPaginationTokenException, ResourceNotFoundException
+    def list_protections(self, ListProtectionsRequest input) -> str:
+        auto body = list_protections_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListProtections", body)
+
     # ListResourcesInProtectionGroup
     # errors: InternalErrorException, InvalidPaginationTokenException, ResourceNotFoundException
     def list_resources_in_protection_group(self, ListResourcesInProtectionGroupRequest input) -> str:
@@ -987,17 +1267,69 @@ struct ShieldClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # TagResource
+    # errors: InternalErrorException, InvalidParameterException, InvalidResourceException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalErrorException, InvalidParameterException, InvalidResourceException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateApplicationLayerAutomaticResponse
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
     def update_application_layer_automatic_response(self, UpdateApplicationLayerAutomaticResponseRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateApplicationLayerAutomaticResponse", body)
 
+    # UpdateEmergencyContactSettings
+    # errors: InternalErrorException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
+    def update_emergency_contact_settings(self, UpdateEmergencyContactSettingsRequest input) -> str:
+        auto body = update_emergency_contact_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateEmergencyContactSettings", body)
+
+    # UpdateProtectionGroup
+    # errors: InternalErrorException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
+    def update_protection_group(self, UpdateProtectionGroupRequest input) -> str:
+        auto body = update_protection_group_request_to_json(input)
+        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateProtectionGroup", body)
+
     # UpdateSubscription
     # errors: InternalErrorException, InvalidParameterException, LockedSubscriptionException, OptimisticLockException, ResourceNotFoundException
     def update_subscription(self, UpdateSubscriptionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateSubscription", body)
+
+    # Paginator for ListAttacks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AttackSummaries).
+    def paginate_list_attacks(self, ListAttacksRequest input):
+        auto host = endpoints.regional_host(shield_protocol().service, self.region)
+        while True:
+            auto body = list_attacks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListAttacks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListProtections — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Protections).
+    def paginate_list_protections(self, ListProtectionsRequest input):
+        auto host = endpoints.regional_host(shield_protocol().service, self.region)
+        while True:
+            auto body = list_protections_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListProtections", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a ShieldClient bound to credentials + region.
 def shield_client(core.Credentials creds, str region) -> ShieldClient:

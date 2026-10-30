@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 92 operations — 72 with a generated method,
-#   20 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 92 operations — 91 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   233 structs (153 @derive(Json)), 14 enums, 2 error variants.
 #   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -178,8 +178,9 @@ struct AssociateServiceRoleToAccountRequest:
 struct AssociateServiceRoleToAccountResponse:
     Optional[str] AssociatedAt
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BadRequestException:
     Optional[list[ErrorDetail]] ErrorDetails
     Optional[str] Message
@@ -196,8 +197,9 @@ struct BulkDeploymentMetrics:
     Optional[int64] RecordsProcessed
     Optional[int64] RetryAttempts
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BulkDeploymentResult:
     Optional[str] CreatedAt
     Optional[str] DeploymentArn
@@ -215,15 +217,17 @@ struct ConnectivityInfo:
     Optional[str] Metadata
     Optional[int64] PortNumber
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connector:
     str ConnectorArn
     str Id
     Optional[dict[str, str]] Parameters
 
-# no @derive(Json): member(s) Connectors: list[Connector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connectors: list[Connector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorDefinitionVersion:
     Optional[list[Connector]] Connectors
 
@@ -234,8 +238,9 @@ struct Core:
     Optional[bool] SyncShadow
     str ThingArn
 
-# no @derive(Json): member(s) Cores: list[Core] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cores: list[Core] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoreDefinitionVersion:
     Optional[list[Core]] Cores
 
@@ -543,8 +548,9 @@ struct CreateSubscriptionDefinitionVersionResponse:
     Optional[str] Id
     Optional[str] Version
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefinitionInformation:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -650,8 +656,9 @@ struct Device:
     Optional[bool] SyncShadow
     str ThingArn
 
-# no @derive(Json): member(s) Devices: list[Device] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Devices: list[Device] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceDefinitionVersion:
     Optional[list[Device]] Devices
 
@@ -684,15 +691,17 @@ struct ErrorDetail:
     Optional[str] DetailedErrorCode
     Optional[str] DetailedErrorMessage
 
-# no @derive(Json): member(s) FunctionConfiguration: FunctionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionConfiguration: FunctionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Function:
     Optional[str] FunctionArn
     Optional[FunctionConfiguration] FunctionConfiguration
     str Id
 
-# no @derive(Json): member(s) Environment: FunctionConfigurationEnvironment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: FunctionConfigurationEnvironment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionConfiguration:
     Optional[EncodingType] EncodingType
     Optional[FunctionConfigurationEnvironment] Environment
@@ -703,8 +712,9 @@ struct FunctionConfiguration:
     Optional[int64] Timeout
     Optional[str] FunctionRuntimeOverride
 
-# no @derive(Json): member(s) ResourceAccessPolicies: list[ResourceAccessPolicy], Variables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceAccessPolicies: list[ResourceAccessPolicy], Variables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionConfigurationEnvironment:
     Optional[bool] AccessSysfs
     Optional[FunctionExecutionConfig] Execution
@@ -720,8 +730,9 @@ struct FunctionDefaultExecutionConfig:
     Optional[FunctionIsolationMode] IsolationMode
     Optional[FunctionRunAsConfig] RunAs
 
-# no @derive(Json): member(s) Functions: list[Function] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Functions: list[Function] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionDefinitionVersion:
     Optional[FunctionDefaultConfig] DefaultConfig
     Optional[list[Function]] Functions
@@ -736,8 +747,9 @@ struct FunctionRunAsConfig:
     Optional[int64] Gid
     Optional[int64] Uid
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneralError:
     Optional[list[ErrorDetail]] ErrorDetails
     Optional[str] Message
@@ -757,8 +769,9 @@ struct GetAssociatedRoleResponse:
 struct GetBulkDeploymentStatusRequest:
     str BulkDeploymentId
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBulkDeploymentStatusResponse:
     Optional[BulkDeploymentMetrics] BulkDeploymentMetrics
     Optional[BulkDeploymentStatus] BulkDeploymentStatus
@@ -772,8 +785,9 @@ struct GetBulkDeploymentStatusResponse:
 struct GetConnectivityInfoRequest:
     str ThingName
 
-# no @derive(Json): member(s) ConnectivityInfo: list[ConnectivityInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectivityInfo: list[ConnectivityInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectivityInfoResponse:
     Optional[list[ConnectivityInfo]] ConnectivityInfo
     Optional[str] Message
@@ -783,8 +797,9 @@ struct GetConnectivityInfoResponse:
 struct GetConnectorDefinitionRequest:
     str ConnectorDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectorDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -802,8 +817,9 @@ struct GetConnectorDefinitionVersionRequest:
     str ConnectorDefinitionVersionId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definition: ConnectorDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: ConnectorDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectorDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -817,8 +833,9 @@ struct GetConnectorDefinitionVersionResponse:
 struct GetCoreDefinitionRequest:
     str CoreDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoreDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -835,8 +852,9 @@ struct GetCoreDefinitionVersionRequest:
     str CoreDefinitionId
     str CoreDefinitionVersionId
 
-# no @derive(Json): member(s) Definition: CoreDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: CoreDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoreDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -851,8 +869,9 @@ struct GetDeploymentStatusRequest:
     str DeploymentId
     str GroupId
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentStatusResponse:
     Optional[str] DeploymentStatus
     Optional[DeploymentType] DeploymentType
@@ -865,8 +884,9 @@ struct GetDeploymentStatusResponse:
 struct GetDeviceDefinitionRequest:
     str DeviceDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -884,8 +904,9 @@ struct GetDeviceDefinitionVersionRequest:
     str DeviceDefinitionVersionId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definition: DeviceDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: DeviceDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -899,8 +920,9 @@ struct GetDeviceDefinitionVersionResponse:
 struct GetFunctionDefinitionRequest:
     str FunctionDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFunctionDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -918,8 +940,9 @@ struct GetFunctionDefinitionVersionRequest:
     str FunctionDefinitionVersionId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definition: FunctionDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: FunctionDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFunctionDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -956,8 +979,9 @@ struct GetGroupCertificateConfigurationResponse:
 struct GetGroupRequest:
     str GroupId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGroupResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -987,8 +1011,9 @@ struct GetGroupVersionResponse:
 struct GetLoggerDefinitionRequest:
     str LoggerDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoggerDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -1006,8 +1031,9 @@ struct GetLoggerDefinitionVersionRequest:
     str LoggerDefinitionVersionId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definition: LoggerDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: LoggerDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoggerDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -1020,8 +1046,9 @@ struct GetLoggerDefinitionVersionResponse:
 struct GetResourceDefinitionRequest:
     str ResourceDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -1038,8 +1065,9 @@ struct GetResourceDefinitionVersionRequest:
     str ResourceDefinitionId
     str ResourceDefinitionVersionId
 
-# no @derive(Json): member(s) Definition: ResourceDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: ResourceDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -1063,8 +1091,9 @@ struct GetServiceRoleForAccountResponse:
 struct GetSubscriptionDefinitionRequest:
     str SubscriptionDefinitionId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionDefinitionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -1082,8 +1111,9 @@ struct GetSubscriptionDefinitionVersionRequest:
     str SubscriptionDefinitionId
     str SubscriptionDefinitionVersionId
 
-# no @derive(Json): member(s) Definition: SubscriptionDefinitionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: SubscriptionDefinitionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionDefinitionVersionResponse:
     Optional[str] Arn
     Optional[str] CreationTimestamp
@@ -1137,8 +1167,9 @@ struct GroupVersion:
     Optional[str] ResourceDefinitionVersionArn
     Optional[str] SubscriptionDefinitionVersionArn
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalServerErrorException:
     Optional[list[ErrorDetail]] ErrorDetails
     Optional[str] Message
@@ -1150,8 +1181,9 @@ struct ListBulkDeploymentDetailedReportsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Deployments: list[BulkDeploymentResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deployments: list[BulkDeploymentResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBulkDeploymentDetailedReportsResponse:
     Optional[list[BulkDeploymentResult]] Deployments
     Optional[str] NextToken
@@ -1162,8 +1194,9 @@ struct ListBulkDeploymentsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BulkDeployments: list[BulkDeployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BulkDeployments: list[BulkDeployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBulkDeploymentsResponse:
     Optional[list[BulkDeployment]] BulkDeployments
     Optional[str] NextToken
@@ -1175,8 +1208,9 @@ struct ListConnectorDefinitionVersionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1187,8 +1221,9 @@ struct ListConnectorDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1200,8 +1235,9 @@ struct ListCoreDefinitionVersionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoreDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1212,14 +1248,16 @@ struct ListCoreDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoreDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1231,8 +1269,9 @@ struct ListDeploymentsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Deployments: list[Deployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deployments: list[Deployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsResponse:
     Optional[list[Deployment]] Deployments
     Optional[str] NextToken
@@ -1244,8 +1283,9 @@ struct ListDeviceDefinitionVersionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1256,8 +1296,9 @@ struct ListDeviceDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1269,8 +1310,9 @@ struct ListFunctionDefinitionVersionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1281,8 +1323,9 @@ struct ListFunctionDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFunctionDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1292,8 +1335,9 @@ struct ListFunctionDefinitionsResponse:
 struct ListGroupCertificateAuthoritiesRequest:
     str GroupId
 
-# no @derive(Json): member(s) GroupCertificateAuthorities: list[GroupCertificateAuthorityProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupCertificateAuthorities: list[GroupCertificateAuthorityProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupCertificateAuthoritiesResponse:
     Optional[list[GroupCertificateAuthorityProperties]] GroupCertificateAuthorities
 
@@ -1304,8 +1348,9 @@ struct ListGroupVersionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1316,8 +1361,9 @@ struct ListGroupsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Groups: list[GroupInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     Optional[list[GroupInformation]] Groups
     Optional[str] NextToken
@@ -1329,8 +1375,9 @@ struct ListLoggerDefinitionVersionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLoggerDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1341,8 +1388,9 @@ struct ListLoggerDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLoggerDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1354,8 +1402,9 @@ struct ListResourceDefinitionVersionsRequest:
     Optional[str] NextToken
     str ResourceDefinitionId
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1366,8 +1415,9 @@ struct ListResourceDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1379,8 +1429,9 @@ struct ListSubscriptionDefinitionVersionsRequest:
     Optional[str] NextToken
     str SubscriptionDefinitionId
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionDefinitionVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1391,8 +1442,9 @@ struct ListSubscriptionDefinitionsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[DefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionDefinitionsResponse:
     Optional[list[DefinitionInformation]] Definitions
     Optional[str] NextToken
@@ -1402,13 +1454,15 @@ struct ListSubscriptionDefinitionsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) Versions: list[VersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[VersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVersionsResponse:
     Optional[str] NextToken
     Optional[list[VersionInformation]] Versions
@@ -1432,8 +1486,9 @@ struct Logger:
     Optional[int64] Space
     LoggerType Type
 
-# no @derive(Json): member(s) Loggers: list[Logger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Loggers: list[Logger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggerDefinitionVersion:
     Optional[list[Logger]] Loggers
 
@@ -1449,8 +1504,9 @@ struct ResetDeploymentsResponse:
     Optional[str] DeploymentArn
     Optional[str] DeploymentId
 
-# no @derive(Json): member(s) ResourceDataContainer: ResourceDataContainer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceDataContainer: ResourceDataContainer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     str Id
     str Name
@@ -1461,8 +1517,9 @@ struct ResourceAccessPolicy:
     Optional[Permission] Permission
     str ResourceId
 
-# no @derive(Json): member(s) SecretsManagerSecretResourceData: SecretsManagerSecretResourceData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecretsManagerSecretResourceData: SecretsManagerSecretResourceData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDataContainer:
     Optional[LocalDeviceResourceData] LocalDeviceResourceData
     Optional[LocalVolumeResourceData] LocalVolumeResourceData
@@ -1470,8 +1527,9 @@ struct ResourceDataContainer:
     Optional[SageMakerMachineLearningModelResourceData] SageMakerMachineLearningModelResourceData
     Optional[SecretsManagerSecretResourceData] SecretsManagerSecretResourceData
 
-# no @derive(Json): member(s) Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDefinitionVersion:
     Optional[list[Resource]] Resources
 
@@ -1500,8 +1558,9 @@ struct SageMakerMachineLearningModelResourceData:
     Optional[ResourceDownloadOwnerSetting] OwnerSetting
     Optional[str] SageMakerJobArn
 
-# no @derive(Json): member(s) AdditionalStagingLabelsToDownload: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalStagingLabelsToDownload: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecretsManagerSecretResourceData:
     Optional[str] ARN
     Optional[list[str]] AdditionalStagingLabelsToDownload
@@ -1536,8 +1595,9 @@ struct Subscription:
     str Subject
     str Target
 
-# no @derive(Json): member(s) Subscriptions: list[Subscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscriptions: list[Subscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionDefinitionVersion:
     Optional[list[Subscription]] Subscriptions
 
@@ -1714,26 +1774,7 @@ def greengrass_error_from_code(str code) -> GreengrassError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConnectorDefinition (document member `InitialVersion: ConnectorDefinitionVersion` is not serializable by derive)
-#   CreateConnectorDefinitionVersion (document member `Connectors: list[Connector]` is not serializable by derive)
-#   CreateCoreDefinition (document member `InitialVersion: CoreDefinitionVersion` is not serializable by derive)
-#   CreateCoreDefinitionVersion (document member `Cores: list[Core]` is not serializable by derive)
-#   CreateDeviceDefinition (document member `InitialVersion: DeviceDefinitionVersion` is not serializable by derive)
-#   CreateDeviceDefinitionVersion (document member `Devices: list[Device]` is not serializable by derive)
-#   CreateFunctionDefinition (document member `InitialVersion: FunctionDefinitionVersion` is not serializable by derive)
-#   CreateFunctionDefinitionVersion (document member `Functions: list[Function]` is not serializable by derive)
-#   CreateGroup (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateLoggerDefinition (document member `InitialVersion: LoggerDefinitionVersion` is not serializable by derive)
-#   CreateLoggerDefinitionVersion (document member `Loggers: list[Logger]` is not serializable by derive)
-#   CreateResourceDefinition (document member `InitialVersion: ResourceDefinitionVersion` is not serializable by derive)
-#   CreateResourceDefinitionVersion (document member `Resources: list[Resource]` is not serializable by derive)
-#   CreateSoftwareUpdateJob (document member `UpdateTargets: list[str]` is not serializable by derive)
-#   CreateSubscriptionDefinition (document member `InitialVersion: SubscriptionDefinitionVersion` is not serializable by derive)
-#   CreateSubscriptionDefinitionVersion (document member `Subscriptions: list[Subscription]` is not serializable by derive)
-#   StartBulkDeployment (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateConnectivityInfo (document member `ConnectivityInfo: list[ConnectivityInfo]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1821,6 +1862,235 @@ struct UpdateThingRuntimeConfigurationDocument:
     # document members of UpdateThingRuntimeConfiguration
     Optional[TelemetryConfigurationUpdate] TelemetryConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def greengrass_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def greengrass_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def greengrass_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Connector to a compact JSON object (declaration order).
+def connector_to_json(Connector v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectorArn\":" + greengrass_json_str(v.ConnectorArn))
+    parts.append("\"Id\":" + greengrass_json_str(v.Id))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(greengrass_json_str(k1) + ":" + greengrass_json_str(u0[k1]))
+        parts.append("\"Parameters\":" + greengrass_json_obj(m1))
+    return greengrass_json_obj(parts)
+
+# Serialize ConnectorDefinitionVersion to a compact JSON object (declaration order).
+def connector_definition_version_to_json(ConnectorDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.Connectors.is_some():
+        auto u0 = v.Connectors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connector_to_json(x1))
+        parts.append("\"Connectors\":" + greengrass_json_arr(e1))
+    return greengrass_json_obj(parts)
+
+# Serialize CoreDefinitionVersion to a compact JSON object (declaration order).
+def core_definition_version_to_json(CoreDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.Cores.is_some():
+        auto u0 = v.Cores.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Cores\":" + greengrass_json_arr(e1))
+    return greengrass_json_obj(parts)
+
+# Serialize DeviceDefinitionVersion to a compact JSON object (declaration order).
+def device_definition_version_to_json(DeviceDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.Devices.is_some():
+        auto u0 = v.Devices.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Devices\":" + greengrass_json_arr(e1))
+    return greengrass_json_obj(parts)
+
+# Serialize Function to a compact JSON object (declaration order).
+def function_to_json(Function v) -> str:
+    list[str] parts = []
+    if v.FunctionArn.is_some():
+        auto u0 = v.FunctionArn.unwrap()
+        parts.append("\"FunctionArn\":" + greengrass_json_str(u0))
+    if v.FunctionConfiguration.is_some():
+        auto u1 = v.FunctionConfiguration.unwrap()
+        parts.append("\"FunctionConfiguration\":" + function_configuration_to_json(u1))
+    parts.append("\"Id\":" + greengrass_json_str(v.Id))
+    return greengrass_json_obj(parts)
+
+# Serialize FunctionConfiguration to a compact JSON object (declaration order).
+def function_configuration_to_json(FunctionConfiguration v) -> str:
+    list[str] parts = []
+    if v.EncodingType.is_some():
+        auto u0 = v.EncodingType.unwrap()
+        parts.append("\"EncodingType\":" + u0.to_json())
+    if v.Environment.is_some():
+        auto u1 = v.Environment.unwrap()
+        parts.append("\"Environment\":" + function_configuration_environment_to_json(u1))
+    if v.ExecArgs.is_some():
+        auto u2 = v.ExecArgs.unwrap()
+        parts.append("\"ExecArgs\":" + greengrass_json_str(u2))
+    if v.Executable.is_some():
+        auto u3 = v.Executable.unwrap()
+        parts.append("\"Executable\":" + greengrass_json_str(u3))
+    if v.MemorySize.is_some():
+        auto u4 = v.MemorySize.unwrap()
+        parts.append("\"MemorySize\":" + str(u4))
+    if v.Pinned.is_some():
+        auto u5 = v.Pinned.unwrap()
+        parts.append("\"Pinned\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.Timeout.is_some():
+        auto u6 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u6))
+    if v.FunctionRuntimeOverride.is_some():
+        auto u7 = v.FunctionRuntimeOverride.unwrap()
+        parts.append("\"FunctionRuntimeOverride\":" + greengrass_json_str(u7))
+    return greengrass_json_obj(parts)
+
+# Serialize FunctionConfigurationEnvironment to a compact JSON object (declaration order).
+def function_configuration_environment_to_json(FunctionConfigurationEnvironment v) -> str:
+    list[str] parts = []
+    if v.AccessSysfs.is_some():
+        auto u0 = v.AccessSysfs.unwrap()
+        parts.append("\"AccessSysfs\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Execution.is_some():
+        auto u1 = v.Execution.unwrap()
+        parts.append("\"Execution\":" + u1.to_json())
+    if v.ResourceAccessPolicies.is_some():
+        auto u2 = v.ResourceAccessPolicies.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ResourceAccessPolicies\":" + greengrass_json_arr(e3))
+    if v.Variables.is_some():
+        auto u4 = v.Variables.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(greengrass_json_str(k5) + ":" + greengrass_json_str(u4[k5]))
+        parts.append("\"Variables\":" + greengrass_json_obj(m5))
+    return greengrass_json_obj(parts)
+
+# Serialize FunctionDefinitionVersion to a compact JSON object (declaration order).
+def function_definition_version_to_json(FunctionDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.DefaultConfig.is_some():
+        auto u0 = v.DefaultConfig.unwrap()
+        parts.append("\"DefaultConfig\":" + u0.to_json())
+    if v.Functions.is_some():
+        auto u1 = v.Functions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(function_to_json(x2))
+        parts.append("\"Functions\":" + greengrass_json_arr(e2))
+    return greengrass_json_obj(parts)
+
+# Serialize LoggerDefinitionVersion to a compact JSON object (declaration order).
+def logger_definition_version_to_json(LoggerDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.Loggers.is_some():
+        auto u0 = v.Loggers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Loggers\":" + greengrass_json_arr(e1))
+    return greengrass_json_obj(parts)
+
+# Serialize Resource to a compact JSON object (declaration order).
+def resource_to_json(Resource v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + greengrass_json_str(v.Id))
+    parts.append("\"Name\":" + greengrass_json_str(v.Name))
+    parts.append("\"ResourceDataContainer\":" + resource_data_container_to_json(v.ResourceDataContainer))
+    return greengrass_json_obj(parts)
+
+# Serialize ResourceDataContainer to a compact JSON object (declaration order).
+def resource_data_container_to_json(ResourceDataContainer v) -> str:
+    list[str] parts = []
+    if v.LocalDeviceResourceData.is_some():
+        auto u0 = v.LocalDeviceResourceData.unwrap()
+        parts.append("\"LocalDeviceResourceData\":" + u0.to_json())
+    if v.LocalVolumeResourceData.is_some():
+        auto u1 = v.LocalVolumeResourceData.unwrap()
+        parts.append("\"LocalVolumeResourceData\":" + u1.to_json())
+    if v.S3MachineLearningModelResourceData.is_some():
+        auto u2 = v.S3MachineLearningModelResourceData.unwrap()
+        parts.append("\"S3MachineLearningModelResourceData\":" + u2.to_json())
+    if v.SageMakerMachineLearningModelResourceData.is_some():
+        auto u3 = v.SageMakerMachineLearningModelResourceData.unwrap()
+        parts.append("\"SageMakerMachineLearningModelResourceData\":" + u3.to_json())
+    if v.SecretsManagerSecretResourceData.is_some():
+        auto u4 = v.SecretsManagerSecretResourceData.unwrap()
+        parts.append("\"SecretsManagerSecretResourceData\":" + secrets_manager_secret_resource_data_to_json(u4))
+    return greengrass_json_obj(parts)
+
+# Serialize ResourceDefinitionVersion to a compact JSON object (declaration order).
+def resource_definition_version_to_json(ResourceDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.Resources.is_some():
+        auto u0 = v.Resources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(resource_to_json(x1))
+        parts.append("\"Resources\":" + greengrass_json_arr(e1))
+    return greengrass_json_obj(parts)
+
+# Serialize SecretsManagerSecretResourceData to a compact JSON object (declaration order).
+def secrets_manager_secret_resource_data_to_json(SecretsManagerSecretResourceData v) -> str:
+    list[str] parts = []
+    if v.ARN.is_some():
+        auto u0 = v.ARN.unwrap()
+        parts.append("\"ARN\":" + greengrass_json_str(u0))
+    if v.AdditionalStagingLabelsToDownload.is_some():
+        auto u1 = v.AdditionalStagingLabelsToDownload.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(greengrass_json_str(x2))
+        parts.append("\"AdditionalStagingLabelsToDownload\":" + greengrass_json_arr(e2))
+    return greengrass_json_obj(parts)
+
+# Serialize SubscriptionDefinitionVersion to a compact JSON object (declaration order).
+def subscription_definition_version_to_json(SubscriptionDefinitionVersion v) -> str:
+    list[str] parts = []
+    if v.Subscriptions.is_some():
+        auto u0 = v.Subscriptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Subscriptions\":" + greengrass_json_arr(e1))
+    return greengrass_json_obj(parts)
+
 # A bound Greengrass client: credentials + region, threaded into every operation.
 struct GreengrassClient:
     core.Credentials creds
@@ -1846,6 +2116,94 @@ struct GreengrassClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
 
+    # CreateConnectorDefinition  POST /greengrass/definition/connectors
+    # errors: BadRequestException
+    def create_connector_definition(self, CreateConnectorDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/connectors", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + connector_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateConnectorDefinitionVersion  POST /greengrass/definition/connectors/{ConnectorDefinitionId}/versions
+    # errors: BadRequestException
+    def create_connector_definition_version(self, CreateConnectorDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConnectorDefinitionId"] = input.ConnectorDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/connectors/{ConnectorDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Connectors.is_some():
+            auto u0 = input.Connectors.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(connector_to_json(x1))
+            parts.append("\"Connectors\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateCoreDefinition  POST /greengrass/definition/cores
+    # errors: BadRequestException
+    def create_core_definition(self, CreateCoreDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/cores", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + core_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateCoreDefinitionVersion  POST /greengrass/definition/cores/{CoreDefinitionId}/versions
+    # errors: BadRequestException
+    def create_core_definition_version(self, CreateCoreDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CoreDefinitionId"] = input.CoreDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/cores/{CoreDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Cores.is_some():
+            auto u0 = input.Cores.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Cores\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
     # CreateDeployment  POST /greengrass/groups/{GroupId}/deployments
     # errors: BadRequestException
     def create_deployment(self, CreateDeploymentRequest input) -> str:
@@ -1858,6 +2216,119 @@ struct GreengrassClient:
         auto b = binding.HttpBinding(method="POST", path_template="/greengrass/groups/{GroupId}/deployments", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDeploymentDocument(DeploymentId=input.DeploymentId, DeploymentType=input.DeploymentType, GroupVersionId=input.GroupVersionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateDeviceDefinition  POST /greengrass/definition/devices
+    # errors: BadRequestException
+    def create_device_definition(self, CreateDeviceDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/devices", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + device_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateDeviceDefinitionVersion  POST /greengrass/definition/devices/{DeviceDefinitionId}/versions
+    # errors: BadRequestException
+    def create_device_definition_version(self, CreateDeviceDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DeviceDefinitionId"] = input.DeviceDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/devices/{DeviceDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Devices.is_some():
+            auto u0 = input.Devices.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Devices\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateFunctionDefinition  POST /greengrass/definition/functions
+    # errors: BadRequestException
+    def create_function_definition(self, CreateFunctionDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/functions", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + function_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateFunctionDefinitionVersion  POST /greengrass/definition/functions/{FunctionDefinitionId}/versions
+    # errors: BadRequestException
+    def create_function_definition_version(self, CreateFunctionDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FunctionDefinitionId"] = input.FunctionDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/functions/{FunctionDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DefaultConfig.is_some():
+            auto u0 = input.DefaultConfig.unwrap()
+            parts.append("\"DefaultConfig\":" + u0.to_json())
+        if input.Functions.is_some():
+            auto u1 = input.Functions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(function_to_json(x2))
+            parts.append("\"Functions\":" + greengrass_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateGroup  POST /greengrass/groups
+    # errors: BadRequestException
+    def create_group(self, CreateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/groups", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + u0.to_json())
+        parts.append("\"Name\":" + greengrass_json_str(input.Name))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(greengrass_json_str(k2) + ":" + greengrass_json_str(u1[k2]))
+            parts.append("\"tags\":" + greengrass_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
 
     # CreateGroupCertificateAuthority  POST /greengrass/groups/{GroupId}/certificateauthorities
@@ -1884,6 +2355,161 @@ struct GreengrassClient:
         auto b = binding.HttpBinding(method="POST", path_template="/greengrass/groups/{GroupId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateGroupVersionDocument(ConnectorDefinitionVersionArn=input.ConnectorDefinitionVersionArn, CoreDefinitionVersionArn=input.CoreDefinitionVersionArn, DeviceDefinitionVersionArn=input.DeviceDefinitionVersionArn, FunctionDefinitionVersionArn=input.FunctionDefinitionVersionArn, LoggerDefinitionVersionArn=input.LoggerDefinitionVersionArn, ResourceDefinitionVersionArn=input.ResourceDefinitionVersionArn, SubscriptionDefinitionVersionArn=input.SubscriptionDefinitionVersionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateLoggerDefinition  POST /greengrass/definition/loggers
+    # errors: BadRequestException
+    def create_logger_definition(self, CreateLoggerDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/loggers", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + logger_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateLoggerDefinitionVersion  POST /greengrass/definition/loggers/{LoggerDefinitionId}/versions
+    # errors: BadRequestException
+    def create_logger_definition_version(self, CreateLoggerDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["LoggerDefinitionId"] = input.LoggerDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/loggers/{LoggerDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Loggers.is_some():
+            auto u0 = input.Loggers.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Loggers\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateResourceDefinition  POST /greengrass/definition/resources
+    # errors: BadRequestException
+    def create_resource_definition(self, CreateResourceDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/resources", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + resource_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateResourceDefinitionVersion  POST /greengrass/definition/resources/{ResourceDefinitionId}/versions
+    # errors: BadRequestException
+    def create_resource_definition_version(self, CreateResourceDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceDefinitionId"] = input.ResourceDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/resources/{ResourceDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Resources.is_some():
+            auto u0 = input.Resources.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_to_json(x1))
+            parts.append("\"Resources\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateSoftwareUpdateJob  POST /greengrass/updates
+    # errors: BadRequestException, InternalServerErrorException
+    def create_software_update_job(self, CreateSoftwareUpdateJobRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/updates", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"S3UrlSignerRole\":" + greengrass_json_str(input.S3UrlSignerRole))
+        parts.append("\"SoftwareToUpdate\":" + input.SoftwareToUpdate.to_json())
+        if input.UpdateAgentLogLevel.is_some():
+            auto u0 = input.UpdateAgentLogLevel.unwrap()
+            parts.append("\"UpdateAgentLogLevel\":" + u0.to_json())
+        list[str] e1 = []
+        for x1 in input.UpdateTargets:
+            e1.append(greengrass_json_str(x1))
+        parts.append("\"UpdateTargets\":" + greengrass_json_arr(e1))
+        parts.append("\"UpdateTargetsArchitecture\":" + input.UpdateTargetsArchitecture.to_json())
+        parts.append("\"UpdateTargetsOperatingSystem\":" + input.UpdateTargetsOperatingSystem.to_json())
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateSubscriptionDefinition  POST /greengrass/definition/subscriptions
+    # errors: BadRequestException
+    def create_subscription_definition(self, CreateSubscriptionDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/subscriptions", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InitialVersion.is_some():
+            auto u0 = input.InitialVersion.unwrap()
+            parts.append("\"InitialVersion\":" + subscription_definition_version_to_json(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + greengrass_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(greengrass_json_str(k3) + ":" + greengrass_json_str(u2[k3]))
+            parts.append("\"tags\":" + greengrass_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # CreateSubscriptionDefinitionVersion  POST /greengrass/definition/subscriptions/{SubscriptionDefinitionId}/versions
+    # errors: BadRequestException
+    def create_subscription_definition_version(self, CreateSubscriptionDefinitionVersionRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["SubscriptionDefinitionId"] = input.SubscriptionDefinitionId
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/definition/subscriptions/{SubscriptionDefinitionId}/versions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Subscriptions.is_some():
+            auto u0 = input.Subscriptions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Subscriptions\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
 
     # DeleteConnectorDefinition  DELETE /greengrass/definition/connectors/{ConnectorDefinitionId}
@@ -2485,6 +3111,26 @@ struct GreengrassClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
 
+    # StartBulkDeployment  POST /greengrass/bulk/deployments
+    # errors: BadRequestException
+    def start_bulk_deployment(self, StartBulkDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AmznClientToken.is_some():
+            headers["X-Amzn-Client-Token"] = input.AmznClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/bulk/deployments", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ExecutionRoleArn\":" + greengrass_json_str(input.ExecutionRoleArn))
+        parts.append("\"InputFileUri\":" + greengrass_json_str(input.InputFileUri))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(greengrass_json_str(k1) + ":" + greengrass_json_str(u0[k1]))
+            parts.append("\"tags\":" + greengrass_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
     # StopBulkDeployment  PUT /greengrass/bulk/deployments/{BulkDeploymentId}/$stop
     # errors: BadRequestException
     def stop_bulk_deployment(self, StopBulkDeploymentRequest input) -> str:
@@ -2493,6 +3139,40 @@ struct GreengrassClient:
         labels["BulkDeploymentId"] = input.BulkDeploymentId
         auto b = binding.HttpBinding(method="PUT", path_template="/greengrass/bulk/deployments/{BulkDeploymentId}/$stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
+
+    # TagResource  POST /tags/{resource-arn}
+    # errors: BadRequestException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(greengrass_json_str(k1) + ":" + greengrass_json_str(u0[k1]))
+            parts.append("\"tags\":" + greengrass_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
+
+    # UpdateConnectivityInfo  PUT /greengrass/things/{ThingName}/connectivityInfo
+    # errors: BadRequestException, InternalServerErrorException
+    def update_connectivity_info(self, UpdateConnectivityInfoRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ThingName"] = input.ThingName
+        auto b = binding.HttpBinding(method="PUT", path_template="/greengrass/things/{ThingName}/connectivityInfo", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConnectivityInfo.is_some():
+            auto u0 = input.ConnectivityInfo.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"ConnectivityInfo\":" + greengrass_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
 
     # UpdateConnectorDefinition  PUT /greengrass/definition/connectors/{ConnectorDefinitionId}
     # errors: BadRequestException

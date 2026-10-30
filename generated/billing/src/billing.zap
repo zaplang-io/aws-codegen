@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 32 operations — 22 with a generated method,
-#   10 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 32 operations — 32 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   124 structs (76 @derive(Json)), 15 enums, 8 error variants.
-#   10 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Billing awsJson protocol: version 1.0, API id "AWSBilling".
 def billing_protocol() -> awsjson.AwsJson:
@@ -207,8 +208,9 @@ struct AssociateContractResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) sourceViews: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceViews: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateSourceViewsRequest:
     str arn
     list[str] sourceViews
@@ -217,8 +219,9 @@ struct AssociateSourceViewsRequest:
 struct AssociateSourceViewsResponse:
     str arn
 
-# no @derive(Json): member(s) attestationValue: AttestationValue, investmentDistributions: list[InvestmentDistribution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attestationValue: AttestationValue, investmentDistributions: list[InvestmentDistribution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttestationDetails:
     AttestationValue attestationValue
     Optional[list[InvestmentDistribution]] investmentDistributions
@@ -228,14 +231,16 @@ struct AttestationQuantity:
     str attestationVolume
     str attestationUnit
 
-# no @derive(Json): member(s) attestationQuantities: list[AttestationQuantity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attestationQuantities: list[AttestationQuantity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttestationValue:
     Optional[Amount] attestationAmount
     Optional[list[AttestationQuantity]] attestationQuantities
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillingFeatureFilter:
     Optional[str] name
     Optional[list[str]] value
@@ -259,8 +264,9 @@ struct BillingPreferenceSummary:
     Optional[str] accountId
     Optional[BillingPeriod] billingPeriod
 
-# no @derive(Json): member(s) dataFilterExpression: Expression, healthStatus: BillingViewHealthStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataFilterExpression: Expression, healthStatus: BillingViewHealthStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillingViewElement:
     Optional[str] arn
     Optional[str] name
@@ -276,8 +282,9 @@ struct BillingViewElement:
     Optional[DateTime] viewDefinitionLastUpdatedAt
     Optional[BillingViewHealthStatus] healthStatus
 
-# no @derive(Json): member(s) statusReasons: list[BillingViewStatusReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[BillingViewStatusReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillingViewHealthStatus:
     Optional[BillingViewStatus] statusCode
     Optional[list[BillingViewStatusReason]] statusReasons
@@ -286,8 +293,9 @@ struct BillingViewHealthStatus:
 struct BillingViewHealthStatusException:
     str message
 
-# no @derive(Json): member(s) healthStatus: BillingViewHealthStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) healthStatus: BillingViewHealthStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BillingViewListElement:
     Optional[str] arn
     Optional[str] name
@@ -310,8 +318,9 @@ struct BillingViewSegmentsListElement:
     Optional[str] managementAccountId
     Optional[str] billingGroupPrimaryAccountId
 
-# no @derive(Json): member(s) tierCharges: list[BusinessSupportTierCharge], supportEligibleSpendByService: list[BusinessSupportServiceSpend] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tierCharges: list[BusinessSupportTierCharge], supportEligibleSpendByService: list[BusinessSupportServiceSpend] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BusinessSupportAccountCharge:
     str accountId
     str supportPlanName
@@ -379,8 +388,9 @@ struct ContractAccount:
     str accountId
     bool isGdn
 
-# no @derive(Json): member(s) privatePricingAddendum: PrivatePricingAddendum not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privatePricingAddendum: PrivatePricingAddendum not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContractDetails:
     Optional[PrivatePricingAddendum] privatePricingAddendum
 
@@ -392,14 +402,16 @@ struct ContractSummary:
     AssociationStatus associationStatus
     Optional[DateTime] lastUpdatedAt
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategoryValues:
     str key
     list[str] values
 
-# no @derive(Json): member(s) sourceViews: list[str], dataFilterExpression: Expression, resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceViews: list[str], dataFilterExpression: Expression, resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBillingViewRequest:
     str name
     Optional[str] description
@@ -413,8 +425,9 @@ struct CreateBillingViewResponse:
     str arn
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) attestationDetails: AttestationDetails, additionalRecipients: list[AdditionalRecipient] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attestationDetails: AttestationDetails, additionalRecipients: list[AdditionalRecipient] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContractualInvestmentAttestationRequest:
     str contractArn
     str investmentSummaryId
@@ -440,8 +453,9 @@ struct CreditAllocationHistoryEntry:
     str billingMonth
     bool isEstimatedBill
 
-# no @derive(Json): member(s) applicableProductNames: list[str], shareableAccounts: list[str], purchaseTypeApplications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicableProductNames: list[str], shareableAccounts: list[str], purchaseTypeApplications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreditData:
     str creditId
     str accountId
@@ -473,8 +487,9 @@ struct DeleteBillingViewRequest:
 struct DeleteBillingViewResponse:
     str arn
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DimensionValues:
     str key
     list[str] values
@@ -488,8 +503,9 @@ struct DisassociateContractResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) sourceViews: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceViews: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateSourceViewsRequest:
     str arn
     list[str] sourceViews
@@ -503,24 +519,27 @@ struct EnterpriseSupportTimePeriod:
     DateTime beginDate
     Optional[DateTime] endDate
 
-# no @derive(Json): member(s) dimensions: DimensionValues, tags: TagValues, costCategories: CostCategoryValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensions: DimensionValues, tags: TagValues, costCategories: CostCategoryValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     Optional[DimensionValues] dimensions
     Optional[TagValues] tags
     Optional[CostCategoryValues] costCategories
     Optional[TimeRange] timeRange
 
-# no @derive(Json): member(s) features: list[BillingFeature], filters: list[BillingFeatureFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) features: list[BillingFeature], filters: list[BillingFeatureFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBillingPreferencesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
     list[BillingFeature] features
     Optional[list[BillingFeatureFilter]] filters
 
-# no @derive(Json): member(s) billingPreferences: list[BillingPreferenceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) billingPreferences: list[BillingPreferenceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBillingPreferencesResponse:
     list[BillingPreferenceSummary] billingPreferences
     Optional[str] nextToken
@@ -529,8 +548,9 @@ struct GetBillingPreferencesResponse:
 struct GetBillingViewRequest:
     str arn
 
-# no @derive(Json): member(s) billingView: BillingViewElement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) billingView: BillingViewElement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBillingViewResponse:
     BillingViewElement billingView
 
@@ -538,8 +558,9 @@ struct GetBillingViewResponse:
 struct GetContractInformationRequest:
     str contractArn
 
-# no @derive(Json): member(s) contract: ContractDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contract: ContractDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContractInformationResponse:
     ContractDetails contract
 
@@ -552,8 +573,9 @@ struct GetCreditAllocationHistoryRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) creditAllocationHistoryList: list[CreditAllocationHistoryEntry], failedMonths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) creditAllocationHistoryList: list[CreditAllocationHistoryEntry], failedMonths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCreditAllocationHistoryResponse:
     Optional[list[CreditAllocationHistoryEntry]] creditAllocationHistoryList
     bool partialResults
@@ -567,8 +589,9 @@ struct GetCreditsRequest:
     Optional[DateTime] endDate
     Optional[bool] payerAccountFlag
 
-# no @derive(Json): member(s) credits: list[CreditData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credits: list[CreditData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCreditsResponse:
     Optional[list[CreditData]] credits
 
@@ -576,8 +599,9 @@ struct GetCreditsResponse:
 struct GetEnterpriseSupportChargeSummaryRequest:
     str billingMonth
 
-# no @derive(Json): member(s) supportEffectivePricingPlan: PricingPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportEffectivePricingPlan: PricingPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnterpriseSupportChargeSummaryResponse:
     str payerAccountId
     str billingMonth
@@ -599,8 +623,9 @@ struct GetEnterpriseSupportChargeSummaryResponse:
 struct GetEnterpriseSupportContractDetailsRequest:
     str billingMonth
 
-# no @derive(Json): member(s) contractPayerAccountIds: list[ContractAccount], chargedPayerAccountIds: list[ChargeAccount], additionalSupportCharge: list[AdditionalCharge], additionalSupportEligibleUsageSpend: list[AdditionalCharge], pricingPlans: list[PricingPlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contractPayerAccountIds: list[ContractAccount], chargedPayerAccountIds: list[ChargeAccount], additionalSupportCharge: list[AdditionalCharge], additionalSupportEligibleUsageSpend: list[AdditionalCharge], pricingPlans: list[PricingPlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnterpriseSupportContractDetailsResponse:
     Optional[bool] isContractActive
     str supportAllocationMethod
@@ -633,14 +658,16 @@ struct Interval:
     DateTime startDateInclusive
     DateTime endDateInclusive
 
-# no @derive(Json): member(s) outcomeBasedInvestment: OutcomeBasedInvestment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomeBasedInvestment: OutcomeBasedInvestment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Investment:
     Optional[MilestoneBasedInvestment] milestoneBasedInvestment
     Optional[OutcomeBasedInvestment] outcomeBasedInvestment
 
-# no @derive(Json): member(s) investmentDistributions: list[InvestmentDistribution], rejectionReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) investmentDistributions: list[InvestmentDistribution], rejectionReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvestmentAttestation:
     str attestationId
     str investmentName
@@ -682,8 +709,9 @@ struct InvestmentSummary:
 struct LegalEntity:
     str legalEntityName
 
-# no @derive(Json): member(s) linkedTimePeriods: list[EnterpriseSupportTimePeriod], subscriptionTimePeriods: list[EnterpriseSupportTimePeriod], supportEligibleSpendByService: list[ServiceLevelAccountUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedTimePeriods: list[EnterpriseSupportTimePeriod], subscriptionTimePeriods: list[EnterpriseSupportTimePeriod], supportEligibleSpendByService: list[ServiceLevelAccountUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkedAccountCharge:
     str accountId
     str payerAccountId
@@ -705,14 +733,16 @@ struct ListBillingViewSegmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[BillingViewSegmentsListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BillingViewSegmentsListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingViewSegmentsResponse:
     list[BillingViewSegmentsListElement] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) arns: list[str], billingViewTypes: list[BillingViewType], names: list[StringSearch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) arns: list[str], billingViewTypes: list[BillingViewType], names: list[StringSearch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingViewsRequest:
     Optional[ActiveTimeRange] activeTimeRange
     Optional[list[str]] arns
@@ -723,8 +753,9 @@ struct ListBillingViewsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) billingViews: list[BillingViewListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) billingViews: list[BillingViewListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBillingViewsResponse:
     list[BillingViewListElement] billingViews
     Optional[str] nextToken
@@ -736,8 +767,9 @@ struct ListBusinessSupportAccountChargesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accountCharges: list[BusinessSupportAccountCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountCharges: list[BusinessSupportAccountCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBusinessSupportAccountChargesResponse:
     str billingMonth
     bool isEstimated
@@ -756,8 +788,9 @@ struct ListBusinessSupportSubscriptionHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) subscriptionContracts: list[BusinessSupportSubscriptionContract] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptionContracts: list[BusinessSupportSubscriptionContract] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBusinessSupportSubscriptionHistoryResponse:
     list[BusinessSupportSubscriptionContract] subscriptionContracts
     Optional[str] nextToken
@@ -767,8 +800,9 @@ struct ListContractsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ContractSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ContractSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContractsResponse:
     list[ContractSummary] items
     Optional[str] nextToken
@@ -780,8 +814,9 @@ struct ListContractualInvestmentAttestationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[InvestmentAttestation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[InvestmentAttestation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContractualInvestmentAttestationsResponse:
     list[InvestmentAttestation] items
     Optional[str] nextToken
@@ -792,8 +827,9 @@ struct ListContractualInvestmentSummariesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[InvestmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[InvestmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContractualInvestmentSummariesResponse:
     list[InvestmentSummary] items
     Optional[str] nextToken
@@ -805,8 +841,9 @@ struct ListContractualInvestmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[Investment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Investment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContractualInvestmentsResponse:
     list[Investment] items
     Optional[str] nextToken
@@ -818,8 +855,9 @@ struct ListEnterpriseSupportLinkedAccountChargesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) linkedAccount: list[LinkedAccountCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedAccount: list[LinkedAccountCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnterpriseSupportLinkedAccountChargesResponse:
     list[LinkedAccountCharge] linkedAccount
     Optional[str] nextToken
@@ -830,8 +868,9 @@ struct ListSourceViewsForBillingViewRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sourceViews: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceViews: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceViewsForBillingViewResponse:
     list[str] sourceViews
     Optional[str] nextToken
@@ -840,8 +879,9 @@ struct ListSourceViewsForBillingViewResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[ResourceTag]] resourceTags
 
@@ -851,8 +891,9 @@ struct MilestoneBasedInvestment:
     Amount investmentValue
     DateTime investmentDisbursedAt
 
-# no @derive(Json): member(s) investmentRestrictions: list[InvestmentRestriction], investmentMultipliers: list[InvestmentMultiplier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) investmentRestrictions: list[InvestmentRestriction], investmentMultipliers: list[InvestmentMultiplier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutcomeBasedInvestment:
     str investmentId
     str outcomeDescription
@@ -861,8 +902,9 @@ struct OutcomeBasedInvestment:
     Optional[list[InvestmentMultiplier]] investmentMultipliers
     Amount disbursedValue
 
-# no @derive(Json): member(s) tiers: list[PricingPlanTier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tiers: list[PricingPlanTier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PricingPlan:
     Optional[str] pricingPlanId
     Optional[str] name
@@ -886,8 +928,9 @@ struct PricingPlanTier:
     Optional[str] increment
     Optional[str] incrementCharge
 
-# no @derive(Json): member(s) eligiblePayerAccounts: list[str], investmentAccounts: list[str], legalEntities: list[LegalEntity], contractRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eligiblePayerAccounts: list[str], investmentAccounts: list[str], legalEntities: list[LegalEntity], contractRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivatePricingAddendum:
     str contractArn
     Interval contractTerm
@@ -934,8 +977,9 @@ struct StringSearch:
     str searchOption
     str searchValue
 
-# no @derive(Json): member(s) resourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[ResourceTag] resourceTags
@@ -945,8 +989,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagValues:
     str key
     list[str] values
@@ -960,8 +1005,9 @@ struct TimeRange:
     Optional[DateTime] beginDateInclusive
     Optional[DateTime] endDateInclusive
 
-# no @derive(Json): member(s) resourceTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] resourceTagKeys
@@ -971,8 +1017,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) billingPreferencesPerKey: list[BillingPreferenceForKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) billingPreferencesPerKey: list[BillingPreferenceForKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBillingPreferencesRequest:
     BillingFeature feature
     list[BillingPreferenceForKey] billingPreferencesPerKey
@@ -982,8 +1029,9 @@ struct UpdateBillingPreferencesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) dataFilterExpression: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataFilterExpression: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBillingViewRequest:
     str arn
     Optional[str] name
@@ -995,8 +1043,9 @@ struct UpdateBillingViewResponse:
     str arn
     Optional[DateTime] updatedAt
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -1044,22 +1093,294 @@ def billing_error_from_code(str code) -> BillingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateSourceViews (input AssociateSourceViewsRequest)
-#   CreateBillingView (input CreateBillingViewRequest)
-#   CreateContractualInvestmentAttestation (input CreateContractualInvestmentAttestationRequest)
-#   DisassociateSourceViews (input DisassociateSourceViewsRequest)
-#   GetBillingPreferences (input GetBillingPreferencesRequest)
-#   ListBillingViews (input ListBillingViewsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateBillingPreferences (input UpdateBillingPreferencesRequest)
-#   UpdateBillingView (input UpdateBillingViewRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def billing_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListBillingViews (input not derivable (no generated method))
+def billing_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def billing_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateSourceViewsRequest to a compact JSON object (declaration order).
+def associate_source_views_request_to_json(AssociateSourceViewsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + billing_json_str(v.arn))
+    list[str] e0 = []
+    for x0 in v.sourceViews:
+        e0.append(billing_json_str(x0))
+    parts.append("\"sourceViews\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize AttestationDetails to a compact JSON object (declaration order).
+def attestation_details_to_json(AttestationDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"attestationValue\":" + attestation_value_to_json(v.attestationValue))
+    if v.investmentDistributions.is_some():
+        auto u0 = v.investmentDistributions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"investmentDistributions\":" + billing_json_arr(e1))
+    return billing_json_obj(parts)
+
+# Serialize AttestationValue to a compact JSON object (declaration order).
+def attestation_value_to_json(AttestationValue v) -> str:
+    list[str] parts = []
+    if v.attestationAmount.is_some():
+        auto u0 = v.attestationAmount.unwrap()
+        parts.append("\"attestationAmount\":" + u0.to_json())
+    if v.attestationQuantities.is_some():
+        auto u1 = v.attestationQuantities.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"attestationQuantities\":" + billing_json_arr(e2))
+    return billing_json_obj(parts)
+
+# Serialize BillingFeatureFilter to a compact JSON object (declaration order).
+def billing_feature_filter_to_json(BillingFeatureFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + billing_json_str(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(billing_json_str(x2))
+        parts.append("\"value\":" + billing_json_arr(e2))
+    return billing_json_obj(parts)
+
+# Serialize CostCategoryValues to a compact JSON object (declaration order).
+def cost_category_values_to_json(CostCategoryValues v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + billing_json_str(v.key))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(billing_json_str(x0))
+    parts.append("\"values\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize CreateBillingViewRequest to a compact JSON object (declaration order).
+def create_billing_view_request_to_json(CreateBillingViewRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + billing_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + billing_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.sourceViews:
+        e1.append(billing_json_str(x1))
+    parts.append("\"sourceViews\":" + billing_json_arr(e1))
+    if v.dataFilterExpression.is_some():
+        auto u2 = v.dataFilterExpression.unwrap()
+        parts.append("\"dataFilterExpression\":" + expression_to_json(u2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + billing_json_str(u3))
+    if v.resourceTags.is_some():
+        auto u4 = v.resourceTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"resourceTags\":" + billing_json_arr(e5))
+    return billing_json_obj(parts)
+
+# Serialize CreateContractualInvestmentAttestationRequest to a compact JSON object (declaration order).
+def create_contractual_investment_attestation_request_to_json(CreateContractualInvestmentAttestationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"contractArn\":" + billing_json_str(v.contractArn))
+    parts.append("\"investmentSummaryId\":" + billing_json_str(v.investmentSummaryId))
+    parts.append("\"investmentId\":" + billing_json_str(v.investmentId))
+    parts.append("\"contractDocumentId\":" + billing_json_str(v.contractDocumentId))
+    parts.append("\"approverDetails\":" + v.approverDetails.to_json())
+    if v.investmentDisbursedAt.is_some():
+        auto u0 = v.investmentDisbursedAt.unwrap()
+        parts.append("\"investmentDisbursedAt\":" + str(datetime.to_timestamp(u0)))
+    parts.append("\"attestationDetails\":" + attestation_details_to_json(v.attestationDetails))
+    if v.additionalRecipients.is_some():
+        auto u1 = v.additionalRecipients.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"additionalRecipients\":" + billing_json_arr(e2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + billing_json_str(u3))
+    return billing_json_obj(parts)
+
+# Serialize DimensionValues to a compact JSON object (declaration order).
+def dimension_values_to_json(DimensionValues v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + billing_json_str(v.key))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(billing_json_str(x0))
+    parts.append("\"values\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize DisassociateSourceViewsRequest to a compact JSON object (declaration order).
+def disassociate_source_views_request_to_json(DisassociateSourceViewsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + billing_json_str(v.arn))
+    list[str] e0 = []
+    for x0 in v.sourceViews:
+        e0.append(billing_json_str(x0))
+    parts.append("\"sourceViews\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.dimensions.is_some():
+        auto u0 = v.dimensions.unwrap()
+        parts.append("\"dimensions\":" + dimension_values_to_json(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        parts.append("\"tags\":" + tag_values_to_json(u1))
+    if v.costCategories.is_some():
+        auto u2 = v.costCategories.unwrap()
+        parts.append("\"costCategories\":" + cost_category_values_to_json(u2))
+    if v.timeRange.is_some():
+        auto u3 = v.timeRange.unwrap()
+        parts.append("\"timeRange\":" + u3.to_json())
+    return billing_json_obj(parts)
+
+# Serialize GetBillingPreferencesRequest to a compact JSON object (declaration order).
+def get_billing_preferences_request_to_json(GetBillingPreferencesRequest v) -> str:
+    list[str] parts = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + billing_json_str(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    list[str] e2 = []
+    for x2 in v.features:
+        e2.append(x2.to_json())
+    parts.append("\"features\":" + billing_json_arr(e2))
+    if v.filters.is_some():
+        auto u3 = v.filters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(billing_feature_filter_to_json(x4))
+        parts.append("\"filters\":" + billing_json_arr(e4))
+    return billing_json_obj(parts)
+
+# Serialize ListBillingViewsRequest to a compact JSON object (declaration order).
+def list_billing_views_request_to_json(ListBillingViewsRequest v) -> str:
+    list[str] parts = []
+    if v.activeTimeRange.is_some():
+        auto u0 = v.activeTimeRange.unwrap()
+        parts.append("\"activeTimeRange\":" + u0.to_json())
+    if v.arns.is_some():
+        auto u1 = v.arns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(billing_json_str(x2))
+        parts.append("\"arns\":" + billing_json_arr(e2))
+    if v.billingViewTypes.is_some():
+        auto u3 = v.billingViewTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"billingViewTypes\":" + billing_json_arr(e4))
+    if v.names.is_some():
+        auto u5 = v.names.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"names\":" + billing_json_arr(e6))
+    if v.ownerAccountId.is_some():
+        auto u7 = v.ownerAccountId.unwrap()
+        parts.append("\"ownerAccountId\":" + billing_json_str(u7))
+    if v.sourceAccountId.is_some():
+        auto u8 = v.sourceAccountId.unwrap()
+        parts.append("\"sourceAccountId\":" + billing_json_str(u8))
+    if v.maxResults.is_some():
+        auto u9 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u9))
+    if v.nextToken.is_some():
+        auto u10 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + billing_json_str(u10))
+    return billing_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + billing_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.resourceTags:
+        e0.append(x0.to_json())
+    parts.append("\"resourceTags\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize TagValues to a compact JSON object (declaration order).
+def tag_values_to_json(TagValues v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + billing_json_str(v.key))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(billing_json_str(x0))
+    parts.append("\"values\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + billing_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.resourceTagKeys:
+        e0.append(billing_json_str(x0))
+    parts.append("\"resourceTagKeys\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize UpdateBillingPreferencesRequest to a compact JSON object (declaration order).
+def update_billing_preferences_request_to_json(UpdateBillingPreferencesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"feature\":" + v.feature.to_json())
+    list[str] e0 = []
+    for x0 in v.billingPreferencesPerKey:
+        e0.append(x0.to_json())
+    parts.append("\"billingPreferencesPerKey\":" + billing_json_arr(e0))
+    return billing_json_obj(parts)
+
+# Serialize UpdateBillingViewRequest to a compact JSON object (declaration order).
+def update_billing_view_request_to_json(UpdateBillingViewRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + billing_json_str(v.arn))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + billing_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + billing_json_str(u1))
+    if v.dataFilterExpression.is_some():
+        auto u2 = v.dataFilterExpression.unwrap()
+        parts.append("\"dataFilterExpression\":" + expression_to_json(u2))
+    return billing_json_obj(parts)
 
 # A bound Billing client: credentials + region, threaded into every operation.
 struct BillingClient:
@@ -1072,11 +1393,29 @@ struct BillingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "AssociateContract", body)
 
+    # AssociateSourceViews
+    # errors: AccessDeniedException, BillingViewHealthStatusException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def associate_source_views(self, AssociateSourceViewsRequest input) -> str:
+        auto body = associate_source_views_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "AssociateSourceViews", body)
+
     # CancelContractualInvestmentAttestation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def cancel_contractual_investment_attestation(self, CancelContractualInvestmentAttestationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "CancelContractualInvestmentAttestation", body)
+
+    # CreateBillingView
+    # errors: AccessDeniedException, BillingViewHealthStatusException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_billing_view(self, CreateBillingViewRequest input) -> str:
+        auto body = create_billing_view_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "CreateBillingView", body)
+
+    # CreateContractualInvestmentAttestation
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_contractual_investment_attestation(self, CreateContractualInvestmentAttestationRequest input) -> str:
+        auto body = create_contractual_investment_attestation_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "CreateContractualInvestmentAttestation", body)
 
     # DeleteBillingView
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -1089,6 +1428,18 @@ struct BillingClient:
     def disassociate_contract(self, DisassociateContractRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "DisassociateContract", body)
+
+    # DisassociateSourceViews
+    # errors: AccessDeniedException, BillingViewHealthStatusException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_source_views(self, DisassociateSourceViewsRequest input) -> str:
+        auto body = disassociate_source_views_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "DisassociateSourceViews", body)
+
+    # GetBillingPreferences
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_billing_preferences(self, GetBillingPreferencesRequest input) -> str:
+        auto body = get_billing_preferences_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "GetBillingPreferences", body)
 
     # GetBillingView
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1137,6 +1488,12 @@ struct BillingClient:
     def list_billing_view_segments(self, ListBillingViewSegmentsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "ListBillingViewSegments", body)
+
+    # ListBillingViews
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_billing_views(self, ListBillingViewsRequest input) -> str:
+        auto body = list_billing_views_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "ListBillingViews", body)
 
     # ListBusinessSupportAccountCharges
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1198,6 +1555,30 @@ struct BillingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "RedeemCredits", body)
 
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateBillingPreferences
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_billing_preferences(self, UpdateBillingPreferencesRequest input) -> str:
+        auto body = update_billing_preferences_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "UpdateBillingPreferences", body)
+
+    # UpdateBillingView
+    # errors: AccessDeniedException, BillingViewHealthStatusException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_billing_view(self, UpdateBillingViewRequest input) -> str:
+        auto body = update_billing_view_request_to_json(input)
+        return awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "UpdateBillingView", body)
+
     # Paginator for GetCreditAllocationHistory — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: creditAllocationHistoryList).
     def paginate_get_credit_allocation_history(self, GetCreditAllocationHistoryRequest input):
@@ -1219,6 +1600,20 @@ struct BillingClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "ListBillingViewSegments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBillingViews — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: billingViews).
+    def paginate_list_billing_views(self, ListBillingViewsRequest input):
+        auto host = endpoints.regional_host(billing_protocol().service, self.region)
+        while True:
+            auto body = list_billing_views_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(billing_protocol(), self.creds, self.region, "ListBillingViews", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

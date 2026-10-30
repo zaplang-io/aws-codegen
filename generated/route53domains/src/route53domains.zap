@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 35 operations — 27 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 35 operations — 35 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   92 structs (74 @derive(Json)), 13 enums, 8 error variants.
-#   2 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Route_53_Domains awsJson protocol: version 1.1, API id "Route53Domains_v20140515".
 def route53domains_protocol() -> awsjson.AwsJson:
@@ -512,8 +513,9 @@ struct Consent:
     float64 MaxPrice
     str Currency
 
-# no @derive(Json): member(s) ExtraParams: list[ExtraParam] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtraParams: list[ExtraParam] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactDetail:
     Optional[str] FirstName
     Optional[str] LastName
@@ -538,8 +540,9 @@ struct DeleteDomainRequest:
 struct DeleteDomainResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) TagsToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTagsForDomainRequest:
     str DomainName
     list[str] TagsToDelete
@@ -652,8 +655,9 @@ struct ExtraParam:
     ExtraParamName Name
     str Value
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCondition:
     ListDomainsAttributeName Name
     Operator Operator
@@ -672,8 +676,9 @@ struct GetContactReachabilityStatusResponse:
 struct GetDomainDetailRequest:
     str DomainName
 
-# no @derive(Json): member(s) Nameservers: list[Nameserver], AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, StatusList: list[str], DnssecKeys: list[DnssecKey], BillingContact: ContactDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nameservers: list[Nameserver], AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, StatusList: list[str], DnssecKeys: list[DnssecKey], BillingContact: ContactDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainDetailResponse:
     Optional[str] DomainName
     Optional[list[Nameserver]] Nameservers
@@ -715,8 +720,9 @@ struct GetDomainSuggestionsRequest:
     bool OnlyAvailable
     Optional[bool] OnlyStandardPrices
 
-# no @derive(Json): member(s) SuggestionsList: list[DomainSuggestion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuggestionsList: list[DomainSuggestion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainSuggestionsResponse:
     Optional[list[DomainSuggestion]] SuggestionsList
 
@@ -739,22 +745,25 @@ struct GetOperationDetailResponse:
 struct InvalidInput:
     Optional[str] message
 
-# no @derive(Json): member(s) FilterConditions: list[FilterCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterConditions: list[FilterCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsRequest:
     Optional[list[FilterCondition]] FilterConditions
     Optional[SortCondition] SortCondition
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Domains: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     Optional[list[DomainSummary]] Domains
     Optional[str] NextPageMarker
 
-# no @derive(Json): member(s) Status: list[OperationStatus], Type: list[OperationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Status: list[OperationStatus], Type: list[OperationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationsRequest:
     Optional[DateTime] SubmittedSince
     Optional[str] Marker
@@ -764,8 +773,9 @@ struct ListOperationsRequest:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) Operations: list[OperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[OperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationsResponse:
     Optional[list[OperationSummary]] Operations
     Optional[str] NextPageMarker
@@ -776,8 +786,9 @@ struct ListPricesRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Prices: list[DomainPrice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Prices: list[DomainPrice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPricesResponse:
     Optional[list[DomainPrice]] Prices
     Optional[str] NextPageMarker
@@ -786,13 +797,15 @@ struct ListPricesResponse:
 struct ListTagsForDomainRequest:
     str DomainName
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForDomainResponse:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) GlueIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlueIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Nameserver:
     str Name
     Optional[list[str]] GlueIps
@@ -823,8 +836,9 @@ struct PushDomainRequest:
     str DomainName
     str Target
 
-# no @derive(Json): member(s) AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterDomainRequest:
     str DomainName
     Optional[str] IdnLangCode
@@ -904,8 +918,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Nameservers: list[Nameserver], AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nameservers: list[Nameserver], AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransferDomainRequest:
     str DomainName
     Optional[str] IdnLangCode
@@ -953,8 +968,9 @@ struct UpdateDomainContactPrivacyRequest:
 struct UpdateDomainContactPrivacyResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainContactRequest:
     str DomainName
     Optional[ContactDetail] AdminContact
@@ -967,8 +983,9 @@ struct UpdateDomainContactRequest:
 struct UpdateDomainContactResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Nameservers: list[Nameserver] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nameservers: list[Nameserver] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainNameserversRequest:
     str DomainName
     Optional[str] FIAuthKey
@@ -978,8 +995,9 @@ struct UpdateDomainNameserversRequest:
 struct UpdateDomainNameserversResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) TagsToUpdate: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsToUpdate: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTagsForDomainRequest:
     str DomainName
     Optional[list[Tag]] TagsToUpdate
@@ -996,8 +1014,9 @@ struct ViewBillingRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) BillingRecords: list[BillingRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BillingRecords: list[BillingRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewBillingResponse:
     Optional[str] NextPageMarker
     Optional[list[BillingRecord]] BillingRecords
@@ -1039,21 +1058,295 @@ def route53domains_error_from_code(str code) -> Route_53_DomainsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   DeleteTagsForDomain (input DeleteTagsForDomainRequest)
-#   ListDomains (input ListDomainsRequest)
-#   ListOperations (input ListOperationsRequest)
-#   RegisterDomain (input RegisterDomainRequest)
-#   TransferDomain (input TransferDomainRequest)
-#   UpdateDomainContact (input UpdateDomainContactRequest)
-#   UpdateDomainNameservers (input UpdateDomainNameserversRequest)
-#   UpdateTagsForDomain (input UpdateTagsForDomainRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def route53domains_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListDomains (input not derivable (no generated method))
-#   ListOperations (input not derivable (no generated method))
+def route53domains_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def route53domains_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ContactDetail to a compact JSON object (declaration order).
+def contact_detail_to_json(ContactDetail v) -> str:
+    list[str] parts = []
+    if v.FirstName.is_some():
+        auto u0 = v.FirstName.unwrap()
+        parts.append("\"FirstName\":" + route53domains_json_str(u0))
+    if v.LastName.is_some():
+        auto u1 = v.LastName.unwrap()
+        parts.append("\"LastName\":" + route53domains_json_str(u1))
+    if v.ContactType.is_some():
+        auto u2 = v.ContactType.unwrap()
+        parts.append("\"ContactType\":" + u2.to_json())
+    if v.OrganizationName.is_some():
+        auto u3 = v.OrganizationName.unwrap()
+        parts.append("\"OrganizationName\":" + route53domains_json_str(u3))
+    if v.AddressLine1.is_some():
+        auto u4 = v.AddressLine1.unwrap()
+        parts.append("\"AddressLine1\":" + route53domains_json_str(u4))
+    if v.AddressLine2.is_some():
+        auto u5 = v.AddressLine2.unwrap()
+        parts.append("\"AddressLine2\":" + route53domains_json_str(u5))
+    if v.City.is_some():
+        auto u6 = v.City.unwrap()
+        parts.append("\"City\":" + route53domains_json_str(u6))
+    if v.State.is_some():
+        auto u7 = v.State.unwrap()
+        parts.append("\"State\":" + route53domains_json_str(u7))
+    if v.CountryCode.is_some():
+        auto u8 = v.CountryCode.unwrap()
+        parts.append("\"CountryCode\":" + u8.to_json())
+    if v.ZipCode.is_some():
+        auto u9 = v.ZipCode.unwrap()
+        parts.append("\"ZipCode\":" + route53domains_json_str(u9))
+    if v.PhoneNumber.is_some():
+        auto u10 = v.PhoneNumber.unwrap()
+        parts.append("\"PhoneNumber\":" + route53domains_json_str(u10))
+    if v.Email.is_some():
+        auto u11 = v.Email.unwrap()
+        parts.append("\"Email\":" + route53domains_json_str(u11))
+    if v.Fax.is_some():
+        auto u12 = v.Fax.unwrap()
+        parts.append("\"Fax\":" + route53domains_json_str(u12))
+    if v.ExtraParams.is_some():
+        auto u13 = v.ExtraParams.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"ExtraParams\":" + route53domains_json_arr(e14))
+    return route53domains_json_obj(parts)
+
+# Serialize DeleteTagsForDomainRequest to a compact JSON object (declaration order).
+def delete_tags_for_domain_request_to_json(DeleteTagsForDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+    list[str] e0 = []
+    for x0 in v.TagsToDelete:
+        e0.append(route53domains_json_str(x0))
+    parts.append("\"TagsToDelete\":" + route53domains_json_arr(e0))
+    return route53domains_json_obj(parts)
+
+# Serialize FilterCondition to a compact JSON object (declaration order).
+def filter_condition_to_json(FilterCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(route53domains_json_str(x0))
+    parts.append("\"Values\":" + route53domains_json_arr(e0))
+    return route53domains_json_obj(parts)
+
+# Serialize ListDomainsRequest to a compact JSON object (declaration order).
+def list_domains_request_to_json(ListDomainsRequest v) -> str:
+    list[str] parts = []
+    if v.FilterConditions.is_some():
+        auto u0 = v.FilterConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_condition_to_json(x1))
+        parts.append("\"FilterConditions\":" + route53domains_json_arr(e1))
+    if v.SortCondition.is_some():
+        auto u2 = v.SortCondition.unwrap()
+        parts.append("\"SortCondition\":" + u2.to_json())
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + route53domains_json_str(u3))
+    if v.MaxItems.is_some():
+        auto u4 = v.MaxItems.unwrap()
+        parts.append("\"MaxItems\":" + str(u4))
+    return route53domains_json_obj(parts)
+
+# Serialize ListOperationsRequest to a compact JSON object (declaration order).
+def list_operations_request_to_json(ListOperationsRequest v) -> str:
+    list[str] parts = []
+    if v.SubmittedSince.is_some():
+        auto u0 = v.SubmittedSince.unwrap()
+        parts.append("\"SubmittedSince\":" + str(datetime.to_timestamp(u0)))
+    if v.Marker.is_some():
+        auto u1 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + route53domains_json_str(u1))
+    if v.MaxItems.is_some():
+        auto u2 = v.MaxItems.unwrap()
+        parts.append("\"MaxItems\":" + str(u2))
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Status\":" + route53domains_json_arr(e4))
+    if v.Type.is_some():
+        auto u5 = v.Type.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Type\":" + route53domains_json_arr(e6))
+    if v.SortBy.is_some():
+        auto u7 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + route53domains_json_str(u7))
+    if v.SortOrder.is_some():
+        auto u8 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u8.to_json())
+    return route53domains_json_obj(parts)
+
+# Serialize Nameserver to a compact JSON object (declaration order).
+def nameserver_to_json(Nameserver v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + route53domains_json_str(v.Name))
+    if v.GlueIps.is_some():
+        auto u0 = v.GlueIps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(route53domains_json_str(x1))
+        parts.append("\"GlueIps\":" + route53domains_json_arr(e1))
+    return route53domains_json_obj(parts)
+
+# Serialize RegisterDomainRequest to a compact JSON object (declaration order).
+def register_domain_request_to_json(RegisterDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+    if v.IdnLangCode.is_some():
+        auto u0 = v.IdnLangCode.unwrap()
+        parts.append("\"IdnLangCode\":" + route53domains_json_str(u0))
+    parts.append("\"DurationInYears\":" + str(v.DurationInYears))
+    if v.AutoRenew.is_some():
+        auto u1 = v.AutoRenew.unwrap()
+        parts.append("\"AutoRenew\":" + json.dumps(JsonValue.Bool(u1)))
+    parts.append("\"AdminContact\":" + contact_detail_to_json(v.AdminContact))
+    parts.append("\"RegistrantContact\":" + contact_detail_to_json(v.RegistrantContact))
+    parts.append("\"TechContact\":" + contact_detail_to_json(v.TechContact))
+    if v.PrivacyProtectAdminContact.is_some():
+        auto u2 = v.PrivacyProtectAdminContact.unwrap()
+        parts.append("\"PrivacyProtectAdminContact\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.PrivacyProtectRegistrantContact.is_some():
+        auto u3 = v.PrivacyProtectRegistrantContact.unwrap()
+        parts.append("\"PrivacyProtectRegistrantContact\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.PrivacyProtectTechContact.is_some():
+        auto u4 = v.PrivacyProtectTechContact.unwrap()
+        parts.append("\"PrivacyProtectTechContact\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.BillingContact.is_some():
+        auto u5 = v.BillingContact.unwrap()
+        parts.append("\"BillingContact\":" + contact_detail_to_json(u5))
+    if v.PrivacyProtectBillingContact.is_some():
+        auto u6 = v.PrivacyProtectBillingContact.unwrap()
+        parts.append("\"PrivacyProtectBillingContact\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.Consent.is_some():
+        auto u7 = v.Consent.unwrap()
+        parts.append("\"Consent\":" + u7.to_json())
+    return route53domains_json_obj(parts)
+
+# Serialize TransferDomainRequest to a compact JSON object (declaration order).
+def transfer_domain_request_to_json(TransferDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+    if v.IdnLangCode.is_some():
+        auto u0 = v.IdnLangCode.unwrap()
+        parts.append("\"IdnLangCode\":" + route53domains_json_str(u0))
+    if v.DurationInYears.is_some():
+        auto u1 = v.DurationInYears.unwrap()
+        parts.append("\"DurationInYears\":" + str(u1))
+    if v.Nameservers.is_some():
+        auto u2 = v.Nameservers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(nameserver_to_json(x3))
+        parts.append("\"Nameservers\":" + route53domains_json_arr(e3))
+    if v.AuthCode.is_some():
+        auto u4 = v.AuthCode.unwrap()
+        parts.append("\"AuthCode\":" + route53domains_json_str(u4))
+    if v.AutoRenew.is_some():
+        auto u5 = v.AutoRenew.unwrap()
+        parts.append("\"AutoRenew\":" + json.dumps(JsonValue.Bool(u5)))
+    parts.append("\"AdminContact\":" + contact_detail_to_json(v.AdminContact))
+    parts.append("\"RegistrantContact\":" + contact_detail_to_json(v.RegistrantContact))
+    parts.append("\"TechContact\":" + contact_detail_to_json(v.TechContact))
+    if v.PrivacyProtectAdminContact.is_some():
+        auto u6 = v.PrivacyProtectAdminContact.unwrap()
+        parts.append("\"PrivacyProtectAdminContact\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.PrivacyProtectRegistrantContact.is_some():
+        auto u7 = v.PrivacyProtectRegistrantContact.unwrap()
+        parts.append("\"PrivacyProtectRegistrantContact\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.PrivacyProtectTechContact.is_some():
+        auto u8 = v.PrivacyProtectTechContact.unwrap()
+        parts.append("\"PrivacyProtectTechContact\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.BillingContact.is_some():
+        auto u9 = v.BillingContact.unwrap()
+        parts.append("\"BillingContact\":" + contact_detail_to_json(u9))
+    if v.PrivacyProtectBillingContact.is_some():
+        auto u10 = v.PrivacyProtectBillingContact.unwrap()
+        parts.append("\"PrivacyProtectBillingContact\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.Consent.is_some():
+        auto u11 = v.Consent.unwrap()
+        parts.append("\"Consent\":" + u11.to_json())
+    return route53domains_json_obj(parts)
+
+# Serialize UpdateDomainContactRequest to a compact JSON object (declaration order).
+def update_domain_contact_request_to_json(UpdateDomainContactRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+    if v.AdminContact.is_some():
+        auto u0 = v.AdminContact.unwrap()
+        parts.append("\"AdminContact\":" + contact_detail_to_json(u0))
+    if v.RegistrantContact.is_some():
+        auto u1 = v.RegistrantContact.unwrap()
+        parts.append("\"RegistrantContact\":" + contact_detail_to_json(u1))
+    if v.TechContact.is_some():
+        auto u2 = v.TechContact.unwrap()
+        parts.append("\"TechContact\":" + contact_detail_to_json(u2))
+    if v.Consent.is_some():
+        auto u3 = v.Consent.unwrap()
+        parts.append("\"Consent\":" + u3.to_json())
+    if v.BillingContact.is_some():
+        auto u4 = v.BillingContact.unwrap()
+        parts.append("\"BillingContact\":" + contact_detail_to_json(u4))
+    return route53domains_json_obj(parts)
+
+# Serialize UpdateDomainNameserversRequest to a compact JSON object (declaration order).
+def update_domain_nameservers_request_to_json(UpdateDomainNameserversRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+    if v.FIAuthKey.is_some():
+        auto u0 = v.FIAuthKey.unwrap()
+        parts.append("\"FIAuthKey\":" + route53domains_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Nameservers:
+        e1.append(nameserver_to_json(x1))
+    parts.append("\"Nameservers\":" + route53domains_json_arr(e1))
+    return route53domains_json_obj(parts)
+
+# Serialize UpdateTagsForDomainRequest to a compact JSON object (declaration order).
+def update_tags_for_domain_request_to_json(UpdateTagsForDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+    if v.TagsToUpdate.is_some():
+        auto u0 = v.TagsToUpdate.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagsToUpdate\":" + route53domains_json_arr(e1))
+    return route53domains_json_obj(parts)
 
 # A bound Route_53_Domains client: credentials + region, threaded into every operation.
 struct Route_53_DomainsClient:
@@ -1095,6 +1388,12 @@ struct Route_53_DomainsClient:
     def delete_domain(self, DeleteDomainRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DeleteDomain", body)
+
+    # DeleteTagsForDomain
+    # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
+    def delete_tags_for_domain(self, DeleteTagsForDomainRequest input) -> str:
+        auto body = delete_tags_for_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DeleteTagsForDomain", body)
 
     # DisableDomainAutoRenew
     # errors: InvalidInput, UnsupportedTLD
@@ -1156,6 +1455,18 @@ struct Route_53_DomainsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "GetOperationDetail", body)
 
+    # ListDomains
+    # errors: InvalidInput
+    def list_domains(self, ListDomainsRequest input) -> str:
+        auto body = list_domains_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListDomains", body)
+
+    # ListOperations
+    # errors: InvalidInput
+    def list_operations(self, ListOperationsRequest input) -> str:
+        auto body = list_operations_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListOperations", body)
+
     # ListPrices
     # errors: InvalidInput, UnsupportedTLD
     def list_prices(self, ListPricesRequest input) -> str:
@@ -1173,6 +1484,12 @@ struct Route_53_DomainsClient:
     def push_domain(self, PushDomainRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "PushDomain", body)
+
+    # RegisterDomain
+    # errors: DomainLimitExceeded, DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
+    def register_domain(self, RegisterDomainRequest input) -> str:
+        auto body = register_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RegisterDomain", body)
 
     # RejectDomainTransferFromAnotherAwsAccount
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
@@ -1204,11 +1521,23 @@ struct Route_53_DomainsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RetrieveDomainAuthCode", body)
 
+    # TransferDomain
+    # errors: DomainLimitExceeded, DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
+    def transfer_domain(self, TransferDomainRequest input) -> str:
+        auto body = transfer_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "TransferDomain", body)
+
     # TransferDomainToAnotherAwsAccount
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, UnsupportedTLD
     def transfer_domain_to_another_aws_account(self, TransferDomainToAnotherAwsAccountRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "TransferDomainToAnotherAwsAccount", body)
+
+    # UpdateDomainContact
+    # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
+    def update_domain_contact(self, UpdateDomainContactRequest input) -> str:
+        auto body = update_domain_contact_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateDomainContact", body)
 
     # UpdateDomainContactPrivacy
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
@@ -1216,11 +1545,51 @@ struct Route_53_DomainsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateDomainContactPrivacy", body)
 
+    # UpdateDomainNameservers
+    # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
+    def update_domain_nameservers(self, UpdateDomainNameserversRequest input) -> str:
+        auto body = update_domain_nameservers_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateDomainNameservers", body)
+
+    # UpdateTagsForDomain
+    # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
+    def update_tags_for_domain(self, UpdateTagsForDomainRequest input) -> str:
+        auto body = update_tags_for_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateTagsForDomain", body)
+
     # ViewBilling
     # errors: InvalidInput
     def view_billing(self, ViewBillingRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ViewBilling", body)
+
+    # Paginator for ListDomains — yields each Response page, threading the
+    # NextPageMarker -> Marker continuation token until the output token is absent (result key: Domains).
+    def paginate_list_domains(self, ListDomainsRequest input):
+        auto host = endpoints.regional_host(route53domains_protocol().service, self.region)
+        while True:
+            auto body = list_domains_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListDomains", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageMarker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for ListOperations — yields each Response page, threading the
+    # NextPageMarker -> Marker continuation token until the output token is absent (result key: Operations).
+    def paginate_list_operations(self, ListOperationsRequest input):
+        auto host = endpoints.regional_host(route53domains_protocol().service, self.region)
+        while True:
+            auto body = list_operations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListOperations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageMarker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
 
     # Paginator for ListPrices — yields each Response page, threading the
     # NextPageMarker -> Marker continuation token until the output token is absent (result key: Prices).

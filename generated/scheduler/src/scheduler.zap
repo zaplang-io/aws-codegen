@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 7 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 12 operations — 11 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (35 @derive(Json)), 8 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Scheduler rest-json protocol: SigV4 service "scheduler" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -100,8 +101,9 @@ enum ScheduleState:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) SecurityGroups: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsVpcConfiguration:
     Optional[AssignPublicIp] AssignPublicIp
     Optional[list[str]] SecurityGroups
@@ -176,8 +178,9 @@ struct DeleteScheduleOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CapacityProviderStrategy: list[CapacityProviderStrategyItem], NetworkConfiguration: NetworkConfiguration, PlacementConstraints: list[PlacementConstraint], PlacementStrategy: list[PlacementStrategy], Tags: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProviderStrategy: list[CapacityProviderStrategyItem], NetworkConfiguration: NetworkConfiguration, PlacementConstraints: list[PlacementConstraint], PlacementStrategy: list[PlacementStrategy], Tags: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsParameters:
     Optional[list[CapacityProviderStrategyItem]] CapacityProviderStrategy
     Optional[bool] EnableECSManagedTags
@@ -223,8 +226,9 @@ struct GetScheduleInput:
     Optional[str] GroupName
     str Name
 
-# no @derive(Json): member(s) Target: Target not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Target: Target not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScheduleOutput:
     Optional[ActionAfterCompletion] ActionAfterCompletion
     Optional[str] Arn
@@ -257,8 +261,9 @@ struct ListScheduleGroupsInput:
     Optional[str] NamePrefix
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScheduleGroups: list[ScheduleGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduleGroups: list[ScheduleGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduleGroupsOutput:
     Optional[str] NextToken
     list[ScheduleGroupSummary] ScheduleGroups
@@ -273,8 +278,9 @@ struct ListSchedulesInput:
     # wire string of the ScheduleState enum (querystring binding)
     Optional[str] State
 
-# no @derive(Json): member(s) Schedules: list[ScheduleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schedules: list[ScheduleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchedulesOutput:
     Optional[str] NextToken
     list[ScheduleSummary] Schedules
@@ -284,13 +290,15 @@ struct ListSchedulesOutput:
 struct ListTagsForResourceInput:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[AwsVpcConfiguration] awsvpcConfiguration
 
@@ -318,8 +326,9 @@ struct SageMakerPipelineParameter:
     str Name
     str Value
 
-# no @derive(Json): member(s) PipelineParameterList: list[SageMakerPipelineParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineParameterList: list[SageMakerPipelineParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerPipelineParameters:
     Optional[list[SageMakerPipelineParameter]] PipelineParameterList
 
@@ -365,8 +374,9 @@ struct TagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EcsParameters: EcsParameters, SageMakerPipelineParameters: SageMakerPipelineParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EcsParameters: EcsParameters, SageMakerPipelineParameters: SageMakerPipelineParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Target:
     str Arn
     Optional[DeadLetterConfig] DeadLetterConfig
@@ -458,16 +468,231 @@ def scheduler_error_from_code(str code) -> SchedulerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateSchedule (document member `Target: Target` is not serializable by derive)
-#   CreateScheduleGroup (document member `Tags: list[Tag]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateSchedule (document member `Target: Target` is not serializable by derive)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def scheduler_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def scheduler_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def scheduler_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AwsVpcConfiguration to a compact JSON object (declaration order).
+def aws_vpc_configuration_to_json(AwsVpcConfiguration v) -> str:
+    list[str] parts = []
+    if v.AssignPublicIp.is_some():
+        auto u0 = v.AssignPublicIp.unwrap()
+        parts.append("\"AssignPublicIp\":" + u0.to_json())
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(scheduler_json_str(x2))
+        parts.append("\"SecurityGroups\":" + scheduler_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.Subnets:
+        e3.append(scheduler_json_str(x3))
+    parts.append("\"Subnets\":" + scheduler_json_arr(e3))
+    return scheduler_json_obj(parts)
+
+# Serialize EcsParameters to a compact JSON object (declaration order).
+def ecs_parameters_to_json(EcsParameters v) -> str:
+    list[str] parts = []
+    if v.CapacityProviderStrategy.is_some():
+        auto u0 = v.CapacityProviderStrategy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CapacityProviderStrategy\":" + scheduler_json_arr(e1))
+    if v.EnableECSManagedTags.is_some():
+        auto u2 = v.EnableECSManagedTags.unwrap()
+        parts.append("\"EnableECSManagedTags\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.EnableExecuteCommand.is_some():
+        auto u3 = v.EnableExecuteCommand.unwrap()
+        parts.append("\"EnableExecuteCommand\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Group.is_some():
+        auto u4 = v.Group.unwrap()
+        parts.append("\"Group\":" + scheduler_json_str(u4))
+    if v.LaunchType.is_some():
+        auto u5 = v.LaunchType.unwrap()
+        parts.append("\"LaunchType\":" + u5.to_json())
+    if v.NetworkConfiguration.is_some():
+        auto u6 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u6))
+    if v.PlacementConstraints.is_some():
+        auto u7 = v.PlacementConstraints.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"PlacementConstraints\":" + scheduler_json_arr(e8))
+    if v.PlacementStrategy.is_some():
+        auto u9 = v.PlacementStrategy.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PlacementStrategy\":" + scheduler_json_arr(e10))
+    if v.PlatformVersion.is_some():
+        auto u11 = v.PlatformVersion.unwrap()
+        parts.append("\"PlatformVersion\":" + scheduler_json_str(u11))
+    if v.PropagateTags.is_some():
+        auto u12 = v.PropagateTags.unwrap()
+        parts.append("\"PropagateTags\":" + scheduler_json_str(u12))
+    if v.ReferenceId.is_some():
+        auto u13 = v.ReferenceId.unwrap()
+        parts.append("\"ReferenceId\":" + scheduler_json_str(u13))
+    if v.Tags.is_some():
+        auto u14 = v.Tags.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            list[str] m16 = []
+            for k16 in sorted(x15.keys()):
+                m16.append(scheduler_json_str(k16) + ":" + scheduler_json_str(x15[k16]))
+            e15.append(scheduler_json_obj(m16))
+        parts.append("\"Tags\":" + scheduler_json_arr(e15))
+    if v.TaskCount.is_some():
+        auto u17 = v.TaskCount.unwrap()
+        parts.append("\"TaskCount\":" + str(u17))
+    parts.append("\"TaskDefinitionArn\":" + scheduler_json_str(v.TaskDefinitionArn))
+    return scheduler_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.awsvpcConfiguration.is_some():
+        auto u0 = v.awsvpcConfiguration.unwrap()
+        parts.append("\"awsvpcConfiguration\":" + aws_vpc_configuration_to_json(u0))
+    return scheduler_json_obj(parts)
+
+# Serialize SageMakerPipelineParameters to a compact JSON object (declaration order).
+def sage_maker_pipeline_parameters_to_json(SageMakerPipelineParameters v) -> str:
+    list[str] parts = []
+    if v.PipelineParameterList.is_some():
+        auto u0 = v.PipelineParameterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PipelineParameterList\":" + scheduler_json_arr(e1))
+    return scheduler_json_obj(parts)
+
+# Serialize Target to a compact JSON object (declaration order).
+def target_to_json(Target v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + scheduler_json_str(v.Arn))
+    if v.DeadLetterConfig.is_some():
+        auto u0 = v.DeadLetterConfig.unwrap()
+        parts.append("\"DeadLetterConfig\":" + u0.to_json())
+    if v.EcsParameters.is_some():
+        auto u1 = v.EcsParameters.unwrap()
+        parts.append("\"EcsParameters\":" + ecs_parameters_to_json(u1))
+    if v.EventBridgeParameters.is_some():
+        auto u2 = v.EventBridgeParameters.unwrap()
+        parts.append("\"EventBridgeParameters\":" + u2.to_json())
+    if v.Input.is_some():
+        auto u3 = v.Input.unwrap()
+        parts.append("\"Input\":" + scheduler_json_str(u3))
+    if v.KinesisParameters.is_some():
+        auto u4 = v.KinesisParameters.unwrap()
+        parts.append("\"KinesisParameters\":" + u4.to_json())
+    if v.RetryPolicy.is_some():
+        auto u5 = v.RetryPolicy.unwrap()
+        parts.append("\"RetryPolicy\":" + u5.to_json())
+    parts.append("\"RoleArn\":" + scheduler_json_str(v.RoleArn))
+    if v.SageMakerPipelineParameters.is_some():
+        auto u6 = v.SageMakerPipelineParameters.unwrap()
+        parts.append("\"SageMakerPipelineParameters\":" + sage_maker_pipeline_parameters_to_json(u6))
+    if v.SqsParameters.is_some():
+        auto u7 = v.SqsParameters.unwrap()
+        parts.append("\"SqsParameters\":" + u7.to_json())
+    return scheduler_json_obj(parts)
 
 # A bound Scheduler client: credentials + region, threaded into every operation.
 struct SchedulerClient:
     core.Credentials creds
     str region
+
+    # CreateSchedule  POST /schedules/{Name}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_schedule(self, CreateScheduleInput input) -> str:
+        auto host = endpoints.regional_host(scheduler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ActionAfterCompletion.is_some():
+            auto u0 = input.ActionAfterCompletion.unwrap()
+            parts.append("\"ActionAfterCompletion\":" + u0.to_json())
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + scheduler_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + scheduler_json_str(u2))
+        if input.EndDate.is_some():
+            auto u3 = input.EndDate.unwrap()
+            parts.append("\"EndDate\":" + str(datetime.to_timestamp(u3)))
+        parts.append("\"FlexibleTimeWindow\":" + input.FlexibleTimeWindow.to_json())
+        if input.GroupName.is_some():
+            auto u4 = input.GroupName.unwrap()
+            parts.append("\"GroupName\":" + scheduler_json_str(u4))
+        if input.KmsKeyArn.is_some():
+            auto u5 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + scheduler_json_str(u5))
+        parts.append("\"ScheduleExpression\":" + scheduler_json_str(input.ScheduleExpression))
+        if input.ScheduleExpressionTimezone.is_some():
+            auto u6 = input.ScheduleExpressionTimezone.unwrap()
+            parts.append("\"ScheduleExpressionTimezone\":" + scheduler_json_str(u6))
+        if input.StartDate.is_some():
+            auto u7 = input.StartDate.unwrap()
+            parts.append("\"StartDate\":" + str(datetime.to_timestamp(u7)))
+        if input.State.is_some():
+            auto u8 = input.State.unwrap()
+            parts.append("\"State\":" + u8.to_json())
+        parts.append("\"Target\":" + target_to_json(input.Target))
+        auto bp = restjson.rest_json_document(b, scheduler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scheduler_service(), self.region, host)
+
+    # CreateScheduleGroup  POST /schedule-groups/{Name}
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_schedule_group(self, CreateScheduleGroupInput input) -> str:
+        auto host = endpoints.regional_host(scheduler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + scheduler_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + scheduler_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, scheduler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scheduler_service(), self.region, host)
 
     # DeleteSchedule  DELETE /schedules/{Name}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -556,6 +781,62 @@ struct SchedulerClient:
         labels["ResourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(scheduler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + scheduler_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, scheduler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scheduler_service(), self.region, host)
+
+    # UpdateSchedule  PUT /schedules/{Name}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_schedule(self, UpdateScheduleInput input) -> str:
+        auto host = endpoints.regional_host(scheduler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ActionAfterCompletion.is_some():
+            auto u0 = input.ActionAfterCompletion.unwrap()
+            parts.append("\"ActionAfterCompletion\":" + u0.to_json())
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + scheduler_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + scheduler_json_str(u2))
+        if input.EndDate.is_some():
+            auto u3 = input.EndDate.unwrap()
+            parts.append("\"EndDate\":" + str(datetime.to_timestamp(u3)))
+        parts.append("\"FlexibleTimeWindow\":" + input.FlexibleTimeWindow.to_json())
+        if input.GroupName.is_some():
+            auto u4 = input.GroupName.unwrap()
+            parts.append("\"GroupName\":" + scheduler_json_str(u4))
+        if input.KmsKeyArn.is_some():
+            auto u5 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + scheduler_json_str(u5))
+        parts.append("\"ScheduleExpression\":" + scheduler_json_str(input.ScheduleExpression))
+        if input.ScheduleExpressionTimezone.is_some():
+            auto u6 = input.ScheduleExpressionTimezone.unwrap()
+            parts.append("\"ScheduleExpressionTimezone\":" + scheduler_json_str(u6))
+        if input.StartDate.is_some():
+            auto u7 = input.StartDate.unwrap()
+            parts.append("\"StartDate\":" + str(datetime.to_timestamp(u7)))
+        if input.State.is_some():
+            auto u8 = input.State.unwrap()
+            parts.append("\"State\":" + u8.to_json())
+        parts.append("\"Target\":" + target_to_json(input.Target))
+        auto bp = restjson.rest_json_document(b, scheduler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scheduler_service(), self.region, host)
 
     # Paginator for ListScheduleGroups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: ScheduleGroups).

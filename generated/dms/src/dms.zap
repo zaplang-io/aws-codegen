@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 119 operations — 57 with a generated method,
-#   62 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 119 operations — 119 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   374 structs (216 @derive(Json)), 42 enums, 26 error variants.
-#   4 paginators generated (12 paginated ops skipped) from paginators-1.json.
+#   16 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,8 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
+import datetime
 
 # The Database_Migration_Service awsJson protocol: version 1.1, API id "AmazonDMSv20160101".
 def dms_protocol() -> awsjson.AwsJson:
@@ -373,8 +375,9 @@ struct AccountQuota:
     Optional[int64] Used
     Optional[int64] Max
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToResourceMessage:
     str ResourceArn
     list[Tag] Tags
@@ -390,8 +393,9 @@ struct ApplyPendingMaintenanceActionMessage:
     str ApplyAction
     str OptInType
 
-# no @derive(Json): member(s) ResourcePendingMaintenanceActions: ResourcePendingMaintenanceActions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourcePendingMaintenanceActions: ResourcePendingMaintenanceActions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplyPendingMaintenanceActionResponse:
     Optional[ResourcePendingMaintenanceActions] ResourcePendingMaintenanceActions
 
@@ -405,13 +409,15 @@ struct BatchStartRecommendationsErrorEntry:
     Optional[str] Message
     Optional[str] Code
 
-# no @derive(Json): member(s) Data: list[StartRecommendationsRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: list[StartRecommendationsRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStartRecommendationsRequest:
     Optional[list[StartRecommendationsRequestEntry]] Data
 
-# no @derive(Json): member(s) ErrorEntries: list[BatchStartRecommendationsErrorEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorEntries: list[BatchStartRecommendationsErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStartRecommendationsResponse:
     Optional[list[BatchStartRecommendationsErrorEntry]] ErrorEntries
 
@@ -487,8 +493,9 @@ struct CollectorShortInfoResponse:
     Optional[str] CollectorReferencedId
     Optional[str] CollectorName
 
-# no @derive(Json): member(s) VpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeConfig:
     Optional[str] AvailabilityZone
     Optional[str] DnsNameServers
@@ -509,8 +516,9 @@ struct Connection:
     Optional[str] EndpointIdentifier
     Optional[str] ReplicationInstanceIdentifier
 
-# no @derive(Json): member(s) SourceDataSettings: list[SourceDataSetting], TargetDataSettings: list[TargetDataSetting], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDataSettings: list[SourceDataSetting], TargetDataSettings: list[TargetDataSetting], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataMigrationMessage:
     Optional[str] DataMigrationName
     str MigrationProjectIdentifier
@@ -523,13 +531,15 @@ struct CreateDataMigrationMessage:
     Optional[list[Tag]] Tags
     Optional[str] SelectionRules
 
-# no @derive(Json): member(s) DataMigration: DataMigration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataMigration: DataMigration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataMigrationResponse:
     Optional[DataMigration] DataMigration
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataProviderMessage:
     Optional[str] DataProviderName
     Optional[str] Description
@@ -542,8 +552,9 @@ struct CreateDataProviderMessage:
 struct CreateDataProviderResponse:
     Optional[DataProvider] DataProvider
 
-# no @derive(Json): member(s) Tags: list[Tag], OracleSettings: OracleSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], OracleSettings: OracleSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointMessage:
     str EndpointIdentifier
     ReplicationEndpointTypeValue EndpointType
@@ -581,13 +592,15 @@ struct CreateEndpointMessage:
     Optional[GcpMySQLSettings] GcpMySQLSettings
     Optional[TimestreamSettings] TimestreamSettings
 
-# no @derive(Json): member(s) Endpoint: Endpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoint: Endpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointResponse:
     Optional[Endpoint] Endpoint
 
-# no @derive(Json): member(s) EventCategories: list[str], SourceIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategories: list[str], SourceIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventSubscriptionMessage:
     str SubscriptionName
     str SnsTopicArn
@@ -597,8 +610,9 @@ struct CreateEventSubscriptionMessage:
     Optional[bool] Enabled
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) EventSubscription: EventSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSubscription: EventSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventSubscriptionResponse:
     Optional[EventSubscription] EventSubscription
 
@@ -617,8 +631,9 @@ struct CreateFleetAdvisorCollectorResponse:
     Optional[str] ServiceAccessRoleArn
     Optional[str] S3BucketName
 
-# no @derive(Json): member(s) Tags: list[Tag], VpcSecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], VpcSecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceProfileMessage:
     Optional[str] AvailabilityZone
     Optional[str] KmsKeyArn
@@ -630,13 +645,15 @@ struct CreateInstanceProfileMessage:
     Optional[str] SubnetGroupIdentifier
     Optional[list[str]] VpcSecurityGroups
 
-# no @derive(Json): member(s) InstanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceProfileResponse:
     Optional[InstanceProfile] InstanceProfile
 
-# no @derive(Json): member(s) SourceDataProviderDescriptors: list[DataProviderDescriptorDefinition], TargetDataProviderDescriptors: list[DataProviderDescriptorDefinition], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDataProviderDescriptors: list[DataProviderDescriptorDefinition], TargetDataProviderDescriptors: list[DataProviderDescriptorDefinition], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMigrationProjectMessage:
     Optional[str] MigrationProjectName
     list[DataProviderDescriptorDefinition] SourceDataProviderDescriptors
@@ -647,13 +664,15 @@ struct CreateMigrationProjectMessage:
     Optional[list[Tag]] Tags
     Optional[SCApplicationAttributes] SchemaConversionApplicationAttributes
 
-# no @derive(Json): member(s) MigrationProject: MigrationProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationProject: MigrationProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMigrationProjectResponse:
     Optional[MigrationProject] MigrationProject
 
-# no @derive(Json): member(s) ComputeConfig: ComputeConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeConfig: ComputeConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationConfigMessage:
     str ReplicationConfigIdentifier
     str SourceEndpointArn
@@ -666,13 +685,15 @@ struct CreateReplicationConfigMessage:
     Optional[str] ResourceIdentifier
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ReplicationConfig: ReplicationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationConfig: ReplicationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationConfigResponse:
     Optional[ReplicationConfig] ReplicationConfig
 
-# no @derive(Json): member(s) VpcSecurityGroupIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroupIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationInstanceMessage:
     str ReplicationInstanceIdentifier
     Optional[int64] AllocatedStorage
@@ -692,26 +713,30 @@ struct CreateReplicationInstanceMessage:
     Optional[str] NetworkType
     Optional[KerberosAuthenticationSettings] KerberosAuthenticationSettings
 
-# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationInstanceResponse:
     Optional[ReplicationInstance] ReplicationInstance
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationSubnetGroupMessage:
     str ReplicationSubnetGroupIdentifier
     str ReplicationSubnetGroupDescription
     list[str] SubnetIds
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ReplicationSubnetGroup: ReplicationSubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationSubnetGroup: ReplicationSubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationSubnetGroupResponse:
     Optional[ReplicationSubnetGroup] ReplicationSubnetGroup
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationTaskMessage:
     str ReplicationTaskIdentifier
     str SourceEndpointArn
@@ -731,8 +756,9 @@ struct CreateReplicationTaskMessage:
 struct CreateReplicationTaskResponse:
     Optional[ReplicationTask] ReplicationTask
 
-# no @derive(Json): member(s) SourceDataSettings: list[SourceDataSetting], TargetDataSettings: list[TargetDataSetting], PublicIpAddresses: list[str], DataMigrationCidrBlocks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDataSettings: list[SourceDataSetting], TargetDataSettings: list[TargetDataSetting], PublicIpAddresses: list[str], DataMigrationCidrBlocks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataMigration:
     Optional[str] DataMigrationName
     Optional[str] DataMigrationArn
@@ -820,8 +846,9 @@ struct DatabaseInstanceSoftwareDetailsResponse:
     Optional[int64] OsArchitecture
     Optional[str] Tooltip
 
-# no @derive(Json): member(s) Collectors: list[CollectorShortInfoResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Collectors: list[CollectorShortInfoResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseResponse:
     Optional[str] DatabaseId
     Optional[str] DatabaseName
@@ -867,8 +894,9 @@ struct DeleteConnectionResponse:
 struct DeleteDataMigrationMessage:
     str DataMigrationIdentifier
 
-# no @derive(Json): member(s) DataMigration: DataMigration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataMigration: DataMigration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDataMigrationResponse:
     Optional[DataMigration] DataMigration
 
@@ -884,8 +912,9 @@ struct DeleteDataProviderResponse:
 struct DeleteEndpointMessage:
     str EndpointArn
 
-# no @derive(Json): member(s) Endpoint: Endpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoint: Endpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEndpointResponse:
     Optional[Endpoint] Endpoint
 
@@ -893,18 +922,21 @@ struct DeleteEndpointResponse:
 struct DeleteEventSubscriptionMessage:
     str SubscriptionName
 
-# no @derive(Json): member(s) EventSubscription: EventSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSubscription: EventSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEventSubscriptionResponse:
     Optional[EventSubscription] EventSubscription
 
-# no @derive(Json): member(s) DatabaseIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFleetAdvisorDatabasesRequest:
     list[str] DatabaseIds
 
-# no @derive(Json): member(s) DatabaseIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFleetAdvisorDatabasesResponse:
     Optional[list[str]] DatabaseIds
 
@@ -912,8 +944,9 @@ struct DeleteFleetAdvisorDatabasesResponse:
 struct DeleteInstanceProfileMessage:
     str InstanceProfileIdentifier
 
-# no @derive(Json): member(s) InstanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInstanceProfileResponse:
     Optional[InstanceProfile] InstanceProfile
 
@@ -921,8 +954,9 @@ struct DeleteInstanceProfileResponse:
 struct DeleteMigrationProjectMessage:
     str MigrationProjectIdentifier
 
-# no @derive(Json): member(s) MigrationProject: MigrationProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationProject: MigrationProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMigrationProjectResponse:
     Optional[MigrationProject] MigrationProject
 
@@ -930,8 +964,9 @@ struct DeleteMigrationProjectResponse:
 struct DeleteReplicationConfigMessage:
     str ReplicationConfigArn
 
-# no @derive(Json): member(s) ReplicationConfig: ReplicationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationConfig: ReplicationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteReplicationConfigResponse:
     Optional[ReplicationConfig] ReplicationConfig
 
@@ -939,8 +974,9 @@ struct DeleteReplicationConfigResponse:
 struct DeleteReplicationInstanceMessage:
     str ReplicationInstanceArn
 
-# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteReplicationInstanceResponse:
     Optional[ReplicationInstance] ReplicationInstance
 
@@ -974,8 +1010,9 @@ struct DescribeAccountAttributesMessage:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AccountQuotas: list[AccountQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountQuotas: list[AccountQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountAttributesResponse:
     Optional[list[AccountQuota]] AccountQuotas
     Optional[str] UniqueAccountIdentifier
@@ -991,34 +1028,39 @@ struct DescribeApplicableIndividualAssessmentsMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) IndividualAssessmentNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndividualAssessmentNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicableIndividualAssessmentsResponse:
     Optional[list[str]] IndividualAssessmentNames
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCertificatesMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) Certificates: list[Certificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Certificates: list[Certificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCertificatesResponse:
     Optional[str] Marker
     Optional[list[Certificate]] Certificates
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) Connections: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionsResponse:
     Optional[str] Marker
     Optional[list[Connection]] Connections
@@ -1032,8 +1074,9 @@ struct DescribeConversionConfigurationResponse:
     Optional[str] MigrationProjectIdentifier
     Optional[str] ConversionConfiguration
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataMigrationsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
@@ -1041,21 +1084,24 @@ struct DescribeDataMigrationsMessage:
     Optional[bool] WithoutSettings
     Optional[bool] WithoutStatistics
 
-# no @derive(Json): member(s) DataMigrations: list[DataMigration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataMigrations: list[DataMigration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataMigrationsResponse:
     Optional[list[DataMigration]] DataMigrations
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataProvidersMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) DataProviders: list[DataProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataProviders: list[DataProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataProvidersResponse:
     Optional[str] Marker
     Optional[list[DataProvider]] DataProviders
@@ -1066,34 +1112,39 @@ struct DescribeEndpointSettingsMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) EndpointSettings: list[EndpointSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointSettings: list[EndpointSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointSettingsResponse:
     Optional[str] Marker
     Optional[list[EndpointSetting]] EndpointSettings
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointTypesMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) SupportedEndpointTypes: list[SupportedEndpointType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedEndpointTypes: list[SupportedEndpointType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointTypesResponse:
     Optional[str] Marker
     Optional[list[SupportedEndpointType]] SupportedEndpointTypes
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointsResponse:
     Optional[str] Marker
     Optional[list[Endpoint]] Endpoints
@@ -1103,39 +1154,45 @@ struct DescribeEngineVersionsMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) EngineVersions: list[EngineVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineVersions: list[EngineVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEngineVersionsResponse:
     Optional[list[EngineVersion]] EngineVersions
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventCategoriesMessage:
     Optional[str] SourceType
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) EventCategoryGroupList: list[EventCategoryGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategoryGroupList: list[EventCategoryGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventCategoriesResponse:
     Optional[list[EventCategoryGroup]] EventCategoryGroupList
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventSubscriptionsMessage:
     Optional[str] SubscriptionName
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) EventSubscriptionsList: list[EventSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSubscriptionsList: list[EventSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventSubscriptionsResponse:
     Optional[str] Marker
     Optional[list[EventSubscription]] EventSubscriptionsList
 
-# no @derive(Json): member(s) EventCategories: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategories: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventsMessage:
     Optional[str] SourceIdentifier
     Optional[str] SourceType
@@ -1147,48 +1204,55 @@ struct DescribeEventsMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventsResponse:
     Optional[str] Marker
     Optional[list[Event]] Events
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExtensionPackAssociationsMessage:
     str MigrationProjectIdentifier
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExtensionPackAssociationsResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorCollectorsRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Collectors: list[CollectorResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Collectors: list[CollectorResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorCollectorsResponse:
     Optional[list[CollectorResponse]] Collectors
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorDatabasesRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Databases: list[DatabaseResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Databases: list[DatabaseResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorDatabasesResponse:
     Optional[list[DatabaseResponse]] Databases
     Optional[str] NextToken
@@ -1198,61 +1262,70 @@ struct DescribeFleetAdvisorLsaAnalysisRequest:
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Analysis: list[FleetAdvisorLsaAnalysisResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Analysis: list[FleetAdvisorLsaAnalysisResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorLsaAnalysisResponse:
     Optional[list[FleetAdvisorLsaAnalysisResponse]] Analysis
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorSchemaObjectSummaryRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FleetAdvisorSchemaObjects: list[FleetAdvisorSchemaObjectResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FleetAdvisorSchemaObjects: list[FleetAdvisorSchemaObjectResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorSchemaObjectSummaryResponse:
     Optional[list[FleetAdvisorSchemaObjectResponse]] FleetAdvisorSchemaObjects
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorSchemasRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FleetAdvisorSchemas: list[SchemaResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FleetAdvisorSchemas: list[SchemaResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFleetAdvisorSchemasResponse:
     Optional[list[SchemaResponse]] FleetAdvisorSchemas
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceProfilesMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) InstanceProfiles: list[InstanceProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceProfiles: list[InstanceProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceProfilesResponse:
     Optional[str] Marker
     Optional[list[InstanceProfile]] InstanceProfiles
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelAssessmentsMessage:
     str MigrationProjectIdentifier
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelAssessmentsResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
@@ -1265,78 +1338,89 @@ struct DescribeMetadataModelChildrenMessage:
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) MetadataModelChildren: list[MetadataModelReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetadataModelChildren: list[MetadataModelReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelChildrenResponse:
     Optional[str] Marker
     Optional[list[MetadataModelReference]] MetadataModelChildren
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelConversionsMessage:
     str MigrationProjectIdentifier
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelConversionsResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelCreationsMessage:
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
     str MigrationProjectIdentifier
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelCreationsResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelExportsAsScriptMessage:
     str MigrationProjectIdentifier
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelExportsAsScriptResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelExportsToTargetMessage:
     str MigrationProjectIdentifier
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelExportsToTargetResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelImportsMessage:
     str MigrationProjectIdentifier
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requests: list[SchemaConversionRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelImportsResponse:
     Optional[str] Marker
     Optional[list[SchemaConversionRequest]] Requests
@@ -1347,23 +1431,26 @@ struct DescribeMetadataModelMessage:
     str MigrationProjectIdentifier
     OriginTypeValue Origin
 
-# no @derive(Json): member(s) TargetMetadataModels: list[MetadataModelReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetMetadataModels: list[MetadataModelReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetadataModelResponse:
     Optional[str] MetadataModelName
     Optional[str] MetadataModelType
     Optional[list[MetadataModelReference]] TargetMetadataModels
     Optional[str] Definition
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMigrationProjectsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) MigrationProjects: list[MigrationProject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationProjects: list[MigrationProject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMigrationProjectsResponse:
     Optional[str] Marker
     Optional[list[MigrationProject]] MigrationProjects
@@ -1373,48 +1460,55 @@ struct DescribeOrderableReplicationInstancesMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) OrderableReplicationInstances: list[OrderableReplicationInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrderableReplicationInstances: list[OrderableReplicationInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrderableReplicationInstancesResponse:
     Optional[list[OrderableReplicationInstance]] OrderableReplicationInstances
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePendingMaintenanceActionsMessage:
     Optional[str] ReplicationInstanceArn
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) PendingMaintenanceActions: list[ResourcePendingMaintenanceActions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingMaintenanceActions: list[ResourcePendingMaintenanceActions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePendingMaintenanceActionsResponse:
     Optional[list[ResourcePendingMaintenanceActions]] PendingMaintenanceActions
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecommendationLimitationsRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Limitations: list[Limitation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Limitations: list[Limitation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecommendationLimitationsResponse:
     Optional[str] NextToken
     Optional[list[Limitation]] Limitations
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecommendationsRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecommendationsResponse:
     Optional[str] NextToken
     Optional[list[Recommendation]] Recommendations
@@ -1427,15 +1521,17 @@ struct DescribeRefreshSchemasStatusMessage:
 struct DescribeRefreshSchemasStatusResponse:
     Optional[RefreshSchemasStatus] RefreshSchemasStatus
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationConfigsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationConfigs: list[ReplicationConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationConfigs: list[ReplicationConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationConfigsResponse:
     Optional[str] Marker
     Optional[list[ReplicationConfig]] ReplicationConfigs
@@ -1446,49 +1542,56 @@ struct DescribeReplicationInstanceTaskLogsMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationInstanceTaskLogs: list[ReplicationInstanceTaskLog] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationInstanceTaskLogs: list[ReplicationInstanceTaskLog] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationInstanceTaskLogsResponse:
     Optional[str] ReplicationInstanceArn
     Optional[list[ReplicationInstanceTaskLog]] ReplicationInstanceTaskLogs
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationInstancesMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationInstances: list[ReplicationInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationInstances: list[ReplicationInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationInstancesResponse:
     Optional[str] Marker
     Optional[list[ReplicationInstance]] ReplicationInstances
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationSubnetGroupsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationSubnetGroups: list[ReplicationSubnetGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationSubnetGroups: list[ReplicationSubnetGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationSubnetGroupsResponse:
     Optional[str] Marker
     Optional[list[ReplicationSubnetGroup]] ReplicationSubnetGroups
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTableStatisticsMessage:
     str ReplicationConfigArn
     Optional[int64] MaxRecords
     Optional[str] Marker
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ReplicationTableStatistics: list[TableStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationTableStatistics: list[TableStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTableStatisticsResponse:
     Optional[str] ReplicationConfigArn
     Optional[str] Marker
@@ -1500,62 +1603,71 @@ struct DescribeReplicationTaskAssessmentResultsMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationTaskAssessmentResults: list[ReplicationTaskAssessmentResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationTaskAssessmentResults: list[ReplicationTaskAssessmentResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTaskAssessmentResultsResponse:
     Optional[str] Marker
     Optional[str] BucketName
     Optional[list[ReplicationTaskAssessmentResult]] ReplicationTaskAssessmentResults
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTaskAssessmentRunsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationTaskAssessmentRuns: list[ReplicationTaskAssessmentRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationTaskAssessmentRuns: list[ReplicationTaskAssessmentRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTaskAssessmentRunsResponse:
     Optional[str] Marker
     Optional[list[ReplicationTaskAssessmentRun]] ReplicationTaskAssessmentRuns
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTaskIndividualAssessmentsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) ReplicationTaskIndividualAssessments: list[ReplicationTaskIndividualAssessment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationTaskIndividualAssessments: list[ReplicationTaskIndividualAssessment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTaskIndividualAssessmentsResponse:
     Optional[str] Marker
     Optional[list[ReplicationTaskIndividualAssessment]] ReplicationTaskIndividualAssessments
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTasksMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
     Optional[bool] WithoutSettings
 
-# no @derive(Json): member(s) ReplicationTasks: list[ReplicationTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationTasks: list[ReplicationTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationTasksResponse:
     Optional[str] Marker
     Optional[list[ReplicationTask]] ReplicationTasks
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationsMessage:
     Optional[list[Filter]] Filters
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) Replications: list[Replication] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replications: list[Replication] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationsResponse:
     Optional[str] Marker
     Optional[list[Replication]] Replications
@@ -1566,22 +1678,25 @@ struct DescribeSchemasMessage:
     Optional[int64] MaxRecords
     Optional[str] Marker
 
-# no @derive(Json): member(s) Schemas: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSchemasResponse:
     Optional[str] Marker
     Optional[list[str]] Schemas
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTableStatisticsMessage:
     str ReplicationTaskArn
     Optional[int64] MaxRecords
     Optional[str] Marker
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) TableStatistics: list[TableStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableStatistics: list[TableStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTableStatisticsResponse:
     Optional[str] ReplicationTaskArn
     Optional[list[TableStatistics]] TableStatistics
@@ -1628,8 +1743,9 @@ struct ElasticsearchSettings:
     Optional[int64] ErrorRetryDuration
     Optional[bool] UseNewMappingType
 
-# no @derive(Json): member(s) OracleSettings: OracleSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OracleSettings: OracleSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Endpoint:
     Optional[str] EndpointIdentifier
     Optional[ReplicationEndpointTypeValue] EndpointType
@@ -1670,8 +1786,9 @@ struct Endpoint:
     Optional[TimestreamSettings] TimestreamSettings
     Optional[LakehouseSettings] LakehouseSettings
 
-# no @derive(Json): member(s) EnumValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnumValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointSetting:
     Optional[str] Name
     Optional[EndpointSettingTypeValue] Type
@@ -1683,8 +1800,9 @@ struct EndpointSetting:
     Optional[int64] IntValueMax
     Optional[str] DefaultValue
 
-# no @derive(Json): member(s) AvailableUpgrades: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailableUpgrades: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EngineVersion:
     Optional[str] Version
     Optional[str] Lifecycle
@@ -1699,8 +1817,9 @@ struct EngineVersion:
 struct ErrorDetails:
     Optional[DefaultErrorDetails] defaultErrorDetails
 
-# no @derive(Json): member(s) EventCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[str] SourceIdentifier
     Optional[str] SourceType
@@ -1708,14 +1827,16 @@ struct Event:
     Optional[list[str]] EventCategories
     Optional[DateTime] Date
 
-# no @derive(Json): member(s) EventCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventCategoryGroup:
     Optional[str] SourceType
     Optional[list[str]] EventCategories
 
-# no @derive(Json): member(s) SourceIdsList: list[str], EventCategoriesList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceIdsList: list[str], EventCategoriesList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSubscription:
     Optional[str] CustomerAwsId
     Optional[str] CustSubscriptionId
@@ -1727,8 +1848,9 @@ struct EventSubscription:
     Optional[list[str]] EventCategoriesList
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) AssessmentReportTypes: list[AssessmentReportType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssessmentReportTypes: list[AssessmentReportType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportMetadataModelAssessmentMessage:
     str MigrationProjectIdentifier
     str SelectionRules
@@ -1754,8 +1876,9 @@ struct ExportSqlDetails:
 struct FailedDependencyFault:
     Optional[str] message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str Name
     list[str] Values
@@ -1838,8 +1961,9 @@ struct IbmDb2zOsDataProviderSettings:
     Optional[str] S3Path
     Optional[str] S3AccessRoleArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportCertificateMessage:
     str CertificateIdentifier
     Optional[str] CertificatePem
@@ -1851,8 +1975,9 @@ struct ImportCertificateMessage:
 struct ImportCertificateResponse:
     Optional[Certificate] Certificate
 
-# no @derive(Json): member(s) VpcSecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceProfile:
     Optional[str] InstanceProfileArn
     Optional[str] AvailabilityZone
@@ -1975,14 +2100,16 @@ struct Limitation:
     Optional[str] Impact
     Optional[str] Type
 
-# no @derive(Json): member(s) ResourceArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceMessage:
     Optional[str] ResourceArn
     Optional[list[str]] ResourceArnList
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] TagList
 
@@ -2035,8 +2162,9 @@ struct MicrosoftSqlServerDataProviderSettings:
     Optional[str] S3Path
     Optional[str] S3AccessRoleArn
 
-# no @derive(Json): member(s) SourceDataProviderDescriptors: list[DataProviderDescriptor], TargetDataProviderDescriptors: list[DataProviderDescriptor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDataProviderDescriptors: list[DataProviderDescriptor], TargetDataProviderDescriptors: list[DataProviderDescriptor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MigrationProject:
     Optional[str] MigrationProjectName
     Optional[str] MigrationProjectArn
@@ -2058,8 +2186,9 @@ struct ModifyConversionConfigurationMessage:
 struct ModifyConversionConfigurationResponse:
     Optional[str] MigrationProjectIdentifier
 
-# no @derive(Json): member(s) SourceDataSettings: list[SourceDataSetting], TargetDataSettings: list[TargetDataSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDataSettings: list[SourceDataSetting], TargetDataSettings: list[TargetDataSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyDataMigrationMessage:
     str DataMigrationIdentifier
     Optional[str] DataMigrationName
@@ -2071,8 +2200,9 @@ struct ModifyDataMigrationMessage:
     Optional[int64] NumberOfJobs
     Optional[str] SelectionRules
 
-# no @derive(Json): member(s) DataMigration: DataMigration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataMigration: DataMigration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyDataMigrationResponse:
     Optional[DataMigration] DataMigration
 
@@ -2090,8 +2220,9 @@ struct ModifyDataProviderMessage:
 struct ModifyDataProviderResponse:
     Optional[DataProvider] DataProvider
 
-# no @derive(Json): member(s) OracleSettings: OracleSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OracleSettings: OracleSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyEndpointMessage:
     str EndpointArn
     Optional[str] EndpointIdentifier
@@ -2128,13 +2259,15 @@ struct ModifyEndpointMessage:
     Optional[GcpMySQLSettings] GcpMySQLSettings
     Optional[TimestreamSettings] TimestreamSettings
 
-# no @derive(Json): member(s) Endpoint: Endpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoint: Endpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyEndpointResponse:
     Optional[Endpoint] Endpoint
 
-# no @derive(Json): member(s) EventCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyEventSubscriptionMessage:
     str SubscriptionName
     Optional[str] SnsTopicArn
@@ -2142,13 +2275,15 @@ struct ModifyEventSubscriptionMessage:
     Optional[list[str]] EventCategories
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) EventSubscription: EventSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSubscription: EventSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyEventSubscriptionResponse:
     Optional[EventSubscription] EventSubscription
 
-# no @derive(Json): member(s) VpcSecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyInstanceProfileMessage:
     str InstanceProfileIdentifier
     Optional[str] AvailabilityZone
@@ -2160,13 +2295,15 @@ struct ModifyInstanceProfileMessage:
     Optional[str] SubnetGroupIdentifier
     Optional[list[str]] VpcSecurityGroups
 
-# no @derive(Json): member(s) InstanceProfile: InstanceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceProfile: InstanceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyInstanceProfileResponse:
     Optional[InstanceProfile] InstanceProfile
 
-# no @derive(Json): member(s) SourceDataProviderDescriptors: list[DataProviderDescriptorDefinition], TargetDataProviderDescriptors: list[DataProviderDescriptorDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDataProviderDescriptors: list[DataProviderDescriptorDefinition], TargetDataProviderDescriptors: list[DataProviderDescriptorDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyMigrationProjectMessage:
     str MigrationProjectIdentifier
     Optional[str] MigrationProjectName
@@ -2177,13 +2314,15 @@ struct ModifyMigrationProjectMessage:
     Optional[str] Description
     Optional[SCApplicationAttributes] SchemaConversionApplicationAttributes
 
-# no @derive(Json): member(s) MigrationProject: MigrationProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationProject: MigrationProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyMigrationProjectResponse:
     Optional[MigrationProject] MigrationProject
 
-# no @derive(Json): member(s) ComputeConfig: ComputeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeConfig: ComputeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReplicationConfigMessage:
     str ReplicationConfigArn
     Optional[str] ReplicationConfigIdentifier
@@ -2195,13 +2334,15 @@ struct ModifyReplicationConfigMessage:
     Optional[str] SourceEndpointArn
     Optional[str] TargetEndpointArn
 
-# no @derive(Json): member(s) ReplicationConfig: ReplicationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationConfig: ReplicationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReplicationConfigResponse:
     Optional[ReplicationConfig] ReplicationConfig
 
-# no @derive(Json): member(s) VpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReplicationInstanceMessage:
     str ReplicationInstanceArn
     Optional[int64] AllocatedStorage
@@ -2217,20 +2358,23 @@ struct ModifyReplicationInstanceMessage:
     Optional[str] NetworkType
     Optional[KerberosAuthenticationSettings] KerberosAuthenticationSettings
 
-# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReplicationInstanceResponse:
     Optional[ReplicationInstance] ReplicationInstance
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReplicationSubnetGroupMessage:
     str ReplicationSubnetGroupIdentifier
     Optional[str] ReplicationSubnetGroupDescription
     list[str] SubnetIds
 
-# no @derive(Json): member(s) ReplicationSubnetGroup: ReplicationSubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationSubnetGroup: ReplicationSubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReplicationSubnetGroupResponse:
     Optional[ReplicationSubnetGroup] ReplicationSubnetGroup
 
@@ -2343,8 +2487,9 @@ struct OracleDataProviderSettings:
     Optional[str] S3Path
     Optional[str] S3AccessRoleArn
 
-# no @derive(Json): member(s) ExtraArchivedLogDestIds: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtraArchivedLogDestIds: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OracleSettings:
     Optional[bool] AddSupplementalLogging
     Optional[int64] ArchivedLogDestId
@@ -2391,8 +2536,9 @@ struct OracleSettings:
     Optional[int64] OpenTransactionWindow
     Optional[OracleAuthenticationMethod] AuthenticationMethod
 
-# no @derive(Json): member(s) AvailabilityZones: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrderableReplicationInstance:
     Optional[str] EngineVersion
     Optional[str] ReplicationInstanceClass
@@ -2522,8 +2668,9 @@ struct RebootReplicationInstanceMessage:
     Optional[bool] ForceFailover
     Optional[bool] ForcePlannedFailover
 
-# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationInstance: ReplicationInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootReplicationInstanceResponse:
     Optional[ReplicationInstance] ReplicationInstance
 
@@ -2615,8 +2762,9 @@ struct RefreshSchemasStatus:
     Optional[DateTime] LastRefreshDate
     Optional[str] LastFailureMessage
 
-# no @derive(Json): member(s) TablesToReload: list[TableToReload] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TablesToReload: list[TableToReload] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReloadReplicationTablesMessage:
     str ReplicationConfigArn
     list[TableToReload] TablesToReload
@@ -2626,8 +2774,9 @@ struct ReloadReplicationTablesMessage:
 struct ReloadReplicationTablesResponse:
     Optional[str] ReplicationConfigArn
 
-# no @derive(Json): member(s) TablesToReload: list[TableToReload] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TablesToReload: list[TableToReload] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReloadTablesMessage:
     str ReplicationTaskArn
     list[TableToReload] TablesToReload
@@ -2637,8 +2786,9 @@ struct ReloadTablesMessage:
 struct ReloadTablesResponse:
     Optional[str] ReplicationTaskArn
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromResourceMessage:
     str ResourceArn
     list[str] TagKeys
@@ -2648,8 +2798,9 @@ struct RemoveTagsFromResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PremigrationAssessmentStatuses: list[PremigrationAssessmentStatus], FailureMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PremigrationAssessmentStatuses: list[PremigrationAssessmentStatus], FailureMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Replication:
     Optional[str] ReplicationConfigIdentifier
     Optional[str] ReplicationConfigArn
@@ -2673,8 +2824,9 @@ struct Replication:
     Optional[DateTime] ReplicationDeprovisionTime
     Optional[bool] IsReadOnly
 
-# no @derive(Json): member(s) ComputeConfig: ComputeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputeConfig: ComputeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfig:
     Optional[str] ReplicationConfigIdentifier
     Optional[str] ReplicationConfigArn
@@ -2689,8 +2841,9 @@ struct ReplicationConfig:
     Optional[DateTime] ReplicationConfigUpdateTime
     Optional[bool] IsReadOnly
 
-# no @derive(Json): member(s) VpcSecurityGroups: list[VpcSecurityGroupMembership], ReplicationSubnetGroup: ReplicationSubnetGroup, ReplicationInstancePublicIpAddresses: list[str], ReplicationInstancePrivateIpAddresses: list[str], ReplicationInstanceIpv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroups: list[VpcSecurityGroupMembership], ReplicationSubnetGroup: ReplicationSubnetGroup, ReplicationInstancePublicIpAddresses: list[str], ReplicationInstancePrivateIpAddresses: list[str], ReplicationInstanceIpv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationInstance:
     Optional[str] ReplicationInstanceIdentifier
     Optional[str] ReplicationInstanceClass
@@ -2747,8 +2900,9 @@ struct ReplicationStats:
     Optional[DateTime] FullLoadStartDate
     Optional[DateTime] FullLoadFinishDate
 
-# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationSubnetGroup:
     Optional[str] ReplicationSubnetGroupIdentifier
     Optional[str] ReplicationSubnetGroupDescription
@@ -2856,8 +3010,9 @@ struct ResourceAlreadyExistsFault:
 struct ResourceNotFoundFault:
     Optional[str] message
 
-# no @derive(Json): member(s) PendingMaintenanceActionDetails: list[PendingMaintenanceAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingMaintenanceActionDetails: list[PendingMaintenanceAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcePendingMaintenanceActions:
     Optional[str] ResourceIdentifier
     Optional[list[PendingMaintenanceAction]] PendingMaintenanceActionDetails
@@ -2985,8 +3140,9 @@ struct StartDataMigrationMessage:
     str DataMigrationIdentifier
     StartReplicationMigrationTypeValue StartType
 
-# no @derive(Json): member(s) DataMigration: DataMigration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataMigration: DataMigration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDataMigrationResponse:
     Optional[DataMigration] DataMigration
 
@@ -3078,8 +3234,9 @@ struct StartReplicationMessage:
     Optional[str] CdcStartPosition
     Optional[str] CdcStopPosition
 
-# no @derive(Json): member(s) Replication: Replication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replication: Replication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartReplicationResponse:
     Optional[Replication] Replication
 
@@ -3091,8 +3248,9 @@ struct StartReplicationTaskAssessmentMessage:
 struct StartReplicationTaskAssessmentResponse:
     Optional[ReplicationTask] ReplicationTask
 
-# no @derive(Json): member(s) IncludeOnly: list[str], Exclude: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeOnly: list[str], Exclude: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartReplicationTaskAssessmentRunMessage:
     str ReplicationTaskArn
     str ServiceAccessRoleArn
@@ -3129,8 +3287,9 @@ struct StatementProperties:
 struct StopDataMigrationMessage:
     str DataMigrationIdentifier
 
-# no @derive(Json): member(s) DataMigration: DataMigration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataMigration: DataMigration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopDataMigrationResponse:
     Optional[DataMigration] DataMigration
 
@@ -3138,8 +3297,9 @@ struct StopDataMigrationResponse:
 struct StopReplicationMessage:
     str ReplicationConfigArn
 
-# no @derive(Json): member(s) Replication: Replication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replication: Replication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopReplicationResponse:
     Optional[Replication] Replication
 
@@ -3363,96 +3523,1736 @@ def dms_error_from_code(str code) -> Database_Migration_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTagsToResource (input AddTagsToResourceMessage)
-#   BatchStartRecommendations (input BatchStartRecommendationsRequest)
-#   CreateDataMigration (input CreateDataMigrationMessage)
-#   CreateDataProvider (input CreateDataProviderMessage)
-#   CreateEndpoint (input CreateEndpointMessage)
-#   CreateEventSubscription (input CreateEventSubscriptionMessage)
-#   CreateInstanceProfile (input CreateInstanceProfileMessage)
-#   CreateMigrationProject (input CreateMigrationProjectMessage)
-#   CreateReplicationConfig (input CreateReplicationConfigMessage)
-#   CreateReplicationInstance (input CreateReplicationInstanceMessage)
-#   CreateReplicationSubnetGroup (input CreateReplicationSubnetGroupMessage)
-#   CreateReplicationTask (input CreateReplicationTaskMessage)
-#   DeleteFleetAdvisorDatabases (input DeleteFleetAdvisorDatabasesRequest)
-#   DescribeCertificates (input DescribeCertificatesMessage)
-#   DescribeConnections (input DescribeConnectionsMessage)
-#   DescribeDataMigrations (input DescribeDataMigrationsMessage)
-#   DescribeDataProviders (input DescribeDataProvidersMessage)
-#   DescribeEndpointTypes (input DescribeEndpointTypesMessage)
-#   DescribeEndpoints (input DescribeEndpointsMessage)
-#   DescribeEventCategories (input DescribeEventCategoriesMessage)
-#   DescribeEventSubscriptions (input DescribeEventSubscriptionsMessage)
-#   DescribeEvents (input DescribeEventsMessage)
-#   DescribeExtensionPackAssociations (input DescribeExtensionPackAssociationsMessage)
-#   DescribeFleetAdvisorCollectors (input DescribeFleetAdvisorCollectorsRequest)
-#   DescribeFleetAdvisorDatabases (input DescribeFleetAdvisorDatabasesRequest)
-#   DescribeFleetAdvisorSchemaObjectSummary (input DescribeFleetAdvisorSchemaObjectSummaryRequest)
-#   DescribeFleetAdvisorSchemas (input DescribeFleetAdvisorSchemasRequest)
-#   DescribeInstanceProfiles (input DescribeInstanceProfilesMessage)
-#   DescribeMetadataModelAssessments (input DescribeMetadataModelAssessmentsMessage)
-#   DescribeMetadataModelConversions (input DescribeMetadataModelConversionsMessage)
-#   DescribeMetadataModelCreations (input DescribeMetadataModelCreationsMessage)
-#   DescribeMetadataModelExportsAsScript (input DescribeMetadataModelExportsAsScriptMessage)
-#   DescribeMetadataModelExportsToTarget (input DescribeMetadataModelExportsToTargetMessage)
-#   DescribeMetadataModelImports (input DescribeMetadataModelImportsMessage)
-#   DescribeMigrationProjects (input DescribeMigrationProjectsMessage)
-#   DescribePendingMaintenanceActions (input DescribePendingMaintenanceActionsMessage)
-#   DescribeRecommendationLimitations (input DescribeRecommendationLimitationsRequest)
-#   DescribeRecommendations (input DescribeRecommendationsRequest)
-#   DescribeReplicationConfigs (input DescribeReplicationConfigsMessage)
-#   DescribeReplicationInstances (input DescribeReplicationInstancesMessage)
-#   DescribeReplicationSubnetGroups (input DescribeReplicationSubnetGroupsMessage)
-#   DescribeReplicationTableStatistics (input DescribeReplicationTableStatisticsMessage)
-#   DescribeReplicationTaskAssessmentRuns (input DescribeReplicationTaskAssessmentRunsMessage)
-#   DescribeReplicationTaskIndividualAssessments (input DescribeReplicationTaskIndividualAssessmentsMessage)
-#   DescribeReplicationTasks (input DescribeReplicationTasksMessage)
-#   DescribeReplications (input DescribeReplicationsMessage)
-#   DescribeTableStatistics (input DescribeTableStatisticsMessage)
-#   ExportMetadataModelAssessment (input ExportMetadataModelAssessmentMessage)
-#   ImportCertificate (input ImportCertificateMessage)
-#   ListTagsForResource (input ListTagsForResourceMessage)
-#   ModifyDataMigration (input ModifyDataMigrationMessage)
-#   ModifyEndpoint (input ModifyEndpointMessage)
-#   ModifyEventSubscription (input ModifyEventSubscriptionMessage)
-#   ModifyInstanceProfile (input ModifyInstanceProfileMessage)
-#   ModifyMigrationProject (input ModifyMigrationProjectMessage)
-#   ModifyReplicationConfig (input ModifyReplicationConfigMessage)
-#   ModifyReplicationInstance (input ModifyReplicationInstanceMessage)
-#   ModifyReplicationSubnetGroup (input ModifyReplicationSubnetGroupMessage)
-#   ReloadReplicationTables (input ReloadReplicationTablesMessage)
-#   ReloadTables (input ReloadTablesMessage)
-#   RemoveTagsFromResource (input RemoveTagsFromResourceMessage)
-#   StartReplicationTaskAssessmentRun (input StartReplicationTaskAssessmentRunMessage)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def dms_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeCertificates (input not derivable (no generated method))
-#   DescribeConnections (input not derivable (no generated method))
-#   DescribeDataMigrations (input not derivable (no generated method))
-#   DescribeEndpointTypes (input not derivable (no generated method))
-#   DescribeEndpoints (input not derivable (no generated method))
-#   DescribeEventSubscriptions (input not derivable (no generated method))
-#   DescribeEvents (input not derivable (no generated method))
-#   DescribeMetadataModelCreations (input not derivable (no generated method))
-#   DescribeReplicationInstances (input not derivable (no generated method))
-#   DescribeReplicationSubnetGroups (input not derivable (no generated method))
-#   DescribeReplicationTasks (input not derivable (no generated method))
-#   DescribeTableStatistics (input not derivable (no generated method))
+def dms_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def dms_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsToResourceMessage to a compact JSON object (declaration order).
+def add_tags_to_resource_message_to_json(AddTagsToResourceMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + dms_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + dms_json_arr(e0))
+    return dms_json_obj(parts)
+
+# Serialize BatchStartRecommendationsRequest to a compact JSON object (declaration order).
+def batch_start_recommendations_request_to_json(BatchStartRecommendationsRequest v) -> str:
+    list[str] parts = []
+    if v.Data.is_some():
+        auto u0 = v.Data.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Data\":" + dms_json_arr(e1))
+    return dms_json_obj(parts)
+
+# Serialize ComputeConfig to a compact JSON object (declaration order).
+def compute_config_to_json(ComputeConfig v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + dms_json_str(u0))
+    if v.DnsNameServers.is_some():
+        auto u1 = v.DnsNameServers.unwrap()
+        parts.append("\"DnsNameServers\":" + dms_json_str(u1))
+    if v.KmsKeyId.is_some():
+        auto u2 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + dms_json_str(u2))
+    if v.MaxCapacityUnits.is_some():
+        auto u3 = v.MaxCapacityUnits.unwrap()
+        parts.append("\"MaxCapacityUnits\":" + str(u3))
+    if v.MinCapacityUnits.is_some():
+        auto u4 = v.MinCapacityUnits.unwrap()
+        parts.append("\"MinCapacityUnits\":" + str(u4))
+    if v.MultiAZ.is_some():
+        auto u5 = v.MultiAZ.unwrap()
+        parts.append("\"MultiAZ\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u6 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + dms_json_str(u6))
+    if v.ReplicationSubnetGroupId.is_some():
+        auto u7 = v.ReplicationSubnetGroupId.unwrap()
+        parts.append("\"ReplicationSubnetGroupId\":" + dms_json_str(u7))
+    if v.VpcSecurityGroupIds.is_some():
+        auto u8 = v.VpcSecurityGroupIds.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(dms_json_str(x9))
+        parts.append("\"VpcSecurityGroupIds\":" + dms_json_arr(e9))
+    return dms_json_obj(parts)
+
+# Serialize CreateDataMigrationMessage to a compact JSON object (declaration order).
+def create_data_migration_message_to_json(CreateDataMigrationMessage v) -> str:
+    list[str] parts = []
+    if v.DataMigrationName.is_some():
+        auto u0 = v.DataMigrationName.unwrap()
+        parts.append("\"DataMigrationName\":" + dms_json_str(u0))
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    parts.append("\"DataMigrationType\":" + v.DataMigrationType.to_json())
+    parts.append("\"ServiceAccessRoleArn\":" + dms_json_str(v.ServiceAccessRoleArn))
+    if v.EnableCloudwatchLogs.is_some():
+        auto u1 = v.EnableCloudwatchLogs.unwrap()
+        parts.append("\"EnableCloudwatchLogs\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.SourceDataSettings.is_some():
+        auto u2 = v.SourceDataSettings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"SourceDataSettings\":" + dms_json_arr(e3))
+    if v.TargetDataSettings.is_some():
+        auto u4 = v.TargetDataSettings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"TargetDataSettings\":" + dms_json_arr(e5))
+    if v.NumberOfJobs.is_some():
+        auto u6 = v.NumberOfJobs.unwrap()
+        parts.append("\"NumberOfJobs\":" + str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e8))
+    if v.SelectionRules.is_some():
+        auto u9 = v.SelectionRules.unwrap()
+        parts.append("\"SelectionRules\":" + dms_json_str(u9))
+    return dms_json_obj(parts)
+
+# Serialize CreateDataProviderMessage to a compact JSON object (declaration order).
+def create_data_provider_message_to_json(CreateDataProviderMessage v) -> str:
+    list[str] parts = []
+    if v.DataProviderName.is_some():
+        auto u0 = v.DataProviderName.unwrap()
+        parts.append("\"DataProviderName\":" + dms_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + dms_json_str(u1))
+    parts.append("\"Engine\":" + dms_json_str(v.Engine))
+    if v.Virtual.is_some():
+        auto u2 = v.Virtual.unwrap()
+        parts.append("\"Virtual\":" + json.dumps(JsonValue.Bool(u2)))
+    parts.append("\"Settings\":" + v.Settings.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e4))
+    return dms_json_obj(parts)
+
+# Serialize CreateEndpointMessage to a compact JSON object (declaration order).
+def create_endpoint_message_to_json(CreateEndpointMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointIdentifier\":" + dms_json_str(v.EndpointIdentifier))
+    parts.append("\"EndpointType\":" + v.EndpointType.to_json())
+    parts.append("\"EngineName\":" + dms_json_str(v.EngineName))
+    if v.Username.is_some():
+        auto u0 = v.Username.unwrap()
+        parts.append("\"Username\":" + dms_json_str(u0))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        parts.append("\"Password\":" + dms_json_str(u1))
+    if v.ServerName.is_some():
+        auto u2 = v.ServerName.unwrap()
+        parts.append("\"ServerName\":" + dms_json_str(u2))
+    if v.Port.is_some():
+        auto u3 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u3))
+    if v.DatabaseName.is_some():
+        auto u4 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + dms_json_str(u4))
+    if v.ExtraConnectionAttributes.is_some():
+        auto u5 = v.ExtraConnectionAttributes.unwrap()
+        parts.append("\"ExtraConnectionAttributes\":" + dms_json_str(u5))
+    if v.KmsKeyId.is_some():
+        auto u6 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + dms_json_str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e8))
+    if v.CertificateArn.is_some():
+        auto u9 = v.CertificateArn.unwrap()
+        parts.append("\"CertificateArn\":" + dms_json_str(u9))
+    if v.SslMode.is_some():
+        auto u10 = v.SslMode.unwrap()
+        parts.append("\"SslMode\":" + u10.to_json())
+    if v.ServiceAccessRoleArn.is_some():
+        auto u11 = v.ServiceAccessRoleArn.unwrap()
+        parts.append("\"ServiceAccessRoleArn\":" + dms_json_str(u11))
+    if v.ExternalTableDefinition.is_some():
+        auto u12 = v.ExternalTableDefinition.unwrap()
+        parts.append("\"ExternalTableDefinition\":" + dms_json_str(u12))
+    if v.DynamoDbSettings.is_some():
+        auto u13 = v.DynamoDbSettings.unwrap()
+        parts.append("\"DynamoDbSettings\":" + u13.to_json())
+    if v.S3Settings.is_some():
+        auto u14 = v.S3Settings.unwrap()
+        parts.append("\"S3Settings\":" + u14.to_json())
+    if v.DmsTransferSettings.is_some():
+        auto u15 = v.DmsTransferSettings.unwrap()
+        parts.append("\"DmsTransferSettings\":" + u15.to_json())
+    if v.MongoDbSettings.is_some():
+        auto u16 = v.MongoDbSettings.unwrap()
+        parts.append("\"MongoDbSettings\":" + u16.to_json())
+    if v.KinesisSettings.is_some():
+        auto u17 = v.KinesisSettings.unwrap()
+        parts.append("\"KinesisSettings\":" + u17.to_json())
+    if v.KafkaSettings.is_some():
+        auto u18 = v.KafkaSettings.unwrap()
+        parts.append("\"KafkaSettings\":" + u18.to_json())
+    if v.ElasticsearchSettings.is_some():
+        auto u19 = v.ElasticsearchSettings.unwrap()
+        parts.append("\"ElasticsearchSettings\":" + u19.to_json())
+    if v.NeptuneSettings.is_some():
+        auto u20 = v.NeptuneSettings.unwrap()
+        parts.append("\"NeptuneSettings\":" + u20.to_json())
+    if v.RedshiftSettings.is_some():
+        auto u21 = v.RedshiftSettings.unwrap()
+        parts.append("\"RedshiftSettings\":" + u21.to_json())
+    if v.PostgreSQLSettings.is_some():
+        auto u22 = v.PostgreSQLSettings.unwrap()
+        parts.append("\"PostgreSQLSettings\":" + u22.to_json())
+    if v.MySQLSettings.is_some():
+        auto u23 = v.MySQLSettings.unwrap()
+        parts.append("\"MySQLSettings\":" + u23.to_json())
+    if v.OracleSettings.is_some():
+        auto u24 = v.OracleSettings.unwrap()
+        parts.append("\"OracleSettings\":" + oracle_settings_to_json(u24))
+    if v.SybaseSettings.is_some():
+        auto u25 = v.SybaseSettings.unwrap()
+        parts.append("\"SybaseSettings\":" + u25.to_json())
+    if v.MicrosoftSQLServerSettings.is_some():
+        auto u26 = v.MicrosoftSQLServerSettings.unwrap()
+        parts.append("\"MicrosoftSQLServerSettings\":" + u26.to_json())
+    if v.IBMDb2Settings.is_some():
+        auto u27 = v.IBMDb2Settings.unwrap()
+        parts.append("\"IBMDb2Settings\":" + u27.to_json())
+    if v.ResourceIdentifier.is_some():
+        auto u28 = v.ResourceIdentifier.unwrap()
+        parts.append("\"ResourceIdentifier\":" + dms_json_str(u28))
+    if v.DocDbSettings.is_some():
+        auto u29 = v.DocDbSettings.unwrap()
+        parts.append("\"DocDbSettings\":" + u29.to_json())
+    if v.RedisSettings.is_some():
+        auto u30 = v.RedisSettings.unwrap()
+        parts.append("\"RedisSettings\":" + u30.to_json())
+    if v.GcpMySQLSettings.is_some():
+        auto u31 = v.GcpMySQLSettings.unwrap()
+        parts.append("\"GcpMySQLSettings\":" + u31.to_json())
+    if v.TimestreamSettings.is_some():
+        auto u32 = v.TimestreamSettings.unwrap()
+        parts.append("\"TimestreamSettings\":" + u32.to_json())
+    return dms_json_obj(parts)
+
+# Serialize CreateEventSubscriptionMessage to a compact JSON object (declaration order).
+def create_event_subscription_message_to_json(CreateEventSubscriptionMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"SubscriptionName\":" + dms_json_str(v.SubscriptionName))
+    parts.append("\"SnsTopicArn\":" + dms_json_str(v.SnsTopicArn))
+    if v.SourceType.is_some():
+        auto u0 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + dms_json_str(u0))
+    if v.EventCategories.is_some():
+        auto u1 = v.EventCategories.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dms_json_str(x2))
+        parts.append("\"EventCategories\":" + dms_json_arr(e2))
+    if v.SourceIds.is_some():
+        auto u3 = v.SourceIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dms_json_str(x4))
+        parts.append("\"SourceIds\":" + dms_json_arr(e4))
+    if v.Enabled.is_some():
+        auto u5 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e7))
+    return dms_json_obj(parts)
+
+# Serialize CreateInstanceProfileMessage to a compact JSON object (declaration order).
+def create_instance_profile_message_to_json(CreateInstanceProfileMessage v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + dms_json_str(u0))
+    if v.KmsKeyArn.is_some():
+        auto u1 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + dms_json_str(u1))
+    if v.PubliclyAccessible.is_some():
+        auto u2 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e4))
+    if v.NetworkType.is_some():
+        auto u5 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + dms_json_str(u5))
+    if v.InstanceProfileName.is_some():
+        auto u6 = v.InstanceProfileName.unwrap()
+        parts.append("\"InstanceProfileName\":" + dms_json_str(u6))
+    if v.Description.is_some():
+        auto u7 = v.Description.unwrap()
+        parts.append("\"Description\":" + dms_json_str(u7))
+    if v.SubnetGroupIdentifier.is_some():
+        auto u8 = v.SubnetGroupIdentifier.unwrap()
+        parts.append("\"SubnetGroupIdentifier\":" + dms_json_str(u8))
+    if v.VpcSecurityGroups.is_some():
+        auto u9 = v.VpcSecurityGroups.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(dms_json_str(x10))
+        parts.append("\"VpcSecurityGroups\":" + dms_json_arr(e10))
+    return dms_json_obj(parts)
+
+# Serialize CreateMigrationProjectMessage to a compact JSON object (declaration order).
+def create_migration_project_message_to_json(CreateMigrationProjectMessage v) -> str:
+    list[str] parts = []
+    if v.MigrationProjectName.is_some():
+        auto u0 = v.MigrationProjectName.unwrap()
+        parts.append("\"MigrationProjectName\":" + dms_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SourceDataProviderDescriptors:
+        e1.append(x1.to_json())
+    parts.append("\"SourceDataProviderDescriptors\":" + dms_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.TargetDataProviderDescriptors:
+        e2.append(x2.to_json())
+    parts.append("\"TargetDataProviderDescriptors\":" + dms_json_arr(e2))
+    parts.append("\"InstanceProfileIdentifier\":" + dms_json_str(v.InstanceProfileIdentifier))
+    if v.TransformationRules.is_some():
+        auto u3 = v.TransformationRules.unwrap()
+        parts.append("\"TransformationRules\":" + dms_json_str(u3))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + dms_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e6))
+    if v.SchemaConversionApplicationAttributes.is_some():
+        auto u7 = v.SchemaConversionApplicationAttributes.unwrap()
+        parts.append("\"SchemaConversionApplicationAttributes\":" + u7.to_json())
+    return dms_json_obj(parts)
+
+# Serialize CreateReplicationConfigMessage to a compact JSON object (declaration order).
+def create_replication_config_message_to_json(CreateReplicationConfigMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationConfigIdentifier\":" + dms_json_str(v.ReplicationConfigIdentifier))
+    parts.append("\"SourceEndpointArn\":" + dms_json_str(v.SourceEndpointArn))
+    parts.append("\"TargetEndpointArn\":" + dms_json_str(v.TargetEndpointArn))
+    parts.append("\"ComputeConfig\":" + compute_config_to_json(v.ComputeConfig))
+    parts.append("\"ReplicationType\":" + v.ReplicationType.to_json())
+    parts.append("\"TableMappings\":" + dms_json_str(v.TableMappings))
+    if v.ReplicationSettings.is_some():
+        auto u0 = v.ReplicationSettings.unwrap()
+        parts.append("\"ReplicationSettings\":" + dms_json_str(u0))
+    if v.SupplementalSettings.is_some():
+        auto u1 = v.SupplementalSettings.unwrap()
+        parts.append("\"SupplementalSettings\":" + dms_json_str(u1))
+    if v.ResourceIdentifier.is_some():
+        auto u2 = v.ResourceIdentifier.unwrap()
+        parts.append("\"ResourceIdentifier\":" + dms_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e4))
+    return dms_json_obj(parts)
+
+# Serialize CreateReplicationInstanceMessage to a compact JSON object (declaration order).
+def create_replication_instance_message_to_json(CreateReplicationInstanceMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationInstanceIdentifier\":" + dms_json_str(v.ReplicationInstanceIdentifier))
+    if v.AllocatedStorage.is_some():
+        auto u0 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u0))
+    parts.append("\"ReplicationInstanceClass\":" + dms_json_str(v.ReplicationInstanceClass))
+    if v.VpcSecurityGroupIds.is_some():
+        auto u1 = v.VpcSecurityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dms_json_str(x2))
+        parts.append("\"VpcSecurityGroupIds\":" + dms_json_arr(e2))
+    if v.AvailabilityZone.is_some():
+        auto u3 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + dms_json_str(u3))
+    if v.ReplicationSubnetGroupIdentifier.is_some():
+        auto u4 = v.ReplicationSubnetGroupIdentifier.unwrap()
+        parts.append("\"ReplicationSubnetGroupIdentifier\":" + dms_json_str(u4))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u5 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + dms_json_str(u5))
+    if v.MultiAZ.is_some():
+        auto u6 = v.MultiAZ.unwrap()
+        parts.append("\"MultiAZ\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.EngineVersion.is_some():
+        auto u7 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + dms_json_str(u7))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u8 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.Tags.is_some():
+        auto u9 = v.Tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e10))
+    if v.KmsKeyId.is_some():
+        auto u11 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + dms_json_str(u11))
+    if v.PubliclyAccessible.is_some():
+        auto u12 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.DnsNameServers.is_some():
+        auto u13 = v.DnsNameServers.unwrap()
+        parts.append("\"DnsNameServers\":" + dms_json_str(u13))
+    if v.ResourceIdentifier.is_some():
+        auto u14 = v.ResourceIdentifier.unwrap()
+        parts.append("\"ResourceIdentifier\":" + dms_json_str(u14))
+    if v.NetworkType.is_some():
+        auto u15 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + dms_json_str(u15))
+    if v.KerberosAuthenticationSettings.is_some():
+        auto u16 = v.KerberosAuthenticationSettings.unwrap()
+        parts.append("\"KerberosAuthenticationSettings\":" + u16.to_json())
+    return dms_json_obj(parts)
+
+# Serialize CreateReplicationSubnetGroupMessage to a compact JSON object (declaration order).
+def create_replication_subnet_group_message_to_json(CreateReplicationSubnetGroupMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationSubnetGroupIdentifier\":" + dms_json_str(v.ReplicationSubnetGroupIdentifier))
+    parts.append("\"ReplicationSubnetGroupDescription\":" + dms_json_str(v.ReplicationSubnetGroupDescription))
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(dms_json_str(x0))
+    parts.append("\"SubnetIds\":" + dms_json_arr(e0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e2))
+    return dms_json_obj(parts)
+
+# Serialize CreateReplicationTaskMessage to a compact JSON object (declaration order).
+def create_replication_task_message_to_json(CreateReplicationTaskMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationTaskIdentifier\":" + dms_json_str(v.ReplicationTaskIdentifier))
+    parts.append("\"SourceEndpointArn\":" + dms_json_str(v.SourceEndpointArn))
+    parts.append("\"TargetEndpointArn\":" + dms_json_str(v.TargetEndpointArn))
+    parts.append("\"ReplicationInstanceArn\":" + dms_json_str(v.ReplicationInstanceArn))
+    parts.append("\"MigrationType\":" + v.MigrationType.to_json())
+    parts.append("\"TableMappings\":" + dms_json_str(v.TableMappings))
+    if v.ReplicationTaskSettings.is_some():
+        auto u0 = v.ReplicationTaskSettings.unwrap()
+        parts.append("\"ReplicationTaskSettings\":" + dms_json_str(u0))
+    if v.CdcStartTime.is_some():
+        auto u1 = v.CdcStartTime.unwrap()
+        parts.append("\"CdcStartTime\":" + str(datetime.to_timestamp(u1)))
+    if v.CdcStartPosition.is_some():
+        auto u2 = v.CdcStartPosition.unwrap()
+        parts.append("\"CdcStartPosition\":" + dms_json_str(u2))
+    if v.CdcStopPosition.is_some():
+        auto u3 = v.CdcStopPosition.unwrap()
+        parts.append("\"CdcStopPosition\":" + dms_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e5))
+    if v.TaskData.is_some():
+        auto u6 = v.TaskData.unwrap()
+        parts.append("\"TaskData\":" + dms_json_str(u6))
+    if v.ResourceIdentifier.is_some():
+        auto u7 = v.ResourceIdentifier.unwrap()
+        parts.append("\"ResourceIdentifier\":" + dms_json_str(u7))
+    return dms_json_obj(parts)
+
+# Serialize DeleteFleetAdvisorDatabasesRequest to a compact JSON object (declaration order).
+def delete_fleet_advisor_databases_request_to_json(DeleteFleetAdvisorDatabasesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DatabaseIds:
+        e0.append(dms_json_str(x0))
+    parts.append("\"DatabaseIds\":" + dms_json_arr(e0))
+    return dms_json_obj(parts)
+
+# Serialize DescribeCertificatesMessage to a compact JSON object (declaration order).
+def describe_certificates_message_to_json(DescribeCertificatesMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeConnectionsMessage to a compact JSON object (declaration order).
+def describe_connections_message_to_json(DescribeConnectionsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeDataMigrationsMessage to a compact JSON object (declaration order).
+def describe_data_migrations_message_to_json(DescribeDataMigrationsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    if v.WithoutSettings.is_some():
+        auto u4 = v.WithoutSettings.unwrap()
+        parts.append("\"WithoutSettings\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.WithoutStatistics.is_some():
+        auto u5 = v.WithoutStatistics.unwrap()
+        parts.append("\"WithoutStatistics\":" + json.dumps(JsonValue.Bool(u5)))
+    return dms_json_obj(parts)
+
+# Serialize DescribeDataProvidersMessage to a compact JSON object (declaration order).
+def describe_data_providers_message_to_json(DescribeDataProvidersMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeEndpointTypesMessage to a compact JSON object (declaration order).
+def describe_endpoint_types_message_to_json(DescribeEndpointTypesMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeEndpointsMessage to a compact JSON object (declaration order).
+def describe_endpoints_message_to_json(DescribeEndpointsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeEventCategoriesMessage to a compact JSON object (declaration order).
+def describe_event_categories_message_to_json(DescribeEventCategoriesMessage v) -> str:
+    list[str] parts = []
+    if v.SourceType.is_some():
+        auto u0 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + dms_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(filter_to_json(x2))
+        parts.append("\"Filters\":" + dms_json_arr(e2))
+    return dms_json_obj(parts)
+
+# Serialize DescribeEventSubscriptionsMessage to a compact JSON object (declaration order).
+def describe_event_subscriptions_message_to_json(DescribeEventSubscriptionsMessage v) -> str:
+    list[str] parts = []
+    if v.SubscriptionName.is_some():
+        auto u0 = v.SubscriptionName.unwrap()
+        parts.append("\"SubscriptionName\":" + dms_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(filter_to_json(x2))
+        parts.append("\"Filters\":" + dms_json_arr(e2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    if v.Marker.is_some():
+        auto u4 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u4))
+    return dms_json_obj(parts)
+
+# Serialize DescribeEventsMessage to a compact JSON object (declaration order).
+def describe_events_message_to_json(DescribeEventsMessage v) -> str:
+    list[str] parts = []
+    if v.SourceIdentifier.is_some():
+        auto u0 = v.SourceIdentifier.unwrap()
+        parts.append("\"SourceIdentifier\":" + dms_json_str(u0))
+    if v.SourceType.is_some():
+        auto u1 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + dms_json_str(u1))
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(u2)))
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(u3)))
+    if v.Duration.is_some():
+        auto u4 = v.Duration.unwrap()
+        parts.append("\"Duration\":" + str(u4))
+    if v.EventCategories.is_some():
+        auto u5 = v.EventCategories.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(dms_json_str(x6))
+        parts.append("\"EventCategories\":" + dms_json_arr(e6))
+    if v.Filters.is_some():
+        auto u7 = v.Filters.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(filter_to_json(x8))
+        parts.append("\"Filters\":" + dms_json_arr(e8))
+    if v.MaxRecords.is_some():
+        auto u9 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u9))
+    if v.Marker.is_some():
+        auto u10 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u10))
+    return dms_json_obj(parts)
+
+# Serialize DescribeExtensionPackAssociationsMessage to a compact JSON object (declaration order).
+def describe_extension_pack_associations_message_to_json(DescribeExtensionPackAssociationsMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeFleetAdvisorCollectorsRequest to a compact JSON object (declaration order).
+def describe_fleet_advisor_collectors_request_to_json(DescribeFleetAdvisorCollectorsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeFleetAdvisorDatabasesRequest to a compact JSON object (declaration order).
+def describe_fleet_advisor_databases_request_to_json(DescribeFleetAdvisorDatabasesRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeFleetAdvisorSchemaObjectSummaryRequest to a compact JSON object (declaration order).
+def describe_fleet_advisor_schema_object_summary_request_to_json(DescribeFleetAdvisorSchemaObjectSummaryRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeFleetAdvisorSchemasRequest to a compact JSON object (declaration order).
+def describe_fleet_advisor_schemas_request_to_json(DescribeFleetAdvisorSchemasRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeInstanceProfilesMessage to a compact JSON object (declaration order).
+def describe_instance_profiles_message_to_json(DescribeInstanceProfilesMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMetadataModelAssessmentsMessage to a compact JSON object (declaration order).
+def describe_metadata_model_assessments_message_to_json(DescribeMetadataModelAssessmentsMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMetadataModelConversionsMessage to a compact JSON object (declaration order).
+def describe_metadata_model_conversions_message_to_json(DescribeMetadataModelConversionsMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMetadataModelCreationsMessage to a compact JSON object (declaration order).
+def describe_metadata_model_creations_message_to_json(DescribeMetadataModelCreationsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMetadataModelExportsAsScriptMessage to a compact JSON object (declaration order).
+def describe_metadata_model_exports_as_script_message_to_json(DescribeMetadataModelExportsAsScriptMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMetadataModelExportsToTargetMessage to a compact JSON object (declaration order).
+def describe_metadata_model_exports_to_target_message_to_json(DescribeMetadataModelExportsToTargetMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMetadataModelImportsMessage to a compact JSON object (declaration order).
+def describe_metadata_model_imports_message_to_json(DescribeMetadataModelImportsMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeMigrationProjectsMessage to a compact JSON object (declaration order).
+def describe_migration_projects_message_to_json(DescribeMigrationProjectsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribePendingMaintenanceActionsMessage to a compact JSON object (declaration order).
+def describe_pending_maintenance_actions_message_to_json(DescribePendingMaintenanceActionsMessage v) -> str:
+    list[str] parts = []
+    if v.ReplicationInstanceArn.is_some():
+        auto u0 = v.ReplicationInstanceArn.unwrap()
+        parts.append("\"ReplicationInstanceArn\":" + dms_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(filter_to_json(x2))
+        parts.append("\"Filters\":" + dms_json_arr(e2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    if v.MaxRecords.is_some():
+        auto u4 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u4))
+    return dms_json_obj(parts)
+
+# Serialize DescribeRecommendationLimitationsRequest to a compact JSON object (declaration order).
+def describe_recommendation_limitations_request_to_json(DescribeRecommendationLimitationsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeRecommendationsRequest to a compact JSON object (declaration order).
+def describe_recommendations_request_to_json(DescribeRecommendationsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationConfigsMessage to a compact JSON object (declaration order).
+def describe_replication_configs_message_to_json(DescribeReplicationConfigsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationInstancesMessage to a compact JSON object (declaration order).
+def describe_replication_instances_message_to_json(DescribeReplicationInstancesMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationSubnetGroupsMessage to a compact JSON object (declaration order).
+def describe_replication_subnet_groups_message_to_json(DescribeReplicationSubnetGroupsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationTableStatisticsMessage to a compact JSON object (declaration order).
+def describe_replication_table_statistics_message_to_json(DescribeReplicationTableStatisticsMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationConfigArn\":" + dms_json_str(v.ReplicationConfigArn))
+    if v.MaxRecords.is_some():
+        auto u0 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u0))
+    if v.Marker.is_some():
+        auto u1 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + dms_json_arr(e3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationTaskAssessmentRunsMessage to a compact JSON object (declaration order).
+def describe_replication_task_assessment_runs_message_to_json(DescribeReplicationTaskAssessmentRunsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationTaskIndividualAssessmentsMessage to a compact JSON object (declaration order).
+def describe_replication_task_individual_assessments_message_to_json(DescribeReplicationTaskIndividualAssessmentsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationTasksMessage to a compact JSON object (declaration order).
+def describe_replication_tasks_message_to_json(DescribeReplicationTasksMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    if v.WithoutSettings.is_some():
+        auto u4 = v.WithoutSettings.unwrap()
+        parts.append("\"WithoutSettings\":" + json.dumps(JsonValue.Bool(u4)))
+    return dms_json_obj(parts)
+
+# Serialize DescribeReplicationsMessage to a compact JSON object (declaration order).
+def describe_replications_message_to_json(DescribeReplicationsMessage v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + dms_json_arr(e1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Marker.is_some():
+        auto u3 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u3))
+    return dms_json_obj(parts)
+
+# Serialize DescribeTableStatisticsMessage to a compact JSON object (declaration order).
+def describe_table_statistics_message_to_json(DescribeTableStatisticsMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationTaskArn\":" + dms_json_str(v.ReplicationTaskArn))
+    if v.MaxRecords.is_some():
+        auto u0 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u0))
+    if v.Marker.is_some():
+        auto u1 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + dms_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + dms_json_arr(e3))
+    return dms_json_obj(parts)
+
+# Serialize ExportMetadataModelAssessmentMessage to a compact JSON object (declaration order).
+def export_metadata_model_assessment_message_to_json(ExportMetadataModelAssessmentMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    parts.append("\"SelectionRules\":" + dms_json_str(v.SelectionRules))
+    if v.FileName.is_some():
+        auto u0 = v.FileName.unwrap()
+        parts.append("\"FileName\":" + dms_json_str(u0))
+    if v.AssessmentReportTypes.is_some():
+        auto u1 = v.AssessmentReportTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AssessmentReportTypes\":" + dms_json_arr(e2))
+    return dms_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + dms_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(dms_json_str(x0))
+    parts.append("\"Values\":" + dms_json_arr(e0))
+    return dms_json_obj(parts)
+
+# Serialize ImportCertificateMessage to a compact JSON object (declaration order).
+def import_certificate_message_to_json(ImportCertificateMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateIdentifier\":" + dms_json_str(v.CertificateIdentifier))
+    if v.CertificatePem.is_some():
+        auto u0 = v.CertificatePem.unwrap()
+        parts.append("\"CertificatePem\":" + dms_json_str(u0))
+    if v.CertificateWallet.is_some():
+        auto u1 = v.CertificateWallet.unwrap()
+        parts.append("\"CertificateWallet\":" + dms_json_str(base64.encode(u1)))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e3))
+    if v.KmsKeyId.is_some():
+        auto u4 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + dms_json_str(u4))
+    return dms_json_obj(parts)
+
+# Serialize ListTagsForResourceMessage to a compact JSON object (declaration order).
+def list_tags_for_resource_message_to_json(ListTagsForResourceMessage v) -> str:
+    list[str] parts = []
+    if v.ResourceArn.is_some():
+        auto u0 = v.ResourceArn.unwrap()
+        parts.append("\"ResourceArn\":" + dms_json_str(u0))
+    if v.ResourceArnList.is_some():
+        auto u1 = v.ResourceArnList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dms_json_str(x2))
+        parts.append("\"ResourceArnList\":" + dms_json_arr(e2))
+    return dms_json_obj(parts)
+
+# Serialize ModifyDataMigrationMessage to a compact JSON object (declaration order).
+def modify_data_migration_message_to_json(ModifyDataMigrationMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"DataMigrationIdentifier\":" + dms_json_str(v.DataMigrationIdentifier))
+    if v.DataMigrationName.is_some():
+        auto u0 = v.DataMigrationName.unwrap()
+        parts.append("\"DataMigrationName\":" + dms_json_str(u0))
+    if v.EnableCloudwatchLogs.is_some():
+        auto u1 = v.EnableCloudwatchLogs.unwrap()
+        parts.append("\"EnableCloudwatchLogs\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ServiceAccessRoleArn.is_some():
+        auto u2 = v.ServiceAccessRoleArn.unwrap()
+        parts.append("\"ServiceAccessRoleArn\":" + dms_json_str(u2))
+    if v.DataMigrationType.is_some():
+        auto u3 = v.DataMigrationType.unwrap()
+        parts.append("\"DataMigrationType\":" + u3.to_json())
+    if v.SourceDataSettings.is_some():
+        auto u4 = v.SourceDataSettings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SourceDataSettings\":" + dms_json_arr(e5))
+    if v.TargetDataSettings.is_some():
+        auto u6 = v.TargetDataSettings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"TargetDataSettings\":" + dms_json_arr(e7))
+    if v.NumberOfJobs.is_some():
+        auto u8 = v.NumberOfJobs.unwrap()
+        parts.append("\"NumberOfJobs\":" + str(u8))
+    if v.SelectionRules.is_some():
+        auto u9 = v.SelectionRules.unwrap()
+        parts.append("\"SelectionRules\":" + dms_json_str(u9))
+    return dms_json_obj(parts)
+
+# Serialize ModifyEndpointMessage to a compact JSON object (declaration order).
+def modify_endpoint_message_to_json(ModifyEndpointMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointArn\":" + dms_json_str(v.EndpointArn))
+    if v.EndpointIdentifier.is_some():
+        auto u0 = v.EndpointIdentifier.unwrap()
+        parts.append("\"EndpointIdentifier\":" + dms_json_str(u0))
+    if v.EndpointType.is_some():
+        auto u1 = v.EndpointType.unwrap()
+        parts.append("\"EndpointType\":" + u1.to_json())
+    if v.EngineName.is_some():
+        auto u2 = v.EngineName.unwrap()
+        parts.append("\"EngineName\":" + dms_json_str(u2))
+    if v.Username.is_some():
+        auto u3 = v.Username.unwrap()
+        parts.append("\"Username\":" + dms_json_str(u3))
+    if v.Password.is_some():
+        auto u4 = v.Password.unwrap()
+        parts.append("\"Password\":" + dms_json_str(u4))
+    if v.ServerName.is_some():
+        auto u5 = v.ServerName.unwrap()
+        parts.append("\"ServerName\":" + dms_json_str(u5))
+    if v.Port.is_some():
+        auto u6 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u6))
+    if v.DatabaseName.is_some():
+        auto u7 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + dms_json_str(u7))
+    if v.ExtraConnectionAttributes.is_some():
+        auto u8 = v.ExtraConnectionAttributes.unwrap()
+        parts.append("\"ExtraConnectionAttributes\":" + dms_json_str(u8))
+    if v.CertificateArn.is_some():
+        auto u9 = v.CertificateArn.unwrap()
+        parts.append("\"CertificateArn\":" + dms_json_str(u9))
+    if v.SslMode.is_some():
+        auto u10 = v.SslMode.unwrap()
+        parts.append("\"SslMode\":" + u10.to_json())
+    if v.ServiceAccessRoleArn.is_some():
+        auto u11 = v.ServiceAccessRoleArn.unwrap()
+        parts.append("\"ServiceAccessRoleArn\":" + dms_json_str(u11))
+    if v.ExternalTableDefinition.is_some():
+        auto u12 = v.ExternalTableDefinition.unwrap()
+        parts.append("\"ExternalTableDefinition\":" + dms_json_str(u12))
+    if v.DynamoDbSettings.is_some():
+        auto u13 = v.DynamoDbSettings.unwrap()
+        parts.append("\"DynamoDbSettings\":" + u13.to_json())
+    if v.S3Settings.is_some():
+        auto u14 = v.S3Settings.unwrap()
+        parts.append("\"S3Settings\":" + u14.to_json())
+    if v.DmsTransferSettings.is_some():
+        auto u15 = v.DmsTransferSettings.unwrap()
+        parts.append("\"DmsTransferSettings\":" + u15.to_json())
+    if v.MongoDbSettings.is_some():
+        auto u16 = v.MongoDbSettings.unwrap()
+        parts.append("\"MongoDbSettings\":" + u16.to_json())
+    if v.KinesisSettings.is_some():
+        auto u17 = v.KinesisSettings.unwrap()
+        parts.append("\"KinesisSettings\":" + u17.to_json())
+    if v.KafkaSettings.is_some():
+        auto u18 = v.KafkaSettings.unwrap()
+        parts.append("\"KafkaSettings\":" + u18.to_json())
+    if v.ElasticsearchSettings.is_some():
+        auto u19 = v.ElasticsearchSettings.unwrap()
+        parts.append("\"ElasticsearchSettings\":" + u19.to_json())
+    if v.NeptuneSettings.is_some():
+        auto u20 = v.NeptuneSettings.unwrap()
+        parts.append("\"NeptuneSettings\":" + u20.to_json())
+    if v.RedshiftSettings.is_some():
+        auto u21 = v.RedshiftSettings.unwrap()
+        parts.append("\"RedshiftSettings\":" + u21.to_json())
+    if v.PostgreSQLSettings.is_some():
+        auto u22 = v.PostgreSQLSettings.unwrap()
+        parts.append("\"PostgreSQLSettings\":" + u22.to_json())
+    if v.MySQLSettings.is_some():
+        auto u23 = v.MySQLSettings.unwrap()
+        parts.append("\"MySQLSettings\":" + u23.to_json())
+    if v.OracleSettings.is_some():
+        auto u24 = v.OracleSettings.unwrap()
+        parts.append("\"OracleSettings\":" + oracle_settings_to_json(u24))
+    if v.SybaseSettings.is_some():
+        auto u25 = v.SybaseSettings.unwrap()
+        parts.append("\"SybaseSettings\":" + u25.to_json())
+    if v.MicrosoftSQLServerSettings.is_some():
+        auto u26 = v.MicrosoftSQLServerSettings.unwrap()
+        parts.append("\"MicrosoftSQLServerSettings\":" + u26.to_json())
+    if v.IBMDb2Settings.is_some():
+        auto u27 = v.IBMDb2Settings.unwrap()
+        parts.append("\"IBMDb2Settings\":" + u27.to_json())
+    if v.DocDbSettings.is_some():
+        auto u28 = v.DocDbSettings.unwrap()
+        parts.append("\"DocDbSettings\":" + u28.to_json())
+    if v.RedisSettings.is_some():
+        auto u29 = v.RedisSettings.unwrap()
+        parts.append("\"RedisSettings\":" + u29.to_json())
+    if v.ExactSettings.is_some():
+        auto u30 = v.ExactSettings.unwrap()
+        parts.append("\"ExactSettings\":" + json.dumps(JsonValue.Bool(u30)))
+    if v.GcpMySQLSettings.is_some():
+        auto u31 = v.GcpMySQLSettings.unwrap()
+        parts.append("\"GcpMySQLSettings\":" + u31.to_json())
+    if v.TimestreamSettings.is_some():
+        auto u32 = v.TimestreamSettings.unwrap()
+        parts.append("\"TimestreamSettings\":" + u32.to_json())
+    return dms_json_obj(parts)
+
+# Serialize ModifyEventSubscriptionMessage to a compact JSON object (declaration order).
+def modify_event_subscription_message_to_json(ModifyEventSubscriptionMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"SubscriptionName\":" + dms_json_str(v.SubscriptionName))
+    if v.SnsTopicArn.is_some():
+        auto u0 = v.SnsTopicArn.unwrap()
+        parts.append("\"SnsTopicArn\":" + dms_json_str(u0))
+    if v.SourceType.is_some():
+        auto u1 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + dms_json_str(u1))
+    if v.EventCategories.is_some():
+        auto u2 = v.EventCategories.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(dms_json_str(x3))
+        parts.append("\"EventCategories\":" + dms_json_arr(e3))
+    if v.Enabled.is_some():
+        auto u4 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u4)))
+    return dms_json_obj(parts)
+
+# Serialize ModifyInstanceProfileMessage to a compact JSON object (declaration order).
+def modify_instance_profile_message_to_json(ModifyInstanceProfileMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceProfileIdentifier\":" + dms_json_str(v.InstanceProfileIdentifier))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + dms_json_str(u0))
+    if v.KmsKeyArn.is_some():
+        auto u1 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + dms_json_str(u1))
+    if v.PubliclyAccessible.is_some():
+        auto u2 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.NetworkType.is_some():
+        auto u3 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + dms_json_str(u3))
+    if v.InstanceProfileName.is_some():
+        auto u4 = v.InstanceProfileName.unwrap()
+        parts.append("\"InstanceProfileName\":" + dms_json_str(u4))
+    if v.Description.is_some():
+        auto u5 = v.Description.unwrap()
+        parts.append("\"Description\":" + dms_json_str(u5))
+    if v.SubnetGroupIdentifier.is_some():
+        auto u6 = v.SubnetGroupIdentifier.unwrap()
+        parts.append("\"SubnetGroupIdentifier\":" + dms_json_str(u6))
+    if v.VpcSecurityGroups.is_some():
+        auto u7 = v.VpcSecurityGroups.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(dms_json_str(x8))
+        parts.append("\"VpcSecurityGroups\":" + dms_json_arr(e8))
+    return dms_json_obj(parts)
+
+# Serialize ModifyMigrationProjectMessage to a compact JSON object (declaration order).
+def modify_migration_project_message_to_json(ModifyMigrationProjectMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"MigrationProjectIdentifier\":" + dms_json_str(v.MigrationProjectIdentifier))
+    if v.MigrationProjectName.is_some():
+        auto u0 = v.MigrationProjectName.unwrap()
+        parts.append("\"MigrationProjectName\":" + dms_json_str(u0))
+    if v.SourceDataProviderDescriptors.is_some():
+        auto u1 = v.SourceDataProviderDescriptors.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SourceDataProviderDescriptors\":" + dms_json_arr(e2))
+    if v.TargetDataProviderDescriptors.is_some():
+        auto u3 = v.TargetDataProviderDescriptors.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"TargetDataProviderDescriptors\":" + dms_json_arr(e4))
+    if v.InstanceProfileIdentifier.is_some():
+        auto u5 = v.InstanceProfileIdentifier.unwrap()
+        parts.append("\"InstanceProfileIdentifier\":" + dms_json_str(u5))
+    if v.TransformationRules.is_some():
+        auto u6 = v.TransformationRules.unwrap()
+        parts.append("\"TransformationRules\":" + dms_json_str(u6))
+    if v.Description.is_some():
+        auto u7 = v.Description.unwrap()
+        parts.append("\"Description\":" + dms_json_str(u7))
+    if v.SchemaConversionApplicationAttributes.is_some():
+        auto u8 = v.SchemaConversionApplicationAttributes.unwrap()
+        parts.append("\"SchemaConversionApplicationAttributes\":" + u8.to_json())
+    return dms_json_obj(parts)
+
+# Serialize ModifyReplicationConfigMessage to a compact JSON object (declaration order).
+def modify_replication_config_message_to_json(ModifyReplicationConfigMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationConfigArn\":" + dms_json_str(v.ReplicationConfigArn))
+    if v.ReplicationConfigIdentifier.is_some():
+        auto u0 = v.ReplicationConfigIdentifier.unwrap()
+        parts.append("\"ReplicationConfigIdentifier\":" + dms_json_str(u0))
+    if v.ReplicationType.is_some():
+        auto u1 = v.ReplicationType.unwrap()
+        parts.append("\"ReplicationType\":" + u1.to_json())
+    if v.TableMappings.is_some():
+        auto u2 = v.TableMappings.unwrap()
+        parts.append("\"TableMappings\":" + dms_json_str(u2))
+    if v.ReplicationSettings.is_some():
+        auto u3 = v.ReplicationSettings.unwrap()
+        parts.append("\"ReplicationSettings\":" + dms_json_str(u3))
+    if v.SupplementalSettings.is_some():
+        auto u4 = v.SupplementalSettings.unwrap()
+        parts.append("\"SupplementalSettings\":" + dms_json_str(u4))
+    if v.ComputeConfig.is_some():
+        auto u5 = v.ComputeConfig.unwrap()
+        parts.append("\"ComputeConfig\":" + compute_config_to_json(u5))
+    if v.SourceEndpointArn.is_some():
+        auto u6 = v.SourceEndpointArn.unwrap()
+        parts.append("\"SourceEndpointArn\":" + dms_json_str(u6))
+    if v.TargetEndpointArn.is_some():
+        auto u7 = v.TargetEndpointArn.unwrap()
+        parts.append("\"TargetEndpointArn\":" + dms_json_str(u7))
+    return dms_json_obj(parts)
+
+# Serialize ModifyReplicationInstanceMessage to a compact JSON object (declaration order).
+def modify_replication_instance_message_to_json(ModifyReplicationInstanceMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationInstanceArn\":" + dms_json_str(v.ReplicationInstanceArn))
+    if v.AllocatedStorage.is_some():
+        auto u0 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u0))
+    if v.ApplyImmediately.is_some():
+        auto u1 = v.ApplyImmediately.unwrap()
+        parts.append("\"ApplyImmediately\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ReplicationInstanceClass.is_some():
+        auto u2 = v.ReplicationInstanceClass.unwrap()
+        parts.append("\"ReplicationInstanceClass\":" + dms_json_str(u2))
+    if v.VpcSecurityGroupIds.is_some():
+        auto u3 = v.VpcSecurityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dms_json_str(x4))
+        parts.append("\"VpcSecurityGroupIds\":" + dms_json_arr(e4))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u5 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + dms_json_str(u5))
+    if v.MultiAZ.is_some():
+        auto u6 = v.MultiAZ.unwrap()
+        parts.append("\"MultiAZ\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.EngineVersion.is_some():
+        auto u7 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + dms_json_str(u7))
+    if v.AllowMajorVersionUpgrade.is_some():
+        auto u8 = v.AllowMajorVersionUpgrade.unwrap()
+        parts.append("\"AllowMajorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u9 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.ReplicationInstanceIdentifier.is_some():
+        auto u10 = v.ReplicationInstanceIdentifier.unwrap()
+        parts.append("\"ReplicationInstanceIdentifier\":" + dms_json_str(u10))
+    if v.NetworkType.is_some():
+        auto u11 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + dms_json_str(u11))
+    if v.KerberosAuthenticationSettings.is_some():
+        auto u12 = v.KerberosAuthenticationSettings.unwrap()
+        parts.append("\"KerberosAuthenticationSettings\":" + u12.to_json())
+    return dms_json_obj(parts)
+
+# Serialize ModifyReplicationSubnetGroupMessage to a compact JSON object (declaration order).
+def modify_replication_subnet_group_message_to_json(ModifyReplicationSubnetGroupMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationSubnetGroupIdentifier\":" + dms_json_str(v.ReplicationSubnetGroupIdentifier))
+    if v.ReplicationSubnetGroupDescription.is_some():
+        auto u0 = v.ReplicationSubnetGroupDescription.unwrap()
+        parts.append("\"ReplicationSubnetGroupDescription\":" + dms_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SubnetIds:
+        e1.append(dms_json_str(x1))
+    parts.append("\"SubnetIds\":" + dms_json_arr(e1))
+    return dms_json_obj(parts)
+
+# Serialize OracleSettings to a compact JSON object (declaration order).
+def oracle_settings_to_json(OracleSettings v) -> str:
+    list[str] parts = []
+    if v.AddSupplementalLogging.is_some():
+        auto u0 = v.AddSupplementalLogging.unwrap()
+        parts.append("\"AddSupplementalLogging\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ArchivedLogDestId.is_some():
+        auto u1 = v.ArchivedLogDestId.unwrap()
+        parts.append("\"ArchivedLogDestId\":" + str(u1))
+    if v.AdditionalArchivedLogDestId.is_some():
+        auto u2 = v.AdditionalArchivedLogDestId.unwrap()
+        parts.append("\"AdditionalArchivedLogDestId\":" + str(u2))
+    if v.ExtraArchivedLogDestIds.is_some():
+        auto u3 = v.ExtraArchivedLogDestIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(str(x4))
+        parts.append("\"ExtraArchivedLogDestIds\":" + dms_json_arr(e4))
+    if v.AllowSelectNestedTables.is_some():
+        auto u5 = v.AllowSelectNestedTables.unwrap()
+        parts.append("\"AllowSelectNestedTables\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.ParallelAsmReadThreads.is_some():
+        auto u6 = v.ParallelAsmReadThreads.unwrap()
+        parts.append("\"ParallelAsmReadThreads\":" + str(u6))
+    if v.ReadAheadBlocks.is_some():
+        auto u7 = v.ReadAheadBlocks.unwrap()
+        parts.append("\"ReadAheadBlocks\":" + str(u7))
+    if v.AccessAlternateDirectly.is_some():
+        auto u8 = v.AccessAlternateDirectly.unwrap()
+        parts.append("\"AccessAlternateDirectly\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.UseAlternateFolderForOnline.is_some():
+        auto u9 = v.UseAlternateFolderForOnline.unwrap()
+        parts.append("\"UseAlternateFolderForOnline\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.OraclePathPrefix.is_some():
+        auto u10 = v.OraclePathPrefix.unwrap()
+        parts.append("\"OraclePathPrefix\":" + dms_json_str(u10))
+    if v.UsePathPrefix.is_some():
+        auto u11 = v.UsePathPrefix.unwrap()
+        parts.append("\"UsePathPrefix\":" + dms_json_str(u11))
+    if v.ReplacePathPrefix.is_some():
+        auto u12 = v.ReplacePathPrefix.unwrap()
+        parts.append("\"ReplacePathPrefix\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.EnableHomogenousTablespace.is_some():
+        auto u13 = v.EnableHomogenousTablespace.unwrap()
+        parts.append("\"EnableHomogenousTablespace\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.DirectPathNoLog.is_some():
+        auto u14 = v.DirectPathNoLog.unwrap()
+        parts.append("\"DirectPathNoLog\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.ArchivedLogsOnly.is_some():
+        auto u15 = v.ArchivedLogsOnly.unwrap()
+        parts.append("\"ArchivedLogsOnly\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.AsmPassword.is_some():
+        auto u16 = v.AsmPassword.unwrap()
+        parts.append("\"AsmPassword\":" + dms_json_str(u16))
+    if v.AsmServer.is_some():
+        auto u17 = v.AsmServer.unwrap()
+        parts.append("\"AsmServer\":" + dms_json_str(u17))
+    if v.AsmUser.is_some():
+        auto u18 = v.AsmUser.unwrap()
+        parts.append("\"AsmUser\":" + dms_json_str(u18))
+    if v.CharLengthSemantics.is_some():
+        auto u19 = v.CharLengthSemantics.unwrap()
+        parts.append("\"CharLengthSemantics\":" + u19.to_json())
+    if v.DatabaseName.is_some():
+        auto u20 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + dms_json_str(u20))
+    if v.DirectPathParallelLoad.is_some():
+        auto u21 = v.DirectPathParallelLoad.unwrap()
+        parts.append("\"DirectPathParallelLoad\":" + json.dumps(JsonValue.Bool(u21)))
+    if v.FailTasksOnLobTruncation.is_some():
+        auto u22 = v.FailTasksOnLobTruncation.unwrap()
+        parts.append("\"FailTasksOnLobTruncation\":" + json.dumps(JsonValue.Bool(u22)))
+    if v.NumberDatatypeScale.is_some():
+        auto u23 = v.NumberDatatypeScale.unwrap()
+        parts.append("\"NumberDatatypeScale\":" + str(u23))
+    if v.Password.is_some():
+        auto u24 = v.Password.unwrap()
+        parts.append("\"Password\":" + dms_json_str(u24))
+    if v.Port.is_some():
+        auto u25 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u25))
+    if v.ReadTableSpaceName.is_some():
+        auto u26 = v.ReadTableSpaceName.unwrap()
+        parts.append("\"ReadTableSpaceName\":" + json.dumps(JsonValue.Bool(u26)))
+    if v.RetryInterval.is_some():
+        auto u27 = v.RetryInterval.unwrap()
+        parts.append("\"RetryInterval\":" + str(u27))
+    if v.SecurityDbEncryption.is_some():
+        auto u28 = v.SecurityDbEncryption.unwrap()
+        parts.append("\"SecurityDbEncryption\":" + dms_json_str(u28))
+    if v.SecurityDbEncryptionName.is_some():
+        auto u29 = v.SecurityDbEncryptionName.unwrap()
+        parts.append("\"SecurityDbEncryptionName\":" + dms_json_str(u29))
+    if v.ServerName.is_some():
+        auto u30 = v.ServerName.unwrap()
+        parts.append("\"ServerName\":" + dms_json_str(u30))
+    if v.SpatialDataOptionToGeoJsonFunctionName.is_some():
+        auto u31 = v.SpatialDataOptionToGeoJsonFunctionName.unwrap()
+        parts.append("\"SpatialDataOptionToGeoJsonFunctionName\":" + dms_json_str(u31))
+    if v.StandbyDelayTime.is_some():
+        auto u32 = v.StandbyDelayTime.unwrap()
+        parts.append("\"StandbyDelayTime\":" + str(u32))
+    if v.Username.is_some():
+        auto u33 = v.Username.unwrap()
+        parts.append("\"Username\":" + dms_json_str(u33))
+    if v.UseBFile.is_some():
+        auto u34 = v.UseBFile.unwrap()
+        parts.append("\"UseBFile\":" + json.dumps(JsonValue.Bool(u34)))
+    if v.UseDirectPathFullLoad.is_some():
+        auto u35 = v.UseDirectPathFullLoad.unwrap()
+        parts.append("\"UseDirectPathFullLoad\":" + json.dumps(JsonValue.Bool(u35)))
+    if v.UseLogminerReader.is_some():
+        auto u36 = v.UseLogminerReader.unwrap()
+        parts.append("\"UseLogminerReader\":" + json.dumps(JsonValue.Bool(u36)))
+    if v.SecretsManagerAccessRoleArn.is_some():
+        auto u37 = v.SecretsManagerAccessRoleArn.unwrap()
+        parts.append("\"SecretsManagerAccessRoleArn\":" + dms_json_str(u37))
+    if v.SecretsManagerSecretId.is_some():
+        auto u38 = v.SecretsManagerSecretId.unwrap()
+        parts.append("\"SecretsManagerSecretId\":" + dms_json_str(u38))
+    if v.SecretsManagerOracleAsmAccessRoleArn.is_some():
+        auto u39 = v.SecretsManagerOracleAsmAccessRoleArn.unwrap()
+        parts.append("\"SecretsManagerOracleAsmAccessRoleArn\":" + dms_json_str(u39))
+    if v.SecretsManagerOracleAsmSecretId.is_some():
+        auto u40 = v.SecretsManagerOracleAsmSecretId.unwrap()
+        parts.append("\"SecretsManagerOracleAsmSecretId\":" + dms_json_str(u40))
+    if v.TrimSpaceInChar.is_some():
+        auto u41 = v.TrimSpaceInChar.unwrap()
+        parts.append("\"TrimSpaceInChar\":" + json.dumps(JsonValue.Bool(u41)))
+    if v.ConvertTimestampWithZoneToUTC.is_some():
+        auto u42 = v.ConvertTimestampWithZoneToUTC.unwrap()
+        parts.append("\"ConvertTimestampWithZoneToUTC\":" + json.dumps(JsonValue.Bool(u42)))
+    if v.OpenTransactionWindow.is_some():
+        auto u43 = v.OpenTransactionWindow.unwrap()
+        parts.append("\"OpenTransactionWindow\":" + str(u43))
+    if v.AuthenticationMethod.is_some():
+        auto u44 = v.AuthenticationMethod.unwrap()
+        parts.append("\"AuthenticationMethod\":" + u44.to_json())
+    return dms_json_obj(parts)
+
+# Serialize ReloadReplicationTablesMessage to a compact JSON object (declaration order).
+def reload_replication_tables_message_to_json(ReloadReplicationTablesMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationConfigArn\":" + dms_json_str(v.ReplicationConfigArn))
+    list[str] e0 = []
+    for x0 in v.TablesToReload:
+        e0.append(x0.to_json())
+    parts.append("\"TablesToReload\":" + dms_json_arr(e0))
+    if v.ReloadOption.is_some():
+        auto u1 = v.ReloadOption.unwrap()
+        parts.append("\"ReloadOption\":" + u1.to_json())
+    return dms_json_obj(parts)
+
+# Serialize ReloadTablesMessage to a compact JSON object (declaration order).
+def reload_tables_message_to_json(ReloadTablesMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationTaskArn\":" + dms_json_str(v.ReplicationTaskArn))
+    list[str] e0 = []
+    for x0 in v.TablesToReload:
+        e0.append(x0.to_json())
+    parts.append("\"TablesToReload\":" + dms_json_arr(e0))
+    if v.ReloadOption.is_some():
+        auto u1 = v.ReloadOption.unwrap()
+        parts.append("\"ReloadOption\":" + u1.to_json())
+    return dms_json_obj(parts)
+
+# Serialize RemoveTagsFromResourceMessage to a compact JSON object (declaration order).
+def remove_tags_from_resource_message_to_json(RemoveTagsFromResourceMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + dms_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(dms_json_str(x0))
+    parts.append("\"TagKeys\":" + dms_json_arr(e0))
+    return dms_json_obj(parts)
+
+# Serialize StartReplicationTaskAssessmentRunMessage to a compact JSON object (declaration order).
+def start_replication_task_assessment_run_message_to_json(StartReplicationTaskAssessmentRunMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplicationTaskArn\":" + dms_json_str(v.ReplicationTaskArn))
+    parts.append("\"ServiceAccessRoleArn\":" + dms_json_str(v.ServiceAccessRoleArn))
+    parts.append("\"ResultLocationBucket\":" + dms_json_str(v.ResultLocationBucket))
+    if v.ResultLocationFolder.is_some():
+        auto u0 = v.ResultLocationFolder.unwrap()
+        parts.append("\"ResultLocationFolder\":" + dms_json_str(u0))
+    if v.ResultEncryptionMode.is_some():
+        auto u1 = v.ResultEncryptionMode.unwrap()
+        parts.append("\"ResultEncryptionMode\":" + dms_json_str(u1))
+    if v.ResultKmsKeyArn.is_some():
+        auto u2 = v.ResultKmsKeyArn.unwrap()
+        parts.append("\"ResultKmsKeyArn\":" + dms_json_str(u2))
+    parts.append("\"AssessmentRunName\":" + dms_json_str(v.AssessmentRunName))
+    if v.IncludeOnly.is_some():
+        auto u3 = v.IncludeOnly.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dms_json_str(x4))
+        parts.append("\"IncludeOnly\":" + dms_json_arr(e4))
+    if v.Exclude.is_some():
+        auto u5 = v.Exclude.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(dms_json_str(x6))
+        parts.append("\"Exclude\":" + dms_json_arr(e6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + dms_json_arr(e8))
+    return dms_json_obj(parts)
 
 # A bound Database_Migration_Service client: credentials + region, threaded into every operation.
 struct Database_Migration_ServiceClient:
     core.Credentials creds
     str region
 
+    # AddTagsToResource
+    # errors: InvalidResourceStateFault, ResourceNotFoundFault
+    def add_tags_to_resource(self, AddTagsToResourceMessage input) -> str:
+        auto body = add_tags_to_resource_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "AddTagsToResource", body)
+
     # ApplyPendingMaintenanceAction
     # errors: ResourceNotFoundFault
     def apply_pending_maintenance_action(self, ApplyPendingMaintenanceActionMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ApplyPendingMaintenanceAction", body)
+
+    # BatchStartRecommendations
+    # errors: AccessDeniedFault, InvalidResourceStateFault, ResourceNotFoundFault
+    def batch_start_recommendations(self, BatchStartRecommendationsRequest input) -> str:
+        auto body = batch_start_recommendations_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "BatchStartRecommendations", body)
 
     # CancelMetadataModelConversion
     # errors: AccessDeniedFault, InvalidResourceStateFault, ResourceNotFoundFault
@@ -3472,11 +5272,71 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CancelReplicationTaskAssessmentRun", body)
 
+    # CreateDataMigration
+    # errors: FailedDependencyFault, InvalidOperationFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault
+    def create_data_migration(self, CreateDataMigrationMessage input) -> str:
+        auto body = create_data_migration_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateDataMigration", body)
+
+    # CreateDataProvider
+    # errors: AccessDeniedFault, FailedDependencyFault, ResourceAlreadyExistsFault, ResourceQuotaExceededFault
+    def create_data_provider(self, CreateDataProviderMessage input) -> str:
+        auto body = create_data_provider_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateDataProvider", body)
+
+    # CreateEndpoint
+    # errors: AccessDeniedFault, InvalidResourceStateFault, KMSKeyNotAccessibleFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault, S3AccessDeniedFault
+    def create_endpoint(self, CreateEndpointMessage input) -> str:
+        auto body = create_endpoint_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateEndpoint", body)
+
+    # CreateEventSubscription
+    # errors: KMSAccessDeniedFault, KMSDisabledFault, KMSInvalidStateFault, KMSNotFoundFault, KMSThrottlingFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault, SNSInvalidTopicFault, SNSNoAuthorizationFault
+    def create_event_subscription(self, CreateEventSubscriptionMessage input) -> str:
+        auto body = create_event_subscription_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateEventSubscription", body)
+
     # CreateFleetAdvisorCollector
     # errors: AccessDeniedFault, InvalidResourceStateFault, ResourceQuotaExceededFault, S3AccessDeniedFault, S3ResourceNotFoundFault
     def create_fleet_advisor_collector(self, CreateFleetAdvisorCollectorRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateFleetAdvisorCollector", body)
+
+    # CreateInstanceProfile
+    # errors: AccessDeniedFault, FailedDependencyFault, InvalidResourceStateFault, KMSKeyNotAccessibleFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault, S3AccessDeniedFault, S3ResourceNotFoundFault
+    def create_instance_profile(self, CreateInstanceProfileMessage input) -> str:
+        auto body = create_instance_profile_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateInstanceProfile", body)
+
+    # CreateMigrationProject
+    # errors: AccessDeniedFault, FailedDependencyFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault, S3AccessDeniedFault, S3ResourceNotFoundFault
+    def create_migration_project(self, CreateMigrationProjectMessage input) -> str:
+        auto body = create_migration_project_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateMigrationProject", body)
+
+    # CreateReplicationConfig
+    # errors: AccessDeniedFault, InvalidResourceStateFault, InvalidSubnet, KMSKeyNotAccessibleFault, ReplicationSubnetGroupDoesNotCoverEnoughAZs, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault
+    def create_replication_config(self, CreateReplicationConfigMessage input) -> str:
+        auto body = create_replication_config_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateReplicationConfig", body)
+
+    # CreateReplicationInstance
+    # errors: AccessDeniedFault, InsufficientResourceCapacityFault, InvalidResourceStateFault, InvalidSubnet, KMSKeyNotAccessibleFault, ReplicationSubnetGroupDoesNotCoverEnoughAZs, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault, StorageQuotaExceededFault
+    def create_replication_instance(self, CreateReplicationInstanceMessage input) -> str:
+        auto body = create_replication_instance_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateReplicationInstance", body)
+
+    # CreateReplicationSubnetGroup
+    # errors: AccessDeniedFault, InvalidSubnet, ReplicationSubnetGroupDoesNotCoverEnoughAZs, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault
+    def create_replication_subnet_group(self, CreateReplicationSubnetGroupMessage input) -> str:
+        auto body = create_replication_subnet_group_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateReplicationSubnetGroup", body)
+
+    # CreateReplicationTask
+    # errors: AccessDeniedFault, InvalidResourceStateFault, KMSKeyNotAccessibleFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, ResourceQuotaExceededFault
+    def create_replication_task(self, CreateReplicationTaskMessage input) -> str:
+        auto body = create_replication_task_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "CreateReplicationTask", body)
 
     # DeleteCertificate
     # errors: InvalidResourceStateFault, ResourceNotFoundFault
@@ -3519,6 +5379,12 @@ struct Database_Migration_ServiceClient:
     def delete_fleet_advisor_collector(self, DeleteCollectorRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DeleteFleetAdvisorCollector", body)
+
+    # DeleteFleetAdvisorDatabases
+    # errors: AccessDeniedFault, InvalidOperationFault, ResourceNotFoundFault
+    def delete_fleet_advisor_databases(self, DeleteFleetAdvisorDatabasesRequest input) -> str:
+        auto body = delete_fleet_advisor_databases_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DeleteFleetAdvisorDatabases", body)
 
     # DeleteInstanceProfile
     # errors: AccessDeniedFault, FailedDependencyFault, InvalidResourceStateFault, ResourceNotFoundFault
@@ -3573,21 +5439,89 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeApplicableIndividualAssessments", body)
 
+    # DescribeCertificates
+    # errors: ResourceNotFoundFault
+    def describe_certificates(self, DescribeCertificatesMessage input) -> str:
+        auto body = describe_certificates_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeCertificates", body)
+
+    # DescribeConnections
+    # errors: ResourceNotFoundFault
+    def describe_connections(self, DescribeConnectionsMessage input) -> str:
+        auto body = describe_connections_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeConnections", body)
+
     # DescribeConversionConfiguration
     # errors: ResourceNotFoundFault
     def describe_conversion_configuration(self, DescribeConversionConfigurationMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeConversionConfiguration", body)
 
+    # DescribeDataMigrations
+    # errors: FailedDependencyFault, InvalidResourceStateFault, ResourceNotFoundFault
+    def describe_data_migrations(self, DescribeDataMigrationsMessage input) -> str:
+        auto body = describe_data_migrations_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeDataMigrations", body)
+
+    # DescribeDataProviders
+    # errors: AccessDeniedFault, FailedDependencyFault, ResourceNotFoundFault
+    def describe_data_providers(self, DescribeDataProvidersMessage input) -> str:
+        auto body = describe_data_providers_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeDataProviders", body)
+
     # DescribeEndpointSettings
     def describe_endpoint_settings(self, DescribeEndpointSettingsMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEndpointSettings", body)
 
+    # DescribeEndpointTypes
+    def describe_endpoint_types(self, DescribeEndpointTypesMessage input) -> str:
+        auto body = describe_endpoint_types_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEndpointTypes", body)
+
+    # DescribeEndpoints
+    # errors: ResourceNotFoundFault
+    def describe_endpoints(self, DescribeEndpointsMessage input) -> str:
+        auto body = describe_endpoints_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEndpoints", body)
+
     # DescribeEngineVersions
     def describe_engine_versions(self, DescribeEngineVersionsMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEngineVersions", body)
+
+    # DescribeEventCategories
+    def describe_event_categories(self, DescribeEventCategoriesMessage input) -> str:
+        auto body = describe_event_categories_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEventCategories", body)
+
+    # DescribeEventSubscriptions
+    # errors: ResourceNotFoundFault
+    def describe_event_subscriptions(self, DescribeEventSubscriptionsMessage input) -> str:
+        auto body = describe_event_subscriptions_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEventSubscriptions", body)
+
+    # DescribeEvents
+    def describe_events(self, DescribeEventsMessage input) -> str:
+        auto body = describe_events_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEvents", body)
+
+    # DescribeExtensionPackAssociations
+    def describe_extension_pack_associations(self, DescribeExtensionPackAssociationsMessage input) -> str:
+        auto body = describe_extension_pack_associations_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeExtensionPackAssociations", body)
+
+    # DescribeFleetAdvisorCollectors
+    # errors: InvalidResourceStateFault
+    def describe_fleet_advisor_collectors(self, DescribeFleetAdvisorCollectorsRequest input) -> str:
+        auto body = describe_fleet_advisor_collectors_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeFleetAdvisorCollectors", body)
+
+    # DescribeFleetAdvisorDatabases
+    # errors: InvalidResourceStateFault
+    def describe_fleet_advisor_databases(self, DescribeFleetAdvisorDatabasesRequest input) -> str:
+        auto body = describe_fleet_advisor_databases_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeFleetAdvisorDatabases", body)
 
     # DescribeFleetAdvisorLsaAnalysis
     # errors: InvalidResourceStateFault
@@ -3595,11 +5529,35 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeFleetAdvisorLsaAnalysis", body)
 
+    # DescribeFleetAdvisorSchemaObjectSummary
+    # errors: InvalidResourceStateFault
+    def describe_fleet_advisor_schema_object_summary(self, DescribeFleetAdvisorSchemaObjectSummaryRequest input) -> str:
+        auto body = describe_fleet_advisor_schema_object_summary_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeFleetAdvisorSchemaObjectSummary", body)
+
+    # DescribeFleetAdvisorSchemas
+    # errors: InvalidResourceStateFault
+    def describe_fleet_advisor_schemas(self, DescribeFleetAdvisorSchemasRequest input) -> str:
+        auto body = describe_fleet_advisor_schemas_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeFleetAdvisorSchemas", body)
+
+    # DescribeInstanceProfiles
+    # errors: AccessDeniedFault, FailedDependencyFault, ResourceNotFoundFault
+    def describe_instance_profiles(self, DescribeInstanceProfilesMessage input) -> str:
+        auto body = describe_instance_profiles_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeInstanceProfiles", body)
+
     # DescribeMetadataModel
     # errors: AccessDeniedFault, ResourceNotFoundFault
     def describe_metadata_model(self, DescribeMetadataModelMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModel", body)
+
+    # DescribeMetadataModelAssessments
+    # errors: ResourceNotFoundFault
+    def describe_metadata_model_assessments(self, DescribeMetadataModelAssessmentsMessage input) -> str:
+        auto body = describe_metadata_model_assessments_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelAssessments", body)
 
     # DescribeMetadataModelChildren
     # errors: AccessDeniedFault, ResourceNotFoundFault
@@ -3607,10 +5565,64 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelChildren", body)
 
+    # DescribeMetadataModelConversions
+    # errors: ResourceNotFoundFault
+    def describe_metadata_model_conversions(self, DescribeMetadataModelConversionsMessage input) -> str:
+        auto body = describe_metadata_model_conversions_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelConversions", body)
+
+    # DescribeMetadataModelCreations
+    # errors: AccessDeniedFault, ResourceNotFoundFault
+    def describe_metadata_model_creations(self, DescribeMetadataModelCreationsMessage input) -> str:
+        auto body = describe_metadata_model_creations_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelCreations", body)
+
+    # DescribeMetadataModelExportsAsScript
+    # errors: ResourceNotFoundFault
+    def describe_metadata_model_exports_as_script(self, DescribeMetadataModelExportsAsScriptMessage input) -> str:
+        auto body = describe_metadata_model_exports_as_script_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelExportsAsScript", body)
+
+    # DescribeMetadataModelExportsToTarget
+    # errors: ResourceNotFoundFault
+    def describe_metadata_model_exports_to_target(self, DescribeMetadataModelExportsToTargetMessage input) -> str:
+        auto body = describe_metadata_model_exports_to_target_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelExportsToTarget", body)
+
+    # DescribeMetadataModelImports
+    # errors: ResourceNotFoundFault
+    def describe_metadata_model_imports(self, DescribeMetadataModelImportsMessage input) -> str:
+        auto body = describe_metadata_model_imports_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelImports", body)
+
+    # DescribeMigrationProjects
+    # errors: AccessDeniedFault, FailedDependencyFault, ResourceNotFoundFault
+    def describe_migration_projects(self, DescribeMigrationProjectsMessage input) -> str:
+        auto body = describe_migration_projects_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMigrationProjects", body)
+
     # DescribeOrderableReplicationInstances
     def describe_orderable_replication_instances(self, DescribeOrderableReplicationInstancesMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeOrderableReplicationInstances", body)
+
+    # DescribePendingMaintenanceActions
+    # errors: ResourceNotFoundFault
+    def describe_pending_maintenance_actions(self, DescribePendingMaintenanceActionsMessage input) -> str:
+        auto body = describe_pending_maintenance_actions_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribePendingMaintenanceActions", body)
+
+    # DescribeRecommendationLimitations
+    # errors: AccessDeniedFault, InvalidResourceStateFault
+    def describe_recommendation_limitations(self, DescribeRecommendationLimitationsRequest input) -> str:
+        auto body = describe_recommendation_limitations_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeRecommendationLimitations", body)
+
+    # DescribeRecommendations
+    # errors: AccessDeniedFault, InvalidResourceStateFault
+    def describe_recommendations(self, DescribeRecommendationsRequest input) -> str:
+        auto body = describe_recommendations_request_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeRecommendations", body)
 
     # DescribeRefreshSchemasStatus
     # errors: InvalidResourceStateFault, ResourceNotFoundFault
@@ -3618,11 +5630,35 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeRefreshSchemasStatus", body)
 
+    # DescribeReplicationConfigs
+    # errors: ResourceNotFoundFault
+    def describe_replication_configs(self, DescribeReplicationConfigsMessage input) -> str:
+        auto body = describe_replication_configs_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationConfigs", body)
+
     # DescribeReplicationInstanceTaskLogs
     # errors: InvalidResourceStateFault, ResourceNotFoundFault
     def describe_replication_instance_task_logs(self, DescribeReplicationInstanceTaskLogsMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationInstanceTaskLogs", body)
+
+    # DescribeReplicationInstances
+    # errors: ResourceNotFoundFault
+    def describe_replication_instances(self, DescribeReplicationInstancesMessage input) -> str:
+        auto body = describe_replication_instances_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationInstances", body)
+
+    # DescribeReplicationSubnetGroups
+    # errors: ResourceNotFoundFault
+    def describe_replication_subnet_groups(self, DescribeReplicationSubnetGroupsMessage input) -> str:
+        auto body = describe_replication_subnet_groups_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationSubnetGroups", body)
+
+    # DescribeReplicationTableStatistics
+    # errors: InvalidResourceStateFault, ResourceNotFoundFault
+    def describe_replication_table_statistics(self, DescribeReplicationTableStatisticsMessage input) -> str:
+        auto body = describe_replication_table_statistics_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationTableStatistics", body)
 
     # DescribeReplicationTaskAssessmentResults
     # errors: ResourceNotFoundFault
@@ -3630,11 +5666,47 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationTaskAssessmentResults", body)
 
+    # DescribeReplicationTaskAssessmentRuns
+    # errors: ResourceNotFoundFault
+    def describe_replication_task_assessment_runs(self, DescribeReplicationTaskAssessmentRunsMessage input) -> str:
+        auto body = describe_replication_task_assessment_runs_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationTaskAssessmentRuns", body)
+
+    # DescribeReplicationTaskIndividualAssessments
+    # errors: ResourceNotFoundFault
+    def describe_replication_task_individual_assessments(self, DescribeReplicationTaskIndividualAssessmentsMessage input) -> str:
+        auto body = describe_replication_task_individual_assessments_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationTaskIndividualAssessments", body)
+
+    # DescribeReplicationTasks
+    # errors: ResourceNotFoundFault
+    def describe_replication_tasks(self, DescribeReplicationTasksMessage input) -> str:
+        auto body = describe_replication_tasks_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationTasks", body)
+
+    # DescribeReplications
+    # errors: ResourceNotFoundFault
+    def describe_replications(self, DescribeReplicationsMessage input) -> str:
+        auto body = describe_replications_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplications", body)
+
     # DescribeSchemas
     # errors: InvalidResourceStateFault, ResourceNotFoundFault
     def describe_schemas(self, DescribeSchemasMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeSchemas", body)
+
+    # DescribeTableStatistics
+    # errors: AccessDeniedFault, InvalidResourceStateFault, ResourceNotFoundFault
+    def describe_table_statistics(self, DescribeTableStatisticsMessage input) -> str:
+        auto body = describe_table_statistics_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeTableStatistics", body)
+
+    # ExportMetadataModelAssessment
+    # errors: ResourceNotFoundFault
+    def export_metadata_model_assessment(self, ExportMetadataModelAssessmentMessage input) -> str:
+        auto body = export_metadata_model_assessment_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ExportMetadataModelAssessment", body)
 
     # GetTargetSelectionRules
     # errors: AccessDeniedFault, InvalidResourceStateFault, ResourceNotFoundFault
@@ -3642,17 +5714,77 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "GetTargetSelectionRules", body)
 
+    # ImportCertificate
+    # errors: InvalidCertificateFault, KMSKeyNotAccessibleFault, ResourceAlreadyExistsFault, ResourceQuotaExceededFault
+    def import_certificate(self, ImportCertificateMessage input) -> str:
+        auto body = import_certificate_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ImportCertificate", body)
+
+    # ListTagsForResource
+    # errors: InvalidResourceStateFault, ResourceNotFoundFault
+    def list_tags_for_resource(self, ListTagsForResourceMessage input) -> str:
+        auto body = list_tags_for_resource_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
     # ModifyConversionConfiguration
     # errors: InvalidResourceStateFault, ResourceNotFoundFault
     def modify_conversion_configuration(self, ModifyConversionConfigurationMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyConversionConfiguration", body)
 
+    # ModifyDataMigration
+    # errors: FailedDependencyFault, InvalidResourceStateFault, ResourceNotFoundFault
+    def modify_data_migration(self, ModifyDataMigrationMessage input) -> str:
+        auto body = modify_data_migration_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyDataMigration", body)
+
     # ModifyDataProvider
     # errors: AccessDeniedFault, FailedDependencyFault, InvalidResourceStateFault, ResourceNotFoundFault
     def modify_data_provider(self, ModifyDataProviderMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyDataProvider", body)
+
+    # ModifyEndpoint
+    # errors: AccessDeniedFault, InvalidResourceStateFault, KMSKeyNotAccessibleFault, ResourceAlreadyExistsFault, ResourceNotFoundFault
+    def modify_endpoint(self, ModifyEndpointMessage input) -> str:
+        auto body = modify_endpoint_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyEndpoint", body)
+
+    # ModifyEventSubscription
+    # errors: AccessDeniedFault, KMSAccessDeniedFault, KMSDisabledFault, KMSInvalidStateFault, KMSNotFoundFault, KMSThrottlingFault, ResourceNotFoundFault, ResourceQuotaExceededFault, SNSInvalidTopicFault, SNSNoAuthorizationFault
+    def modify_event_subscription(self, ModifyEventSubscriptionMessage input) -> str:
+        auto body = modify_event_subscription_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyEventSubscription", body)
+
+    # ModifyInstanceProfile
+    # errors: AccessDeniedFault, FailedDependencyFault, InvalidResourceStateFault, KMSKeyNotAccessibleFault, ResourceNotFoundFault, S3AccessDeniedFault, S3ResourceNotFoundFault
+    def modify_instance_profile(self, ModifyInstanceProfileMessage input) -> str:
+        auto body = modify_instance_profile_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyInstanceProfile", body)
+
+    # ModifyMigrationProject
+    # errors: AccessDeniedFault, FailedDependencyFault, InvalidResourceStateFault, ResourceNotFoundFault, S3AccessDeniedFault, S3ResourceNotFoundFault
+    def modify_migration_project(self, ModifyMigrationProjectMessage input) -> str:
+        auto body = modify_migration_project_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyMigrationProject", body)
+
+    # ModifyReplicationConfig
+    # errors: AccessDeniedFault, InvalidResourceStateFault, InvalidSubnet, KMSKeyNotAccessibleFault, ReplicationSubnetGroupDoesNotCoverEnoughAZs, ResourceNotFoundFault
+    def modify_replication_config(self, ModifyReplicationConfigMessage input) -> str:
+        auto body = modify_replication_config_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyReplicationConfig", body)
+
+    # ModifyReplicationInstance
+    # errors: AccessDeniedFault, InsufficientResourceCapacityFault, InvalidResourceStateFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, StorageQuotaExceededFault, UpgradeDependencyFailureFault
+    def modify_replication_instance(self, ModifyReplicationInstanceMessage input) -> str:
+        auto body = modify_replication_instance_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyReplicationInstance", body)
+
+    # ModifyReplicationSubnetGroup
+    # errors: AccessDeniedFault, InvalidSubnet, ReplicationSubnetGroupDoesNotCoverEnoughAZs, ResourceNotFoundFault, ResourceQuotaExceededFault, SubnetAlreadyInUse
+    def modify_replication_subnet_group(self, ModifyReplicationSubnetGroupMessage input) -> str:
+        auto body = modify_replication_subnet_group_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ModifyReplicationSubnetGroup", body)
 
     # ModifyReplicationTask
     # errors: InvalidResourceStateFault, KMSKeyNotAccessibleFault, ResourceAlreadyExistsFault, ResourceNotFoundFault
@@ -3677,6 +5809,24 @@ struct Database_Migration_ServiceClient:
     def refresh_schemas(self, RefreshSchemasMessage input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "RefreshSchemas", body)
+
+    # ReloadReplicationTables
+    # errors: InvalidResourceStateFault, ResourceNotFoundFault
+    def reload_replication_tables(self, ReloadReplicationTablesMessage input) -> str:
+        auto body = reload_replication_tables_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ReloadReplicationTables", body)
+
+    # ReloadTables
+    # errors: InvalidResourceStateFault, ResourceNotFoundFault
+    def reload_tables(self, ReloadTablesMessage input) -> str:
+        auto body = reload_tables_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "ReloadTables", body)
+
+    # RemoveTagsFromResource
+    # errors: InvalidResourceStateFault, ResourceNotFoundFault
+    def remove_tags_from_resource(self, RemoveTagsFromResourceMessage input) -> str:
+        auto body = remove_tags_from_resource_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "RemoveTagsFromResource", body)
 
     # RunFleetAdvisorLsaAnalysis
     # errors: InvalidResourceStateFault, ResourceNotFoundFault
@@ -3756,6 +5906,12 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "StartReplicationTaskAssessment", body)
 
+    # StartReplicationTaskAssessmentRun
+    # errors: AccessDeniedFault, InvalidResourceStateFault, KMSAccessDeniedFault, KMSDisabledFault, KMSFault, KMSInvalidStateFault, KMSKeyNotAccessibleFault, KMSNotFoundFault, ResourceAlreadyExistsFault, ResourceNotFoundFault, S3AccessDeniedFault, S3ResourceNotFoundFault
+    def start_replication_task_assessment_run(self, StartReplicationTaskAssessmentRunMessage input) -> str:
+        auto body = start_replication_task_assessment_run_message_to_json(input)
+        return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "StartReplicationTaskAssessmentRun", body)
+
     # StopDataMigration
     # errors: FailedDependencyFault, InvalidResourceStateFault, ResourceNotFoundFault
     def stop_data_migration(self, StopDataMigrationMessage input) -> str:
@@ -3786,6 +5942,104 @@ struct Database_Migration_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "UpdateSubscriptionsToEventBridge", body)
 
+    # Paginator for DescribeCertificates — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Certificates).
+    def paginate_describe_certificates(self, DescribeCertificatesMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_certificates_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeCertificates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeConnections — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Connections).
+    def paginate_describe_connections(self, DescribeConnectionsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_connections_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeConnections", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeDataMigrations — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: DataMigrations).
+    def paginate_describe_data_migrations(self, DescribeDataMigrationsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_data_migrations_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeDataMigrations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeEndpointTypes — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: SupportedEndpointTypes).
+    def paginate_describe_endpoint_types(self, DescribeEndpointTypesMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_endpoint_types_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEndpointTypes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeEndpoints — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Endpoints).
+    def paginate_describe_endpoints(self, DescribeEndpointsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_endpoints_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEndpoints", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeEventSubscriptions — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: EventSubscriptionsList).
+    def paginate_describe_event_subscriptions(self, DescribeEventSubscriptionsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_event_subscriptions_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEventSubscriptions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeEvents — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Events).
+    def paginate_describe_events(self, DescribeEventsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_events_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeEvents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
     # Paginator for DescribeMetadataModelChildren — yields each Response page, threading the
     # Marker -> Marker continuation token until the output token is absent (result key: MetadataModelChildren).
     def paginate_describe_metadata_model_children(self, DescribeMetadataModelChildrenMessage input):
@@ -3793,6 +6047,20 @@ struct Database_Migration_ServiceClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelChildren", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeMetadataModelCreations — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Requests).
+    def paginate_describe_metadata_model_creations(self, DescribeMetadataModelCreationsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_metadata_model_creations_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeMetadataModelCreations", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")
@@ -3814,6 +6082,34 @@ struct Database_Migration_ServiceClient:
                 break
             input.Marker = Optional.Some(np.token)
 
+    # Paginator for DescribeReplicationInstances — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: ReplicationInstances).
+    def paginate_describe_replication_instances(self, DescribeReplicationInstancesMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_replication_instances_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationInstances", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeReplicationSubnetGroups — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: ReplicationSubnetGroups).
+    def paginate_describe_replication_subnet_groups(self, DescribeReplicationSubnetGroupsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_replication_subnet_groups_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationSubnetGroups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
     # Paginator for DescribeReplicationTaskAssessmentResults — yields each Response page, threading the
     # Marker -> Marker continuation token until the output token is absent (result key: ReplicationTaskAssessmentResults).
     def paginate_describe_replication_task_assessment_results(self, DescribeReplicationTaskAssessmentResultsMessage input):
@@ -3828,6 +6124,20 @@ struct Database_Migration_ServiceClient:
                 break
             input.Marker = Optional.Some(np.token)
 
+    # Paginator for DescribeReplicationTasks — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: ReplicationTasks).
+    def paginate_describe_replication_tasks(self, DescribeReplicationTasksMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_replication_tasks_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeReplicationTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
     # Paginator for DescribeSchemas — yields each Response page, threading the
     # Marker -> Marker continuation token until the output token is absent (result key: Schemas).
     def paginate_describe_schemas(self, DescribeSchemasMessage input):
@@ -3835,6 +6145,20 @@ struct Database_Migration_ServiceClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeSchemas", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeTableStatistics — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: TableStatistics).
+    def paginate_describe_table_statistics(self, DescribeTableStatisticsMessage input):
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        while True:
+            auto body = describe_table_statistics_message_to_json(input)
+            auto raw = awsjson.awsjson_request_now(dms_protocol(), self.creds, self.region, "DescribeTableStatistics", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 13 operations — 9 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 13 operations — 12 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   47 structs (31 @derive(Json)), 7 enums, 6 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -158,8 +158,9 @@ struct DescribeDeviceEc2Input:
     list[str] instanceIds
     str managedDeviceId
 
-# no @derive(Json): member(s) instances: list[InstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instances: list[InstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeviceEc2Output:
     Optional[list[InstanceSummary]] instances
 
@@ -168,8 +169,9 @@ struct DescribeDeviceEc2Output:
 struct DescribeDeviceInput:
     str managedDeviceId
 
-# no @derive(Json): member(s) deviceCapacities: list[Capacity], physicalNetworkInterfaces: list[PhysicalNetworkInterface], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceCapacities: list[Capacity], physicalNetworkInterfaces: list[PhysicalNetworkInterface], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeviceOutput:
     Optional[str] associatedWithJob
     Optional[list[Capacity]] deviceCapacities
@@ -203,8 +205,9 @@ struct DescribeExecutionOutput:
 struct DescribeTaskInput:
     str taskId
 
-# no @derive(Json): member(s) tags: dict[str, str], targets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], targets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskOutput:
     Optional[DateTime] completedAt
     Optional[DateTime] createdAt
@@ -216,8 +219,9 @@ struct DescribeTaskOutput:
     Optional[str] taskArn
     Optional[str] taskId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceSummary:
     Optional[str] associatedWithJob
     Optional[str] managedDeviceArn
@@ -238,8 +242,9 @@ struct ExecutionSummary:
     Optional[ExecutionState] state
     Optional[str] taskId
 
-# no @derive(Json): member(s) blockDeviceMappings: list[InstanceBlockDeviceMapping], securityGroups: list[SecurityGroupIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockDeviceMappings: list[InstanceBlockDeviceMapping], securityGroups: list[SecurityGroupIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     Optional[int64] amiLaunchIndex
     Optional[list[InstanceBlockDeviceMapping]] blockDeviceMappings
@@ -265,8 +270,9 @@ struct InstanceState:
     Optional[int64] code
     Optional[InstanceStateName] name
 
-# no @derive(Json): member(s) instance: Instance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instance: Instance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceSummary:
     Optional[Instance] instance
     Optional[DateTime] lastUpdatedAt
@@ -283,8 +289,9 @@ struct ListDeviceResourcesInput:
     Optional[str] nextToken
     Optional[str] type
 
-# no @derive(Json): member(s) resources: list[ResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[ResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceResourcesOutput:
     Optional[str] nextToken
     Optional[list[ResourceSummary]] resources
@@ -296,8 +303,9 @@ struct ListDevicesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) devices: list[DeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[DeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesOutput:
     Optional[list[DeviceSummary]] devices
     Optional[str] nextToken
@@ -311,8 +319,9 @@ struct ListExecutionsInput:
     Optional[str] state
     str taskId
 
-# no @derive(Json): member(s) executions: list[ExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executions: list[ExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutionsOutput:
     Optional[list[ExecutionSummary]] executions
     Optional[str] nextToken
@@ -322,8 +331,9 @@ struct ListExecutionsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -335,8 +345,9 @@ struct ListTasksInput:
     # wire string of the TaskState enum (querystring binding)
     Optional[str] state
 
-# no @derive(Json): member(s) tasks: list[TaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[TaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTasksOutput:
     Optional[str] nextToken
     Optional[list[TaskSummary]] tasks
@@ -387,8 +398,9 @@ struct TagResourceInput:
     str resourceArn
     dict[str, str] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskSummary:
     Optional[TaskState] state
     Optional[dict[str, str]] tags
@@ -449,9 +461,6 @@ def snow_device_management_error_from_code(str code) -> Snow_Device_ManagementEr
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateTask (document member `tags: dict[str, str]` is not serializable by derive)
-#   DescribeDeviceEc2Instances (document member `instanceIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # A bound Snow_Device_Management client: credentials + region, threaded into every operation.
@@ -468,6 +477,32 @@ struct Snow_Device_ManagementClient:
         auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
+    # CreateTask  POST /task
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_task(self, CreateTaskInput input) -> str:
+        auto host = endpoints.regional_host(snow_device_management_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + snow_device_management_json_str(u0))
+        parts.append("\"command\":" + input.command.to_json())
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + snow_device_management_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(snow_device_management_json_str(k3) + ":" + snow_device_management_json_str(u2[k3]))
+            parts.append("\"tags\":" + snow_device_management_json_obj(m3))
+        list[str] e4 = []
+        for x4 in input.targets:
+            e4.append(snow_device_management_json_str(x4))
+        parts.append("\"targets\":" + snow_device_management_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, snow_device_management_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, snow_device_management_service(), self.region, host)
+
     # DescribeDevice  POST /managed-device/{managedDeviceId}/describe
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_device(self, DescribeDeviceInput input) -> str:
@@ -476,6 +511,21 @@ struct Snow_Device_ManagementClient:
         labels["managedDeviceId"] = input.managedDeviceId
         auto b = binding.HttpBinding(method="POST", path_template="/managed-device/{managedDeviceId}/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
+
+    # DescribeDeviceEc2Instances  POST /managed-device/{managedDeviceId}/resources/ec2/describe
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_device_ec2_instances(self, DescribeDeviceEc2Input input) -> str:
+        auto host = endpoints.regional_host(snow_device_management_service(), self.region)
+        dict[str, str] labels = {}
+        labels["managedDeviceId"] = input.managedDeviceId
+        auto b = binding.HttpBinding(method="POST", path_template="/managed-device/{managedDeviceId}/resources/ec2/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.instanceIds:
+            e0.append(snow_device_management_json_str(x0))
+        parts.append("\"instanceIds\":" + snow_device_management_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, snow_device_management_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, snow_device_management_service(), self.region, host)
 
     # DescribeExecution  POST /task/{taskId}/execution/{managedDeviceId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -563,6 +613,21 @@ struct Snow_Device_ManagementClient:
             query["state"] = input.state.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/tasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(snow_device_management_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(snow_device_management_json_str(k0) + ":" + snow_device_management_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + snow_device_management_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, snow_device_management_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, snow_device_management_service(), self.region, host)
 
     # Paginator for ListDeviceResources — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: resources).

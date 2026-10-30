@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 18 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 24 operations — 23 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   78 structs (55 @derive(Json)), 7 enums, 12 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -139,8 +139,9 @@ struct CreateMicrovmAuthTokenRequest:
     int64 expirationInMinutes
     list[PortSpecification] allowedPorts
 
-# no @derive(Json): member(s) authToken: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authToken: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMicrovmAuthTokenResponse:
     dict[str, str] authToken
 
@@ -163,8 +164,9 @@ struct CreateMicrovmImageRequest:
     Optional[dict[str, str]] tags
     Optional[str] clientToken
 
-# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMicrovmImageResponse:
     str imageArn
     str name
@@ -194,8 +196,9 @@ struct CreateMicrovmShellAuthTokenRequest:
     str microvmIdentifier
     int64 expirationInMinutes
 
-# no @derive(Json): member(s) authToken: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authToken: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMicrovmShellAuthTokenResponse:
     dict[str, str] authToken
 
@@ -246,8 +249,9 @@ struct GetMicrovmImageBuildOutput:
 struct GetMicrovmImageInput:
     str imageIdentifier
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMicrovmImageOutput:
     str imageArn
     str name
@@ -264,8 +268,9 @@ struct GetMicrovmImageVersionInput:
     str imageIdentifier
     str imageVersion
 
-# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMicrovmImageVersionOutput:
     str baseImageArn
     Optional[str] baseImageVersion
@@ -293,8 +298,9 @@ struct GetMicrovmImageVersionOutput:
 struct GetMicrovmRequest:
     str microvmIdentifier
 
-# no @derive(Json): member(s) ingressNetworkConnectors: list[str], egressNetworkConnectors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingressNetworkConnectors: list[str], egressNetworkConnectors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMicrovmResponse:
     str microvmId
     MicrovmState state
@@ -343,8 +349,9 @@ struct ListManagedMicrovmImageVersionsInput:
     Optional[str] nextToken
     str imageIdentifier
 
-# no @derive(Json): member(s) items: list[ManagedMicrovmImageVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ManagedMicrovmImageVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedMicrovmImageVersionsOutput:
     Optional[str] nextToken
     list[ManagedMicrovmImageVersion] items
@@ -355,8 +362,9 @@ struct ListManagedMicrovmImagesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ManagedMicrovmImageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ManagedMicrovmImageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedMicrovmImagesOutput:
     Optional[str] nextToken
     list[ManagedMicrovmImageSummary] items
@@ -372,8 +380,9 @@ struct ListMicrovmImageBuildsInput:
     Optional[str] chipset
     Optional[str] chipsetGeneration
 
-# no @derive(Json): member(s) items: list[MicrovmImageBuildSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[MicrovmImageBuildSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMicrovmImageBuildsOutput:
     Optional[str] nextToken
     list[MicrovmImageBuildSummary] items
@@ -385,8 +394,9 @@ struct ListMicrovmImageVersionsInput:
     Optional[str] nextToken
     str imageIdentifier
 
-# no @derive(Json): member(s) items: list[MicrovmImageVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[MicrovmImageVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMicrovmImageVersionsOutput:
     Optional[str] nextToken
     list[MicrovmImageVersionSummary] items
@@ -398,8 +408,9 @@ struct ListMicrovmImagesRequest:
     Optional[str] nextToken
     Optional[str] nameFilter
 
-# no @derive(Json): member(s) items: list[MicrovmImageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[MicrovmImageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMicrovmImagesResponse:
     Optional[str] nextToken
     list[MicrovmImageSummary] items
@@ -412,8 +423,9 @@ struct ListMicrovmsRequest:
     Optional[str] imageIdentifier
     Optional[str] imageVersion
 
-# no @derive(Json): member(s) items: list[MicrovmItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[MicrovmItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMicrovmsResponse:
     Optional[str] nextToken
     list[MicrovmItem] items
@@ -423,8 +435,9 @@ struct ListMicrovmsResponse:
 struct ListTagsRequest:
     str Resource
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[dict[str, str]] Tags
 
@@ -491,8 +504,9 @@ struct MicrovmImageSummary:
     Optional[str] latestFailedImageVersion
     DateTime createdAt
 
-# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MicrovmImageVersionSummary:
     str baseImageArn
     Optional[str] baseImageVersion
@@ -574,8 +588,9 @@ struct RunMicrovmRequest:
     Optional[int64] maximumDurationInSeconds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) ingressNetworkConnectors: list[str], egressNetworkConnectors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ingressNetworkConnectors: list[str], egressNetworkConnectors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunMicrovmResponse:
     str microvmId
     MicrovmState state
@@ -677,8 +692,9 @@ struct UpdateMicrovmImageRequest:
     str imageIdentifier
     Optional[str] clientToken
 
-# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMicrovmImageResponse:
     str imageArn
     str name
@@ -708,8 +724,9 @@ struct UpdateMicrovmImageVersionRequest:
     str imageVersion
     MicrovmImageVersionStatus status
 
-# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) egressNetworkConnectors: list[str], cpuConfigurations: list[CpuConfiguration], resources: list[Resources], additionalOsCapabilities: list[str], environmentVariables: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMicrovmImageVersionResponse:
     str baseImageArn
     Optional[str] baseImageVersion
@@ -789,12 +806,7 @@ def lambda__error_from_code(str code) -> Lambda_MicrovmsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateMicrovmAuthToken (document member `allowedPorts: list[PortSpecification]` is not serializable by derive)
-#   CreateMicrovmImage (document member `egressNetworkConnectors: list[str]` is not serializable by derive)
-#   RunMicrovm (document member `ingressNetworkConnectors: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateMicrovmImage (document member `egressNetworkConnectors: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -813,6 +825,86 @@ struct UpdateMicrovmImageVersionDocument:
 struct Lambda_MicrovmsClient:
     core.Credentials creds
     str region
+
+    # CreateMicrovmAuthToken  POST /2025-09-09/microvms/{microvmIdentifier}/auth-token
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_microvm_auth_token(self, CreateMicrovmAuthTokenRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["microvmIdentifier"] = input.microvmIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/auth-token", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"expirationInMinutes\":" + str(input.expirationInMinutes))
+        list[str] e0 = []
+        for x0 in input.allowedPorts:
+            e0.append(x0.to_json())
+        parts.append("\"allowedPorts\":" + lambda__json_arr(e0))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateMicrovmImage  POST /2025-09-09/microvm-images
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_microvm_image(self, CreateMicrovmImageRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvm-images", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"baseImageArn\":" + lambda__json_str(input.baseImageArn))
+        if input.baseImageVersion.is_some():
+            auto u0 = input.baseImageVersion.unwrap()
+            parts.append("\"baseImageVersion\":" + lambda__json_str(u0))
+        parts.append("\"buildRoleArn\":" + lambda__json_str(input.buildRoleArn))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + lambda__json_str(u1))
+        parts.append("\"codeArtifact\":" + input.codeArtifact.to_json())
+        if input.logging.is_some():
+            auto u2 = input.logging.unwrap()
+            parts.append("\"logging\":" + u2.to_json())
+        if input.egressNetworkConnectors.is_some():
+            auto u3 = input.egressNetworkConnectors.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(lambda__json_str(x4))
+            parts.append("\"egressNetworkConnectors\":" + lambda__json_arr(e4))
+        if input.cpuConfigurations.is_some():
+            auto u5 = input.cpuConfigurations.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"cpuConfigurations\":" + lambda__json_arr(e6))
+        if input.resources.is_some():
+            auto u7 = input.resources.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"resources\":" + lambda__json_arr(e8))
+        if input.additionalOsCapabilities.is_some():
+            auto u9 = input.additionalOsCapabilities.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(lambda__json_str(x10))
+            parts.append("\"additionalOsCapabilities\":" + lambda__json_arr(e10))
+        if input.hooks.is_some():
+            auto u11 = input.hooks.unwrap()
+            parts.append("\"hooks\":" + u11.to_json())
+        if input.environmentVariables.is_some():
+            auto u12 = input.environmentVariables.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(lambda__json_str(k13) + ":" + lambda__json_str(u12[k13]))
+            parts.append("\"environmentVariables\":" + lambda__json_obj(m13))
+        parts.append("\"name\":" + lambda__json_str(input.name))
+        if input.tags.is_some():
+            auto u14 = input.tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(lambda__json_str(k15) + ":" + lambda__json_str(u14[k15]))
+            parts.append("\"tags\":" + lambda__json_obj(m15))
+        if input.clientToken.is_some():
+            auto u16 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + lambda__json_str(u16))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # CreateMicrovmShellAuthToken  POST /2025-09-09/microvms/{microvmIdentifier}/shell-auth-token
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -992,6 +1084,49 @@ struct Lambda_MicrovmsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/resume", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # RunMicrovm  POST /2025-09-09/microvms
+    # errors: AccessDeniedException, ConflictException, InsufficientCapacityException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def run_microvm(self, RunMicrovmRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ingressNetworkConnectors.is_some():
+            auto u0 = input.ingressNetworkConnectors.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(lambda__json_str(x1))
+            parts.append("\"ingressNetworkConnectors\":" + lambda__json_arr(e1))
+        if input.egressNetworkConnectors.is_some():
+            auto u2 = input.egressNetworkConnectors.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(lambda__json_str(x3))
+            parts.append("\"egressNetworkConnectors\":" + lambda__json_arr(e3))
+        parts.append("\"imageIdentifier\":" + lambda__json_str(input.imageIdentifier))
+        if input.imageVersion.is_some():
+            auto u4 = input.imageVersion.unwrap()
+            parts.append("\"imageVersion\":" + lambda__json_str(u4))
+        if input.executionRoleArn.is_some():
+            auto u5 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + lambda__json_str(u5))
+        if input.idlePolicy.is_some():
+            auto u6 = input.idlePolicy.unwrap()
+            parts.append("\"idlePolicy\":" + u6.to_json())
+        if input.logging.is_some():
+            auto u7 = input.logging.unwrap()
+            parts.append("\"logging\":" + u7.to_json())
+        if input.runHookPayload.is_some():
+            auto u8 = input.runHookPayload.unwrap()
+            parts.append("\"runHookPayload\":" + lambda__json_str(u8))
+        if input.maximumDurationInSeconds.is_some():
+            auto u9 = input.maximumDurationInSeconds.unwrap()
+            parts.append("\"maximumDurationInSeconds\":" + str(u9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + lambda__json_str(u10))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
     # SuspendMicrovm  POST /2025-09-09/microvms/{microvmIdentifier}/suspend
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def suspend_microvm(self, SuspendMicrovmRequest input) -> str:
@@ -1001,6 +1136,21 @@ struct Lambda_MicrovmsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/suspend", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # TagResource  POST /2017-03-31/tags/{Resource}
+    # errors: AccessDeniedException, InternalServerException, InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, ThrottlingException, TooManyRequestsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["Resource"] = input.Resource
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(lambda__json_str(k0) + ":" + lambda__json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + lambda__json_obj(m0))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
     # TerminateMicrovm  DELETE /2025-09-09/microvms/{microvmIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def terminate_microvm(self, TerminateMicrovmRequest input) -> str:
@@ -1009,6 +1159,65 @@ struct Lambda_MicrovmsClient:
         labels["microvmIdentifier"] = input.microvmIdentifier
         auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvms/{microvmIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # UpdateMicrovmImage  PUT /2025-09-09/microvm-images/{imageIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_microvm_image(self, UpdateMicrovmImageRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["imageIdentifier"] = input.imageIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"baseImageArn\":" + lambda__json_str(input.baseImageArn))
+        if input.baseImageVersion.is_some():
+            auto u0 = input.baseImageVersion.unwrap()
+            parts.append("\"baseImageVersion\":" + lambda__json_str(u0))
+        parts.append("\"buildRoleArn\":" + lambda__json_str(input.buildRoleArn))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + lambda__json_str(u1))
+        parts.append("\"codeArtifact\":" + input.codeArtifact.to_json())
+        if input.logging.is_some():
+            auto u2 = input.logging.unwrap()
+            parts.append("\"logging\":" + u2.to_json())
+        if input.egressNetworkConnectors.is_some():
+            auto u3 = input.egressNetworkConnectors.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(lambda__json_str(x4))
+            parts.append("\"egressNetworkConnectors\":" + lambda__json_arr(e4))
+        if input.cpuConfigurations.is_some():
+            auto u5 = input.cpuConfigurations.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"cpuConfigurations\":" + lambda__json_arr(e6))
+        if input.resources.is_some():
+            auto u7 = input.resources.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"resources\":" + lambda__json_arr(e8))
+        if input.additionalOsCapabilities.is_some():
+            auto u9 = input.additionalOsCapabilities.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(lambda__json_str(x10))
+            parts.append("\"additionalOsCapabilities\":" + lambda__json_arr(e10))
+        if input.hooks.is_some():
+            auto u11 = input.hooks.unwrap()
+            parts.append("\"hooks\":" + u11.to_json())
+        if input.environmentVariables.is_some():
+            auto u12 = input.environmentVariables.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(lambda__json_str(k13) + ":" + lambda__json_str(u12[k13]))
+            parts.append("\"environmentVariables\":" + lambda__json_obj(m13))
+        if input.clientToken.is_some():
+            auto u14 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + lambda__json_str(u14))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # UpdateMicrovmImageVersion  PATCH /2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

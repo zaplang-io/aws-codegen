@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 9 operations — 6 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 9 operations — 9 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   47 structs (35 @derive(Json)), 8 enums, 6 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -116,8 +116,9 @@ enum ValidationExceptionReason:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) transactionEventToAddress: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transactionEventToAddress: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddressIdentifierFilter:
     list[str] transactionEventToAddress
 
@@ -147,8 +148,9 @@ struct BatchGetTokenBalanceInputItem:
     OwnerIdentifier ownerIdentifier
     Optional[BlockchainInstant] atBlockchainInstant
 
-# no @derive(Json): member(s) tokenBalances: list[BatchGetTokenBalanceOutputItem], errors: list[BatchGetTokenBalanceErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenBalances: list[BatchGetTokenBalanceOutputItem], errors: list[BatchGetTokenBalanceErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTokenBalanceOutput:
     list[BatchGetTokenBalanceOutputItem] tokenBalances
     list[BatchGetTokenBalanceErrorItem] errors
@@ -165,8 +167,9 @@ struct BatchGetTokenBalanceOutputItem:
 struct BlockchainInstant:
     Optional[DateTime] time
 
-# no @derive(Json): member(s) include: list[ConfirmationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) include: list[ConfirmationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfirmationStatusFilter:
     list[ConfirmationStatus] include
 
@@ -237,8 +240,9 @@ struct ListAssetContractsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) contracts: list[AssetContract] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contracts: list[AssetContract] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetContractsOutput:
     list[AssetContract] contracts
     Optional[str] nextToken
@@ -255,8 +259,9 @@ struct ListFilteredTransactionEventsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) events: list[TransactionEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[TransactionEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFilteredTransactionEventsOutput:
     list[TransactionEvent] events
     Optional[str] nextToken
@@ -274,8 +279,9 @@ struct ListTokenBalancesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tokenBalances: list[TokenBalance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenBalances: list[TokenBalance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTokenBalancesOutput:
     list[TokenBalance] tokenBalances
     Optional[str] nextToken
@@ -289,8 +295,9 @@ struct ListTransactionEventsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) events: list[TransactionEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[TransactionEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTransactionEventsOutput:
     list[TransactionEvent] events
     Optional[str] nextToken
@@ -307,8 +314,9 @@ struct ListTransactionsInput:
     Optional[int64] maxResults
     Optional[ConfirmationStatusFilter] confirmationStatusFilter
 
-# no @derive(Json): member(s) transactions: list[TransactionOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transactions: list[TransactionOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTransactionsOutput:
     list[TransactionOutputItem] transactions
     Optional[str] nextToken
@@ -422,8 +430,9 @@ struct TransactionOutputItem:
     DateTime transactionTimestamp
     Optional[ConfirmationStatus] confirmationStatus
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -469,18 +478,6 @@ def managedblockchain_query_error_from_code(str code) -> ManagedBlockchain_Query
     return ManagedBlockchain_QueryError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchGetTokenBalance (document member `getTokenBalanceInputs: list[BatchGetTokenBalanceInputItem]` is not serializable by derive)
-#   ListFilteredTransactionEvents (document member `addressIdentifierFilter: AddressIdentifierFilter` is not serializable by derive)
-#   ListTransactions (document member `confirmationStatusFilter: ConfirmationStatusFilter` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListFilteredTransactionEvents (operation not generated)
-#   ListTransactions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -528,10 +525,73 @@ struct ListTransactionEventsDocument:
     Optional[str] nextToken
     Optional[int64] maxResults
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def managedblockchain_query_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def managedblockchain_query_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def managedblockchain_query_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddressIdentifierFilter to a compact JSON object (declaration order).
+def address_identifier_filter_to_json(AddressIdentifierFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.transactionEventToAddress:
+        e0.append(managedblockchain_query_json_str(x0))
+    parts.append("\"transactionEventToAddress\":" + managedblockchain_query_json_arr(e0))
+    return managedblockchain_query_json_obj(parts)
+
+# Serialize ConfirmationStatusFilter to a compact JSON object (declaration order).
+def confirmation_status_filter_to_json(ConfirmationStatusFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.include:
+        e0.append(x0.to_json())
+    parts.append("\"include\":" + managedblockchain_query_json_arr(e0))
+    return managedblockchain_query_json_obj(parts)
+
 # A bound ManagedBlockchain_Query client: credentials + region, threaded into every operation.
 struct ManagedBlockchain_QueryClient:
     core.Credentials creds
     str region
+
+    # BatchGetTokenBalance  POST /batch-get-token-balance
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_get_token_balance(self, BatchGetTokenBalanceInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/batch-get-token-balance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.getTokenBalanceInputs.is_some():
+            auto u0 = input.getTokenBalanceInputs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"getTokenBalanceInputs\":" + managedblockchain_query_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, managedblockchain_query_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
 
     # GetAssetContract  POST /get-asset-contract
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -569,6 +629,35 @@ struct ManagedBlockchain_QueryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
 
+    # ListFilteredTransactionEvents  POST /list-filtered-transaction-events
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_filtered_transaction_events(self, ListFilteredTransactionEventsInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-filtered-transaction-events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"network\":" + managedblockchain_query_json_str(input.network))
+        parts.append("\"addressIdentifierFilter\":" + address_identifier_filter_to_json(input.addressIdentifierFilter))
+        if input.timeFilter.is_some():
+            auto u0 = input.timeFilter.unwrap()
+            parts.append("\"timeFilter\":" + u0.to_json())
+        if input.voutFilter.is_some():
+            auto u1 = input.voutFilter.unwrap()
+            parts.append("\"voutFilter\":" + u1.to_json())
+        if input.confirmationStatusFilter.is_some():
+            auto u2 = input.confirmationStatusFilter.unwrap()
+            parts.append("\"confirmationStatusFilter\":" + confirmation_status_filter_to_json(u2))
+        if input.sort.is_some():
+            auto u3 = input.sort.unwrap()
+            parts.append("\"sort\":" + u3.to_json())
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + managedblockchain_query_json_str(u4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, managedblockchain_query_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
+
     # ListTokenBalances  POST /list-token-balances
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_token_balances(self, ListTokenBalancesInput input) -> str:
@@ -587,12 +676,54 @@ struct ManagedBlockchain_QueryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
 
+    # ListTransactions  POST /list-transactions
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_transactions(self, ListTransactionsInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-transactions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"address\":" + managedblockchain_query_json_str(input.address))
+        parts.append("\"network\":" + input.network.to_json())
+        if input.fromBlockchainInstant.is_some():
+            auto u0 = input.fromBlockchainInstant.unwrap()
+            parts.append("\"fromBlockchainInstant\":" + u0.to_json())
+        if input.toBlockchainInstant.is_some():
+            auto u1 = input.toBlockchainInstant.unwrap()
+            parts.append("\"toBlockchainInstant\":" + u1.to_json())
+        if input.sort.is_some():
+            auto u2 = input.sort.unwrap()
+            parts.append("\"sort\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + managedblockchain_query_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.confirmationStatusFilter.is_some():
+            auto u5 = input.confirmationStatusFilter.unwrap()
+            parts.append("\"confirmationStatusFilter\":" + confirmation_status_filter_to_json(u5))
+        auto bp = restjson.rest_json_document(b, managedblockchain_query_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
+
     # Paginator for ListAssetContracts — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: contracts).
     def paginate_list_asset_contracts(self, ListAssetContractsInput input):
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
         while True:
             auto raw = self.list_asset_contracts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFilteredTransactionEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: events).
+    def paginate_list_filtered_transaction_events(self, ListFilteredTransactionEventsInput input):
+        auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
+        while True:
+            auto raw = self.list_filtered_transaction_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -619,6 +750,19 @@ struct ManagedBlockchain_QueryClient:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
         while True:
             auto raw = self.list_transaction_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListTransactions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: transactions).
+    def paginate_list_transactions(self, ListTransactionsInput input):
+        auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
+        while True:
+            auto raw = self.list_transactions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

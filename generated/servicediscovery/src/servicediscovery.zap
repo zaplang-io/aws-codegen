@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 30 operations — 15 with a generated method,
-#   15 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 30 operations — 30 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   110 structs (70 @derive(Json)), 15 enums, 15 error variants.
-#   1 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -164,8 +164,9 @@ enum ServiceType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHttpNamespaceRequest:
     str Name
     Optional[str] CreatorRequestId
@@ -176,8 +177,9 @@ struct CreateHttpNamespaceRequest:
 struct CreateHttpNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivateDnsNamespaceRequest:
     str Name
     Optional[str] CreatorRequestId
@@ -190,8 +192,9 @@ struct CreatePrivateDnsNamespaceRequest:
 struct CreatePrivateDnsNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePublicDnsNamespaceRequest:
     str Name
     Optional[str] CreatorRequestId
@@ -203,8 +206,9 @@ struct CreatePublicDnsNamespaceRequest:
 struct CreatePublicDnsNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) DnsConfig: DnsConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsConfig: DnsConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceRequest:
     str Name
     Optional[str] NamespaceId
@@ -216,8 +220,9 @@ struct CreateServiceRequest:
     Optional[list[Tag]] Tags
     Optional[str] Type
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceResponse:
     Optional[Service] Service
 
@@ -233,8 +238,9 @@ struct DeleteNamespaceRequest:
 struct DeleteNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Attributes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteServiceAttributesRequest:
     str ServiceId
     list[str] Attributes
@@ -262,8 +268,9 @@ struct DeregisterInstanceRequest:
 struct DeregisterInstanceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) QueryParameters: dict[str, str], OptionalParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameters: dict[str, str], OptionalParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoverInstancesRequest:
     str NamespaceName
     str ServiceName
@@ -273,8 +280,9 @@ struct DiscoverInstancesRequest:
     Optional[HealthStatusFilter] HealthStatus
     Optional[str] OwnerAccount
 
-# no @derive(Json): member(s) Instances: list[HttpInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[HttpInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoverInstancesResponse:
     Optional[list[HttpInstanceSummary]] Instances
     Optional[int64] InstancesRevision
@@ -289,15 +297,17 @@ struct DiscoverInstancesRevisionRequest:
 struct DiscoverInstancesRevisionResponse:
     Optional[int64] InstancesRevision
 
-# no @derive(Json): member(s) DnsRecords: list[DnsRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsRecords: list[DnsRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DnsConfig:
     Optional[str] NamespaceId
     Optional[RoutingPolicy] RoutingPolicy
     list[DnsRecord] DnsRecords
 
-# no @derive(Json): member(s) DnsRecords: list[DnsRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsRecords: list[DnsRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DnsConfigChange:
     list[DnsRecord] DnsRecords
 
@@ -321,22 +331,25 @@ struct GetInstanceRequest:
     str ServiceId
     str InstanceId
 
-# no @derive(Json): member(s) Instance: Instance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instance: Instance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceResponse:
     Optional[str] ResourceOwner
     Optional[Instance] Instance
 
-# no @derive(Json): member(s) Instances: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstancesHealthStatusRequest:
     str ServiceId
     Optional[list[str]] Instances
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Status: dict[str, HealthStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Status: dict[str, HealthStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstancesHealthStatusResponse:
     Optional[dict[str, HealthStatus]] Status
     Optional[str] NextToken
@@ -354,8 +367,9 @@ struct GetOperationRequest:
     str OperationId
     Optional[str] OwnerAccount
 
-# no @derive(Json): member(s) Operation: Operation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operation: Operation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOperationResponse:
     Optional[Operation] Operation
 
@@ -363,8 +377,9 @@ struct GetOperationResponse:
 struct GetServiceAttributesRequest:
     str ServiceId
 
-# no @derive(Json): member(s) ServiceAttributes: ServiceAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceAttributes: ServiceAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceAttributesResponse:
     Optional[ServiceAttributes] ServiceAttributes
 
@@ -372,8 +387,9 @@ struct GetServiceAttributesResponse:
 struct GetServiceRequest:
     str Id
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceResponse:
     Optional[Service] Service
 
@@ -387,8 +403,9 @@ struct HealthCheckConfig:
 struct HealthCheckCustomConfig:
     Optional[int64] FailureThreshold
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpInstanceSummary:
     Optional[str] InstanceId
     Optional[str] NamespaceName
@@ -404,8 +421,9 @@ struct HttpNamespaceChange:
 struct HttpProperties:
     Optional[str] HttpName
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     str Id
     Optional[str] CreatorRequestId
@@ -416,8 +434,9 @@ struct Instance:
 struct InstanceNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceSummary:
     Optional[str] Id
     Optional[dict[str, str]] Attributes
@@ -433,48 +452,55 @@ struct ListInstancesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Instances: list[InstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[InstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesResponse:
     Optional[str] ResourceOwner
     Optional[list[InstanceSummary]] Instances
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[NamespaceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[NamespaceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamespacesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[NamespaceFilter]] Filters
 
-# no @derive(Json): member(s) Namespaces: list[NamespaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Namespaces: list[NamespaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamespacesResponse:
     Optional[list[NamespaceSummary]] Namespaces
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[OperationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[OperationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[OperationFilter]] Filters
 
-# no @derive(Json): member(s) Operations: list[OperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[OperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationsResponse:
     Optional[list[OperationSummary]] Operations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ServiceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ServiceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[ServiceFilter]] Filters
 
-# no @derive(Json): member(s) Services: list[ServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[ServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesResponse:
     Optional[list[ServiceSummary]] Services
     Optional[str] NextToken
@@ -483,8 +509,9 @@ struct ListServicesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -507,8 +534,9 @@ struct NamespaceAlreadyExists:
     Optional[str] CreatorRequestId
     Optional[str] NamespaceId
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamespaceFilter:
     NamespaceFilterName Name
     list[str] Values
@@ -535,8 +563,9 @@ struct NamespaceSummary:
     Optional[NamespaceProperties] Properties
     Optional[DateTime] CreateDate
 
-# no @derive(Json): member(s) Targets: dict[OperationTargetType, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: dict[OperationTargetType, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Operation:
     Optional[str] Id
     Optional[str] OwnerAccount
@@ -548,8 +577,9 @@ struct Operation:
     Optional[DateTime] UpdateDate
     Optional[dict[OperationTargetType, str]] Targets
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OperationFilter:
     OperationFilterName Name
     list[str] Values
@@ -606,8 +636,9 @@ struct PublicDnsPropertiesMutable:
 struct PublicDnsPropertiesMutableChange:
     SOAChange SOA
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterInstanceRequest:
     str ServiceId
     str InstanceId
@@ -642,8 +673,9 @@ struct SOA:
 struct SOAChange:
     int64 TTL
 
-# no @derive(Json): member(s) DnsConfig: DnsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsConfig: DnsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     Optional[str] Id
     Optional[str] Arn
@@ -667,8 +699,9 @@ struct ServiceAlreadyExists:
     Optional[str] ServiceId
     Optional[str] ServiceArn
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceAttributes:
     Optional[str] ServiceArn
     Optional[str] ResourceOwner
@@ -678,15 +711,17 @@ struct ServiceAttributes:
 struct ServiceAttributesLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) DnsConfig: DnsConfigChange not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsConfig: DnsConfigChange not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceChange:
     Optional[str] Description
     Optional[DnsConfigChange] DnsConfig
     Optional[HealthCheckConfig] HealthCheckConfig
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceFilter:
     ServiceFilterName Name
     list[str] Values
@@ -696,8 +731,9 @@ struct ServiceFilter:
 struct ServiceNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) DnsConfig: DnsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsConfig: DnsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceSummary:
     Optional[str] Id
     Optional[str] Arn
@@ -717,8 +753,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -733,8 +770,9 @@ struct TooManyTagsException:
     Optional[str] Message
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -780,8 +818,9 @@ struct UpdatePublicDnsNamespaceRequest:
 struct UpdatePublicDnsNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceAttributesRequest:
     str ServiceId
     dict[str, str] Attributes
@@ -791,8 +830,9 @@ struct UpdateServiceAttributesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Service: ServiceChange not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: ServiceChange not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceRequest:
     str Id
     ServiceChange Service
@@ -859,34 +899,393 @@ def servicediscovery_error_from_code(str code) -> ServiceDiscoveryError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateHttpNamespace (input CreateHttpNamespaceRequest)
-#   CreatePrivateDnsNamespace (input CreatePrivateDnsNamespaceRequest)
-#   CreatePublicDnsNamespace (input CreatePublicDnsNamespaceRequest)
-#   CreateService (input CreateServiceRequest)
-#   DeleteServiceAttributes (input DeleteServiceAttributesRequest)
-#   DiscoverInstances (input DiscoverInstancesRequest)
-#   GetInstancesHealthStatus (input GetInstancesHealthStatusRequest)
-#   ListNamespaces (input ListNamespacesRequest)
-#   ListOperations (input ListOperationsRequest)
-#   ListServices (input ListServicesRequest)
-#   RegisterInstance (input RegisterInstanceRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateService (input UpdateServiceRequest)
-#   UpdateServiceAttributes (input UpdateServiceAttributesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def servicediscovery_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListNamespaces (input not derivable (no generated method))
-#   ListOperations (input not derivable (no generated method))
-#   ListServices (input not derivable (no generated method))
+def servicediscovery_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def servicediscovery_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateHttpNamespaceRequest to a compact JSON object (declaration order).
+def create_http_namespace_request_to_json(CreateHttpNamespaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+    if v.CreatorRequestId.is_some():
+        auto u0 = v.CreatorRequestId.unwrap()
+        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicediscovery_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + servicediscovery_json_arr(e3))
+    return servicediscovery_json_obj(parts)
+
+# Serialize CreatePrivateDnsNamespaceRequest to a compact JSON object (declaration order).
+def create_private_dns_namespace_request_to_json(CreatePrivateDnsNamespaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+    if v.CreatorRequestId.is_some():
+        auto u0 = v.CreatorRequestId.unwrap()
+        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicediscovery_json_str(u1))
+    parts.append("\"Vpc\":" + servicediscovery_json_str(v.Vpc))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + servicediscovery_json_arr(e3))
+    if v.Properties.is_some():
+        auto u4 = v.Properties.unwrap()
+        parts.append("\"Properties\":" + u4.to_json())
+    return servicediscovery_json_obj(parts)
+
+# Serialize CreatePublicDnsNamespaceRequest to a compact JSON object (declaration order).
+def create_public_dns_namespace_request_to_json(CreatePublicDnsNamespaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+    if v.CreatorRequestId.is_some():
+        auto u0 = v.CreatorRequestId.unwrap()
+        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicediscovery_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + servicediscovery_json_arr(e3))
+    if v.Properties.is_some():
+        auto u4 = v.Properties.unwrap()
+        parts.append("\"Properties\":" + u4.to_json())
+    return servicediscovery_json_obj(parts)
+
+# Serialize CreateServiceRequest to a compact JSON object (declaration order).
+def create_service_request_to_json(CreateServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+    if v.NamespaceId.is_some():
+        auto u0 = v.NamespaceId.unwrap()
+        parts.append("\"NamespaceId\":" + servicediscovery_json_str(u0))
+    if v.CreatorRequestId.is_some():
+        auto u1 = v.CreatorRequestId.unwrap()
+        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicediscovery_json_str(u2))
+    if v.DnsConfig.is_some():
+        auto u3 = v.DnsConfig.unwrap()
+        parts.append("\"DnsConfig\":" + dns_config_to_json(u3))
+    if v.HealthCheckConfig.is_some():
+        auto u4 = v.HealthCheckConfig.unwrap()
+        parts.append("\"HealthCheckConfig\":" + u4.to_json())
+    if v.HealthCheckCustomConfig.is_some():
+        auto u5 = v.HealthCheckCustomConfig.unwrap()
+        parts.append("\"HealthCheckCustomConfig\":" + u5.to_json())
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + servicediscovery_json_arr(e7))
+    if v.Type.is_some():
+        auto u8 = v.Type.unwrap()
+        parts.append("\"Type\":" + servicediscovery_json_str(u8))
+    return servicediscovery_json_obj(parts)
+
+# Serialize DeleteServiceAttributesRequest to a compact JSON object (declaration order).
+def delete_service_attributes_request_to_json(DeleteServiceAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
+    list[str] e0 = []
+    for x0 in v.Attributes:
+        e0.append(servicediscovery_json_str(x0))
+    parts.append("\"Attributes\":" + servicediscovery_json_arr(e0))
+    return servicediscovery_json_obj(parts)
+
+# Serialize DiscoverInstancesRequest to a compact JSON object (declaration order).
+def discover_instances_request_to_json(DiscoverInstancesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"NamespaceName\":" + servicediscovery_json_str(v.NamespaceName))
+    parts.append("\"ServiceName\":" + servicediscovery_json_str(v.ServiceName))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.QueryParameters.is_some():
+        auto u1 = v.QueryParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(servicediscovery_json_str(k2) + ":" + servicediscovery_json_str(u1[k2]))
+        parts.append("\"QueryParameters\":" + servicediscovery_json_obj(m2))
+    if v.OptionalParameters.is_some():
+        auto u3 = v.OptionalParameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(servicediscovery_json_str(k4) + ":" + servicediscovery_json_str(u3[k4]))
+        parts.append("\"OptionalParameters\":" + servicediscovery_json_obj(m4))
+    if v.HealthStatus.is_some():
+        auto u5 = v.HealthStatus.unwrap()
+        parts.append("\"HealthStatus\":" + u5.to_json())
+    if v.OwnerAccount.is_some():
+        auto u6 = v.OwnerAccount.unwrap()
+        parts.append("\"OwnerAccount\":" + servicediscovery_json_str(u6))
+    return servicediscovery_json_obj(parts)
+
+# Serialize DnsConfig to a compact JSON object (declaration order).
+def dns_config_to_json(DnsConfig v) -> str:
+    list[str] parts = []
+    if v.NamespaceId.is_some():
+        auto u0 = v.NamespaceId.unwrap()
+        parts.append("\"NamespaceId\":" + servicediscovery_json_str(u0))
+    if v.RoutingPolicy.is_some():
+        auto u1 = v.RoutingPolicy.unwrap()
+        parts.append("\"RoutingPolicy\":" + u1.to_json())
+    list[str] e2 = []
+    for x2 in v.DnsRecords:
+        e2.append(x2.to_json())
+    parts.append("\"DnsRecords\":" + servicediscovery_json_arr(e2))
+    return servicediscovery_json_obj(parts)
+
+# Serialize DnsConfigChange to a compact JSON object (declaration order).
+def dns_config_change_to_json(DnsConfigChange v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DnsRecords:
+        e0.append(x0.to_json())
+    parts.append("\"DnsRecords\":" + servicediscovery_json_arr(e0))
+    return servicediscovery_json_obj(parts)
+
+# Serialize GetInstancesHealthStatusRequest to a compact JSON object (declaration order).
+def get_instances_health_status_request_to_json(GetInstancesHealthStatusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
+    if v.Instances.is_some():
+        auto u0 = v.Instances.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(servicediscovery_json_str(x1))
+        parts.append("\"Instances\":" + servicediscovery_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + servicediscovery_json_str(u3))
+    return servicediscovery_json_obj(parts)
+
+# Serialize ListNamespacesRequest to a compact JSON object (declaration order).
+def list_namespaces_request_to_json(ListNamespacesRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + servicediscovery_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(namespace_filter_to_json(x3))
+        parts.append("\"Filters\":" + servicediscovery_json_arr(e3))
+    return servicediscovery_json_obj(parts)
+
+# Serialize ListOperationsRequest to a compact JSON object (declaration order).
+def list_operations_request_to_json(ListOperationsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + servicediscovery_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(operation_filter_to_json(x3))
+        parts.append("\"Filters\":" + servicediscovery_json_arr(e3))
+    return servicediscovery_json_obj(parts)
+
+# Serialize ListServicesRequest to a compact JSON object (declaration order).
+def list_services_request_to_json(ListServicesRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + servicediscovery_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(service_filter_to_json(x3))
+        parts.append("\"Filters\":" + servicediscovery_json_arr(e3))
+    return servicediscovery_json_obj(parts)
+
+# Serialize NamespaceFilter to a compact JSON object (declaration order).
+def namespace_filter_to_json(NamespaceFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(servicediscovery_json_str(x0))
+    parts.append("\"Values\":" + servicediscovery_json_arr(e0))
+    if v.Condition.is_some():
+        auto u1 = v.Condition.unwrap()
+        parts.append("\"Condition\":" + u1.to_json())
+    return servicediscovery_json_obj(parts)
+
+# Serialize OperationFilter to a compact JSON object (declaration order).
+def operation_filter_to_json(OperationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(servicediscovery_json_str(x0))
+    parts.append("\"Values\":" + servicediscovery_json_arr(e0))
+    if v.Condition.is_some():
+        auto u1 = v.Condition.unwrap()
+        parts.append("\"Condition\":" + u1.to_json())
+    return servicediscovery_json_obj(parts)
+
+# Serialize RegisterInstanceRequest to a compact JSON object (declaration order).
+def register_instance_request_to_json(RegisterInstanceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
+    parts.append("\"InstanceId\":" + servicediscovery_json_str(v.InstanceId))
+    if v.CreatorRequestId.is_some():
+        auto u0 = v.CreatorRequestId.unwrap()
+        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+    list[str] m1 = []
+    for k1 in sorted(v.Attributes.keys()):
+        m1.append(servicediscovery_json_str(k1) + ":" + servicediscovery_json_str(v.Attributes[k1]))
+    parts.append("\"Attributes\":" + servicediscovery_json_obj(m1))
+    return servicediscovery_json_obj(parts)
+
+# Serialize ServiceChange to a compact JSON object (declaration order).
+def service_change_to_json(ServiceChange v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicediscovery_json_str(u0))
+    if v.DnsConfig.is_some():
+        auto u1 = v.DnsConfig.unwrap()
+        parts.append("\"DnsConfig\":" + dns_config_change_to_json(u1))
+    if v.HealthCheckConfig.is_some():
+        auto u2 = v.HealthCheckConfig.unwrap()
+        parts.append("\"HealthCheckConfig\":" + u2.to_json())
+    return servicediscovery_json_obj(parts)
+
+# Serialize ServiceFilter to a compact JSON object (declaration order).
+def service_filter_to_json(ServiceFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(servicediscovery_json_str(x0))
+    parts.append("\"Values\":" + servicediscovery_json_arr(e0))
+    if v.Condition.is_some():
+        auto u1 = v.Condition.unwrap()
+        parts.append("\"Condition\":" + u1.to_json())
+    return servicediscovery_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + servicediscovery_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + servicediscovery_json_arr(e0))
+    return servicediscovery_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + servicediscovery_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(servicediscovery_json_str(x0))
+    parts.append("\"TagKeys\":" + servicediscovery_json_arr(e0))
+    return servicediscovery_json_obj(parts)
+
+# Serialize UpdateServiceAttributesRequest to a compact JSON object (declaration order).
+def update_service_attributes_request_to_json(UpdateServiceAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
+    list[str] m0 = []
+    for k0 in sorted(v.Attributes.keys()):
+        m0.append(servicediscovery_json_str(k0) + ":" + servicediscovery_json_str(v.Attributes[k0]))
+    parts.append("\"Attributes\":" + servicediscovery_json_obj(m0))
+    return servicediscovery_json_obj(parts)
+
+# Serialize UpdateServiceRequest to a compact JSON object (declaration order).
+def update_service_request_to_json(UpdateServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + servicediscovery_json_str(v.Id))
+    parts.append("\"Service\":" + service_change_to_json(v.Service))
+    return servicediscovery_json_obj(parts)
 
 # A bound ServiceDiscovery client: credentials + region, threaded into every operation.
 struct ServiceDiscoveryClient:
     core.Credentials creds
     str region
+
+    # CreateHttpNamespace
+    # errors: DuplicateRequest, InvalidInput, NamespaceAlreadyExists, ResourceLimitExceeded, TooManyTagsException
+    def create_http_namespace(self, CreateHttpNamespaceRequest input) -> str:
+        auto body = create_http_namespace_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreateHttpNamespace", body)
+
+    # CreatePrivateDnsNamespace
+    # errors: DuplicateRequest, InvalidInput, NamespaceAlreadyExists, ResourceLimitExceeded, TooManyTagsException
+    def create_private_dns_namespace(self, CreatePrivateDnsNamespaceRequest input) -> str:
+        auto body = create_private_dns_namespace_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreatePrivateDnsNamespace", body)
+
+    # CreatePublicDnsNamespace
+    # errors: DuplicateRequest, InvalidInput, NamespaceAlreadyExists, ResourceLimitExceeded, TooManyTagsException
+    def create_public_dns_namespace(self, CreatePublicDnsNamespaceRequest input) -> str:
+        auto body = create_public_dns_namespace_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreatePublicDnsNamespace", body)
+
+    # CreateService
+    # errors: InvalidInput, NamespaceNotFound, ResourceLimitExceeded, ServiceAlreadyExists, TooManyTagsException
+    def create_service(self, CreateServiceRequest input) -> str:
+        auto body = create_service_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreateService", body)
 
     # DeleteNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceNotFound, ResourceInUse
@@ -900,11 +1299,23 @@ struct ServiceDiscoveryClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeleteService", body)
 
+    # DeleteServiceAttributes
+    # errors: InvalidInput, ServiceNotFound
+    def delete_service_attributes(self, DeleteServiceAttributesRequest input) -> str:
+        auto body = delete_service_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeleteServiceAttributes", body)
+
     # DeregisterInstance
     # errors: DuplicateRequest, InstanceNotFound, InvalidInput, ResourceInUse, ServiceNotFound
     def deregister_instance(self, DeregisterInstanceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeregisterInstance", body)
+
+    # DiscoverInstances
+    # errors: InvalidInput, NamespaceNotFound, RequestLimitExceeded, ServiceNotFound
+    def discover_instances(self, DiscoverInstancesRequest input) -> str:
+        auto body = discover_instances_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DiscoverInstances", body)
 
     # DiscoverInstancesRevision
     # errors: InvalidInput, NamespaceNotFound, RequestLimitExceeded, ServiceNotFound
@@ -917,6 +1328,12 @@ struct ServiceDiscoveryClient:
     def get_instance(self, GetInstanceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetInstance", body)
+
+    # GetInstancesHealthStatus
+    # errors: InstanceNotFound, InvalidInput, ServiceNotFound
+    def get_instances_health_status(self, GetInstancesHealthStatusRequest input) -> str:
+        auto body = get_instances_health_status_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetInstancesHealthStatus", body)
 
     # GetNamespace
     # errors: InvalidInput, NamespaceNotFound
@@ -948,11 +1365,47 @@ struct ServiceDiscoveryClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListInstances", body)
 
+    # ListNamespaces
+    # errors: InvalidInput
+    def list_namespaces(self, ListNamespacesRequest input) -> str:
+        auto body = list_namespaces_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListNamespaces", body)
+
+    # ListOperations
+    # errors: InvalidInput
+    def list_operations(self, ListOperationsRequest input) -> str:
+        auto body = list_operations_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListOperations", body)
+
+    # ListServices
+    # errors: InvalidInput
+    def list_services(self, ListServicesRequest input) -> str:
+        auto body = list_services_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListServices", body)
+
     # ListTagsForResource
     # errors: InvalidInput, ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # RegisterInstance
+    # errors: DuplicateRequest, InvalidInput, ResourceInUse, ResourceLimitExceeded, ServiceNotFound
+    def register_instance(self, RegisterInstanceRequest input) -> str:
+        auto body = register_instance_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "RegisterInstance", body)
+
+    # TagResource
+    # errors: InvalidInput, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidInput, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateHttpNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceNotFound, ResourceInUse
@@ -978,6 +1431,18 @@ struct ServiceDiscoveryClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdatePublicDnsNamespace", body)
 
+    # UpdateService
+    # errors: DuplicateRequest, InvalidInput, ServiceNotFound
+    def update_service(self, UpdateServiceRequest input) -> str:
+        auto body = update_service_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdateService", body)
+
+    # UpdateServiceAttributes
+    # errors: InvalidInput, ServiceAttributesLimitExceededException, ServiceNotFound
+    def update_service_attributes(self, UpdateServiceAttributesRequest input) -> str:
+        auto body = update_service_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdateServiceAttributes", body)
+
     # Paginator for ListInstances — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Instances).
     def paginate_list_instances(self, ListInstancesRequest input):
@@ -985,6 +1450,48 @@ struct ServiceDiscoveryClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListInstances", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListNamespaces — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Namespaces).
+    def paginate_list_namespaces(self, ListNamespacesRequest input):
+        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
+        while True:
+            auto body = list_namespaces_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListNamespaces", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Operations).
+    def paginate_list_operations(self, ListOperationsRequest input):
+        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
+        while True:
+            auto body = list_operations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListOperations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListServices — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Services).
+    def paginate_list_services(self, ListServicesRequest input):
+        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
+        while True:
+            auto body = list_services_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListServices", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

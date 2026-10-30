@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 9 operations — 5 with a generated method,
-#   4 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 9 operations — 9 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   31 structs (16 @derive(Json)), 3 enums, 6 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -60,8 +60,9 @@ enum TargetIdType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) NoncompliantKeys: list[str], KeysWithNoncompliantValues: list[str], MissingTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NoncompliantKeys: list[str], KeysWithNoncompliantValues: list[str], MissingTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComplianceDetails:
     Optional[list[str]] NoncompliantKeys
     Optional[list[str]] KeysWithNoncompliantValues
@@ -93,8 +94,9 @@ struct FailureInfo:
     Optional[ErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) TargetIdFilters: list[str], RegionFilters: list[str], ResourceTypeFilters: list[str], TagKeyFilters: list[str], GroupBy: list[GroupByAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetIdFilters: list[str], RegionFilters: list[str], ResourceTypeFilters: list[str], TagKeyFilters: list[str], GroupBy: list[GroupByAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceSummaryInput:
     Optional[list[str]] TargetIdFilters
     Optional[list[str]] RegionFilters
@@ -104,14 +106,16 @@ struct GetComplianceSummaryInput:
     Optional[int64] MaxResults
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) SummaryList: list[Summary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryList: list[Summary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceSummaryOutput:
     Optional[list[Summary]] SummaryList
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) TagFilters: list[TagFilter], ResourceTypeFilters: list[str], ResourceARNList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilters: list[TagFilter], ResourceTypeFilters: list[str], ResourceARNList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcesInput:
     Optional[str] PaginationToken
     Optional[list[TagFilter]] TagFilters
@@ -122,8 +126,9 @@ struct GetResourcesInput:
     Optional[bool] ExcludeCompliantResources
     Optional[list[str]] ResourceARNList
 
-# no @derive(Json): member(s) ResourceTagMappingList: list[ResourceTagMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTagMappingList: list[ResourceTagMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcesOutput:
     Optional[str] PaginationToken
     Optional[list[ResourceTagMapping]] ResourceTagMappingList
@@ -132,8 +137,9 @@ struct GetResourcesOutput:
 struct GetTagKeysInput:
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagKeysOutput:
     Optional[str] PaginationToken
     Optional[list[str]] TagKeys
@@ -143,8 +149,9 @@ struct GetTagValuesInput:
     Optional[str] PaginationToken
     str Key
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagValuesOutput:
     Optional[str] PaginationToken
     Optional[list[str]] TagValues
@@ -162,8 +169,9 @@ struct ListRequiredTagsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RequiredTags: list[RequiredTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequiredTags: list[RequiredTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRequiredTagsOutput:
     Optional[list[RequiredTag]] RequiredTags
     Optional[str] NextToken
@@ -172,15 +180,17 @@ struct ListRequiredTagsOutput:
 struct PaginationTokenExpiredException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CloudFormationResourceTypes: list[str], ReportingTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudFormationResourceTypes: list[str], ReportingTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequiredTag:
     Optional[str] ResourceType
     Optional[list[str]] CloudFormationResourceTypes
     Optional[list[str]] ReportingTagKeys
 
-# no @derive(Json): member(s) Tags: list[Tag], ComplianceDetails: ComplianceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ComplianceDetails: ComplianceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceTagMapping:
     Optional[str] ResourceARN
     Optional[list[Tag]] Tags
@@ -209,20 +219,23 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagFilter:
     Optional[str] Key
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) ResourceARNList: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceARNList: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourcesInput:
     list[str] ResourceARNList
     dict[str, str] Tags
 
-# no @derive(Json): member(s) FailedResourcesMap: dict[str, FailureInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedResourcesMap: dict[str, FailureInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourcesOutput:
     Optional[dict[str, FailureInfo]] FailedResourcesMap
 
@@ -230,14 +243,16 @@ struct TagResourcesOutput:
 struct ThrottledException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ResourceARNList: list[str], TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceARNList: list[str], TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourcesInput:
     list[str] ResourceARNList
     list[str] TagKeys
 
-# no @derive(Json): member(s) FailedResourcesMap: dict[str, FailureInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedResourcesMap: dict[str, FailureInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourcesOutput:
     Optional[dict[str, FailureInfo]] FailedResourcesMap
 
@@ -272,17 +287,154 @@ def tagging_error_from_code(str code) -> Resource_Groups_Tagging_APIError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   GetComplianceSummary (input GetComplianceSummaryInput)
-#   GetResources (input GetResourcesInput)
-#   TagResources (input TagResourcesInput)
-#   UntagResources (input UntagResourcesInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def tagging_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   GetComplianceSummary (input not derivable (no generated method))
-#   GetResources (input not derivable (no generated method))
+def tagging_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def tagging_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize GetComplianceSummaryInput to a compact JSON object (declaration order).
+def get_compliance_summary_input_to_json(GetComplianceSummaryInput v) -> str:
+    list[str] parts = []
+    if v.TargetIdFilters.is_some():
+        auto u0 = v.TargetIdFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(tagging_json_str(x1))
+        parts.append("\"TargetIdFilters\":" + tagging_json_arr(e1))
+    if v.RegionFilters.is_some():
+        auto u2 = v.RegionFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(tagging_json_str(x3))
+        parts.append("\"RegionFilters\":" + tagging_json_arr(e3))
+    if v.ResourceTypeFilters.is_some():
+        auto u4 = v.ResourceTypeFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(tagging_json_str(x5))
+        parts.append("\"ResourceTypeFilters\":" + tagging_json_arr(e5))
+    if v.TagKeyFilters.is_some():
+        auto u6 = v.TagKeyFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(tagging_json_str(x7))
+        parts.append("\"TagKeyFilters\":" + tagging_json_arr(e7))
+    if v.GroupBy.is_some():
+        auto u8 = v.GroupBy.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"GroupBy\":" + tagging_json_arr(e9))
+    if v.MaxResults.is_some():
+        auto u10 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u10))
+    if v.PaginationToken.is_some():
+        auto u11 = v.PaginationToken.unwrap()
+        parts.append("\"PaginationToken\":" + tagging_json_str(u11))
+    return tagging_json_obj(parts)
+
+# Serialize GetResourcesInput to a compact JSON object (declaration order).
+def get_resources_input_to_json(GetResourcesInput v) -> str:
+    list[str] parts = []
+    if v.PaginationToken.is_some():
+        auto u0 = v.PaginationToken.unwrap()
+        parts.append("\"PaginationToken\":" + tagging_json_str(u0))
+    if v.TagFilters.is_some():
+        auto u1 = v.TagFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(tag_filter_to_json(x2))
+        parts.append("\"TagFilters\":" + tagging_json_arr(e2))
+    if v.ResourcesPerPage.is_some():
+        auto u3 = v.ResourcesPerPage.unwrap()
+        parts.append("\"ResourcesPerPage\":" + str(u3))
+    if v.TagsPerPage.is_some():
+        auto u4 = v.TagsPerPage.unwrap()
+        parts.append("\"TagsPerPage\":" + str(u4))
+    if v.ResourceTypeFilters.is_some():
+        auto u5 = v.ResourceTypeFilters.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(tagging_json_str(x6))
+        parts.append("\"ResourceTypeFilters\":" + tagging_json_arr(e6))
+    if v.IncludeComplianceDetails.is_some():
+        auto u7 = v.IncludeComplianceDetails.unwrap()
+        parts.append("\"IncludeComplianceDetails\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.ExcludeCompliantResources.is_some():
+        auto u8 = v.ExcludeCompliantResources.unwrap()
+        parts.append("\"ExcludeCompliantResources\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.ResourceARNList.is_some():
+        auto u9 = v.ResourceARNList.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(tagging_json_str(x10))
+        parts.append("\"ResourceARNList\":" + tagging_json_arr(e10))
+    return tagging_json_obj(parts)
+
+# Serialize TagFilter to a compact JSON object (declaration order).
+def tag_filter_to_json(TagFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + tagging_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(tagging_json_str(x2))
+        parts.append("\"Values\":" + tagging_json_arr(e2))
+    return tagging_json_obj(parts)
+
+# Serialize TagResourcesInput to a compact JSON object (declaration order).
+def tag_resources_input_to_json(TagResourcesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResourceARNList:
+        e0.append(tagging_json_str(x0))
+    parts.append("\"ResourceARNList\":" + tagging_json_arr(e0))
+    list[str] m1 = []
+    for k1 in sorted(v.Tags.keys()):
+        m1.append(tagging_json_str(k1) + ":" + tagging_json_str(v.Tags[k1]))
+    parts.append("\"Tags\":" + tagging_json_obj(m1))
+    return tagging_json_obj(parts)
+
+# Serialize UntagResourcesInput to a compact JSON object (declaration order).
+def untag_resources_input_to_json(UntagResourcesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResourceARNList:
+        e0.append(tagging_json_str(x0))
+    parts.append("\"ResourceARNList\":" + tagging_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.TagKeys:
+        e1.append(tagging_json_str(x1))
+    parts.append("\"TagKeys\":" + tagging_json_arr(e1))
+    return tagging_json_obj(parts)
 
 # A bound Resource_Groups_Tagging_API client: credentials + region, threaded into every operation.
 struct Resource_Groups_Tagging_APIClient:
@@ -294,6 +446,18 @@ struct Resource_Groups_Tagging_APIClient:
     def describe_report_creation(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "DescribeReportCreation", body)
+
+    # GetComplianceSummary
+    # errors: ConstraintViolationException, InternalServiceException, InvalidParameterException, ThrottledException
+    def get_compliance_summary(self, GetComplianceSummaryInput input) -> str:
+        auto body = get_compliance_summary_input_to_json(input)
+        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetComplianceSummary", body)
+
+    # GetResources
+    # errors: InternalServiceException, InvalidParameterException, PaginationTokenExpiredException, ThrottledException
+    def get_resources(self, GetResourcesInput input) -> str:
+        auto body = get_resources_input_to_json(input)
+        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetResources", body)
 
     # GetTagKeys
     # errors: InternalServiceException, InvalidParameterException, PaginationTokenExpiredException, ThrottledException
@@ -318,6 +482,46 @@ struct Resource_Groups_Tagging_APIClient:
     def start_report_creation(self, StartReportCreationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "StartReportCreation", body)
+
+    # TagResources
+    # errors: InternalServiceException, InvalidParameterException, ThrottledException
+    def tag_resources(self, TagResourcesInput input) -> str:
+        auto body = tag_resources_input_to_json(input)
+        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "TagResources", body)
+
+    # UntagResources
+    # errors: InternalServiceException, InvalidParameterException, ThrottledException
+    def untag_resources(self, UntagResourcesInput input) -> str:
+        auto body = untag_resources_input_to_json(input)
+        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "UntagResources", body)
+
+    # Paginator for GetComplianceSummary — yields each Response page, threading the
+    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: SummaryList).
+    def paginate_get_compliance_summary(self, GetComplianceSummaryInput input):
+        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
+        while True:
+            auto body = get_compliance_summary_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetComplianceSummary", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "PaginationToken")
+            if not np.has_more:
+                break
+            input.PaginationToken = Optional.Some(np.token)
+
+    # Paginator for GetResources — yields each Response page, threading the
+    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: ResourceTagMappingList).
+    def paginate_get_resources(self, GetResourcesInput input):
+        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
+        while True:
+            auto body = get_resources_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetResources", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "PaginationToken")
+            if not np.has_more:
+                break
+            input.PaginationToken = Optional.Some(np.token)
 
     # Paginator for GetTagKeys — yields each Response page, threading the
     # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: TagKeys).

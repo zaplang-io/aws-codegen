@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 11 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 14 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   76 structs (57 @derive(Json)), 12 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -169,8 +169,9 @@ struct ClinicalNoteGenerationResult:
     Optional[ArtifactDetails] transcriptResult
     Optional[ArtifactDetails] afterVisitSummaryResult
 
-# no @derive(Json): member(s) noteTemplateSettings: NoteTemplateSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) noteTemplateSettings: NoteTemplateSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClinicalNoteGenerationSettings:
     NoteTemplateSettings noteTemplateSettings
 
@@ -224,8 +225,9 @@ struct CreateWebAppConfiguration:
     str idcInstanceId
     str idcRegion
 
-# no @derive(Json): member(s) templateInstructions: list[TemplateSectionInstruction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateInstructions: list[TemplateSectionInstruction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomTemplate:
     CustomTemplateBase templateType
     list[TemplateSectionInstruction] templateInstructions
@@ -282,8 +284,9 @@ struct FHIRServer:
 struct GetDomainInput:
     str domainId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainOutput:
     str domainId
     str arn
@@ -303,8 +306,9 @@ struct GetMedicalScribeListeningSessionInput:
     str domainId
     str subscriptionId
 
-# no @derive(Json): member(s) medicalScribeListeningSessionDetails: MedicalScribeListeningSessionDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) medicalScribeListeningSessionDetails: MedicalScribeListeningSessionDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMedicalScribeListeningSessionOutput:
     Optional[MedicalScribeListeningSessionDetails] medicalScribeListeningSessionDetails
 
@@ -314,8 +318,9 @@ struct GetPatientInsightsJobRequest:
     str domainId
     str jobId
 
-# no @derive(Json): member(s) inputDataConfig: InputDataConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputDataConfig: InputDataConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPatientInsightsJobResponse:
     str jobId
     str jobArn
@@ -341,8 +346,9 @@ struct GetSubscriptionInput:
 struct GetSubscriptionOutput:
     Optional[SubscriptionDescription] subscription
 
-# no @derive(Json): member(s) s3Sources: list[S3Source] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3Sources: list[S3Source] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDataConfig:
     Optional[FHIRServer] fhirServer
     Optional[list[S3Source]] s3Sources
@@ -367,8 +373,9 @@ struct ListDomainsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) domains: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domains: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsOutput:
     list[DomainSummary] domains
     Optional[str] nextToken
@@ -380,8 +387,9 @@ struct ListSubscriptionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) subscriptions: list[SubscriptionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptions: list[SubscriptionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionsOutput:
     list[SubscriptionDescription] subscriptions
     Optional[str] nextToken
@@ -391,8 +399,9 @@ struct ListSubscriptionsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -417,23 +426,26 @@ struct MedicalScribeChannelDefinition:
     int64 channelId
     MedicalScribeParticipantRole participantRole
 
-# no @derive(Json): member(s) postStreamActionSettings: MedicalScribePostStreamActionSettings, channelDefinitions: list[MedicalScribeChannelDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postStreamActionSettings: MedicalScribePostStreamActionSettings, channelDefinitions: list[MedicalScribeChannelDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MedicalScribeConfigurationEvent:
     MedicalScribePostStreamActionSettings postStreamActionSettings
     Optional[list[MedicalScribeChannelDefinition]] channelDefinitions
     Optional[EncounterContext] encounterContext
 
-# no @derive(Json): member(s) configurationEvent: MedicalScribeConfigurationEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationEvent: MedicalScribeConfigurationEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MedicalScribeInputStream:
     Optional[MedicalScribeAudioEvent] audioEvent
     Optional[MedicalScribeBinaryAudioEvent] binaryAudioEvent
     Optional[MedicalScribeSessionControlEvent] sessionControlEvent
     Optional[MedicalScribeConfigurationEvent] configurationEvent
 
-# no @derive(Json): member(s) channelDefinitions: list[MedicalScribeChannelDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelDefinitions: list[MedicalScribeChannelDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MedicalScribeListeningSessionDetails:
     Optional[str] sessionId
     Optional[str] domainId
@@ -455,8 +467,9 @@ struct MedicalScribeOutputStream:
     Optional[InternalServerException] internalFailureException
     Optional[ValidationException] validationException
 
-# no @derive(Json): member(s) clinicalNoteGenerationSettings: ClinicalNoteGenerationSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clinicalNoteGenerationSettings: ClinicalNoteGenerationSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MedicalScribePostStreamActionSettings:
     str outputS3Uri
     ClinicalNoteGenerationSettings clinicalNoteGenerationSettings
@@ -487,8 +500,9 @@ struct MedicalScribeTranscriptSegment:
     Optional[str] channelId
     Optional[str] content
 
-# no @derive(Json): member(s) customTemplate: CustomTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customTemplate: CustomTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NoteTemplateSettings:
     Optional[ManagedTemplate] managedTemplate
     Optional[CustomTemplate] customTemplate
@@ -653,11 +667,52 @@ def health_agent_error_from_code(str code) -> ConnectHealthError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateDomain (document member `tags: dict[str, str]` is not serializable by derive)
 #   StartMedicalScribeListeningSession (httpPayload member `inputStream` is a non-derivable structure)
-#   StartPatientInsightsJob (document member `inputDataConfig: InputDataConfig` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def health_agent_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def health_agent_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def health_agent_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize InputDataConfig to a compact JSON object (declaration order).
+def input_data_config_to_json(InputDataConfig v) -> str:
+    list[str] parts = []
+    if v.fhirServer.is_some():
+        auto u0 = v.fhirServer.unwrap()
+        parts.append("\"fhirServer\":" + u0.to_json())
+    if v.s3Sources.is_some():
+        auto u1 = v.s3Sources.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"s3Sources\":" + health_agent_json_arr(e2))
+    return health_agent_json_obj(parts)
 
 # A bound ConnectHealth client: credentials + region, threaded into every operation.
 struct ConnectHealthClient:
@@ -673,6 +728,28 @@ struct ConnectHealthClient:
         labels["subscriptionId"] = input.subscriptionId
         auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions/{subscriptionId}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
+
+    # CreateDomain  POST /domain
+    # errors: ServiceQuotaExceededException
+    def create_domain(self, CreateDomainInput input) -> str:
+        auto host = endpoints.regional_host(health_agent_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/domain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + health_agent_json_str(input.name))
+        if input.kmsKeyArn.is_some():
+            auto u0 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + health_agent_json_str(u0))
+        if input.webAppSetupConfiguration.is_some():
+            auto u1 = input.webAppSetupConfiguration.unwrap()
+            parts.append("\"webAppSetupConfiguration\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(health_agent_json_str(k3) + ":" + health_agent_json_str(u2[k3]))
+            parts.append("\"tags\":" + health_agent_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, health_agent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, health_agent_service(), self.region, host)
 
     # CreateSubscription  POST /domains/{domainId}/subscriptions
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
@@ -776,6 +853,40 @@ struct ConnectHealthClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
+
+    # StartPatientInsightsJob  POST /domain/{domainId}/patient-insights-job
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_patient_insights_job(self, StartPatientInsightsJobRequest input) -> str:
+        auto host = endpoints.regional_host(health_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        auto b = binding.HttpBinding(method="POST", path_template="/domain/{domainId}/patient-insights-job", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"patientContext\":" + input.patientContext.to_json())
+        parts.append("\"insightsContext\":" + input.insightsContext.to_json())
+        parts.append("\"encounterContext\":" + input.encounterContext.to_json())
+        parts.append("\"userContext\":" + input.userContext.to_json())
+        parts.append("\"inputDataConfig\":" + input_data_config_to_json(input.inputDataConfig))
+        parts.append("\"outputDataConfig\":" + input.outputDataConfig.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + health_agent_json_str(u0))
+        auto bp = restjson.rest_json_document(b, health_agent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, health_agent_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(health_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(health_agent_json_str(k0) + ":" + health_agent_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + health_agent_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, health_agent_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, health_agent_service(), self.region, host)
 
     # Paginator for ListDomains — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: domains).

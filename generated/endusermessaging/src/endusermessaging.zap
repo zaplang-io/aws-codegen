@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 17 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 27 operations — 26 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   84 structs (52 @derive(Json)), 9 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -150,8 +150,9 @@ struct BrandProfileInfo:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) text: TextParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) text: TextParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelParameters:
     Optional[TextParameters] text
     Optional[VoiceParameters] voice
@@ -178,8 +179,9 @@ struct CreateBrandProfileAttributesInput:
     list[BrandProfileAttributeInput] attributes
     Optional[str] clientToken
 
-# no @derive(Json): member(s) attributes: list[BrandProfileAttributeOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[BrandProfileAttributeOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBrandProfileAttributesOutput:
     list[BrandProfileAttributeOutput] attributes
 
@@ -192,8 +194,9 @@ struct CreateBrandProfileFromRegistrationInput:
     Optional[list[Tag]] tags
     Optional[str] clientToken
 
-# no @derive(Json): member(s) results: list[JobResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[JobResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBrandProfileFromRegistrationOutput:
     list[JobResult] results
 
@@ -226,8 +229,9 @@ struct CreateNotifyCodeConfigurationInput:
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) notifyCodeConfiguration: NotifyCodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifyCodeConfiguration: NotifyCodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotifyCodeConfigurationOutput:
     NotifyCodeConfiguration notifyCodeConfiguration
 
@@ -239,8 +243,9 @@ struct CreateRegistrationsFromBrandProfileInput:
     Optional[bool] smartMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) results: list[JobResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[JobResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistrationsFromBrandProfileOutput:
     list[JobResult] results
 
@@ -319,8 +324,9 @@ struct GetJobInput:
 struct GetNotifyCodeConfigurationInput:
     str notifyCodeConfigurationId
 
-# no @derive(Json): member(s) notifyCodeConfiguration: NotifyCodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifyCodeConfiguration: NotifyCodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNotifyCodeConfigurationOutput:
     NotifyCodeConfiguration notifyCodeConfiguration
 
@@ -328,8 +334,9 @@ struct GetNotifyCodeConfigurationOutput:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) resources: list[JobResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[JobResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     str jobId
     JobStatus status
@@ -352,8 +359,9 @@ struct JobResult:
     str jobId
     str resourceIdentifier
 
-# no @derive(Json): member(s) resources: list[JobResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[JobResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobSummary:
     str jobId
     JobStatus status
@@ -372,8 +380,9 @@ struct ListBrandProfileAttributesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) brandProfileAttributes: list[BrandProfileAttributeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) brandProfileAttributes: list[BrandProfileAttributeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrandProfileAttributesOutput:
     list[BrandProfileAttributeSummary] brandProfileAttributes
     Optional[str] nextToken
@@ -384,8 +393,9 @@ struct ListBrandProfilesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) brandProfiles: list[BrandProfileInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) brandProfiles: list[BrandProfileInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrandProfilesOutput:
     list[BrandProfileInfo] brandProfiles
     Optional[str] nextToken
@@ -400,8 +410,9 @@ struct ListJobsInput:
     Optional[str] brandProfileId
     Optional[str] operationType
 
-# no @derive(Json): member(s) jobs: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsOutput:
     list[JobSummary] jobs
     Optional[str] nextToken
@@ -412,8 +423,9 @@ struct ListNotifyCodeConfigurationsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) notifyCodeConfigurations: list[NotifyCodeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifyCodeConfigurations: list[NotifyCodeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotifyCodeConfigurationsOutput:
     list[NotifyCodeConfiguration] notifyCodeConfigurations
     Optional[str] nextToken
@@ -425,8 +437,9 @@ struct ListRegistrationsFromBrandProfileInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) registrationAssociations: list[RegistrationAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registrationAssociations: list[RegistrationAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistrationsFromBrandProfileOutput:
     list[RegistrationAssociationSummary] registrationAssociations
     Optional[str] nextToken
@@ -436,13 +449,15 @@ struct ListRegistrationsFromBrandProfileOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) channelParameters: ChannelParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelParameters: ChannelParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyCodeConfiguration:
     str notifyCodeConfigurationId
     str notifyCodeConfigurationArn
@@ -510,8 +525,9 @@ struct TagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) destinationCountryParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationCountryParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextParameters:
     Optional[str] inlineTemplateBody
     Optional[dict[str, str]] destinationCountryParameters
@@ -562,8 +578,9 @@ struct UpdateBrandProfileFromRegistrationInput:
     Optional[OnAttributeConflict] onAttributeConflict
     Optional[str] clientToken
 
-# no @derive(Json): member(s) results: list[JobResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[JobResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBrandProfileFromRegistrationOutput:
     list[JobResult] results
 
@@ -584,8 +601,9 @@ struct UpdateBrandProfileOutput:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) text: UpdateTextParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) text: UpdateTextParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelParameters:
     Optional[UpdateTextParameters] text
     Optional[UpdateVoiceParameters] voice
@@ -608,8 +626,9 @@ struct UpdateNotifyCodeConfigurationInput:
     Optional[UpdateChannelParameters] channelParameters
     Optional[bool] deletionProtectionEnabled
 
-# no @derive(Json): member(s) notifyCodeConfiguration: NotifyCodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifyCodeConfiguration: NotifyCodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotifyCodeConfigurationOutput:
     NotifyCodeConfiguration notifyCodeConfiguration
 
@@ -627,13 +646,15 @@ struct UpdateRegistrationsFromBrandProfileInput:
     Optional[OnAttributeConflict] onAttributeConflict
     Optional[str] clientToken
 
-# no @derive(Json): member(s) results: list[JobResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[JobResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegistrationsFromBrandProfileOutput:
     list[JobResult] results
 
-# no @derive(Json): member(s) destinationCountryParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationCountryParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTextParameters:
     Optional[str] inlineTemplateBody
     Optional[dict[str, str]] destinationCountryParameters
@@ -661,8 +682,9 @@ struct ValidateNotifyCodeVerificationInput:
 struct ValidateNotifyCodeVerificationOutput:
     VerificationStatus status
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -722,16 +744,7 @@ def end_user_messaging_error_from_code(str code) -> EndUserMessagingError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateBrandProfile (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateBrandProfileAttributes (document member `attributes: list[BrandProfileAttributeInput]` is not serializable by derive)
-#   CreateBrandProfileFromRegistration (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateNotifyCodeConfiguration (document member `channelParameters: ChannelParameters` is not serializable by derive)
-#   CreateRegistrationsFromBrandProfile (document member `registrationTypes: list[str]` is not serializable by derive)
-#   SendNotifyCodeVerification (document member `overrideChannelParameters: ChannelParameters` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateNotifyCodeConfiguration (document member `channelParameters: UpdateChannelParameters` is not serializable by derive)
-#   UpdateRegistrationsFromBrandProfile (document member `registrationIds: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -765,10 +778,214 @@ struct ValidateNotifyCodeVerificationDocument:
     Optional[str] referenceId
     str code
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def end_user_messaging_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def end_user_messaging_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def end_user_messaging_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ChannelParameters to a compact JSON object (declaration order).
+def channel_parameters_to_json(ChannelParameters v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + text_parameters_to_json(u0))
+    if v.voice.is_some():
+        auto u1 = v.voice.unwrap()
+        parts.append("\"voice\":" + u1.to_json())
+    if v.notify.is_some():
+        auto u2 = v.notify.unwrap()
+        parts.append("\"notify\":" + u2.to_json())
+    if v.whatsApp.is_some():
+        auto u3 = v.whatsApp.unwrap()
+        parts.append("\"whatsApp\":" + u3.to_json())
+    return end_user_messaging_json_obj(parts)
+
+# Serialize TextParameters to a compact JSON object (declaration order).
+def text_parameters_to_json(TextParameters v) -> str:
+    list[str] parts = []
+    if v.inlineTemplateBody.is_some():
+        auto u0 = v.inlineTemplateBody.unwrap()
+        parts.append("\"inlineTemplateBody\":" + end_user_messaging_json_str(u0))
+    if v.destinationCountryParameters.is_some():
+        auto u1 = v.destinationCountryParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(end_user_messaging_json_str(k2) + ":" + end_user_messaging_json_str(u1[k2]))
+        parts.append("\"destinationCountryParameters\":" + end_user_messaging_json_obj(m2))
+    return end_user_messaging_json_obj(parts)
+
+# Serialize UpdateChannelParameters to a compact JSON object (declaration order).
+def update_channel_parameters_to_json(UpdateChannelParameters v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + update_text_parameters_to_json(u0))
+    if v.voice.is_some():
+        auto u1 = v.voice.unwrap()
+        parts.append("\"voice\":" + u1.to_json())
+    if v.notify.is_some():
+        auto u2 = v.notify.unwrap()
+        parts.append("\"notify\":" + u2.to_json())
+    if v.whatsApp.is_some():
+        auto u3 = v.whatsApp.unwrap()
+        parts.append("\"whatsApp\":" + u3.to_json())
+    return end_user_messaging_json_obj(parts)
+
+# Serialize UpdateTextParameters to a compact JSON object (declaration order).
+def update_text_parameters_to_json(UpdateTextParameters v) -> str:
+    list[str] parts = []
+    if v.inlineTemplateBody.is_some():
+        auto u0 = v.inlineTemplateBody.unwrap()
+        parts.append("\"inlineTemplateBody\":" + end_user_messaging_json_str(u0))
+    if v.destinationCountryParameters.is_some():
+        auto u1 = v.destinationCountryParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(end_user_messaging_json_str(k2) + ":" + end_user_messaging_json_str(u1[k2]))
+        parts.append("\"destinationCountryParameters\":" + end_user_messaging_json_obj(m2))
+    return end_user_messaging_json_obj(parts)
+
 # A bound EndUserMessaging client: credentials + region, threaded into every operation.
 struct EndUserMessagingClient:
     core.Credentials creds
     str region
+
+    # CreateBrandProfile  POST /v1/brand-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_brand_profile(self, CreateBrandProfileInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"brandProfileName\":" + end_user_messaging_json_str(input.brandProfileName))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + end_user_messaging_json_str(u0))
+        if input.deletionProtectionEnabled.is_some():
+            auto u1 = input.deletionProtectionEnabled.unwrap()
+            parts.append("\"deletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + end_user_messaging_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # CreateBrandProfileAttributes  POST /v1/brand-profiles/{brandProfileId}/attributes
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_brand_profile_attributes(self, CreateBrandProfileAttributesInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["brandProfileId"] = input.brandProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/attributes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.attributes:
+            e0.append(x0.to_json())
+        parts.append("\"attributes\":" + end_user_messaging_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + end_user_messaging_json_str(u1))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # CreateBrandProfileFromRegistration  POST /v1/brand-profiles/create-from-registration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_brand_profile_from_registration(self, CreateBrandProfileFromRegistrationInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/create-from-registration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"registrationId\":" + end_user_messaging_json_str(input.registrationId))
+        parts.append("\"brandProfileName\":" + end_user_messaging_json_str(input.brandProfileName))
+        if input.smartMatch.is_some():
+            auto u0 = input.smartMatch.unwrap()
+            parts.append("\"smartMatch\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + end_user_messaging_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + end_user_messaging_json_str(u3))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # CreateNotifyCodeConfiguration  POST /v1/notify-code-configurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_notify_code_configuration(self, CreateNotifyCodeConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"notifyCodeConfigurationName\":" + end_user_messaging_json_str(input.notifyCodeConfigurationName))
+        if input.codeConfigurationParameters.is_some():
+            auto u0 = input.codeConfigurationParameters.unwrap()
+            parts.append("\"codeConfigurationParameters\":" + u0.to_json())
+        if input.channelParameters.is_some():
+            auto u1 = input.channelParameters.unwrap()
+            parts.append("\"channelParameters\":" + channel_parameters_to_json(u1))
+        if input.deletionProtectionEnabled.is_some():
+            auto u2 = input.deletionProtectionEnabled.unwrap()
+            parts.append("\"deletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + end_user_messaging_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + end_user_messaging_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # CreateRegistrationsFromBrandProfile  POST /v1/brand-profiles/{brandProfileId}/create-registrations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_registrations_from_brand_profile(self, CreateRegistrationsFromBrandProfileInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["brandProfileId"] = input.brandProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/create-registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.registrationTypes:
+            e0.append(end_user_messaging_json_str(x0))
+        parts.append("\"registrationTypes\":" + end_user_messaging_json_arr(e0))
+        if input.smartMatch.is_some():
+            auto u1 = input.smartMatch.unwrap()
+            parts.append("\"smartMatch\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + end_user_messaging_json_str(u2))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
 
     # DeleteBrandProfile  DELETE /v1/brand-profiles/{brandProfileId+}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -914,6 +1131,54 @@ struct EndUserMessagingClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
+    # SendNotifyCodeVerification  POST /v1/notify-code-verifications/send
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_notify_code_verification(self, SendNotifyCodeVerificationInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-verifications/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"channel\":" + input.channel_.to_json())
+        parts.append("\"destinationIdentity\":" + end_user_messaging_json_str(input.destinationIdentity))
+        parts.append("\"originationIdentity\":" + end_user_messaging_json_str(input.originationIdentity))
+        if input.notifyCodeConfiguration.is_some():
+            auto u0 = input.notifyCodeConfiguration.unwrap()
+            parts.append("\"notifyCodeConfiguration\":" + end_user_messaging_json_str(u0))
+        if input.overrideChannelParameters.is_some():
+            auto u1 = input.overrideChannelParameters.unwrap()
+            parts.append("\"overrideChannelParameters\":" + channel_parameters_to_json(u1))
+        if input.overrideCodeConfigurationParameters.is_some():
+            auto u2 = input.overrideCodeConfigurationParameters.unwrap()
+            parts.append("\"overrideCodeConfigurationParameters\":" + u2.to_json())
+        if input.configurationSetName.is_some():
+            auto u3 = input.configurationSetName.unwrap()
+            parts.append("\"configurationSetName\":" + end_user_messaging_json_str(u3))
+        if input.context.is_some():
+            auto u4 = input.context.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(end_user_messaging_json_str(k5) + ":" + end_user_messaging_json_str(u4[k5]))
+            parts.append("\"context\":" + end_user_messaging_json_obj(m5))
+        if input.referenceId.is_some():
+            auto u6 = input.referenceId.unwrap()
+            parts.append("\"referenceId\":" + end_user_messaging_json_str(u6))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + end_user_messaging_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
     # UpdateBrandProfile  PUT /v1/brand-profiles/{brandProfileId+}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_brand_profile(self, UpdateBrandProfileInput input) -> str:
@@ -946,6 +1211,53 @@ struct EndUserMessagingClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/update-from-registration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandProfileFromRegistrationDocument(registrationId=input.registrationId, smartMatch=input.smartMatch, onAttributeConflict=input.onAttributeConflict, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # UpdateNotifyCodeConfiguration  PUT /v1/notify-code-configurations/{notifyCodeConfigurationId+}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_notify_code_configuration(self, UpdateNotifyCodeConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["notifyCodeConfigurationId"] = input.notifyCodeConfigurationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.notifyCodeConfigurationName.is_some():
+            auto u0 = input.notifyCodeConfigurationName.unwrap()
+            parts.append("\"notifyCodeConfigurationName\":" + end_user_messaging_json_str(u0))
+        if input.codeConfigurationParameters.is_some():
+            auto u1 = input.codeConfigurationParameters.unwrap()
+            parts.append("\"codeConfigurationParameters\":" + u1.to_json())
+        if input.channelParameters.is_some():
+            auto u2 = input.channelParameters.unwrap()
+            parts.append("\"channelParameters\":" + update_channel_parameters_to_json(u2))
+        if input.deletionProtectionEnabled.is_some():
+            auto u3 = input.deletionProtectionEnabled.unwrap()
+            parts.append("\"deletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
+
+    # UpdateRegistrationsFromBrandProfile  POST /v1/brand-profiles/{brandProfileId}/update-registrations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_registrations_from_brand_profile(self, UpdateRegistrationsFromBrandProfileInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["brandProfileId"] = input.brandProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/update-registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.registrationIds:
+            e0.append(end_user_messaging_json_str(x0))
+        parts.append("\"registrationIds\":" + end_user_messaging_json_arr(e0))
+        if input.smartMatch.is_some():
+            auto u1 = input.smartMatch.unwrap()
+            parts.append("\"smartMatch\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.onAttributeConflict.is_some():
+            auto u2 = input.onAttributeConflict.unwrap()
+            parts.append("\"onAttributeConflict\":" + u2.to_json())
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + end_user_messaging_json_str(u3))
+        auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
 
     # ValidateNotifyCodeVerification  POST /v1/notify-code-verifications/validate

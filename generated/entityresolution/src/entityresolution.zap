@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 23 with a generated method,
-#   15 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 38 operations — 36 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   131 structs (76 @derive(Json)), 15 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -200,8 +200,9 @@ struct BatchDeleteUniqueIdInput:
     Optional[str] inputSource
     list[str] uniqueIds
 
-# no @derive(Json): member(s) errors: list[DeleteUniqueIdError], deleted: list[DeletedUniqueId], disconnectedUniqueIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[DeleteUniqueIdError], deleted: list[DeletedUniqueId], disconnectedUniqueIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteUniqueIdOutput:
     DeleteUniqueIdStatus status
     list[DeleteUniqueIdError] errors
@@ -224,8 +225,9 @@ struct CreateIdMappingWorkflowInput:
     Optional[str] roleArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) inputSourceConfig: list[IdMappingWorkflowInputSource], outputSourceConfig: list[IdMappingWorkflowOutputSource], idMappingTechniques: IdMappingTechniques not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[IdMappingWorkflowInputSource], outputSourceConfig: list[IdMappingWorkflowOutputSource], idMappingTechniques: IdMappingTechniques not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdMappingWorkflowOutput:
     str workflowName
     str workflowArn
@@ -247,8 +249,9 @@ struct CreateIdNamespaceInput:
     Optional[str] roleArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) inputSourceConfig: list[IdNamespaceInputSource], idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowProperties], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[IdNamespaceInputSource], idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowProperties], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdNamespaceOutput:
     str idNamespaceName
     str idNamespaceArn
@@ -273,8 +276,9 @@ struct CreateMatchingWorkflowInput:
     str roleArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) inputSourceConfig: list[InputSource], outputSourceConfig: list[OutputSource], resolutionTechniques: ResolutionTechniques not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[InputSource], outputSourceConfig: list[OutputSource], resolutionTechniques: ResolutionTechniques not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMatchingWorkflowOutput:
     str workflowName
     str workflowArn
@@ -293,8 +297,9 @@ struct CreateSchemaMappingInput:
     list[SchemaInputAttribute] mappedInputFields
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) mappedInputFields: list[SchemaInputAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mappedInputFields: list[SchemaInputAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSchemaMappingOutput:
     str schemaName
     str schemaArn
@@ -391,8 +396,9 @@ struct GenerateMatchIdInput:
     list[Record] records
     Optional[ProcessingType] processingType
 
-# no @derive(Json): member(s) matchGroups: list[MatchGroup], failedRecords: list[FailedRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchGroups: list[MatchGroup], failedRecords: list[FailedRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateMatchIdOutput:
     list[MatchGroup] matchGroups
     list[FailedRecord] failedRecords
@@ -403,8 +409,9 @@ struct GetIdMappingJobInput:
     str workflowName
     str jobId
 
-# no @derive(Json): member(s) outputSourceConfig: list[IdMappingJobOutputSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputSourceConfig: list[IdMappingJobOutputSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdMappingJobOutput:
     str jobId
     JobStatus status
@@ -420,8 +427,9 @@ struct GetIdMappingJobOutput:
 struct GetIdMappingWorkflowInput:
     str workflowName
 
-# no @derive(Json): member(s) inputSourceConfig: list[IdMappingWorkflowInputSource], outputSourceConfig: list[IdMappingWorkflowOutputSource], idMappingTechniques: IdMappingTechniques, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[IdMappingWorkflowInputSource], outputSourceConfig: list[IdMappingWorkflowOutputSource], idMappingTechniques: IdMappingTechniques, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdMappingWorkflowOutput:
     str workflowName
     str workflowArn
@@ -440,8 +448,9 @@ struct GetIdMappingWorkflowOutput:
 struct GetIdNamespaceInput:
     str idNamespaceName
 
-# no @derive(Json): member(s) inputSourceConfig: list[IdNamespaceInputSource], idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowProperties], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[IdNamespaceInputSource], idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowProperties], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdNamespaceOutput:
     str idNamespaceName
     str idNamespaceArn
@@ -472,8 +481,9 @@ struct GetMatchingJobInput:
     str workflowName
     str jobId
 
-# no @derive(Json): member(s) outputSourceConfig: list[JobOutputSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputSourceConfig: list[JobOutputSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMatchingJobOutput:
     str jobId
     JobStatus status
@@ -488,8 +498,9 @@ struct GetMatchingJobOutput:
 struct GetMatchingWorkflowInput:
     str workflowName
 
-# no @derive(Json): member(s) inputSourceConfig: list[InputSource], outputSourceConfig: list[OutputSource], resolutionTechniques: ResolutionTechniques, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[InputSource], outputSourceConfig: list[OutputSource], resolutionTechniques: ResolutionTechniques, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMatchingWorkflowOutput:
     str workflowName
     str workflowArn
@@ -520,8 +531,9 @@ struct GetProviderServiceInput:
     str providerName
     str providerServiceName
 
-# no @derive(Json): member(s) providerIntermediateDataAccessConfiguration: ProviderIntermediateDataAccessConfiguration, providerComponentSchema: ProviderComponentSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) providerIntermediateDataAccessConfiguration: ProviderIntermediateDataAccessConfiguration, providerComponentSchema: ProviderComponentSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProviderServiceOutput:
     str providerName
     str providerServiceName
@@ -542,8 +554,9 @@ struct GetProviderServiceOutput:
 struct GetSchemaMappingInput:
     str schemaName
 
-# no @derive(Json): member(s) mappedInputFields: list[SchemaInputAttribute], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mappedInputFields: list[SchemaInputAttribute], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSchemaMappingOutput:
     str schemaName
     str schemaArn
@@ -582,16 +595,18 @@ struct IdMappingJobOutputSource:
     str outputS3Path
     Optional[str] KMSArn
 
-# no @derive(Json): member(s) rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdMappingRuleBasedProperties:
     Optional[list[Rule]] rules
     IdMappingWorkflowRuleDefinitionType ruleDefinitionType
     AttributeMatchingModel attributeMatchingModel
     RecordMatchingModel recordMatchingModel
 
-# no @derive(Json): member(s) ruleBasedProperties: IdMappingRuleBasedProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleBasedProperties: IdMappingRuleBasedProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdMappingTechniques:
     IdMappingType idMappingType
     Optional[IdMappingRuleBasedProperties] ruleBasedProperties
@@ -619,8 +634,9 @@ struct IdMappingWorkflowSummary:
 struct IdNamespaceIdMappingWorkflowMetadata:
     IdMappingType idMappingType
 
-# no @derive(Json): member(s) ruleBasedProperties: NamespaceRuleBasedProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleBasedProperties: NamespaceRuleBasedProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdNamespaceIdMappingWorkflowProperties:
     IdMappingType idMappingType
     Optional[NamespaceRuleBasedProperties] ruleBasedProperties
@@ -631,8 +647,9 @@ struct IdNamespaceInputSource:
     str inputSourceARN
     Optional[str] schemaName
 
-# no @derive(Json): member(s) idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdNamespaceSummary:
     str idNamespaceName
     str idNamespaceArn
@@ -688,8 +705,9 @@ struct ListIdMappingJobsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) jobs: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdMappingJobsOutput:
     Optional[list[JobSummary]] jobs
     Optional[str] nextToken
@@ -700,8 +718,9 @@ struct ListIdMappingWorkflowsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) workflowSummaries: list[IdMappingWorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowSummaries: list[IdMappingWorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdMappingWorkflowsOutput:
     Optional[list[IdMappingWorkflowSummary]] workflowSummaries
     Optional[str] nextToken
@@ -712,8 +731,9 @@ struct ListIdNamespacesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) idNamespaceSummaries: list[IdNamespaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idNamespaceSummaries: list[IdNamespaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdNamespacesOutput:
     Optional[list[IdNamespaceSummary]] idNamespaceSummaries
     Optional[str] nextToken
@@ -725,8 +745,9 @@ struct ListMatchingJobsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) jobs: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMatchingJobsOutput:
     Optional[list[JobSummary]] jobs
     Optional[str] nextToken
@@ -737,8 +758,9 @@ struct ListMatchingWorkflowsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) workflowSummaries: list[MatchingWorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowSummaries: list[MatchingWorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMatchingWorkflowsOutput:
     Optional[list[MatchingWorkflowSummary]] workflowSummaries
     Optional[str] nextToken
@@ -750,8 +772,9 @@ struct ListProviderServicesInput:
     Optional[int64] maxResults
     Optional[str] providerName
 
-# no @derive(Json): member(s) providerServiceSummaries: list[ProviderServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) providerServiceSummaries: list[ProviderServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProviderServicesOutput:
     Optional[list[ProviderServiceSummary]] providerServiceSummaries
     Optional[str] nextToken
@@ -762,8 +785,9 @@ struct ListSchemaMappingsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) schemaList: list[SchemaMappingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemaList: list[SchemaMappingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemaMappingsOutput:
     Optional[list[SchemaMappingSummary]] schemaList
     Optional[str] nextToken
@@ -773,13 +797,15 @@ struct ListSchemaMappingsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     dict[str, str] tags
 
-# no @derive(Json): member(s) records: list[MatchedRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) records: list[MatchedRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchGroup:
     list[MatchedRecord] records
     str matchId
@@ -807,8 +833,9 @@ struct NamespaceProviderProperties:
     str providerServiceArn
     Optional[Document] providerConfiguration
 
-# no @derive(Json): member(s) rules: list[Rule], ruleDefinitionTypes: list[IdMappingWorkflowRuleDefinitionType], recordMatchingModels: list[RecordMatchingModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[Rule], ruleDefinitionTypes: list[IdMappingWorkflowRuleDefinitionType], recordMatchingModels: list[RecordMatchingModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamespaceRuleBasedProperties:
     Optional[list[Rule]] rules
     Optional[list[IdMappingWorkflowRuleDefinitionType]] ruleDefinitionTypes
@@ -820,8 +847,9 @@ struct OutputAttribute:
     str name
     Optional[bool] hashed
 
-# no @derive(Json): member(s) output: list[OutputAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) output: list[OutputAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputSource:
     Optional[str] KMSArn
     Optional[str] outputS3Path
@@ -829,8 +857,9 @@ struct OutputSource:
     Optional[bool] applyNormalization
     Optional[CustomerProfilesIntegrationConfig] customerProfilesIntegrationConfig
 
-# no @derive(Json): member(s) schemas: list[list[str]], providerSchemaAttributes: list[ProviderSchemaAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemas: list[list[str]], providerSchemaAttributes: list[ProviderSchemaAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderComponentSchema:
     Optional[list[list[str]]] schemas
     Optional[list[ProviderSchemaAttribute]] providerSchemaAttributes
@@ -845,8 +874,9 @@ struct ProviderIdNameSpaceConfiguration:
     Optional[Document] providerTargetConfigurationDefinition
     Optional[Document] providerSourceConfigurationDefinition
 
-# no @derive(Json): member(s) awsAccountIds: list[str], requiredBucketActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsAccountIds: list[str], requiredBucketActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderIntermediateDataAccessConfiguration:
     Optional[list[str]] awsAccountIds
     Optional[list[str]] requiredBucketActions
@@ -892,15 +922,17 @@ struct PutPolicyOutput:
     str token
     Optional[str] policy
 
-# no @derive(Json): member(s) recordAttributeMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordAttributeMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Record:
     str inputSourceARN
     str uniqueId
     dict[str, str] recordAttributeMap
 
-# no @derive(Json): member(s) ruleBasedProperties: RuleBasedProperties, ruleConditionProperties: RuleConditionProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleBasedProperties: RuleBasedProperties, ruleConditionProperties: RuleConditionProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolutionTechniques:
     ResolutionType resolutionType
     Optional[RuleBasedProperties] ruleBasedProperties
@@ -912,14 +944,16 @@ struct ResolutionTechniques:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) matchingKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchingKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     str ruleName
     list[str] matchingKeys
 
-# no @derive(Json): member(s) rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleBasedProperties:
     list[Rule] rules
     AttributeMatchingModel attributeMatchingModel
@@ -930,8 +964,9 @@ struct RuleCondition:
     str ruleName
     str condition
 
-# no @derive(Json): member(s) rules: list[RuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[RuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleConditionProperties:
     list[RuleCondition] rules
     Optional[MatchingConfig] matchingConfig
@@ -960,8 +995,9 @@ struct StartIdMappingJobInput:
     Optional[list[IdMappingJobOutputSource]] outputSourceConfig
     Optional[JobType] jobType
 
-# no @derive(Json): member(s) outputSourceConfig: list[IdMappingJobOutputSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputSourceConfig: list[IdMappingJobOutputSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartIdMappingJobOutput:
     str jobId
     Optional[list[IdMappingJobOutputSource]] outputSourceConfig
@@ -1013,8 +1049,9 @@ struct UpdateIdMappingWorkflowInput:
     Optional[IdMappingIncrementalRunConfig] incrementalRunConfig
     Optional[str] roleArn
 
-# no @derive(Json): member(s) inputSourceConfig: list[IdMappingWorkflowInputSource], outputSourceConfig: list[IdMappingWorkflowOutputSource], idMappingTechniques: IdMappingTechniques not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[IdMappingWorkflowInputSource], outputSourceConfig: list[IdMappingWorkflowOutputSource], idMappingTechniques: IdMappingTechniques not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdMappingWorkflowOutput:
     str workflowName
     str workflowArn
@@ -1034,8 +1071,9 @@ struct UpdateIdNamespaceInput:
     Optional[list[IdNamespaceIdMappingWorkflowProperties]] idMappingWorkflowProperties
     Optional[str] roleArn
 
-# no @derive(Json): member(s) inputSourceConfig: list[IdNamespaceInputSource], idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[IdNamespaceInputSource], idMappingWorkflowProperties: list[IdNamespaceIdMappingWorkflowProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdNamespaceOutput:
     str idNamespaceName
     str idNamespaceArn
@@ -1058,8 +1096,9 @@ struct UpdateMatchingWorkflowInput:
     Optional[IncrementalRunConfig] incrementalRunConfig
     str roleArn
 
-# no @derive(Json): member(s) inputSourceConfig: list[InputSource], outputSourceConfig: list[OutputSource], resolutionTechniques: ResolutionTechniques not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSourceConfig: list[InputSource], outputSourceConfig: list[OutputSource], resolutionTechniques: ResolutionTechniques not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMatchingWorkflowOutput:
     str workflowName
     Optional[str] description
@@ -1076,8 +1115,9 @@ struct UpdateSchemaMappingInput:
     Optional[str] description
     list[SchemaInputAttribute] mappedInputFields
 
-# no @derive(Json): member(s) mappedInputFields: list[SchemaInputAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mappedInputFields: list[SchemaInputAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSchemaMappingOutput:
     str schemaName
     str schemaArn
@@ -1126,21 +1166,8 @@ def entityresolution_error_from_code(str code) -> EntityResolutionError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddPolicyStatement (document member `action: list[str]` is not serializable by derive)
 #   BatchDeleteUniqueId (httpHeader `uniqueIds` has unsupported type list[str])
-#   CreateIdMappingWorkflow (document member `inputSourceConfig: list[IdMappingWorkflowInputSource]` is not serializable by derive)
-#   CreateIdNamespace (document member `inputSourceConfig: list[IdNamespaceInputSource]` is not serializable by derive)
-#   CreateMatchingWorkflow (document member `inputSourceConfig: list[InputSource]` is not serializable by derive)
-#   CreateSchemaMapping (document member `mappedInputFields: list[SchemaInputAttribute]` is not serializable by derive)
-#   GenerateMatchId (document member `records: list[Record]` is not serializable by derive)
-#   GetMatchId (document member `record: dict[str, str]` is not serializable by derive)
-#   StartIdMappingJob (document member `outputSourceConfig: list[IdMappingJobOutputSource]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateIdMappingWorkflow (document member `inputSourceConfig: list[IdMappingWorkflowInputSource]` is not serializable by derive)
-#   UpdateIdNamespace (document member `inputSourceConfig: list[IdNamespaceInputSource]` is not serializable by derive)
-#   UpdateMatchingWorkflow (document member `inputSourceConfig: list[InputSource]` is not serializable by derive)
-#   UpdateSchemaMapping (document member `mappedInputFields: list[SchemaInputAttribute]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1151,10 +1178,339 @@ struct PutPolicyDocument:
     Optional[str] token
     str policy
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def entityresolution_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def entityresolution_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def entityresolution_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize IdMappingRuleBasedProperties to a compact JSON object (declaration order).
+def id_mapping_rule_based_properties_to_json(IdMappingRuleBasedProperties v) -> str:
+    list[str] parts = []
+    if v.rules.is_some():
+        auto u0 = v.rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rule_to_json(x1))
+        parts.append("\"rules\":" + entityresolution_json_arr(e1))
+    parts.append("\"ruleDefinitionType\":" + v.ruleDefinitionType.to_json())
+    parts.append("\"attributeMatchingModel\":" + v.attributeMatchingModel.to_json())
+    parts.append("\"recordMatchingModel\":" + v.recordMatchingModel.to_json())
+    return entityresolution_json_obj(parts)
+
+# Serialize IdMappingTechniques to a compact JSON object (declaration order).
+def id_mapping_techniques_to_json(IdMappingTechniques v) -> str:
+    list[str] parts = []
+    parts.append("\"idMappingType\":" + v.idMappingType.to_json())
+    if v.ruleBasedProperties.is_some():
+        auto u0 = v.ruleBasedProperties.unwrap()
+        parts.append("\"ruleBasedProperties\":" + id_mapping_rule_based_properties_to_json(u0))
+    if v.providerProperties.is_some():
+        auto u1 = v.providerProperties.unwrap()
+        parts.append("\"providerProperties\":" + u1.to_json())
+    return entityresolution_json_obj(parts)
+
+# Serialize IdNamespaceIdMappingWorkflowProperties to a compact JSON object (declaration order).
+def id_namespace_id_mapping_workflow_properties_to_json(IdNamespaceIdMappingWorkflowProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"idMappingType\":" + v.idMappingType.to_json())
+    if v.ruleBasedProperties.is_some():
+        auto u0 = v.ruleBasedProperties.unwrap()
+        parts.append("\"ruleBasedProperties\":" + namespace_rule_based_properties_to_json(u0))
+    if v.providerProperties.is_some():
+        auto u1 = v.providerProperties.unwrap()
+        parts.append("\"providerProperties\":" + u1.to_json())
+    return entityresolution_json_obj(parts)
+
+# Serialize NamespaceRuleBasedProperties to a compact JSON object (declaration order).
+def namespace_rule_based_properties_to_json(NamespaceRuleBasedProperties v) -> str:
+    list[str] parts = []
+    if v.rules.is_some():
+        auto u0 = v.rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rule_to_json(x1))
+        parts.append("\"rules\":" + entityresolution_json_arr(e1))
+    if v.ruleDefinitionTypes.is_some():
+        auto u2 = v.ruleDefinitionTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ruleDefinitionTypes\":" + entityresolution_json_arr(e3))
+    if v.attributeMatchingModel.is_some():
+        auto u4 = v.attributeMatchingModel.unwrap()
+        parts.append("\"attributeMatchingModel\":" + u4.to_json())
+    if v.recordMatchingModels.is_some():
+        auto u5 = v.recordMatchingModels.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"recordMatchingModels\":" + entityresolution_json_arr(e6))
+    return entityresolution_json_obj(parts)
+
+# Serialize OutputSource to a compact JSON object (declaration order).
+def output_source_to_json(OutputSource v) -> str:
+    list[str] parts = []
+    if v.KMSArn.is_some():
+        auto u0 = v.KMSArn.unwrap()
+        parts.append("\"KMSArn\":" + entityresolution_json_str(u0))
+    if v.outputS3Path.is_some():
+        auto u1 = v.outputS3Path.unwrap()
+        parts.append("\"outputS3Path\":" + entityresolution_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.output:
+        e2.append(x2.to_json())
+    parts.append("\"output\":" + entityresolution_json_arr(e2))
+    if v.applyNormalization.is_some():
+        auto u3 = v.applyNormalization.unwrap()
+        parts.append("\"applyNormalization\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.customerProfilesIntegrationConfig.is_some():
+        auto u4 = v.customerProfilesIntegrationConfig.unwrap()
+        parts.append("\"customerProfilesIntegrationConfig\":" + u4.to_json())
+    return entityresolution_json_obj(parts)
+
+# Serialize Record to a compact JSON object (declaration order).
+def record_to_json(Record v) -> str:
+    list[str] parts = []
+    parts.append("\"inputSourceARN\":" + entityresolution_json_str(v.inputSourceARN))
+    parts.append("\"uniqueId\":" + entityresolution_json_str(v.uniqueId))
+    list[str] m0 = []
+    for k0 in sorted(v.recordAttributeMap.keys()):
+        m0.append(entityresolution_json_str(k0) + ":" + entityresolution_json_str(v.recordAttributeMap[k0]))
+    parts.append("\"recordAttributeMap\":" + entityresolution_json_obj(m0))
+    return entityresolution_json_obj(parts)
+
+# Serialize ResolutionTechniques to a compact JSON object (declaration order).
+def resolution_techniques_to_json(ResolutionTechniques v) -> str:
+    list[str] parts = []
+    parts.append("\"resolutionType\":" + v.resolutionType.to_json())
+    if v.ruleBasedProperties.is_some():
+        auto u0 = v.ruleBasedProperties.unwrap()
+        parts.append("\"ruleBasedProperties\":" + rule_based_properties_to_json(u0))
+    if v.ruleConditionProperties.is_some():
+        auto u1 = v.ruleConditionProperties.unwrap()
+        parts.append("\"ruleConditionProperties\":" + rule_condition_properties_to_json(u1))
+    if v.enableRealTimeMatching.is_some():
+        auto u2 = v.enableRealTimeMatching.unwrap()
+        parts.append("\"enableRealTimeMatching\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.providerProperties.is_some():
+        auto u3 = v.providerProperties.unwrap()
+        parts.append("\"providerProperties\":" + u3.to_json())
+    return entityresolution_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    parts.append("\"ruleName\":" + entityresolution_json_str(v.ruleName))
+    list[str] e0 = []
+    for x0 in v.matchingKeys:
+        e0.append(entityresolution_json_str(x0))
+    parts.append("\"matchingKeys\":" + entityresolution_json_arr(e0))
+    return entityresolution_json_obj(parts)
+
+# Serialize RuleBasedProperties to a compact JSON object (declaration order).
+def rule_based_properties_to_json(RuleBasedProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.rules:
+        e0.append(rule_to_json(x0))
+    parts.append("\"rules\":" + entityresolution_json_arr(e0))
+    parts.append("\"attributeMatchingModel\":" + v.attributeMatchingModel.to_json())
+    if v.matchPurpose.is_some():
+        auto u1 = v.matchPurpose.unwrap()
+        parts.append("\"matchPurpose\":" + u1.to_json())
+    return entityresolution_json_obj(parts)
+
+# Serialize RuleConditionProperties to a compact JSON object (declaration order).
+def rule_condition_properties_to_json(RuleConditionProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.rules:
+        e0.append(x0.to_json())
+    parts.append("\"rules\":" + entityresolution_json_arr(e0))
+    if v.matchingConfig.is_some():
+        auto u1 = v.matchingConfig.unwrap()
+        parts.append("\"matchingConfig\":" + u1.to_json())
+    return entityresolution_json_obj(parts)
+
 # A bound EntityResolution client: credentials + region, threaded into every operation.
 struct EntityResolutionClient:
     core.Credentials creds
     str region
+
+    # AddPolicyStatement  POST /policies/{arn}/{statementId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def add_policy_statement(self, AddPolicyStatementInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        labels["statementId"] = input.statementId
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{arn}/{statementId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"effect\":" + input.effect.to_json())
+        list[str] e0 = []
+        for x0 in input.action:
+            e0.append(entityresolution_json_str(x0))
+        parts.append("\"action\":" + entityresolution_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.principal:
+            e1.append(entityresolution_json_str(x1))
+        parts.append("\"principal\":" + entityresolution_json_arr(e1))
+        if input.condition.is_some():
+            auto u2 = input.condition.unwrap()
+            parts.append("\"condition\":" + entityresolution_json_str(u2))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # CreateIdMappingWorkflow  POST /idmappingworkflows
+    # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
+    def create_id_mapping_workflow(self, CreateIdMappingWorkflowInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/idmappingworkflows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workflowName\":" + entityresolution_json_str(input.workflowName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.inputSourceConfig:
+            e1.append(x1.to_json())
+        parts.append("\"inputSourceConfig\":" + entityresolution_json_arr(e1))
+        if input.outputSourceConfig.is_some():
+            auto u2 = input.outputSourceConfig.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"outputSourceConfig\":" + entityresolution_json_arr(e3))
+        parts.append("\"idMappingTechniques\":" + id_mapping_techniques_to_json(input.idMappingTechniques))
+        if input.incrementalRunConfig.is_some():
+            auto u4 = input.incrementalRunConfig.unwrap()
+            parts.append("\"incrementalRunConfig\":" + u4.to_json())
+        if input.roleArn.is_some():
+            auto u5 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + entityresolution_json_str(u5))
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(entityresolution_json_str(k7) + ":" + entityresolution_json_str(u6[k7]))
+            parts.append("\"tags\":" + entityresolution_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # CreateIdNamespace  POST /idnamespaces
+    # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
+    def create_id_namespace(self, CreateIdNamespaceInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/idnamespaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"idNamespaceName\":" + entityresolution_json_str(input.idNamespaceName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        if input.inputSourceConfig.is_some():
+            auto u1 = input.inputSourceConfig.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"inputSourceConfig\":" + entityresolution_json_arr(e2))
+        if input.idMappingWorkflowProperties.is_some():
+            auto u3 = input.idMappingWorkflowProperties.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(id_namespace_id_mapping_workflow_properties_to_json(x4))
+            parts.append("\"idMappingWorkflowProperties\":" + entityresolution_json_arr(e4))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.roleArn.is_some():
+            auto u5 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + entityresolution_json_str(u5))
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(entityresolution_json_str(k7) + ":" + entityresolution_json_str(u6[k7]))
+            parts.append("\"tags\":" + entityresolution_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # CreateMatchingWorkflow  POST /matchingworkflows
+    # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
+    def create_matching_workflow(self, CreateMatchingWorkflowInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workflowName\":" + entityresolution_json_str(input.workflowName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.inputSourceConfig:
+            e1.append(x1.to_json())
+        parts.append("\"inputSourceConfig\":" + entityresolution_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.outputSourceConfig:
+            e2.append(output_source_to_json(x2))
+        parts.append("\"outputSourceConfig\":" + entityresolution_json_arr(e2))
+        parts.append("\"resolutionTechniques\":" + resolution_techniques_to_json(input.resolutionTechniques))
+        if input.incrementalRunConfig.is_some():
+            auto u3 = input.incrementalRunConfig.unwrap()
+            parts.append("\"incrementalRunConfig\":" + u3.to_json())
+        parts.append("\"roleArn\":" + entityresolution_json_str(input.roleArn))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(entityresolution_json_str(k5) + ":" + entityresolution_json_str(u4[k5]))
+            parts.append("\"tags\":" + entityresolution_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # CreateSchemaMapping  POST /schemas
+    # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
+    def create_schema_mapping(self, CreateSchemaMappingInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/schemas", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"schemaName\":" + entityresolution_json_str(input.schemaName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.mappedInputFields:
+            e1.append(x1.to_json())
+        parts.append("\"mappedInputFields\":" + entityresolution_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(entityresolution_json_str(k3) + ":" + entityresolution_json_str(u2[k3]))
+            parts.append("\"tags\":" + entityresolution_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
 
     # DeleteIdMappingWorkflow  DELETE /idmappingworkflows/{workflowName}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1202,6 +1558,24 @@ struct EntityResolutionClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
+    # GenerateMatchId  POST /matchingworkflows/{workflowName}/generateMatches
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def generate_match_id(self, GenerateMatchIdInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowName"] = input.workflowName
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/generateMatches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.records:
+            e0.append(record_to_json(x0))
+        parts.append("\"records\":" + entityresolution_json_arr(e0))
+        if input.processingType.is_some():
+            auto u1 = input.processingType.unwrap()
+            parts.append("\"processingType\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
     # GetIdMappingJob  GET /idmappingworkflows/{workflowName}/jobs/{jobId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_id_mapping_job(self, GetIdMappingJobInput input) -> str:
@@ -1229,6 +1603,24 @@ struct EntityResolutionClient:
         labels["idNamespaceName"] = input.idNamespaceName
         auto b = binding.HttpBinding(method="GET", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
+
+    # GetMatchId  POST /matchingworkflows/{workflowName}/matches
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_match_id(self, GetMatchIdInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowName"] = input.workflowName
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/matches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.record.keys()):
+            m0.append(entityresolution_json_str(k0) + ":" + entityresolution_json_str(input.record[k0]))
+        parts.append("\"record\":" + entityresolution_json_obj(m0))
+        if input.applyNormalization.is_some():
+            auto u1 = input.applyNormalization.unwrap()
+            parts.append("\"applyNormalization\":" + json.dumps(JsonValue.Bool(u1)))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
 
     # GetMatchingJob  GET /matchingworkflows/{workflowName}/jobs/{jobId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1387,6 +1779,26 @@ struct EntityResolutionClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
 
+    # StartIdMappingJob  POST /idmappingworkflows/{workflowName}/jobs
+    # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_id_mapping_job(self, StartIdMappingJobInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowName"] = input.workflowName
+        auto b = binding.HttpBinding(method="POST", path_template="/idmappingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.outputSourceConfig.is_some():
+            auto u0 = input.outputSourceConfig.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"outputSourceConfig\":" + entityresolution_json_arr(e1))
+        if input.jobType.is_some():
+            auto u2 = input.jobType.unwrap()
+            parts.append("\"jobType\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
     # StartMatchingJob  POST /matchingworkflows/{workflowName}/jobs
     # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_matching_job(self, StartMatchingJobInput input) -> str:
@@ -1395,6 +1807,126 @@ struct EntityResolutionClient:
         labels["workflowName"] = input.workflowName
         auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(entityresolution_json_str(k0) + ":" + entityresolution_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + entityresolution_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # UpdateIdMappingWorkflow  PUT /idmappingworkflows/{workflowName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_id_mapping_workflow(self, UpdateIdMappingWorkflowInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowName"] = input.workflowName
+        auto b = binding.HttpBinding(method="PUT", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.inputSourceConfig:
+            e1.append(x1.to_json())
+        parts.append("\"inputSourceConfig\":" + entityresolution_json_arr(e1))
+        if input.outputSourceConfig.is_some():
+            auto u2 = input.outputSourceConfig.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"outputSourceConfig\":" + entityresolution_json_arr(e3))
+        parts.append("\"idMappingTechniques\":" + id_mapping_techniques_to_json(input.idMappingTechniques))
+        if input.incrementalRunConfig.is_some():
+            auto u4 = input.incrementalRunConfig.unwrap()
+            parts.append("\"incrementalRunConfig\":" + u4.to_json())
+        if input.roleArn.is_some():
+            auto u5 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + entityresolution_json_str(u5))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # UpdateIdNamespace  PUT /idnamespaces/{idNamespaceName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_id_namespace(self, UpdateIdNamespaceInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["idNamespaceName"] = input.idNamespaceName
+        auto b = binding.HttpBinding(method="PUT", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        if input.inputSourceConfig.is_some():
+            auto u1 = input.inputSourceConfig.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"inputSourceConfig\":" + entityresolution_json_arr(e2))
+        if input.idMappingWorkflowProperties.is_some():
+            auto u3 = input.idMappingWorkflowProperties.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(id_namespace_id_mapping_workflow_properties_to_json(x4))
+            parts.append("\"idMappingWorkflowProperties\":" + entityresolution_json_arr(e4))
+        if input.roleArn.is_some():
+            auto u5 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + entityresolution_json_str(u5))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # UpdateMatchingWorkflow  PUT /matchingworkflows/{workflowName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_matching_workflow(self, UpdateMatchingWorkflowInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowName"] = input.workflowName
+        auto b = binding.HttpBinding(method="PUT", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.inputSourceConfig:
+            e1.append(x1.to_json())
+        parts.append("\"inputSourceConfig\":" + entityresolution_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.outputSourceConfig:
+            e2.append(output_source_to_json(x2))
+        parts.append("\"outputSourceConfig\":" + entityresolution_json_arr(e2))
+        parts.append("\"resolutionTechniques\":" + resolution_techniques_to_json(input.resolutionTechniques))
+        if input.incrementalRunConfig.is_some():
+            auto u3 = input.incrementalRunConfig.unwrap()
+            parts.append("\"incrementalRunConfig\":" + u3.to_json())
+        parts.append("\"roleArn\":" + entityresolution_json_str(input.roleArn))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
+
+    # UpdateSchemaMapping  PUT /schemas/{schemaName}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_schema_mapping(self, UpdateSchemaMappingInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["schemaName"] = input.schemaName
+        auto b = binding.HttpBinding(method="PUT", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + entityresolution_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.mappedInputFields:
+            e1.append(x1.to_json())
+        parts.append("\"mappedInputFields\":" + entityresolution_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
 
     # Paginator for ListIdMappingJobs — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: jobs).

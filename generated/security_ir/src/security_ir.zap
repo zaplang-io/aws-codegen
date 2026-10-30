@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 17 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 23 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   77 structs (57 @derive(Json)), 17 enums, 9 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Security_IR rest-json protocol: SigV4 service "security-ir" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -238,8 +239,9 @@ struct BatchGetMemberAccountDetailsRequest:
     str membershipId
     list[str] accountIds
 
-# no @derive(Json): member(s) items: list[GetMembershipAccountDetailItem], errors: list[GetMembershipAccountDetailError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[GetMembershipAccountDetailItem], errors: list[GetMembershipAccountDetailError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetMemberAccountDetailsResponse:
     Optional[list[GetMembershipAccountDetailItem]] items
     Optional[list[GetMembershipAccountDetailError]] errors
@@ -361,8 +363,9 @@ struct GetCaseAttachmentUploadUrlResponse:
 struct GetCaseRequest:
     str caseId
 
-# no @derive(Json): member(s) impactedAwsRegions: list[ImpactedAwsRegion], threatActorIpAddresses: list[ThreatActorIp], impactedAccounts: list[str], watchers: list[Watcher], impactedServices: list[str], caseAttachments: list[CaseAttachmentAttributes], caseMetadata: list[CaseMetadataEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) impactedAwsRegions: list[ImpactedAwsRegion], threatActorIpAddresses: list[ThreatActorIp], impactedAccounts: list[str], watchers: list[Watcher], impactedServices: list[str], caseAttachments: list[CaseAttachmentAttributes], caseMetadata: list[CaseMetadataEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCaseResponse:
     Optional[str] title
     Optional[str] caseArn
@@ -423,8 +426,9 @@ struct GetMembershipAccountDetailItem:
 struct GetMembershipRequest:
     str membershipId
 
-# no @derive(Json): member(s) incidentResponseTeam: list[IncidentResponder], optInFeatures: list[OptInFeature], membershipAccountsConfigurations: MembershipAccountsConfigurations not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incidentResponseTeam: list[IncidentResponder], optInFeatures: list[OptInFeature], membershipAccountsConfigurations: MembershipAccountsConfigurations not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMembershipResponse:
     str membershipId
     Optional[str] accountId
@@ -444,8 +448,9 @@ struct GetMembershipResponse:
 struct ImpactedAwsRegion:
     AwsRegion region
 
-# no @derive(Json): member(s) communicationPreferences: list[CommunicationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) communicationPreferences: list[CommunicationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IncidentResponder:
     str name
     str jobTitle
@@ -484,8 +489,9 @@ struct ListCaseEditsRequest:
     Optional[int64] maxResults
     str caseId
 
-# no @derive(Json): member(s) items: list[CaseEditItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[CaseEditItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCaseEditsResponse:
     Optional[str] nextToken
     Optional[list[CaseEditItem]] items
@@ -510,8 +516,9 @@ struct ListCasesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ListCasesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ListCasesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCasesResponse:
     Optional[str] nextToken
     Optional[list[ListCasesItem]] items
@@ -533,8 +540,9 @@ struct ListCommentsRequest:
     Optional[int64] maxResults
     str caseId
 
-# no @derive(Json): member(s) items: list[ListCommentsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ListCommentsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommentsResponse:
     Optional[str] nextToken
     Optional[list[ListCommentsItem]] items
@@ -547,8 +555,9 @@ struct ListInvestigationsRequest:
     Optional[int64] maxResults
     str caseId
 
-# no @derive(Json): member(s) investigationActions: list[InvestigationAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) investigationActions: list[InvestigationAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvestigationsResponse:
     Optional[str] nextToken
     list[InvestigationAction] investigationActions
@@ -567,8 +576,9 @@ struct ListMembershipsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ListMembershipItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ListMembershipItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembershipsResponse:
     Optional[str] nextToken
     Optional[list[ListMembershipItem]] items
@@ -578,19 +588,22 @@ struct ListMembershipsResponse:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     dict[str, str] tags
 
-# no @derive(Json): member(s) organizationalUnits: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) organizationalUnits: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MembershipAccountsConfigurations:
     Optional[bool] coverEntireOrganization
     Optional[list[str]] organizationalUnits
 
-# no @derive(Json): member(s) organizationalUnitsToAdd: list[str], organizationalUnitsToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) organizationalUnitsToAdd: list[str], organizationalUnitsToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MembershipAccountsConfigurationsUpdate:
     Optional[bool] coverEntireOrganization
     Optional[list[str]] organizationalUnitsToAdd
@@ -739,8 +752,9 @@ struct UpdateResolverTypeResponse:
     Optional[CaseStatus] caseStatus
     Optional[ResolverType] resolverType
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -801,14 +815,8 @@ def security_ir_error_from_code(str code) -> Security_IRError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetMemberAccountDetails (document member `accountIds: list[str]` is not serializable by derive)
-#   CreateCase (document member `impactedAccounts: list[str]` is not serializable by derive)
-#   CreateMembership (document member `incidentResponseTeam: list[IncidentResponder]` is not serializable by derive)
 #   GetFindingMetrics (httpQuery `startDate` has unsupported type DateTime)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateCase (document member `watchersToAdd: list[Watcher]` is not serializable by derive)
-#   UpdateMembership (document member `incidentResponseTeam: list[IncidentResponder]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -871,10 +879,89 @@ struct UpdateResolverTypeDocument:
     # document members of UpdateResolverType
     ResolverType resolverType
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def security_ir_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def security_ir_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def security_ir_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize IncidentResponder to a compact JSON object (declaration order).
+def incident_responder_to_json(IncidentResponder v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + security_ir_json_str(v.name))
+    parts.append("\"jobTitle\":" + security_ir_json_str(v.jobTitle))
+    parts.append("\"email\":" + security_ir_json_str(v.email))
+    if v.communicationPreferences.is_some():
+        auto u0 = v.communicationPreferences.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"communicationPreferences\":" + security_ir_json_arr(e1))
+    return security_ir_json_obj(parts)
+
+# Serialize MembershipAccountsConfigurationsUpdate to a compact JSON object (declaration order).
+def membership_accounts_configurations_update_to_json(MembershipAccountsConfigurationsUpdate v) -> str:
+    list[str] parts = []
+    if v.coverEntireOrganization.is_some():
+        auto u0 = v.coverEntireOrganization.unwrap()
+        parts.append("\"coverEntireOrganization\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.organizationalUnitsToAdd.is_some():
+        auto u1 = v.organizationalUnitsToAdd.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(security_ir_json_str(x2))
+        parts.append("\"organizationalUnitsToAdd\":" + security_ir_json_arr(e2))
+    if v.organizationalUnitsToRemove.is_some():
+        auto u3 = v.organizationalUnitsToRemove.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(security_ir_json_str(x4))
+        parts.append("\"organizationalUnitsToRemove\":" + security_ir_json_arr(e4))
+    return security_ir_json_obj(parts)
+
 # A bound Security_IR client: credentials + region, threaded into every operation.
 struct Security_IRClient:
     core.Credentials creds
     str region
+
+    # BatchGetMemberAccountDetails  POST /v1/membership/{membershipId}/batch-member-details
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_get_member_account_details(self, BatchGetMemberAccountDetailsRequest input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipId"] = input.membershipId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/membership/{membershipId}/batch-member-details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(security_ir_json_str(x0))
+        parts.append("\"accountIds\":" + security_ir_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
 
     # CancelMembership  PUT /v1/membership/{membershipId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -894,6 +981,55 @@ struct Security_IRClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/close-case", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
+    # CreateCase  POST /v1/create-case
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_case(self, CreateCaseRequest input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/create-case", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + security_ir_json_str(u0))
+        parts.append("\"resolverType\":" + input.resolverType.to_json())
+        parts.append("\"title\":" + security_ir_json_str(input.title))
+        parts.append("\"description\":" + security_ir_json_str(input.description))
+        parts.append("\"engagementType\":" + input.engagementType.to_json())
+        parts.append("\"reportedIncidentStartDate\":" + str(datetime.to_timestamp(input.reportedIncidentStartDate)))
+        list[str] e1 = []
+        for x1 in input.impactedAccounts:
+            e1.append(security_ir_json_str(x1))
+        parts.append("\"impactedAccounts\":" + security_ir_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.watchers:
+            e2.append(x2.to_json())
+        parts.append("\"watchers\":" + security_ir_json_arr(e2))
+        if input.threatActorIpAddresses.is_some():
+            auto u3 = input.threatActorIpAddresses.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"threatActorIpAddresses\":" + security_ir_json_arr(e4))
+        if input.impactedServices.is_some():
+            auto u5 = input.impactedServices.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(security_ir_json_str(x6))
+            parts.append("\"impactedServices\":" + security_ir_json_arr(e6))
+        if input.impactedAwsRegions.is_some():
+            auto u7 = input.impactedAwsRegions.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"impactedAwsRegions\":" + security_ir_json_arr(e8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(security_ir_json_str(k10) + ":" + security_ir_json_str(u9[k10]))
+            parts.append("\"tags\":" + security_ir_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
+
     # CreateCaseComment  POST /v1/cases/{caseId}/create-comment
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_case_comment(self, CreateCaseCommentRequest input) -> str:
@@ -903,6 +1039,38 @@ struct Security_IRClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/create-comment", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCaseCommentDocument(clientToken=input.clientToken, body=input.body)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
+
+    # CreateMembership  POST /v1/membership
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_membership(self, CreateMembershipRequest input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/membership", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + security_ir_json_str(u0))
+        parts.append("\"membershipName\":" + security_ir_json_str(input.membershipName))
+        list[str] e1 = []
+        for x1 in input.incidentResponseTeam:
+            e1.append(incident_responder_to_json(x1))
+        parts.append("\"incidentResponseTeam\":" + security_ir_json_arr(e1))
+        if input.optInFeatures.is_some():
+            auto u2 = input.optInFeatures.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"optInFeatures\":" + security_ir_json_arr(e3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(security_ir_json_str(k5) + ":" + security_ir_json_str(u4[k5]))
+            parts.append("\"tags\":" + security_ir_json_obj(m5))
+        if input.coverEntireOrganization.is_some():
+            auto u6 = input.coverEntireOrganization.unwrap()
+            parts.append("\"coverEntireOrganization\":" + json.dumps(JsonValue.Bool(u6)))
+        auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
 
     # GetCase  GET /v1/cases/{caseId}/get-case
@@ -1019,6 +1187,113 @@ struct Security_IRClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
 
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(security_ir_json_str(k0) + ":" + security_ir_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + security_ir_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
+
+    # UpdateCase  POST /v1/cases/{caseId}/update-case
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_case(self, UpdateCaseRequest input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        dict[str, str] labels = {}
+        labels["caseId"] = input.caseId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-case", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.title.is_some():
+            auto u0 = input.title.unwrap()
+            parts.append("\"title\":" + security_ir_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + security_ir_json_str(u1))
+        if input.reportedIncidentStartDate.is_some():
+            auto u2 = input.reportedIncidentStartDate.unwrap()
+            parts.append("\"reportedIncidentStartDate\":" + str(datetime.to_timestamp(u2)))
+        if input.actualIncidentStartDate.is_some():
+            auto u3 = input.actualIncidentStartDate.unwrap()
+            parts.append("\"actualIncidentStartDate\":" + str(datetime.to_timestamp(u3)))
+        if input.engagementType.is_some():
+            auto u4 = input.engagementType.unwrap()
+            parts.append("\"engagementType\":" + u4.to_json())
+        if input.watchersToAdd.is_some():
+            auto u5 = input.watchersToAdd.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"watchersToAdd\":" + security_ir_json_arr(e6))
+        if input.watchersToDelete.is_some():
+            auto u7 = input.watchersToDelete.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"watchersToDelete\":" + security_ir_json_arr(e8))
+        if input.threatActorIpAddressesToAdd.is_some():
+            auto u9 = input.threatActorIpAddressesToAdd.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"threatActorIpAddressesToAdd\":" + security_ir_json_arr(e10))
+        if input.threatActorIpAddressesToDelete.is_some():
+            auto u11 = input.threatActorIpAddressesToDelete.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"threatActorIpAddressesToDelete\":" + security_ir_json_arr(e12))
+        if input.impactedServicesToAdd.is_some():
+            auto u13 = input.impactedServicesToAdd.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(security_ir_json_str(x14))
+            parts.append("\"impactedServicesToAdd\":" + security_ir_json_arr(e14))
+        if input.impactedServicesToDelete.is_some():
+            auto u15 = input.impactedServicesToDelete.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(security_ir_json_str(x16))
+            parts.append("\"impactedServicesToDelete\":" + security_ir_json_arr(e16))
+        if input.impactedAwsRegionsToAdd.is_some():
+            auto u17 = input.impactedAwsRegionsToAdd.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(x18.to_json())
+            parts.append("\"impactedAwsRegionsToAdd\":" + security_ir_json_arr(e18))
+        if input.impactedAwsRegionsToDelete.is_some():
+            auto u19 = input.impactedAwsRegionsToDelete.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(x20.to_json())
+            parts.append("\"impactedAwsRegionsToDelete\":" + security_ir_json_arr(e20))
+        if input.impactedAccountsToAdd.is_some():
+            auto u21 = input.impactedAccountsToAdd.unwrap()
+            list[str] e22 = []
+            for x22 in u21:
+                e22.append(security_ir_json_str(x22))
+            parts.append("\"impactedAccountsToAdd\":" + security_ir_json_arr(e22))
+        if input.impactedAccountsToDelete.is_some():
+            auto u23 = input.impactedAccountsToDelete.unwrap()
+            list[str] e24 = []
+            for x24 in u23:
+                e24.append(security_ir_json_str(x24))
+            parts.append("\"impactedAccountsToDelete\":" + security_ir_json_arr(e24))
+        if input.caseMetadata.is_some():
+            auto u25 = input.caseMetadata.unwrap()
+            list[str] e26 = []
+            for x26 in u25:
+                e26.append(x26.to_json())
+            parts.append("\"caseMetadata\":" + security_ir_json_arr(e26))
+        auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
+
     # UpdateCaseComment  PUT /v1/cases/{caseId}/update-case-comment/{commentId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_case_comment(self, UpdateCaseCommentRequest input) -> str:
@@ -1040,6 +1315,38 @@ struct Security_IRClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-case-status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCaseStatusDocument(caseStatus=input.caseStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
+
+    # UpdateMembership  PUT /v1/membership/{membershipId}/update-membership
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_membership(self, UpdateMembershipRequest input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipId"] = input.membershipId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/membership/{membershipId}/update-membership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.membershipName.is_some():
+            auto u0 = input.membershipName.unwrap()
+            parts.append("\"membershipName\":" + security_ir_json_str(u0))
+        if input.incidentResponseTeam.is_some():
+            auto u1 = input.incidentResponseTeam.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(incident_responder_to_json(x2))
+            parts.append("\"incidentResponseTeam\":" + security_ir_json_arr(e2))
+        if input.optInFeatures.is_some():
+            auto u3 = input.optInFeatures.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"optInFeatures\":" + security_ir_json_arr(e4))
+        if input.membershipAccountsConfigurationsUpdate.is_some():
+            auto u5 = input.membershipAccountsConfigurationsUpdate.unwrap()
+            parts.append("\"membershipAccountsConfigurationsUpdate\":" + membership_accounts_configurations_update_to_json(u5))
+        if input.undoMembershipCancellation.is_some():
+            auto u6 = input.undoMembershipCancellation.unwrap()
+            parts.append("\"undoMembershipCancellation\":" + json.dumps(JsonValue.Bool(u6)))
+        auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
 
     # UpdateResolverType  POST /v1/cases/{caseId}/update-resolver-type

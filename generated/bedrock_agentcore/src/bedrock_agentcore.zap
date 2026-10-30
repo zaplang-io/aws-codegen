@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 67 operations — 45 with a generated method,
-#   22 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 67 operations — 67 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   422 structs (277 @derive(Json)), 48 enums, 15 error variants.
-#   8 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Bedrock_AgentCore rest-json protocol: SigV4 service "bedrock-agentcore" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -508,14 +509,16 @@ enum ValidationExceptionReason:
 struct A2aDescriptor:
     AgentCardDefinition agentCard
 
-# no @derive(Json): member(s) perVariantOnlineEvaluationConfig: list[PerVariantOnlineEvaluationConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) perVariantOnlineEvaluationConfig: list[PerVariantOnlineEvaluationConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ABTestEvaluationConfig:
     Optional[str] onlineEvaluationConfigArn
     Optional[list[PerVariantOnlineEvaluationConfig]] perVariantOnlineEvaluationConfig
 
-# no @derive(Json): member(s) evaluatorMetrics: list[EvaluatorMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluatorMetrics: list[EvaluatorMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ABTestResults:
     Optional[DateTime] analysisTimestamp
     list[EvaluatorMetric] evaluatorMetrics
@@ -540,8 +543,9 @@ struct AccessDeniedException:
 struct ActorSummary:
     str actorId
 
-# no @derive(Json): member(s) failureSpans: list[FailureSpanDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureSpans: list[FailureSpanDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AffectedSession:
     str sessionId
     str explanation
@@ -564,8 +568,9 @@ struct AgentSkillsDescriptor:
     SkillMdDefinition skillMd
     Optional[SkillDefinition] skillDefinition
 
-# no @derive(Json): member(s) sessionSpans: list[Span], cloudwatchLogs: CloudWatchLogsTraceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionSpans: list[Span], cloudwatchLogs: CloudWatchLogsTraceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentTracesConfig:
     Optional[list[Span]] sessionSpans
     Optional[CloudWatchLogsTraceConfig] cloudwatchLogs
@@ -604,8 +609,9 @@ struct BatchCreateMemoryRecordsInput:
     Optional[str] clientToken
     Optional[RecordExpirySpecification] recordExpirySpecification
 
-# no @derive(Json): member(s) successfulRecords: list[MemoryRecordOutput], failedRecords: list[MemoryRecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRecords: list[MemoryRecordOutput], failedRecords: list[MemoryRecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateMemoryRecordsOutput:
     list[MemoryRecordOutput] successfulRecords
     list[MemoryRecordOutput] failedRecords
@@ -616,14 +622,16 @@ struct BatchDeleteMemoryRecordsInput:
     str memoryId
     list[MemoryRecordDeleteInput] records
 
-# no @derive(Json): member(s) successfulRecords: list[MemoryRecordOutput], failedRecords: list[MemoryRecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRecords: list[MemoryRecordOutput], failedRecords: list[MemoryRecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteMemoryRecordsOutput:
     list[MemoryRecordOutput] successfulRecords
     list[MemoryRecordOutput] failedRecords
 
-# no @derive(Json): member(s) evaluators: list[Evaluator], insights: list[Insight], evaluationResults: EvaluationJobResults, errorDetails: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluators: list[Evaluator], insights: list[Insight], evaluationResults: EvaluationJobResults, errorDetails: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchEvaluationSummary:
     str batchEvaluationId
     str batchEvaluationArn
@@ -649,8 +657,9 @@ struct BatchUpdateMemoryRecordsInput:
     list[MemoryRecordUpdateInput] records
     Optional[RecordExpirySpecification] recordExpirySpecification
 
-# no @derive(Json): member(s) successfulRecords: list[MemoryRecordOutput], failedRecords: list[MemoryRecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRecords: list[MemoryRecordOutput], failedRecords: list[MemoryRecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateMemoryRecordsOutput:
     list[MemoryRecordOutput] successfulRecords
     list[MemoryRecordOutput] failedRecords
@@ -665,8 +674,9 @@ struct BranchFilter:
     str name
     Optional[bool] includeParentBranches
 
-# no @derive(Json): member(s) keyShortcut: KeyShortcutArguments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyShortcut: KeyShortcutArguments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrowserAction:
     Optional[MouseClickArguments] mouseClick
     Optional[MouseMoveArguments] mouseMove
@@ -725,8 +735,9 @@ struct Certificate:
 struct CertificateLocation:
     Optional[SecretsManagerLocation] secretsManager
 
-# no @derive(Json): member(s) sessionIds: list[str], sessionTraceIds: list[SessionTraceIds] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionIds: list[str], sessionTraceIds: list[SessionTraceIds] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchFilterConfig:
     Optional[list[str]] sessionIds
     Optional[SessionFilterConfig] timeRange
@@ -738,21 +749,24 @@ struct CloudWatchLogsFilter:
     CloudWatchLogsFilterOperator operator
     FilterValue value
 
-# no @derive(Json): member(s) filters: list[CloudWatchLogsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[CloudWatchLogsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLogsRule:
     Optional[list[CloudWatchLogsFilter]] filters
 
-# no @derive(Json): member(s) serviceNames: list[str], logGroupNames: list[str], logGroupNamePrefixes: list[str], filterConfig: CloudWatchFilterConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceNames: list[str], logGroupNames: list[str], logGroupNamePrefixes: list[str], filterConfig: CloudWatchFilterConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLogsSource:
     list[str] serviceNames
     Optional[list[str]] logGroupNames
     Optional[list[str]] logGroupNamePrefixes
     Optional[CloudWatchFilterConfig] filterConfig
 
-# no @derive(Json): member(s) logGroupArns: list[str], serviceNames: list[str], rule: CloudWatchLogsRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupArns: list[str], serviceNames: list[str], rule: CloudWatchLogsRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLogsTraceConfig:
     list[str] logGroupArns
     list[str] serviceNames
@@ -767,8 +781,9 @@ struct CloudWatchOutputConfig:
     Optional[str] metricsNamespace
     Optional[ResultDestination] resultDestination
 
-# no @derive(Json): member(s) content: list[ContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[ContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeInterpreterResult:
     list[ContentBlock] content
     Optional[ToolResultStructuredContent] structuredContent
@@ -785,8 +800,9 @@ struct CodeInterpreterSessionSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] lastUpdatedAt
 
-# no @derive(Json): member(s) result: CodeInterpreterResult, validationException: ValidationException not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) result: CodeInterpreterResult, validationException: ValidationException not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeInterpreterStreamOutput:
     Optional[CodeInterpreterResult] result
     Optional[AccessDeniedException] accessDeniedException
@@ -861,8 +877,9 @@ struct ContentDeltaEvent:
     Optional[str] stdout
     Optional[str] stderr
 
-# no @derive(Json): member(s) inline: InlineMemoryContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inline: InlineMemoryContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentSource:
     Optional[InlineMemoryContent] inline
 
@@ -928,8 +945,9 @@ struct CreateEventInput:
     Optional[str] extractionMode
     Optional[ExtractionConfig] extractionConfig
 
-# no @derive(Json): member(s) event: Event not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) event: Event not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventOutput:
     Event event
 
@@ -944,8 +962,9 @@ struct CreatePaymentInstrumentRequest:
     PaymentInstrumentDetails paymentInstrumentDetails
     Optional[str] clientToken
 
-# no @derive(Json): member(s) paymentInstrument: PaymentInstrument not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentInstrument: PaymentInstrument not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePaymentInstrumentResponse:
     PaymentInstrument paymentInstrument
 
@@ -978,8 +997,9 @@ struct CryptoX402PaymentOutput:
 struct CustomDescriptor:
     Optional[str] inlineContent
 
-# no @derive(Json): member(s) cloudWatchLogs: CloudWatchLogsSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudWatchLogs: CloudWatchLogsSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceConfig:
     Optional[CloudWatchLogsSource] cloudWatchLogs
     Optional[OnlineEvaluationConfigSource] onlineEvaluationConfigSource
@@ -1096,8 +1116,9 @@ struct EfsConfiguration:
     str mountPath
     str fileSystemArn
 
-# no @derive(Json): member(s) linkedAccounts: list[LinkedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedAccounts: list[LinkedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmbeddedCryptoWallet:
     CryptoWalletNetwork network
     list[LinkedAccount] linkedAccounts
@@ -1112,8 +1133,9 @@ struct EvaluateRequest:
     Optional[EvaluationTarget] evaluationTarget
     Optional[list[EvaluationReferenceInput]] evaluationReferenceInputs
 
-# no @derive(Json): member(s) evaluationResults: list[EvaluationResultContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluationResults: list[EvaluationResultContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateResponse:
     list[EvaluationResultContent] evaluationResults
 
@@ -1121,18 +1143,21 @@ struct EvaluateResponse:
 struct EvaluationContent:
     Optional[str] text
 
-# no @derive(Json): member(s) toolNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationExpectedTrajectory:
     Optional[list[str]] toolNames
 
-# no @derive(Json): member(s) sessionSpans: list[Span] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionSpans: list[Span] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationInput:
     Optional[list[Span]] sessionSpans
 
-# no @derive(Json): member(s) evaluatorSummaries: list[EvaluatorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluatorSummaries: list[EvaluatorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationJobResults:
     Optional[int64] numberOfSessionsCompleted
     Optional[int64] numberOfSessionsInProgress
@@ -1141,21 +1166,24 @@ struct EvaluationJobResults:
     Optional[int64] numberOfSessionsIgnored
     Optional[list[EvaluatorSummary]] evaluatorSummaries
 
-# no @derive(Json): member(s) sessionMetadata: list[SessionMetadataShape] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionMetadata: list[SessionMetadataShape] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationMetadata:
     Optional[list[SessionMetadataShape]] sessionMetadata
 
-# no @derive(Json): member(s) assertions: list[EvaluationContent], expectedTrajectory: EvaluationExpectedTrajectory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assertions: list[EvaluationContent], expectedTrajectory: EvaluationExpectedTrajectory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationReferenceInput:
     Context context
     Optional[EvaluationContent] expectedResponse
     Optional[list[EvaluationContent]] assertions
     Optional[EvaluationExpectedTrajectory] expectedTrajectory
 
-# no @derive(Json): member(s) ignoredReferenceInputFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ignoredReferenceInputFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationResultContent:
     str evaluatorArn
     str evaluatorId
@@ -1170,8 +1198,9 @@ struct EvaluationResultContent:
     Optional[str] errorCode
     Optional[list[str]] ignoredReferenceInputFields
 
-# no @derive(Json): member(s) spanIds: list[str], traceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spanIds: list[str], traceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationTarget:
     Optional[list[str]] spanIds
     Optional[list[str]] traceIds
@@ -1180,8 +1209,9 @@ struct EvaluationTarget:
 struct Evaluator:
     str evaluatorId
 
-# no @derive(Json): member(s) variantResults: list[VariantResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variantResults: list[VariantResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatorMetric:
     str evaluatorArn
     ControlStats controlStats
@@ -1199,8 +1229,9 @@ struct EvaluatorSummary:
     Optional[int64] totalEvaluated
     Optional[int64] totalFailed
 
-# no @derive(Json): member(s) payload: list[PayloadType], metadata: dict[str, MetadataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: list[PayloadType], metadata: dict[str, MetadataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     str memoryId
     str actorId
@@ -1223,8 +1254,9 @@ struct ExecutionSummaryAffectedSession:
     str approachTaken
     str finalOutcome
 
-# no @derive(Json): member(s) affectedSessions: list[ExecutionSummaryAffectedSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) affectedSessions: list[ExecutionSummaryAffectedSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionSummaryCluster:
     int64 clusterId
     str name
@@ -1232,21 +1264,24 @@ struct ExecutionSummaryCluster:
     int64 affectedSessionCount
     list[ExecutionSummaryAffectedSession] affectedSessions
 
-# no @derive(Json): member(s) executionSummaries: list[ExecutionSummaryCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionSummaries: list[ExecutionSummaryCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionSummaryClusteringResultContent:
     list[ExecutionSummaryCluster] executionSummaries
 
-# no @derive(Json): member(s) domainPatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainPatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalProxy:
     str server
     int64 port
     Optional[list[str]] domainPatterns
     Optional[ProxyCredentials] credentials
 
-# no @derive(Json): member(s) namespaceVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaceVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractionConfig:
     Optional[dict[str, str]] namespaceVariables
 
@@ -1261,13 +1296,15 @@ struct ExtractionJobFilterInput:
     Optional[str] actorId
     Optional[str] status
 
-# no @derive(Json): member(s) messagesList: list[MessageMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messagesList: list[MessageMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractionJobMessages:
     Optional[list[MessageMetadata]] messagesList
 
-# no @derive(Json): member(s) messages: ExtractionJobMessages not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: ExtractionJobMessages not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractionJobMetadata:
     str jobID
     ExtractionJobMessages messages
@@ -1277,13 +1314,15 @@ struct ExtractionJobMetadata:
     Optional[str] sessionId
     Optional[str] actorId
 
-# no @derive(Json): member(s) failures: list[FailureCategoryCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failures: list[FailureCategoryCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailureAnalysisResultContent:
     list[FailureCategoryCluster] failures
 
-# no @derive(Json): member(s) subCategories: list[FailureSubCategoryCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subCategories: list[FailureSubCategoryCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailureCategoryCluster:
     int64 clusterId
     str name
@@ -1291,15 +1330,17 @@ struct FailureCategoryCluster:
     int64 affectedSessionCount
     list[FailureSubCategoryCluster] subCategories
 
-# no @derive(Json): member(s) signals: list[InsightsFailureSignal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signals: list[InsightsFailureSignal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailureSpanDetail:
     str spanId
     str traceId
     list[InsightsFailureSignal] signals
 
-# no @derive(Json): member(s) rootCauses: list[RootCauseCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rootCauses: list[RootCauseCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailureSubCategoryCluster:
     int64 clusterId
     str name
@@ -1307,8 +1348,9 @@ struct FailureSubCategoryCluster:
     int64 affectedSessionCount
     list[RootCauseCluster] rootCauses
 
-# no @derive(Json): member(s) eventMetadata: list[EventMetadataFilterExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventMetadata: list[EventMetadataFilterExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterInput:
     Optional[BranchFilter] branch
     Optional[list[EventMetadataFilterExpression]] eventMetadata
@@ -1319,8 +1361,9 @@ struct FilterValue:
     Optional[float64] doubleValue
     Optional[bool] booleanValue
 
-# no @derive(Json): member(s) targetPaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetPaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayFilter:
     Optional[list[str]] targetPaths
 
@@ -1329,8 +1372,9 @@ struct GatewayFilter:
 struct GetABTestRequest:
     str abTestId
 
-# no @derive(Json): member(s) variants: list[Variant], gatewayFilter: GatewayFilter, evaluationConfig: ABTestEvaluationConfig, errorDetails: list[str], results: ABTestResults not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variants: list[Variant], gatewayFilter: GatewayFilter, evaluationConfig: ABTestEvaluationConfig, errorDetails: list[str], results: ABTestResults not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetABTestResponse:
     str abTestId
     str abTestArn
@@ -1370,8 +1414,9 @@ struct GetAgentCardResponse:
 struct GetBatchEvaluationRequest:
     str batchEvaluationId
 
-# no @derive(Json): member(s) evaluators: list[Evaluator], insights: list[Insight], dataSourceConfig: DataSourceConfig, evaluationResults: EvaluationJobResults, insightResults: list[InsightResult], failureAnalysisResult: FailureAnalysisResultContent, userIntentResult: UserIntentClusteringResultContent, executionSummaryResult: ExecutionSummaryClusteringResultContent, errorDetails: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluators: list[Evaluator], insights: list[Insight], dataSourceConfig: DataSourceConfig, evaluationResults: EvaluationJobResults, insightResults: list[InsightResult], failureAnalysisResult: FailureAnalysisResultContent, userIntentResult: UserIntentClusteringResultContent, executionSummaryResult: ExecutionSummaryClusteringResultContent, errorDetails: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBatchEvaluationResponse:
     str batchEvaluationId
     str batchEvaluationArn
@@ -1398,8 +1443,9 @@ struct GetBrowserSessionRequest:
     str browserIdentifier
     str sessionId
 
-# no @derive(Json): member(s) extensions: list[BrowserExtension], enterprisePolicies: list[BrowserEnterprisePolicy], proxyConfiguration: ProxyConfiguration, certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extensions: list[BrowserExtension], enterprisePolicies: list[BrowserEnterprisePolicy], proxyConfiguration: ProxyConfiguration, certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBrowserSessionResponse:
     str browserIdentifier
     str sessionId
@@ -1424,8 +1470,9 @@ struct GetCodeInterpreterSessionRequest:
     str codeInterpreterIdentifier
     str sessionId
 
-# no @derive(Json): member(s) certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeInterpreterSessionResponse:
     str codeInterpreterIdentifier
     str sessionId
@@ -1444,8 +1491,9 @@ struct GetEventInput:
     str actorId
     str eventId
 
-# no @derive(Json): member(s) event: Event not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) event: Event not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventOutput:
     Event event
 
@@ -1456,8 +1504,9 @@ struct GetMemoryRecordInput:
     str memoryRecordId
     Optional[str] namespace
 
-# no @derive(Json): member(s) memoryRecord: MemoryRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memoryRecord: MemoryRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMemoryRecordOutput:
     MemoryRecord memoryRecord
 
@@ -1486,8 +1535,9 @@ struct GetPaymentInstrumentRequest:
     Optional[str] paymentConnectorId
     str paymentInstrumentId
 
-# no @derive(Json): member(s) paymentInstrument: PaymentInstrument not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentInstrument: PaymentInstrument not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPaymentInstrumentResponse:
     PaymentInstrument paymentInstrument
 
@@ -1508,8 +1558,9 @@ struct GetPaymentSessionResponse:
 struct GetRecommendationRequest:
     str recommendationId
 
-# no @derive(Json): member(s) recommendationConfig: RecommendationConfig, recommendationResult: RecommendationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationConfig: RecommendationConfig, recommendationResult: RecommendationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationResponse:
     str recommendationId
     str recommendationArn
@@ -1595,8 +1646,9 @@ struct GetWorkloadAccessTokenRequest:
 struct GetWorkloadAccessTokenResponse:
     str workloadAccessToken
 
-# no @derive(Json): member(s) inline: InlineGroundTruth not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inline: InlineGroundTruth not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroundTruthSource:
     Optional[InlineGroundTruth] inline
 
@@ -1617,8 +1669,9 @@ struct HarnessAgentCoreBrowserConfig:
 struct HarnessAgentCoreCodeInterpreterConfig:
     Optional[str] codeInterpreterArn
 
-# no @derive(Json): member(s) outboundAuth: HarnessGatewayOutboundAuth not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outboundAuth: HarnessGatewayOutboundAuth not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessAgentCoreGatewayConfig:
     str gatewayArn
     Optional[HarnessGatewayOutboundAuth] outboundAuth
@@ -1632,16 +1685,18 @@ struct HarnessBedrockModelConfig:
     Optional[HarnessBedrockApiFormat] apiFormat
     Optional[Document] additionalParams
 
-# no @derive(Json): member(s) toolResult: HarnessToolResultBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolResult: HarnessToolResultBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessContentBlock:
     Optional[str] text
     Optional[HarnessToolUseBlock] toolUse
     Optional[HarnessToolResultBlock] toolResult
     Optional[HarnessReasoningContentBlock] reasoningContent
 
-# no @derive(Json): member(s) toolResult: list[HarnessToolResultBlockDelta] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolResult: list[HarnessToolResultBlockDelta] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessContentBlockDelta:
     Optional[str] text
     Optional[HarnessToolUseBlockDelta] toolUse
@@ -1649,8 +1704,9 @@ struct HarnessContentBlockDelta:
     Optional[HarnessReasoningContentBlockDelta] reasoningContent
     Optional[HarnessToolResultMetadataBlockDelta] toolResultMetadata
 
-# no @derive(Json): member(s) delta: HarnessContentBlockDelta not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delta: HarnessContentBlockDelta not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessContentBlockDeltaEvent:
     int64 contentBlockIndex
     HarnessContentBlockDelta delta
@@ -1669,8 +1725,9 @@ struct HarnessContentBlockStartEvent:
 struct HarnessContentBlockStopEvent:
     int64 contentBlockIndex
 
-# no @derive(Json): member(s) oauth: OAuthCredentialProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauth: OAuthCredentialProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessGatewayOutboundAuth:
     Optional[Unit] awsIam
     Optional[Unit] none
@@ -1709,8 +1766,9 @@ struct HarnessLiteLlmModelConfig:
     Optional[float64] topP
     Optional[Document] additionalParams
 
-# no @derive(Json): member(s) content: list[HarnessContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[HarnessContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessMessage:
     HarnessConversationRole role
     list[HarnessContentBlock] content
@@ -1762,22 +1820,25 @@ struct HarnessReasoningTextBlock:
     str text
     Optional[str] signature
 
-# no @derive(Json): member(s) headers: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessRemoteMcpConfig:
     str url
     Optional[dict[str, str]] headers
 
-# no @derive(Json): member(s) awsSkills: HarnessSkillAwsSkillsSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsSkills: HarnessSkillAwsSkillsSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessSkill:
     Optional[str] path
     Optional[HarnessSkillS3Source] s3
     Optional[HarnessSkillGitSource] git
     Optional[HarnessSkillAwsSkillsSource] awsSkills
 
-# no @derive(Json): member(s) paths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessSkillAwsSkillsSource:
     Optional[list[str]] paths
 
@@ -1812,15 +1873,17 @@ struct HarnessTokenUsage:
     Optional[int64] cacheReadInputTokens
     Optional[int64] cacheWriteInputTokens
 
-# no @derive(Json): member(s) config: HarnessToolConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) config: HarnessToolConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessTool:
     HarnessToolType type
     Optional[str] name
     Optional[HarnessToolConfiguration] config
 
-# no @derive(Json): member(s) remoteMcp: HarnessRemoteMcpConfig, agentCoreGateway: HarnessAgentCoreGatewayConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteMcp: HarnessRemoteMcpConfig, agentCoreGateway: HarnessAgentCoreGatewayConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessToolConfiguration:
     Optional[HarnessRemoteMcpConfig] remoteMcp
     Optional[HarnessAgentCoreBrowserConfig] agentCoreBrowser
@@ -1828,8 +1891,9 @@ struct HarnessToolConfiguration:
     Optional[HarnessInlineFunctionConfig] inlineFunction
     Optional[HarnessAgentCoreCodeInterpreterConfig] agentCoreCodeInterpreter
 
-# no @derive(Json): member(s) content: list[HarnessToolResultContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[HarnessToolResultContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessToolResultBlock:
     str toolUseId
     list[HarnessToolResultContentBlock] content
@@ -1895,15 +1959,17 @@ struct IngestPayloadType:
     Optional[Conversational] conversational
     Optional[MemoryJsonData] json
 
-# no @derive(Json): member(s) assertions: list[EvaluationContent], expectedTrajectory: EvaluationExpectedTrajectory, turns: list[GroundTruthTurn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assertions: list[EvaluationContent], expectedTrajectory: EvaluationExpectedTrajectory, turns: list[GroundTruthTurn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineGroundTruth:
     Optional[list[EvaluationContent]] assertions
     Optional[EvaluationExpectedTrajectory] expectedTrajectory
     Optional[list[GroundTruthTurn]] turns
 
-# no @derive(Json): member(s) payload: list[IngestPayloadType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: list[IngestPayloadType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineMemoryContent:
     list[IngestPayloadType] payload
 
@@ -1917,8 +1983,9 @@ struct InputContentBlock:
 struct Insight:
     str insightId
 
-# no @derive(Json): member(s) sampleSessions: list[SampleSession], rootCauses: list[InsightRootCause] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleSessions: list[SampleSession], rootCauses: list[InsightRootCause] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightResult:
     str type
     str name
@@ -1928,8 +1995,9 @@ struct InsightResult:
     Optional[list[SampleSession]] sampleSessions
     Optional[list[InsightRootCause]] rootCauses
 
-# no @derive(Json): member(s) sampleSessions: list[SampleSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleSessions: list[SampleSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightRootCause:
     str name
     str explanation
@@ -1971,8 +2039,9 @@ struct InvokeAgentRuntimeCommandRequestBody:
     str command
     Optional[int64] timeout
 
-# no @derive(Json): member(s) stream: InvokeAgentRuntimeCommandStreamOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stream: InvokeAgentRuntimeCommandStreamOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeAgentRuntimeCommandResponse:
     Optional[str] runtimeSessionId
     Optional[str] traceId
@@ -1983,8 +2052,9 @@ struct InvokeAgentRuntimeCommandResponse:
     Optional[int64] statusCode
     InvokeAgentRuntimeCommandStreamOutput stream
 
-# no @derive(Json): member(s) validationException: ValidationException not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationException: ValidationException not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeAgentRuntimeCommandStreamOutput:
     Optional[ResponseChunk] chunk
     Optional[AccessDeniedException] accessDeniedException
@@ -2050,8 +2120,9 @@ struct InvokeCodeInterpreterRequest:
     ToolName name
     Optional[ToolArguments] arguments
 
-# no @derive(Json): member(s) stream: CodeInterpreterStreamOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stream: CodeInterpreterStreamOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeCodeInterpreterResponse:
     Optional[str] sessionId
     CodeInterpreterStreamOutput stream
@@ -2078,13 +2149,15 @@ struct InvokeHarnessRequest:
     Optional[int64] timeoutSeconds
     Optional[str] actorId
 
-# no @derive(Json): member(s) stream: InvokeHarnessStreamOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stream: InvokeHarnessStreamOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeHarnessResponse:
     InvokeHarnessStreamOutput stream
 
-# no @derive(Json): member(s) contentBlockDelta: HarnessContentBlockDeltaEvent, validationException: ValidationException not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentBlockDelta: HarnessContentBlockDeltaEvent, validationException: ValidationException not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeHarnessStreamOutput:
     Optional[HarnessMessageStartEvent] messageStart
     Optional[HarnessContentBlockStartEvent] contentBlockStart
@@ -2107,8 +2180,9 @@ struct KeyPressResult:
     BrowserActionStatus status
     Optional[str] error
 
-# no @derive(Json): member(s) keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyShortcutArguments:
     list[str] keys
 
@@ -2164,8 +2238,9 @@ struct ListABTestsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) abTests: list[ABTestSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) abTests: list[ABTestSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListABTestsResponse:
     list[ABTestSummary] abTests
     Optional[str] nextToken
@@ -2177,8 +2252,9 @@ struct ListActorsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actorSummaries: list[ActorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actorSummaries: list[ActorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActorsOutput:
     list[ActorSummary] actorSummaries
     Optional[str] nextToken
@@ -2189,8 +2265,9 @@ struct ListBatchEvaluationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) batchEvaluations: list[BatchEvaluationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchEvaluations: list[BatchEvaluationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchEvaluationsResponse:
     list[BatchEvaluationSummary] batchEvaluations
     Optional[str] nextToken
@@ -2203,8 +2280,9 @@ struct ListBrowserSessionsRequest:
     Optional[str] nextToken
     Optional[BrowserSessionStatus] status
 
-# no @derive(Json): member(s) items: list[BrowserSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BrowserSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrowserSessionsResponse:
     list[BrowserSessionSummary] items
     Optional[str] nextToken
@@ -2217,8 +2295,9 @@ struct ListCodeInterpreterSessionsRequest:
     Optional[str] nextToken
     Optional[CodeInterpreterSessionStatus] status
 
-# no @derive(Json): member(s) items: list[CodeInterpreterSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[CodeInterpreterSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeInterpreterSessionsResponse:
     list[CodeInterpreterSessionSummary] items
     Optional[str] nextToken
@@ -2234,8 +2313,9 @@ struct ListEventsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventsOutput:
     list[Event] events
     Optional[str] nextToken
@@ -2248,8 +2328,9 @@ struct ListMemoryExtractionJobsInput:
     Optional[ExtractionJobFilterInput] filter
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobs: list[ExtractionJobMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[ExtractionJobMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMemoryExtractionJobsOutput:
     list[ExtractionJobMetadata] jobs
     Optional[str] nextToken
@@ -2265,8 +2346,9 @@ struct ListMemoryRecordsInput:
     Optional[str] nextToken
     Optional[list[MemoryMetadataFilterExpression]] metadataFilters
 
-# no @derive(Json): member(s) memoryRecordSummaries: list[MemoryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memoryRecordSummaries: list[MemoryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMemoryRecordsOutput:
     list[MemoryRecordSummary] memoryRecordSummaries
     Optional[str] nextToken
@@ -2281,8 +2363,9 @@ struct ListPaymentInstrumentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) paymentInstruments: list[PaymentInstrumentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentInstruments: list[PaymentInstrumentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPaymentInstrumentsResponse:
     list[PaymentInstrumentSummary] paymentInstruments
     Optional[str] nextToken
@@ -2296,8 +2379,9 @@ struct ListPaymentSessionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) paymentSessions: list[PaymentSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentSessions: list[PaymentSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPaymentSessionsResponse:
     list[PaymentSessionSummary] paymentSessions
     Optional[str] nextToken
@@ -2310,8 +2394,9 @@ struct ListRecommendationsRequest:
     # wire string of the RecommendationStatus enum (querystring binding)
     Optional[str] statusFilter
 
-# no @derive(Json): member(s) recommendationSummaries: list[RecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationSummaries: list[RecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsResponse:
     list[RecommendationSummary] recommendationSummaries
     Optional[str] nextToken
@@ -2325,8 +2410,9 @@ struct ListSessionsInput:
     Optional[str] nextToken
     Optional[SessionFilter] filter
 
-# no @derive(Json): member(s) sessionSummaries: list[SessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionSummaries: list[SessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsOutput:
     list[SessionSummary] sessionSummaries
     Optional[str] nextToken
@@ -2358,15 +2444,17 @@ struct MemoryJsonDataContent:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) right: MemoryRecordRightExpression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) right: MemoryRecordRightExpression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryMetadataFilterExpression:
     MemoryRecordLeftExpression left
     MemoryRecordOperatorType operator
     Optional[MemoryRecordRightExpression] right
 
-# no @derive(Json): member(s) namespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecord:
     str memoryRecordId
     MemoryContent content
@@ -2377,8 +2465,9 @@ struct MemoryRecord:
     Optional[dict[str, MemoryRecordMetadataValue]] metadata
     Optional[DateTime] expiresAt
 
-# no @derive(Json): member(s) namespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecordCreateInput:
     str requestIdentifier
     list[str] namespaces
@@ -2396,8 +2485,9 @@ struct MemoryRecordDeleteInput:
 struct MemoryRecordLeftExpression:
     Optional[str] metadataKey
 
-# no @derive(Json): member(s) stringListValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringListValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecordMetadataValue:
     Optional[str] stringValue
     Optional[list[str]] stringListValue
@@ -2412,13 +2502,15 @@ struct MemoryRecordOutput:
     Optional[int64] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) metadataValue: MemoryRecordMetadataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataValue: MemoryRecordMetadataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecordRightExpression:
     Optional[MemoryRecordMetadataValue] metadataValue
 
-# no @derive(Json): member(s) namespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecordSummary:
     str memoryRecordId
     MemoryContent content
@@ -2429,8 +2521,9 @@ struct MemoryRecordSummary:
     Optional[DateTime] timestamp
     Optional[dict[str, MemoryRecordMetadataValue]] metadata
 
-# no @derive(Json): member(s) namespaces: list[str], sourceNamespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], sourceNamespaces: list[str], metadata: dict[str, MemoryRecordMetadataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecordUpdateInput:
     str memoryRecordId
     DateTime timestamp
@@ -2501,8 +2594,9 @@ struct MouseScrollResult:
     BrowserActionStatus status
     Optional[str] error
 
-# no @derive(Json): member(s) wwwAuthenticateHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) wwwAuthenticateHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MppPaymentInput:
     str version
     list[str] wwwAuthenticateHeaders
@@ -2521,8 +2615,9 @@ struct OAuth2Authentication:
     Optional[str] name
     Optional[str] username
 
-# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuthCredentialProvider:
     str providerArn
     list[str] scopes
@@ -2558,14 +2653,16 @@ struct PaymentDocument:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) mpp: MppPaymentInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mpp: MppPaymentInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PaymentInput:
     Optional[CryptoX402PaymentInput] cryptoX402
     Optional[MppPaymentInput] mpp
 
-# no @derive(Json): member(s) paymentInstrumentDetails: PaymentInstrumentDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentInstrumentDetails: PaymentInstrumentDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PaymentInstrument:
     str paymentInstrumentId
     str paymentManagerArn
@@ -2577,8 +2674,9 @@ struct PaymentInstrument:
     PaymentInstrumentStatus status
     DateTime updatedAt
 
-# no @derive(Json): member(s) embeddedCryptoWallet: EmbeddedCryptoWallet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) embeddedCryptoWallet: EmbeddedCryptoWallet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PaymentInstrumentDetails:
     Optional[EmbeddedCryptoWallet] embeddedCryptoWallet
 
@@ -2665,18 +2763,21 @@ struct ProcessPaymentResponse:
     @json(timestamp="iso8601")
     DateTime updatedAt
 
-# no @derive(Json): member(s) externalProxy: ExternalProxy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalProxy: ExternalProxy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Proxy:
     Optional[ExternalProxy] externalProxy
 
-# no @derive(Json): member(s) domainPatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainPatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyBypass:
     Optional[list[str]] domainPatterns
 
-# no @derive(Json): member(s) proxies: list[Proxy], bypass: ProxyBypass not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) proxies: list[Proxy], bypass: ProxyBypass not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyConfiguration:
     list[Proxy] proxies
     Optional[ProxyBypass] bypass
@@ -2685,14 +2786,16 @@ struct ProxyConfiguration:
 struct ProxyCredentials:
     Optional[BasicAuth] basicAuth
 
-# no @derive(Json): member(s) systemPromptRecommendationConfig: SystemPromptRecommendationConfig, toolDescriptionRecommendationConfig: ToolDescriptionRecommendationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) systemPromptRecommendationConfig: SystemPromptRecommendationConfig, toolDescriptionRecommendationConfig: ToolDescriptionRecommendationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationConfig:
     Optional[SystemPromptRecommendationConfig] systemPromptRecommendationConfig
     Optional[ToolDescriptionRecommendationConfig] toolDescriptionRecommendationConfig
 
-# no @derive(Json): member(s) evaluators: list[RecommendationEvaluatorReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluators: list[RecommendationEvaluatorReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationEvaluationConfig:
     list[RecommendationEvaluatorReference] evaluators
 
@@ -2700,8 +2803,9 @@ struct RecommendationEvaluationConfig:
 struct RecommendationEvaluatorReference:
     str evaluatorArn
 
-# no @derive(Json): member(s) toolDescriptionRecommendationResult: ToolDescriptionRecommendationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolDescriptionRecommendationResult: ToolDescriptionRecommendationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationResult:
     Optional[SystemPromptRecommendationResult] systemPromptRecommendationResult
     Optional[ToolDescriptionRecommendationResult] toolDescriptionRecommendationResult
@@ -2777,8 +2881,9 @@ struct RetrieveMemoryRecordsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) memoryRecordSummaries: list[MemoryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memoryRecordSummaries: list[MemoryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieveMemoryRecordsOutput:
     list[MemoryRecordSummary] memoryRecordSummaries
     Optional[str] nextToken
@@ -2791,8 +2896,9 @@ struct RetryableConflictException:
 struct RightExpression:
     Optional[MetadataValue] metadataValue
 
-# no @derive(Json): member(s) affectedSessions: list[AffectedSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) affectedSessions: list[AffectedSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RootCauseCluster:
     int64 clusterId
     str name
@@ -2817,8 +2923,9 @@ struct S3Location:
     str prefix
     Optional[str] versionId
 
-# no @derive(Json): member(s) findings: list[SessionFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[SessionFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampleSession:
     str sessionId
     Optional[DateTime] lastSeenAt
@@ -2852,8 +2959,9 @@ struct ScreenshotResult:
     Optional[str] error
     Optional[bytes] data
 
-# no @derive(Json): member(s) metadataFilters: list[MemoryMetadataFilterExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataFilters: list[MemoryMetadataFilterExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCriteria:
     str searchQuery
     Optional[str] memoryStrategyId
@@ -2868,8 +2976,9 @@ struct SearchRegistryRecordsRequest:
     Optional[int64] maxResults
     Optional[MetadataFilterExpression] filters
 
-# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRegistryRecordsResponse:
     list[RegistryRecordSummary] registryRecords
 
@@ -2918,8 +3027,9 @@ struct SessionFinding:
 struct SessionLimits:
     Amount maxSpendAmount
 
-# no @derive(Json): member(s) groundTruth: GroundTruthSource, metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groundTruth: GroundTruthSource, metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionMetadataShape:
     str sessionId
     Optional[str] testScenarioId
@@ -2932,8 +3042,9 @@ struct SessionSummary:
     str actorId
     DateTime createdAt
 
-# no @derive(Json): member(s) traceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) traceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionTraceIds:
     str sessionId
     list[str] traceIds
@@ -2972,8 +3083,9 @@ struct StartBatchEvaluationRequest:
     Optional[str] description
     Optional[OutputConfig] outputConfig
 
-# no @derive(Json): member(s) evaluators: list[Evaluator], insights: list[Insight], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluators: list[Evaluator], insights: list[Insight], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBatchEvaluationResponse:
     str batchEvaluationId
     str batchEvaluationArn
@@ -3053,8 +3165,9 @@ struct StartRecommendationRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) recommendationConfig: RecommendationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationConfig: RecommendationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRecommendationResponse:
     str recommendationId
     str recommendationArn
@@ -3158,8 +3271,9 @@ struct SystemPromptConfigurationBundle:
     str versionId
     str systemPromptJsonPath
 
-# no @derive(Json): member(s) agentTraces: AgentTracesConfig, evaluationConfig: RecommendationEvaluationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentTraces: AgentTracesConfig, evaluationConfig: RecommendationEvaluationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemPromptRecommendationConfig:
     SystemPromptConfig systemPrompt
     AgentTracesConfig agentTraces
@@ -3199,8 +3313,9 @@ struct TokenUsage:
     Optional[int64] outputTokens
     Optional[int64] totalTokens
 
-# no @derive(Json): member(s) paths: list[str], content: list[InputContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paths: list[str], content: list[InputContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolArguments:
     Optional[str] code
     Optional[ProgrammingLanguage] language
@@ -3217,8 +3332,9 @@ struct ToolArguments:
 struct ToolDescriptionConfig:
     Optional[str] text
 
-# no @derive(Json): member(s) tools: list[ConfigurationBundleToolEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[ConfigurationBundleToolEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolDescriptionConfigurationBundle:
     str bundleArn
     str versionId
@@ -3235,28 +3351,32 @@ struct ToolDescriptionOutput:
     Optional[str] recommendedToolDescription
     Optional[str] explanation
 
-# no @derive(Json): member(s) toolDescription: ToolDescriptionSource, agentTraces: AgentTracesConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolDescription: ToolDescriptionSource, agentTraces: AgentTracesConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolDescriptionRecommendationConfig:
     ToolDescriptionSource toolDescription
     AgentTracesConfig agentTraces
 
-# no @derive(Json): member(s) tools: list[ToolDescriptionOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[ToolDescriptionOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolDescriptionRecommendationResult:
     Optional[list[ToolDescriptionOutput]] tools
     Optional[RecommendationResultConfigurationBundle] configurationBundle
     Optional[str] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) toolDescriptionText: ToolDescriptionTextInput, configurationBundle: ToolDescriptionConfigurationBundle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolDescriptionText: ToolDescriptionTextInput, configurationBundle: ToolDescriptionConfigurationBundle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolDescriptionSource:
     Optional[ToolDescriptionTextInput] toolDescriptionText
     Optional[ToolDescriptionConfigurationBundle] configurationBundle
 
-# no @derive(Json): member(s) tools: list[ToolDescriptionInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[ToolDescriptionInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolDescriptionTextInput:
     list[ToolDescriptionInput] tools
 
@@ -3330,14 +3450,16 @@ struct UserIdentifier:
     Optional[str] userToken
     Optional[str] userId
 
-# no @derive(Json): member(s) userMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserIntentAffectedSession:
     str sessionId
     list[str] userMessages
 
-# no @derive(Json): member(s) affectedSessions: list[UserIntentAffectedSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) affectedSessions: list[UserIntentAffectedSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserIntentCluster:
     int64 clusterId
     str name
@@ -3345,13 +3467,15 @@ struct UserIntentCluster:
     int64 affectedSessionCount
     list[UserIntentAffectedSession] affectedSessions
 
-# no @derive(Json): member(s) userIntents: list[UserIntentCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userIntents: list[UserIntentCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserIntentClusteringResultContent:
     list[UserIntentCluster] userIntents
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -3447,38 +3571,6 @@ def bedrock_agentcore_error_from_code(str code) -> Bedrock_AgentCoreError:
     return Bedrock_AgentCoreError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchCreateMemoryRecords (document member `records: list[MemoryRecordCreateInput]` is not serializable by derive)
-#   BatchDeleteMemoryRecords (document member `records: list[MemoryRecordDeleteInput]` is not serializable by derive)
-#   BatchUpdateMemoryRecords (document member `records: list[MemoryRecordUpdateInput]` is not serializable by derive)
-#   CreateABTest (document member `variants: list[Variant]` is not serializable by derive)
-#   CreateEvent (document member `payload: list[PayloadType]` is not serializable by derive)
-#   CreatePaymentInstrument (document member `paymentInstrumentDetails: PaymentInstrumentDetails` is not serializable by derive)
-#   Evaluate (document member `evaluationInput: EvaluationInput` is not serializable by derive)
-#   GetResourceOauth2Token (document member `scopes: list[str]` is not serializable by derive)
-#   IngestData (document member `source: ContentSource` is not serializable by derive)
-#   InvokeBrowser (document member `action: BrowserAction` is not serializable by derive)
-#   InvokeCodeInterpreter (document member `arguments: ToolArguments` is not serializable by derive)
-#   InvokeHarness (document member `messages: list[HarnessMessage]` is not serializable by derive)
-#   ListEvents (document member `filter: FilterInput` is not serializable by derive)
-#   ListMemoryRecords (document member `metadataFilters: list[MemoryMetadataFilterExpression]` is not serializable by derive)
-#   ProcessPayment (document member `paymentInput: PaymentInput` is not serializable by derive)
-#   RetrieveMemoryRecords (document member `searchCriteria: SearchCriteria` is not serializable by derive)
-#   SearchRegistryRecords (document member `registryIds: list[str]` is not serializable by derive)
-#   StartBatchEvaluation (document member `evaluators: list[Evaluator]` is not serializable by derive)
-#   StartBrowserSession (document member `extensions: list[BrowserExtension]` is not serializable by derive)
-#   StartCodeInterpreterSession (document member `certificates: list[Certificate]` is not serializable by derive)
-#   StartRecommendation (document member `recommendationConfig: RecommendationConfig` is not serializable by derive)
-#   UpdateABTest (document member `variants: list[Variant]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListEvents (operation not generated)
-#   ListMemoryRecords (operation not generated)
-#   RetrieveMemoryRecords (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3645,10 +3737,903 @@ struct UpdateBrowserStreamDocument:
     StreamUpdate streamUpdate
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bedrock_agentcore_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bedrock_agentcore_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bedrock_agentcore_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def bedrock_agentcore_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ABTestEvaluationConfig to a compact JSON object (declaration order).
+def ab_test_evaluation_config_to_json(ABTestEvaluationConfig v) -> str:
+    list[str] parts = []
+    if v.onlineEvaluationConfigArn.is_some():
+        auto u0 = v.onlineEvaluationConfigArn.unwrap()
+        parts.append("\"onlineEvaluationConfigArn\":" + bedrock_agentcore_json_str(u0))
+    if v.perVariantOnlineEvaluationConfig.is_some():
+        auto u1 = v.perVariantOnlineEvaluationConfig.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"perVariantOnlineEvaluationConfig\":" + bedrock_agentcore_json_arr(e2))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize AgentTracesConfig to a compact JSON object (declaration order).
+def agent_traces_config_to_json(AgentTracesConfig v) -> str:
+    list[str] parts = []
+    if v.sessionSpans.is_some():
+        auto u0 = v.sessionSpans.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"sessionSpans\":" + bedrock_agentcore_json_arr(e1))
+    if v.cloudwatchLogs.is_some():
+        auto u2 = v.cloudwatchLogs.unwrap()
+        parts.append("\"cloudwatchLogs\":" + cloud_watch_logs_trace_config_to_json(u2))
+    if v.batchEvaluation.is_some():
+        auto u3 = v.batchEvaluation.unwrap()
+        parts.append("\"batchEvaluation\":" + u3.to_json())
+    if v.onlineEvaluation.is_some():
+        auto u4 = v.onlineEvaluation.unwrap()
+        parts.append("\"onlineEvaluation\":" + u4.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize BrowserAction to a compact JSON object (declaration order).
+def browser_action_to_json(BrowserAction v) -> str:
+    list[str] parts = []
+    if v.mouseClick.is_some():
+        auto u0 = v.mouseClick.unwrap()
+        parts.append("\"mouseClick\":" + u0.to_json())
+    if v.mouseMove.is_some():
+        auto u1 = v.mouseMove.unwrap()
+        parts.append("\"mouseMove\":" + u1.to_json())
+    if v.mouseDrag.is_some():
+        auto u2 = v.mouseDrag.unwrap()
+        parts.append("\"mouseDrag\":" + u2.to_json())
+    if v.mouseScroll.is_some():
+        auto u3 = v.mouseScroll.unwrap()
+        parts.append("\"mouseScroll\":" + u3.to_json())
+    if v.keyType.is_some():
+        auto u4 = v.keyType.unwrap()
+        parts.append("\"keyType\":" + u4.to_json())
+    if v.keyPress.is_some():
+        auto u5 = v.keyPress.unwrap()
+        parts.append("\"keyPress\":" + u5.to_json())
+    if v.keyShortcut.is_some():
+        auto u6 = v.keyShortcut.unwrap()
+        parts.append("\"keyShortcut\":" + key_shortcut_arguments_to_json(u6))
+    if v.screenshot.is_some():
+        auto u7 = v.screenshot.unwrap()
+        parts.append("\"screenshot\":" + u7.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize CloudWatchFilterConfig to a compact JSON object (declaration order).
+def cloud_watch_filter_config_to_json(CloudWatchFilterConfig v) -> str:
+    list[str] parts = []
+    if v.sessionIds.is_some():
+        auto u0 = v.sessionIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"sessionIds\":" + bedrock_agentcore_json_arr(e1))
+    if v.timeRange.is_some():
+        auto u2 = v.timeRange.unwrap()
+        parts.append("\"timeRange\":" + u2.to_json())
+    if v.sessionTraceIds.is_some():
+        auto u3 = v.sessionTraceIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(session_trace_ids_to_json(x4))
+        parts.append("\"sessionTraceIds\":" + bedrock_agentcore_json_arr(e4))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize CloudWatchLogsRule to a compact JSON object (declaration order).
+def cloud_watch_logs_rule_to_json(CloudWatchLogsRule v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filters\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize CloudWatchLogsSource to a compact JSON object (declaration order).
+def cloud_watch_logs_source_to_json(CloudWatchLogsSource v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.serviceNames:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"serviceNames\":" + bedrock_agentcore_json_arr(e0))
+    if v.logGroupNames.is_some():
+        auto u1 = v.logGroupNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_json_str(x2))
+        parts.append("\"logGroupNames\":" + bedrock_agentcore_json_arr(e2))
+    if v.logGroupNamePrefixes.is_some():
+        auto u3 = v.logGroupNamePrefixes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_json_str(x4))
+        parts.append("\"logGroupNamePrefixes\":" + bedrock_agentcore_json_arr(e4))
+    if v.filterConfig.is_some():
+        auto u5 = v.filterConfig.unwrap()
+        parts.append("\"filterConfig\":" + cloud_watch_filter_config_to_json(u5))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize CloudWatchLogsTraceConfig to a compact JSON object (declaration order).
+def cloud_watch_logs_trace_config_to_json(CloudWatchLogsTraceConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.logGroupArns:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"logGroupArns\":" + bedrock_agentcore_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.serviceNames:
+        e1.append(bedrock_agentcore_json_str(x1))
+    parts.append("\"serviceNames\":" + bedrock_agentcore_json_arr(e1))
+    parts.append("\"startTime\":" + bedrock_agentcore_json_ts_iso(v.startTime))
+    parts.append("\"endTime\":" + bedrock_agentcore_json_ts_iso(v.endTime))
+    if v.rule.is_some():
+        auto u2 = v.rule.unwrap()
+        parts.append("\"rule\":" + cloud_watch_logs_rule_to_json(u2))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ContentSource to a compact JSON object (declaration order).
+def content_source_to_json(ContentSource v) -> str:
+    list[str] parts = []
+    if v.inline.is_some():
+        auto u0 = v.inline.unwrap()
+        parts.append("\"inline\":" + inline_memory_content_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize DataSourceConfig to a compact JSON object (declaration order).
+def data_source_config_to_json(DataSourceConfig v) -> str:
+    list[str] parts = []
+    if v.cloudWatchLogs.is_some():
+        auto u0 = v.cloudWatchLogs.unwrap()
+        parts.append("\"cloudWatchLogs\":" + cloud_watch_logs_source_to_json(u0))
+    if v.onlineEvaluationConfigSource.is_some():
+        auto u1 = v.onlineEvaluationConfigSource.unwrap()
+        parts.append("\"onlineEvaluationConfigSource\":" + u1.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize EmbeddedCryptoWallet to a compact JSON object (declaration order).
+def embedded_crypto_wallet_to_json(EmbeddedCryptoWallet v) -> str:
+    list[str] parts = []
+    parts.append("\"network\":" + v.network.to_json())
+    list[str] e0 = []
+    for x0 in v.linkedAccounts:
+        e0.append(x0.to_json())
+    parts.append("\"linkedAccounts\":" + bedrock_agentcore_json_arr(e0))
+    if v.walletAddress.is_some():
+        auto u1 = v.walletAddress.unwrap()
+        parts.append("\"walletAddress\":" + bedrock_agentcore_json_str(u1))
+    if v.redirectUrl.is_some():
+        auto u2 = v.redirectUrl.unwrap()
+        parts.append("\"redirectUrl\":" + bedrock_agentcore_json_str(u2))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize EvaluationExpectedTrajectory to a compact JSON object (declaration order).
+def evaluation_expected_trajectory_to_json(EvaluationExpectedTrajectory v) -> str:
+    list[str] parts = []
+    if v.toolNames.is_some():
+        auto u0 = v.toolNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"toolNames\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize EvaluationInput to a compact JSON object (declaration order).
+def evaluation_input_to_json(EvaluationInput v) -> str:
+    list[str] parts = []
+    if v.sessionSpans.is_some():
+        auto u0 = v.sessionSpans.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"sessionSpans\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize EvaluationMetadata to a compact JSON object (declaration order).
+def evaluation_metadata_to_json(EvaluationMetadata v) -> str:
+    list[str] parts = []
+    if v.sessionMetadata.is_some():
+        auto u0 = v.sessionMetadata.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(session_metadata_shape_to_json(x1))
+        parts.append("\"sessionMetadata\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize EvaluationReferenceInput to a compact JSON object (declaration order).
+def evaluation_reference_input_to_json(EvaluationReferenceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"context\":" + v.context.to_json())
+    if v.expectedResponse.is_some():
+        auto u0 = v.expectedResponse.unwrap()
+        parts.append("\"expectedResponse\":" + u0.to_json())
+    if v.assertions.is_some():
+        auto u1 = v.assertions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"assertions\":" + bedrock_agentcore_json_arr(e2))
+    if v.expectedTrajectory.is_some():
+        auto u3 = v.expectedTrajectory.unwrap()
+        parts.append("\"expectedTrajectory\":" + evaluation_expected_trajectory_to_json(u3))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize EvaluationTarget to a compact JSON object (declaration order).
+def evaluation_target_to_json(EvaluationTarget v) -> str:
+    list[str] parts = []
+    if v.spanIds.is_some():
+        auto u0 = v.spanIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"spanIds\":" + bedrock_agentcore_json_arr(e1))
+    if v.traceIds.is_some():
+        auto u2 = v.traceIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_json_str(x3))
+        parts.append("\"traceIds\":" + bedrock_agentcore_json_arr(e3))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ExternalProxy to a compact JSON object (declaration order).
+def external_proxy_to_json(ExternalProxy v) -> str:
+    list[str] parts = []
+    parts.append("\"server\":" + bedrock_agentcore_json_str(v.server))
+    parts.append("\"port\":" + str(v.port))
+    if v.domainPatterns.is_some():
+        auto u0 = v.domainPatterns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"domainPatterns\":" + bedrock_agentcore_json_arr(e1))
+    if v.credentials.is_some():
+        auto u2 = v.credentials.unwrap()
+        parts.append("\"credentials\":" + u2.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ExtractionConfig to a compact JSON object (declaration order).
+def extraction_config_to_json(ExtractionConfig v) -> str:
+    list[str] parts = []
+    if v.namespaceVariables.is_some():
+        auto u0 = v.namespaceVariables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_agentcore_json_str(k1) + ":" + bedrock_agentcore_json_str(u0[k1]))
+        parts.append("\"namespaceVariables\":" + bedrock_agentcore_json_obj(m1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize FilterInput to a compact JSON object (declaration order).
+def filter_input_to_json(FilterInput v) -> str:
+    list[str] parts = []
+    if v.branch.is_some():
+        auto u0 = v.branch.unwrap()
+        parts.append("\"branch\":" + u0.to_json())
+    if v.eventMetadata.is_some():
+        auto u1 = v.eventMetadata.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"eventMetadata\":" + bedrock_agentcore_json_arr(e2))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize GatewayFilter to a compact JSON object (declaration order).
+def gateway_filter_to_json(GatewayFilter v) -> str:
+    list[str] parts = []
+    if v.targetPaths.is_some():
+        auto u0 = v.targetPaths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"targetPaths\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize GroundTruthSource to a compact JSON object (declaration order).
+def ground_truth_source_to_json(GroundTruthSource v) -> str:
+    list[str] parts = []
+    if v.inline.is_some():
+        auto u0 = v.inline.unwrap()
+        parts.append("\"inline\":" + inline_ground_truth_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessAgentCoreGatewayConfig to a compact JSON object (declaration order).
+def harness_agent_core_gateway_config_to_json(HarnessAgentCoreGatewayConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"gatewayArn\":" + bedrock_agentcore_json_str(v.gatewayArn))
+    if v.outboundAuth.is_some():
+        auto u0 = v.outboundAuth.unwrap()
+        parts.append("\"outboundAuth\":" + harness_gateway_outbound_auth_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessContentBlock to a compact JSON object (declaration order).
+def harness_content_block_to_json(HarnessContentBlock v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + bedrock_agentcore_json_str(u0))
+    if v.toolUse.is_some():
+        auto u1 = v.toolUse.unwrap()
+        parts.append("\"toolUse\":" + u1.to_json())
+    if v.toolResult.is_some():
+        auto u2 = v.toolResult.unwrap()
+        parts.append("\"toolResult\":" + harness_tool_result_block_to_json(u2))
+    if v.reasoningContent.is_some():
+        auto u3 = v.reasoningContent.unwrap()
+        parts.append("\"reasoningContent\":" + u3.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessGatewayOutboundAuth to a compact JSON object (declaration order).
+def harness_gateway_outbound_auth_to_json(HarnessGatewayOutboundAuth v) -> str:
+    list[str] parts = []
+    if v.awsIam.is_some():
+        auto u0 = v.awsIam.unwrap()
+        parts.append("\"awsIam\":" + u0.to_json())
+    if v.none.is_some():
+        auto u1 = v.none.unwrap()
+        parts.append("\"none\":" + u1.to_json())
+    if v.oauth.is_some():
+        auto u2 = v.oauth.unwrap()
+        parts.append("\"oauth\":" + o_auth_credential_provider_to_json(u2))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessMessage to a compact JSON object (declaration order).
+def harness_message_to_json(HarnessMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"role\":" + v.role.to_json())
+    list[str] e0 = []
+    for x0 in v.content:
+        e0.append(harness_content_block_to_json(x0))
+    parts.append("\"content\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessRemoteMcpConfig to a compact JSON object (declaration order).
+def harness_remote_mcp_config_to_json(HarnessRemoteMcpConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"url\":" + bedrock_agentcore_json_str(v.url))
+    if v.headers.is_some():
+        auto u0 = v.headers.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_agentcore_json_str(k1) + ":" + bedrock_agentcore_json_str(u0[k1]))
+        parts.append("\"headers\":" + bedrock_agentcore_json_obj(m1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessSkill to a compact JSON object (declaration order).
+def harness_skill_to_json(HarnessSkill v) -> str:
+    list[str] parts = []
+    if v.path.is_some():
+        auto u0 = v.path.unwrap()
+        parts.append("\"path\":" + bedrock_agentcore_json_str(u0))
+    if v.s3.is_some():
+        auto u1 = v.s3.unwrap()
+        parts.append("\"s3\":" + u1.to_json())
+    if v.git.is_some():
+        auto u2 = v.git.unwrap()
+        parts.append("\"git\":" + u2.to_json())
+    if v.awsSkills.is_some():
+        auto u3 = v.awsSkills.unwrap()
+        parts.append("\"awsSkills\":" + harness_skill_aws_skills_source_to_json(u3))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessSkillAwsSkillsSource to a compact JSON object (declaration order).
+def harness_skill_aws_skills_source_to_json(HarnessSkillAwsSkillsSource v) -> str:
+    list[str] parts = []
+    if v.paths.is_some():
+        auto u0 = v.paths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"paths\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessTool to a compact JSON object (declaration order).
+def harness_tool_to_json(HarnessTool v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + bedrock_agentcore_json_str(u0))
+    if v.config.is_some():
+        auto u1 = v.config.unwrap()
+        parts.append("\"config\":" + harness_tool_configuration_to_json(u1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessToolConfiguration to a compact JSON object (declaration order).
+def harness_tool_configuration_to_json(HarnessToolConfiguration v) -> str:
+    list[str] parts = []
+    if v.remoteMcp.is_some():
+        auto u0 = v.remoteMcp.unwrap()
+        parts.append("\"remoteMcp\":" + harness_remote_mcp_config_to_json(u0))
+    if v.agentCoreBrowser.is_some():
+        auto u1 = v.agentCoreBrowser.unwrap()
+        parts.append("\"agentCoreBrowser\":" + u1.to_json())
+    if v.agentCoreGateway.is_some():
+        auto u2 = v.agentCoreGateway.unwrap()
+        parts.append("\"agentCoreGateway\":" + harness_agent_core_gateway_config_to_json(u2))
+    if v.inlineFunction.is_some():
+        auto u3 = v.inlineFunction.unwrap()
+        parts.append("\"inlineFunction\":" + u3.to_json())
+    if v.agentCoreCodeInterpreter.is_some():
+        auto u4 = v.agentCoreCodeInterpreter.unwrap()
+        parts.append("\"agentCoreCodeInterpreter\":" + u4.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize HarnessToolResultBlock to a compact JSON object (declaration order).
+def harness_tool_result_block_to_json(HarnessToolResultBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"toolUseId\":" + bedrock_agentcore_json_str(v.toolUseId))
+    list[str] e0 = []
+    for x0 in v.content:
+        e0.append(x0.to_json())
+    parts.append("\"content\":" + bedrock_agentcore_json_arr(e0))
+    if v.status.is_some():
+        auto u1 = v.status.unwrap()
+        parts.append("\"status\":" + u1.to_json())
+    if v.type.is_some():
+        auto u2 = v.type.unwrap()
+        parts.append("\"type\":" + u2.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize InlineGroundTruth to a compact JSON object (declaration order).
+def inline_ground_truth_to_json(InlineGroundTruth v) -> str:
+    list[str] parts = []
+    if v.assertions.is_some():
+        auto u0 = v.assertions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"assertions\":" + bedrock_agentcore_json_arr(e1))
+    if v.expectedTrajectory.is_some():
+        auto u2 = v.expectedTrajectory.unwrap()
+        parts.append("\"expectedTrajectory\":" + evaluation_expected_trajectory_to_json(u2))
+    if v.turns.is_some():
+        auto u3 = v.turns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"turns\":" + bedrock_agentcore_json_arr(e4))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize InlineMemoryContent to a compact JSON object (declaration order).
+def inline_memory_content_to_json(InlineMemoryContent v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.payload:
+        e0.append(x0.to_json())
+    parts.append("\"payload\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize KeyShortcutArguments to a compact JSON object (declaration order).
+def key_shortcut_arguments_to_json(KeyShortcutArguments v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.keys:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"keys\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize MemoryMetadataFilterExpression to a compact JSON object (declaration order).
+def memory_metadata_filter_expression_to_json(MemoryMetadataFilterExpression v) -> str:
+    list[str] parts = []
+    parts.append("\"left\":" + v.left.to_json())
+    parts.append("\"operator\":" + v.operator.to_json())
+    if v.right.is_some():
+        auto u0 = v.right.unwrap()
+        parts.append("\"right\":" + memory_record_right_expression_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize MemoryRecordCreateInput to a compact JSON object (declaration order).
+def memory_record_create_input_to_json(MemoryRecordCreateInput v) -> str:
+    list[str] parts = []
+    parts.append("\"requestIdentifier\":" + bedrock_agentcore_json_str(v.requestIdentifier))
+    list[str] e0 = []
+    for x0 in v.namespaces:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"namespaces\":" + bedrock_agentcore_json_arr(e0))
+    parts.append("\"content\":" + v.content.to_json())
+    parts.append("\"timestamp\":" + str(datetime.to_timestamp(v.timestamp)))
+    if v.memoryStrategyId.is_some():
+        auto u1 = v.memoryStrategyId.unwrap()
+        parts.append("\"memoryStrategyId\":" + bedrock_agentcore_json_str(u1))
+    if v.metadata.is_some():
+        auto u2 = v.metadata.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_agentcore_json_str(k3) + ":" + memory_record_metadata_value_to_json(u2[k3]))
+        parts.append("\"metadata\":" + bedrock_agentcore_json_obj(m3))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize MemoryRecordMetadataValue to a compact JSON object (declaration order).
+def memory_record_metadata_value_to_json(MemoryRecordMetadataValue v) -> str:
+    list[str] parts = []
+    if v.stringValue.is_some():
+        auto u0 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + bedrock_agentcore_json_str(u0))
+    if v.stringListValue.is_some():
+        auto u1 = v.stringListValue.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_json_str(x2))
+        parts.append("\"stringListValue\":" + bedrock_agentcore_json_arr(e2))
+    if v.numberValue.is_some():
+        auto u3 = v.numberValue.unwrap()
+        parts.append("\"numberValue\":" + str(u3))
+    if v.dateTimeValue.is_some():
+        auto u4 = v.dateTimeValue.unwrap()
+        parts.append("\"dateTimeValue\":" + str(datetime.to_timestamp(u4)))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize MemoryRecordRightExpression to a compact JSON object (declaration order).
+def memory_record_right_expression_to_json(MemoryRecordRightExpression v) -> str:
+    list[str] parts = []
+    if v.metadataValue.is_some():
+        auto u0 = v.metadataValue.unwrap()
+        parts.append("\"metadataValue\":" + memory_record_metadata_value_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize MemoryRecordUpdateInput to a compact JSON object (declaration order).
+def memory_record_update_input_to_json(MemoryRecordUpdateInput v) -> str:
+    list[str] parts = []
+    parts.append("\"memoryRecordId\":" + bedrock_agentcore_json_str(v.memoryRecordId))
+    parts.append("\"timestamp\":" + str(datetime.to_timestamp(v.timestamp)))
+    if v.content.is_some():
+        auto u0 = v.content.unwrap()
+        parts.append("\"content\":" + u0.to_json())
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_json_arr(e2))
+    if v.sourceNamespaces.is_some():
+        auto u3 = v.sourceNamespaces.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_json_str(x4))
+        parts.append("\"sourceNamespaces\":" + bedrock_agentcore_json_arr(e4))
+    if v.memoryStrategyId.is_some():
+        auto u5 = v.memoryStrategyId.unwrap()
+        parts.append("\"memoryStrategyId\":" + bedrock_agentcore_json_str(u5))
+    if v.metadata.is_some():
+        auto u6 = v.metadata.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(bedrock_agentcore_json_str(k7) + ":" + memory_record_metadata_value_to_json(u6[k7]))
+        parts.append("\"metadata\":" + bedrock_agentcore_json_obj(m7))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize MppPaymentInput to a compact JSON object (declaration order).
+def mpp_payment_input_to_json(MppPaymentInput v) -> str:
+    list[str] parts = []
+    parts.append("\"version\":" + bedrock_agentcore_json_str(v.version))
+    list[str] e0 = []
+    for x0 in v.wwwAuthenticateHeaders:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"wwwAuthenticateHeaders\":" + bedrock_agentcore_json_arr(e0))
+    if v.buyerPaysGasFees.is_some():
+        auto u1 = v.buyerPaysGasFees.unwrap()
+        parts.append("\"buyerPaysGasFees\":" + json.dumps(JsonValue.Bool(u1)))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize OAuthCredentialProvider to a compact JSON object (declaration order).
+def o_auth_credential_provider_to_json(OAuthCredentialProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"providerArn\":" + bedrock_agentcore_json_str(v.providerArn))
+    list[str] e0 = []
+    for x0 in v.scopes:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"scopes\":" + bedrock_agentcore_json_arr(e0))
+    if v.customParameters.is_some():
+        auto u1 = v.customParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(bedrock_agentcore_json_str(k2) + ":" + bedrock_agentcore_json_str(u1[k2]))
+        parts.append("\"customParameters\":" + bedrock_agentcore_json_obj(m2))
+    if v.grantType.is_some():
+        auto u3 = v.grantType.unwrap()
+        parts.append("\"grantType\":" + u3.to_json())
+    if v.defaultReturnUrl.is_some():
+        auto u4 = v.defaultReturnUrl.unwrap()
+        parts.append("\"defaultReturnUrl\":" + bedrock_agentcore_json_str(u4))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize PaymentInput to a compact JSON object (declaration order).
+def payment_input_to_json(PaymentInput v) -> str:
+    list[str] parts = []
+    if v.cryptoX402.is_some():
+        auto u0 = v.cryptoX402.unwrap()
+        parts.append("\"cryptoX402\":" + u0.to_json())
+    if v.mpp.is_some():
+        auto u1 = v.mpp.unwrap()
+        parts.append("\"mpp\":" + mpp_payment_input_to_json(u1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize PaymentInstrumentDetails to a compact JSON object (declaration order).
+def payment_instrument_details_to_json(PaymentInstrumentDetails v) -> str:
+    list[str] parts = []
+    if v.embeddedCryptoWallet.is_some():
+        auto u0 = v.embeddedCryptoWallet.unwrap()
+        parts.append("\"embeddedCryptoWallet\":" + embedded_crypto_wallet_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize Proxy to a compact JSON object (declaration order).
+def proxy_to_json(Proxy v) -> str:
+    list[str] parts = []
+    if v.externalProxy.is_some():
+        auto u0 = v.externalProxy.unwrap()
+        parts.append("\"externalProxy\":" + external_proxy_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ProxyBypass to a compact JSON object (declaration order).
+def proxy_bypass_to_json(ProxyBypass v) -> str:
+    list[str] parts = []
+    if v.domainPatterns.is_some():
+        auto u0 = v.domainPatterns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"domainPatterns\":" + bedrock_agentcore_json_arr(e1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ProxyConfiguration to a compact JSON object (declaration order).
+def proxy_configuration_to_json(ProxyConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.proxies:
+        e0.append(proxy_to_json(x0))
+    parts.append("\"proxies\":" + bedrock_agentcore_json_arr(e0))
+    if v.bypass.is_some():
+        auto u1 = v.bypass.unwrap()
+        parts.append("\"bypass\":" + proxy_bypass_to_json(u1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize RecommendationConfig to a compact JSON object (declaration order).
+def recommendation_config_to_json(RecommendationConfig v) -> str:
+    list[str] parts = []
+    if v.systemPromptRecommendationConfig.is_some():
+        auto u0 = v.systemPromptRecommendationConfig.unwrap()
+        parts.append("\"systemPromptRecommendationConfig\":" + system_prompt_recommendation_config_to_json(u0))
+    if v.toolDescriptionRecommendationConfig.is_some():
+        auto u1 = v.toolDescriptionRecommendationConfig.unwrap()
+        parts.append("\"toolDescriptionRecommendationConfig\":" + tool_description_recommendation_config_to_json(u1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize RecommendationEvaluationConfig to a compact JSON object (declaration order).
+def recommendation_evaluation_config_to_json(RecommendationEvaluationConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.evaluators:
+        e0.append(x0.to_json())
+    parts.append("\"evaluators\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize SearchCriteria to a compact JSON object (declaration order).
+def search_criteria_to_json(SearchCriteria v) -> str:
+    list[str] parts = []
+    parts.append("\"searchQuery\":" + bedrock_agentcore_json_str(v.searchQuery))
+    if v.memoryStrategyId.is_some():
+        auto u0 = v.memoryStrategyId.unwrap()
+        parts.append("\"memoryStrategyId\":" + bedrock_agentcore_json_str(u0))
+    if v.topK.is_some():
+        auto u1 = v.topK.unwrap()
+        parts.append("\"topK\":" + str(u1))
+    if v.metadataFilters.is_some():
+        auto u2 = v.metadataFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(memory_metadata_filter_expression_to_json(x3))
+        parts.append("\"metadataFilters\":" + bedrock_agentcore_json_arr(e3))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize SessionMetadataShape to a compact JSON object (declaration order).
+def session_metadata_shape_to_json(SessionMetadataShape v) -> str:
+    list[str] parts = []
+    parts.append("\"sessionId\":" + bedrock_agentcore_json_str(v.sessionId))
+    if v.testScenarioId.is_some():
+        auto u0 = v.testScenarioId.unwrap()
+        parts.append("\"testScenarioId\":" + bedrock_agentcore_json_str(u0))
+    if v.groundTruth.is_some():
+        auto u1 = v.groundTruth.unwrap()
+        parts.append("\"groundTruth\":" + ground_truth_source_to_json(u1))
+    if v.metadata.is_some():
+        auto u2 = v.metadata.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_agentcore_json_str(k3) + ":" + bedrock_agentcore_json_str(u2[k3]))
+        parts.append("\"metadata\":" + bedrock_agentcore_json_obj(m3))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize SessionTraceIds to a compact JSON object (declaration order).
+def session_trace_ids_to_json(SessionTraceIds v) -> str:
+    list[str] parts = []
+    parts.append("\"sessionId\":" + bedrock_agentcore_json_str(v.sessionId))
+    list[str] e0 = []
+    for x0 in v.traceIds:
+        e0.append(bedrock_agentcore_json_str(x0))
+    parts.append("\"traceIds\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize SystemPromptRecommendationConfig to a compact JSON object (declaration order).
+def system_prompt_recommendation_config_to_json(SystemPromptRecommendationConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"systemPrompt\":" + v.systemPrompt.to_json())
+    parts.append("\"agentTraces\":" + agent_traces_config_to_json(v.agentTraces))
+    if v.evaluationConfig.is_some():
+        auto u0 = v.evaluationConfig.unwrap()
+        parts.append("\"evaluationConfig\":" + recommendation_evaluation_config_to_json(u0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ToolArguments to a compact JSON object (declaration order).
+def tool_arguments_to_json(ToolArguments v) -> str:
+    list[str] parts = []
+    if v.code.is_some():
+        auto u0 = v.code.unwrap()
+        parts.append("\"code\":" + bedrock_agentcore_json_str(u0))
+    if v.language.is_some():
+        auto u1 = v.language.unwrap()
+        parts.append("\"language\":" + u1.to_json())
+    if v.clearContext.is_some():
+        auto u2 = v.clearContext.unwrap()
+        parts.append("\"clearContext\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.command.is_some():
+        auto u3 = v.command.unwrap()
+        parts.append("\"command\":" + bedrock_agentcore_json_str(u3))
+    if v.path.is_some():
+        auto u4 = v.path.unwrap()
+        parts.append("\"path\":" + bedrock_agentcore_json_str(u4))
+    if v.paths.is_some():
+        auto u5 = v.paths.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(bedrock_agentcore_json_str(x6))
+        parts.append("\"paths\":" + bedrock_agentcore_json_arr(e6))
+    if v.content.is_some():
+        auto u7 = v.content.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"content\":" + bedrock_agentcore_json_arr(e8))
+    if v.directoryPath.is_some():
+        auto u9 = v.directoryPath.unwrap()
+        parts.append("\"directoryPath\":" + bedrock_agentcore_json_str(u9))
+    if v.taskId.is_some():
+        auto u10 = v.taskId.unwrap()
+        parts.append("\"taskId\":" + bedrock_agentcore_json_str(u10))
+    if v.runtime.is_some():
+        auto u11 = v.runtime.unwrap()
+        parts.append("\"runtime\":" + u11.to_json())
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ToolDescriptionConfigurationBundle to a compact JSON object (declaration order).
+def tool_description_configuration_bundle_to_json(ToolDescriptionConfigurationBundle v) -> str:
+    list[str] parts = []
+    parts.append("\"bundleArn\":" + bedrock_agentcore_json_str(v.bundleArn))
+    parts.append("\"versionId\":" + bedrock_agentcore_json_str(v.versionId))
+    list[str] e0 = []
+    for x0 in v.tools:
+        e0.append(x0.to_json())
+    parts.append("\"tools\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ToolDescriptionRecommendationConfig to a compact JSON object (declaration order).
+def tool_description_recommendation_config_to_json(ToolDescriptionRecommendationConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"toolDescription\":" + tool_description_source_to_json(v.toolDescription))
+    parts.append("\"agentTraces\":" + agent_traces_config_to_json(v.agentTraces))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ToolDescriptionSource to a compact JSON object (declaration order).
+def tool_description_source_to_json(ToolDescriptionSource v) -> str:
+    list[str] parts = []
+    if v.toolDescriptionText.is_some():
+        auto u0 = v.toolDescriptionText.unwrap()
+        parts.append("\"toolDescriptionText\":" + tool_description_text_input_to_json(u0))
+    if v.configurationBundle.is_some():
+        auto u1 = v.configurationBundle.unwrap()
+        parts.append("\"configurationBundle\":" + tool_description_configuration_bundle_to_json(u1))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize ToolDescriptionTextInput to a compact JSON object (declaration order).
+def tool_description_text_input_to_json(ToolDescriptionTextInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.tools:
+        e0.append(x0.to_json())
+    parts.append("\"tools\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
 # A bound Bedrock_AgentCore client: credentials + region, threaded into every operation.
 struct Bedrock_AgentCoreClient:
     core.Credentials creds
     str region
+
+    # BatchCreateMemoryRecords  POST /memories/{memoryId}/memoryRecords/batchCreate
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def batch_create_memory_records(self, BatchCreateMemoryRecordsInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/memoryRecords/batchCreate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.records:
+            e0.append(memory_record_create_input_to_json(x0))
+        parts.append("\"records\":" + bedrock_agentcore_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u1))
+        if input.recordExpirySpecification.is_some():
+            auto u2 = input.recordExpirySpecification.unwrap()
+            parts.append("\"recordExpirySpecification\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # BatchDeleteMemoryRecords  POST /memories/{memoryId}/memoryRecords/batchDelete
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def batch_delete_memory_records(self, BatchDeleteMemoryRecordsInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/memoryRecords/batchDelete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.records:
+            e0.append(x0.to_json())
+        parts.append("\"records\":" + bedrock_agentcore_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # BatchUpdateMemoryRecords  POST /memories/{memoryId}/memoryRecords/batchUpdate
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def batch_update_memory_records(self, BatchUpdateMemoryRecordsInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/memoryRecords/batchUpdate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.records:
+            e0.append(memory_record_update_input_to_json(x0))
+        parts.append("\"records\":" + bedrock_agentcore_json_arr(e0))
+        if input.recordExpirySpecification.is_some():
+            auto u1 = input.recordExpirySpecification.unwrap()
+            parts.append("\"recordExpirySpecification\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
     # CompleteResourceTokenAuth  POST /identities/CompleteResourceTokenAuth
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
@@ -3657,6 +4642,100 @@ struct Bedrock_AgentCoreClient:
         auto b = binding.HttpBinding(method="POST", path_template="/identities/CompleteResourceTokenAuth", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CompleteResourceTokenAuthDocument(userIdentifier=input.userIdentifier, sessionUri=input.sessionUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # CreateABTest  POST /ab-tests
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_ab_test(self, CreateABTestRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ab-tests", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_json_str(u0))
+        parts.append("\"gatewayArn\":" + bedrock_agentcore_json_str(input.gatewayArn))
+        list[str] e1 = []
+        for x1 in input.variants:
+            e1.append(x1.to_json())
+        parts.append("\"variants\":" + bedrock_agentcore_json_arr(e1))
+        if input.gatewayFilter.is_some():
+            auto u2 = input.gatewayFilter.unwrap()
+            parts.append("\"gatewayFilter\":" + gateway_filter_to_json(u2))
+        parts.append("\"evaluationConfig\":" + ab_test_evaluation_config_to_json(input.evaluationConfig))
+        parts.append("\"roleArn\":" + bedrock_agentcore_json_str(input.roleArn))
+        if input.enableOnCreate.is_some():
+            auto u3 = input.enableOnCreate.unwrap()
+            parts.append("\"enableOnCreate\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(bedrock_agentcore_json_str(k6) + ":" + bedrock_agentcore_json_str(u5[k6]))
+            parts.append("\"tags\":" + bedrock_agentcore_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # CreateEvent  POST /memories/{memoryId}/events
+    # errors: AccessDeniedException, InvalidInputException, ResourceNotFoundException, RetryableConflictException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def create_event(self, CreateEventInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"actorId\":" + bedrock_agentcore_json_str(input.actorId))
+        if input.sessionId.is_some():
+            auto u0 = input.sessionId.unwrap()
+            parts.append("\"sessionId\":" + bedrock_agentcore_json_str(u0))
+        parts.append("\"eventTimestamp\":" + str(datetime.to_timestamp(input.eventTimestamp)))
+        list[str] e1 = []
+        for x1 in input.payload:
+            e1.append(x1.to_json())
+        parts.append("\"payload\":" + bedrock_agentcore_json_arr(e1))
+        if input.branch.is_some():
+            auto u2 = input.branch.unwrap()
+            parts.append("\"branch\":" + u2.to_json())
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u3))
+        if input.metadata.is_some():
+            auto u4 = input.metadata.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(bedrock_agentcore_json_str(k5) + ":" + u4[k5].to_json())
+            parts.append("\"metadata\":" + bedrock_agentcore_json_obj(m5))
+        if input.extractionMode.is_some():
+            auto u6 = input.extractionMode.unwrap()
+            parts.append("\"extractionMode\":" + bedrock_agentcore_json_str(u6))
+        if input.extractionConfig.is_some():
+            auto u7 = input.extractionConfig.unwrap()
+            parts.append("\"extractionConfig\":" + extraction_config_to_json(u7))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # CreatePaymentInstrument  POST /payments/createPaymentInstrument
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, SubscriptionRequiredException, ThrottlingException, ValidationException
+    def create_payment_instrument(self, CreatePaymentInstrumentRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] headers = {}
+        if input.userId.is_some():
+            headers["X-Amzn-Bedrock-AgentCore-Payments-User-Id"] = input.userId.unwrap_or("")
+        if input.agentName.is_some():
+            headers["X-Amzn-Bedrock-AgentCore-Payments-Agent-Name"] = input.agentName.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/createPaymentInstrument", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"paymentManagerArn\":" + bedrock_agentcore_json_str(input.paymentManagerArn))
+        parts.append("\"paymentConnectorId\":" + bedrock_agentcore_json_str(input.paymentConnectorId))
+        parts.append("\"paymentInstrumentType\":" + bedrock_agentcore_json_str(input.paymentInstrumentType))
+        parts.append("\"paymentInstrumentDetails\":" + payment_instrument_details_to_json(input.paymentInstrumentDetails))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
     # CreatePaymentSession  POST /payments/createPaymentSession
@@ -3758,6 +4837,27 @@ struct Bedrock_AgentCoreClient:
         labels["recommendationId"] = input.recommendationId
         auto b = binding.HttpBinding(method="DELETE", path_template="/recommendations/{recommendationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_service(), self.region, host)
+
+    # Evaluate  POST /evaluations/evaluate/{evaluatorId}
+    # errors: AccessDeniedException, ConflictException, DuplicateIdException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def evaluate(self, EvaluateRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["evaluatorId"] = input.evaluatorId
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluations/evaluate/{evaluatorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"evaluationInput\":" + evaluation_input_to_json(input.evaluationInput))
+        if input.evaluationTarget.is_some():
+            auto u0 = input.evaluationTarget.unwrap()
+            parts.append("\"evaluationTarget\":" + evaluation_target_to_json(u0))
+        if input.evaluationReferenceInputs.is_some():
+            auto u1 = input.evaluationReferenceInputs.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(evaluation_reference_input_to_json(x2))
+            parts.append("\"evaluationReferenceInputs\":" + bedrock_agentcore_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
     # GetABTest  GET /ab-tests/{abTestId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
@@ -3899,6 +4999,52 @@ struct Bedrock_AgentCoreClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
+    # GetResourceOauth2Token  POST /identities/oauth2/token
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def get_resource_oauth2_token(self, GetResourceOauth2TokenRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/oauth2/token", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workloadIdentityToken\":" + bedrock_agentcore_json_str(input.workloadIdentityToken))
+        parts.append("\"resourceCredentialProviderName\":" + bedrock_agentcore_json_str(input.resourceCredentialProviderName))
+        list[str] e0 = []
+        for x0 in input.scopes:
+            e0.append(bedrock_agentcore_json_str(x0))
+        parts.append("\"scopes\":" + bedrock_agentcore_json_arr(e0))
+        parts.append("\"oauth2Flow\":" + input.oauth2Flow.to_json())
+        if input.sessionUri.is_some():
+            auto u1 = input.sessionUri.unwrap()
+            parts.append("\"sessionUri\":" + bedrock_agentcore_json_str(u1))
+        if input.resourceOauth2ReturnUrl.is_some():
+            auto u2 = input.resourceOauth2ReturnUrl.unwrap()
+            parts.append("\"resourceOauth2ReturnUrl\":" + bedrock_agentcore_json_str(u2))
+        if input.forceAuthentication.is_some():
+            auto u3 = input.forceAuthentication.unwrap()
+            parts.append("\"forceAuthentication\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.customParameters.is_some():
+            auto u4 = input.customParameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(bedrock_agentcore_json_str(k5) + ":" + bedrock_agentcore_json_str(u4[k5]))
+            parts.append("\"customParameters\":" + bedrock_agentcore_json_obj(m5))
+        if input.customState.is_some():
+            auto u6 = input.customState.unwrap()
+            parts.append("\"customState\":" + bedrock_agentcore_json_str(u6))
+        if input.resources.is_some():
+            auto u7 = input.resources.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(bedrock_agentcore_json_str(x8))
+            parts.append("\"resources\":" + bedrock_agentcore_json_arr(e8))
+        if input.audiences.is_some():
+            auto u9 = input.audiences.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(bedrock_agentcore_json_str(x10))
+            parts.append("\"audiences\":" + bedrock_agentcore_json_arr(e10))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
     # GetResourcePaymentToken  POST /identities/payment/token
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_resource_payment_token(self, GetResourcePaymentTokenRequest input) -> str:
@@ -3933,6 +5079,35 @@ struct Bedrock_AgentCoreClient:
         auto b = binding.HttpBinding(method="POST", path_template="/identities/GetWorkloadAccessTokenForUserId", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkloadAccessTokenForUserIdDocument(workloadName=input.workloadName, userId=input.userId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # IngestData  POST /memories/{memoryId}/ingest
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def ingest_data(self, IngestDataInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/ingest", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"source\":" + content_source_to_json(input.source))
+        parts.append("\"contentTimestamp\":" + str(datetime.to_timestamp(input.contentTimestamp)))
+        parts.append("\"actorId\":" + bedrock_agentcore_json_str(input.actorId))
+        if input.sessionId.is_some():
+            auto u0 = input.sessionId.unwrap()
+            parts.append("\"sessionId\":" + bedrock_agentcore_json_str(u0))
+        if input.extractionConfig.is_some():
+            auto u1 = input.extractionConfig.unwrap()
+            parts.append("\"extractionConfig\":" + extraction_config_to_json(u1))
+        if input.metadata.is_some():
+            auto u2 = input.metadata.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(bedrock_agentcore_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"metadata\":" + bedrock_agentcore_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
     # InvokeAgentRuntime  POST /runtimes/{agentRuntimeArn}/invocations
@@ -4005,6 +5180,110 @@ struct Bedrock_AgentCoreClient:
         auto bp = restjson.rest_json_raw_payload(b, input.body.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
+    # InvokeBrowser  POST /browsers/{browserIdentifier}/sessions/invoke
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_browser(self, InvokeBrowserRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["browserIdentifier"] = input.browserIdentifier
+        dict[str, str] headers = {}
+        headers["x-amzn-browser-session-id"] = input.sessionId
+        auto b = binding.HttpBinding(method="POST", path_template="/browsers/{browserIdentifier}/sessions/invoke", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"action\":" + browser_action_to_json(input.action))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # InvokeCodeInterpreter  POST /code-interpreters/{codeInterpreterIdentifier}/tools/invoke
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_code_interpreter(self, InvokeCodeInterpreterRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["codeInterpreterIdentifier"] = input.codeInterpreterIdentifier
+        dict[str, str] headers = {}
+        if input.sessionId.is_some():
+            headers["x-amzn-code-interpreter-session-id"] = input.sessionId.unwrap_or("")
+        if input.traceId.is_some():
+            headers["X-Amzn-Trace-Id"] = input.traceId.unwrap_or("")
+        if input.traceParent.is_some():
+            headers["traceparent"] = input.traceParent.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/code-interpreters/{codeInterpreterIdentifier}/tools/invoke", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + input.name.to_json())
+        if input.arguments.is_some():
+            auto u0 = input.arguments.unwrap()
+            parts.append("\"arguments\":" + tool_arguments_to_json(u0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # InvokeHarness  POST /harnesses/invoke
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, RuntimeClientError, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_harness(self, InvokeHarnessRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] query = {}
+        query["harnessArn"] = input.harnessArn
+        if input.qualifier.is_some():
+            query["qualifier"] = input.qualifier.unwrap_or("")
+        dict[str, str] headers = {}
+        headers["X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"] = input.runtimeSessionId
+        if input.runtimeUserId.is_some():
+            headers["X-Amzn-Bedrock-AgentCore-Runtime-User-Id"] = input.runtimeUserId.unwrap_or("")
+        if input.traceParent.is_some():
+            headers["traceparent"] = input.traceParent.unwrap_or("")
+        if input.traceState.is_some():
+            headers["tracestate"] = input.traceState.unwrap_or("")
+        if input.traceId.is_some():
+            headers["X-Amzn-Trace-Id"] = input.traceId.unwrap_or("")
+        if input.baggage.is_some():
+            headers["baggage"] = input.baggage.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/harnesses/invoke", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.messages:
+            e0.append(harness_message_to_json(x0))
+        parts.append("\"messages\":" + bedrock_agentcore_json_arr(e0))
+        if input.model.is_some():
+            auto u1 = input.model.unwrap()
+            parts.append("\"model\":" + u1.to_json())
+        if input.systemPrompt.is_some():
+            auto u2 = input.systemPrompt.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"systemPrompt\":" + bedrock_agentcore_json_arr(e3))
+        if input.tools.is_some():
+            auto u4 = input.tools.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(harness_tool_to_json(x5))
+            parts.append("\"tools\":" + bedrock_agentcore_json_arr(e5))
+        if input.skills.is_some():
+            auto u6 = input.skills.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(harness_skill_to_json(x7))
+            parts.append("\"skills\":" + bedrock_agentcore_json_arr(e7))
+        if input.allowedTools.is_some():
+            auto u8 = input.allowedTools.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(bedrock_agentcore_json_str(x9))
+            parts.append("\"allowedTools\":" + bedrock_agentcore_json_arr(e9))
+        if input.maxIterations.is_some():
+            auto u10 = input.maxIterations.unwrap()
+            parts.append("\"maxIterations\":" + str(u10))
+        if input.maxTokens.is_some():
+            auto u11 = input.maxTokens.unwrap()
+            parts.append("\"maxTokens\":" + str(u11))
+        if input.timeoutSeconds.is_some():
+            auto u12 = input.timeoutSeconds.unwrap()
+            parts.append("\"timeoutSeconds\":" + str(u12))
+        if input.actorId.is_some():
+            auto u13 = input.actorId.unwrap()
+            parts.append("\"actorId\":" + bedrock_agentcore_json_str(u13))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
     # ListABTests  GET /ab-tests
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
     def list_ab_tests(self, ListABTestsRequest input) -> str:
@@ -4062,6 +5341,31 @@ struct Bedrock_AgentCoreClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
+    # ListEvents  POST /memories/{memoryId}/actor/{actorId}/sessions/{sessionId}
+    # errors: AccessDeniedException, InvalidInputException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def list_events(self, ListEventsInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        labels["sessionId"] = input.sessionId
+        labels["actorId"] = input.actorId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/actor/{actorId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.includePayloads.is_some():
+            auto u0 = input.includePayloads.unwrap()
+            parts.append("\"includePayloads\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.filter.is_some():
+            auto u1 = input.filter.unwrap()
+            parts.append("\"filter\":" + filter_input_to_json(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + bedrock_agentcore_json_str(u3))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
     # ListMemoryExtractionJobs  POST /memories/{memoryId}/extractionJobs
     # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
     def list_memory_extraction_jobs(self, ListMemoryExtractionJobsInput input) -> str:
@@ -4071,6 +5375,38 @@ struct Bedrock_AgentCoreClient:
         auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/extractionJobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMemoryExtractionJobsDocument(maxResults=input.maxResults, filter=input.filter, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # ListMemoryRecords  POST /memories/{memoryId}/memoryRecords
+    # errors: AccessDeniedException, InvalidInputException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def list_memory_records(self, ListMemoryRecordsInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/memoryRecords", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.namespace.is_some():
+            auto u0 = input.namespace.unwrap()
+            parts.append("\"namespace\":" + bedrock_agentcore_json_str(u0))
+        if input.namespacePath.is_some():
+            auto u1 = input.namespacePath.unwrap()
+            parts.append("\"namespacePath\":" + bedrock_agentcore_json_str(u1))
+        if input.memoryStrategyId.is_some():
+            auto u2 = input.memoryStrategyId.unwrap()
+            parts.append("\"memoryStrategyId\":" + bedrock_agentcore_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + bedrock_agentcore_json_str(u4))
+        if input.metadataFilters.is_some():
+            auto u5 = input.metadataFilters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(memory_metadata_filter_expression_to_json(x6))
+            parts.append("\"metadataFilters\":" + bedrock_agentcore_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
     # ListPaymentInstruments  POST /payments/listPaymentInstruments
@@ -4127,6 +5463,52 @@ struct Bedrock_AgentCoreClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
+    # ProcessPayment  POST /payments/processPayment
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, SubscriptionRequiredException, ThrottlingException, ValidationException
+    def process_payment(self, ProcessPaymentRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] headers = {}
+        if input.userId.is_some():
+            headers["X-Amzn-Bedrock-AgentCore-Payments-User-Id"] = input.userId.unwrap_or("")
+        if input.agentName.is_some():
+            headers["X-Amzn-Bedrock-AgentCore-Payments-Agent-Name"] = input.agentName.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/processPayment", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"paymentManagerArn\":" + bedrock_agentcore_json_str(input.paymentManagerArn))
+        parts.append("\"paymentSessionId\":" + bedrock_agentcore_json_str(input.paymentSessionId))
+        parts.append("\"paymentInstrumentId\":" + bedrock_agentcore_json_str(input.paymentInstrumentId))
+        parts.append("\"paymentType\":" + input.paymentType.to_json())
+        parts.append("\"paymentInput\":" + payment_input_to_json(input.paymentInput))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # RetrieveMemoryRecords  POST /memories/{memoryId}/retrieve
+    # errors: AccessDeniedException, InvalidInputException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def retrieve_memory_records(self, RetrieveMemoryRecordsInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/retrieve", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.namespace.is_some():
+            auto u0 = input.namespace.unwrap()
+            parts.append("\"namespace\":" + bedrock_agentcore_json_str(u0))
+        if input.namespacePath.is_some():
+            auto u1 = input.namespacePath.unwrap()
+            parts.append("\"namespacePath\":" + bedrock_agentcore_json_str(u1))
+        parts.append("\"searchCriteria\":" + search_criteria_to_json(input.searchCriteria))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + bedrock_agentcore_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
     # SaveBrowserSessionProfile  PUT /browser-profiles/{profileIdentifier}/save
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def save_browser_session_profile(self, SaveBrowserSessionProfileRequest input) -> str:
@@ -4143,6 +5525,165 @@ struct Bedrock_AgentCoreClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
+    # SearchRegistryRecords  POST /registry-records/search
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def search_registry_records(self, SearchRegistryRecordsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/registry-records/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"searchQuery\":" + bedrock_agentcore_json_str(input.searchQuery))
+        list[str] e0 = []
+        for x0 in input.registryIds:
+            e0.append(bedrock_agentcore_json_str(x0))
+        parts.append("\"registryIds\":" + bedrock_agentcore_json_arr(e0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            parts.append("\"filters\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # StartBatchEvaluation  POST /evaluations/batch-evaluate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_batch_evaluation(self, StartBatchEvaluationRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluations/batch-evaluate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"batchEvaluationName\":" + bedrock_agentcore_json_str(input.batchEvaluationName))
+        if input.evaluators.is_some():
+            auto u0 = input.evaluators.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"evaluators\":" + bedrock_agentcore_json_arr(e1))
+        if input.insights.is_some():
+            auto u2 = input.insights.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"insights\":" + bedrock_agentcore_json_arr(e3))
+        parts.append("\"dataSourceConfig\":" + data_source_config_to_json(input.dataSourceConfig))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u4))
+        if input.evaluationMetadata.is_some():
+            auto u5 = input.evaluationMetadata.unwrap()
+            parts.append("\"evaluationMetadata\":" + evaluation_metadata_to_json(u5))
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(bedrock_agentcore_json_str(k7) + ":" + bedrock_agentcore_json_str(u6[k7]))
+            parts.append("\"tags\":" + bedrock_agentcore_json_obj(m7))
+        if input.kmsKeyArn.is_some():
+            auto u8 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_json_str(u8))
+        if input.description.is_some():
+            auto u9 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_json_str(u9))
+        if input.outputConfig.is_some():
+            auto u10 = input.outputConfig.unwrap()
+            parts.append("\"outputConfig\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # StartBrowserSession  PUT /browsers/{browserIdentifier}/sessions/start
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_browser_session(self, StartBrowserSessionRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["browserIdentifier"] = input.browserIdentifier
+        dict[str, str] headers = {}
+        if input.traceId.is_some():
+            headers["X-Amzn-Trace-Id"] = input.traceId.unwrap_or("")
+        if input.traceParent.is_some():
+            headers["traceparent"] = input.traceParent.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/browsers/{browserIdentifier}/sessions/start", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_json_str(u0))
+        if input.sessionTimeoutSeconds.is_some():
+            auto u1 = input.sessionTimeoutSeconds.unwrap()
+            parts.append("\"sessionTimeoutSeconds\":" + str(u1))
+        if input.viewPort.is_some():
+            auto u2 = input.viewPort.unwrap()
+            parts.append("\"viewPort\":" + u2.to_json())
+        if input.extensions.is_some():
+            auto u3 = input.extensions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"extensions\":" + bedrock_agentcore_json_arr(e4))
+        if input.profileConfiguration.is_some():
+            auto u5 = input.profileConfiguration.unwrap()
+            parts.append("\"profileConfiguration\":" + u5.to_json())
+        if input.proxyConfiguration.is_some():
+            auto u6 = input.proxyConfiguration.unwrap()
+            parts.append("\"proxyConfiguration\":" + proxy_configuration_to_json(u6))
+        if input.enterprisePolicies.is_some():
+            auto u7 = input.enterprisePolicies.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"enterprisePolicies\":" + bedrock_agentcore_json_arr(e8))
+        if input.certificates.is_some():
+            auto u9 = input.certificates.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"certificates\":" + bedrock_agentcore_json_arr(e10))
+        if input.filesystemConfigurations.is_some():
+            auto u11 = input.filesystemConfigurations.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_json_arr(e12))
+        if input.clientToken.is_some():
+            auto u13 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u13))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # StartCodeInterpreterSession  PUT /code-interpreters/{codeInterpreterIdentifier}/sessions/start
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_code_interpreter_session(self, StartCodeInterpreterSessionRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["codeInterpreterIdentifier"] = input.codeInterpreterIdentifier
+        dict[str, str] headers = {}
+        if input.traceId.is_some():
+            headers["X-Amzn-Trace-Id"] = input.traceId.unwrap_or("")
+        if input.traceParent.is_some():
+            headers["traceparent"] = input.traceParent.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/code-interpreters/{codeInterpreterIdentifier}/sessions/start", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_json_str(u0))
+        if input.sessionTimeoutSeconds.is_some():
+            auto u1 = input.sessionTimeoutSeconds.unwrap()
+            parts.append("\"sessionTimeoutSeconds\":" + str(u1))
+        if input.certificates.is_some():
+            auto u2 = input.certificates.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"certificates\":" + bedrock_agentcore_json_arr(e3))
+        if input.filesystemConfigurations.is_some():
+            auto u4 = input.filesystemConfigurations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_json_arr(e5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u6))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
     # StartMemoryExtractionJob  POST /memories/{memoryId}/extractionJobs/start
     # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
     def start_memory_extraction_job(self, StartMemoryExtractionJobInput input) -> str:
@@ -4152,6 +5693,33 @@ struct Bedrock_AgentCoreClient:
         auto b = binding.HttpBinding(method="POST", path_template="/memories/{memoryId}/extractionJobs/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMemoryExtractionJobDocument(extractionJob=input.extractionJob, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # StartRecommendation  POST /recommendations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_recommendation(self, StartRecommendationRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_json_str(u0))
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"recommendationConfig\":" + recommendation_config_to_json(input.recommendationConfig))
+        if input.kmsKeyArn.is_some():
+            auto u1 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_json_str(k4) + ":" + bedrock_agentcore_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
     # StopBatchEvaluation  POST /evaluations/batch-evaluate/{batchEvaluationId}/stop
@@ -4215,6 +5783,44 @@ struct Bedrock_AgentCoreClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 
+    # UpdateABTest  PUT /ab-tests/{abTestId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_ab_test(self, UpdateABTestRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["abTestId"] = input.abTestId
+        auto b = binding.HttpBinding(method="PUT", path_template="/ab-tests/{abTestId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_json_str(u0))
+        if input.name.is_some():
+            auto u1 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_json_str(u2))
+        if input.variants.is_some():
+            auto u3 = input.variants.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"variants\":" + bedrock_agentcore_json_arr(e4))
+        if input.gatewayFilter.is_some():
+            auto u5 = input.gatewayFilter.unwrap()
+            parts.append("\"gatewayFilter\":" + gateway_filter_to_json(u5))
+        if input.evaluationConfig.is_some():
+            auto u6 = input.evaluationConfig.unwrap()
+            parts.append("\"evaluationConfig\":" + ab_test_evaluation_config_to_json(u6))
+        if input.roleArn.is_some():
+            auto u7 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + bedrock_agentcore_json_str(u7))
+        if input.executionStatus.is_some():
+            auto u8 = input.executionStatus.unwrap()
+            parts.append("\"executionStatus\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
     # UpdateBrowserStream  PUT /browsers/{browserIdentifier}/sessions/streams/update
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_browser_stream(self, UpdateBrowserStreamRequest input) -> str:
@@ -4267,12 +5873,38 @@ struct Bedrock_AgentCoreClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: events).
+    def paginate_list_events(self, ListEventsInput input):
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        while True:
+            auto raw = self.list_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListMemoryExtractionJobs — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: jobs).
     def paginate_list_memory_extraction_jobs(self, ListMemoryExtractionJobsInput input):
         auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
         while True:
             auto raw = self.list_memory_extraction_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListMemoryRecords — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: memoryRecordSummaries).
+    def paginate_list_memory_records(self, ListMemoryRecordsInput input):
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        while True:
+            auto raw = self.list_memory_records(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -4325,6 +5957,19 @@ struct Bedrock_AgentCoreClient:
         auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
         while True:
             auto raw = self.list_sessions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for RetrieveMemoryRecords — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: memoryRecordSummaries).
+    def paginate_retrieve_memory_records(self, RetrieveMemoryRecordsInput input):
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        while True:
+            auto raw = self.retrieve_memory_records(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

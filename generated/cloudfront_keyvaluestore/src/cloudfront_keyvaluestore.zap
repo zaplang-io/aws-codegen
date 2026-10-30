@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 5 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   21 structs (19 @derive(Json)), 0 enums, 6 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -105,8 +105,9 @@ struct ListKeysRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ListKeysResponseListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListKeysResponseListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeysResponse:
     Optional[str] NextToken
     Optional[list[ListKeysResponseListItem]] Items
@@ -193,11 +194,6 @@ def cloudfront_keyvaluestore_error_from_code(str code) -> CloudFront_KeyValueSto
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UpdateKeys (document member `Puts: list[PutKeyRequestListItem]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -268,6 +264,31 @@ struct CloudFront_KeyValueStoreClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutKeyDocument(Value=input.Value)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, cloudfront_keyvaluestore_service(), self.region, host)
+
+    # UpdateKeys  POST /key-value-stores/{KvsARN}/keys
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_keys(self, UpdateKeysRequest input) -> str:
+        auto host = endpoints.regional_host(cloudfront_keyvaluestore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["KvsARN"] = input.KvsARN
+        dict[str, str] headers = {}
+        headers["If-Match"] = input.IfMatch
+        auto b = binding.HttpBinding(method="POST", path_template="/key-value-stores/{KvsARN}/keys", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Puts.is_some():
+            auto u0 = input.Puts.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Puts\":" + cloudfront_keyvaluestore_json_arr(e1))
+        if input.Deletes.is_some():
+            auto u2 = input.Deletes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Deletes\":" + cloudfront_keyvaluestore_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, cloudfront_keyvaluestore_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cloudfront_keyvaluestore_service(), self.region, host)
 
     # Paginator for ListKeys — yields each Response page, threading the

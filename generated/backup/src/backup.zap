@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 115 operations — 78 with a generated method,
-#   37 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 115 operations — 103 with a generated method,
+#   12 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   285 structs (166 @derive(Json)), 30 enums, 10 error variants.
 #   15 paginators generated (10 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -354,14 +354,16 @@ enum VaultType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) BackupOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedBackupSetting:
     Optional[str] ResourceType
     Optional[dict[str, str]] BackupOptions
 
-# no @derive(Json): member(s) Findings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatedScanResult:
     Optional[bool] FailedScan
     Optional[list[str]] Findings
@@ -383,8 +385,9 @@ struct AssociateBackupVaultMpaApprovalTeamInput:
     str MpaApprovalTeamArn
     Optional[str] RequesterComment
 
-# no @derive(Json): member(s) BackupOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupJob:
     Optional[str] AccountId
     Optional[str] BackupJobId
@@ -428,16 +431,18 @@ struct BackupJobSummary:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) Rules: list[BackupRule], AdvancedBackupSettings: list[AdvancedBackupSetting], ScanSettings: list[ScanSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[BackupRule], AdvancedBackupSettings: list[AdvancedBackupSetting], ScanSettings: list[ScanSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupPlan:
     str BackupPlanName
     list[BackupRule] Rules
     Optional[list[AdvancedBackupSetting]] AdvancedBackupSettings
     Optional[list[ScanSetting]] ScanSettings
 
-# no @derive(Json): member(s) Rules: list[BackupRuleInput], AdvancedBackupSettings: list[AdvancedBackupSetting], ScanSettings: list[ScanSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[BackupRuleInput], AdvancedBackupSettings: list[AdvancedBackupSetting], ScanSettings: list[ScanSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupPlanInput:
     str BackupPlanName
     list[BackupRuleInput] Rules
@@ -449,8 +454,9 @@ struct BackupPlanTemplatesListMember:
     Optional[str] BackupPlanTemplateId
     Optional[str] BackupPlanTemplateName
 
-# no @derive(Json): member(s) AdvancedBackupSettings: list[AdvancedBackupSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedBackupSettings: list[AdvancedBackupSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupPlansListMember:
     Optional[str] BackupPlanArn
     Optional[str] BackupPlanId
@@ -462,8 +468,9 @@ struct BackupPlansListMember:
     Optional[DateTime] LastExecutionDate
     Optional[list[AdvancedBackupSetting]] AdvancedBackupSettings
 
-# no @derive(Json): member(s) RecoveryPointTags: dict[str, str], CopyActions: list[CopyAction], IndexActions: list[IndexAction], ScanActions: list[ScanAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointTags: dict[str, str], CopyActions: list[CopyAction], IndexActions: list[IndexAction], ScanActions: list[ScanAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupRule:
     str RuleName
     str TargetBackupVaultName
@@ -480,8 +487,9 @@ struct BackupRule:
     Optional[list[IndexAction]] IndexActions
     Optional[list[ScanAction]] ScanActions
 
-# no @derive(Json): member(s) RecoveryPointTags: dict[str, str], CopyActions: list[CopyAction], IndexActions: list[IndexAction], ScanActions: list[ScanAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointTags: dict[str, str], CopyActions: list[CopyAction], IndexActions: list[IndexAction], ScanActions: list[ScanAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupRuleInput:
     str RuleName
     str TargetBackupVaultName
@@ -497,8 +505,9 @@ struct BackupRuleInput:
     Optional[list[IndexAction]] IndexActions
     Optional[list[ScanAction]] ScanActions
 
-# no @derive(Json): member(s) Resources: list[str], ListOfTags: list[Condition], NotResources: list[str], Conditions: Conditions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str], ListOfTags: list[Condition], NotResources: list[str], Conditions: Conditions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupSelection:
     str SelectionName
     str IamRoleArn
@@ -560,8 +569,9 @@ struct ConditionParameter:
     Optional[str] ConditionKey
     Optional[str] ConditionValue
 
-# no @derive(Json): member(s) StringEquals: list[ConditionParameter], StringNotEquals: list[ConditionParameter], StringLike: list[ConditionParameter], StringNotLike: list[ConditionParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringEquals: list[ConditionParameter], StringNotEquals: list[ConditionParameter], StringLike: list[ConditionParameter], StringNotLike: list[ConditionParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Conditions:
     Optional[list[ConditionParameter]] StringEquals
     Optional[list[ConditionParameter]] StringNotEquals
@@ -580,8 +590,9 @@ struct ControlInputParameter:
     Optional[str] ParameterName
     Optional[str] ParameterValue
 
-# no @derive(Json): member(s) ComplianceResourceIds: list[str], ComplianceResourceTypes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceResourceIds: list[str], ComplianceResourceTypes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlScope:
     Optional[list[str]] ComplianceResourceIds
     Optional[list[str]] ComplianceResourceTypes
@@ -592,8 +603,9 @@ struct CopyAction:
     Optional[Lifecycle] Lifecycle
     str DestinationBackupVaultArn
 
-# no @derive(Json): member(s) ChildJobsInState: dict[CopyJobState, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChildJobsInState: dict[CopyJobState, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyJob:
     Optional[str] AccountId
     Optional[str] CopyJobId
@@ -655,8 +667,9 @@ struct CreateBackupPlanInput:
     Optional[dict[str, str]] BackupPlanTags
     Optional[str] CreatorRequestId
 
-# no @derive(Json): member(s) AdvancedBackupSettings: list[AdvancedBackupSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedBackupSettings: list[AdvancedBackupSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackupPlanOutput:
     Optional[str] BackupPlanId
     Optional[str] BackupPlanArn
@@ -714,8 +727,9 @@ struct CreateLegalHoldInput:
     Optional[RecoveryPointSelection] RecoveryPointSelection
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) RecoveryPointSelection: RecoveryPointSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointSelection: RecoveryPointSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLegalHoldOutput:
     Optional[str] Title
     Optional[LegalHoldStatus] Status
@@ -911,8 +925,9 @@ struct DependencyFailureException:
 struct DescribeBackupAccessPointInput:
     str AccessPointArn
 
-# no @derive(Json): member(s) AccessPointMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessPointMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupAccessPointResponse:
     str AccessPointArn
     Optional[dict[str, str]] AccessPointMetadata
@@ -931,8 +946,9 @@ struct DescribeBackupAccessPointResponse:
 struct DescribeBackupJobInput:
     str BackupJobId
 
-# no @derive(Json): member(s) BackupOptions: dict[str, str], ChildJobsInState: dict[BackupJobState, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupOptions: dict[str, str], ChildJobsInState: dict[BackupJobState, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupJobOutput:
     Optional[str] AccountId
     Optional[str] BackupJobId
@@ -998,8 +1014,9 @@ struct DescribeBackupVaultOutput:
 struct DescribeCopyJobInput:
     str CopyJobId
 
-# no @derive(Json): member(s) CopyJob: CopyJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CopyJob: CopyJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCopyJobOutput:
     Optional[CopyJob] CopyJob
 
@@ -1008,8 +1025,9 @@ struct DescribeCopyJobOutput:
 struct DescribeFrameworkInput:
     str FrameworkName
 
-# no @derive(Json): member(s) FrameworkControls: list[FrameworkControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FrameworkControls: list[FrameworkControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFrameworkOutput:
     Optional[str] FrameworkName
     Optional[str] FrameworkArn
@@ -1026,8 +1044,9 @@ struct DescribeGlobalSettingsInput:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) GlobalSettings: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSettings: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGlobalSettingsOutput:
     Optional[dict[str, str]] GlobalSettings
     Optional[DateTime] LastUpdateTime
@@ -1056,8 +1075,9 @@ struct DescribeRecoveryPointInput:
     str RecoveryPointArn
     Optional[str] BackupVaultAccountId
 
-# no @derive(Json): member(s) ScanResults: list[ScanResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScanResults: list[ScanResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecoveryPointOutput:
     Optional[str] RecoveryPointArn
     Optional[str] BackupVaultName
@@ -1095,8 +1115,9 @@ struct DescribeRegionSettingsInput:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ResourceTypeOptInPreference: dict[str, bool], ResourceTypeManagementPreference: dict[str, bool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypeOptInPreference: dict[str, bool], ResourceTypeManagementPreference: dict[str, bool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegionSettingsOutput:
     Optional[dict[str, bool]] ResourceTypeOptInPreference
     Optional[dict[str, bool]] ResourceTypeManagementPreference
@@ -1106,8 +1127,9 @@ struct DescribeRegionSettingsOutput:
 struct DescribeReportJobInput:
     str ReportJobId
 
-# no @derive(Json): member(s) ReportJob: ReportJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportJob: ReportJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReportJobOutput:
     Optional[ReportJob] ReportJob
 
@@ -1116,8 +1138,9 @@ struct DescribeReportJobOutput:
 struct DescribeReportPlanInput:
     str ReportPlanName
 
-# no @derive(Json): member(s) ReportPlan: ReportPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportPlan: ReportPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReportPlanOutput:
     Optional[ReportPlan] ReportPlan
 
@@ -1218,8 +1241,9 @@ struct Framework:
     Optional[DateTime] CreationTime
     Optional[str] DeploymentStatus
 
-# no @derive(Json): member(s) ControlInputParameters: list[ControlInputParameter], ControlScope: ControlScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlInputParameters: list[ControlInputParameter], ControlScope: ControlScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FrameworkControl:
     str ControlName
     Optional[list[ControlInputParameter]] ControlInputParameters
@@ -1230,8 +1254,9 @@ struct FrameworkControl:
 struct GetBackupPlanFromJSONInput:
     str BackupPlanTemplateJson
 
-# no @derive(Json): member(s) BackupPlan: BackupPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlan: BackupPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackupPlanFromJSONOutput:
     Optional[BackupPlan] BackupPlan
 
@@ -1240,8 +1265,9 @@ struct GetBackupPlanFromJSONOutput:
 struct GetBackupPlanFromTemplateInput:
     str BackupPlanTemplateId
 
-# no @derive(Json): member(s) BackupPlanDocument: BackupPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlanDocument: BackupPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackupPlanFromTemplateOutput:
     Optional[BackupPlan] BackupPlanDocument
 
@@ -1252,8 +1278,9 @@ struct GetBackupPlanInput:
     Optional[str] VersionId
     Optional[int64] MaxScheduledRunsPreview
 
-# no @derive(Json): member(s) BackupPlan: BackupPlan, AdvancedBackupSettings: list[AdvancedBackupSetting], ScheduledRunsPreview: list[ScheduledPlanExecutionMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlan: BackupPlan, AdvancedBackupSettings: list[AdvancedBackupSetting], ScheduledRunsPreview: list[ScheduledPlanExecutionMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackupPlanOutput:
     Optional[BackupPlan] BackupPlan
     Optional[str] BackupPlanId
@@ -1272,8 +1299,9 @@ struct GetBackupSelectionInput:
     str BackupPlanId
     str SelectionId
 
-# no @derive(Json): member(s) BackupSelection: BackupSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupSelection: BackupSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackupSelectionOutput:
     Optional[BackupSelection] BackupSelection
     Optional[str] SelectionId
@@ -1297,8 +1325,9 @@ struct GetBackupVaultAccessPolicyOutput:
 struct GetBackupVaultNotificationsInput:
     str BackupVaultName
 
-# no @derive(Json): member(s) BackupVaultEvents: list[BackupVaultEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupVaultEvents: list[BackupVaultEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackupVaultNotificationsOutput:
     Optional[str] BackupVaultName
     Optional[str] BackupVaultArn
@@ -1310,8 +1339,9 @@ struct GetBackupVaultNotificationsOutput:
 struct GetLegalHoldInput:
     str LegalHoldId
 
-# no @derive(Json): member(s) RecoveryPointSelection: RecoveryPointSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointSelection: RecoveryPointSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLegalHoldOutput:
     Optional[str] Title
     Optional[LegalHoldStatus] Status
@@ -1365,8 +1395,9 @@ struct GetRecoveryPointRestoreMetadataInput:
     str RecoveryPointArn
     Optional[str] BackupVaultAccountId
 
-# no @derive(Json): member(s) RestoreMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryPointRestoreMetadataOutput:
     Optional[str] BackupVaultArn
     Optional[str] RecoveryPointArn
@@ -1378,8 +1409,9 @@ struct GetRecoveryPointRestoreMetadataOutput:
 struct GetRestoreJobMetadataInput:
     str RestoreJobId
 
-# no @derive(Json): member(s) Metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRestoreJobMetadataOutput:
     Optional[str] RestoreJobId
     Optional[dict[str, str]] Metadata
@@ -1391,8 +1423,9 @@ struct GetRestoreTestingInferredMetadataInput:
     str BackupVaultName
     str RecoveryPointArn
 
-# no @derive(Json): member(s) InferredMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferredMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRestoreTestingInferredMetadataOutput:
     dict[str, str] InferredMetadata
 
@@ -1401,8 +1434,9 @@ struct GetRestoreTestingInferredMetadataOutput:
 struct GetRestoreTestingPlanInput:
     str RestoreTestingPlanName
 
-# no @derive(Json): member(s) RestoreTestingPlan: RestoreTestingPlanForGet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreTestingPlan: RestoreTestingPlanForGet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRestoreTestingPlanOutput:
     RestoreTestingPlanForGet RestoreTestingPlan
 
@@ -1412,13 +1446,15 @@ struct GetRestoreTestingSelectionInput:
     str RestoreTestingPlanName
     str RestoreTestingSelectionName
 
-# no @derive(Json): member(s) RestoreTestingSelection: RestoreTestingSelectionForGet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreTestingSelection: RestoreTestingSelectionForGet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRestoreTestingSelectionOutput:
     RestoreTestingSelectionForGet RestoreTestingSelection
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSupportedResourceTypesOutput:
     Optional[list[str]] ResourceTypes
 
@@ -1427,13 +1463,15 @@ struct GetSupportedResourceTypesOutput:
 struct GetTieringConfigurationInput:
     str TieringConfigurationName
 
-# no @derive(Json): member(s) TieringConfiguration: TieringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TieringConfiguration: TieringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTieringConfigurationOutput:
     Optional[TieringConfiguration] TieringConfiguration
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IndexAction:
     Optional[list[str]] ResourceTypes
 
@@ -1515,8 +1553,9 @@ struct LimitExceededException:
     Optional[str] Type
     Optional[str] Context
 
-# no @derive(Json): member(s) AccessPointMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessPointMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPointsMember:
     str AccessPointArn
     dict[str, str] AccessPointMetadata
@@ -1537,8 +1576,9 @@ struct ListBackupAccessPointsByRecoveryPointRequest:
     Optional[str] NextToken
     str RecoveryPointArn
 
-# no @derive(Json): member(s) BackupAccessPoints: list[ListAccessPointsMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupAccessPoints: list[ListAccessPointsMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupAccessPointsByRecoveryPointResponse:
     list[ListAccessPointsMember] BackupAccessPoints
     Optional[str] NextToken
@@ -1550,8 +1590,9 @@ struct ListBackupAccessPointsByResourceRequest:
     Optional[str] NextToken
     str ResourceArn
 
-# no @derive(Json): member(s) BackupAccessPoints: list[ListAccessPointsMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupAccessPoints: list[ListAccessPointsMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupAccessPointsByResourceResponse:
     list[ListAccessPointsMember] BackupAccessPoints
     Optional[str] NextToken
@@ -1562,8 +1603,9 @@ struct ListBackupAccessPointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BackupAccessPoints: list[ListAccessPointsMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupAccessPoints: list[ListAccessPointsMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupAccessPointsResponse:
     list[ListAccessPointsMember] BackupAccessPoints
     Optional[str] NextToken
@@ -1581,8 +1623,9 @@ struct ListBackupJobSummariesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BackupJobSummaries: list[BackupJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupJobSummaries: list[BackupJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupJobSummariesOutput:
     Optional[list[BackupJobSummary]] BackupJobSummaries
     Optional[str] AggregationPeriod
@@ -1606,8 +1649,9 @@ struct ListBackupJobsInput:
     Optional[str] ByParentJobId
     Optional[str] ByMessageCategory
 
-# no @derive(Json): member(s) BackupJobs: list[BackupJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupJobs: list[BackupJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupJobsOutput:
     Optional[list[BackupJob]] BackupJobs
     Optional[str] NextToken
@@ -1618,8 +1662,9 @@ struct ListBackupPlanTemplatesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BackupPlanTemplatesList: list[BackupPlanTemplatesListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlanTemplatesList: list[BackupPlanTemplatesListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupPlanTemplatesOutput:
     Optional[str] NextToken
     Optional[list[BackupPlanTemplatesListMember]] BackupPlanTemplatesList
@@ -1631,8 +1676,9 @@ struct ListBackupPlanVersionsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BackupPlanVersionsList: list[BackupPlansListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlanVersionsList: list[BackupPlansListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupPlanVersionsOutput:
     Optional[str] NextToken
     Optional[list[BackupPlansListMember]] BackupPlanVersionsList
@@ -1644,8 +1690,9 @@ struct ListBackupPlansInput:
     Optional[int64] MaxResults
     Optional[bool] IncludeDeleted
 
-# no @derive(Json): member(s) BackupPlansList: list[BackupPlansListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlansList: list[BackupPlansListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupPlansOutput:
     Optional[str] NextToken
     Optional[list[BackupPlansListMember]] BackupPlansList
@@ -1657,8 +1704,9 @@ struct ListBackupSelectionsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BackupSelectionsList: list[BackupSelectionsListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupSelectionsList: list[BackupSelectionsListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupSelectionsOutput:
     Optional[str] NextToken
     Optional[list[BackupSelectionsListMember]] BackupSelectionsList
@@ -1672,8 +1720,9 @@ struct ListBackupVaultsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BackupVaultList: list[BackupVaultListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupVaultList: list[BackupVaultListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupVaultsOutput:
     Optional[list[BackupVaultListMember]] BackupVaultList
     Optional[str] NextToken
@@ -1691,8 +1740,9 @@ struct ListCopyJobSummariesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CopyJobSummaries: list[CopyJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CopyJobSummaries: list[CopyJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCopyJobSummariesOutput:
     Optional[list[CopyJobSummary]] CopyJobSummaries
     Optional[str] AggregationPeriod
@@ -1717,8 +1767,9 @@ struct ListCopyJobsInput:
     Optional[str] ByMessageCategory
     Optional[str] BySourceRecoveryPointArn
 
-# no @derive(Json): member(s) CopyJobs: list[CopyJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CopyJobs: list[CopyJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCopyJobsOutput:
     Optional[list[CopyJob]] CopyJobs
     Optional[str] NextToken
@@ -1729,8 +1780,9 @@ struct ListFrameworksInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Frameworks: list[Framework] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Frameworks: list[Framework] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFrameworksOutput:
     Optional[list[Framework]] Frameworks
     Optional[str] NextToken
@@ -1747,8 +1799,9 @@ struct ListIndexedRecoveryPointsInput:
     # wire string of the IndexStatus enum (querystring binding)
     Optional[str] IndexStatus
 
-# no @derive(Json): member(s) IndexedRecoveryPoints: list[IndexedRecoveryPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexedRecoveryPoints: list[IndexedRecoveryPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndexedRecoveryPointsOutput:
     Optional[list[IndexedRecoveryPoint]] IndexedRecoveryPoints
     Optional[str] NextToken
@@ -1759,8 +1812,9 @@ struct ListLegalHoldsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LegalHolds: list[LegalHold] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LegalHolds: list[LegalHold] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLegalHoldsOutput:
     Optional[str] NextToken
     Optional[list[LegalHold]] LegalHolds
@@ -1773,8 +1827,9 @@ struct ListProtectedResourcesByBackupVaultInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[ProtectedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[ProtectedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectedResourcesByBackupVaultOutput:
     Optional[list[ProtectedResource]] Results
     Optional[str] NextToken
@@ -1785,8 +1840,9 @@ struct ListProtectedResourcesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[ProtectedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[ProtectedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProtectedResourcesOutput:
     Optional[list[ProtectedResource]] Results
     Optional[str] NextToken
@@ -1805,8 +1861,9 @@ struct ListRecoveryPointsByBackupVaultInput:
     Optional[DateTime] ByCreatedAfter
     Optional[str] ByParentRecoveryPointArn
 
-# no @derive(Json): member(s) RecoveryPoints: list[RecoveryPointByBackupVault] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPoints: list[RecoveryPointByBackupVault] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPointsByBackupVaultOutput:
     Optional[str] NextToken
     Optional[list[RecoveryPointByBackupVault]] RecoveryPoints
@@ -1818,8 +1875,9 @@ struct ListRecoveryPointsByLegalHoldInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RecoveryPoints: list[RecoveryPointMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPoints: list[RecoveryPointMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPointsByLegalHoldOutput:
     Optional[list[RecoveryPointMember]] RecoveryPoints
     Optional[str] NextToken
@@ -1832,8 +1890,9 @@ struct ListRecoveryPointsByResourceInput:
     Optional[int64] MaxResults
     Optional[bool] ManagedByAWSBackupOnly
 
-# no @derive(Json): member(s) RecoveryPoints: list[RecoveryPointByResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPoints: list[RecoveryPointByResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPointsByResourceOutput:
     Optional[str] NextToken
     Optional[list[RecoveryPointByResource]] RecoveryPoints
@@ -1848,8 +1907,9 @@ struct ListReportJobsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReportJobs: list[ReportJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportJobs: list[ReportJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportJobsOutput:
     Optional[list[ReportJob]] ReportJobs
     Optional[str] NextToken
@@ -1860,8 +1920,9 @@ struct ListReportPlansInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReportPlans: list[ReportPlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportPlans: list[ReportPlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportPlansOutput:
     Optional[list[ReportPlan]] ReportPlans
     Optional[str] NextToken
@@ -1873,8 +1934,9 @@ struct ListRestoreAccessBackupVaultsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RestoreAccessBackupVaults: list[RestoreAccessBackupVaultListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreAccessBackupVaults: list[RestoreAccessBackupVaultListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRestoreAccessBackupVaultsOutput:
     Optional[str] NextToken
     Optional[list[RestoreAccessBackupVaultListMember]] RestoreAccessBackupVaults
@@ -1891,8 +1953,9 @@ struct ListRestoreJobSummariesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RestoreJobSummaries: list[RestoreJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreJobSummaries: list[RestoreJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRestoreJobSummariesOutput:
     Optional[list[RestoreJobSummary]] RestoreJobSummaries
     Optional[str] AggregationPeriod
@@ -1909,8 +1972,9 @@ struct ListRestoreJobsByProtectedResourceInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RestoreJobs: list[RestoreJobsListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreJobs: list[RestoreJobsListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRestoreJobsByProtectedResourceOutput:
     Optional[list[RestoreJobsListMember]] RestoreJobs
     Optional[str] NextToken
@@ -1931,8 +1995,9 @@ struct ListRestoreJobsInput:
     Optional[str] ByRestoreTestingPlanArn
     Optional[str] ByParentJobId
 
-# no @derive(Json): member(s) RestoreJobs: list[RestoreJobsListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreJobs: list[RestoreJobsListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRestoreJobsOutput:
     Optional[list[RestoreJobsListMember]] RestoreJobs
     Optional[str] NextToken
@@ -1943,8 +2008,9 @@ struct ListRestoreTestingPlansInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RestoreTestingPlans: list[RestoreTestingPlanForList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreTestingPlans: list[RestoreTestingPlanForList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRestoreTestingPlansOutput:
     Optional[str] NextToken
     list[RestoreTestingPlanForList] RestoreTestingPlans
@@ -1956,8 +2022,9 @@ struct ListRestoreTestingSelectionsInput:
     Optional[str] NextToken
     str RestoreTestingPlanName
 
-# no @derive(Json): member(s) RestoreTestingSelections: list[RestoreTestingSelectionForList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestoreTestingSelections: list[RestoreTestingSelectionForList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRestoreTestingSelectionsOutput:
     Optional[str] NextToken
     list[RestoreTestingSelectionForList] RestoreTestingSelections
@@ -1977,8 +2044,9 @@ struct ListScanJobSummariesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScanJobSummaries: list[ScanJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScanJobSummaries: list[ScanJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScanJobSummariesOutput:
     Optional[list[ScanJobSummary]] ScanJobSummaries
     Optional[str] AggregationPeriod
@@ -2003,8 +2071,9 @@ struct ListScanJobsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScanJobs: list[ScanJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScanJobs: list[ScanJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScanJobsOutput:
     Optional[str] NextToken
     list[ScanJob] ScanJobs
@@ -2016,8 +2085,9 @@ struct ListTagsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsOutput:
     Optional[str] NextToken
     Optional[dict[str, str]] Tags
@@ -2028,8 +2098,9 @@ struct ListTieringConfigurationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TieringConfigurations: list[TieringConfigurationsListMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TieringConfigurations: list[TieringConfigurationsListMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTieringConfigurationsOutput:
     Optional[list[TieringConfigurationsListMember]] TieringConfigurations
     Optional[str] NextToken
@@ -2050,8 +2121,9 @@ struct ProtectedResource:
     Optional[str] LastBackupVaultArn
     Optional[str] LastRecoveryPointArn
 
-# no @derive(Json): member(s) StringEquals: list[KeyValue], StringNotEquals: list[KeyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringEquals: list[KeyValue], StringNotEquals: list[KeyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedResourceConditions:
     Optional[list[KeyValue]] StringEquals
     Optional[list[KeyValue]] StringNotEquals
@@ -2084,8 +2156,9 @@ struct PutRestoreValidationResultInput:
     RestoreValidationStatus ValidationStatus
     Optional[str] ValidationStatusMessage
 
-# no @derive(Json): member(s) AggregatedScanResult: AggregatedScanResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregatedScanResult: AggregatedScanResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPointByBackupVault:
     Optional[str] RecoveryPointArn
     Optional[str] BackupVaultName
@@ -2116,8 +2189,9 @@ struct RecoveryPointByBackupVault:
     Optional[EncryptionKeyType] EncryptionKeyType
     Optional[AggregatedScanResult] AggregatedScanResult
 
-# no @derive(Json): member(s) AggregatedScanResult: AggregatedScanResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregatedScanResult: AggregatedScanResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPointByResource:
     Optional[str] RecoveryPointArn
     Optional[DateTime] CreationDate
@@ -2153,28 +2227,32 @@ struct RecoveryPointMember:
     Optional[str] ResourceType
     Optional[str] BackupVaultName
 
-# no @derive(Json): member(s) VaultNames: list[str], ResourceIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VaultNames: list[str], ResourceIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPointSelection:
     Optional[list[str]] VaultNames
     Optional[list[str]] ResourceIdentifiers
     Optional[DateRange] DateRange
 
-# no @derive(Json): member(s) Formats: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Formats: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportDeliveryChannel:
     str S3BucketName
     Optional[str] S3KeyPrefix
     Optional[list[str]] Formats
 
-# no @derive(Json): member(s) S3Keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportDestination:
     Optional[str] S3BucketName
     Optional[list[str]] S3Keys
 
-# no @derive(Json): member(s) ReportDestination: ReportDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportDestination: ReportDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportJob:
     Optional[str] ReportJobId
     Optional[str] ReportPlanArn
@@ -2185,8 +2263,9 @@ struct ReportJob:
     Optional[str] StatusMessage
     Optional[ReportDestination] ReportDestination
 
-# no @derive(Json): member(s) ReportSetting: ReportSetting, ReportDeliveryChannel: ReportDeliveryChannel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportSetting: ReportSetting, ReportDeliveryChannel: ReportDeliveryChannel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportPlan:
     Optional[str] ReportPlanArn
     Optional[str] ReportPlanName
@@ -2198,8 +2277,9 @@ struct ReportPlan:
     Optional[DateTime] LastAttemptedExecutionTime
     Optional[DateTime] LastSuccessfulExecutionTime
 
-# no @derive(Json): member(s) FrameworkArns: list[str], Accounts: list[str], OrganizationUnits: list[str], Regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FrameworkArns: list[str], Accounts: list[str], OrganizationUnits: list[str], Regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportSetting:
     str ReportTemplate
     Optional[list[str]] FrameworkArns
@@ -2215,8 +2295,9 @@ struct ResourceNotFoundException:
     Optional[str] Type
     Optional[str] Context
 
-# no @derive(Json): member(s) Resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSelection:
     list[str] Resources
     int64 TieringDownSettingsInDays
@@ -2270,8 +2351,9 @@ struct RestoreJobsListMember:
     Optional[RestoreDeletionStatus] DeletionStatus
     Optional[str] DeletionStatusMessage
 
-# no @derive(Json): member(s) RecoveryPointSelection: RestoreTestingRecoveryPointSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointSelection: RestoreTestingRecoveryPointSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingPlanForCreate:
     RestoreTestingRecoveryPointSelection RecoveryPointSelection
     str RestoreTestingPlanName
@@ -2279,8 +2361,9 @@ struct RestoreTestingPlanForCreate:
     Optional[str] ScheduleExpressionTimezone
     Optional[int64] StartWindowHours
 
-# no @derive(Json): member(s) RecoveryPointSelection: RestoreTestingRecoveryPointSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointSelection: RestoreTestingRecoveryPointSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingPlanForGet:
     DateTime CreationTime
     Optional[str] CreatorRequestId
@@ -2304,16 +2387,18 @@ struct RestoreTestingPlanForList:
     Optional[str] ScheduleExpressionTimezone
     Optional[int64] StartWindowHours
 
-# no @derive(Json): member(s) RecoveryPointSelection: RestoreTestingRecoveryPointSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryPointSelection: RestoreTestingRecoveryPointSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingPlanForUpdate:
     Optional[RestoreTestingRecoveryPointSelection] RecoveryPointSelection
     Optional[str] ScheduleExpression
     Optional[str] ScheduleExpressionTimezone
     Optional[int64] StartWindowHours
 
-# no @derive(Json): member(s) ExcludeVaults: list[str], IncludeVaults: list[str], RecoveryPointTypes: list[RestoreTestingRecoveryPointType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludeVaults: list[str], IncludeVaults: list[str], RecoveryPointTypes: list[RestoreTestingRecoveryPointType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingRecoveryPointSelection:
     Optional[RestoreTestingRecoveryPointSelectionAlgorithm] Algorithm
     Optional[list[str]] ExcludeVaults
@@ -2321,8 +2406,9 @@ struct RestoreTestingRecoveryPointSelection:
     Optional[list[RestoreTestingRecoveryPointType]] RecoveryPointTypes
     Optional[int64] SelectionWindowDays
 
-# no @derive(Json): member(s) ProtectedResourceArns: list[str], ProtectedResourceConditions: ProtectedResourceConditions, RestoreMetadataOverrides: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectedResourceArns: list[str], ProtectedResourceConditions: ProtectedResourceConditions, RestoreMetadataOverrides: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingSelectionForCreate:
     str IamRoleArn
     Optional[list[str]] ProtectedResourceArns
@@ -2332,8 +2418,9 @@ struct RestoreTestingSelectionForCreate:
     str RestoreTestingSelectionName
     Optional[int64] ValidationWindowHours
 
-# no @derive(Json): member(s) ProtectedResourceArns: list[str], ProtectedResourceConditions: ProtectedResourceConditions, RestoreMetadataOverrides: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectedResourceArns: list[str], ProtectedResourceConditions: ProtectedResourceConditions, RestoreMetadataOverrides: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingSelectionForGet:
     DateTime CreationTime
     Optional[str] CreatorRequestId
@@ -2355,8 +2442,9 @@ struct RestoreTestingSelectionForList:
     str RestoreTestingSelectionName
     Optional[int64] ValidationWindowHours
 
-# no @derive(Json): member(s) ProtectedResourceArns: list[str], ProtectedResourceConditions: ProtectedResourceConditions, RestoreMetadataOverrides: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectedResourceArns: list[str], ProtectedResourceConditions: ProtectedResourceConditions, RestoreMetadataOverrides: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTestingSelectionForUpdate:
     Optional[str] IamRoleArn
     Optional[list[str]] ProtectedResourceArns
@@ -2420,8 +2508,9 @@ struct ScanJobSummary:
     Optional[str] MalwareScanner
     Optional[ScanResultStatus] ScanResultStatus
 
-# no @derive(Json): member(s) Findings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanResult:
     Optional[str] MalwareScanner
     Optional[ScanJobState] ScanJobState
@@ -2432,8 +2521,9 @@ struct ScanResult:
 struct ScanResultInfo:
     ScanResultStatus ScanResultStatus
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanSetting:
     Optional[str] MalwareScanner
     Optional[list[str]] ResourceTypes
@@ -2543,8 +2633,9 @@ struct TagResourceInput:
     str ResourceArn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) ResourceSelection: list[ResourceSelection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceSelection: list[ResourceSelection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TieringConfiguration:
     str TieringConfigurationName
     Optional[str] TieringConfigurationArn
@@ -2554,15 +2645,17 @@ struct TieringConfiguration:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastUpdatedTime
 
-# no @derive(Json): member(s) ResourceSelection: list[ResourceSelection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceSelection: list[ResourceSelection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TieringConfigurationInputForCreate:
     str TieringConfigurationName
     str BackupVaultName
     list[ResourceSelection] ResourceSelection
 
-# no @derive(Json): member(s) ResourceSelection: list[ResourceSelection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceSelection: list[ResourceSelection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TieringConfigurationInputForUpdate:
     list[ResourceSelection] ResourceSelection
     str BackupVaultName
@@ -2587,8 +2680,9 @@ struct UpdateBackupPlanInput:
     str BackupPlanId
     BackupPlanInput BackupPlan
 
-# no @derive(Json): member(s) AdvancedBackupSettings: list[AdvancedBackupSetting], ScanSettings: list[ScanSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedBackupSettings: list[AdvancedBackupSetting], ScanSettings: list[ScanSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackupPlanOutput:
     Optional[str] BackupPlanId
     Optional[str] BackupPlanArn
@@ -2754,18 +2848,6 @@ def backup_error_from_code(str code) -> BackupError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateBackupAccessPoint (document member `AccessPointMetadata: dict[str, str]` is not serializable by derive)
-#   CreateBackupPlan (document member `BackupPlan: BackupPlanInput` is not serializable by derive)
-#   CreateBackupSelection (document member `BackupSelection: BackupSelection` is not serializable by derive)
-#   CreateBackupVault (document member `BackupVaultTags: dict[str, str]` is not serializable by derive)
-#   CreateFramework (document member `FrameworkControls: list[FrameworkControl]` is not serializable by derive)
-#   CreateLegalHold (document member `RecoveryPointSelection: RecoveryPointSelection` is not serializable by derive)
-#   CreateLogicallyAirGappedBackupVault (document member `BackupVaultTags: dict[str, str]` is not serializable by derive)
-#   CreateReportPlan (document member `ReportDeliveryChannel: ReportDeliveryChannel` is not serializable by derive)
-#   CreateRestoreAccessBackupVault (document member `BackupVaultTags: dict[str, str]` is not serializable by derive)
-#   CreateRestoreTestingPlan (document member `RestoreTestingPlan: RestoreTestingPlanForCreate` is not serializable by derive)
-#   CreateRestoreTestingSelection (document member `RestoreTestingSelection: RestoreTestingSelectionForCreate` is not serializable by derive)
-#   CreateTieringConfiguration (document member `TieringConfiguration: TieringConfigurationInputForCreate` is not serializable by derive)
 #   GetPITRMalwareScanResults (httpQuery `ScanEndTime` has unsupported type DateTime)
 #   ListBackupJobs (httpQuery `ByCreatedBefore` has unsupported type DateTime)
 #   ListBackupPlans (httpQuery `IncludeDeleted` has unsupported type bool)
@@ -2778,19 +2860,6 @@ def backup_error_from_code(str code) -> BackupError:
 #   ListRestoreJobs (httpQuery `ByCreatedBefore` has unsupported type DateTime)
 #   ListRestoreJobsByProtectedResource (httpQuery `ByRecoveryPointCreationDateAfter` has unsupported type DateTime)
 #   ListScanJobs (httpQuery `ByCompleteAfter` has unsupported type DateTime)
-#   PutBackupVaultNotifications (document member `BackupVaultEvents: list[BackupVaultEvent]` is not serializable by derive)
-#   StartBackupJob (document member `RecoveryPointTags: dict[str, str]` is not serializable by derive)
-#   StartRestoreJob (document member `Metadata: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UntagResource (document member `TagKeyList: list[str]` is not serializable by derive)
-#   UpdateBackupPlan (document member `BackupPlan: BackupPlanInput` is not serializable by derive)
-#   UpdateFramework (document member `FrameworkControls: list[FrameworkControl]` is not serializable by derive)
-#   UpdateGlobalSettings (document member `GlobalSettings: dict[str, str]` is not serializable by derive)
-#   UpdateRegionSettings (document member `ResourceTypeOptInPreference: dict[str, bool]` is not serializable by derive)
-#   UpdateReportPlan (document member `ReportDeliveryChannel: ReportDeliveryChannel` is not serializable by derive)
-#   UpdateRestoreTestingPlan (document member `RestoreTestingPlan: RestoreTestingPlanForUpdate` is not serializable by derive)
-#   UpdateRestoreTestingSelection (document member `RestoreTestingSelection: RestoreTestingSelectionForUpdate` is not serializable by derive)
-#   UpdateTieringConfiguration (document member `TieringConfiguration: TieringConfigurationInputForUpdate` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -2881,6 +2950,476 @@ struct UpdateRecoveryPointLifecycleDocument:
     # document members of UpdateRecoveryPointLifecycle
     Optional[Lifecycle] Lifecycle
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def backup_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def backup_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def backup_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdvancedBackupSetting to a compact JSON object (declaration order).
+def advanced_backup_setting_to_json(AdvancedBackupSetting v) -> str:
+    list[str] parts = []
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + backup_json_str(u0))
+    if v.BackupOptions.is_some():
+        auto u1 = v.BackupOptions.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(backup_json_str(k2) + ":" + backup_json_str(u1[k2]))
+        parts.append("\"BackupOptions\":" + backup_json_obj(m2))
+    return backup_json_obj(parts)
+
+# Serialize BackupPlanInput to a compact JSON object (declaration order).
+def backup_plan_input_to_json(BackupPlanInput v) -> str:
+    list[str] parts = []
+    parts.append("\"BackupPlanName\":" + backup_json_str(v.BackupPlanName))
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(backup_rule_input_to_json(x0))
+    parts.append("\"Rules\":" + backup_json_arr(e0))
+    if v.AdvancedBackupSettings.is_some():
+        auto u1 = v.AdvancedBackupSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(advanced_backup_setting_to_json(x2))
+        parts.append("\"AdvancedBackupSettings\":" + backup_json_arr(e2))
+    if v.ScanSettings.is_some():
+        auto u3 = v.ScanSettings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(scan_setting_to_json(x4))
+        parts.append("\"ScanSettings\":" + backup_json_arr(e4))
+    return backup_json_obj(parts)
+
+# Serialize BackupRuleInput to a compact JSON object (declaration order).
+def backup_rule_input_to_json(BackupRuleInput v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleName\":" + backup_json_str(v.RuleName))
+    parts.append("\"TargetBackupVaultName\":" + backup_json_str(v.TargetBackupVaultName))
+    if v.TargetLogicallyAirGappedBackupVaultArn.is_some():
+        auto u0 = v.TargetLogicallyAirGappedBackupVaultArn.unwrap()
+        parts.append("\"TargetLogicallyAirGappedBackupVaultArn\":" + backup_json_str(u0))
+    if v.ScheduleExpression.is_some():
+        auto u1 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + backup_json_str(u1))
+    if v.StartWindowMinutes.is_some():
+        auto u2 = v.StartWindowMinutes.unwrap()
+        parts.append("\"StartWindowMinutes\":" + str(u2))
+    if v.CompletionWindowMinutes.is_some():
+        auto u3 = v.CompletionWindowMinutes.unwrap()
+        parts.append("\"CompletionWindowMinutes\":" + str(u3))
+    if v.Lifecycle.is_some():
+        auto u4 = v.Lifecycle.unwrap()
+        parts.append("\"Lifecycle\":" + u4.to_json())
+    if v.RecoveryPointTags.is_some():
+        auto u5 = v.RecoveryPointTags.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(backup_json_str(k6) + ":" + backup_json_str(u5[k6]))
+        parts.append("\"RecoveryPointTags\":" + backup_json_obj(m6))
+    if v.CopyActions.is_some():
+        auto u7 = v.CopyActions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CopyActions\":" + backup_json_arr(e8))
+    if v.EnableContinuousBackup.is_some():
+        auto u9 = v.EnableContinuousBackup.unwrap()
+        parts.append("\"EnableContinuousBackup\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.ScheduleExpressionTimezone.is_some():
+        auto u10 = v.ScheduleExpressionTimezone.unwrap()
+        parts.append("\"ScheduleExpressionTimezone\":" + backup_json_str(u10))
+    if v.IndexActions.is_some():
+        auto u11 = v.IndexActions.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(index_action_to_json(x12))
+        parts.append("\"IndexActions\":" + backup_json_arr(e12))
+    if v.ScanActions.is_some():
+        auto u13 = v.ScanActions.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"ScanActions\":" + backup_json_arr(e14))
+    return backup_json_obj(parts)
+
+# Serialize BackupSelection to a compact JSON object (declaration order).
+def backup_selection_to_json(BackupSelection v) -> str:
+    list[str] parts = []
+    parts.append("\"SelectionName\":" + backup_json_str(v.SelectionName))
+    parts.append("\"IamRoleArn\":" + backup_json_str(v.IamRoleArn))
+    if v.Resources.is_some():
+        auto u0 = v.Resources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(backup_json_str(x1))
+        parts.append("\"Resources\":" + backup_json_arr(e1))
+    if v.ListOfTags.is_some():
+        auto u2 = v.ListOfTags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ListOfTags\":" + backup_json_arr(e3))
+    if v.NotResources.is_some():
+        auto u4 = v.NotResources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(backup_json_str(x5))
+        parts.append("\"NotResources\":" + backup_json_arr(e5))
+    if v.Conditions.is_some():
+        auto u6 = v.Conditions.unwrap()
+        parts.append("\"Conditions\":" + conditions_to_json(u6))
+    return backup_json_obj(parts)
+
+# Serialize Conditions to a compact JSON object (declaration order).
+def conditions_to_json(Conditions v) -> str:
+    list[str] parts = []
+    if v.StringEquals.is_some():
+        auto u0 = v.StringEquals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringEquals\":" + backup_json_arr(e1))
+    if v.StringNotEquals.is_some():
+        auto u2 = v.StringNotEquals.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"StringNotEquals\":" + backup_json_arr(e3))
+    if v.StringLike.is_some():
+        auto u4 = v.StringLike.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"StringLike\":" + backup_json_arr(e5))
+    if v.StringNotLike.is_some():
+        auto u6 = v.StringNotLike.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"StringNotLike\":" + backup_json_arr(e7))
+    return backup_json_obj(parts)
+
+# Serialize ControlScope to a compact JSON object (declaration order).
+def control_scope_to_json(ControlScope v) -> str:
+    list[str] parts = []
+    if v.ComplianceResourceIds.is_some():
+        auto u0 = v.ComplianceResourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(backup_json_str(x1))
+        parts.append("\"ComplianceResourceIds\":" + backup_json_arr(e1))
+    if v.ComplianceResourceTypes.is_some():
+        auto u2 = v.ComplianceResourceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(backup_json_str(x3))
+        parts.append("\"ComplianceResourceTypes\":" + backup_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(backup_json_str(k5) + ":" + backup_json_str(u4[k5]))
+        parts.append("\"Tags\":" + backup_json_obj(m5))
+    return backup_json_obj(parts)
+
+# Serialize FrameworkControl to a compact JSON object (declaration order).
+def framework_control_to_json(FrameworkControl v) -> str:
+    list[str] parts = []
+    parts.append("\"ControlName\":" + backup_json_str(v.ControlName))
+    if v.ControlInputParameters.is_some():
+        auto u0 = v.ControlInputParameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ControlInputParameters\":" + backup_json_arr(e1))
+    if v.ControlScope.is_some():
+        auto u2 = v.ControlScope.unwrap()
+        parts.append("\"ControlScope\":" + control_scope_to_json(u2))
+    return backup_json_obj(parts)
+
+# Serialize IndexAction to a compact JSON object (declaration order).
+def index_action_to_json(IndexAction v) -> str:
+    list[str] parts = []
+    if v.ResourceTypes.is_some():
+        auto u0 = v.ResourceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(backup_json_str(x1))
+        parts.append("\"ResourceTypes\":" + backup_json_arr(e1))
+    return backup_json_obj(parts)
+
+# Serialize ProtectedResourceConditions to a compact JSON object (declaration order).
+def protected_resource_conditions_to_json(ProtectedResourceConditions v) -> str:
+    list[str] parts = []
+    if v.StringEquals.is_some():
+        auto u0 = v.StringEquals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringEquals\":" + backup_json_arr(e1))
+    if v.StringNotEquals.is_some():
+        auto u2 = v.StringNotEquals.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"StringNotEquals\":" + backup_json_arr(e3))
+    return backup_json_obj(parts)
+
+# Serialize RecoveryPointSelection to a compact JSON object (declaration order).
+def recovery_point_selection_to_json(RecoveryPointSelection v) -> str:
+    list[str] parts = []
+    if v.VaultNames.is_some():
+        auto u0 = v.VaultNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(backup_json_str(x1))
+        parts.append("\"VaultNames\":" + backup_json_arr(e1))
+    if v.ResourceIdentifiers.is_some():
+        auto u2 = v.ResourceIdentifiers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(backup_json_str(x3))
+        parts.append("\"ResourceIdentifiers\":" + backup_json_arr(e3))
+    if v.DateRange.is_some():
+        auto u4 = v.DateRange.unwrap()
+        parts.append("\"DateRange\":" + u4.to_json())
+    return backup_json_obj(parts)
+
+# Serialize ReportDeliveryChannel to a compact JSON object (declaration order).
+def report_delivery_channel_to_json(ReportDeliveryChannel v) -> str:
+    list[str] parts = []
+    parts.append("\"S3BucketName\":" + backup_json_str(v.S3BucketName))
+    if v.S3KeyPrefix.is_some():
+        auto u0 = v.S3KeyPrefix.unwrap()
+        parts.append("\"S3KeyPrefix\":" + backup_json_str(u0))
+    if v.Formats.is_some():
+        auto u1 = v.Formats.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(backup_json_str(x2))
+        parts.append("\"Formats\":" + backup_json_arr(e2))
+    return backup_json_obj(parts)
+
+# Serialize ReportSetting to a compact JSON object (declaration order).
+def report_setting_to_json(ReportSetting v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportTemplate\":" + backup_json_str(v.ReportTemplate))
+    if v.FrameworkArns.is_some():
+        auto u0 = v.FrameworkArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(backup_json_str(x1))
+        parts.append("\"FrameworkArns\":" + backup_json_arr(e1))
+    if v.NumberOfFrameworks.is_some():
+        auto u2 = v.NumberOfFrameworks.unwrap()
+        parts.append("\"NumberOfFrameworks\":" + str(u2))
+    if v.Accounts.is_some():
+        auto u3 = v.Accounts.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(backup_json_str(x4))
+        parts.append("\"Accounts\":" + backup_json_arr(e4))
+    if v.OrganizationUnits.is_some():
+        auto u5 = v.OrganizationUnits.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(backup_json_str(x6))
+        parts.append("\"OrganizationUnits\":" + backup_json_arr(e6))
+    if v.Regions.is_some():
+        auto u7 = v.Regions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(backup_json_str(x8))
+        parts.append("\"Regions\":" + backup_json_arr(e8))
+    return backup_json_obj(parts)
+
+# Serialize ResourceSelection to a compact JSON object (declaration order).
+def resource_selection_to_json(ResourceSelection v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Resources:
+        e0.append(backup_json_str(x0))
+    parts.append("\"Resources\":" + backup_json_arr(e0))
+    parts.append("\"TieringDownSettingsInDays\":" + str(v.TieringDownSettingsInDays))
+    parts.append("\"ResourceType\":" + backup_json_str(v.ResourceType))
+    return backup_json_obj(parts)
+
+# Serialize RestoreTestingPlanForCreate to a compact JSON object (declaration order).
+def restore_testing_plan_for_create_to_json(RestoreTestingPlanForCreate v) -> str:
+    list[str] parts = []
+    parts.append("\"RecoveryPointSelection\":" + restore_testing_recovery_point_selection_to_json(v.RecoveryPointSelection))
+    parts.append("\"RestoreTestingPlanName\":" + backup_json_str(v.RestoreTestingPlanName))
+    parts.append("\"ScheduleExpression\":" + backup_json_str(v.ScheduleExpression))
+    if v.ScheduleExpressionTimezone.is_some():
+        auto u0 = v.ScheduleExpressionTimezone.unwrap()
+        parts.append("\"ScheduleExpressionTimezone\":" + backup_json_str(u0))
+    if v.StartWindowHours.is_some():
+        auto u1 = v.StartWindowHours.unwrap()
+        parts.append("\"StartWindowHours\":" + str(u1))
+    return backup_json_obj(parts)
+
+# Serialize RestoreTestingPlanForUpdate to a compact JSON object (declaration order).
+def restore_testing_plan_for_update_to_json(RestoreTestingPlanForUpdate v) -> str:
+    list[str] parts = []
+    if v.RecoveryPointSelection.is_some():
+        auto u0 = v.RecoveryPointSelection.unwrap()
+        parts.append("\"RecoveryPointSelection\":" + restore_testing_recovery_point_selection_to_json(u0))
+    if v.ScheduleExpression.is_some():
+        auto u1 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + backup_json_str(u1))
+    if v.ScheduleExpressionTimezone.is_some():
+        auto u2 = v.ScheduleExpressionTimezone.unwrap()
+        parts.append("\"ScheduleExpressionTimezone\":" + backup_json_str(u2))
+    if v.StartWindowHours.is_some():
+        auto u3 = v.StartWindowHours.unwrap()
+        parts.append("\"StartWindowHours\":" + str(u3))
+    return backup_json_obj(parts)
+
+# Serialize RestoreTestingRecoveryPointSelection to a compact JSON object (declaration order).
+def restore_testing_recovery_point_selection_to_json(RestoreTestingRecoveryPointSelection v) -> str:
+    list[str] parts = []
+    if v.Algorithm.is_some():
+        auto u0 = v.Algorithm.unwrap()
+        parts.append("\"Algorithm\":" + u0.to_json())
+    if v.ExcludeVaults.is_some():
+        auto u1 = v.ExcludeVaults.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(backup_json_str(x2))
+        parts.append("\"ExcludeVaults\":" + backup_json_arr(e2))
+    if v.IncludeVaults.is_some():
+        auto u3 = v.IncludeVaults.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(backup_json_str(x4))
+        parts.append("\"IncludeVaults\":" + backup_json_arr(e4))
+    if v.RecoveryPointTypes.is_some():
+        auto u5 = v.RecoveryPointTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"RecoveryPointTypes\":" + backup_json_arr(e6))
+    if v.SelectionWindowDays.is_some():
+        auto u7 = v.SelectionWindowDays.unwrap()
+        parts.append("\"SelectionWindowDays\":" + str(u7))
+    return backup_json_obj(parts)
+
+# Serialize RestoreTestingSelectionForCreate to a compact JSON object (declaration order).
+def restore_testing_selection_for_create_to_json(RestoreTestingSelectionForCreate v) -> str:
+    list[str] parts = []
+    parts.append("\"IamRoleArn\":" + backup_json_str(v.IamRoleArn))
+    if v.ProtectedResourceArns.is_some():
+        auto u0 = v.ProtectedResourceArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(backup_json_str(x1))
+        parts.append("\"ProtectedResourceArns\":" + backup_json_arr(e1))
+    if v.ProtectedResourceConditions.is_some():
+        auto u2 = v.ProtectedResourceConditions.unwrap()
+        parts.append("\"ProtectedResourceConditions\":" + protected_resource_conditions_to_json(u2))
+    parts.append("\"ProtectedResourceType\":" + backup_json_str(v.ProtectedResourceType))
+    if v.RestoreMetadataOverrides.is_some():
+        auto u3 = v.RestoreMetadataOverrides.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(backup_json_str(k4) + ":" + backup_json_str(u3[k4]))
+        parts.append("\"RestoreMetadataOverrides\":" + backup_json_obj(m4))
+    parts.append("\"RestoreTestingSelectionName\":" + backup_json_str(v.RestoreTestingSelectionName))
+    if v.ValidationWindowHours.is_some():
+        auto u5 = v.ValidationWindowHours.unwrap()
+        parts.append("\"ValidationWindowHours\":" + str(u5))
+    return backup_json_obj(parts)
+
+# Serialize RestoreTestingSelectionForUpdate to a compact JSON object (declaration order).
+def restore_testing_selection_for_update_to_json(RestoreTestingSelectionForUpdate v) -> str:
+    list[str] parts = []
+    if v.IamRoleArn.is_some():
+        auto u0 = v.IamRoleArn.unwrap()
+        parts.append("\"IamRoleArn\":" + backup_json_str(u0))
+    if v.ProtectedResourceArns.is_some():
+        auto u1 = v.ProtectedResourceArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(backup_json_str(x2))
+        parts.append("\"ProtectedResourceArns\":" + backup_json_arr(e2))
+    if v.ProtectedResourceConditions.is_some():
+        auto u3 = v.ProtectedResourceConditions.unwrap()
+        parts.append("\"ProtectedResourceConditions\":" + protected_resource_conditions_to_json(u3))
+    if v.RestoreMetadataOverrides.is_some():
+        auto u4 = v.RestoreMetadataOverrides.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(backup_json_str(k5) + ":" + backup_json_str(u4[k5]))
+        parts.append("\"RestoreMetadataOverrides\":" + backup_json_obj(m5))
+    if v.ValidationWindowHours.is_some():
+        auto u6 = v.ValidationWindowHours.unwrap()
+        parts.append("\"ValidationWindowHours\":" + str(u6))
+    return backup_json_obj(parts)
+
+# Serialize ScanSetting to a compact JSON object (declaration order).
+def scan_setting_to_json(ScanSetting v) -> str:
+    list[str] parts = []
+    if v.MalwareScanner.is_some():
+        auto u0 = v.MalwareScanner.unwrap()
+        parts.append("\"MalwareScanner\":" + backup_json_str(u0))
+    if v.ResourceTypes.is_some():
+        auto u1 = v.ResourceTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(backup_json_str(x2))
+        parts.append("\"ResourceTypes\":" + backup_json_arr(e2))
+    if v.ScannerRoleArn.is_some():
+        auto u3 = v.ScannerRoleArn.unwrap()
+        parts.append("\"ScannerRoleArn\":" + backup_json_str(u3))
+    return backup_json_obj(parts)
+
+# Serialize TieringConfigurationInputForCreate to a compact JSON object (declaration order).
+def tiering_configuration_input_for_create_to_json(TieringConfigurationInputForCreate v) -> str:
+    list[str] parts = []
+    parts.append("\"TieringConfigurationName\":" + backup_json_str(v.TieringConfigurationName))
+    parts.append("\"BackupVaultName\":" + backup_json_str(v.BackupVaultName))
+    list[str] e0 = []
+    for x0 in v.ResourceSelection:
+        e0.append(resource_selection_to_json(x0))
+    parts.append("\"ResourceSelection\":" + backup_json_arr(e0))
+    return backup_json_obj(parts)
+
+# Serialize TieringConfigurationInputForUpdate to a compact JSON object (declaration order).
+def tiering_configuration_input_for_update_to_json(TieringConfigurationInputForUpdate v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResourceSelection:
+        e0.append(resource_selection_to_json(x0))
+    parts.append("\"ResourceSelection\":" + backup_json_arr(e0))
+    parts.append("\"BackupVaultName\":" + backup_json_str(v.BackupVaultName))
+    return backup_json_obj(parts)
+
 # A bound Backup client: credentials + region, threaded into every operation.
 struct BackupClient:
     core.Credentials creds
@@ -2909,6 +3448,265 @@ struct BackupClient:
             query["retainRecordInDays"] = str(input.RetainRecordInDays.unwrap_or(0))
         auto b = binding.HttpBinding(method="DELETE", path_template="/legal-holds/{legalHoldId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # CreateBackupAccessPoint  PUT /backup-access-point/create
+    # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def create_backup_access_point(self, CreateBackupAccessPointRequest input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-access-point/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccessPointMetadata.is_some():
+            auto u0 = input.AccessPointMetadata.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + backup_json_str(u0[k1]))
+            parts.append("\"AccessPointMetadata\":" + backup_json_obj(m1))
+        if input.AccessPointPolicy.is_some():
+            auto u2 = input.AccessPointPolicy.unwrap()
+            parts.append("\"AccessPointPolicy\":" + backup_json_str(u2))
+        parts.append("\"Name\":" + backup_json_str(input.Name))
+        parts.append("\"RecoveryPointArn\":" + backup_json_str(input.RecoveryPointArn))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(backup_json_str(k4) + ":" + backup_json_str(u3[k4]))
+            parts.append("\"Tags\":" + backup_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateBackupPlan  PUT /backup/plans/
+    # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_backup_plan(self, CreateBackupPlanInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup/plans/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"BackupPlan\":" + backup_plan_input_to_json(input.BackupPlan))
+        if input.BackupPlanTags.is_some():
+            auto u0 = input.BackupPlanTags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + backup_json_str(u0[k1]))
+            parts.append("\"BackupPlanTags\":" + backup_json_obj(m1))
+        if input.CreatorRequestId.is_some():
+            auto u2 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u2))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateBackupSelection  PUT /backup/plans/{backupPlanId}/selections/
+    # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_backup_selection(self, CreateBackupSelectionInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["backupPlanId"] = input.BackupPlanId
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup/plans/{backupPlanId}/selections/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"BackupSelection\":" + backup_selection_to_json(input.BackupSelection))
+        if input.CreatorRequestId.is_some():
+            auto u0 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u0))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateBackupVault  PUT /backup-vaults/{backupVaultName}
+    # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_backup_vault(self, CreateBackupVaultInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["backupVaultName"] = input.BackupVaultName
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BackupVaultTags.is_some():
+            auto u0 = input.BackupVaultTags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + backup_json_str(u0[k1]))
+            parts.append("\"BackupVaultTags\":" + backup_json_obj(m1))
+        if input.EncryptionKeyArn.is_some():
+            auto u2 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + backup_json_str(u2))
+        if input.CreatorRequestId.is_some():
+            auto u3 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateFramework  POST /audit/frameworks
+    # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_framework(self, CreateFrameworkInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/frameworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FrameworkName\":" + backup_json_str(input.FrameworkName))
+        if input.FrameworkDescription.is_some():
+            auto u0 = input.FrameworkDescription.unwrap()
+            parts.append("\"FrameworkDescription\":" + backup_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.FrameworkControls:
+            e1.append(framework_control_to_json(x1))
+        parts.append("\"FrameworkControls\":" + backup_json_arr(e1))
+        if input.IdempotencyToken.is_some():
+            auto u2 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u2))
+        if input.FrameworkTags.is_some():
+            auto u3 = input.FrameworkTags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(backup_json_str(k4) + ":" + backup_json_str(u3[k4]))
+            parts.append("\"FrameworkTags\":" + backup_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateLegalHold  POST /legal-holds/
+    # errors: InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_legal_hold(self, CreateLegalHoldInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/legal-holds/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Title\":" + backup_json_str(input.Title))
+        parts.append("\"Description\":" + backup_json_str(input.Description))
+        if input.IdempotencyToken.is_some():
+            auto u0 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u0))
+        if input.RecoveryPointSelection.is_some():
+            auto u1 = input.RecoveryPointSelection.unwrap()
+            parts.append("\"RecoveryPointSelection\":" + recovery_point_selection_to_json(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(backup_json_str(k3) + ":" + backup_json_str(u2[k3]))
+            parts.append("\"Tags\":" + backup_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateLogicallyAirGappedBackupVault  PUT /logically-air-gapped-backup-vaults/{backupVaultName}
+    # errors: AlreadyExistsException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_logically_air_gapped_backup_vault(self, CreateLogicallyAirGappedBackupVaultInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["backupVaultName"] = input.BackupVaultName
+        auto b = binding.HttpBinding(method="PUT", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BackupVaultTags.is_some():
+            auto u0 = input.BackupVaultTags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + backup_json_str(u0[k1]))
+            parts.append("\"BackupVaultTags\":" + backup_json_obj(m1))
+        if input.CreatorRequestId.is_some():
+            auto u2 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u2))
+        parts.append("\"MinRetentionDays\":" + str(input.MinRetentionDays))
+        parts.append("\"MaxRetentionDays\":" + str(input.MaxRetentionDays))
+        if input.EncryptionKeyArn.is_some():
+            auto u3 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + backup_json_str(u3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateReportPlan  POST /audit/report-plans
+    # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_report_plan(self, CreateReportPlanInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/report-plans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ReportPlanName\":" + backup_json_str(input.ReportPlanName))
+        if input.ReportPlanDescription.is_some():
+            auto u0 = input.ReportPlanDescription.unwrap()
+            parts.append("\"ReportPlanDescription\":" + backup_json_str(u0))
+        parts.append("\"ReportDeliveryChannel\":" + report_delivery_channel_to_json(input.ReportDeliveryChannel))
+        parts.append("\"ReportSetting\":" + report_setting_to_json(input.ReportSetting))
+        if input.ReportPlanTags.is_some():
+            auto u1 = input.ReportPlanTags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(backup_json_str(k2) + ":" + backup_json_str(u1[k2]))
+            parts.append("\"ReportPlanTags\":" + backup_json_obj(m2))
+        if input.IdempotencyToken.is_some():
+            auto u3 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateRestoreAccessBackupVault  PUT /restore-access-backup-vaults
+    # errors: AlreadyExistsException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def create_restore_access_backup_vault(self, CreateRestoreAccessBackupVaultInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-access-backup-vaults", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SourceBackupVaultArn\":" + backup_json_str(input.SourceBackupVaultArn))
+        if input.BackupVaultName.is_some():
+            auto u0 = input.BackupVaultName.unwrap()
+            parts.append("\"BackupVaultName\":" + backup_json_str(u0))
+        if input.BackupVaultTags.is_some():
+            auto u1 = input.BackupVaultTags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(backup_json_str(k2) + ":" + backup_json_str(u1[k2]))
+            parts.append("\"BackupVaultTags\":" + backup_json_obj(m2))
+        if input.CreatorRequestId.is_some():
+            auto u3 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u3))
+        if input.RequesterComment.is_some():
+            auto u4 = input.RequesterComment.unwrap()
+            parts.append("\"RequesterComment\":" + backup_json_str(u4))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateRestoreTestingPlan  PUT /restore-testing/plans
+    # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_restore_testing_plan(self, CreateRestoreTestingPlanInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CreatorRequestId.is_some():
+            auto u0 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u0))
+        parts.append("\"RestoreTestingPlan\":" + restore_testing_plan_for_create_to_json(input.RestoreTestingPlan))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(backup_json_str(k2) + ":" + backup_json_str(u1[k2]))
+            parts.append("\"Tags\":" + backup_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateRestoreTestingSelection  PUT /restore-testing/plans/{RestoreTestingPlanName}/selections
+    # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def create_restore_testing_selection(self, CreateRestoreTestingSelectionInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CreatorRequestId.is_some():
+            auto u0 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u0))
+        parts.append("\"RestoreTestingSelection\":" + restore_testing_selection_for_create_to_json(input.RestoreTestingSelection))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # CreateTieringConfiguration  PUT /tiering-configurations
+    # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
+    def create_tiering_configuration(self, CreateTieringConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/tiering-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TieringConfiguration\":" + tiering_configuration_input_for_create_to_json(input.TieringConfiguration))
+        if input.TieringConfigurationTags.is_some():
+            auto u0 = input.TieringConfigurationTags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + backup_json_str(u0[k1]))
+            parts.append("\"TieringConfigurationTags\":" + backup_json_obj(m1))
+        if input.CreatorRequestId.is_some():
+            auto u2 = input.CreatorRequestId.unwrap()
+            parts.append("\"CreatorRequestId\":" + backup_json_str(u2))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
 
     # DeleteBackupAccessPoint  DELETE /backup-access-point/delete/{AccessPointArn}
     # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
@@ -3672,6 +4470,22 @@ struct BackupClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
 
+    # PutBackupVaultNotifications  PUT /backup-vaults/{backupVaultName}/notification-configuration
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def put_backup_vault_notifications(self, PutBackupVaultNotificationsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["backupVaultName"] = input.BackupVaultName
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SNSTopicArn\":" + backup_json_str(input.SNSTopicArn))
+        list[str] e0 = []
+        for x0 in input.BackupVaultEvents:
+            e0.append(x0.to_json())
+        parts.append("\"BackupVaultEvents\":" + backup_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
     # PutRestoreValidationResult  PUT /restore-jobs/{restoreJobId}/validations
     # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def put_restore_validation_result(self, PutRestoreValidationResultInput input) -> str:
@@ -3696,6 +4510,48 @@ struct BackupClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/{restoreAccessBackupVaultArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
+    # StartBackupJob  PUT /backup-jobs
+    # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def start_backup_job(self, StartBackupJobInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"BackupVaultName\":" + backup_json_str(input.BackupVaultName))
+        if input.LogicallyAirGappedBackupVaultArn.is_some():
+            auto u0 = input.LogicallyAirGappedBackupVaultArn.unwrap()
+            parts.append("\"LogicallyAirGappedBackupVaultArn\":" + backup_json_str(u0))
+        parts.append("\"ResourceArn\":" + backup_json_str(input.ResourceArn))
+        parts.append("\"IamRoleArn\":" + backup_json_str(input.IamRoleArn))
+        if input.IdempotencyToken.is_some():
+            auto u1 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u1))
+        if input.StartWindowMinutes.is_some():
+            auto u2 = input.StartWindowMinutes.unwrap()
+            parts.append("\"StartWindowMinutes\":" + str(u2))
+        if input.CompleteWindowMinutes.is_some():
+            auto u3 = input.CompleteWindowMinutes.unwrap()
+            parts.append("\"CompleteWindowMinutes\":" + str(u3))
+        if input.Lifecycle.is_some():
+            auto u4 = input.Lifecycle.unwrap()
+            parts.append("\"Lifecycle\":" + u4.to_json())
+        if input.RecoveryPointTags.is_some():
+            auto u5 = input.RecoveryPointTags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(backup_json_str(k6) + ":" + backup_json_str(u5[k6]))
+            parts.append("\"RecoveryPointTags\":" + backup_json_obj(m6))
+        if input.BackupOptions.is_some():
+            auto u7 = input.BackupOptions.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(backup_json_str(k8) + ":" + backup_json_str(u7[k8]))
+            parts.append("\"BackupOptions\":" + backup_json_obj(m8))
+        if input.Index.is_some():
+            auto u9 = input.Index.unwrap()
+            parts.append("\"Index\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
     # StartCopyJob  PUT /copy-jobs
     # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def start_copy_job(self, StartCopyJobInput input) -> str:
@@ -3716,6 +4572,32 @@ struct BackupClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
 
+    # StartRestoreJob  PUT /restore-jobs
+    # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def start_restore_job(self, StartRestoreJobInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RecoveryPointArn\":" + backup_json_str(input.RecoveryPointArn))
+        list[str] m0 = []
+        for k0 in sorted(input.Metadata.keys()):
+            m0.append(backup_json_str(k0) + ":" + backup_json_str(input.Metadata[k0]))
+        parts.append("\"Metadata\":" + backup_json_obj(m0))
+        if input.IamRoleArn.is_some():
+            auto u1 = input.IamRoleArn.unwrap()
+            parts.append("\"IamRoleArn\":" + backup_json_str(u1))
+        if input.IdempotencyToken.is_some():
+            auto u2 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u2))
+        if input.ResourceType.is_some():
+            auto u3 = input.ResourceType.unwrap()
+            parts.append("\"ResourceType\":" + backup_json_str(u3))
+        if input.CopySourceTagsToRestoredResource.is_some():
+            auto u4 = input.CopySourceTagsToRestoredResource.unwrap()
+            parts.append("\"CopySourceTagsToRestoredResource\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
     # StartScanJob  PUT /scan/job
     # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def start_scan_job(self, StartScanJobInput input) -> str:
@@ -3733,6 +4615,86 @@ struct BackupClient:
         labels["backupJobId"] = input.BackupJobId
         auto b = binding.HttpBinding(method="POST", path_template="/backup-jobs/{backupJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(backup_json_str(k0) + ":" + backup_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + backup_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UntagResource  POST /untag/{resourceArn}
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/untag/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TagKeyList:
+            e0.append(backup_json_str(x0))
+        parts.append("\"TagKeyList\":" + backup_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateBackupPlan  POST /backup/plans/{backupPlanId}
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def update_backup_plan(self, UpdateBackupPlanInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["backupPlanId"] = input.BackupPlanId
+        auto b = binding.HttpBinding(method="POST", path_template="/backup/plans/{backupPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"BackupPlan\":" + backup_plan_input_to_json(input.BackupPlan))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateFramework  PUT /audit/frameworks/{frameworkName}
+    # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def update_framework(self, UpdateFrameworkInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["frameworkName"] = input.FrameworkName
+        auto b = binding.HttpBinding(method="PUT", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FrameworkDescription.is_some():
+            auto u0 = input.FrameworkDescription.unwrap()
+            parts.append("\"FrameworkDescription\":" + backup_json_str(u0))
+        if input.FrameworkControls.is_some():
+            auto u1 = input.FrameworkControls.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(framework_control_to_json(x2))
+            parts.append("\"FrameworkControls\":" + backup_json_arr(e2))
+        if input.IdempotencyToken.is_some():
+            auto u3 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateGlobalSettings  PUT /global-settings
+    # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ServiceUnavailableException
+    def update_global_settings(self, UpdateGlobalSettingsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/global-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GlobalSettings.is_some():
+            auto u0 = input.GlobalSettings.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + backup_json_str(u0[k1]))
+            parts.append("\"GlobalSettings\":" + backup_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
 
     # UpdateRecoveryPointIndexSettings  POST /backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index
     # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
@@ -3756,6 +4718,87 @@ struct BackupClient:
         auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRecoveryPointLifecycleDocument(Lifecycle=input.Lifecycle)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateRegionSettings  PUT /account-settings
+    # errors: InvalidParameterValueException, MissingParameterValueException, ServiceUnavailableException
+    def update_region_settings(self, UpdateRegionSettingsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ResourceTypeOptInPreference.is_some():
+            auto u0 = input.ResourceTypeOptInPreference.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_json_str(k1) + ":" + json.dumps(JsonValue.Bool(u0[k1])))
+            parts.append("\"ResourceTypeOptInPreference\":" + backup_json_obj(m1))
+        if input.ResourceTypeManagementPreference.is_some():
+            auto u2 = input.ResourceTypeManagementPreference.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(backup_json_str(k3) + ":" + json.dumps(JsonValue.Bool(u2[k3])))
+            parts.append("\"ResourceTypeManagementPreference\":" + backup_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateReportPlan  PUT /audit/report-plans/{reportPlanName}
+    # errors: ConflictException, InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def update_report_plan(self, UpdateReportPlanInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["reportPlanName"] = input.ReportPlanName
+        auto b = binding.HttpBinding(method="PUT", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ReportPlanDescription.is_some():
+            auto u0 = input.ReportPlanDescription.unwrap()
+            parts.append("\"ReportPlanDescription\":" + backup_json_str(u0))
+        if input.ReportDeliveryChannel.is_some():
+            auto u1 = input.ReportDeliveryChannel.unwrap()
+            parts.append("\"ReportDeliveryChannel\":" + report_delivery_channel_to_json(u1))
+        if input.ReportSetting.is_some():
+            auto u2 = input.ReportSetting.unwrap()
+            parts.append("\"ReportSetting\":" + report_setting_to_json(u2))
+        if input.IdempotencyToken.is_some():
+            auto u3 = input.IdempotencyToken.unwrap()
+            parts.append("\"IdempotencyToken\":" + backup_json_str(u3))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateRestoreTestingPlan  PUT /restore-testing/plans/{RestoreTestingPlanName}
+    # errors: ConflictException, InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def update_restore_testing_plan(self, UpdateRestoreTestingPlanInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RestoreTestingPlan\":" + restore_testing_plan_for_update_to_json(input.RestoreTestingPlan))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateRestoreTestingSelection  PUT /restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}
+    # errors: ConflictException, InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def update_restore_testing_selection(self, UpdateRestoreTestingSelectionInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
+        labels["RestoreTestingSelectionName"] = input.RestoreTestingSelectionName
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RestoreTestingSelection\":" + restore_testing_selection_for_update_to_json(input.RestoreTestingSelection))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
+
+    # UpdateTieringConfiguration  PUT /tiering-configurations/{tieringConfigurationName}
+    # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def update_tiering_configuration(self, UpdateTieringConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["tieringConfigurationName"] = input.TieringConfigurationName
+        auto b = binding.HttpBinding(method="PUT", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TieringConfiguration\":" + tiering_configuration_input_for_update_to_json(input.TieringConfiguration))
+        auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
 
     # Paginator for ListBackupAccessPoints — yields each Response page, threading the

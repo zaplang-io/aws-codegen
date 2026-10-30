@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 6 operations — 2 with a generated method,
-#   4 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 6 operations — 6 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   33 structs (26 @derive(Json)), 5 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -95,8 +95,9 @@ struct DataAutomationConfiguration:
     str dataAutomationProjectArn
     Optional[DataAutomationStage] stage
 
-# no @derive(Json): member(s) kmsEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kmsEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionConfiguration:
     str kmsKeyId
     Optional[dict[str, str]] kmsEncryptionContext
@@ -130,8 +131,9 @@ struct InputConfiguration:
 struct InternalServerException:
     Optional[str] message
 
-# no @derive(Json): member(s) encryptionConfiguration: EncryptionConfiguration, blueprints: list[Blueprint], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionConfiguration: EncryptionConfiguration, blueprints: list[Blueprint], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeDataAutomationAsyncRequest:
     Optional[str] clientToken
     InputConfiguration inputConfiguration
@@ -147,8 +149,9 @@ struct InvokeDataAutomationAsyncRequest:
 struct InvokeDataAutomationAsyncResponse:
     str invocationArn
 
-# no @derive(Json): member(s) blueprints: list[Blueprint], encryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprints: list[Blueprint], encryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeDataAutomationRequest:
     SyncInputConfiguration inputConfiguration
     Optional[DataAutomationConfiguration] dataAutomationConfiguration
@@ -157,8 +160,9 @@ struct InvokeDataAutomationRequest:
     Optional[EncryptionConfiguration] encryptionConfiguration
     Optional[OutputConfiguration] outputConfiguration
 
-# no @derive(Json): member(s) outputSegments: list[OutputSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputSegments: list[OutputSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeDataAutomationResponse:
     Optional[OutputConfiguration] outputConfiguration
     SemanticModality semanticModality
@@ -168,8 +172,9 @@ struct InvokeDataAutomationResponse:
 struct ListTagsForResourceRequest:
     str resourceARN
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -210,8 +215,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceARN
     list[Tag] tags
@@ -230,8 +236,9 @@ struct TimestampSegment:
     int64 startTimeMillis
     int64 endTimeMillis
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceARN
     list[str] tagKeys
@@ -287,12 +294,121 @@ def bedrock_data_automation_runtime_error_from_code(str code) -> Bedrock_Data_Au
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   InvokeDataAutomation (input InvokeDataAutomationRequest)
-#   InvokeDataAutomationAsync (input InvokeDataAutomationAsyncRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bedrock_data_automation_runtime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bedrock_data_automation_runtime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bedrock_data_automation_runtime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EncryptionConfiguration to a compact JSON object (declaration order).
+def encryption_configuration_to_json(EncryptionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"kmsKeyId\":" + bedrock_data_automation_runtime_json_str(v.kmsKeyId))
+    if v.kmsEncryptionContext.is_some():
+        auto u0 = v.kmsEncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_data_automation_runtime_json_str(k1) + ":" + bedrock_data_automation_runtime_json_str(u0[k1]))
+        parts.append("\"kmsEncryptionContext\":" + bedrock_data_automation_runtime_json_obj(m1))
+    return bedrock_data_automation_runtime_json_obj(parts)
+
+# Serialize InvokeDataAutomationAsyncRequest to a compact JSON object (declaration order).
+def invoke_data_automation_async_request_to_json(InvokeDataAutomationAsyncRequest v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + bedrock_data_automation_runtime_json_str(u0))
+    parts.append("\"inputConfiguration\":" + v.inputConfiguration.to_json())
+    parts.append("\"outputConfiguration\":" + v.outputConfiguration.to_json())
+    if v.dataAutomationConfiguration.is_some():
+        auto u1 = v.dataAutomationConfiguration.unwrap()
+        parts.append("\"dataAutomationConfiguration\":" + u1.to_json())
+    if v.encryptionConfiguration.is_some():
+        auto u2 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u2))
+    if v.notificationConfiguration.is_some():
+        auto u3 = v.notificationConfiguration.unwrap()
+        parts.append("\"notificationConfiguration\":" + u3.to_json())
+    if v.blueprints.is_some():
+        auto u4 = v.blueprints.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"blueprints\":" + bedrock_data_automation_runtime_json_arr(e5))
+    parts.append("\"dataAutomationProfileArn\":" + bedrock_data_automation_runtime_json_str(v.dataAutomationProfileArn))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + bedrock_data_automation_runtime_json_arr(e7))
+    return bedrock_data_automation_runtime_json_obj(parts)
+
+# Serialize InvokeDataAutomationRequest to a compact JSON object (declaration order).
+def invoke_data_automation_request_to_json(InvokeDataAutomationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"inputConfiguration\":" + v.inputConfiguration.to_json())
+    if v.dataAutomationConfiguration.is_some():
+        auto u0 = v.dataAutomationConfiguration.unwrap()
+        parts.append("\"dataAutomationConfiguration\":" + u0.to_json())
+    if v.blueprints.is_some():
+        auto u1 = v.blueprints.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"blueprints\":" + bedrock_data_automation_runtime_json_arr(e2))
+    parts.append("\"dataAutomationProfileArn\":" + bedrock_data_automation_runtime_json_str(v.dataAutomationProfileArn))
+    if v.encryptionConfiguration.is_some():
+        auto u3 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u3))
+    if v.outputConfiguration.is_some():
+        auto u4 = v.outputConfiguration.unwrap()
+        parts.append("\"outputConfiguration\":" + u4.to_json())
+    return bedrock_data_automation_runtime_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceARN\":" + bedrock_data_automation_runtime_json_str(v.resourceARN))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + bedrock_data_automation_runtime_json_arr(e0))
+    return bedrock_data_automation_runtime_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceARN\":" + bedrock_data_automation_runtime_json_str(v.resourceARN))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(bedrock_data_automation_runtime_json_str(x0))
+    parts.append("\"tagKeys\":" + bedrock_data_automation_runtime_json_arr(e0))
+    return bedrock_data_automation_runtime_json_obj(parts)
 
 # A bound Bedrock_Data_Automation_Runtime client: credentials + region, threaded into every operation.
 struct Bedrock_Data_Automation_RuntimeClient:
@@ -305,11 +421,35 @@ struct Bedrock_Data_Automation_RuntimeClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bedrock_data_automation_runtime_protocol(), self.creds, self.region, "GetDataAutomationStatus", body)
 
+    # InvokeDataAutomation
+    # errors: AccessDeniedException, InternalServerException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def invoke_data_automation(self, InvokeDataAutomationRequest input) -> str:
+        auto body = invoke_data_automation_request_to_json(input)
+        return awsjson.awsjson_request_now(bedrock_data_automation_runtime_protocol(), self.creds, self.region, "InvokeDataAutomation", body)
+
+    # InvokeDataAutomationAsync
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_data_automation_async(self, InvokeDataAutomationAsyncRequest input) -> str:
+        auto body = invoke_data_automation_async_request_to_json(input)
+        return awsjson.awsjson_request_now(bedrock_data_automation_runtime_protocol(), self.creds, self.region, "InvokeDataAutomationAsync", body)
+
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(bedrock_data_automation_runtime_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bedrock_data_automation_runtime_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(bedrock_data_automation_runtime_protocol(), self.creds, self.region, "UntagResource", body)
 
 # Construct a Bedrock_Data_Automation_RuntimeClient bound to credentials + region.
 def bedrock_data_automation_runtime_client(core.Credentials creds, str region) -> Bedrock_Data_Automation_RuntimeClient:

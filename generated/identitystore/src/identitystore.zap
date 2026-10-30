@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 22 operations — 14 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 22 operations — 22 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   71 structs (50 @derive(Json)), 4 enums, 7 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -133,8 +133,9 @@ struct CreateGroupResponse:
     str GroupArn
     str Revision
 
-# no @derive(Json): member(s) Emails: list[Email], Addresses: list[Address], PhoneNumbers: list[PhoneNumber], Photos: list[Photo], Roles: list[Role], Extensions: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Emails: list[Email], Addresses: list[Address], PhoneNumbers: list[PhoneNumber], Photos: list[Photo], Roles: list[Role], Extensions: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserRequest:
     str IdentityStoreId
     Optional[str] UserName
@@ -217,8 +218,9 @@ struct DescribeGroupRequest:
     str IdentityStoreId
     str GroupId
 
-# no @derive(Json): member(s) ExternalIds: list[ExternalId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalIds: list[ExternalId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGroupResponse:
     str IdentityStoreId
     str GroupId
@@ -236,22 +238,25 @@ struct DescribeGroupResponse:
 struct DescribeIdentityStoreRequest:
     str IdentityStoreId
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIdentityStoreResponse:
     str IdentityStoreId
     str IdentityStoreArn
     Optional[NetworkConfigurationDetails] NetworkConfiguration
 
-# no @derive(Json): member(s) Extensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Extensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserRequest:
     str IdentityStoreId
     str UserId
     Optional[list[str]] Extensions
 
-# no @derive(Json): member(s) ExternalIds: list[ExternalId], Emails: list[Email], Addresses: list[Address], PhoneNumbers: list[PhoneNumber], Photos: list[Photo], Roles: list[Role], Extensions: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalIds: list[ExternalId], Emails: list[Email], Addresses: list[Address], PhoneNumbers: list[PhoneNumber], Photos: list[Photo], Roles: list[Role], Extensions: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserResponse:
     str IdentityStoreId
     str UserId
@@ -332,8 +337,9 @@ struct GetUserIdResponse:
     str UserId
     str UserArn
 
-# no @derive(Json): member(s) ExternalIds: list[ExternalId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalIds: list[ExternalId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Group:
     str IdentityStoreId
     str GroupId
@@ -376,15 +382,17 @@ struct InternalServerException:
     Optional[str] RequestId
     Optional[int64] RetryAfterSeconds
 
-# no @derive(Json): member(s) GroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsMemberInGroupsRequest:
     str IdentityStoreId
     MemberId MemberId
     list[str] GroupIds
 
-# no @derive(Json): member(s) Results: list[GroupMembershipExistenceResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[GroupMembershipExistenceResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsMemberInGroupsResponse:
     list[GroupMembershipExistenceResult] Results
 
@@ -395,8 +403,9 @@ struct ListGroupMembershipsForMemberRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GroupMemberships: list[GroupMembership] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupMemberships: list[GroupMembership] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupMembershipsForMemberResponse:
     list[GroupMembership] GroupMemberships
     Optional[str] NextToken
@@ -408,22 +417,25 @@ struct ListGroupMembershipsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GroupMemberships: list[GroupMembership] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupMemberships: list[GroupMembership] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupMembershipsResponse:
     list[GroupMembership] GroupMemberships
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsRequest:
     str IdentityStoreId
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     list[Group] Groups
     Optional[str] NextToken
@@ -433,14 +445,16 @@ struct ListIdentityStoresRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IdentityStores: list[IdentityStore] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityStores: list[IdentityStore] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityStoresResponse:
     list[IdentityStore] IdentityStores
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Extensions: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Extensions: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersRequest:
     str IdentityStoreId
     Optional[list[str]] Extensions
@@ -448,8 +462,9 @@ struct ListUsersRequest:
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     list[User] Users
     Optional[str] NextToken
@@ -467,16 +482,18 @@ struct Name:
     Optional[str] HonorificPrefix
     Optional[str] HonorificSuffix
 
-# no @derive(Json): member(s) ApiRestrictSourceVpcs: list[str], ApiAllowSourceIps: list[str], ScimAllowSourceIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApiRestrictSourceVpcs: list[str], ApiAllowSourceIps: list[str], ScimAllowSourceIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     bool VpceAccessRequired
     Optional[list[str]] ApiRestrictSourceVpcs
     Optional[list[str]] ApiAllowSourceIps
     Optional[list[str]] ScimAllowSourceIps
 
-# no @derive(Json): member(s) ApiRestrictSourceVpcs: list[str], ApiAllowSourceIps: list[str], ScimAllowSourceIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApiRestrictSourceVpcs: list[str], ApiAllowSourceIps: list[str], ScimAllowSourceIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfigurationDetails:
     bool VpceAccessRequired
     Optional[list[str]] ApiRestrictSourceVpcs
@@ -527,8 +544,9 @@ struct UniqueAttribute:
     str AttributePath
     AttributeValue AttributeValue
 
-# no @derive(Json): member(s) Operations: list[AttributeOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[AttributeOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGroupRequest:
     str IdentityStoreId
     str GroupId
@@ -542,8 +560,9 @@ struct UpdateGroupResponse:
     str GroupArn
     str Revision
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdentityStoreRequest:
     str IdentityStoreId
     Optional[NetworkConfiguration] NetworkConfiguration
@@ -553,8 +572,9 @@ struct UpdateIdentityStoreResponse:
     str IdentityStoreId
     str IdentityStoreArn
 
-# no @derive(Json): member(s) Operations: list[AttributeOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[AttributeOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserRequest:
     str IdentityStoreId
     str UserId
@@ -568,8 +588,9 @@ struct UpdateUserResponse:
     str UserArn
     str Revision
 
-# no @derive(Json): member(s) ExternalIds: list[ExternalId], Emails: list[Email], Addresses: list[Address], PhoneNumbers: list[PhoneNumber], Photos: list[Photo], Roles: list[Role], Extensions: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalIds: list[ExternalId], Emails: list[Email], Addresses: list[Address], PhoneNumbers: list[PhoneNumber], Photos: list[Photo], Roles: list[Role], Extensions: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct User:
     str IdentityStoreId
     str UserId
@@ -640,21 +661,240 @@ def identitystore_error_from_code(str code) -> identitystoreError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateUser (input CreateUserRequest)
-#   DescribeUser (input DescribeUserRequest)
-#   IsMemberInGroups (input IsMemberInGroupsRequest)
-#   ListGroups (input ListGroupsRequest)
-#   ListUsers (input ListUsersRequest)
-#   UpdateGroup (input UpdateGroupRequest)
-#   UpdateIdentityStore (input UpdateIdentityStoreRequest)
-#   UpdateUser (input UpdateUserRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def identitystore_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListGroups (input not derivable (no generated method))
-#   ListUsers (input not derivable (no generated method))
+def identitystore_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def identitystore_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateUserRequest to a compact JSON object (declaration order).
+def create_user_request_to_json(CreateUserRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    if v.UserName.is_some():
+        auto u0 = v.UserName.unwrap()
+        parts.append("\"UserName\":" + identitystore_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + u1.to_json())
+    if v.DisplayName.is_some():
+        auto u2 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + identitystore_json_str(u2))
+    if v.NickName.is_some():
+        auto u3 = v.NickName.unwrap()
+        parts.append("\"NickName\":" + identitystore_json_str(u3))
+    if v.ProfileUrl.is_some():
+        auto u4 = v.ProfileUrl.unwrap()
+        parts.append("\"ProfileUrl\":" + identitystore_json_str(u4))
+    if v.Emails.is_some():
+        auto u5 = v.Emails.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Emails\":" + identitystore_json_arr(e6))
+    if v.Addresses.is_some():
+        auto u7 = v.Addresses.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Addresses\":" + identitystore_json_arr(e8))
+    if v.PhoneNumbers.is_some():
+        auto u9 = v.PhoneNumbers.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PhoneNumbers\":" + identitystore_json_arr(e10))
+    if v.UserType.is_some():
+        auto u11 = v.UserType.unwrap()
+        parts.append("\"UserType\":" + identitystore_json_str(u11))
+    if v.Title.is_some():
+        auto u12 = v.Title.unwrap()
+        parts.append("\"Title\":" + identitystore_json_str(u12))
+    if v.PreferredLanguage.is_some():
+        auto u13 = v.PreferredLanguage.unwrap()
+        parts.append("\"PreferredLanguage\":" + identitystore_json_str(u13))
+    if v.Locale.is_some():
+        auto u14 = v.Locale.unwrap()
+        parts.append("\"Locale\":" + identitystore_json_str(u14))
+    if v.Timezone.is_some():
+        auto u15 = v.Timezone.unwrap()
+        parts.append("\"Timezone\":" + identitystore_json_str(u15))
+    if v.Photos.is_some():
+        auto u16 = v.Photos.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"Photos\":" + identitystore_json_arr(e17))
+    if v.Website.is_some():
+        auto u18 = v.Website.unwrap()
+        parts.append("\"Website\":" + identitystore_json_str(u18))
+    if v.Birthdate.is_some():
+        auto u19 = v.Birthdate.unwrap()
+        parts.append("\"Birthdate\":" + identitystore_json_str(u19))
+    if v.Roles.is_some():
+        auto u20 = v.Roles.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"Roles\":" + identitystore_json_arr(e21))
+    if v.Extensions.is_some():
+        auto u22 = v.Extensions.unwrap()
+        list[str] m23 = []
+        for k23 in sorted(u22.keys()):
+            m23.append(identitystore_json_str(k23) + ":" + u22[k23].to_json())
+        parts.append("\"Extensions\":" + identitystore_json_obj(m23))
+    return identitystore_json_obj(parts)
+
+# Serialize DescribeUserRequest to a compact JSON object (declaration order).
+def describe_user_request_to_json(DescribeUserRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    parts.append("\"UserId\":" + identitystore_json_str(v.UserId))
+    if v.Extensions.is_some():
+        auto u0 = v.Extensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(identitystore_json_str(x1))
+        parts.append("\"Extensions\":" + identitystore_json_arr(e1))
+    return identitystore_json_obj(parts)
+
+# Serialize IsMemberInGroupsRequest to a compact JSON object (declaration order).
+def is_member_in_groups_request_to_json(IsMemberInGroupsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    parts.append("\"MemberId\":" + v.MemberId.to_json())
+    list[str] e0 = []
+    for x0 in v.GroupIds:
+        e0.append(identitystore_json_str(x0))
+    parts.append("\"GroupIds\":" + identitystore_json_arr(e0))
+    return identitystore_json_obj(parts)
+
+# Serialize ListGroupsRequest to a compact JSON object (declaration order).
+def list_groups_request_to_json(ListGroupsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + identitystore_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + identitystore_json_arr(e3))
+    return identitystore_json_obj(parts)
+
+# Serialize ListUsersRequest to a compact JSON object (declaration order).
+def list_users_request_to_json(ListUsersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    if v.Extensions.is_some():
+        auto u0 = v.Extensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(identitystore_json_str(x1))
+        parts.append("\"Extensions\":" + identitystore_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + identitystore_json_str(u3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Filters\":" + identitystore_json_arr(e5))
+    return identitystore_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"VpceAccessRequired\":" + json.dumps(JsonValue.Bool(v.VpceAccessRequired)))
+    if v.ApiRestrictSourceVpcs.is_some():
+        auto u0 = v.ApiRestrictSourceVpcs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(identitystore_json_str(x1))
+        parts.append("\"ApiRestrictSourceVpcs\":" + identitystore_json_arr(e1))
+    if v.ApiAllowSourceIps.is_some():
+        auto u2 = v.ApiAllowSourceIps.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(identitystore_json_str(x3))
+        parts.append("\"ApiAllowSourceIps\":" + identitystore_json_arr(e3))
+    if v.ScimAllowSourceIps.is_some():
+        auto u4 = v.ScimAllowSourceIps.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(identitystore_json_str(x5))
+        parts.append("\"ScimAllowSourceIps\":" + identitystore_json_arr(e5))
+    return identitystore_json_obj(parts)
+
+# Serialize UpdateGroupRequest to a compact JSON object (declaration order).
+def update_group_request_to_json(UpdateGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    parts.append("\"GroupId\":" + identitystore_json_str(v.GroupId))
+    list[str] e0 = []
+    for x0 in v.Operations:
+        e0.append(x0.to_json())
+    parts.append("\"Operations\":" + identitystore_json_arr(e0))
+    if v.Revision.is_some():
+        auto u1 = v.Revision.unwrap()
+        parts.append("\"Revision\":" + identitystore_json_str(u1))
+    return identitystore_json_obj(parts)
+
+# Serialize UpdateIdentityStoreRequest to a compact JSON object (declaration order).
+def update_identity_store_request_to_json(UpdateIdentityStoreRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    if v.NetworkConfiguration.is_some():
+        auto u0 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u0))
+    return identitystore_json_obj(parts)
+
+# Serialize UpdateUserRequest to a compact JSON object (declaration order).
+def update_user_request_to_json(UpdateUserRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityStoreId\":" + identitystore_json_str(v.IdentityStoreId))
+    parts.append("\"UserId\":" + identitystore_json_str(v.UserId))
+    list[str] e0 = []
+    for x0 in v.Operations:
+        e0.append(x0.to_json())
+    parts.append("\"Operations\":" + identitystore_json_arr(e0))
+    if v.Revision.is_some():
+        auto u1 = v.Revision.unwrap()
+        parts.append("\"Revision\":" + identitystore_json_str(u1))
+    return identitystore_json_obj(parts)
 
 # A bound identitystore client: credentials + region, threaded into every operation.
 struct identitystoreClient:
@@ -672,6 +912,12 @@ struct identitystoreClient:
     def create_group_membership(self, CreateGroupMembershipRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "CreateGroupMembership", body)
+
+    # CreateUser
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto body = create_user_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "CreateUser", body)
 
     # DeleteGroup
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -709,6 +955,12 @@ struct identitystoreClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "DescribeIdentityStore", body)
 
+    # DescribeUser
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_user(self, DescribeUserRequest input) -> str:
+        auto body = describe_user_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "DescribeUser", body)
+
     # GetGroupId
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_group_id(self, GetGroupIdRequest input) -> str:
@@ -727,6 +979,12 @@ struct identitystoreClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "GetUserId", body)
 
+    # IsMemberInGroups
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def is_member_in_groups(self, IsMemberInGroupsRequest input) -> str:
+        auto body = is_member_in_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "IsMemberInGroups", body)
+
     # ListGroupMemberships
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_group_memberships(self, ListGroupMembershipsRequest input) -> str:
@@ -739,11 +997,41 @@ struct identitystoreClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListGroupMembershipsForMember", body)
 
+    # ListGroups
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_groups(self, ListGroupsRequest input) -> str:
+        auto body = list_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListGroups", body)
+
     # ListIdentityStores
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_identity_stores(self, ListIdentityStoresRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListIdentityStores", body)
+
+    # ListUsers
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_users(self, ListUsersRequest input) -> str:
+        auto body = list_users_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListUsers", body)
+
+    # UpdateGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_group(self, UpdateGroupRequest input) -> str:
+        auto body = update_group_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "UpdateGroup", body)
+
+    # UpdateIdentityStore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_identity_store(self, UpdateIdentityStoreRequest input) -> str:
+        auto body = update_identity_store_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "UpdateIdentityStore", body)
+
+    # UpdateUser
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto body = update_user_request_to_json(input)
+        return awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "UpdateUser", body)
 
     # Paginator for ListGroupMemberships — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: GroupMemberships).
@@ -773,6 +1061,20 @@ struct identitystoreClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Groups).
+    def paginate_list_groups(self, ListGroupsRequest input):
+        auto host = endpoints.regional_host(identitystore_protocol().service, self.region)
+        while True:
+            auto body = list_groups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListGroups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListIdentityStores — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: IdentityStores).
     def paginate_list_identity_stores(self, ListIdentityStoresRequest input):
@@ -780,6 +1082,20 @@ struct identitystoreClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListIdentityStores", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListUsers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Users).
+    def paginate_list_users(self, ListUsersRequest input):
+        auto host = endpoints.regional_host(identitystore_protocol().service, self.region)
+        while True:
+            auto body = list_users_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(identitystore_protocol(), self.creds, self.region, "ListUsers", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

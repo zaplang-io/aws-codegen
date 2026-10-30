@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 34 operations — 23 with a generated method,
-#   11 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 34 operations — 34 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   156 structs (84 @derive(Json)), 10 enums, 9 error variants.
-#   4 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -121,8 +121,9 @@ struct ActionIdentifier:
     str actionType
     str actionId
 
-# no @derive(Json): member(s) set: list[AttributeValue], record: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) set: list[AttributeValue], record: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValue:
     Optional[bool] boolean
     Optional[EntityIdentifier] entityIdentifier
@@ -143,8 +144,9 @@ struct BatchGetPolicyErrorItem:
     str policyId
     str message
 
-# no @derive(Json): member(s) requests: list[BatchGetPolicyInputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requests: list[BatchGetPolicyInputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPolicyInput:
     list[BatchGetPolicyInputItem] requests
 
@@ -153,8 +155,9 @@ struct BatchGetPolicyInputItem:
     str policyStoreId
     str policyId
 
-# no @derive(Json): member(s) results: list[BatchGetPolicyOutputItem], errors: list[BatchGetPolicyErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[BatchGetPolicyOutputItem], errors: list[BatchGetPolicyErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPolicyOutput:
     list[BatchGetPolicyOutputItem] results
     list[BatchGetPolicyErrorItem] errors
@@ -171,36 +174,41 @@ struct BatchGetPolicyOutputItem:
     DateTime lastUpdatedDate
     Optional[str] name
 
-# no @derive(Json): member(s) entities: EntitiesDefinition, requests: list[BatchIsAuthorizedInputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: EntitiesDefinition, requests: list[BatchIsAuthorizedInputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedInput:
     str policyStoreId
     Optional[EntitiesDefinition] entities
     list[BatchIsAuthorizedInputItem] requests
 
-# no @derive(Json): member(s) context: ContextDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedInputItem:
     Optional[EntityIdentifier] principal
     Optional[ActionIdentifier] action
     Optional[EntityIdentifier] resource
     Optional[ContextDefinition] context
 
-# no @derive(Json): member(s) results: list[BatchIsAuthorizedOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[BatchIsAuthorizedOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedOutput:
     list[BatchIsAuthorizedOutputItem] results
 
-# no @derive(Json): member(s) request: BatchIsAuthorizedInputItem, determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) request: BatchIsAuthorizedInputItem, determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedOutputItem:
     BatchIsAuthorizedInputItem request
     Decision decision
     list[DeterminingPolicyItem] determiningPolicies
     list[EvaluationErrorItem] errors
 
-# no @derive(Json): member(s) entities: EntitiesDefinition, requests: list[BatchIsAuthorizedWithTokenInputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: EntitiesDefinition, requests: list[BatchIsAuthorizedWithTokenInputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedWithTokenInput:
     str policyStoreId
     Optional[str] identityToken
@@ -208,29 +216,33 @@ struct BatchIsAuthorizedWithTokenInput:
     Optional[EntitiesDefinition] entities
     list[BatchIsAuthorizedWithTokenInputItem] requests
 
-# no @derive(Json): member(s) context: ContextDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedWithTokenInputItem:
     Optional[ActionIdentifier] action
     Optional[EntityIdentifier] resource
     Optional[ContextDefinition] context
 
-# no @derive(Json): member(s) results: list[BatchIsAuthorizedWithTokenOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[BatchIsAuthorizedWithTokenOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedWithTokenOutput:
     Optional[EntityIdentifier] principal
     list[BatchIsAuthorizedWithTokenOutputItem] results
 
-# no @derive(Json): member(s) request: BatchIsAuthorizedWithTokenInputItem, determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) request: BatchIsAuthorizedWithTokenInputItem, determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchIsAuthorizedWithTokenOutputItem:
     BatchIsAuthorizedWithTokenInputItem request
     Decision decision
     list[DeterminingPolicyItem] determiningPolicies
     list[EvaluationErrorItem] errors
 
-# no @derive(Json): member(s) set: list[CedarTagValue], record: dict[str, CedarTagValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) set: list[CedarTagValue], record: dict[str, CedarTagValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CedarTagValue:
     Optional[bool] boolean
     Optional[EntityIdentifier] entityIdentifier
@@ -256,61 +268,70 @@ struct CognitoGroupConfigurationDetail:
 struct CognitoGroupConfigurationItem:
     Optional[str] groupEntityType
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CognitoUserPoolConfiguration:
     str userPoolArn
     Optional[list[str]] clientIds
     Optional[CognitoGroupConfiguration] groupConfiguration
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CognitoUserPoolConfigurationDetail:
     str userPoolArn
     list[str] clientIds
     str issuer
     Optional[CognitoGroupConfigurationDetail] groupConfiguration
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CognitoUserPoolConfigurationItem:
     str userPoolArn
     list[str] clientIds
     str issuer
     Optional[CognitoGroupConfigurationItem] groupConfiguration
 
-# no @derive(Json): member(s) cognitoUserPoolConfiguration: CognitoUserPoolConfiguration, openIdConnectConfiguration: OpenIdConnectConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cognitoUserPoolConfiguration: CognitoUserPoolConfiguration, openIdConnectConfiguration: OpenIdConnectConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     Optional[CognitoUserPoolConfiguration] cognitoUserPoolConfiguration
     Optional[OpenIdConnectConfiguration] openIdConnectConfiguration
 
-# no @derive(Json): member(s) cognitoUserPoolConfiguration: CognitoUserPoolConfigurationDetail, openIdConnectConfiguration: OpenIdConnectConfigurationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cognitoUserPoolConfiguration: CognitoUserPoolConfigurationDetail, openIdConnectConfiguration: OpenIdConnectConfigurationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationDetail:
     Optional[CognitoUserPoolConfigurationDetail] cognitoUserPoolConfiguration
     Optional[OpenIdConnectConfigurationDetail] openIdConnectConfiguration
 
-# no @derive(Json): member(s) cognitoUserPoolConfiguration: CognitoUserPoolConfigurationItem, openIdConnectConfiguration: OpenIdConnectConfigurationItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cognitoUserPoolConfiguration: CognitoUserPoolConfigurationItem, openIdConnectConfiguration: OpenIdConnectConfigurationItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationItem:
     Optional[CognitoUserPoolConfigurationItem] cognitoUserPoolConfiguration
     Optional[OpenIdConnectConfigurationItem] openIdConnectConfiguration
 
-# no @derive(Json): member(s) resources: list[ResourceConflict] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[ResourceConflict] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConflictException:
     str message
     list[ResourceConflict] resources
 
-# no @derive(Json): member(s) contextMap: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contextMap: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextDefinition:
     Optional[dict[str, AttributeValue]] contextMap
     Optional[str] cedarJson
 
-# no @derive(Json): member(s) configuration: Configuration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: Configuration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdentitySourceInput:
     Optional[str] clientToken
     str policyStoreId
@@ -333,8 +354,9 @@ struct CreatePolicyInput:
     PolicyDefinition definition
     Optional[str] name
 
-# no @derive(Json): member(s) actions: list[ActionIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[ActionIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicyOutput:
     str policyStoreId
     str policyId
@@ -359,8 +381,9 @@ struct CreatePolicyStoreAliasOutput:
     @json(timestamp="iso8601")
     DateTime createdAt
 
-# no @derive(Json): member(s) encryptionSettings: EncryptionSettings, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionSettings: EncryptionSettings, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicyStoreInput:
     Optional[str] clientToken
     ValidationSettings validationSettings
@@ -448,20 +471,23 @@ struct DeletePolicyTemplateOutput:
 struct DeterminingPolicyItem:
     str policyId
 
-# no @derive(Json): member(s) kmsEncryptionSettings: KmsEncryptionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kmsEncryptionSettings: KmsEncryptionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionSettings:
     Optional[KmsEncryptionSettings] kmsEncryptionSettings
     Optional[Unit] default
 
-# no @derive(Json): member(s) kmsEncryptionState: KmsEncryptionState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kmsEncryptionState: KmsEncryptionState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionState:
     Optional[KmsEncryptionState] kmsEncryptionState
     Optional[Unit] default
 
-# no @derive(Json): member(s) entityList: list[EntityItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityList: list[EntityItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntitiesDefinition:
     Optional[list[EntityItem]] entityList
     Optional[str] cedarJson
@@ -471,8 +497,9 @@ struct EntityIdentifier:
     str entityType
     str entityId
 
-# no @derive(Json): member(s) attributes: dict[str, AttributeValue], parents: list[EntityIdentifier], tags: dict[str, CedarTagValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, AttributeValue], parents: list[EntityIdentifier], tags: dict[str, CedarTagValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityItem:
     EntityIdentifier identifier
     Optional[dict[str, AttributeValue]] attributes
@@ -493,8 +520,9 @@ struct GetIdentitySourceInput:
     str policyStoreId
     str identitySourceId
 
-# no @derive(Json): member(s) details: IdentitySourceDetails, configuration: ConfigurationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: IdentitySourceDetails, configuration: ConfigurationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentitySourceOutput:
     DateTime createdDate
     Optional[IdentitySourceDetails] details
@@ -509,8 +537,9 @@ struct GetPolicyInput:
     str policyStoreId
     str policyId
 
-# no @derive(Json): member(s) actions: list[ActionIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[ActionIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPolicyOutput:
     str policyStoreId
     str policyId
@@ -542,8 +571,9 @@ struct GetPolicyStoreInput:
     str policyStoreId
     Optional[bool] tags
 
-# no @derive(Json): member(s) encryptionState: EncryptionState, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionState: EncryptionState, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPolicyStoreOutput:
     str policyStoreId
     str arn
@@ -577,8 +607,9 @@ struct GetPolicyTemplateOutput:
 struct GetSchemaInput:
     str policyStoreId
 
-# no @derive(Json): member(s) namespaces: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSchemaOutput:
     str policyStoreId
     str schema
@@ -586,8 +617,9 @@ struct GetSchemaOutput:
     DateTime lastUpdatedDate
     Optional[list[str]] namespaces
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentitySourceDetails:
     Optional[list[str]] clientIds
     Optional[str] userPoolArn
@@ -598,8 +630,9 @@ struct IdentitySourceDetails:
 struct IdentitySourceFilter:
     Optional[str] principalEntityType
 
-# no @derive(Json): member(s) details: IdentitySourceItemDetails, configuration: ConfigurationItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: IdentitySourceItemDetails, configuration: ConfigurationItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentitySourceItem:
     DateTime createdDate
     Optional[IdentitySourceItemDetails] details
@@ -609,8 +642,9 @@ struct IdentitySourceItem:
     str principalEntityType
     Optional[ConfigurationItem] configuration
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentitySourceItemDetails:
     Optional[list[str]] clientIds
     Optional[str] userPoolArn
@@ -625,8 +659,9 @@ struct InternalServerException:
 struct InvalidStateException:
     str message
 
-# no @derive(Json): member(s) context: ContextDefinition, entities: EntitiesDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextDefinition, entities: EntitiesDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsAuthorizedInput:
     str policyStoreId
     Optional[EntityIdentifier] principal
@@ -635,15 +670,17 @@ struct IsAuthorizedInput:
     Optional[ContextDefinition] context
     Optional[EntitiesDefinition] entities
 
-# no @derive(Json): member(s) determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsAuthorizedOutput:
     Decision decision
     list[DeterminingPolicyItem] determiningPolicies
     list[EvaluationErrorItem] errors
 
-# no @derive(Json): member(s) context: ContextDefinition, entities: EntitiesDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextDefinition, entities: EntitiesDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsAuthorizedWithTokenInput:
     str policyStoreId
     Optional[str] identityToken
@@ -653,36 +690,41 @@ struct IsAuthorizedWithTokenInput:
     Optional[ContextDefinition] context
     Optional[EntitiesDefinition] entities
 
-# no @derive(Json): member(s) determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) determiningPolicies: list[DeterminingPolicyItem], errors: list[EvaluationErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsAuthorizedWithTokenOutput:
     Decision decision
     list[DeterminingPolicyItem] determiningPolicies
     list[EvaluationErrorItem] errors
     Optional[EntityIdentifier] principal
 
-# no @derive(Json): member(s) encryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KmsEncryptionSettings:
     str key
     Optional[dict[str, str]] encryptionContext
 
-# no @derive(Json): member(s) encryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KmsEncryptionState:
     str key
     dict[str, str] encryptionContext
 
-# no @derive(Json): member(s) filters: list[IdentitySourceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[IdentitySourceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentitySourcesInput:
     str policyStoreId
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[list[IdentitySourceFilter]] filters
 
-# no @derive(Json): member(s) identitySources: list[IdentitySourceItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identitySources: list[IdentitySourceItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentitySourcesOutput:
     Optional[str] nextToken
     list[IdentitySourceItem] identitySources
@@ -694,8 +736,9 @@ struct ListPoliciesInput:
     Optional[int64] maxResults
     Optional[PolicyFilter] filter
 
-# no @derive(Json): member(s) policies: list[PolicyItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[PolicyItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesOutput:
     Optional[str] nextToken
     list[PolicyItem] policies
@@ -706,8 +749,9 @@ struct ListPolicyStoreAliasesInput:
     Optional[int64] maxResults
     Optional[PolicyStoreAliasFilter] filter
 
-# no @derive(Json): member(s) policyStoreAliases: list[PolicyStoreAliasItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyStoreAliases: list[PolicyStoreAliasItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyStoreAliasesOutput:
     Optional[str] nextToken
     list[PolicyStoreAliasItem] policyStoreAliases
@@ -717,8 +761,9 @@ struct ListPolicyStoresInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) policyStores: list[PolicyStoreItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyStores: list[PolicyStoreItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyStoresOutput:
     Optional[str] nextToken
     list[PolicyStoreItem] policyStores
@@ -729,8 +774,9 @@ struct ListPolicyTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) policyTemplates: list[PolicyTemplateItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyTemplates: list[PolicyTemplateItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyTemplatesOutput:
     Optional[str] nextToken
     list[PolicyTemplateItem] policyTemplates
@@ -739,47 +785,54 @@ struct ListPolicyTemplatesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) audiences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audiences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectAccessTokenConfiguration:
     Optional[str] principalIdClaim
     Optional[list[str]] audiences
 
-# no @derive(Json): member(s) audiences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audiences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectAccessTokenConfigurationDetail:
     Optional[str] principalIdClaim
     Optional[list[str]] audiences
 
-# no @derive(Json): member(s) audiences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audiences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectAccessTokenConfigurationItem:
     Optional[str] principalIdClaim
     Optional[list[str]] audiences
 
-# no @derive(Json): member(s) tokenSelection: OpenIdConnectTokenSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenSelection: OpenIdConnectTokenSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectConfiguration:
     str issuer
     Optional[str] entityIdPrefix
     Optional[OpenIdConnectGroupConfiguration] groupConfiguration
     OpenIdConnectTokenSelection tokenSelection
 
-# no @derive(Json): member(s) tokenSelection: OpenIdConnectTokenSelectionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenSelection: OpenIdConnectTokenSelectionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectConfigurationDetail:
     str issuer
     Optional[str] entityIdPrefix
     Optional[OpenIdConnectGroupConfigurationDetail] groupConfiguration
     OpenIdConnectTokenSelectionDetail tokenSelection
 
-# no @derive(Json): member(s) tokenSelection: OpenIdConnectTokenSelectionItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenSelection: OpenIdConnectTokenSelectionItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectConfigurationItem:
     str issuer
     Optional[str] entityIdPrefix
@@ -801,38 +854,44 @@ struct OpenIdConnectGroupConfigurationItem:
     str groupClaim
     str groupEntityType
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectIdentityTokenConfiguration:
     Optional[str] principalIdClaim
     Optional[list[str]] clientIds
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectIdentityTokenConfigurationDetail:
     Optional[str] principalIdClaim
     Optional[list[str]] clientIds
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectIdentityTokenConfigurationItem:
     Optional[str] principalIdClaim
     Optional[list[str]] clientIds
 
-# no @derive(Json): member(s) accessTokenOnly: OpenIdConnectAccessTokenConfiguration, identityTokenOnly: OpenIdConnectIdentityTokenConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTokenOnly: OpenIdConnectAccessTokenConfiguration, identityTokenOnly: OpenIdConnectIdentityTokenConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectTokenSelection:
     Optional[OpenIdConnectAccessTokenConfiguration] accessTokenOnly
     Optional[OpenIdConnectIdentityTokenConfiguration] identityTokenOnly
 
-# no @derive(Json): member(s) accessTokenOnly: OpenIdConnectAccessTokenConfigurationDetail, identityTokenOnly: OpenIdConnectIdentityTokenConfigurationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTokenOnly: OpenIdConnectAccessTokenConfigurationDetail, identityTokenOnly: OpenIdConnectIdentityTokenConfigurationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectTokenSelectionDetail:
     Optional[OpenIdConnectAccessTokenConfigurationDetail] accessTokenOnly
     Optional[OpenIdConnectIdentityTokenConfigurationDetail] identityTokenOnly
 
-# no @derive(Json): member(s) accessTokenOnly: OpenIdConnectAccessTokenConfigurationItem, identityTokenOnly: OpenIdConnectIdentityTokenConfigurationItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTokenOnly: OpenIdConnectAccessTokenConfigurationItem, identityTokenOnly: OpenIdConnectIdentityTokenConfigurationItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenIdConnectTokenSelectionItem:
     Optional[OpenIdConnectAccessTokenConfigurationItem] accessTokenOnly
     Optional[OpenIdConnectIdentityTokenConfigurationItem] identityTokenOnly
@@ -859,8 +918,9 @@ struct PolicyFilter:
     Optional[PolicyType] policyType
     Optional[str] policyTemplateId
 
-# no @derive(Json): member(s) actions: list[ActionIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[ActionIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyItem:
     str policyStoreId
     str policyId
@@ -913,8 +973,9 @@ struct PutSchemaInput:
     str policyStoreId
     SchemaDefinition definition
 
-# no @derive(Json): member(s) namespaces: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutSchemaOutput:
     str policyStoreId
     list[str] namespaces
@@ -958,8 +1019,9 @@ struct StaticPolicyDefinitionDetail:
 struct StaticPolicyDefinitionItem:
     Optional[str] description
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     dict[str, str] tags
@@ -1003,8 +1065,9 @@ struct Unit:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
@@ -1018,21 +1081,24 @@ struct UntagResourceOutput:
 struct UpdateCognitoGroupConfiguration:
     str groupEntityType
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCognitoUserPoolConfiguration:
     str userPoolArn
     Optional[list[str]] clientIds
     Optional[UpdateCognitoGroupConfiguration] groupConfiguration
 
-# no @derive(Json): member(s) cognitoUserPoolConfiguration: UpdateCognitoUserPoolConfiguration, openIdConnectConfiguration: UpdateOpenIdConnectConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cognitoUserPoolConfiguration: UpdateCognitoUserPoolConfiguration, openIdConnectConfiguration: UpdateOpenIdConnectConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfiguration:
     Optional[UpdateCognitoUserPoolConfiguration] cognitoUserPoolConfiguration
     Optional[UpdateOpenIdConnectConfiguration] openIdConnectConfiguration
 
-# no @derive(Json): member(s) updateConfiguration: UpdateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) updateConfiguration: UpdateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdentitySourceInput:
     str policyStoreId
     str identitySourceId
@@ -1048,14 +1114,16 @@ struct UpdateIdentitySourceOutput:
     DateTime lastUpdatedDate
     str policyStoreId
 
-# no @derive(Json): member(s) audiences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audiences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpenIdConnectAccessTokenConfiguration:
     Optional[str] principalIdClaim
     Optional[list[str]] audiences
 
-# no @derive(Json): member(s) tokenSelection: UpdateOpenIdConnectTokenSelection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenSelection: UpdateOpenIdConnectTokenSelection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpenIdConnectConfiguration:
     str issuer
     Optional[str] entityIdPrefix
@@ -1067,14 +1135,16 @@ struct UpdateOpenIdConnectGroupConfiguration:
     str groupClaim
     str groupEntityType
 
-# no @derive(Json): member(s) clientIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpenIdConnectIdentityTokenConfiguration:
     Optional[str] principalIdClaim
     Optional[list[str]] clientIds
 
-# no @derive(Json): member(s) accessTokenOnly: UpdateOpenIdConnectAccessTokenConfiguration, identityTokenOnly: UpdateOpenIdConnectIdentityTokenConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTokenOnly: UpdateOpenIdConnectAccessTokenConfiguration, identityTokenOnly: UpdateOpenIdConnectIdentityTokenConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpenIdConnectTokenSelection:
     Optional[UpdateOpenIdConnectAccessTokenConfiguration] accessTokenOnly
     Optional[UpdateOpenIdConnectIdentityTokenConfiguration] identityTokenOnly
@@ -1090,8 +1160,9 @@ struct UpdatePolicyInput:
     Optional[UpdatePolicyDefinition] definition
     Optional[str] name
 
-# no @derive(Json): member(s) actions: list[ActionIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[ActionIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePolicyOutput:
     str policyStoreId
     str policyId
@@ -1141,8 +1212,9 @@ struct UpdateStaticPolicyDefinition:
     Optional[str] description
     str statement
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -1196,34 +1268,592 @@ def verifiedpermissions_error_from_code(str code) -> VerifiedPermissionsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchGetPolicy (input BatchGetPolicyInput)
-#   BatchIsAuthorized (input BatchIsAuthorizedInput)
-#   BatchIsAuthorizedWithToken (input BatchIsAuthorizedWithTokenInput)
-#   CreateIdentitySource (input CreateIdentitySourceInput)
-#   CreatePolicyStore (input CreatePolicyStoreInput)
-#   IsAuthorized (input IsAuthorizedInput)
-#   IsAuthorizedWithToken (input IsAuthorizedWithTokenInput)
-#   ListIdentitySources (input ListIdentitySourcesInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateIdentitySource (input UpdateIdentitySourceInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def verifiedpermissions_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListIdentitySources (input not derivable (no generated method))
+def verifiedpermissions_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def verifiedpermissions_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AttributeValue to a compact JSON object (declaration order).
+def attribute_value_to_json(AttributeValue v) -> str:
+    list[str] parts = []
+    if v.boolean.is_some():
+        auto u0 = v.boolean.unwrap()
+        parts.append("\"boolean\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.entityIdentifier.is_some():
+        auto u1 = v.entityIdentifier.unwrap()
+        parts.append("\"entityIdentifier\":" + u1.to_json())
+    if v.long.is_some():
+        auto u2 = v.long.unwrap()
+        parts.append("\"long\":" + str(u2))
+    if v.string.is_some():
+        auto u3 = v.string.unwrap()
+        parts.append("\"string\":" + verifiedpermissions_json_str(u3))
+    if v.set_.is_some():
+        auto u4 = v.set_.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(attribute_value_to_json(x5))
+        parts.append("\"set\":" + verifiedpermissions_json_arr(e5))
+    if v.record.is_some():
+        auto u6 = v.record.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(verifiedpermissions_json_str(k7) + ":" + attribute_value_to_json(u6[k7]))
+        parts.append("\"record\":" + verifiedpermissions_json_obj(m7))
+    if v.ipaddr.is_some():
+        auto u8 = v.ipaddr.unwrap()
+        parts.append("\"ipaddr\":" + verifiedpermissions_json_str(u8))
+    if v.decimal.is_some():
+        auto u9 = v.decimal.unwrap()
+        parts.append("\"decimal\":" + verifiedpermissions_json_str(u9))
+    if v.datetime.is_some():
+        auto u10 = v.datetime.unwrap()
+        parts.append("\"datetime\":" + verifiedpermissions_json_str(u10))
+    if v.duration.is_some():
+        auto u11 = v.duration.unwrap()
+        parts.append("\"duration\":" + verifiedpermissions_json_str(u11))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize BatchGetPolicyInput to a compact JSON object (declaration order).
+def batch_get_policy_input_to_json(BatchGetPolicyInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.requests:
+        e0.append(x0.to_json())
+    parts.append("\"requests\":" + verifiedpermissions_json_arr(e0))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize BatchIsAuthorizedInput to a compact JSON object (declaration order).
+def batch_is_authorized_input_to_json(BatchIsAuthorizedInput v) -> str:
+    list[str] parts = []
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    if v.entities.is_some():
+        auto u0 = v.entities.unwrap()
+        parts.append("\"entities\":" + entities_definition_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.requests:
+        e1.append(batch_is_authorized_input_item_to_json(x1))
+    parts.append("\"requests\":" + verifiedpermissions_json_arr(e1))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize BatchIsAuthorizedInputItem to a compact JSON object (declaration order).
+def batch_is_authorized_input_item_to_json(BatchIsAuthorizedInputItem v) -> str:
+    list[str] parts = []
+    if v.principal.is_some():
+        auto u0 = v.principal.unwrap()
+        parts.append("\"principal\":" + u0.to_json())
+    if v.action.is_some():
+        auto u1 = v.action.unwrap()
+        parts.append("\"action\":" + u1.to_json())
+    if v.resource.is_some():
+        auto u2 = v.resource.unwrap()
+        parts.append("\"resource\":" + u2.to_json())
+    if v.context.is_some():
+        auto u3 = v.context.unwrap()
+        parts.append("\"context\":" + context_definition_to_json(u3))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize BatchIsAuthorizedWithTokenInput to a compact JSON object (declaration order).
+def batch_is_authorized_with_token_input_to_json(BatchIsAuthorizedWithTokenInput v) -> str:
+    list[str] parts = []
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    if v.identityToken.is_some():
+        auto u0 = v.identityToken.unwrap()
+        parts.append("\"identityToken\":" + verifiedpermissions_json_str(u0))
+    if v.accessToken.is_some():
+        auto u1 = v.accessToken.unwrap()
+        parts.append("\"accessToken\":" + verifiedpermissions_json_str(u1))
+    if v.entities.is_some():
+        auto u2 = v.entities.unwrap()
+        parts.append("\"entities\":" + entities_definition_to_json(u2))
+    list[str] e3 = []
+    for x3 in v.requests:
+        e3.append(batch_is_authorized_with_token_input_item_to_json(x3))
+    parts.append("\"requests\":" + verifiedpermissions_json_arr(e3))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize BatchIsAuthorizedWithTokenInputItem to a compact JSON object (declaration order).
+def batch_is_authorized_with_token_input_item_to_json(BatchIsAuthorizedWithTokenInputItem v) -> str:
+    list[str] parts = []
+    if v.action.is_some():
+        auto u0 = v.action.unwrap()
+        parts.append("\"action\":" + u0.to_json())
+    if v.resource.is_some():
+        auto u1 = v.resource.unwrap()
+        parts.append("\"resource\":" + u1.to_json())
+    if v.context.is_some():
+        auto u2 = v.context.unwrap()
+        parts.append("\"context\":" + context_definition_to_json(u2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize CedarTagValue to a compact JSON object (declaration order).
+def cedar_tag_value_to_json(CedarTagValue v) -> str:
+    list[str] parts = []
+    if v.boolean.is_some():
+        auto u0 = v.boolean.unwrap()
+        parts.append("\"boolean\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.entityIdentifier.is_some():
+        auto u1 = v.entityIdentifier.unwrap()
+        parts.append("\"entityIdentifier\":" + u1.to_json())
+    if v.long.is_some():
+        auto u2 = v.long.unwrap()
+        parts.append("\"long\":" + str(u2))
+    if v.string.is_some():
+        auto u3 = v.string.unwrap()
+        parts.append("\"string\":" + verifiedpermissions_json_str(u3))
+    if v.set_.is_some():
+        auto u4 = v.set_.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cedar_tag_value_to_json(x5))
+        parts.append("\"set\":" + verifiedpermissions_json_arr(e5))
+    if v.record.is_some():
+        auto u6 = v.record.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(verifiedpermissions_json_str(k7) + ":" + cedar_tag_value_to_json(u6[k7]))
+        parts.append("\"record\":" + verifiedpermissions_json_obj(m7))
+    if v.ipaddr.is_some():
+        auto u8 = v.ipaddr.unwrap()
+        parts.append("\"ipaddr\":" + verifiedpermissions_json_str(u8))
+    if v.decimal.is_some():
+        auto u9 = v.decimal.unwrap()
+        parts.append("\"decimal\":" + verifiedpermissions_json_str(u9))
+    if v.datetime.is_some():
+        auto u10 = v.datetime.unwrap()
+        parts.append("\"datetime\":" + verifiedpermissions_json_str(u10))
+    if v.duration.is_some():
+        auto u11 = v.duration.unwrap()
+        parts.append("\"duration\":" + verifiedpermissions_json_str(u11))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize CognitoUserPoolConfiguration to a compact JSON object (declaration order).
+def cognito_user_pool_configuration_to_json(CognitoUserPoolConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"userPoolArn\":" + verifiedpermissions_json_str(v.userPoolArn))
+    if v.clientIds.is_some():
+        auto u0 = v.clientIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(verifiedpermissions_json_str(x1))
+        parts.append("\"clientIds\":" + verifiedpermissions_json_arr(e1))
+    if v.groupConfiguration.is_some():
+        auto u2 = v.groupConfiguration.unwrap()
+        parts.append("\"groupConfiguration\":" + u2.to_json())
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize Configuration to a compact JSON object (declaration order).
+def configuration_to_json(Configuration v) -> str:
+    list[str] parts = []
+    if v.cognitoUserPoolConfiguration.is_some():
+        auto u0 = v.cognitoUserPoolConfiguration.unwrap()
+        parts.append("\"cognitoUserPoolConfiguration\":" + cognito_user_pool_configuration_to_json(u0))
+    if v.openIdConnectConfiguration.is_some():
+        auto u1 = v.openIdConnectConfiguration.unwrap()
+        parts.append("\"openIdConnectConfiguration\":" + open_id_connect_configuration_to_json(u1))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize ContextDefinition to a compact JSON object (declaration order).
+def context_definition_to_json(ContextDefinition v) -> str:
+    list[str] parts = []
+    if v.contextMap.is_some():
+        auto u0 = v.contextMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(verifiedpermissions_json_str(k1) + ":" + attribute_value_to_json(u0[k1]))
+        parts.append("\"contextMap\":" + verifiedpermissions_json_obj(m1))
+    if v.cedarJson.is_some():
+        auto u2 = v.cedarJson.unwrap()
+        parts.append("\"cedarJson\":" + verifiedpermissions_json_str(u2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize CreateIdentitySourceInput to a compact JSON object (declaration order).
+def create_identity_source_input_to_json(CreateIdentitySourceInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + verifiedpermissions_json_str(u0))
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    parts.append("\"configuration\":" + configuration_to_json(v.configuration))
+    if v.principalEntityType.is_some():
+        auto u1 = v.principalEntityType.unwrap()
+        parts.append("\"principalEntityType\":" + verifiedpermissions_json_str(u1))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize CreatePolicyStoreInput to a compact JSON object (declaration order).
+def create_policy_store_input_to_json(CreatePolicyStoreInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + verifiedpermissions_json_str(u0))
+    parts.append("\"validationSettings\":" + v.validationSettings.to_json())
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + verifiedpermissions_json_str(u1))
+    if v.deletionProtection.is_some():
+        auto u2 = v.deletionProtection.unwrap()
+        parts.append("\"deletionProtection\":" + u2.to_json())
+    if v.encryptionSettings.is_some():
+        auto u3 = v.encryptionSettings.unwrap()
+        parts.append("\"encryptionSettings\":" + encryption_settings_to_json(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(verifiedpermissions_json_str(k5) + ":" + verifiedpermissions_json_str(u4[k5]))
+        parts.append("\"tags\":" + verifiedpermissions_json_obj(m5))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize EncryptionSettings to a compact JSON object (declaration order).
+def encryption_settings_to_json(EncryptionSettings v) -> str:
+    list[str] parts = []
+    if v.kmsEncryptionSettings.is_some():
+        auto u0 = v.kmsEncryptionSettings.unwrap()
+        parts.append("\"kmsEncryptionSettings\":" + kms_encryption_settings_to_json(u0))
+    if v.default.is_some():
+        auto u1 = v.default.unwrap()
+        parts.append("\"default\":" + u1.to_json())
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize EntitiesDefinition to a compact JSON object (declaration order).
+def entities_definition_to_json(EntitiesDefinition v) -> str:
+    list[str] parts = []
+    if v.entityList.is_some():
+        auto u0 = v.entityList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(entity_item_to_json(x1))
+        parts.append("\"entityList\":" + verifiedpermissions_json_arr(e1))
+    if v.cedarJson.is_some():
+        auto u2 = v.cedarJson.unwrap()
+        parts.append("\"cedarJson\":" + verifiedpermissions_json_str(u2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize EntityItem to a compact JSON object (declaration order).
+def entity_item_to_json(EntityItem v) -> str:
+    list[str] parts = []
+    parts.append("\"identifier\":" + v.identifier.to_json())
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(verifiedpermissions_json_str(k1) + ":" + attribute_value_to_json(u0[k1]))
+        parts.append("\"attributes\":" + verifiedpermissions_json_obj(m1))
+    if v.parents.is_some():
+        auto u2 = v.parents.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"parents\":" + verifiedpermissions_json_arr(e3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(verifiedpermissions_json_str(k5) + ":" + cedar_tag_value_to_json(u4[k5]))
+        parts.append("\"tags\":" + verifiedpermissions_json_obj(m5))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize IsAuthorizedInput to a compact JSON object (declaration order).
+def is_authorized_input_to_json(IsAuthorizedInput v) -> str:
+    list[str] parts = []
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    if v.principal.is_some():
+        auto u0 = v.principal.unwrap()
+        parts.append("\"principal\":" + u0.to_json())
+    if v.action.is_some():
+        auto u1 = v.action.unwrap()
+        parts.append("\"action\":" + u1.to_json())
+    if v.resource.is_some():
+        auto u2 = v.resource.unwrap()
+        parts.append("\"resource\":" + u2.to_json())
+    if v.context.is_some():
+        auto u3 = v.context.unwrap()
+        parts.append("\"context\":" + context_definition_to_json(u3))
+    if v.entities.is_some():
+        auto u4 = v.entities.unwrap()
+        parts.append("\"entities\":" + entities_definition_to_json(u4))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize IsAuthorizedWithTokenInput to a compact JSON object (declaration order).
+def is_authorized_with_token_input_to_json(IsAuthorizedWithTokenInput v) -> str:
+    list[str] parts = []
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    if v.identityToken.is_some():
+        auto u0 = v.identityToken.unwrap()
+        parts.append("\"identityToken\":" + verifiedpermissions_json_str(u0))
+    if v.accessToken.is_some():
+        auto u1 = v.accessToken.unwrap()
+        parts.append("\"accessToken\":" + verifiedpermissions_json_str(u1))
+    if v.action.is_some():
+        auto u2 = v.action.unwrap()
+        parts.append("\"action\":" + u2.to_json())
+    if v.resource.is_some():
+        auto u3 = v.resource.unwrap()
+        parts.append("\"resource\":" + u3.to_json())
+    if v.context.is_some():
+        auto u4 = v.context.unwrap()
+        parts.append("\"context\":" + context_definition_to_json(u4))
+    if v.entities.is_some():
+        auto u5 = v.entities.unwrap()
+        parts.append("\"entities\":" + entities_definition_to_json(u5))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize KmsEncryptionSettings to a compact JSON object (declaration order).
+def kms_encryption_settings_to_json(KmsEncryptionSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + verifiedpermissions_json_str(v.key))
+    if v.encryptionContext.is_some():
+        auto u0 = v.encryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(verifiedpermissions_json_str(k1) + ":" + verifiedpermissions_json_str(u0[k1]))
+        parts.append("\"encryptionContext\":" + verifiedpermissions_json_obj(m1))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize ListIdentitySourcesInput to a compact JSON object (declaration order).
+def list_identity_sources_input_to_json(ListIdentitySourcesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + verifiedpermissions_json_str(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"filters\":" + verifiedpermissions_json_arr(e3))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize OpenIdConnectAccessTokenConfiguration to a compact JSON object (declaration order).
+def open_id_connect_access_token_configuration_to_json(OpenIdConnectAccessTokenConfiguration v) -> str:
+    list[str] parts = []
+    if v.principalIdClaim.is_some():
+        auto u0 = v.principalIdClaim.unwrap()
+        parts.append("\"principalIdClaim\":" + verifiedpermissions_json_str(u0))
+    if v.audiences.is_some():
+        auto u1 = v.audiences.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(verifiedpermissions_json_str(x2))
+        parts.append("\"audiences\":" + verifiedpermissions_json_arr(e2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize OpenIdConnectConfiguration to a compact JSON object (declaration order).
+def open_id_connect_configuration_to_json(OpenIdConnectConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"issuer\":" + verifiedpermissions_json_str(v.issuer))
+    if v.entityIdPrefix.is_some():
+        auto u0 = v.entityIdPrefix.unwrap()
+        parts.append("\"entityIdPrefix\":" + verifiedpermissions_json_str(u0))
+    if v.groupConfiguration.is_some():
+        auto u1 = v.groupConfiguration.unwrap()
+        parts.append("\"groupConfiguration\":" + u1.to_json())
+    parts.append("\"tokenSelection\":" + open_id_connect_token_selection_to_json(v.tokenSelection))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize OpenIdConnectIdentityTokenConfiguration to a compact JSON object (declaration order).
+def open_id_connect_identity_token_configuration_to_json(OpenIdConnectIdentityTokenConfiguration v) -> str:
+    list[str] parts = []
+    if v.principalIdClaim.is_some():
+        auto u0 = v.principalIdClaim.unwrap()
+        parts.append("\"principalIdClaim\":" + verifiedpermissions_json_str(u0))
+    if v.clientIds.is_some():
+        auto u1 = v.clientIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(verifiedpermissions_json_str(x2))
+        parts.append("\"clientIds\":" + verifiedpermissions_json_arr(e2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize OpenIdConnectTokenSelection to a compact JSON object (declaration order).
+def open_id_connect_token_selection_to_json(OpenIdConnectTokenSelection v) -> str:
+    list[str] parts = []
+    if v.accessTokenOnly.is_some():
+        auto u0 = v.accessTokenOnly.unwrap()
+        parts.append("\"accessTokenOnly\":" + open_id_connect_access_token_configuration_to_json(u0))
+    if v.identityTokenOnly.is_some():
+        auto u1 = v.identityTokenOnly.unwrap()
+        parts.append("\"identityTokenOnly\":" + open_id_connect_identity_token_configuration_to_json(u1))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + verifiedpermissions_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(verifiedpermissions_json_str(k0) + ":" + verifiedpermissions_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + verifiedpermissions_json_obj(m0))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + verifiedpermissions_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(verifiedpermissions_json_str(x0))
+    parts.append("\"tagKeys\":" + verifiedpermissions_json_arr(e0))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateCognitoUserPoolConfiguration to a compact JSON object (declaration order).
+def update_cognito_user_pool_configuration_to_json(UpdateCognitoUserPoolConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"userPoolArn\":" + verifiedpermissions_json_str(v.userPoolArn))
+    if v.clientIds.is_some():
+        auto u0 = v.clientIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(verifiedpermissions_json_str(x1))
+        parts.append("\"clientIds\":" + verifiedpermissions_json_arr(e1))
+    if v.groupConfiguration.is_some():
+        auto u2 = v.groupConfiguration.unwrap()
+        parts.append("\"groupConfiguration\":" + u2.to_json())
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateConfiguration to a compact JSON object (declaration order).
+def update_configuration_to_json(UpdateConfiguration v) -> str:
+    list[str] parts = []
+    if v.cognitoUserPoolConfiguration.is_some():
+        auto u0 = v.cognitoUserPoolConfiguration.unwrap()
+        parts.append("\"cognitoUserPoolConfiguration\":" + update_cognito_user_pool_configuration_to_json(u0))
+    if v.openIdConnectConfiguration.is_some():
+        auto u1 = v.openIdConnectConfiguration.unwrap()
+        parts.append("\"openIdConnectConfiguration\":" + update_open_id_connect_configuration_to_json(u1))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateIdentitySourceInput to a compact JSON object (declaration order).
+def update_identity_source_input_to_json(UpdateIdentitySourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"policyStoreId\":" + verifiedpermissions_json_str(v.policyStoreId))
+    parts.append("\"identitySourceId\":" + verifiedpermissions_json_str(v.identitySourceId))
+    parts.append("\"updateConfiguration\":" + update_configuration_to_json(v.updateConfiguration))
+    if v.principalEntityType.is_some():
+        auto u0 = v.principalEntityType.unwrap()
+        parts.append("\"principalEntityType\":" + verifiedpermissions_json_str(u0))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateOpenIdConnectAccessTokenConfiguration to a compact JSON object (declaration order).
+def update_open_id_connect_access_token_configuration_to_json(UpdateOpenIdConnectAccessTokenConfiguration v) -> str:
+    list[str] parts = []
+    if v.principalIdClaim.is_some():
+        auto u0 = v.principalIdClaim.unwrap()
+        parts.append("\"principalIdClaim\":" + verifiedpermissions_json_str(u0))
+    if v.audiences.is_some():
+        auto u1 = v.audiences.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(verifiedpermissions_json_str(x2))
+        parts.append("\"audiences\":" + verifiedpermissions_json_arr(e2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateOpenIdConnectConfiguration to a compact JSON object (declaration order).
+def update_open_id_connect_configuration_to_json(UpdateOpenIdConnectConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"issuer\":" + verifiedpermissions_json_str(v.issuer))
+    if v.entityIdPrefix.is_some():
+        auto u0 = v.entityIdPrefix.unwrap()
+        parts.append("\"entityIdPrefix\":" + verifiedpermissions_json_str(u0))
+    if v.groupConfiguration.is_some():
+        auto u1 = v.groupConfiguration.unwrap()
+        parts.append("\"groupConfiguration\":" + u1.to_json())
+    parts.append("\"tokenSelection\":" + update_open_id_connect_token_selection_to_json(v.tokenSelection))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateOpenIdConnectIdentityTokenConfiguration to a compact JSON object (declaration order).
+def update_open_id_connect_identity_token_configuration_to_json(UpdateOpenIdConnectIdentityTokenConfiguration v) -> str:
+    list[str] parts = []
+    if v.principalIdClaim.is_some():
+        auto u0 = v.principalIdClaim.unwrap()
+        parts.append("\"principalIdClaim\":" + verifiedpermissions_json_str(u0))
+    if v.clientIds.is_some():
+        auto u1 = v.clientIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(verifiedpermissions_json_str(x2))
+        parts.append("\"clientIds\":" + verifiedpermissions_json_arr(e2))
+    return verifiedpermissions_json_obj(parts)
+
+# Serialize UpdateOpenIdConnectTokenSelection to a compact JSON object (declaration order).
+def update_open_id_connect_token_selection_to_json(UpdateOpenIdConnectTokenSelection v) -> str:
+    list[str] parts = []
+    if v.accessTokenOnly.is_some():
+        auto u0 = v.accessTokenOnly.unwrap()
+        parts.append("\"accessTokenOnly\":" + update_open_id_connect_access_token_configuration_to_json(u0))
+    if v.identityTokenOnly.is_some():
+        auto u1 = v.identityTokenOnly.unwrap()
+        parts.append("\"identityTokenOnly\":" + update_open_id_connect_identity_token_configuration_to_json(u1))
+    return verifiedpermissions_json_obj(parts)
 
 # A bound VerifiedPermissions client: credentials + region, threaded into every operation.
 struct VerifiedPermissionsClient:
     core.Credentials creds
     str region
 
+    # BatchGetPolicy
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_policy(self, BatchGetPolicyInput input) -> str:
+        auto body = batch_get_policy_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "BatchGetPolicy", body)
+
+    # BatchIsAuthorized
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_is_authorized(self, BatchIsAuthorizedInput input) -> str:
+        auto body = batch_is_authorized_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "BatchIsAuthorized", body)
+
+    # BatchIsAuthorizedWithToken
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_is_authorized_with_token(self, BatchIsAuthorizedWithTokenInput input) -> str:
+        auto body = batch_is_authorized_with_token_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "BatchIsAuthorizedWithToken", body)
+
+    # CreateIdentitySource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_identity_source(self, CreateIdentitySourceInput input) -> str:
+        auto body = create_identity_source_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "CreateIdentitySource", body)
+
     # CreatePolicy
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_policy(self, CreatePolicyInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "CreatePolicy", body)
+
+    # CreatePolicyStore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_policy_store(self, CreatePolicyStoreInput input) -> str:
+        auto body = create_policy_store_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "CreatePolicyStore", body)
 
     # CreatePolicyStoreAlias
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -1303,6 +1933,24 @@ struct VerifiedPermissionsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "GetSchema", body)
 
+    # IsAuthorized
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def is_authorized(self, IsAuthorizedInput input) -> str:
+        auto body = is_authorized_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "IsAuthorized", body)
+
+    # IsAuthorizedWithToken
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def is_authorized_with_token(self, IsAuthorizedWithTokenInput input) -> str:
+        auto body = is_authorized_with_token_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "IsAuthorizedWithToken", body)
+
+    # ListIdentitySources
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_identity_sources(self, ListIdentitySourcesInput input) -> str:
+        auto body = list_identity_sources_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "ListIdentitySources", body)
+
     # ListPolicies
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_policies(self, ListPoliciesInput input) -> str:
@@ -1339,6 +1987,24 @@ struct VerifiedPermissionsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "PutSchema", body)
 
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateIdentitySource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_identity_source(self, UpdateIdentitySourceInput input) -> str:
+        auto body = update_identity_source_input_to_json(input)
+        return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "UpdateIdentitySource", body)
+
     # UpdatePolicy
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_policy(self, UpdatePolicyInput input) -> str:
@@ -1356,6 +2022,20 @@ struct VerifiedPermissionsClient:
     def update_policy_template(self, UpdatePolicyTemplateInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "UpdatePolicyTemplate", body)
+
+    # Paginator for ListIdentitySources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: identitySources).
+    def paginate_list_identity_sources(self, ListIdentitySourcesInput input):
+        auto host = endpoints.regional_host(verifiedpermissions_protocol().service, self.region)
+        while True:
+            auto body = list_identity_sources_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(verifiedpermissions_protocol(), self.creds, self.region, "ListIdentitySources", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListPolicies — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: policies).

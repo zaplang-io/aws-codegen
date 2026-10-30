@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 5 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   23 structs (19 @derive(Json)), 6 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -166,8 +166,9 @@ struct ListChangedBlocksRequest:
     Optional[int64] MaxResults
     Optional[int64] StartingBlockIndex
 
-# no @derive(Json): member(s) ChangedBlocks: list[ChangedBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangedBlocks: list[ChangedBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChangedBlocksResponse:
     Optional[list[ChangedBlock]] ChangedBlocks
     Optional[DateTime] ExpiryTime
@@ -183,8 +184,9 @@ struct ListSnapshotBlocksRequest:
     Optional[int64] MaxResults
     Optional[int64] StartingBlockIndex
 
-# no @derive(Json): member(s) Blocks: list[Block] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blocks: list[Block] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSnapshotBlocksResponse:
     Optional[list[Block]] Blocks
     Optional[DateTime] ExpiryTime
@@ -235,8 +237,9 @@ struct StartSnapshotRequest:
     Optional[str] KmsKeyArn
     Optional[int64] Timeout
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSnapshotResponse:
     Optional[str] Description
     Optional[str] SnapshotId
@@ -297,11 +300,6 @@ def ebs_error_from_code(str code) -> EBSError:
     return EBSError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   StartSnapshot (document member `Tags: list[Tag]` is not serializable by derive)
 
 # A bound EBS client: credentials + region, threaded into every operation.
 struct EBSClient:
@@ -386,6 +384,40 @@ struct EBSClient:
         headers["x-amz-Checksum-Algorithm"] = input.ChecksumAlgorithm
         auto b = binding.HttpBinding(method="PUT", path_template="/snapshots/{snapshotId}/blocks/{blockIndex}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.BlockData), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, ebs_service(), self.region, host)
+
+    # StartSnapshot  POST /snapshots
+    # errors: AccessDeniedException, ConcurrentLimitExceededException, ConflictException, InternalServerException, RequestThrottledException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def start_snapshot(self, StartSnapshotRequest input) -> str:
+        auto host = endpoints.regional_host(ebs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"VolumeSize\":" + str(input.VolumeSize))
+        if input.ParentSnapshotId.is_some():
+            auto u0 = input.ParentSnapshotId.unwrap()
+            parts.append("\"ParentSnapshotId\":" + ebs_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + ebs_json_arr(e2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"Description\":" + ebs_json_str(u3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + ebs_json_str(u4))
+        if input.Encrypted.is_some():
+            auto u5 = input.Encrypted.unwrap()
+            parts.append("\"Encrypted\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.KmsKeyArn.is_some():
+            auto u6 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + ebs_json_str(u6))
+        if input.Timeout.is_some():
+            auto u7 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u7))
+        auto bp = restjson.rest_json_document(b, ebs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ebs_service(), self.region, host)
 
 # Construct a EBSClient bound to credentials + region.

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 24 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 38 operations — 38 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   228 structs (131 @derive(Json)), 19 enums, 10 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -199,8 +199,9 @@ enum VirtualServiceStatusCode:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) file: FileAccessLog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) file: FileAccessLog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessLog:
     Optional[FileAccessLog] file
 
@@ -209,21 +210,24 @@ struct AwsCloudMapInstanceAttribute:
     str key
     str value
 
-# no @derive(Json): member(s) attributes: list[AwsCloudMapInstanceAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[AwsCloudMapInstanceAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudMapServiceDiscovery:
     Optional[list[AwsCloudMapInstanceAttribute]] attributes
     Optional[IpPreference] ipPreference
     str namespaceName
     str serviceName
 
-# no @derive(Json): member(s) virtualService: VirtualServiceBackend not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualService: VirtualServiceBackend not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Backend:
     Optional[VirtualServiceBackend] virtualService
 
-# no @derive(Json): member(s) clientPolicy: ClientPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientPolicy: ClientPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackendDefaults:
     Optional[ClientPolicy] clientPolicy
 
@@ -231,13 +235,15 @@ struct BackendDefaults:
 struct BadRequestException:
     Optional[str] message
 
-# no @derive(Json): member(s) tls: ClientPolicyTls not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tls: ClientPolicyTls not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientPolicy:
     Optional[ClientPolicyTls] tls
 
-# no @derive(Json): member(s) ports: list[int64], validation: TlsValidationContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ports: list[int64], validation: TlsValidationContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientPolicyTls:
     Optional[ClientTlsCertificate] certificate
     Optional[bool] enforce
@@ -264,8 +270,9 @@ struct CreateGatewayRouteInput:
     Optional[list[TagRef]] tags
     str virtualGatewayName
 
-# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayRouteOutput:
     GatewayRouteData gatewayRoute
 
@@ -292,8 +299,9 @@ struct CreateRouteInput:
     Optional[list[TagRef]] tags
     str virtualRouterName
 
-# no @derive(Json): member(s) route: RouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) route: RouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouteOutput:
     RouteData route
 
@@ -307,8 +315,9 @@ struct CreateVirtualGatewayInput:
     Optional[list[TagRef]] tags
     str virtualGatewayName
 
-# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVirtualGatewayOutput:
     VirtualGatewayData virtualGateway
 
@@ -322,8 +331,9 @@ struct CreateVirtualNodeInput:
     Optional[list[TagRef]] tags
     str virtualNodeName
 
-# no @derive(Json): member(s) virtualNode: VirtualNodeData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualNode: VirtualNodeData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVirtualNodeOutput:
     VirtualNodeData virtualNode
 
@@ -337,8 +347,9 @@ struct CreateVirtualRouterInput:
     Optional[list[TagRef]] tags
     str virtualRouterName
 
-# no @derive(Json): member(s) virtualRouter: VirtualRouterData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualRouter: VirtualRouterData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVirtualRouterOutput:
     VirtualRouterData virtualRouter
 
@@ -364,8 +375,9 @@ struct DeleteGatewayRouteInput:
     Optional[str] meshOwner
     str virtualGatewayName
 
-# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteGatewayRouteOutput:
     GatewayRouteData gatewayRoute
 
@@ -386,8 +398,9 @@ struct DeleteRouteInput:
     str routeName
     str virtualRouterName
 
-# no @derive(Json): member(s) route: RouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) route: RouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRouteOutput:
     RouteData route
 
@@ -398,8 +411,9 @@ struct DeleteVirtualGatewayInput:
     Optional[str] meshOwner
     str virtualGatewayName
 
-# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVirtualGatewayOutput:
     VirtualGatewayData virtualGateway
 
@@ -410,8 +424,9 @@ struct DeleteVirtualNodeInput:
     Optional[str] meshOwner
     str virtualNodeName
 
-# no @derive(Json): member(s) virtualNode: VirtualNodeData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualNode: VirtualNodeData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVirtualNodeOutput:
     VirtualNodeData virtualNode
 
@@ -422,8 +437,9 @@ struct DeleteVirtualRouterInput:
     Optional[str] meshOwner
     str virtualRouterName
 
-# no @derive(Json): member(s) virtualRouter: VirtualRouterData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualRouter: VirtualRouterData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVirtualRouterOutput:
     VirtualRouterData virtualRouter
 
@@ -446,8 +462,9 @@ struct DescribeGatewayRouteInput:
     Optional[str] meshOwner
     str virtualGatewayName
 
-# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayRouteOutput:
     GatewayRouteData gatewayRoute
 
@@ -469,8 +486,9 @@ struct DescribeRouteInput:
     str routeName
     str virtualRouterName
 
-# no @derive(Json): member(s) route: RouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) route: RouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRouteOutput:
     RouteData route
 
@@ -481,8 +499,9 @@ struct DescribeVirtualGatewayInput:
     Optional[str] meshOwner
     str virtualGatewayName
 
-# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVirtualGatewayOutput:
     VirtualGatewayData virtualGateway
 
@@ -493,8 +512,9 @@ struct DescribeVirtualNodeInput:
     Optional[str] meshOwner
     str virtualNodeName
 
-# no @derive(Json): member(s) virtualNode: VirtualNodeData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualNode: VirtualNodeData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVirtualNodeOutput:
     VirtualNodeData virtualNode
 
@@ -505,8 +525,9 @@ struct DescribeVirtualRouterInput:
     Optional[str] meshOwner
     str virtualRouterName
 
-# no @derive(Json): member(s) virtualRouter: VirtualRouterData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualRouter: VirtualRouterData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVirtualRouterOutput:
     VirtualRouterData virtualRouter
 
@@ -536,8 +557,9 @@ struct Duration:
 struct EgressFilter:
     EgressFilterType type
 
-# no @derive(Json): member(s) format: LoggingFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) format: LoggingFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileAccessLog:
     Optional[LoggingFormat] format
     str path
@@ -546,8 +568,9 @@ struct FileAccessLog:
 struct ForbiddenException:
     Optional[str] message
 
-# no @derive(Json): member(s) spec: GatewayRouteSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spec: GatewayRouteSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRouteData:
     str gatewayRouteName
     str meshName
@@ -577,8 +600,9 @@ struct GatewayRouteRef:
     int64 version
     str virtualGatewayName
 
-# no @derive(Json): member(s) grpcRoute: GrpcGatewayRoute, http2Route: HttpGatewayRoute, httpRoute: HttpGatewayRoute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grpcRoute: GrpcGatewayRoute, http2Route: HttpGatewayRoute, httpRoute: HttpGatewayRoute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRouteSpec:
     Optional[GrpcGatewayRoute] grpcRoute
     Optional[HttpGatewayRoute] http2Route
@@ -598,8 +622,9 @@ struct GatewayRouteTarget:
 struct GatewayRouteVirtualService:
     str virtualServiceName
 
-# no @derive(Json): member(s) match: GrpcGatewayRouteMatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: GrpcGatewayRouteMatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrpcGatewayRoute:
     GrpcGatewayRouteAction action
     # wire name "match" differs from field; derive rename is a #346 follow-up
@@ -610,8 +635,9 @@ struct GrpcGatewayRouteAction:
     Optional[GrpcGatewayRouteRewrite] rewrite
     GatewayRouteTarget target
 
-# no @derive(Json): member(s) metadata: list[GrpcGatewayRouteMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: list[GrpcGatewayRouteMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrpcGatewayRouteMatch:
     Optional[GatewayRouteHostnameMatch] hostname
     Optional[list[GrpcGatewayRouteMetadata]] metadata
@@ -638,8 +664,9 @@ struct GrpcMetadataMatchMethod:
     Optional[str] regex
     Optional[str] suffix
 
-# no @derive(Json): member(s) grpcRetryEvents: list[GrpcRetryPolicyEvent], httpRetryEvents: list[str], tcpRetryEvents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grpcRetryEvents: list[GrpcRetryPolicyEvent], httpRetryEvents: list[str], tcpRetryEvents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrpcRetryPolicy:
     Optional[list[GrpcRetryPolicyEvent]] grpcRetryEvents
     Optional[list[str]] httpRetryEvents
@@ -647,8 +674,9 @@ struct GrpcRetryPolicy:
     Duration perRetryTimeout
     Optional[list[str]] tcpRetryEvents
 
-# no @derive(Json): member(s) action: GrpcRouteAction, match: GrpcRouteMatch, retryPolicy: GrpcRetryPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: GrpcRouteAction, match: GrpcRouteMatch, retryPolicy: GrpcRetryPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrpcRoute:
     GrpcRouteAction action
     # wire name "match" differs from field; derive rename is a #346 follow-up
@@ -656,13 +684,15 @@ struct GrpcRoute:
     Optional[GrpcRetryPolicy] retryPolicy
     Optional[GrpcTimeout] timeout
 
-# no @derive(Json): member(s) weightedTargets: list[WeightedTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) weightedTargets: list[WeightedTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrpcRouteAction:
     list[WeightedTarget] weightedTargets
 
-# no @derive(Json): member(s) metadata: list[GrpcRouteMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: list[GrpcRouteMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrpcRouteMatch:
     Optional[list[GrpcRouteMetadata]] metadata
     Optional[str] methodName
@@ -709,8 +739,9 @@ struct HealthCheckPolicy:
     int64 timeoutMillis
     int64 unhealthyThreshold
 
-# no @derive(Json): member(s) match: HttpGatewayRouteMatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: HttpGatewayRouteMatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpGatewayRoute:
     HttpGatewayRouteAction action
     # wire name "match" differs from field; derive rename is a #346 follow-up
@@ -728,8 +759,9 @@ struct HttpGatewayRouteHeader:
     Optional[HeaderMatchMethod] match_
     str name
 
-# no @derive(Json): member(s) headers: list[HttpGatewayRouteHeader], queryParameters: list[HttpQueryParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: list[HttpGatewayRouteHeader], queryParameters: list[HttpQueryParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpGatewayRouteMatch:
     Optional[list[HttpGatewayRouteHeader]] headers
     Optional[GatewayRouteHostnameMatch] hostname
@@ -765,16 +797,18 @@ struct HttpQueryParameter:
     Optional[QueryParameterMatch] match_
     str name
 
-# no @derive(Json): member(s) httpRetryEvents: list[str], tcpRetryEvents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) httpRetryEvents: list[str], tcpRetryEvents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpRetryPolicy:
     Optional[list[str]] httpRetryEvents
     int64 maxRetries
     Duration perRetryTimeout
     Optional[list[str]] tcpRetryEvents
 
-# no @derive(Json): member(s) action: HttpRouteAction, match: HttpRouteMatch, retryPolicy: HttpRetryPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: HttpRouteAction, match: HttpRouteMatch, retryPolicy: HttpRetryPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpRoute:
     HttpRouteAction action
     # wire name "match" differs from field; derive rename is a #346 follow-up
@@ -782,8 +816,9 @@ struct HttpRoute:
     Optional[HttpRetryPolicy] retryPolicy
     Optional[HttpTimeout] timeout
 
-# no @derive(Json): member(s) weightedTargets: list[WeightedTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) weightedTargets: list[WeightedTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpRouteAction:
     list[WeightedTarget] weightedTargets
 
@@ -794,8 +829,9 @@ struct HttpRouteHeader:
     Optional[HeaderMatchMethod] match_
     str name
 
-# no @derive(Json): member(s) headers: list[HttpRouteHeader], queryParameters: list[HttpQueryParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: list[HttpRouteHeader], queryParameters: list[HttpQueryParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpRouteMatch:
     Optional[list[HttpRouteHeader]] headers
     Optional[HttpMethod] method
@@ -832,8 +868,9 @@ struct ListGatewayRoutesInput:
     Optional[str] nextToken
     str virtualGatewayName
 
-# no @derive(Json): member(s) gatewayRoutes: list[GatewayRouteRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoutes: list[GatewayRouteRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayRoutesOutput:
     list[GatewayRouteRef] gatewayRoutes
     Optional[str] nextToken
@@ -844,8 +881,9 @@ struct ListMeshesInput:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) meshes: list[MeshRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) meshes: list[MeshRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMeshesOutput:
     list[MeshRef] meshes
     Optional[str] nextToken
@@ -859,8 +897,9 @@ struct ListRoutesInput:
     Optional[str] nextToken
     str virtualRouterName
 
-# no @derive(Json): member(s) routes: list[RouteRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routes: list[RouteRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutesOutput:
     Optional[str] nextToken
     list[RouteRef] routes
@@ -872,8 +911,9 @@ struct ListTagsForResourceInput:
     Optional[str] nextToken
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[TagRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[TagRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[str] nextToken
     list[TagRef] tags
@@ -886,8 +926,9 @@ struct ListVirtualGatewaysInput:
     Optional[str] meshOwner
     Optional[str] nextToken
 
-# no @derive(Json): member(s) virtualGateways: list[VirtualGatewayRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualGateways: list[VirtualGatewayRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualGatewaysOutput:
     Optional[str] nextToken
     list[VirtualGatewayRef] virtualGateways
@@ -900,8 +941,9 @@ struct ListVirtualNodesInput:
     Optional[str] meshOwner
     Optional[str] nextToken
 
-# no @derive(Json): member(s) virtualNodes: list[VirtualNodeRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualNodes: list[VirtualNodeRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualNodesOutput:
     Optional[str] nextToken
     list[VirtualNodeRef] virtualNodes
@@ -914,8 +956,9 @@ struct ListVirtualRoutersInput:
     Optional[str] meshOwner
     Optional[str] nextToken
 
-# no @derive(Json): member(s) virtualRouters: list[VirtualRouterRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualRouters: list[VirtualRouterRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualRoutersOutput:
     Optional[str] nextToken
     list[VirtualRouterRef] virtualRouters
@@ -928,14 +971,16 @@ struct ListVirtualServicesInput:
     Optional[str] meshOwner
     Optional[str] nextToken
 
-# no @derive(Json): member(s) virtualServices: list[VirtualServiceRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualServices: list[VirtualServiceRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVirtualServicesOutput:
     Optional[str] nextToken
     list[VirtualServiceRef] virtualServices
 
-# no @derive(Json): member(s) tls: ListenerTls not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tls: ListenerTls not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Listener:
     Optional[VirtualNodeConnectionPool] connectionPool
     Optional[HealthCheckPolicy] healthCheck
@@ -951,8 +996,9 @@ struct ListenerTimeout:
     Optional[HttpTimeout] http2
     Optional[TcpTimeout] tcp
 
-# no @derive(Json): member(s) validation: ListenerTlsValidationContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validation: ListenerTlsValidationContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListenerTls:
     ListenerTlsCertificate certificate
     ListenerTlsMode mode
@@ -977,8 +1023,9 @@ struct ListenerTlsFileCertificate:
 struct ListenerTlsSdsCertificate:
     str secretName
 
-# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListenerTlsValidationContext:
     Optional[SubjectAlternativeNames] subjectAlternativeNames
     ListenerTlsValidationContextTrust trust
@@ -988,13 +1035,15 @@ struct ListenerTlsValidationContextTrust:
     Optional[TlsValidationContextFileTrust] file
     Optional[TlsValidationContextSdsTrust] sds
 
-# no @derive(Json): member(s) accessLog: AccessLog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessLog: AccessLog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Logging:
     Optional[AccessLog] accessLog
 
-# no @derive(Json): member(s) json: list[JsonFormatRef] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) json: list[JsonFormatRef] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingFormat:
     Optional[list[JsonFormatRef]] json
     Optional[str] text
@@ -1068,8 +1117,9 @@ struct ResourceMetadata:
     str uid
     int64 version
 
-# no @derive(Json): member(s) spec: RouteSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spec: RouteSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteData:
     str meshName
     ResourceMetadata metadata
@@ -1090,8 +1140,9 @@ struct RouteRef:
     int64 version
     str virtualRouterName
 
-# no @derive(Json): member(s) grpcRoute: GrpcRoute, http2Route: HttpRoute, httpRoute: HttpRoute, tcpRoute: TcpRoute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grpcRoute: GrpcRoute, http2Route: HttpRoute, httpRoute: HttpRoute, tcpRoute: TcpRoute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteSpec:
     Optional[GrpcRoute] grpcRoute
     Optional[HttpRoute] http2Route
@@ -1103,8 +1154,9 @@ struct RouteSpec:
 struct RouteStatus:
     RouteStatusCode status
 
-# no @derive(Json): member(s) awsCloudMap: AwsCloudMapServiceDiscovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsCloudMap: AwsCloudMapServiceDiscovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceDiscovery:
     Optional[AwsCloudMapServiceDiscovery] awsCloudMap
     Optional[DnsServiceDiscovery] dns
@@ -1113,13 +1165,15 @@ struct ServiceDiscovery:
 struct ServiceUnavailableException:
     Optional[str] message
 
-# no @derive(Json): member(s) exact: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exact: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubjectAlternativeNameMatchers:
     list[str] exact
 
-# no @derive(Json): member(s) match: SubjectAlternativeNameMatchers not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: SubjectAlternativeNameMatchers not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubjectAlternativeNames:
     # wire name "match" differs from field; derive rename is a #346 follow-up
     SubjectAlternativeNameMatchers match_
@@ -1140,16 +1194,18 @@ struct TagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) action: TcpRouteAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: TcpRouteAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TcpRoute:
     TcpRouteAction action
     # wire name "match" differs from field; derive rename is a #346 follow-up
     Optional[TcpRouteMatch] match_
     Optional[TcpTimeout] timeout
 
-# no @derive(Json): member(s) weightedTargets: list[WeightedTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) weightedTargets: list[WeightedTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TcpRouteAction:
     list[WeightedTarget] weightedTargets
 
@@ -1161,14 +1217,16 @@ struct TcpRouteMatch:
 struct TcpTimeout:
     Optional[Duration] idle
 
-# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames, trust: TlsValidationContextTrust not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames, trust: TlsValidationContextTrust not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TlsValidationContext:
     Optional[SubjectAlternativeNames] subjectAlternativeNames
     TlsValidationContextTrust trust
 
-# no @derive(Json): member(s) certificateAuthorityArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAuthorityArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TlsValidationContextAcmTrust:
     list[str] certificateAuthorityArns
 
@@ -1180,8 +1238,9 @@ struct TlsValidationContextFileTrust:
 struct TlsValidationContextSdsTrust:
     str secretName
 
-# no @derive(Json): member(s) acm: TlsValidationContextAcmTrust not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) acm: TlsValidationContextAcmTrust not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TlsValidationContextTrust:
     Optional[TlsValidationContextAcmTrust] acm
     Optional[TlsValidationContextFileTrust] file
@@ -1216,8 +1275,9 @@ struct UpdateGatewayRouteInput:
     GatewayRouteSpec spec
     str virtualGatewayName
 
-# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRoute: GatewayRouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayRouteOutput:
     GatewayRouteData gatewayRoute
 
@@ -1242,8 +1302,9 @@ struct UpdateRouteInput:
     RouteSpec spec
     str virtualRouterName
 
-# no @derive(Json): member(s) route: RouteData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) route: RouteData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouteOutput:
     RouteData route
 
@@ -1256,8 +1317,9 @@ struct UpdateVirtualGatewayInput:
     VirtualGatewaySpec spec
     str virtualGatewayName
 
-# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualGateway: VirtualGatewayData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVirtualGatewayOutput:
     VirtualGatewayData virtualGateway
 
@@ -1270,8 +1332,9 @@ struct UpdateVirtualNodeInput:
     VirtualNodeSpec spec
     str virtualNodeName
 
-# no @derive(Json): member(s) virtualNode: VirtualNodeData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualNode: VirtualNodeData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVirtualNodeOutput:
     VirtualNodeData virtualNode
 
@@ -1284,8 +1347,9 @@ struct UpdateVirtualRouterInput:
     VirtualRouterSpec spec
     str virtualRouterName
 
-# no @derive(Json): member(s) virtualRouter: VirtualRouterData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) virtualRouter: VirtualRouterData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVirtualRouterOutput:
     VirtualRouterData virtualRouter
 
@@ -1302,23 +1366,27 @@ struct UpdateVirtualServiceInput:
 struct UpdateVirtualServiceOutput:
     VirtualServiceData virtualService
 
-# no @derive(Json): member(s) file: VirtualGatewayFileAccessLog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) file: VirtualGatewayFileAccessLog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayAccessLog:
     Optional[VirtualGatewayFileAccessLog] file
 
-# no @derive(Json): member(s) clientPolicy: VirtualGatewayClientPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientPolicy: VirtualGatewayClientPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayBackendDefaults:
     Optional[VirtualGatewayClientPolicy] clientPolicy
 
-# no @derive(Json): member(s) tls: VirtualGatewayClientPolicyTls not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tls: VirtualGatewayClientPolicyTls not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayClientPolicy:
     Optional[VirtualGatewayClientPolicyTls] tls
 
-# no @derive(Json): member(s) ports: list[int64], validation: VirtualGatewayTlsValidationContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ports: list[int64], validation: VirtualGatewayTlsValidationContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayClientPolicyTls:
     Optional[VirtualGatewayClientTlsCertificate] certificate
     Optional[bool] enforce
@@ -1336,8 +1404,9 @@ struct VirtualGatewayConnectionPool:
     Optional[VirtualGatewayHttpConnectionPool] http
     Optional[VirtualGatewayHttp2ConnectionPool] http2
 
-# no @derive(Json): member(s) spec: VirtualGatewaySpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spec: VirtualGatewaySpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayData:
     str meshName
     ResourceMetadata metadata
@@ -1345,8 +1414,9 @@ struct VirtualGatewayData:
     VirtualGatewayStatus status
     str virtualGatewayName
 
-# no @derive(Json): member(s) format: LoggingFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) format: LoggingFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayFileAccessLog:
     Optional[LoggingFormat] format
     str path
@@ -1374,16 +1444,18 @@ struct VirtualGatewayHttpConnectionPool:
     int64 maxConnections
     Optional[int64] maxPendingRequests
 
-# no @derive(Json): member(s) tls: VirtualGatewayListenerTls not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tls: VirtualGatewayListenerTls not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayListener:
     Optional[VirtualGatewayConnectionPool] connectionPool
     Optional[VirtualGatewayHealthCheckPolicy] healthCheck
     VirtualGatewayPortMapping portMapping
     Optional[VirtualGatewayListenerTls] tls
 
-# no @derive(Json): member(s) validation: VirtualGatewayListenerTlsValidationContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validation: VirtualGatewayListenerTlsValidationContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayListenerTls:
     VirtualGatewayListenerTlsCertificate certificate
     VirtualGatewayListenerTlsMode mode
@@ -1408,8 +1480,9 @@ struct VirtualGatewayListenerTlsFileCertificate:
 struct VirtualGatewayListenerTlsSdsCertificate:
     str secretName
 
-# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayListenerTlsValidationContext:
     Optional[SubjectAlternativeNames] subjectAlternativeNames
     VirtualGatewayListenerTlsValidationContextTrust trust
@@ -1419,8 +1492,9 @@ struct VirtualGatewayListenerTlsValidationContextTrust:
     Optional[VirtualGatewayTlsValidationContextFileTrust] file
     Optional[VirtualGatewayTlsValidationContextSdsTrust] sds
 
-# no @derive(Json): member(s) accessLog: VirtualGatewayAccessLog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessLog: VirtualGatewayAccessLog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayLogging:
     Optional[VirtualGatewayAccessLog] accessLog
 
@@ -1440,8 +1514,9 @@ struct VirtualGatewayRef:
     int64 version
     str virtualGatewayName
 
-# no @derive(Json): member(s) backendDefaults: VirtualGatewayBackendDefaults, listeners: list[VirtualGatewayListener], logging: VirtualGatewayLogging not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) backendDefaults: VirtualGatewayBackendDefaults, listeners: list[VirtualGatewayListener], logging: VirtualGatewayLogging not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewaySpec:
     Optional[VirtualGatewayBackendDefaults] backendDefaults
     list[VirtualGatewayListener] listeners
@@ -1451,14 +1526,16 @@ struct VirtualGatewaySpec:
 struct VirtualGatewayStatus:
     VirtualGatewayStatusCode status
 
-# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames, trust: VirtualGatewayTlsValidationContextTrust not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjectAlternativeNames: SubjectAlternativeNames, trust: VirtualGatewayTlsValidationContextTrust not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayTlsValidationContext:
     Optional[SubjectAlternativeNames] subjectAlternativeNames
     VirtualGatewayTlsValidationContextTrust trust
 
-# no @derive(Json): member(s) certificateAuthorityArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAuthorityArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayTlsValidationContextAcmTrust:
     list[str] certificateAuthorityArns
 
@@ -1470,8 +1547,9 @@ struct VirtualGatewayTlsValidationContextFileTrust:
 struct VirtualGatewayTlsValidationContextSdsTrust:
     str secretName
 
-# no @derive(Json): member(s) acm: VirtualGatewayTlsValidationContextAcmTrust not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) acm: VirtualGatewayTlsValidationContextAcmTrust not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualGatewayTlsValidationContextTrust:
     Optional[VirtualGatewayTlsValidationContextAcmTrust] acm
     Optional[VirtualGatewayTlsValidationContextFileTrust] file
@@ -1484,8 +1562,9 @@ struct VirtualNodeConnectionPool:
     Optional[VirtualNodeHttp2ConnectionPool] http2
     Optional[VirtualNodeTcpConnectionPool] tcp
 
-# no @derive(Json): member(s) spec: VirtualNodeSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spec: VirtualNodeSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualNodeData:
     str meshName
     ResourceMetadata metadata
@@ -1521,8 +1600,9 @@ struct VirtualNodeRef:
 struct VirtualNodeServiceProvider:
     str virtualNodeName
 
-# no @derive(Json): member(s) backendDefaults: BackendDefaults, backends: list[Backend], listeners: list[Listener], logging: Logging, serviceDiscovery: ServiceDiscovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) backendDefaults: BackendDefaults, backends: list[Backend], listeners: list[Listener], logging: Logging, serviceDiscovery: ServiceDiscovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualNodeSpec:
     Optional[BackendDefaults] backendDefaults
     Optional[list[Backend]] backends
@@ -1538,8 +1618,9 @@ struct VirtualNodeStatus:
 struct VirtualNodeTcpConnectionPool:
     int64 maxConnections
 
-# no @derive(Json): member(s) spec: VirtualRouterSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spec: VirtualRouterSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualRouterData:
     str meshName
     ResourceMetadata metadata
@@ -1566,8 +1647,9 @@ struct VirtualRouterRef:
 struct VirtualRouterServiceProvider:
     str virtualRouterName
 
-# no @derive(Json): member(s) listeners: list[VirtualRouterListener] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listeners: list[VirtualRouterListener] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualRouterSpec:
     Optional[list[VirtualRouterListener]] listeners
 
@@ -1575,8 +1657,9 @@ struct VirtualRouterSpec:
 struct VirtualRouterStatus:
     VirtualRouterStatusCode status
 
-# no @derive(Json): member(s) clientPolicy: ClientPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientPolicy: ClientPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VirtualServiceBackend:
     Optional[ClientPolicy] clientPolicy
     str virtualServiceName
@@ -1663,24 +1746,6 @@ def appmesh_error_from_code(str code) -> App_MeshError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateGatewayRoute (document member `spec: GatewayRouteSpec` is not serializable by derive)
-#   CreateMesh (document member `tags: list[TagRef]` is not serializable by derive)
-#   CreateRoute (document member `spec: RouteSpec` is not serializable by derive)
-#   CreateVirtualGateway (document member `spec: VirtualGatewaySpec` is not serializable by derive)
-#   CreateVirtualNode (document member `spec: VirtualNodeSpec` is not serializable by derive)
-#   CreateVirtualRouter (document member `spec: VirtualRouterSpec` is not serializable by derive)
-#   CreateVirtualService (document member `tags: list[TagRef]` is not serializable by derive)
-#   TagResource (document member `tags: list[TagRef]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateGatewayRoute (document member `spec: GatewayRouteSpec` is not serializable by derive)
-#   UpdateRoute (document member `spec: RouteSpec` is not serializable by derive)
-#   UpdateVirtualGateway (document member `spec: VirtualGatewaySpec` is not serializable by derive)
-#   UpdateVirtualNode (document member `spec: VirtualNodeSpec` is not serializable by derive)
-#   UpdateVirtualRouter (document member `spec: VirtualRouterSpec` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1696,10 +1761,859 @@ struct UpdateVirtualServiceDocument:
     Optional[str] clientToken
     VirtualServiceSpec spec
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def appmesh_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def appmesh_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def appmesh_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccessLog to a compact JSON object (declaration order).
+def access_log_to_json(AccessLog v) -> str:
+    list[str] parts = []
+    if v.file.is_some():
+        auto u0 = v.file.unwrap()
+        parts.append("\"file\":" + file_access_log_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize AwsCloudMapServiceDiscovery to a compact JSON object (declaration order).
+def aws_cloud_map_service_discovery_to_json(AwsCloudMapServiceDiscovery v) -> str:
+    list[str] parts = []
+    if v.attributes.is_some():
+        auto u0 = v.attributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"attributes\":" + appmesh_json_arr(e1))
+    if v.ipPreference.is_some():
+        auto u2 = v.ipPreference.unwrap()
+        parts.append("\"ipPreference\":" + u2.to_json())
+    parts.append("\"namespaceName\":" + appmesh_json_str(v.namespaceName))
+    parts.append("\"serviceName\":" + appmesh_json_str(v.serviceName))
+    return appmesh_json_obj(parts)
+
+# Serialize Backend to a compact JSON object (declaration order).
+def backend_to_json(Backend v) -> str:
+    list[str] parts = []
+    if v.virtualService.is_some():
+        auto u0 = v.virtualService.unwrap()
+        parts.append("\"virtualService\":" + virtual_service_backend_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize BackendDefaults to a compact JSON object (declaration order).
+def backend_defaults_to_json(BackendDefaults v) -> str:
+    list[str] parts = []
+    if v.clientPolicy.is_some():
+        auto u0 = v.clientPolicy.unwrap()
+        parts.append("\"clientPolicy\":" + client_policy_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize ClientPolicy to a compact JSON object (declaration order).
+def client_policy_to_json(ClientPolicy v) -> str:
+    list[str] parts = []
+    if v.tls.is_some():
+        auto u0 = v.tls.unwrap()
+        parts.append("\"tls\":" + client_policy_tls_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize ClientPolicyTls to a compact JSON object (declaration order).
+def client_policy_tls_to_json(ClientPolicyTls v) -> str:
+    list[str] parts = []
+    if v.certificate.is_some():
+        auto u0 = v.certificate.unwrap()
+        parts.append("\"certificate\":" + u0.to_json())
+    if v.enforce.is_some():
+        auto u1 = v.enforce.unwrap()
+        parts.append("\"enforce\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ports.is_some():
+        auto u2 = v.ports.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"ports\":" + appmesh_json_arr(e3))
+    parts.append("\"validation\":" + tls_validation_context_to_json(v.validation))
+    return appmesh_json_obj(parts)
+
+# Serialize FileAccessLog to a compact JSON object (declaration order).
+def file_access_log_to_json(FileAccessLog v) -> str:
+    list[str] parts = []
+    if v.format.is_some():
+        auto u0 = v.format.unwrap()
+        parts.append("\"format\":" + logging_format_to_json(u0))
+    parts.append("\"path\":" + appmesh_json_str(v.path))
+    return appmesh_json_obj(parts)
+
+# Serialize GatewayRouteSpec to a compact JSON object (declaration order).
+def gateway_route_spec_to_json(GatewayRouteSpec v) -> str:
+    list[str] parts = []
+    if v.grpcRoute.is_some():
+        auto u0 = v.grpcRoute.unwrap()
+        parts.append("\"grpcRoute\":" + grpc_gateway_route_to_json(u0))
+    if v.http2Route.is_some():
+        auto u1 = v.http2Route.unwrap()
+        parts.append("\"http2Route\":" + http_gateway_route_to_json(u1))
+    if v.httpRoute.is_some():
+        auto u2 = v.httpRoute.unwrap()
+        parts.append("\"httpRoute\":" + http_gateway_route_to_json(u2))
+    if v.priority.is_some():
+        auto u3 = v.priority.unwrap()
+        parts.append("\"priority\":" + str(u3))
+    return appmesh_json_obj(parts)
+
+# Serialize GrpcGatewayRoute to a compact JSON object (declaration order).
+def grpc_gateway_route_to_json(GrpcGatewayRoute v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + v.action.to_json())
+    parts.append("\"match\":" + grpc_gateway_route_match_to_json(v.match_))
+    return appmesh_json_obj(parts)
+
+# Serialize GrpcGatewayRouteMatch to a compact JSON object (declaration order).
+def grpc_gateway_route_match_to_json(GrpcGatewayRouteMatch v) -> str:
+    list[str] parts = []
+    if v.hostname.is_some():
+        auto u0 = v.hostname.unwrap()
+        parts.append("\"hostname\":" + u0.to_json())
+    if v.metadata.is_some():
+        auto u1 = v.metadata.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"metadata\":" + appmesh_json_arr(e2))
+    if v.port.is_some():
+        auto u3 = v.port.unwrap()
+        parts.append("\"port\":" + str(u3))
+    if v.serviceName.is_some():
+        auto u4 = v.serviceName.unwrap()
+        parts.append("\"serviceName\":" + appmesh_json_str(u4))
+    return appmesh_json_obj(parts)
+
+# Serialize GrpcRetryPolicy to a compact JSON object (declaration order).
+def grpc_retry_policy_to_json(GrpcRetryPolicy v) -> str:
+    list[str] parts = []
+    if v.grpcRetryEvents.is_some():
+        auto u0 = v.grpcRetryEvents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"grpcRetryEvents\":" + appmesh_json_arr(e1))
+    if v.httpRetryEvents.is_some():
+        auto u2 = v.httpRetryEvents.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(appmesh_json_str(x3))
+        parts.append("\"httpRetryEvents\":" + appmesh_json_arr(e3))
+    parts.append("\"maxRetries\":" + str(v.maxRetries))
+    parts.append("\"perRetryTimeout\":" + v.perRetryTimeout.to_json())
+    if v.tcpRetryEvents.is_some():
+        auto u4 = v.tcpRetryEvents.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(appmesh_json_str(x5))
+        parts.append("\"tcpRetryEvents\":" + appmesh_json_arr(e5))
+    return appmesh_json_obj(parts)
+
+# Serialize GrpcRoute to a compact JSON object (declaration order).
+def grpc_route_to_json(GrpcRoute v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + grpc_route_action_to_json(v.action))
+    parts.append("\"match\":" + grpc_route_match_to_json(v.match_))
+    if v.retryPolicy.is_some():
+        auto u0 = v.retryPolicy.unwrap()
+        parts.append("\"retryPolicy\":" + grpc_retry_policy_to_json(u0))
+    if v.timeout.is_some():
+        auto u1 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + u1.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize GrpcRouteAction to a compact JSON object (declaration order).
+def grpc_route_action_to_json(GrpcRouteAction v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.weightedTargets:
+        e0.append(x0.to_json())
+    parts.append("\"weightedTargets\":" + appmesh_json_arr(e0))
+    return appmesh_json_obj(parts)
+
+# Serialize GrpcRouteMatch to a compact JSON object (declaration order).
+def grpc_route_match_to_json(GrpcRouteMatch v) -> str:
+    list[str] parts = []
+    if v.metadata.is_some():
+        auto u0 = v.metadata.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"metadata\":" + appmesh_json_arr(e1))
+    if v.methodName.is_some():
+        auto u2 = v.methodName.unwrap()
+        parts.append("\"methodName\":" + appmesh_json_str(u2))
+    if v.port.is_some():
+        auto u3 = v.port.unwrap()
+        parts.append("\"port\":" + str(u3))
+    if v.serviceName.is_some():
+        auto u4 = v.serviceName.unwrap()
+        parts.append("\"serviceName\":" + appmesh_json_str(u4))
+    return appmesh_json_obj(parts)
+
+# Serialize HttpGatewayRoute to a compact JSON object (declaration order).
+def http_gateway_route_to_json(HttpGatewayRoute v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + v.action.to_json())
+    parts.append("\"match\":" + http_gateway_route_match_to_json(v.match_))
+    return appmesh_json_obj(parts)
+
+# Serialize HttpGatewayRouteMatch to a compact JSON object (declaration order).
+def http_gateway_route_match_to_json(HttpGatewayRouteMatch v) -> str:
+    list[str] parts = []
+    if v.headers.is_some():
+        auto u0 = v.headers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"headers\":" + appmesh_json_arr(e1))
+    if v.hostname.is_some():
+        auto u2 = v.hostname.unwrap()
+        parts.append("\"hostname\":" + u2.to_json())
+    if v.method.is_some():
+        auto u3 = v.method.unwrap()
+        parts.append("\"method\":" + u3.to_json())
+    if v.path.is_some():
+        auto u4 = v.path.unwrap()
+        parts.append("\"path\":" + u4.to_json())
+    if v.port.is_some():
+        auto u5 = v.port.unwrap()
+        parts.append("\"port\":" + str(u5))
+    if v.prefix.is_some():
+        auto u6 = v.prefix.unwrap()
+        parts.append("\"prefix\":" + appmesh_json_str(u6))
+    if v.queryParameters.is_some():
+        auto u7 = v.queryParameters.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"queryParameters\":" + appmesh_json_arr(e8))
+    return appmesh_json_obj(parts)
+
+# Serialize HttpRetryPolicy to a compact JSON object (declaration order).
+def http_retry_policy_to_json(HttpRetryPolicy v) -> str:
+    list[str] parts = []
+    if v.httpRetryEvents.is_some():
+        auto u0 = v.httpRetryEvents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(appmesh_json_str(x1))
+        parts.append("\"httpRetryEvents\":" + appmesh_json_arr(e1))
+    parts.append("\"maxRetries\":" + str(v.maxRetries))
+    parts.append("\"perRetryTimeout\":" + v.perRetryTimeout.to_json())
+    if v.tcpRetryEvents.is_some():
+        auto u2 = v.tcpRetryEvents.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(appmesh_json_str(x3))
+        parts.append("\"tcpRetryEvents\":" + appmesh_json_arr(e3))
+    return appmesh_json_obj(parts)
+
+# Serialize HttpRoute to a compact JSON object (declaration order).
+def http_route_to_json(HttpRoute v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + http_route_action_to_json(v.action))
+    parts.append("\"match\":" + http_route_match_to_json(v.match_))
+    if v.retryPolicy.is_some():
+        auto u0 = v.retryPolicy.unwrap()
+        parts.append("\"retryPolicy\":" + http_retry_policy_to_json(u0))
+    if v.timeout.is_some():
+        auto u1 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + u1.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize HttpRouteAction to a compact JSON object (declaration order).
+def http_route_action_to_json(HttpRouteAction v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.weightedTargets:
+        e0.append(x0.to_json())
+    parts.append("\"weightedTargets\":" + appmesh_json_arr(e0))
+    return appmesh_json_obj(parts)
+
+# Serialize HttpRouteMatch to a compact JSON object (declaration order).
+def http_route_match_to_json(HttpRouteMatch v) -> str:
+    list[str] parts = []
+    if v.headers.is_some():
+        auto u0 = v.headers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"headers\":" + appmesh_json_arr(e1))
+    if v.method.is_some():
+        auto u2 = v.method.unwrap()
+        parts.append("\"method\":" + u2.to_json())
+    if v.path.is_some():
+        auto u3 = v.path.unwrap()
+        parts.append("\"path\":" + u3.to_json())
+    if v.port.is_some():
+        auto u4 = v.port.unwrap()
+        parts.append("\"port\":" + str(u4))
+    if v.prefix.is_some():
+        auto u5 = v.prefix.unwrap()
+        parts.append("\"prefix\":" + appmesh_json_str(u5))
+    if v.queryParameters.is_some():
+        auto u6 = v.queryParameters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"queryParameters\":" + appmesh_json_arr(e7))
+    if v.scheme.is_some():
+        auto u8 = v.scheme.unwrap()
+        parts.append("\"scheme\":" + u8.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize Listener to a compact JSON object (declaration order).
+def listener_to_json(Listener v) -> str:
+    list[str] parts = []
+    if v.connectionPool.is_some():
+        auto u0 = v.connectionPool.unwrap()
+        parts.append("\"connectionPool\":" + u0.to_json())
+    if v.healthCheck.is_some():
+        auto u1 = v.healthCheck.unwrap()
+        parts.append("\"healthCheck\":" + u1.to_json())
+    if v.outlierDetection.is_some():
+        auto u2 = v.outlierDetection.unwrap()
+        parts.append("\"outlierDetection\":" + u2.to_json())
+    parts.append("\"portMapping\":" + v.portMapping.to_json())
+    if v.timeout.is_some():
+        auto u3 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + u3.to_json())
+    if v.tls.is_some():
+        auto u4 = v.tls.unwrap()
+        parts.append("\"tls\":" + listener_tls_to_json(u4))
+    return appmesh_json_obj(parts)
+
+# Serialize ListenerTls to a compact JSON object (declaration order).
+def listener_tls_to_json(ListenerTls v) -> str:
+    list[str] parts = []
+    parts.append("\"certificate\":" + v.certificate.to_json())
+    parts.append("\"mode\":" + v.mode.to_json())
+    if v.validation.is_some():
+        auto u0 = v.validation.unwrap()
+        parts.append("\"validation\":" + listener_tls_validation_context_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize ListenerTlsValidationContext to a compact JSON object (declaration order).
+def listener_tls_validation_context_to_json(ListenerTlsValidationContext v) -> str:
+    list[str] parts = []
+    if v.subjectAlternativeNames.is_some():
+        auto u0 = v.subjectAlternativeNames.unwrap()
+        parts.append("\"subjectAlternativeNames\":" + subject_alternative_names_to_json(u0))
+    parts.append("\"trust\":" + v.trust.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize Logging to a compact JSON object (declaration order).
+def logging_to_json(Logging v) -> str:
+    list[str] parts = []
+    if v.accessLog.is_some():
+        auto u0 = v.accessLog.unwrap()
+        parts.append("\"accessLog\":" + access_log_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize LoggingFormat to a compact JSON object (declaration order).
+def logging_format_to_json(LoggingFormat v) -> str:
+    list[str] parts = []
+    if v.json.is_some():
+        auto u0 = v.json.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"json\":" + appmesh_json_arr(e1))
+    if v.text.is_some():
+        auto u2 = v.text.unwrap()
+        parts.append("\"text\":" + appmesh_json_str(u2))
+    return appmesh_json_obj(parts)
+
+# Serialize RouteSpec to a compact JSON object (declaration order).
+def route_spec_to_json(RouteSpec v) -> str:
+    list[str] parts = []
+    if v.grpcRoute.is_some():
+        auto u0 = v.grpcRoute.unwrap()
+        parts.append("\"grpcRoute\":" + grpc_route_to_json(u0))
+    if v.http2Route.is_some():
+        auto u1 = v.http2Route.unwrap()
+        parts.append("\"http2Route\":" + http_route_to_json(u1))
+    if v.httpRoute.is_some():
+        auto u2 = v.httpRoute.unwrap()
+        parts.append("\"httpRoute\":" + http_route_to_json(u2))
+    if v.priority.is_some():
+        auto u3 = v.priority.unwrap()
+        parts.append("\"priority\":" + str(u3))
+    if v.tcpRoute.is_some():
+        auto u4 = v.tcpRoute.unwrap()
+        parts.append("\"tcpRoute\":" + tcp_route_to_json(u4))
+    return appmesh_json_obj(parts)
+
+# Serialize ServiceDiscovery to a compact JSON object (declaration order).
+def service_discovery_to_json(ServiceDiscovery v) -> str:
+    list[str] parts = []
+    if v.awsCloudMap.is_some():
+        auto u0 = v.awsCloudMap.unwrap()
+        parts.append("\"awsCloudMap\":" + aws_cloud_map_service_discovery_to_json(u0))
+    if v.dns.is_some():
+        auto u1 = v.dns.unwrap()
+        parts.append("\"dns\":" + u1.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize SubjectAlternativeNameMatchers to a compact JSON object (declaration order).
+def subject_alternative_name_matchers_to_json(SubjectAlternativeNameMatchers v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.exact:
+        e0.append(appmesh_json_str(x0))
+    parts.append("\"exact\":" + appmesh_json_arr(e0))
+    return appmesh_json_obj(parts)
+
+# Serialize SubjectAlternativeNames to a compact JSON object (declaration order).
+def subject_alternative_names_to_json(SubjectAlternativeNames v) -> str:
+    list[str] parts = []
+    parts.append("\"match\":" + subject_alternative_name_matchers_to_json(v.match_))
+    return appmesh_json_obj(parts)
+
+# Serialize TcpRoute to a compact JSON object (declaration order).
+def tcp_route_to_json(TcpRoute v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + tcp_route_action_to_json(v.action))
+    if v.match_.is_some():
+        auto u0 = v.match_.unwrap()
+        parts.append("\"match\":" + u0.to_json())
+    if v.timeout.is_some():
+        auto u1 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + u1.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize TcpRouteAction to a compact JSON object (declaration order).
+def tcp_route_action_to_json(TcpRouteAction v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.weightedTargets:
+        e0.append(x0.to_json())
+    parts.append("\"weightedTargets\":" + appmesh_json_arr(e0))
+    return appmesh_json_obj(parts)
+
+# Serialize TlsValidationContext to a compact JSON object (declaration order).
+def tls_validation_context_to_json(TlsValidationContext v) -> str:
+    list[str] parts = []
+    if v.subjectAlternativeNames.is_some():
+        auto u0 = v.subjectAlternativeNames.unwrap()
+        parts.append("\"subjectAlternativeNames\":" + subject_alternative_names_to_json(u0))
+    parts.append("\"trust\":" + tls_validation_context_trust_to_json(v.trust))
+    return appmesh_json_obj(parts)
+
+# Serialize TlsValidationContextAcmTrust to a compact JSON object (declaration order).
+def tls_validation_context_acm_trust_to_json(TlsValidationContextAcmTrust v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.certificateAuthorityArns:
+        e0.append(appmesh_json_str(x0))
+    parts.append("\"certificateAuthorityArns\":" + appmesh_json_arr(e0))
+    return appmesh_json_obj(parts)
+
+# Serialize TlsValidationContextTrust to a compact JSON object (declaration order).
+def tls_validation_context_trust_to_json(TlsValidationContextTrust v) -> str:
+    list[str] parts = []
+    if v.acm.is_some():
+        auto u0 = v.acm.unwrap()
+        parts.append("\"acm\":" + tls_validation_context_acm_trust_to_json(u0))
+    if v.file.is_some():
+        auto u1 = v.file.unwrap()
+        parts.append("\"file\":" + u1.to_json())
+    if v.sds.is_some():
+        auto u2 = v.sds.unwrap()
+        parts.append("\"sds\":" + u2.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayAccessLog to a compact JSON object (declaration order).
+def virtual_gateway_access_log_to_json(VirtualGatewayAccessLog v) -> str:
+    list[str] parts = []
+    if v.file.is_some():
+        auto u0 = v.file.unwrap()
+        parts.append("\"file\":" + virtual_gateway_file_access_log_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayBackendDefaults to a compact JSON object (declaration order).
+def virtual_gateway_backend_defaults_to_json(VirtualGatewayBackendDefaults v) -> str:
+    list[str] parts = []
+    if v.clientPolicy.is_some():
+        auto u0 = v.clientPolicy.unwrap()
+        parts.append("\"clientPolicy\":" + virtual_gateway_client_policy_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayClientPolicy to a compact JSON object (declaration order).
+def virtual_gateway_client_policy_to_json(VirtualGatewayClientPolicy v) -> str:
+    list[str] parts = []
+    if v.tls.is_some():
+        auto u0 = v.tls.unwrap()
+        parts.append("\"tls\":" + virtual_gateway_client_policy_tls_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayClientPolicyTls to a compact JSON object (declaration order).
+def virtual_gateway_client_policy_tls_to_json(VirtualGatewayClientPolicyTls v) -> str:
+    list[str] parts = []
+    if v.certificate.is_some():
+        auto u0 = v.certificate.unwrap()
+        parts.append("\"certificate\":" + u0.to_json())
+    if v.enforce.is_some():
+        auto u1 = v.enforce.unwrap()
+        parts.append("\"enforce\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ports.is_some():
+        auto u2 = v.ports.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"ports\":" + appmesh_json_arr(e3))
+    parts.append("\"validation\":" + virtual_gateway_tls_validation_context_to_json(v.validation))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayFileAccessLog to a compact JSON object (declaration order).
+def virtual_gateway_file_access_log_to_json(VirtualGatewayFileAccessLog v) -> str:
+    list[str] parts = []
+    if v.format.is_some():
+        auto u0 = v.format.unwrap()
+        parts.append("\"format\":" + logging_format_to_json(u0))
+    parts.append("\"path\":" + appmesh_json_str(v.path))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayListener to a compact JSON object (declaration order).
+def virtual_gateway_listener_to_json(VirtualGatewayListener v) -> str:
+    list[str] parts = []
+    if v.connectionPool.is_some():
+        auto u0 = v.connectionPool.unwrap()
+        parts.append("\"connectionPool\":" + u0.to_json())
+    if v.healthCheck.is_some():
+        auto u1 = v.healthCheck.unwrap()
+        parts.append("\"healthCheck\":" + u1.to_json())
+    parts.append("\"portMapping\":" + v.portMapping.to_json())
+    if v.tls.is_some():
+        auto u2 = v.tls.unwrap()
+        parts.append("\"tls\":" + virtual_gateway_listener_tls_to_json(u2))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayListenerTls to a compact JSON object (declaration order).
+def virtual_gateway_listener_tls_to_json(VirtualGatewayListenerTls v) -> str:
+    list[str] parts = []
+    parts.append("\"certificate\":" + v.certificate.to_json())
+    parts.append("\"mode\":" + v.mode.to_json())
+    if v.validation.is_some():
+        auto u0 = v.validation.unwrap()
+        parts.append("\"validation\":" + virtual_gateway_listener_tls_validation_context_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayListenerTlsValidationContext to a compact JSON object (declaration order).
+def virtual_gateway_listener_tls_validation_context_to_json(VirtualGatewayListenerTlsValidationContext v) -> str:
+    list[str] parts = []
+    if v.subjectAlternativeNames.is_some():
+        auto u0 = v.subjectAlternativeNames.unwrap()
+        parts.append("\"subjectAlternativeNames\":" + subject_alternative_names_to_json(u0))
+    parts.append("\"trust\":" + v.trust.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayLogging to a compact JSON object (declaration order).
+def virtual_gateway_logging_to_json(VirtualGatewayLogging v) -> str:
+    list[str] parts = []
+    if v.accessLog.is_some():
+        auto u0 = v.accessLog.unwrap()
+        parts.append("\"accessLog\":" + virtual_gateway_access_log_to_json(u0))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewaySpec to a compact JSON object (declaration order).
+def virtual_gateway_spec_to_json(VirtualGatewaySpec v) -> str:
+    list[str] parts = []
+    if v.backendDefaults.is_some():
+        auto u0 = v.backendDefaults.unwrap()
+        parts.append("\"backendDefaults\":" + virtual_gateway_backend_defaults_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.listeners:
+        e1.append(virtual_gateway_listener_to_json(x1))
+    parts.append("\"listeners\":" + appmesh_json_arr(e1))
+    if v.logging.is_some():
+        auto u2 = v.logging.unwrap()
+        parts.append("\"logging\":" + virtual_gateway_logging_to_json(u2))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayTlsValidationContext to a compact JSON object (declaration order).
+def virtual_gateway_tls_validation_context_to_json(VirtualGatewayTlsValidationContext v) -> str:
+    list[str] parts = []
+    if v.subjectAlternativeNames.is_some():
+        auto u0 = v.subjectAlternativeNames.unwrap()
+        parts.append("\"subjectAlternativeNames\":" + subject_alternative_names_to_json(u0))
+    parts.append("\"trust\":" + virtual_gateway_tls_validation_context_trust_to_json(v.trust))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayTlsValidationContextAcmTrust to a compact JSON object (declaration order).
+def virtual_gateway_tls_validation_context_acm_trust_to_json(VirtualGatewayTlsValidationContextAcmTrust v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.certificateAuthorityArns:
+        e0.append(appmesh_json_str(x0))
+    parts.append("\"certificateAuthorityArns\":" + appmesh_json_arr(e0))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualGatewayTlsValidationContextTrust to a compact JSON object (declaration order).
+def virtual_gateway_tls_validation_context_trust_to_json(VirtualGatewayTlsValidationContextTrust v) -> str:
+    list[str] parts = []
+    if v.acm.is_some():
+        auto u0 = v.acm.unwrap()
+        parts.append("\"acm\":" + virtual_gateway_tls_validation_context_acm_trust_to_json(u0))
+    if v.file.is_some():
+        auto u1 = v.file.unwrap()
+        parts.append("\"file\":" + u1.to_json())
+    if v.sds.is_some():
+        auto u2 = v.sds.unwrap()
+        parts.append("\"sds\":" + u2.to_json())
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualNodeSpec to a compact JSON object (declaration order).
+def virtual_node_spec_to_json(VirtualNodeSpec v) -> str:
+    list[str] parts = []
+    if v.backendDefaults.is_some():
+        auto u0 = v.backendDefaults.unwrap()
+        parts.append("\"backendDefaults\":" + backend_defaults_to_json(u0))
+    if v.backends.is_some():
+        auto u1 = v.backends.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(backend_to_json(x2))
+        parts.append("\"backends\":" + appmesh_json_arr(e2))
+    if v.listeners.is_some():
+        auto u3 = v.listeners.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(listener_to_json(x4))
+        parts.append("\"listeners\":" + appmesh_json_arr(e4))
+    if v.logging.is_some():
+        auto u5 = v.logging.unwrap()
+        parts.append("\"logging\":" + logging_to_json(u5))
+    if v.serviceDiscovery.is_some():
+        auto u6 = v.serviceDiscovery.unwrap()
+        parts.append("\"serviceDiscovery\":" + service_discovery_to_json(u6))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualRouterSpec to a compact JSON object (declaration order).
+def virtual_router_spec_to_json(VirtualRouterSpec v) -> str:
+    list[str] parts = []
+    if v.listeners.is_some():
+        auto u0 = v.listeners.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"listeners\":" + appmesh_json_arr(e1))
+    return appmesh_json_obj(parts)
+
+# Serialize VirtualServiceBackend to a compact JSON object (declaration order).
+def virtual_service_backend_to_json(VirtualServiceBackend v) -> str:
+    list[str] parts = []
+    if v.clientPolicy.is_some():
+        auto u0 = v.clientPolicy.unwrap()
+        parts.append("\"clientPolicy\":" + client_policy_to_json(u0))
+    parts.append("\"virtualServiceName\":" + appmesh_json_str(v.virtualServiceName))
+    return appmesh_json_obj(parts)
+
 # A bound App_Mesh client: credentials + region, threaded into every operation.
 struct App_MeshClient:
     core.Credentials creds
     str region
+
+    # CreateGatewayRoute  PUT /v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_gateway_route(self, CreateGatewayRouteInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        labels["virtualGatewayName"] = input.virtualGatewayName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"gatewayRouteName\":" + appmesh_json_str(input.gatewayRouteName))
+        parts.append("\"spec\":" + gateway_route_spec_to_json(input.spec))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # CreateMesh  PUT /v20190125/meshes
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_mesh(self, CreateMeshInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"meshName\":" + appmesh_json_str(input.meshName))
+        if input.spec.is_some():
+            auto u1 = input.spec.unwrap()
+            parts.append("\"spec\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # CreateRoute  PUT /v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_route(self, CreateRouteInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        labels["virtualRouterName"] = input.virtualRouterName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"routeName\":" + appmesh_json_str(input.routeName))
+        parts.append("\"spec\":" + route_spec_to_json(input.spec))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # CreateVirtualGateway  PUT /v20190125/meshes/{meshName}/virtualGateways
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_virtual_gateway(self, CreateVirtualGatewayInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateways", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + virtual_gateway_spec_to_json(input.spec))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e2))
+        parts.append("\"virtualGatewayName\":" + appmesh_json_str(input.virtualGatewayName))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # CreateVirtualNode  PUT /v20190125/meshes/{meshName}/virtualNodes
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_virtual_node(self, CreateVirtualNodeInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualNodes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + virtual_node_spec_to_json(input.spec))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e2))
+        parts.append("\"virtualNodeName\":" + appmesh_json_str(input.virtualNodeName))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # CreateVirtualRouter  PUT /v20190125/meshes/{meshName}/virtualRouters
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_virtual_router(self, CreateVirtualRouterInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouters", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + virtual_router_spec_to_json(input.spec))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e2))
+        parts.append("\"virtualRouterName\":" + appmesh_json_str(input.virtualRouterName))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # CreateVirtualService  PUT /v20190125/meshes/{meshName}/virtualServices
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def create_virtual_service(self, CreateVirtualServiceInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualServices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + input.spec.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + appmesh_json_arr(e2))
+        parts.append("\"virtualServiceName\":" + appmesh_json_str(input.virtualServiceName))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
 
     # DeleteGatewayRoute  DELETE /v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ResourceInUseException, ServiceUnavailableException, TooManyRequestsException
@@ -2005,6 +2919,56 @@ struct App_MeshClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualServices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
+    # TagResource  PUT /v20190125/tag
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, TooManyTagsException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/tag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + appmesh_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # UntagResource  PUT /v20190125/untag
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/untag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(appmesh_json_str(x0))
+        parts.append("\"tagKeys\":" + appmesh_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # UpdateGatewayRoute  PUT /v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_gateway_route(self, UpdateGatewayRouteInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayRouteName"] = input.gatewayRouteName
+        labels["meshName"] = input.meshName
+        labels["virtualGatewayName"] = input.virtualGatewayName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + gateway_route_spec_to_json(input.spec))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
     # UpdateMesh  PUT /v20190125/meshes/{meshName}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
     def update_mesh(self, UpdateMeshInput input) -> str:
@@ -2014,6 +2978,83 @@ struct App_MeshClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMeshDocument(clientToken=input.clientToken, spec=input.spec)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # UpdateRoute  PUT /v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_route(self, UpdateRouteInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        labels["routeName"] = input.routeName
+        labels["virtualRouterName"] = input.virtualRouterName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + route_spec_to_json(input.spec))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # UpdateVirtualGateway  PUT /v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_virtual_gateway(self, UpdateVirtualGatewayInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        labels["virtualGatewayName"] = input.virtualGatewayName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + virtual_gateway_spec_to_json(input.spec))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # UpdateVirtualNode  PUT /v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_virtual_node(self, UpdateVirtualNodeInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        labels["virtualNodeName"] = input.virtualNodeName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + virtual_node_spec_to_json(input.spec))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
+
+    # UpdateVirtualRouter  PUT /v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_virtual_router(self, UpdateVirtualRouterInput input) -> str:
+        auto host = endpoints.regional_host(appmesh_service(), self.region)
+        dict[str, str] labels = {}
+        labels["meshName"] = input.meshName
+        labels["virtualRouterName"] = input.virtualRouterName
+        dict[str, str] query = {}
+        if input.meshOwner.is_some():
+            query["meshOwner"] = input.meshOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appmesh_json_str(u0))
+        parts.append("\"spec\":" + virtual_router_spec_to_json(input.spec))
+        auto bp = restjson.rest_json_document(b, appmesh_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
 
     # UpdateVirtualService  PUT /v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}

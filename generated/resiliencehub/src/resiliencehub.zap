@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 63 operations — 40 with a generated method,
-#   23 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 63 operations — 57 with a generated method,
+#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   189 structs (100 @derive(Json)), 42 enums, 7 error variants.
-#   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -413,8 +413,9 @@ struct AcceptResourceGroupingRecommendationsRequest:
     str appArn
     list[AcceptGroupingRecommendationEntry] entries
 
-# no @derive(Json): member(s) failedEntries: list[FailedGroupingRecommendationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedEntries: list[FailedGroupingRecommendationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptResourceGroupingRecommendationsResponse:
     str appArn
     list[FailedGroupingRecommendationEntry] failedEntries
@@ -429,8 +430,9 @@ struct AddDraftAppVersionResourceMappingsRequest:
     str appArn
     list[ResourceMapping] resourceMappings
 
-# no @derive(Json): member(s) resourceMappings: list[ResourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceMappings: list[ResourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddDraftAppVersionResourceMappingsResponse:
     str appArn
     str appVersion
@@ -441,8 +443,9 @@ struct Alarm:
     Optional[str] alarmArn
     Optional[str] source
 
-# no @derive(Json): member(s) appComponentNames: list[str], items: list[RecommendationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponentNames: list[str], items: list[RecommendationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlarmRecommendation:
     Optional[str] appComponentName
     Optional[list[str]] appComponentNames
@@ -455,8 +458,9 @@ struct AlarmRecommendation:
     str referenceId
     AlarmType type
 
-# no @derive(Json): member(s) eventSubscriptions: list[EventSubscription], permissionModel: PermissionModel, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventSubscriptions: list[EventSubscription], permissionModel: PermissionModel, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct App:
     str appArn
     Optional[AppAssessmentScheduleType] assessmentSchedule
@@ -478,8 +482,9 @@ struct App:
     Optional[AppStatusType] status
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) compliance: dict[DisruptionType, DisruptionCompliance], policy: ResiliencyPolicy, resiliencyScore: ResiliencyScore, resourceErrorsDetails: ResourceErrorsDetails, summary: AssessmentSummary, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compliance: dict[DisruptionType, DisruptionCompliance], policy: ResiliencyPolicy, resiliencyScore: ResiliencyScore, resourceErrorsDetails: ResourceErrorsDetails, summary: AssessmentSummary, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppAssessment:
     Optional[str] appArn
     Optional[str] appVersion
@@ -518,16 +523,18 @@ struct AppAssessmentSummary:
     Optional[DateTime] startTime
     Optional[str] versionName
 
-# no @derive(Json): member(s) additionalInfo: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppComponent:
     Optional[dict[str, list[str]]] additionalInfo
     Optional[str] id
     str name
     str type
 
-# no @derive(Json): member(s) compliance: dict[DisruptionType, DisruptionCompliance], resiliencyScore: ResiliencyScore not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compliance: dict[DisruptionType, DisruptionCompliance], resiliencyScore: ResiliencyScore not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppComponentCompliance:
     Optional[str] appComponentName
     Optional[dict[DisruptionType, DisruptionCompliance]] compliance
@@ -568,15 +575,17 @@ struct AppVersionSummary:
     Optional[int64] identifier
     Optional[str] versionName
 
-# no @derive(Json): member(s) appComponents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentRiskRecommendation:
     Optional[list[str]] appComponents
     Optional[str] recommendation
     Optional[str] risk
 
-# no @derive(Json): member(s) riskRecommendations: list[AssessmentRiskRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) riskRecommendations: list[AssessmentRiskRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentSummary:
     Optional[list[AssessmentRiskRecommendation]] riskRecommendations
     Optional[str] summary
@@ -592,8 +601,9 @@ struct BatchUpdateRecommendationStatusRequest:
     str appArn
     list[UpdateRecommendationStatusRequestEntry] requestEntries
 
-# no @derive(Json): member(s) failedEntries: list[BatchUpdateRecommendationStatusFailedEntry], successfulEntries: list[BatchUpdateRecommendationStatusSuccessfulEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedEntries: list[BatchUpdateRecommendationStatusFailedEntry], successfulEntries: list[BatchUpdateRecommendationStatusSuccessfulEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateRecommendationStatusResponse:
     str appArn
     list[BatchUpdateRecommendationStatusFailedEntry] failedEntries
@@ -608,8 +618,9 @@ struct BatchUpdateRecommendationStatusSuccessfulEntry:
     Optional[UpdateRecommendationStatusItem] item
     str referenceId
 
-# no @derive(Json): member(s) actualValue: dict[DisruptionType, DisruptionCompliance], expectedValue: dict[DisruptionType, DisruptionCompliance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actualValue: dict[DisruptionType, DisruptionCompliance], expectedValue: dict[DisruptionType, DisruptionCompliance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComplianceDrift:
     Optional[str] actualReferenceId
     Optional[dict[DisruptionType, DisruptionCompliance]] actualValue
@@ -622,8 +633,9 @@ struct ComplianceDrift:
     Optional[str] expectedReferenceId
     Optional[dict[DisruptionType, DisruptionCompliance]] expectedValue
 
-# no @derive(Json): member(s) configRecommendations: list[ConfigRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configRecommendations: list[ConfigRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentRecommendation:
     str appComponentName
     list[ConfigRecommendation] configRecommendations
@@ -635,8 +647,9 @@ struct Condition:
     ConditionOperatorType operator
     Optional[str] value
 
-# no @derive(Json): member(s) compliance: dict[DisruptionType, DisruptionCompliance], recommendationCompliance: dict[DisruptionType, RecommendationDisruptionCompliance], suggestedChanges: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compliance: dict[DisruptionType, DisruptionCompliance], recommendationCompliance: dict[DisruptionType, RecommendationDisruptionCompliance], suggestedChanges: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigRecommendation:
     Optional[str] appComponentName
     Optional[dict[DisruptionType, DisruptionCompliance]] compliance
@@ -674,8 +687,9 @@ struct CreateAppRequest:
     Optional[str] policyArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppResponse:
     App app
 
@@ -689,8 +703,9 @@ struct CreateAppVersionAppComponentRequest:
     str name
     str type
 
-# no @derive(Json): member(s) appComponent: AppComponent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponent: AppComponent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppVersionAppComponentResponse:
     str appArn
     Optional[AppComponent] appComponent
@@ -710,8 +725,9 @@ struct CreateAppVersionResourceRequest:
     Optional[str] resourceName
     str resourceType
 
-# no @derive(Json): member(s) physicalResource: PhysicalResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) physicalResource: PhysicalResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppVersionResourceResponse:
     str appArn
     str appVersion
@@ -729,8 +745,9 @@ struct CreateRecommendationTemplateRequest:
     Optional[list[RenderRecommendationType]] recommendationTypes
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) recommendationTemplate: RecommendationTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationTemplate: RecommendationTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommendationTemplateResponse:
     Optional[RecommendationTemplate] recommendationTemplate
 
@@ -745,8 +762,9 @@ struct CreateResiliencyPolicyRequest:
     Optional[dict[str, str]] tags
     ResiliencyPolicyTier tier
 
-# no @derive(Json): member(s) policy: ResiliencyPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: ResiliencyPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResiliencyPolicyResponse:
     ResiliencyPolicy policy
 
@@ -793,8 +811,9 @@ struct DeleteAppVersionAppComponentRequest:
     Optional[str] clientToken
     str id
 
-# no @derive(Json): member(s) appComponent: AppComponent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponent: AppComponent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAppVersionAppComponentResponse:
     str appArn
     Optional[AppComponent] appComponent
@@ -811,8 +830,9 @@ struct DeleteAppVersionResourceRequest:
     Optional[str] physicalResourceId
     Optional[str] resourceName
 
-# no @derive(Json): member(s) physicalResource: PhysicalResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) physicalResource: PhysicalResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAppVersionResourceResponse:
     str appArn
     str appVersion
@@ -844,8 +864,9 @@ struct DeleteResiliencyPolicyResponse:
 struct DescribeAppAssessmentRequest:
     str assessmentArn
 
-# no @derive(Json): member(s) assessment: AppAssessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessment: AppAssessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppAssessmentResponse:
     AppAssessment assessment
 
@@ -854,8 +875,9 @@ struct DescribeAppAssessmentResponse:
 struct DescribeAppRequest:
     str appArn
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppResponse:
     App app
 
@@ -866,8 +888,9 @@ struct DescribeAppVersionAppComponentRequest:
     str appVersion
     str id
 
-# no @derive(Json): member(s) appComponent: AppComponent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponent: AppComponent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppVersionAppComponentResponse:
     str appArn
     Optional[AppComponent] appComponent
@@ -890,8 +913,9 @@ struct DescribeAppVersionResourceRequest:
     Optional[str] physicalResourceId
     Optional[str] resourceName
 
-# no @derive(Json): member(s) physicalResource: PhysicalResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) physicalResource: PhysicalResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppVersionResourceResponse:
     str appArn
     str appVersion
@@ -912,8 +936,9 @@ struct DescribeAppVersionResourcesResolutionStatusResponse:
     str resolutionId
     ResourceResolutionStatusType status
 
-# no @derive(Json): member(s) additionalInfo: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppVersionResponse:
     Optional[dict[str, list[str]]] additionalInfo
     str appArn
@@ -936,8 +961,9 @@ struct DescribeAppVersionTemplateResponse:
 struct DescribeDraftAppVersionResourcesImportStatusRequest:
     str appArn
 
-# no @derive(Json): member(s) errorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDraftAppVersionResourcesImportStatusResponse:
     str appArn
     str appVersion
@@ -963,8 +989,9 @@ struct DescribeMetricsExportResponse:
 struct DescribeResiliencyPolicyRequest:
     str policyArn
 
-# no @derive(Json): member(s) policy: ResiliencyPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: ResiliencyPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResiliencyPolicyResponse:
     ResiliencyPolicy policy
 
@@ -993,8 +1020,9 @@ struct DisruptionCompliance:
     Optional[str] rtoDescription
     Optional[str] rtoReferenceId
 
-# no @derive(Json): member(s) namespaces: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksSource:
     str eksClusterArn
     list[str] namespaces
@@ -1040,8 +1068,9 @@ struct GroupingAppComponent:
     str appComponentName
     str appComponentType
 
-# no @derive(Json): member(s) recommendationReasons: list[str], resources: list[GroupingResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationReasons: list[str], resources: list[GroupingResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupingRecommendation:
     GroupingRecommendationConfidenceLevel confidenceLevel
     DateTime creationTime
@@ -1053,8 +1082,9 @@ struct GroupingRecommendation:
     float64 score
     GroupingRecommendationStatusType status
 
-# no @derive(Json): member(s) sourceAppComponentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceAppComponentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupingResource:
     LogicalResourceId logicalResourceId
     PhysicalResourceId physicalResourceId
@@ -1071,8 +1101,9 @@ struct ImportResourcesToDraftAppVersionRequest:
     Optional[list[str]] sourceArns
     Optional[list[TerraformSource]] terraformSources
 
-# no @derive(Json): member(s) eksSources: list[EksSource], sourceArns: list[str], terraformSources: list[TerraformSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eksSources: list[EksSource], sourceArns: list[str], terraformSources: list[TerraformSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportResourcesToDraftAppVersionResponse:
     str appArn
     str appVersion
@@ -1092,8 +1123,9 @@ struct ListAlarmRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) alarmRecommendations: list[AlarmRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarmRecommendations: list[AlarmRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAlarmRecommendationsResponse:
     list[AlarmRecommendation] alarmRecommendations
     Optional[str] nextToken
@@ -1105,8 +1137,9 @@ struct ListAppAssessmentComplianceDriftsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) complianceDrifts: list[ComplianceDrift] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) complianceDrifts: list[ComplianceDrift] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppAssessmentComplianceDriftsResponse:
     list[ComplianceDrift] complianceDrifts
     Optional[str] nextToken
@@ -1118,8 +1151,9 @@ struct ListAppAssessmentResourceDriftsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceDrifts: list[ResourceDrift] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceDrifts: list[ResourceDrift] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppAssessmentResourceDriftsResponse:
     Optional[str] nextToken
     list[ResourceDrift] resourceDrifts
@@ -1138,8 +1172,9 @@ struct ListAppAssessmentsRequest:
     Optional[str] nextToken
     Optional[bool] reverseOrder
 
-# no @derive(Json): member(s) assessmentSummaries: list[AppAssessmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentSummaries: list[AppAssessmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppAssessmentsResponse:
     list[AppAssessmentSummary] assessmentSummaries
     Optional[str] nextToken
@@ -1151,8 +1186,9 @@ struct ListAppComponentCompliancesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) componentCompliances: list[AppComponentCompliance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentCompliances: list[AppComponentCompliance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppComponentCompliancesResponse:
     list[AppComponentCompliance] componentCompliances
     Optional[str] nextToken
@@ -1164,8 +1200,9 @@ struct ListAppComponentRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) componentRecommendations: list[ComponentRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentRecommendations: list[ComponentRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppComponentRecommendationsResponse:
     list[ComponentRecommendation] componentRecommendations
     Optional[str] nextToken
@@ -1178,8 +1215,9 @@ struct ListAppInputSourcesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) appInputSources: list[AppInputSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appInputSources: list[AppInputSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppInputSourcesResponse:
     list[AppInputSource] appInputSources
     Optional[str] nextToken
@@ -1192,8 +1230,9 @@ struct ListAppVersionAppComponentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) appComponents: list[AppComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponents: list[AppComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppVersionAppComponentsResponse:
     str appArn
     Optional[list[AppComponent]] appComponents
@@ -1208,8 +1247,9 @@ struct ListAppVersionResourceMappingsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceMappings: list[ResourceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceMappings: list[ResourceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppVersionResourceMappingsResponse:
     Optional[str] nextToken
     list[ResourceMapping] resourceMappings
@@ -1223,8 +1263,9 @@ struct ListAppVersionResourcesRequest:
     Optional[str] nextToken
     Optional[str] resolutionId
 
-# no @derive(Json): member(s) physicalResources: list[PhysicalResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) physicalResources: list[PhysicalResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppVersionResourcesResponse:
     Optional[str] nextToken
     list[PhysicalResource] physicalResources
@@ -1239,8 +1280,9 @@ struct ListAppVersionsRequest:
     Optional[str] nextToken
     Optional[DateTime] startTime
 
-# no @derive(Json): member(s) appVersions: list[AppVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appVersions: list[AppVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppVersionsResponse:
     list[AppVersionSummary] appVersions
     Optional[str] nextToken
@@ -1257,8 +1299,9 @@ struct ListAppsRequest:
     Optional[bool] reverseOrder
     Optional[DateTime] toLastAssessmentTime
 
-# no @derive(Json): member(s) appSummaries: list[AppSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appSummaries: list[AppSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppsResponse:
     list[AppSummary] appSummaries
     Optional[str] nextToken
@@ -1273,8 +1316,9 @@ struct ListMetricsRequest:
     Optional[str] nextToken
     Optional[list[Sort]] sorts
 
-# no @derive(Json): member(s) rows: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rows: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetricsResponse:
     Optional[str] nextToken
     list[list[str]] rows
@@ -1290,8 +1334,9 @@ struct ListRecommendationTemplatesRequest:
     Optional[bool] reverseOrder
     Optional[list[RecommendationTemplateStatus]] status
 
-# no @derive(Json): member(s) recommendationTemplates: list[RecommendationTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationTemplates: list[RecommendationTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationTemplatesResponse:
     Optional[str] nextToken
     Optional[list[RecommendationTemplate]] recommendationTemplates
@@ -1303,8 +1348,9 @@ struct ListResiliencyPoliciesRequest:
     Optional[str] nextToken
     Optional[str] policyName
 
-# no @derive(Json): member(s) resiliencyPolicies: list[ResiliencyPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyPolicies: list[ResiliencyPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResiliencyPoliciesResponse:
     Optional[str] nextToken
     list[ResiliencyPolicy] resiliencyPolicies
@@ -1316,8 +1362,9 @@ struct ListResourceGroupingRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) groupingRecommendations: list[GroupingRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groupingRecommendations: list[GroupingRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceGroupingRecommendationsResponse:
     list[GroupingRecommendation] groupingRecommendations
     Optional[str] nextToken
@@ -1329,8 +1376,9 @@ struct ListSopRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sopRecommendations: list[SopRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sopRecommendations: list[SopRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSopRecommendationsResponse:
     Optional[str] nextToken
     list[SopRecommendation] sopRecommendations
@@ -1341,8 +1389,9 @@ struct ListSuggestedResiliencyPoliciesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resiliencyPolicies: list[ResiliencyPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resiliencyPolicies: list[ResiliencyPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSuggestedResiliencyPoliciesResponse:
     Optional[str] nextToken
     list[ResiliencyPolicy] resiliencyPolicies
@@ -1352,8 +1401,9 @@ struct ListSuggestedResiliencyPoliciesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1364,8 +1414,9 @@ struct ListTestRecommendationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) testRecommendations: list[TestRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testRecommendations: list[TestRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTestRecommendationsResponse:
     Optional[str] nextToken
     list[TestRecommendation] testRecommendations
@@ -1379,8 +1430,9 @@ struct ListUnsupportedAppVersionResourcesRequest:
     Optional[str] nextToken
     Optional[str] resolutionId
 
-# no @derive(Json): member(s) unsupportedResources: list[UnsupportedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unsupportedResources: list[UnsupportedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUnsupportedAppVersionResourcesResponse:
     Optional[str] nextToken
     str resolutionId
@@ -1394,15 +1446,17 @@ struct LogicalResourceId:
     Optional[str] resourceGroupName
     Optional[str] terraformSourceName
 
-# no @derive(Json): member(s) crossAccountRoleArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) crossAccountRoleArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PermissionModel:
     Optional[list[str]] crossAccountRoleArns
     Optional[str] invokerRoleName
     PermissionModelType type
 
-# no @derive(Json): member(s) additionalInfo: dict[str, list[str]], appComponents: list[AppComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, list[str]], appComponents: list[AppComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhysicalResource:
     Optional[dict[str, list[str]]] additionalInfo
     Optional[list[AppComponent]] appComponents
@@ -1464,8 +1518,9 @@ struct RecommendationItem:
     Optional[str] targetAccountId
     Optional[str] targetRegion
 
-# no @derive(Json): member(s) recommendationIds: list[str], recommendationTypes: list[RenderRecommendationType], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationIds: list[str], recommendationTypes: list[RenderRecommendationType], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationTemplate:
     Optional[str] appArn
     str assessmentArn
@@ -1493,8 +1548,9 @@ struct RejectResourceGroupingRecommendationsRequest:
     str appArn
     list[RejectGroupingRecommendationEntry] entries
 
-# no @derive(Json): member(s) failedEntries: list[FailedGroupingRecommendationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedEntries: list[FailedGroupingRecommendationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectResourceGroupingRecommendationsResponse:
     str appArn
     list[FailedGroupingRecommendationEntry] failedEntries
@@ -1515,8 +1571,9 @@ struct RemoveDraftAppVersionResourceMappingsResponse:
     Optional[str] appArn
     Optional[str] appVersion
 
-# no @derive(Json): member(s) policy: dict[DisruptionType, FailurePolicy], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: dict[DisruptionType, FailurePolicy], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResiliencyPolicy:
     Optional[DateTime] creationTime
     Optional[DataLocationConstraint] dataLocationConstraint
@@ -1528,8 +1585,9 @@ struct ResiliencyPolicy:
     Optional[dict[str, str]] tags
     Optional[ResiliencyPolicyTier] tier
 
-# no @derive(Json): member(s) componentScore: dict[ResiliencyScoreType, ScoringComponentResiliencyScore], disruptionScore: dict[DisruptionType, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentScore: dict[ResiliencyScoreType, ScoringComponentResiliencyScore], disruptionScore: dict[DisruptionType, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResiliencyScore:
     Optional[dict[ResiliencyScoreType, ScoringComponentResiliencyScore]] componentScore
     dict[DisruptionType, float64] disruptionScore
@@ -1562,8 +1620,9 @@ struct ResourceError:
     Optional[str] physicalResourceId
     Optional[str] reason
 
-# no @derive(Json): member(s) resourceErrors: list[ResourceError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceErrors: list[ResourceError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceErrorsDetails:
     Optional[bool] hasMoreErrors
     Optional[list[ResourceError]] resourceErrors
@@ -1606,8 +1665,9 @@ struct ScoringComponentResiliencyScore:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) items: list[RecommendationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RecommendationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SopRecommendation:
     Optional[str] appComponentName
     Optional[str] description
@@ -1633,8 +1693,9 @@ struct StartAppAssessmentRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) assessment: AppAssessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessment: AppAssessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAppAssessmentResponse:
     AppAssessment assessment
 
@@ -1676,8 +1737,9 @@ struct TagResourceResponse:
 struct TerraformSource:
     str s3StateFileUrl
 
-# no @derive(Json): member(s) dependsOnAlarms: list[str], items: list[RecommendationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependsOnAlarms: list[str], items: list[RecommendationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestRecommendation:
     Optional[str] appComponentId
     Optional[str] appComponentName
@@ -1727,8 +1789,9 @@ struct UpdateAppRequest:
     Optional[PermissionModel] permissionModel
     Optional[str] policyArn
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppResponse:
     App app
 
@@ -1741,8 +1804,9 @@ struct UpdateAppVersionAppComponentRequest:
     Optional[str] name
     Optional[str] type
 
-# no @derive(Json): member(s) appComponent: AppComponent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appComponent: AppComponent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppVersionAppComponentResponse:
     str appArn
     Optional[AppComponent] appComponent
@@ -1768,15 +1832,17 @@ struct UpdateAppVersionResourceRequest:
     Optional[str] resourceName
     Optional[str] resourceType
 
-# no @derive(Json): member(s) physicalResource: PhysicalResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) physicalResource: PhysicalResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppVersionResourceResponse:
     str appArn
     str appVersion
     Optional[PhysicalResource] physicalResource
 
-# no @derive(Json): member(s) additionalInfo: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppVersionResponse:
     Optional[dict[str, list[str]]] additionalInfo
     str appArn
@@ -1807,8 +1873,9 @@ struct UpdateResiliencyPolicyRequest:
     Optional[str] policyName
     Optional[ResiliencyPolicyTier] tier
 
-# no @derive(Json): member(s) policy: ResiliencyPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policy: ResiliencyPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResiliencyPolicyResponse:
     ResiliencyPolicy policy
 
@@ -1854,33 +1921,12 @@ def resiliencehub_error_from_code(str code) -> resiliencehubError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AcceptResourceGroupingRecommendations (document member `entries: list[AcceptGroupingRecommendationEntry]` is not serializable by derive)
-#   AddDraftAppVersionResourceMappings (document member `resourceMappings: list[ResourceMapping]` is not serializable by derive)
-#   BatchUpdateRecommendationStatus (document member `requestEntries: list[UpdateRecommendationStatusRequestEntry]` is not serializable by derive)
-#   CreateApp (document member `eventSubscriptions: list[EventSubscription]` is not serializable by derive)
-#   CreateAppVersionAppComponent (document member `additionalInfo: dict[str, list[str]]` is not serializable by derive)
-#   CreateAppVersionResource (document member `additionalInfo: dict[str, list[str]]` is not serializable by derive)
-#   CreateRecommendationTemplate (document member `recommendationIds: list[str]` is not serializable by derive)
-#   CreateResiliencyPolicy (document member `policy: dict[DisruptionType, FailurePolicy]` is not serializable by derive)
-#   ImportResourcesToDraftAppVersion (document member `eksSources: list[EksSource]` is not serializable by derive)
+#   CreateResiliencyPolicy (document member `policy: dict[DisruptionType, FailurePolicy]` is not serializable)
 #   ListAppAssessments (httpQuery `assessmentStatus` has unsupported type list[AssessmentStatus])
 #   ListApps (httpQuery `fromLastAssessmentTime` has unsupported type DateTime)
-#   ListMetrics (document member `conditions: list[Condition]` is not serializable by derive)
 #   ListRecommendationTemplates (httpQuery `reverseOrder` has unsupported type bool)
-#   RejectResourceGroupingRecommendations (document member `entries: list[RejectGroupingRecommendationEntry]` is not serializable by derive)
-#   RemoveDraftAppVersionResourceMappings (document member `appRegistryAppNames: list[str]` is not serializable by derive)
-#   StartAppAssessment (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateApp (document member `eventSubscriptions: list[EventSubscription]` is not serializable by derive)
-#   UpdateAppVersion (document member `additionalInfo: dict[str, list[str]]` is not serializable by derive)
-#   UpdateAppVersionAppComponent (document member `additionalInfo: dict[str, list[str]]` is not serializable by derive)
-#   UpdateAppVersionResource (document member `additionalInfo: dict[str, list[str]]` is not serializable by derive)
-#   UpdateResiliencyPolicy (document member `policy: dict[DisruptionType, FailurePolicy]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListMetrics (operation not generated)
+#   UpdateResiliencyPolicy (document member `policy: dict[DisruptionType, FailurePolicy]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2134,10 +2180,250 @@ struct StartResourceGroupingRecommendationTaskDocument:
     # document members of StartResourceGroupingRecommendationTask
     str appArn
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def resiliencehub_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def resiliencehub_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def resiliencehub_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EksSource to a compact JSON object (declaration order).
+def eks_source_to_json(EksSource v) -> str:
+    list[str] parts = []
+    parts.append("\"eksClusterArn\":" + resiliencehub_json_str(v.eksClusterArn))
+    list[str] e0 = []
+    for x0 in v.namespaces:
+        e0.append(resiliencehub_json_str(x0))
+    parts.append("\"namespaces\":" + resiliencehub_json_arr(e0))
+    return resiliencehub_json_obj(parts)
+
+# Serialize PermissionModel to a compact JSON object (declaration order).
+def permission_model_to_json(PermissionModel v) -> str:
+    list[str] parts = []
+    if v.crossAccountRoleArns.is_some():
+        auto u0 = v.crossAccountRoleArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(resiliencehub_json_str(x1))
+        parts.append("\"crossAccountRoleArns\":" + resiliencehub_json_arr(e1))
+    if v.invokerRoleName.is_some():
+        auto u2 = v.invokerRoleName.unwrap()
+        parts.append("\"invokerRoleName\":" + resiliencehub_json_str(u2))
+    parts.append("\"type\":" + v.type.to_json())
+    return resiliencehub_json_obj(parts)
+
 # A bound resiliencehub client: credentials + region, threaded into every operation.
 struct resiliencehubClient:
     core.Credentials creds
     str region
+
+    # AcceptResourceGroupingRecommendations  POST /accept-resource-grouping-recommendations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def accept_resource_grouping_recommendations(self, AcceptResourceGroupingRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/accept-resource-grouping-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(x0.to_json())
+        parts.append("\"entries\":" + resiliencehub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # AddDraftAppVersionResourceMappings  POST /add-draft-app-version-resource-mappings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def add_draft_app_version_resource_mappings(self, AddDraftAppVersionResourceMappingsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/add-draft-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        list[str] e0 = []
+        for x0 in input.resourceMappings:
+            e0.append(x0.to_json())
+        parts.append("\"resourceMappings\":" + resiliencehub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # BatchUpdateRecommendationStatus  POST /batch-update-recommendation-status
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_recommendation_status(self, BatchUpdateRecommendationStatusRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/batch-update-recommendation-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        list[str] e0 = []
+        for x0 in input.requestEntries:
+            e0.append(x0.to_json())
+        parts.append("\"requestEntries\":" + resiliencehub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # CreateApp  POST /create-app
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_app(self, CreateAppRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.assessmentSchedule.is_some():
+            auto u0 = input.assessmentSchedule.unwrap()
+            parts.append("\"assessmentSchedule\":" + u0.to_json())
+        if input.awsApplicationArn.is_some():
+            auto u1 = input.awsApplicationArn.unwrap()
+            parts.append("\"awsApplicationArn\":" + resiliencehub_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + resiliencehub_json_str(u2))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + resiliencehub_json_str(u3))
+        if input.eventSubscriptions.is_some():
+            auto u4 = input.eventSubscriptions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"eventSubscriptions\":" + resiliencehub_json_arr(e5))
+        parts.append("\"name\":" + resiliencehub_json_str(input.name))
+        if input.permissionModel.is_some():
+            auto u6 = input.permissionModel.unwrap()
+            parts.append("\"permissionModel\":" + permission_model_to_json(u6))
+        if input.policyArn.is_some():
+            auto u7 = input.policyArn.unwrap()
+            parts.append("\"policyArn\":" + resiliencehub_json_str(u7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(resiliencehub_json_str(k9) + ":" + resiliencehub_json_str(u8[k9]))
+            parts.append("\"tags\":" + resiliencehub_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # CreateAppVersionAppComponent  POST /create-app-version-app-component
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_app_version_app_component(self, CreateAppVersionAppComponentRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-app-version-app-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.additionalInfo.is_some():
+            auto u0 = input.additionalInfo.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                list[str] e2 = []
+                for x2 in u0[k1]:
+                    e2.append(resiliencehub_json_str(x2))
+                m1.append(resiliencehub_json_str(k1) + ":" + resiliencehub_json_arr(e2))
+            parts.append("\"additionalInfo\":" + resiliencehub_json_obj(m1))
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + resiliencehub_json_str(u3))
+        if input.id.is_some():
+            auto u4 = input.id.unwrap()
+            parts.append("\"id\":" + resiliencehub_json_str(u4))
+        parts.append("\"name\":" + resiliencehub_json_str(input.name))
+        parts.append("\"type\":" + resiliencehub_json_str(input.type))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # CreateAppVersionResource  POST /create-app-version-resource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_app_version_resource(self, CreateAppVersionResourceRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-app-version-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.additionalInfo.is_some():
+            auto u0 = input.additionalInfo.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                list[str] e2 = []
+                for x2 in u0[k1]:
+                    e2.append(resiliencehub_json_str(x2))
+                m1.append(resiliencehub_json_str(k1) + ":" + resiliencehub_json_arr(e2))
+            parts.append("\"additionalInfo\":" + resiliencehub_json_obj(m1))
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        list[str] e3 = []
+        for x3 in input.appComponents:
+            e3.append(resiliencehub_json_str(x3))
+        parts.append("\"appComponents\":" + resiliencehub_json_arr(e3))
+        if input.awsAccountId.is_some():
+            auto u4 = input.awsAccountId.unwrap()
+            parts.append("\"awsAccountId\":" + resiliencehub_json_str(u4))
+        if input.awsRegion.is_some():
+            auto u5 = input.awsRegion.unwrap()
+            parts.append("\"awsRegion\":" + resiliencehub_json_str(u5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + resiliencehub_json_str(u6))
+        parts.append("\"logicalResourceId\":" + input.logicalResourceId.to_json())
+        parts.append("\"physicalResourceId\":" + resiliencehub_json_str(input.physicalResourceId))
+        if input.resourceName.is_some():
+            auto u7 = input.resourceName.unwrap()
+            parts.append("\"resourceName\":" + resiliencehub_json_str(u7))
+        parts.append("\"resourceType\":" + resiliencehub_json_str(input.resourceType))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # CreateRecommendationTemplate  POST /create-recommendation-template
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_recommendation_template(self, CreateRecommendationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-recommendation-template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"assessmentArn\":" + resiliencehub_json_str(input.assessmentArn))
+        if input.bucketName.is_some():
+            auto u0 = input.bucketName.unwrap()
+            parts.append("\"bucketName\":" + resiliencehub_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + resiliencehub_json_str(u1))
+        if input.format.is_some():
+            auto u2 = input.format.unwrap()
+            parts.append("\"format\":" + u2.to_json())
+        parts.append("\"name\":" + resiliencehub_json_str(input.name))
+        if input.recommendationIds.is_some():
+            auto u3 = input.recommendationIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(resiliencehub_json_str(x4))
+            parts.append("\"recommendationIds\":" + resiliencehub_json_arr(e4))
+        if input.recommendationTypes.is_some():
+            auto u5 = input.recommendationTypes.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"recommendationTypes\":" + resiliencehub_json_arr(e6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(resiliencehub_json_str(k8) + ":" + resiliencehub_json_str(u7[k8]))
+            parts.append("\"tags\":" + resiliencehub_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
     # DeleteApp  POST /delete-app
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2301,6 +2587,37 @@ struct resiliencehubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
+    # ImportResourcesToDraftAppVersion  POST /import-resources-to-draft-app-version
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def import_resources_to_draft_app_version(self, ImportResourcesToDraftAppVersionRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/import-resources-to-draft-app-version", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        if input.eksSources.is_some():
+            auto u0 = input.eksSources.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(eks_source_to_json(x1))
+            parts.append("\"eksSources\":" + resiliencehub_json_arr(e1))
+        if input.importStrategy.is_some():
+            auto u2 = input.importStrategy.unwrap()
+            parts.append("\"importStrategy\":" + u2.to_json())
+        if input.sourceArns.is_some():
+            auto u3 = input.sourceArns.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(resiliencehub_json_str(x4))
+            parts.append("\"sourceArns\":" + resiliencehub_json_arr(e4))
+        if input.terraformSources.is_some():
+            auto u5 = input.terraformSources.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"terraformSources\":" + resiliencehub_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
     # ListAlarmRecommendations  POST /list-alarm-recommendations
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_alarm_recommendations(self, ListAlarmRecommendationsRequest input) -> str:
@@ -2389,6 +2706,42 @@ struct resiliencehubClient:
         auto b = binding.HttpBinding(method="POST", path_template="/list-app-versions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppVersionsDocument(appArn=input.appArn, endTime=input.endTime, maxResults=input.maxResults, nextToken=input.nextToken, startTime=input.startTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # ListMetrics  POST /list-metrics
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_metrics(self, ListMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-metrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.conditions.is_some():
+            auto u0 = input.conditions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"conditions\":" + resiliencehub_json_arr(e1))
+        if input.dataSource.is_some():
+            auto u2 = input.dataSource.unwrap()
+            parts.append("\"dataSource\":" + resiliencehub_json_str(u2))
+        if input.fields.is_some():
+            auto u3 = input.fields.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"fields\":" + resiliencehub_json_arr(e4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + resiliencehub_json_str(u6))
+        if input.sorts.is_some():
+            auto u7 = input.sorts.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"sorts\":" + resiliencehub_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
     # ListResiliencyPolicies  GET /list-resiliency-policies
@@ -2485,6 +2838,66 @@ struct resiliencehubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
+    # RejectResourceGroupingRecommendations  POST /reject-resource-grouping-recommendations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def reject_resource_grouping_recommendations(self, RejectResourceGroupingRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/reject-resource-grouping-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(x0.to_json())
+        parts.append("\"entries\":" + resiliencehub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # RemoveDraftAppVersionResourceMappings  POST /remove-draft-app-version-resource-mappings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def remove_draft_app_version_resource_mappings(self, RemoveDraftAppVersionResourceMappingsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/remove-draft-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        if input.appRegistryAppNames.is_some():
+            auto u0 = input.appRegistryAppNames.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resiliencehub_json_str(x1))
+            parts.append("\"appRegistryAppNames\":" + resiliencehub_json_arr(e1))
+        if input.eksSourceNames.is_some():
+            auto u2 = input.eksSourceNames.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resiliencehub_json_str(x3))
+            parts.append("\"eksSourceNames\":" + resiliencehub_json_arr(e3))
+        if input.logicalStackNames.is_some():
+            auto u4 = input.logicalStackNames.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(resiliencehub_json_str(x5))
+            parts.append("\"logicalStackNames\":" + resiliencehub_json_arr(e5))
+        if input.resourceGroupNames.is_some():
+            auto u6 = input.resourceGroupNames.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(resiliencehub_json_str(x7))
+            parts.append("\"resourceGroupNames\":" + resiliencehub_json_arr(e7))
+        if input.resourceNames.is_some():
+            auto u8 = input.resourceNames.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(resiliencehub_json_str(x9))
+            parts.append("\"resourceNames\":" + resiliencehub_json_arr(e9))
+        if input.terraformSourceNames.is_some():
+            auto u10 = input.terraformSourceNames.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(resiliencehub_json_str(x11))
+            parts.append("\"terraformSourceNames\":" + resiliencehub_json_arr(e11))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
     # ResolveAppVersionResources  POST /resolve-app-version-resources
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def resolve_app_version_resources(self, ResolveAppVersionResourcesRequest input) -> str:
@@ -2492,6 +2905,27 @@ struct resiliencehubClient:
         auto b = binding.HttpBinding(method="POST", path_template="/resolve-app-version-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResolveAppVersionResourcesDocument(appArn=input.appArn, appVersion=input.appVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # StartAppAssessment  POST /start-app-assessment
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_app_assessment(self, StartAppAssessmentRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/start-app-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        parts.append("\"appVersion\":" + resiliencehub_json_str(input.appVersion))
+        parts.append("\"assessmentName\":" + resiliencehub_json_str(input.assessmentName))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + resiliencehub_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(resiliencehub_json_str(k2) + ":" + resiliencehub_json_str(u1[k2]))
+            parts.append("\"tags\":" + resiliencehub_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
     # StartMetricsExport  POST /start-metrics-export
@@ -2512,12 +2946,162 @@ struct resiliencehubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(resiliencehub_json_str(k0) + ":" + resiliencehub_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + resiliencehub_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # UpdateApp  POST /update-app
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_app(self, UpdateAppRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        if input.assessmentSchedule.is_some():
+            auto u0 = input.assessmentSchedule.unwrap()
+            parts.append("\"assessmentSchedule\":" + u0.to_json())
+        if input.clearResiliencyPolicyArn.is_some():
+            auto u1 = input.clearResiliencyPolicyArn.unwrap()
+            parts.append("\"clearResiliencyPolicyArn\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + resiliencehub_json_str(u2))
+        if input.eventSubscriptions.is_some():
+            auto u3 = input.eventSubscriptions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"eventSubscriptions\":" + resiliencehub_json_arr(e4))
+        if input.permissionModel.is_some():
+            auto u5 = input.permissionModel.unwrap()
+            parts.append("\"permissionModel\":" + permission_model_to_json(u5))
+        if input.policyArn.is_some():
+            auto u6 = input.policyArn.unwrap()
+            parts.append("\"policyArn\":" + resiliencehub_json_str(u6))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # UpdateAppVersion  POST /update-app-version
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_app_version(self, UpdateAppVersionRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.additionalInfo.is_some():
+            auto u0 = input.additionalInfo.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                list[str] e2 = []
+                for x2 in u0[k1]:
+                    e2.append(resiliencehub_json_str(x2))
+                m1.append(resiliencehub_json_str(k1) + ":" + resiliencehub_json_arr(e2))
+            parts.append("\"additionalInfo\":" + resiliencehub_json_obj(m1))
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # UpdateAppVersionAppComponent  POST /update-app-version-app-component
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_app_version_app_component(self, UpdateAppVersionAppComponentRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version-app-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.additionalInfo.is_some():
+            auto u0 = input.additionalInfo.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                list[str] e2 = []
+                for x2 in u0[k1]:
+                    e2.append(resiliencehub_json_str(x2))
+                m1.append(resiliencehub_json_str(k1) + ":" + resiliencehub_json_arr(e2))
+            parts.append("\"additionalInfo\":" + resiliencehub_json_obj(m1))
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        parts.append("\"id\":" + resiliencehub_json_str(input.id))
+        if input.name.is_some():
+            auto u3 = input.name.unwrap()
+            parts.append("\"name\":" + resiliencehub_json_str(u3))
+        if input.type.is_some():
+            auto u4 = input.type.unwrap()
+            parts.append("\"type\":" + resiliencehub_json_str(u4))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # UpdateAppVersionResource  POST /update-app-version-resource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_app_version_resource(self, UpdateAppVersionResourceRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.additionalInfo.is_some():
+            auto u0 = input.additionalInfo.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                list[str] e2 = []
+                for x2 in u0[k1]:
+                    e2.append(resiliencehub_json_str(x2))
+                m1.append(resiliencehub_json_str(k1) + ":" + resiliencehub_json_arr(e2))
+            parts.append("\"additionalInfo\":" + resiliencehub_json_obj(m1))
+        parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
+        if input.appComponents.is_some():
+            auto u3 = input.appComponents.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(resiliencehub_json_str(x4))
+            parts.append("\"appComponents\":" + resiliencehub_json_arr(e4))
+        if input.awsAccountId.is_some():
+            auto u5 = input.awsAccountId.unwrap()
+            parts.append("\"awsAccountId\":" + resiliencehub_json_str(u5))
+        if input.awsRegion.is_some():
+            auto u6 = input.awsRegion.unwrap()
+            parts.append("\"awsRegion\":" + resiliencehub_json_str(u6))
+        if input.excluded.is_some():
+            auto u7 = input.excluded.unwrap()
+            parts.append("\"excluded\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.logicalResourceId.is_some():
+            auto u8 = input.logicalResourceId.unwrap()
+            parts.append("\"logicalResourceId\":" + u8.to_json())
+        if input.physicalResourceId.is_some():
+            auto u9 = input.physicalResourceId.unwrap()
+            parts.append("\"physicalResourceId\":" + resiliencehub_json_str(u9))
+        if input.resourceName.is_some():
+            auto u10 = input.resourceName.unwrap()
+            parts.append("\"resourceName\":" + resiliencehub_json_str(u10))
+        if input.resourceType.is_some():
+            auto u11 = input.resourceType.unwrap()
+            parts.append("\"resourceType\":" + resiliencehub_json_str(u11))
+        auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
     # Paginator for ListAppAssessmentResourceDrifts — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: resourceDrifts).
     def paginate_list_app_assessment_resource_drifts(self, ListAppAssessmentResourceDriftsRequest input):
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         while True:
             auto raw = self.list_app_assessment_resource_drifts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListMetrics — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: rows).
+    def paginate_list_metrics(self, ListMetricsRequest input):
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        while True:
+            auto raw = self.list_metrics(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

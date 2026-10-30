@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 22 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 30 operations — 28 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   100 structs (69 @derive(Json)), 14 enums, 7 error variants.
 #   5 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -224,8 +224,9 @@ struct CreateDataLakeDatasetRequest:
     Optional[DataLakeDatasetPartitionSpec] partitionSpec
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) dataset: DataLakeDataset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataset: DataLakeDataset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataLakeDatasetResponse:
     DataLakeDataset dataset
 
@@ -280,8 +281,9 @@ struct DataIntegrationEventDatasetTargetDetails:
     DataIntegrationEventDatasetOperationType operationType
     DataIntegrationEventDatasetLoadExecutionDetails datasetLoadExecution
 
-# no @derive(Json): member(s) sources: list[DataIntegrationFlowSource], target: DataIntegrationFlowTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[DataIntegrationFlowSource], target: DataIntegrationFlowTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlow:
     str instanceId
     str name
@@ -291,8 +293,9 @@ struct DataIntegrationFlow:
     DateTime createdTime
     DateTime lastModifiedTime
 
-# no @derive(Json): member(s) dedupeStrategy: DataIntegrationFlowDedupeStrategy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dedupeStrategy: DataIntegrationFlowDedupeStrategy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowDatasetOptions:
     Optional[DataIntegrationFlowLoadType] loadType
     Optional[bool] dedupeRecords
@@ -302,20 +305,23 @@ struct DataIntegrationFlowDatasetOptions:
 struct DataIntegrationFlowDatasetSource:
     str datasetIdentifier
 
-# no @derive(Json): member(s) options: DataIntegrationFlowDatasetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: DataIntegrationFlowDatasetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowDatasetSourceConfiguration:
     str datasetIdentifier
     Optional[DataIntegrationFlowDatasetOptions] options
 
-# no @derive(Json): member(s) options: DataIntegrationFlowDatasetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: DataIntegrationFlowDatasetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowDatasetTargetConfiguration:
     str datasetIdentifier
     Optional[DataIntegrationFlowDatasetOptions] options
 
-# no @derive(Json): member(s) fieldPriority: DataIntegrationFlowFieldPriorityDedupeStrategyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldPriority: DataIntegrationFlowFieldPriorityDedupeStrategyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowDedupeStrategy:
     str type
     Optional[DataIntegrationFlowFieldPriorityDedupeStrategyConfiguration] fieldPriority
@@ -347,8 +353,9 @@ struct DataIntegrationFlowFieldPriorityDedupeField:
     str name
     DataIntegrationFlowFieldPriorityDedupeSortOrder sortOrder
 
-# no @derive(Json): member(s) fields: list[DataIntegrationFlowFieldPriorityDedupeField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[DataIntegrationFlowFieldPriorityDedupeField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowFieldPriorityDedupeStrategyConfiguration:
     list[DataIntegrationFlowFieldPriorityDedupeField] fields
 
@@ -377,16 +384,18 @@ struct DataIntegrationFlowS3TargetConfiguration:
 struct DataIntegrationFlowSQLTransformationConfiguration:
     str query
 
-# no @derive(Json): member(s) datasetSource: DataIntegrationFlowDatasetSourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetSource: DataIntegrationFlowDatasetSourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowSource:
     DataIntegrationFlowSourceType sourceType
     str sourceName
     Optional[DataIntegrationFlowS3SourceConfiguration] s3Source
     Optional[DataIntegrationFlowDatasetSourceConfiguration] datasetSource
 
-# no @derive(Json): member(s) datasetTarget: DataIntegrationFlowDatasetTargetConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetTarget: DataIntegrationFlowDatasetTargetConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataIntegrationFlowTarget:
     DataIntegrationFlowTargetType targetType
     Optional[DataIntegrationFlowS3TargetConfiguration] s3Target
@@ -397,8 +406,9 @@ struct DataIntegrationFlowTransformation:
     DataIntegrationFlowTransformationType transformationType
     Optional[DataIntegrationFlowSQLTransformationConfiguration] sqlTransformation
 
-# no @derive(Json): member(s) schema: DataLakeDatasetSchema, partitionSpec: DataLakeDatasetPartitionSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schema: DataLakeDatasetSchema, partitionSpec: DataLakeDatasetPartitionSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeDataset:
     str instanceId
     str namespace
@@ -419,8 +429,9 @@ struct DataLakeDatasetPartitionField:
 struct DataLakeDatasetPartitionFieldTransform:
     DataLakeDatasetPartitionTransformType type
 
-# no @derive(Json): member(s) fields: list[DataLakeDatasetPartitionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[DataLakeDatasetPartitionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeDatasetPartitionSpec:
     list[DataLakeDatasetPartitionField] fields
 
@@ -428,8 +439,9 @@ struct DataLakeDatasetPartitionSpec:
 struct DataLakeDatasetPrimaryKeyField:
     str name
 
-# no @derive(Json): member(s) fields: list[DataLakeDatasetSchemaField], primaryKeys: list[DataLakeDatasetPrimaryKeyField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[DataLakeDatasetSchemaField], primaryKeys: list[DataLakeDatasetPrimaryKeyField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLakeDatasetSchema:
     str name
     list[DataLakeDatasetSchemaField] fields
@@ -531,8 +543,9 @@ struct GetDataIntegrationFlowRequest:
     str instanceId
     str name
 
-# no @derive(Json): member(s) flow: DataIntegrationFlow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flow: DataIntegrationFlow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataIntegrationFlowResponse:
     DataIntegrationFlow flow
 
@@ -543,8 +556,9 @@ struct GetDataLakeDatasetRequest:
     str namespace
     str name
 
-# no @derive(Json): member(s) dataset: DataLakeDataset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataset: DataLakeDataset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataLakeDatasetResponse:
     DataLakeDataset dataset
 
@@ -594,8 +608,9 @@ struct ListDataIntegrationEventsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) events: list[DataIntegrationEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[DataIntegrationEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataIntegrationEventsResponse:
     list[DataIntegrationEvent] events
     Optional[str] nextToken
@@ -608,8 +623,9 @@ struct ListDataIntegrationFlowExecutionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) flowExecutions: list[DataIntegrationFlowExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowExecutions: list[DataIntegrationFlowExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataIntegrationFlowExecutionsResponse:
     list[DataIntegrationFlowExecution] flowExecutions
     Optional[str] nextToken
@@ -621,8 +637,9 @@ struct ListDataIntegrationFlowsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) flows: list[DataIntegrationFlow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flows: list[DataIntegrationFlow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataIntegrationFlowsResponse:
     list[DataIntegrationFlow] flows
     Optional[str] nextToken
@@ -635,8 +652,9 @@ struct ListDataLakeDatasetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasets: list[DataLakeDataset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasets: list[DataLakeDataset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataLakeDatasetsResponse:
     list[DataLakeDataset] datasets
     Optional[str] nextToken
@@ -648,8 +666,9 @@ struct ListDataLakeNamespacesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) namespaces: list[DataLakeNamespace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[DataLakeNamespace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataLakeNamespacesResponse:
     list[DataLakeNamespace] namespaces
     Optional[str] nextToken
@@ -662,8 +681,9 @@ struct ListInstancesRequest:
     Optional[list[str]] instanceNameFilter
     Optional[list[InstanceState]] instanceStateFilter
 
-# no @derive(Json): member(s) instances: list[Instance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instances: list[Instance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesResponse:
     list[Instance] instances
     Optional[str] nextToken
@@ -673,8 +693,9 @@ struct ListInstancesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -736,8 +757,9 @@ struct UpdateDataIntegrationFlowRequest:
     Optional[DataIntegrationFlowTransformation] transformation
     Optional[DataIntegrationFlowTarget] target
 
-# no @derive(Json): member(s) flow: DataIntegrationFlow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flow: DataIntegrationFlow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataIntegrationFlowResponse:
     DataIntegrationFlow flow
 
@@ -749,8 +771,9 @@ struct UpdateDataLakeDatasetRequest:
     str name
     Optional[str] description
 
-# no @derive(Json): member(s) dataset: DataLakeDataset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataset: DataLakeDataset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataLakeDatasetResponse:
     DataLakeDataset dataset
 
@@ -818,14 +841,8 @@ def scn_error_from_code(str code) -> SupplyChainError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateDataIntegrationFlow (document member `sources: list[DataIntegrationFlowSource]` is not serializable by derive)
-#   CreateDataLakeDataset (document member `schema: DataLakeDatasetSchema` is not serializable by derive)
-#   CreateDataLakeNamespace (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateInstance (document member `tags: dict[str, str]` is not serializable by derive)
 #   ListInstances (httpQuery `instanceNameFilter` has unsupported type list[str])
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateDataIntegrationFlow (document member `sources: list[DataIntegrationFlowSource]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -866,6 +883,136 @@ struct UpdateInstanceDocument:
     Optional[str] instanceName
     Optional[str] instanceDescription
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def scn_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def scn_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def scn_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DataIntegrationFlowDatasetOptions to a compact JSON object (declaration order).
+def data_integration_flow_dataset_options_to_json(DataIntegrationFlowDatasetOptions v) -> str:
+    list[str] parts = []
+    if v.loadType.is_some():
+        auto u0 = v.loadType.unwrap()
+        parts.append("\"loadType\":" + u0.to_json())
+    if v.dedupeRecords.is_some():
+        auto u1 = v.dedupeRecords.unwrap()
+        parts.append("\"dedupeRecords\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.dedupeStrategy.is_some():
+        auto u2 = v.dedupeStrategy.unwrap()
+        parts.append("\"dedupeStrategy\":" + data_integration_flow_dedupe_strategy_to_json(u2))
+    return scn_json_obj(parts)
+
+# Serialize DataIntegrationFlowDatasetSourceConfiguration to a compact JSON object (declaration order).
+def data_integration_flow_dataset_source_configuration_to_json(DataIntegrationFlowDatasetSourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"datasetIdentifier\":" + scn_json_str(v.datasetIdentifier))
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        parts.append("\"options\":" + data_integration_flow_dataset_options_to_json(u0))
+    return scn_json_obj(parts)
+
+# Serialize DataIntegrationFlowDatasetTargetConfiguration to a compact JSON object (declaration order).
+def data_integration_flow_dataset_target_configuration_to_json(DataIntegrationFlowDatasetTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"datasetIdentifier\":" + scn_json_str(v.datasetIdentifier))
+    if v.options.is_some():
+        auto u0 = v.options.unwrap()
+        parts.append("\"options\":" + data_integration_flow_dataset_options_to_json(u0))
+    return scn_json_obj(parts)
+
+# Serialize DataIntegrationFlowDedupeStrategy to a compact JSON object (declaration order).
+def data_integration_flow_dedupe_strategy_to_json(DataIntegrationFlowDedupeStrategy v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + scn_json_str(v.type))
+    if v.fieldPriority.is_some():
+        auto u0 = v.fieldPriority.unwrap()
+        parts.append("\"fieldPriority\":" + data_integration_flow_field_priority_dedupe_strategy_configuration_to_json(u0))
+    return scn_json_obj(parts)
+
+# Serialize DataIntegrationFlowFieldPriorityDedupeStrategyConfiguration to a compact JSON object (declaration order).
+def data_integration_flow_field_priority_dedupe_strategy_configuration_to_json(DataIntegrationFlowFieldPriorityDedupeStrategyConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + scn_json_arr(e0))
+    return scn_json_obj(parts)
+
+# Serialize DataIntegrationFlowSource to a compact JSON object (declaration order).
+def data_integration_flow_source_to_json(DataIntegrationFlowSource v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceType\":" + v.sourceType.to_json())
+    parts.append("\"sourceName\":" + scn_json_str(v.sourceName))
+    if v.s3Source.is_some():
+        auto u0 = v.s3Source.unwrap()
+        parts.append("\"s3Source\":" + u0.to_json())
+    if v.datasetSource.is_some():
+        auto u1 = v.datasetSource.unwrap()
+        parts.append("\"datasetSource\":" + data_integration_flow_dataset_source_configuration_to_json(u1))
+    return scn_json_obj(parts)
+
+# Serialize DataIntegrationFlowTarget to a compact JSON object (declaration order).
+def data_integration_flow_target_to_json(DataIntegrationFlowTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"targetType\":" + v.targetType.to_json())
+    if v.s3Target.is_some():
+        auto u0 = v.s3Target.unwrap()
+        parts.append("\"s3Target\":" + u0.to_json())
+    if v.datasetTarget.is_some():
+        auto u1 = v.datasetTarget.unwrap()
+        parts.append("\"datasetTarget\":" + data_integration_flow_dataset_target_configuration_to_json(u1))
+    return scn_json_obj(parts)
+
+# Serialize DataLakeDatasetPartitionSpec to a compact JSON object (declaration order).
+def data_lake_dataset_partition_spec_to_json(DataLakeDatasetPartitionSpec v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + scn_json_arr(e0))
+    return scn_json_obj(parts)
+
+# Serialize DataLakeDatasetSchema to a compact JSON object (declaration order).
+def data_lake_dataset_schema_to_json(DataLakeDatasetSchema v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + scn_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + scn_json_arr(e0))
+    if v.primaryKeys.is_some():
+        auto u1 = v.primaryKeys.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"primaryKeys\":" + scn_json_arr(e2))
+    return scn_json_obj(parts)
+
 # A bound SupplyChain client: credentials + region, threaded into every operation.
 struct SupplyChainClient:
     core.Credentials creds
@@ -880,6 +1027,109 @@ struct SupplyChainClient:
         auto b = binding.HttpBinding(method="POST", path_template="/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBillOfMaterialsImportJobDocument(s3uri=input.s3uri, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
+
+    # CreateDataIntegrationFlow  PUT /api/data-integration/instance/{instanceId}/data-integration-flows/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_integration_flow(self, CreateDataIntegrationFlowRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["instanceId"] = input.instanceId
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sources:
+            e0.append(data_integration_flow_source_to_json(x0))
+        parts.append("\"sources\":" + scn_json_arr(e0))
+        parts.append("\"transformation\":" + input.transformation.to_json())
+        parts.append("\"target\":" + data_integration_flow_target_to_json(input.target))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(scn_json_str(k2) + ":" + scn_json_str(u1[k2]))
+            parts.append("\"tags\":" + scn_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
+
+    # CreateDataLakeDataset  PUT /api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_lake_dataset(self, CreateDataLakeDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["instanceId"] = input.instanceId
+        labels["namespace"] = input.namespace
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.schema.is_some():
+            auto u0 = input.schema.unwrap()
+            parts.append("\"schema\":" + data_lake_dataset_schema_to_json(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + scn_json_str(u1))
+        if input.partitionSpec.is_some():
+            auto u2 = input.partitionSpec.unwrap()
+            parts.append("\"partitionSpec\":" + data_lake_dataset_partition_spec_to_json(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(scn_json_str(k4) + ":" + scn_json_str(u3[k4]))
+            parts.append("\"tags\":" + scn_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
+
+    # CreateDataLakeNamespace  PUT /api/datalake/instance/{instanceId}/namespaces/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_lake_namespace(self, CreateDataLakeNamespaceRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["instanceId"] = input.instanceId
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + scn_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(scn_json_str(k2) + ":" + scn_json_str(u1[k2]))
+            parts.append("\"tags\":" + scn_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
+
+    # CreateInstance  POST /api/instance
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_instance(self, CreateInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/api/instance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.instanceName.is_some():
+            auto u0 = input.instanceName.unwrap()
+            parts.append("\"instanceName\":" + scn_json_str(u0))
+        if input.instanceDescription.is_some():
+            auto u1 = input.instanceDescription.unwrap()
+            parts.append("\"instanceDescription\":" + scn_json_str(u1))
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + scn_json_str(u2))
+        if input.webAppDnsDomain.is_some():
+            auto u3 = input.webAppDnsDomain.unwrap()
+            parts.append("\"webAppDnsDomain\":" + scn_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(scn_json_str(k5) + ":" + scn_json_str(u4[k5]))
+            parts.append("\"tags\":" + scn_json_obj(m5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + scn_json_str(u6))
+        auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
 
     # DeleteDataIntegrationFlow  DELETE /api/data-integration/instance/{instanceId}/data-integration-flows/{name}
@@ -1085,6 +1335,45 @@ struct SupplyChainClient:
         auto b = binding.HttpBinding(method="POST", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendDataIntegrationEventDocument(eventType=input.eventType, data=input.data, eventGroupId=input.eventGroupId, eventTimestamp=input.eventTimestamp, clientToken=input.clientToken, datasetTarget=input.datasetTarget)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
+
+    # TagResource  POST /api/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/api/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(scn_json_str(k0) + ":" + scn_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + scn_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
+
+    # UpdateDataIntegrationFlow  PATCH /api/data-integration/instance/{instanceId}/data-integration-flows/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_data_integration_flow(self, UpdateDataIntegrationFlowRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["instanceId"] = input.instanceId
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sources.is_some():
+            auto u0 = input.sources.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(data_integration_flow_source_to_json(x1))
+            parts.append("\"sources\":" + scn_json_arr(e1))
+        if input.transformation.is_some():
+            auto u2 = input.transformation.unwrap()
+            parts.append("\"transformation\":" + u2.to_json())
+        if input.target.is_some():
+            auto u3 = input.target.unwrap()
+            parts.append("\"target\":" + data_integration_flow_target_to_json(u3))
+        auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
 
     # UpdateDataLakeDataset  PATCH /api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}

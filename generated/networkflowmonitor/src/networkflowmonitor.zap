@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 19 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 24 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (49 @derive(Json)), 9 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -171,8 +171,9 @@ struct CreateMonitorInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) localResources: list[MonitorLocalResource], remoteResources: list[MonitorRemoteResource], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localResources: list[MonitorLocalResource], remoteResources: list[MonitorRemoteResource], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMonitorOutput:
     str monitorArn
     str monitorName
@@ -190,8 +191,9 @@ struct CreateScopeInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScopeOutput:
     str scopeId
     ScopeStatus status
@@ -223,8 +225,9 @@ struct DeleteScopeOutput:
 struct GetMonitorInput:
     str monitorName
 
-# no @derive(Json): member(s) localResources: list[MonitorLocalResource], remoteResources: list[MonitorRemoteResource], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localResources: list[MonitorLocalResource], remoteResources: list[MonitorRemoteResource], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMonitorOutput:
     str monitorArn
     str monitorName
@@ -243,8 +246,9 @@ struct GetQueryResultsMonitorTopContributorsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) topContributors: list[MonitorTopContributorsRow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topContributors: list[MonitorTopContributorsRow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsMonitorTopContributorsOutput:
     Optional[MetricUnit] unit
     Optional[list[MonitorTopContributorsRow]] topContributors
@@ -258,8 +262,9 @@ struct GetQueryResultsWorkloadInsightsTopContributorsDataInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datapoints: list[WorkloadInsightsTopContributorsDataPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datapoints: list[WorkloadInsightsTopContributorsDataPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsWorkloadInsightsTopContributorsDataOutput:
     MetricUnit unit
     list[WorkloadInsightsTopContributorsDataPoint] datapoints
@@ -273,8 +278,9 @@ struct GetQueryResultsWorkloadInsightsTopContributorsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) topContributors: list[WorkloadInsightsTopContributorsRow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topContributors: list[WorkloadInsightsTopContributorsRow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsWorkloadInsightsTopContributorsOutput:
     Optional[list[WorkloadInsightsTopContributorsRow]] topContributors
     Optional[str] nextToken
@@ -314,8 +320,9 @@ struct GetQueryStatusWorkloadInsightsTopContributorsOutput:
 struct GetScopeInput:
     str scopeId
 
-# no @derive(Json): member(s) targets: list[TargetResource], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[TargetResource], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScopeOutput:
     str scopeId
     ScopeStatus status
@@ -344,8 +351,9 @@ struct ListMonitorsInput:
     # wire string of the MonitorStatus enum (querystring binding)
     Optional[str] monitorStatus
 
-# no @derive(Json): member(s) monitors: list[MonitorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) monitors: list[MonitorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorsOutput:
     list[MonitorSummary] monitors
     Optional[str] nextToken
@@ -356,8 +364,9 @@ struct ListScopesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) scopes: list[ScopeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[ScopeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScopesOutput:
     list[ScopeSummary] scopes
     Optional[str] nextToken
@@ -367,8 +376,9 @@ struct ListScopesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -388,8 +398,9 @@ struct MonitorSummary:
     str monitorName
     MonitorStatus monitorStatus
 
-# no @derive(Json): member(s) traversedConstructs: list[TraversedComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) traversedConstructs: list[TraversedComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitorTopContributorsRow:
     Optional[str] localIp
     Optional[str] snatIp
@@ -562,8 +573,9 @@ struct UpdateMonitorInput:
     Optional[list[MonitorRemoteResource]] remoteResourcesToRemove
     Optional[str] clientToken
 
-# no @derive(Json): member(s) localResources: list[MonitorLocalResource], remoteResources: list[MonitorRemoteResource], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localResources: list[MonitorLocalResource], remoteResources: list[MonitorRemoteResource], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMonitorOutput:
     str monitorArn
     str monitorName
@@ -581,8 +593,9 @@ struct UpdateScopeInput:
     Optional[list[TargetResource]] resourcesToAdd
     Optional[list[TargetResource]] resourcesToDelete
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScopeOutput:
     str scopeId
     ScopeStatus status
@@ -593,8 +606,9 @@ struct UpdateScopeOutput:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) timestamps: list[DateTime], values: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) timestamps: list[DateTime], values: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadInsightsTopContributorsDataPoint:
     list[DateTime] timestamps
     list[float64] values
@@ -650,12 +664,7 @@ def networkflowmonitor_error_from_code(str code) -> NetworkFlowMonitorError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateMonitor (document member `localResources: list[MonitorLocalResource]` is not serializable by derive)
-#   CreateScope (document member `targets: list[TargetResource]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateMonitor (document member `localResourcesToAdd: list[MonitorLocalResource]` is not serializable by derive)
-#   UpdateScope (document member `resourcesToAdd: list[TargetResource]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -690,6 +699,58 @@ struct StartQueryWorkloadInsightsTopContributorsDataDocument:
 struct NetworkFlowMonitorClient:
     core.Credentials creds
     str region
+
+    # CreateMonitor  POST /monitors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_monitor(self, CreateMonitorInput input) -> str:
+        auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"monitorName\":" + networkflowmonitor_json_str(input.monitorName))
+        list[str] e0 = []
+        for x0 in input.localResources:
+            e0.append(x0.to_json())
+        parts.append("\"localResources\":" + networkflowmonitor_json_arr(e0))
+        if input.remoteResources.is_some():
+            auto u1 = input.remoteResources.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"remoteResources\":" + networkflowmonitor_json_arr(e2))
+        parts.append("\"scopeArn\":" + networkflowmonitor_json_str(input.scopeArn))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + networkflowmonitor_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(networkflowmonitor_json_str(k5) + ":" + networkflowmonitor_json_str(u4[k5]))
+            parts.append("\"tags\":" + networkflowmonitor_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, networkflowmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
+
+    # CreateScope  POST /scopes
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scope(self, CreateScopeInput input) -> str:
+        auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/scopes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targets:
+            e0.append(x0.to_json())
+        parts.append("\"targets\":" + networkflowmonitor_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + networkflowmonitor_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(networkflowmonitor_json_str(k3) + ":" + networkflowmonitor_json_str(u2[k3]))
+            parts.append("\"tags\":" + networkflowmonitor_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, networkflowmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
 
     # DeleteMonitor  DELETE /monitors/{monitorName}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -899,6 +960,82 @@ struct NetworkFlowMonitorClient:
         labels["queryId"] = input.queryId
         auto b = binding.HttpBinding(method="DELETE", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(networkflowmonitor_json_str(k0) + ":" + networkflowmonitor_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + networkflowmonitor_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, networkflowmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
+
+    # UpdateMonitor  PATCH /monitors/{monitorName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_monitor(self, UpdateMonitorInput input) -> str:
+        auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["monitorName"] = input.monitorName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.localResourcesToAdd.is_some():
+            auto u0 = input.localResourcesToAdd.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"localResourcesToAdd\":" + networkflowmonitor_json_arr(e1))
+        if input.localResourcesToRemove.is_some():
+            auto u2 = input.localResourcesToRemove.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"localResourcesToRemove\":" + networkflowmonitor_json_arr(e3))
+        if input.remoteResourcesToAdd.is_some():
+            auto u4 = input.remoteResourcesToAdd.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"remoteResourcesToAdd\":" + networkflowmonitor_json_arr(e5))
+        if input.remoteResourcesToRemove.is_some():
+            auto u6 = input.remoteResourcesToRemove.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"remoteResourcesToRemove\":" + networkflowmonitor_json_arr(e7))
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + networkflowmonitor_json_str(u8))
+        auto bp = restjson.rest_json_document(b, networkflowmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
+
+    # UpdateScope  PATCH /scopes/{scopeId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_scope(self, UpdateScopeInput input) -> str:
+        auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["scopeId"] = input.scopeId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourcesToAdd.is_some():
+            auto u0 = input.resourcesToAdd.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"resourcesToAdd\":" + networkflowmonitor_json_arr(e1))
+        if input.resourcesToDelete.is_some():
+            auto u2 = input.resourcesToDelete.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"resourcesToDelete\":" + networkflowmonitor_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, networkflowmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
 
     # Paginator for GetQueryResultsMonitorTopContributors — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: topContributors).

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 6 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 10 operations — 8 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   58 structs (44 @derive(Json)), 10 enums, 24 error variants.
 #   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -308,8 +308,9 @@ struct DescribeVoicesInput:
     Optional[bool] IncludeAdditionalLanguageCodes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Voices: list[Voice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Voices: list[Voice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVoicesOutput:
     Optional[list[Voice]] Voices
     Optional[str] NextToken
@@ -337,8 +338,9 @@ struct GetLexiconOutput:
 struct GetSpeechSynthesisTaskInput:
     str TaskId
 
-# no @derive(Json): member(s) SynthesisTask: SynthesisTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SynthesisTask: SynthesisTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSpeechSynthesisTaskOutput:
     Optional[SynthesisTask] SynthesisTask
 
@@ -410,8 +412,9 @@ struct LexiconSizeExceededException:
 struct ListLexiconsInput:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Lexicons: list[LexiconDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lexicons: list[LexiconDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLexiconsOutput:
     Optional[list[LexiconDescription]] Lexicons
     Optional[str] NextToken
@@ -424,8 +427,9 @@ struct ListSpeechSynthesisTasksInput:
     # wire string of the TaskStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) SynthesisTasks: list[SynthesisTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SynthesisTasks: list[SynthesisTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpeechSynthesisTasksOutput:
     Optional[str] NextToken
     Optional[list[SynthesisTask]] SynthesisTasks
@@ -472,8 +476,9 @@ struct StartSpeechSynthesisStreamActionStream:
     Optional[TextEvent] TextEvent
     Optional[CloseStreamEvent] CloseStreamEvent
 
-# no @derive(Json): member(s) ValidationException: ValidationException, ThrottlingException: ThrottlingException not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationException: ValidationException, ThrottlingException: ThrottlingException not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSpeechSynthesisStreamEventStream:
     Optional[AudioEvent] AudioEvent
     Optional[StreamClosedEvent] StreamClosedEvent
@@ -497,8 +502,9 @@ struct StartSpeechSynthesisStreamInput:
     str VoiceId
     Optional[StartSpeechSynthesisStreamActionStream] ActionStream
 
-# no @derive(Json): member(s) EventStream: StartSpeechSynthesisStreamEventStream not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventStream: StartSpeechSynthesisStreamEventStream not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSpeechSynthesisStreamOutput:
     Optional[StartSpeechSynthesisStreamEventStream] EventStream
 
@@ -518,8 +524,9 @@ struct StartSpeechSynthesisTaskInput:
     Optional[TextType] TextType
     VoiceId VoiceId
 
-# no @derive(Json): member(s) SynthesisTask: SynthesisTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SynthesisTask: SynthesisTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSpeechSynthesisTaskOutput:
     Optional[SynthesisTask] SynthesisTask
 
@@ -527,8 +534,9 @@ struct StartSpeechSynthesisTaskOutput:
 struct StreamClosedEvent:
     Optional[int64] RequestCharacters
 
-# no @derive(Json): member(s) LexiconNames: list[str], SpeechMarkTypes: list[SpeechMarkType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LexiconNames: list[str], SpeechMarkTypes: list[SpeechMarkType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SynthesisTask:
     Optional[Engine] Engine
     Optional[str] TaskId
@@ -579,8 +587,9 @@ struct TextEvent:
 struct TextLengthExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThrottlingException:
     Optional[str] message
     Optional[list[ThrottlingReason]] throttlingReasons
@@ -598,8 +607,9 @@ struct UnsupportedPlsAlphabetException:
 struct UnsupportedPlsLanguageException:
     Optional[str] message
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -610,8 +620,9 @@ struct ValidationExceptionField:
     str name
     str message
 
-# no @derive(Json): member(s) AdditionalLanguageCodes: list[LanguageCode], SupportedEngines: list[Engine] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalLanguageCodes: list[LanguageCode], SupportedEngines: list[Engine] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Voice:
     Optional[Gender] Gender
     Optional[VoiceId] Id
@@ -712,8 +723,6 @@ def polly_error_from_code(str code) -> PollyError:
 # document member, or an unsupported httpPayload):
 #   DescribeVoices (httpQuery `IncludeAdditionalLanguageCodes` has unsupported type bool)
 #   StartSpeechSynthesisStream (httpHeader `LexiconNames` has unsupported type list[str])
-#   StartSpeechSynthesisTask (document member `LexiconNames: list[str]` is not serializable by derive)
-#   SynthesizeSpeech (document member `LexiconNames: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -792,6 +801,85 @@ struct PollyClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutLexiconDocument(Content=input.Content)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
+
+    # StartSpeechSynthesisTask  POST /v1/synthesisTasks
+    # errors: EngineNotSupportedException, InvalidS3BucketException, InvalidS3KeyException, InvalidSampleRateException, InvalidSnsTopicArnException, InvalidSsmlException, LanguageNotSupportedException, LexiconNotFoundException, MarksNotSupportedForFormatException, ServiceFailureException, SsmlMarksNotSupportedForTextTypeException, TextLengthExceededException
+    def start_speech_synthesis_task(self, StartSpeechSynthesisTaskInput input) -> str:
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/synthesisTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Engine.is_some():
+            auto u0 = input.Engine.unwrap()
+            parts.append("\"Engine\":" + u0.to_json())
+        if input.LanguageCode.is_some():
+            auto u1 = input.LanguageCode.unwrap()
+            parts.append("\"LanguageCode\":" + u1.to_json())
+        if input.LexiconNames.is_some():
+            auto u2 = input.LexiconNames.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(polly_json_str(x3))
+            parts.append("\"LexiconNames\":" + polly_json_arr(e3))
+        parts.append("\"OutputFormat\":" + input.OutputFormat.to_json())
+        parts.append("\"OutputS3BucketName\":" + polly_json_str(input.OutputS3BucketName))
+        if input.OutputS3KeyPrefix.is_some():
+            auto u4 = input.OutputS3KeyPrefix.unwrap()
+            parts.append("\"OutputS3KeyPrefix\":" + polly_json_str(u4))
+        if input.SampleRate.is_some():
+            auto u5 = input.SampleRate.unwrap()
+            parts.append("\"SampleRate\":" + polly_json_str(u5))
+        if input.SnsTopicArn.is_some():
+            auto u6 = input.SnsTopicArn.unwrap()
+            parts.append("\"SnsTopicArn\":" + polly_json_str(u6))
+        if input.SpeechMarkTypes.is_some():
+            auto u7 = input.SpeechMarkTypes.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"SpeechMarkTypes\":" + polly_json_arr(e8))
+        parts.append("\"Text\":" + polly_json_str(input.Text))
+        if input.TextType.is_some():
+            auto u9 = input.TextType.unwrap()
+            parts.append("\"TextType\":" + u9.to_json())
+        parts.append("\"VoiceId\":" + input.VoiceId.to_json())
+        auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
+
+    # SynthesizeSpeech  POST /v1/speech
+    # errors: EngineNotSupportedException, InvalidSampleRateException, InvalidSsmlException, LanguageNotSupportedException, LexiconNotFoundException, MarksNotSupportedForFormatException, ServiceFailureException, SsmlMarksNotSupportedForTextTypeException, TextLengthExceededException
+    def synthesize_speech(self, SynthesizeSpeechInput input) -> str:
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/speech", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Engine.is_some():
+            auto u0 = input.Engine.unwrap()
+            parts.append("\"Engine\":" + u0.to_json())
+        if input.LanguageCode.is_some():
+            auto u1 = input.LanguageCode.unwrap()
+            parts.append("\"LanguageCode\":" + u1.to_json())
+        if input.LexiconNames.is_some():
+            auto u2 = input.LexiconNames.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(polly_json_str(x3))
+            parts.append("\"LexiconNames\":" + polly_json_arr(e3))
+        parts.append("\"OutputFormat\":" + input.OutputFormat.to_json())
+        if input.SampleRate.is_some():
+            auto u4 = input.SampleRate.unwrap()
+            parts.append("\"SampleRate\":" + polly_json_str(u4))
+        if input.SpeechMarkTypes.is_some():
+            auto u5 = input.SpeechMarkTypes.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"SpeechMarkTypes\":" + polly_json_arr(e6))
+        parts.append("\"Text\":" + polly_json_str(input.Text))
+        if input.TextType.is_some():
+            auto u7 = input.TextType.unwrap()
+            parts.append("\"TextType\":" + u7.to_json())
+        parts.append("\"VoiceId\":" + input.VoiceId.to_json())
+        auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
 
     # Paginator for ListLexicons — yields each Response page, threading the

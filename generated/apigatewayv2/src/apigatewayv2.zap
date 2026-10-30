@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 103 operations — 73 with a generated method,
-#   30 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 103 operations — 99 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   314 structs (160 @derive(Json)), 19 enums, 5 error variants.
 #   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -213,8 +213,9 @@ struct AccessLogSettings:
     Optional[str] DestinationArn
     Optional[str] Format
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Api:
     Optional[str] ApiEndpoint
     Optional[bool] ApiGatewayManaged
@@ -241,27 +242,31 @@ struct ApiMapping:
     Optional[str] ApiMappingKey
     str Stage
 
-# no @derive(Json): member(s) Items: list[ApiMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ApiMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiMappings:
     Optional[list[ApiMapping]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Api] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Api] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Apis:
     Optional[list[Api]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) None: None_ not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) None: None_ not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Authorization:
     Optional[CognitoConfig] CognitoConfig
     # wire name "None" differs from field; derive rename is a #346 follow-up
     Optional[None_] None_
 
-# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Authorizer:
     Optional[str] AuthorizerCredentialsArn
     Optional[str] AuthorizerId
@@ -275,8 +280,9 @@ struct Authorizer:
     Optional[JWTConfiguration] JwtConfiguration
     str Name
 
-# no @derive(Json): member(s) Items: list[Authorizer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Authorizer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Authorizers:
     Optional[list[Authorizer]] Items
     Optional[str] NextToken
@@ -303,8 +309,9 @@ struct ConflictException:
 struct ConflictExceptionResponseContent:
     Optional[str] Message
 
-# no @derive(Json): member(s) AllowHeaders: list[str], AllowMethods: list[str], AllowOrigins: list[str], ExposeHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowHeaders: list[str], AllowMethods: list[str], AllowOrigins: list[str], ExposeHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cors:
     Optional[bool] AllowCredentials
     Optional[list[str]] AllowHeaders
@@ -313,8 +320,9 @@ struct Cors:
     Optional[list[str]] ExposeHeaders
     Optional[int64] MaxAge
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApiInput:
     Optional[str] ApiKeySelectionExpression
     Optional[Cors] CorsConfiguration
@@ -369,8 +377,9 @@ struct CreateApiRequest:
     Optional[str] Target
     Optional[str] Version
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApiResponse:
     Optional[str] ApiEndpoint
     Optional[bool] ApiGatewayManaged
@@ -390,8 +399,9 @@ struct CreateApiResponse:
     Optional[str] Version
     Optional[list[str]] Warnings
 
-# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAuthorizerInput:
     Optional[str] AuthorizerCredentialsArn
     Optional[str] AuthorizerPayloadFormatVersion
@@ -419,8 +429,9 @@ struct CreateAuthorizerRequest:
     Optional[JWTConfiguration] JwtConfiguration
     str Name
 
-# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAuthorizerResponse:
     Optional[str] AuthorizerCredentialsArn
     Optional[str] AuthorizerId
@@ -456,8 +467,9 @@ struct CreateDeploymentResponse:
     Optional[str] DeploymentStatusMessage
     Optional[str] Description
 
-# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainNameInput:
     str DomainName
     Optional[list[DomainNameConfiguration]] DomainNameConfigurations
@@ -474,8 +486,9 @@ struct CreateDomainNameRequest:
     Optional[RoutingMode] RoutingMode
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainNameResponse:
     Optional[str] ApiMappingSelectionExpression
     Optional[str] DomainName
@@ -485,8 +498,9 @@ struct CreateDomainNameResponse:
     Optional[RoutingMode] RoutingMode
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationInput:
     Optional[str] ConnectionId
     Optional[ConnectionType] ConnectionType
@@ -528,8 +542,9 @@ struct CreateIntegrationRequest:
     Optional[int64] TimeoutInMillis
     Optional[TlsConfigInput] TlsConfig
 
-# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationResponseInput:
     Optional[ContentHandlingStrategy] ContentHandlingStrategy
     str IntegrationResponseKey
@@ -548,8 +563,9 @@ struct CreateIntegrationResponseRequest:
     Optional[dict[str, str]] ResponseTemplates
     Optional[str] TemplateSelectionExpression
 
-# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationResponseResponse:
     Optional[ContentHandlingStrategy] ContentHandlingStrategy
     Optional[str] IntegrationResponseId
@@ -558,8 +574,9 @@ struct CreateIntegrationResponseResponse:
     Optional[dict[str, str]] ResponseTemplates
     Optional[str] TemplateSelectionExpression
 
-# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationResult:
     Optional[bool] ApiGatewayManaged
     Optional[str] ConnectionId
@@ -613,15 +630,17 @@ struct CreatePortalProductRequest:
     str DisplayName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortalProductRequestContent:
     Optional[str] Description
     str DisplayName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortalProductResponse:
     Optional[str] Description
     Optional[str] DisplayName
@@ -631,8 +650,9 @@ struct CreatePortalProductResponse:
     Optional[str] PortalProductId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortalProductResponseContent:
     Optional[str] Description
     str DisplayName
@@ -653,8 +673,9 @@ struct CreatePortalRequest:
     Optional[str] RumAppMonitorName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Authorization: Authorization, EndpointConfiguration: EndpointConfigurationRequest, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, EndpointConfiguration: EndpointConfigurationRequest, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortalRequestContent:
     Authorization Authorization
     EndpointConfigurationRequest EndpointConfiguration
@@ -664,8 +685,9 @@ struct CreatePortalRequestContent:
     Optional[str] RumAppMonitorName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortalResponse:
     Optional[Authorization] Authorization
     Optional[EndpointConfigurationResponse] EndpointConfiguration
@@ -681,8 +703,9 @@ struct CreatePortalResponse:
     Optional[StatusException] StatusException
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortalResponseContent:
     Authorization Authorization
     EndpointConfigurationResponse EndpointConfiguration
@@ -732,8 +755,9 @@ struct CreateProductRestEndpointPageRequest:
     RestEndpointIdentifier RestEndpointIdentifier
     Optional[TryItState] TryItState
 
-# no @derive(Json): member(s) DisplayContent: EndpointDisplayContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayContent: EndpointDisplayContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProductRestEndpointPageRequestContent:
     Optional[EndpointDisplayContent] DisplayContent
     RestEndpointIdentifier RestEndpointIdentifier
@@ -763,8 +787,9 @@ struct CreateProductRestEndpointPageResponseContent:
     Optional[StatusException] StatusException
     TryItState TryItState
 
-# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouteInput:
     Optional[bool] ApiKeyRequired
     Optional[list[str]] AuthorizationScopes
@@ -794,8 +819,9 @@ struct CreateRouteRequest:
     Optional[str] RouteResponseSelectionExpression
     Optional[str] Target
 
-# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouteResponseInput:
     Optional[str] ModelSelectionExpression
     Optional[dict[str, str]] ResponseModels
@@ -812,8 +838,9 @@ struct CreateRouteResponseRequest:
     str RouteId
     str RouteResponseKey
 
-# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouteResponseResponse:
     Optional[str] ModelSelectionExpression
     Optional[dict[str, str]] ResponseModels
@@ -821,8 +848,9 @@ struct CreateRouteResponseResponse:
     Optional[str] RouteResponseId
     Optional[str] RouteResponseKey
 
-# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouteResult:
     Optional[bool] ApiGatewayManaged
     Optional[bool] ApiKeyRequired
@@ -847,8 +875,9 @@ struct CreateRoutingRuleRequest:
     Optional[str] DomainNameId
     int64 Priority
 
-# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRoutingRuleResponse:
     Optional[list[RoutingRuleAction]] Actions
     Optional[list[RoutingRuleCondition]] Conditions
@@ -856,8 +885,9 @@ struct CreateRoutingRuleResponse:
     Optional[str] RoutingRuleArn
     Optional[str] RoutingRuleId
 
-# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStageInput:
     Optional[AccessLogSettings] AccessLogSettings
     Optional[bool] AutoDeploy
@@ -885,8 +915,9 @@ struct CreateStageRequest:
     Optional[dict[str, str]] StageVariables
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStageResponse:
     Optional[AccessLogSettings] AccessLogSettings
     Optional[bool] ApiGatewayManaged
@@ -903,8 +934,9 @@ struct CreateStageResponse:
     Optional[dict[str, str]] StageVariables
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcLinkInput:
     str Name
     Optional[list[str]] SecurityGroupIds
@@ -919,8 +951,9 @@ struct CreateVpcLinkRequest:
     list[str] SubnetIds
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcLinkResponse:
     Optional[DateTime] CreatedDate
     Optional[str] Name
@@ -1086,8 +1119,9 @@ struct Deployment:
     Optional[str] DeploymentStatusMessage
     Optional[str] Description
 
-# no @derive(Json): member(s) Items: list[Deployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Deployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployments:
     Optional[list[Deployment]] Items
     Optional[str] NextToken
@@ -1108,15 +1142,17 @@ struct DisplayContentOverrides:
     Optional[str] Endpoint
     Optional[str] OperationName
 
-# no @derive(Json): member(s) Contents: list[Section], ProductPageArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contents: list[Section], ProductPageArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisplayOrder:
     Optional[list[Section]] Contents
     Optional[str] OverviewPageArn
     Optional[list[str]] ProductPageArns
 
-# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainName:
     Optional[str] ApiMappingSelectionExpression
     str DomainName
@@ -1141,14 +1177,16 @@ struct DomainNameConfiguration:
     Optional[SecurityPolicy] SecurityPolicy
     Optional[str] OwnershipVerificationCertificateArn
 
-# no @derive(Json): member(s) Items: list[DomainName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DomainName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainNames:
     Optional[list[DomainName]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) None: None_ not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) None: None_ not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointConfigurationRequest:
     Optional[ACMManaged] AcmManaged
     # wire name "None" differs from field; derive rename is a #346 follow-up
@@ -1161,8 +1199,9 @@ struct EndpointConfigurationResponse:
     str PortalDefaultDomainName
     str PortalDomainHostedZoneId
 
-# no @derive(Json): member(s) None: None_ not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) None: None_ not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointDisplayContent:
     # wire name "None" differs from field; derive rename is a #346 follow-up
     Optional[None_] None_
@@ -1208,8 +1247,9 @@ struct GetApiMappingsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ApiMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ApiMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApiMappingsResponse:
     Optional[list[ApiMapping]] Items
     Optional[str] NextToken
@@ -1219,8 +1259,9 @@ struct GetApiMappingsResponse:
 struct GetApiRequest:
     str ApiId
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApiResponse:
     Optional[str] ApiEndpoint
     Optional[bool] ApiGatewayManaged
@@ -1246,8 +1287,9 @@ struct GetApisRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Api] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Api] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApisResponse:
     Optional[list[Api]] Items
     Optional[str] NextToken
@@ -1258,8 +1300,9 @@ struct GetAuthorizerRequest:
     str ApiId
     str AuthorizerId
 
-# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAuthorizerResponse:
     Optional[str] AuthorizerCredentialsArn
     Optional[str] AuthorizerId
@@ -1280,8 +1323,9 @@ struct GetAuthorizersRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Authorizer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Authorizer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAuthorizersResponse:
     Optional[list[Authorizer]] Items
     Optional[str] NextToken
@@ -1309,8 +1353,9 @@ struct GetDeploymentsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Deployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Deployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentsResponse:
     Optional[list[Deployment]] Items
     Optional[str] NextToken
@@ -1320,8 +1365,9 @@ struct GetDeploymentsResponse:
 struct GetDomainNameRequest:
     str DomainName
 
-# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainNameResponse:
     Optional[str] ApiMappingSelectionExpression
     Optional[str] DomainName
@@ -1337,8 +1383,9 @@ struct GetDomainNamesRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[DomainName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DomainName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainNamesResponse:
     Optional[list[DomainName]] Items
     Optional[str] NextToken
@@ -1356,8 +1403,9 @@ struct GetIntegrationResponseRequest:
     str IntegrationId
     str IntegrationResponseId
 
-# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntegrationResponseResponse:
     Optional[ContentHandlingStrategy] ContentHandlingStrategy
     Optional[str] IntegrationResponseId
@@ -1374,14 +1422,16 @@ struct GetIntegrationResponsesRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[IntegrationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[IntegrationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntegrationResponsesResponse:
     Optional[list[IntegrationResponse]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntegrationResult:
     Optional[bool] ApiGatewayManaged
     Optional[str] ConnectionId
@@ -1411,8 +1461,9 @@ struct GetIntegrationsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Integration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Integration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntegrationsResponse:
     Optional[list[Integration]] Items
     Optional[str] NextToken
@@ -1448,8 +1499,9 @@ struct GetModelsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Model] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Model] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelsResponse:
     Optional[list[Model]] Items
     Optional[str] NextToken
@@ -1460,8 +1512,9 @@ struct GetPortalProductRequest:
     str PortalProductId
     Optional[str] ResourceOwnerAccountId
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortalProductResponse:
     Optional[str] Description
     Optional[str] DisplayName
@@ -1471,8 +1524,9 @@ struct GetPortalProductResponse:
     Optional[str] PortalProductId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortalProductResponseContent:
     str Description
     str DisplayName
@@ -1502,8 +1556,9 @@ struct GetPortalProductSharingPolicyResponseContent:
 struct GetPortalRequest:
     str PortalId
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortalResponse:
     Optional[Authorization] Authorization
     Optional[EndpointConfigurationResponse] EndpointConfiguration
@@ -1520,8 +1575,9 @@ struct GetPortalResponse:
     Optional[StatusException] StatusException
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortalResponseContent:
     Authorization Authorization
     EndpointConfigurationResponse EndpointConfiguration
@@ -1608,8 +1664,9 @@ struct GetRouteResponseRequest:
     str RouteId
     str RouteResponseId
 
-# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouteResponseResponse:
     Optional[str] ModelSelectionExpression
     Optional[dict[str, str]] ResponseModels
@@ -1625,14 +1682,16 @@ struct GetRouteResponsesRequest:
     Optional[str] NextToken
     str RouteId
 
-# no @derive(Json): member(s) Items: list[RouteResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[RouteResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouteResponsesResponse:
     Optional[list[RouteResponse]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouteResult:
     Optional[bool] ApiGatewayManaged
     Optional[bool] ApiKeyRequired
@@ -1655,8 +1714,9 @@ struct GetRoutesRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRoutesResponse:
     Optional[list[Route]] Items
     Optional[str] NextToken
@@ -1668,8 +1728,9 @@ struct GetRoutingRuleRequest:
     Optional[str] DomainNameId
     str RoutingRuleId
 
-# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRoutingRuleResponse:
     Optional[list[RoutingRuleAction]] Actions
     Optional[list[RoutingRuleCondition]] Conditions
@@ -1683,8 +1744,9 @@ struct GetStageRequest:
     str ApiId
     str StageName
 
-# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStageResponse:
     Optional[AccessLogSettings] AccessLogSettings
     Optional[bool] ApiGatewayManaged
@@ -1708,8 +1770,9 @@ struct GetStagesRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Stage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Stage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStagesResponse:
     Optional[list[Stage]] Items
     Optional[str] NextToken
@@ -1719,8 +1782,9 @@ struct GetStagesResponse:
 struct GetTagsRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagsResponse:
     Optional[dict[str, str]] Tags
 
@@ -1729,8 +1793,9 @@ struct GetTagsResponse:
 struct GetVpcLinkRequest:
     str VpcLinkId
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVpcLinkResponse:
     Optional[DateTime] CreatedDate
     Optional[str] Name
@@ -1748,8 +1813,9 @@ struct GetVpcLinksRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[VpcLink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[VpcLink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVpcLinksResponse:
     Optional[list[VpcLink]] Items
     Optional[str] NextToken
@@ -1772,8 +1838,9 @@ struct ImportApiRequest:
     str Body
     Optional[bool] FailOnWarnings
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportApiResponse:
     Optional[str] ApiEndpoint
     Optional[bool] ApiGatewayManaged
@@ -1793,8 +1860,9 @@ struct ImportApiResponse:
     Optional[str] Version
     Optional[list[str]] Warnings
 
-# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Integration:
     Optional[bool] ApiGatewayManaged
     Optional[str] ConnectionId
@@ -1817,8 +1885,9 @@ struct Integration:
     Optional[int64] TimeoutInMillis
     Optional[TlsConfig] TlsConfig
 
-# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationResponse:
     Optional[ContentHandlingStrategy] ContentHandlingStrategy
     Optional[str] IntegrationResponseId
@@ -1827,20 +1896,23 @@ struct IntegrationResponse:
     Optional[dict[str, str]] ResponseTemplates
     Optional[str] TemplateSelectionExpression
 
-# no @derive(Json): member(s) Items: list[IntegrationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[IntegrationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationResponses:
     Optional[list[IntegrationResponse]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[Integration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Integration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Integrations:
     Optional[list[Integration]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Audience: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Audience: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JWTConfiguration:
     Optional[list[str]] Audience
     Optional[str] Issuer
@@ -1862,14 +1934,16 @@ struct ListPortalProductsRequest:
     Optional[str] NextToken
     Optional[str] ResourceOwner
 
-# no @derive(Json): member(s) Items: list[PortalProductSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[PortalProductSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortalProductsResponse:
     Optional[list[PortalProductSummary]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[PortalProductSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[PortalProductSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortalProductsResponseContent:
     Optional[list[PortalProductSummary]] Items
     Optional[str] NextToken
@@ -1880,14 +1954,16 @@ struct ListPortalsRequest:
     Optional[str] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[PortalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[PortalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortalsResponse:
     Optional[list[PortalSummary]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[PortalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[PortalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortalsResponseContent:
     Optional[list[PortalSummary]] Items
     Optional[str] NextToken
@@ -1900,14 +1976,16 @@ struct ListProductPagesRequest:
     str PortalProductId
     Optional[str] ResourceOwnerAccountId
 
-# no @derive(Json): member(s) Items: list[ProductPageSummaryNoBody] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ProductPageSummaryNoBody] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProductPagesResponse:
     Optional[list[ProductPageSummaryNoBody]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ProductPageSummaryNoBody] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ProductPageSummaryNoBody] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProductPagesResponseContent:
     list[ProductPageSummaryNoBody] Items
     Optional[str] NextToken
@@ -1920,14 +1998,16 @@ struct ListProductRestEndpointPagesRequest:
     str PortalProductId
     Optional[str] ResourceOwnerAccountId
 
-# no @derive(Json): member(s) Items: list[ProductRestEndpointPageSummaryNoBody] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ProductRestEndpointPageSummaryNoBody] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProductRestEndpointPagesResponse:
     Optional[list[ProductRestEndpointPageSummaryNoBody]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ProductRestEndpointPageSummaryNoBody] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ProductRestEndpointPageSummaryNoBody] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProductRestEndpointPagesResponseContent:
     list[ProductRestEndpointPageSummaryNoBody] Items
     Optional[str] NextToken
@@ -1940,8 +2020,9 @@ struct ListRoutingRulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RoutingRules: list[RoutingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingRules: list[RoutingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutingRulesResponse:
     Optional[str] NextToken
     Optional[list[RoutingRule]] RoutingRules
@@ -1954,14 +2035,16 @@ struct Model:
     str Name
     Optional[str] Schema
 
-# no @derive(Json): member(s) Items: list[Model] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Model] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Models:
     Optional[list[Model]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TruststoreWarnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TruststoreWarnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MutualTlsAuthentication:
     Optional[str] TruststoreUri
     Optional[str] TruststoreVersion
@@ -1997,8 +2080,9 @@ struct PortalContent:
     str DisplayName
     PortalTheme Theme
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortalProductSummary:
     str Description
     str DisplayName
@@ -2007,8 +2091,9 @@ struct PortalProductSummary:
     str PortalProductId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortalSummary:
     Authorization Authorization
     EndpointConfigurationResponse EndpointConfiguration
@@ -2108,8 +2193,9 @@ struct PutRoutingRuleRequest:
     int64 Priority
     str RoutingRuleId
 
-# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRoutingRuleResponse:
     Optional[list[RoutingRuleAction]] Actions
     Optional[list[RoutingRuleCondition]] Conditions
@@ -2129,8 +2215,9 @@ struct ReimportApiRequest:
     str Body
     Optional[bool] FailOnWarnings
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReimportApiResponse:
     Optional[str] ApiEndpoint
     Optional[bool] ApiGatewayManaged
@@ -2160,8 +2247,9 @@ struct ResetAuthorizersCacheRequest:
 struct RestEndpointIdentifier:
     Optional[IdentifierParts] IdentifierParts
 
-# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Route:
     Optional[bool] ApiGatewayManaged
     Optional[bool] ApiKeyRequired
@@ -2177,8 +2265,9 @@ struct Route:
     Optional[str] RouteResponseSelectionExpression
     Optional[str] Target
 
-# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteResponse:
     Optional[str] ModelSelectionExpression
     Optional[dict[str, str]] ResponseModels
@@ -2186,8 +2275,9 @@ struct RouteResponse:
     Optional[str] RouteResponseId
     str RouteResponseKey
 
-# no @derive(Json): member(s) Items: list[RouteResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[RouteResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteResponses:
     Optional[list[RouteResponse]] Items
     Optional[str] NextToken
@@ -2200,14 +2290,16 @@ struct RouteSettings:
     Optional[int64] ThrottlingBurstLimit
     Optional[float64] ThrottlingRateLimit
 
-# no @derive(Json): member(s) Items: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Routes:
     Optional[list[Route]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingRule:
     Optional[list[RoutingRuleAction]] Actions
     Optional[list[RoutingRuleCondition]] Conditions
@@ -2225,21 +2317,24 @@ struct RoutingRuleActionInvokeApi:
     str Stage
     Optional[bool] StripBasePath
 
-# no @derive(Json): member(s) MatchBasePaths: RoutingRuleMatchBasePaths, MatchHeaders: RoutingRuleMatchHeaders not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchBasePaths: RoutingRuleMatchBasePaths, MatchHeaders: RoutingRuleMatchHeaders not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingRuleCondition:
     Optional[RoutingRuleMatchBasePaths] MatchBasePaths
     Optional[RoutingRuleMatchHeaders] MatchHeaders
 
-# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[RoutingRuleAction], Conditions: list[RoutingRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingRuleInput:
     list[RoutingRuleAction] Actions
     list[RoutingRuleCondition] Conditions
     int64 Priority
 
-# no @derive(Json): member(s) AnyOf: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnyOf: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingRuleMatchBasePaths:
     list[str] AnyOf
 
@@ -2248,25 +2343,29 @@ struct RoutingRuleMatchHeaderValue:
     str Header
     str ValueGlob
 
-# no @derive(Json): member(s) AnyOf: list[RoutingRuleMatchHeaderValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnyOf: list[RoutingRuleMatchHeaderValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingRuleMatchHeaders:
     list[RoutingRuleMatchHeaderValue] AnyOf
 
-# no @derive(Json): member(s) RoutingRules: list[RoutingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingRules: list[RoutingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutingRules:
     Optional[str] NextToken
     Optional[list[RoutingRule]] RoutingRules
 
-# no @derive(Json): member(s) ProductRestEndpointPageArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductRestEndpointPageArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Section:
     list[str] ProductRestEndpointPageArns
     str SectionName
 
-# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Stage:
     Optional[AccessLogSettings] AccessLogSettings
     Optional[bool] ApiGatewayManaged
@@ -2283,8 +2382,9 @@ struct Stage:
     Optional[dict[str, str]] StageVariables
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Items: list[Stage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Stage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Stages:
     Optional[list[Stage]] Items
     Optional[str] NextToken
@@ -2294,8 +2394,9 @@ struct StatusException:
     Optional[str] Exception
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     Optional[dict[str, str]] Tags
 
@@ -2333,8 +2434,9 @@ struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
 
-# no @derive(Json): member(s) CorsConfiguration: Cors not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApiInput:
     Optional[str] ApiKeySelectionExpression
     Optional[Cors] CorsConfiguration
@@ -2388,8 +2490,9 @@ struct UpdateApiRequest:
     Optional[str] Target
     Optional[str] Version
 
-# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: Cors, ImportInfo: list[str], Tags: dict[str, str], Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApiResponse:
     Optional[str] ApiEndpoint
     Optional[bool] ApiGatewayManaged
@@ -2409,8 +2512,9 @@ struct UpdateApiResponse:
     Optional[str] Version
     Optional[list[str]] Warnings
 
-# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAuthorizerInput:
     Optional[str] AuthorizerCredentialsArn
     Optional[str] AuthorizerPayloadFormatVersion
@@ -2439,8 +2543,9 @@ struct UpdateAuthorizerRequest:
     Optional[JWTConfiguration] JwtConfiguration
     Optional[str] Name
 
-# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySource: list[str], JwtConfiguration: JWTConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAuthorizerResponse:
     Optional[str] AuthorizerCredentialsArn
     Optional[str] AuthorizerId
@@ -2475,8 +2580,9 @@ struct UpdateDeploymentResponse:
     Optional[str] DeploymentStatusMessage
     Optional[str] Description
 
-# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainNameInput:
     Optional[list[DomainNameConfiguration]] DomainNameConfigurations
     Optional[MutualTlsAuthenticationInput] MutualTlsAuthentication
@@ -2490,8 +2596,9 @@ struct UpdateDomainNameRequest:
     Optional[MutualTlsAuthenticationInput] MutualTlsAuthentication
     Optional[RoutingMode] RoutingMode
 
-# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainNameConfigurations: list[DomainNameConfiguration], MutualTlsAuthentication: MutualTlsAuthentication, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainNameResponse:
     Optional[str] ApiMappingSelectionExpression
     Optional[str] DomainName
@@ -2501,8 +2608,9 @@ struct UpdateDomainNameResponse:
     Optional[RoutingMode] RoutingMode
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntegrationInput:
     Optional[str] ConnectionId
     Optional[ConnectionType] ConnectionType
@@ -2545,8 +2653,9 @@ struct UpdateIntegrationRequest:
     Optional[int64] TimeoutInMillis
     Optional[TlsConfigInput] TlsConfig
 
-# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntegrationResponseInput:
     Optional[ContentHandlingStrategy] ContentHandlingStrategy
     Optional[str] IntegrationResponseKey
@@ -2566,8 +2675,9 @@ struct UpdateIntegrationResponseRequest:
     Optional[dict[str, str]] ResponseTemplates
     Optional[str] TemplateSelectionExpression
 
-# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseParameters: dict[str, str], ResponseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntegrationResponseResponse:
     Optional[ContentHandlingStrategy] ContentHandlingStrategy
     Optional[str] IntegrationResponseId
@@ -2576,8 +2686,9 @@ struct UpdateIntegrationResponseResponse:
     Optional[dict[str, str]] ResponseTemplates
     Optional[str] TemplateSelectionExpression
 
-# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: dict[str, str], RequestTemplates: dict[str, str], ResponseParameters: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntegrationResult:
     Optional[bool] ApiGatewayManaged
     Optional[str] ConnectionId
@@ -2633,15 +2744,17 @@ struct UpdatePortalProductRequest:
     Optional[DisplayOrder] DisplayOrder
     str PortalProductId
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalProductRequestContent:
     Optional[str] Description
     Optional[str] DisplayName
     Optional[DisplayOrder] DisplayOrder
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalProductResponse:
     Optional[str] Description
     Optional[str] DisplayName
@@ -2651,8 +2764,9 @@ struct UpdatePortalProductResponse:
     Optional[str] PortalProductId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayOrder: DisplayOrder, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalProductResponseContent:
     Optional[str] Description
     str DisplayName
@@ -2673,8 +2787,9 @@ struct UpdatePortalRequest:
     str PortalId
     Optional[str] RumAppMonitorName
 
-# no @derive(Json): member(s) Authorization: Authorization, EndpointConfiguration: EndpointConfigurationRequest, IncludedPortalProductArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, EndpointConfiguration: EndpointConfigurationRequest, IncludedPortalProductArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalRequestContent:
     Optional[Authorization] Authorization
     Optional[EndpointConfigurationRequest] EndpointConfiguration
@@ -2683,8 +2798,9 @@ struct UpdatePortalRequestContent:
     Optional[PortalContent] PortalContent
     Optional[str] RumAppMonitorName
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalResponse:
     Optional[Authorization] Authorization
     Optional[EndpointConfigurationResponse] EndpointConfiguration
@@ -2701,8 +2817,9 @@ struct UpdatePortalResponse:
     Optional[StatusException] StatusException
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authorization: Authorization, IncludedPortalProductArns: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalResponseContent:
     Authorization Authorization
     EndpointConfigurationResponse EndpointConfiguration
@@ -2754,8 +2871,9 @@ struct UpdateProductRestEndpointPageRequest:
     str ProductRestEndpointPageId
     Optional[TryItState] TryItState
 
-# no @derive(Json): member(s) DisplayContent: EndpointDisplayContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisplayContent: EndpointDisplayContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProductRestEndpointPageRequestContent:
     Optional[EndpointDisplayContent] DisplayContent
     Optional[TryItState] TryItState
@@ -2784,8 +2902,9 @@ struct UpdateProductRestEndpointPageResponseContent:
     Optional[StatusException] StatusException
     TryItState TryItState
 
-# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouteInput:
     Optional[bool] ApiKeyRequired
     Optional[list[str]] AuthorizationScopes
@@ -2816,8 +2935,9 @@ struct UpdateRouteRequest:
     Optional[str] RouteResponseSelectionExpression
     Optional[str] Target
 
-# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouteResponseInput:
     Optional[str] ModelSelectionExpression
     Optional[dict[str, str]] ResponseModels
@@ -2835,8 +2955,9 @@ struct UpdateRouteResponseRequest:
     str RouteResponseId
     Optional[str] RouteResponseKey
 
-# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseModels: dict[str, str], ResponseParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouteResponseResponse:
     Optional[str] ModelSelectionExpression
     Optional[dict[str, str]] ResponseModels
@@ -2844,8 +2965,9 @@ struct UpdateRouteResponseResponse:
     Optional[str] RouteResponseId
     Optional[str] RouteResponseKey
 
-# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationScopes: list[str], RequestModels: dict[str, str], RequestParameters: dict[str, ParameterConstraints] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouteResult:
     Optional[bool] ApiGatewayManaged
     Optional[bool] ApiKeyRequired
@@ -2861,8 +2983,9 @@ struct UpdateRouteResult:
     Optional[str] RouteResponseSelectionExpression
     Optional[str] Target
 
-# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStageInput:
     Optional[AccessLogSettings] AccessLogSettings
     Optional[bool] AutoDeploy
@@ -2887,8 +3010,9 @@ struct UpdateStageRequest:
     str StageName
     Optional[dict[str, str]] StageVariables
 
-# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteSettings: dict[str, RouteSettings], StageVariables: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStageResponse:
     Optional[AccessLogSettings] AccessLogSettings
     Optional[bool] ApiGatewayManaged
@@ -2915,8 +3039,9 @@ struct UpdateVpcLinkRequest:
     Optional[str] Name
     str VpcLinkId
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVpcLinkResponse:
     Optional[DateTime] CreatedDate
     Optional[str] Name
@@ -2928,8 +3053,9 @@ struct UpdateVpcLinkResponse:
     Optional[str] VpcLinkStatusMessage
     Optional[str] VpcLinkVersion
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcLink:
     Optional[DateTime] CreatedDate
     str Name
@@ -2941,8 +3067,9 @@ struct VpcLink:
     Optional[str] VpcLinkStatusMessage
     Optional[str] VpcLinkVersion
 
-# no @derive(Json): member(s) Items: list[VpcLink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[VpcLink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcLinks:
     Optional[list[VpcLink]] Items
     Optional[str] NextToken
@@ -2979,36 +3106,10 @@ def apigateway_error_from_code(str code) -> ApiGatewayV2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApi (document member `CorsConfiguration: Cors` is not serializable by derive)
-#   CreateAuthorizer (document member `IdentitySource: list[str]` is not serializable by derive)
-#   CreateDomainName (document member `DomainNameConfigurations: list[DomainNameConfiguration]` is not serializable by derive)
-#   CreateIntegration (document member `RequestParameters: dict[str, str]` is not serializable by derive)
-#   CreateIntegrationResponse (document member `ResponseParameters: dict[str, str]` is not serializable by derive)
-#   CreatePortal (document member `Authorization: Authorization` is not serializable by derive)
-#   CreatePortalProduct (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateProductRestEndpointPage (document member `DisplayContent: EndpointDisplayContent` is not serializable by derive)
-#   CreateRoute (document member `AuthorizationScopes: list[str]` is not serializable by derive)
-#   CreateRouteResponse (document member `ResponseModels: dict[str, str]` is not serializable by derive)
-#   CreateRoutingRule (document member `Actions: list[RoutingRuleAction]` is not serializable by derive)
-#   CreateStage (document member `RouteSettings: dict[str, RouteSettings]` is not serializable by derive)
-#   CreateVpcLink (document member `SecurityGroupIds: list[str]` is not serializable by derive)
 #   ExportApi (httpQuery `IncludeExtensions` has unsupported type bool)
 #   ImportApi (httpQuery `FailOnWarnings` has unsupported type bool)
-#   PutRoutingRule (document member `Actions: list[RoutingRuleAction]` is not serializable by derive)
 #   ReimportApi (httpQuery `FailOnWarnings` has unsupported type bool)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateApi (document member `CorsConfiguration: Cors` is not serializable by derive)
-#   UpdateAuthorizer (document member `IdentitySource: list[str]` is not serializable by derive)
-#   UpdateDomainName (document member `DomainNameConfigurations: list[DomainNameConfiguration]` is not serializable by derive)
-#   UpdateIntegration (document member `RequestParameters: dict[str, str]` is not serializable by derive)
-#   UpdateIntegrationResponse (document member `ResponseParameters: dict[str, str]` is not serializable by derive)
-#   UpdatePortal (document member `Authorization: Authorization` is not serializable by derive)
-#   UpdatePortalProduct (document member `DisplayOrder: DisplayOrder` is not serializable by derive)
-#   UpdateProductRestEndpointPage (document member `DisplayContent: EndpointDisplayContent` is not serializable by derive)
-#   UpdateRoute (document member `AuthorizationScopes: list[str]` is not serializable by derive)
-#   UpdateRouteResponse (document member `ResponseModels: dict[str, str]` is not serializable by derive)
-#   UpdateStage (document member `RouteSettings: dict[str, RouteSettings]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3079,10 +3180,231 @@ struct UpdateVpcLinkDocument:
     # document members of UpdateVpcLink
     Optional[str] Name
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def apigateway_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def apigateway_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def apigateway_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Authorization to a compact JSON object (declaration order).
+def authorization_to_json(Authorization v) -> str:
+    list[str] parts = []
+    if v.CognitoConfig.is_some():
+        auto u0 = v.CognitoConfig.unwrap()
+        parts.append("\"cognitoConfig\":" + u0.to_json())
+    if v.None_.is_some():
+        auto u1 = v.None_.unwrap()
+        parts.append("\"none\":" + u1.to_json())
+    return apigateway_json_obj(parts)
+
+# Serialize Cors to a compact JSON object (declaration order).
+def cors_to_json(Cors v) -> str:
+    list[str] parts = []
+    if v.AllowCredentials.is_some():
+        auto u0 = v.AllowCredentials.unwrap()
+        parts.append("\"allowCredentials\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AllowHeaders.is_some():
+        auto u1 = v.AllowHeaders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(apigateway_json_str(x2))
+        parts.append("\"allowHeaders\":" + apigateway_json_arr(e2))
+    if v.AllowMethods.is_some():
+        auto u3 = v.AllowMethods.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(apigateway_json_str(x4))
+        parts.append("\"allowMethods\":" + apigateway_json_arr(e4))
+    if v.AllowOrigins.is_some():
+        auto u5 = v.AllowOrigins.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(apigateway_json_str(x6))
+        parts.append("\"allowOrigins\":" + apigateway_json_arr(e6))
+    if v.ExposeHeaders.is_some():
+        auto u7 = v.ExposeHeaders.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(apigateway_json_str(x8))
+        parts.append("\"exposeHeaders\":" + apigateway_json_arr(e8))
+    if v.MaxAge.is_some():
+        auto u9 = v.MaxAge.unwrap()
+        parts.append("\"maxAge\":" + str(u9))
+    return apigateway_json_obj(parts)
+
+# Serialize DisplayOrder to a compact JSON object (declaration order).
+def display_order_to_json(DisplayOrder v) -> str:
+    list[str] parts = []
+    if v.Contents.is_some():
+        auto u0 = v.Contents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(section_to_json(x1))
+        parts.append("\"contents\":" + apigateway_json_arr(e1))
+    if v.OverviewPageArn.is_some():
+        auto u2 = v.OverviewPageArn.unwrap()
+        parts.append("\"overviewPageArn\":" + apigateway_json_str(u2))
+    if v.ProductPageArns.is_some():
+        auto u3 = v.ProductPageArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(apigateway_json_str(x4))
+        parts.append("\"productPageArns\":" + apigateway_json_arr(e4))
+    return apigateway_json_obj(parts)
+
+# Serialize EndpointConfigurationRequest to a compact JSON object (declaration order).
+def endpoint_configuration_request_to_json(EndpointConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.AcmManaged.is_some():
+        auto u0 = v.AcmManaged.unwrap()
+        parts.append("\"acmManaged\":" + u0.to_json())
+    if v.None_.is_some():
+        auto u1 = v.None_.unwrap()
+        parts.append("\"none\":" + u1.to_json())
+    return apigateway_json_obj(parts)
+
+# Serialize EndpointDisplayContent to a compact JSON object (declaration order).
+def endpoint_display_content_to_json(EndpointDisplayContent v) -> str:
+    list[str] parts = []
+    if v.None_.is_some():
+        auto u0 = v.None_.unwrap()
+        parts.append("\"none\":" + u0.to_json())
+    if v.Overrides.is_some():
+        auto u1 = v.Overrides.unwrap()
+        parts.append("\"overrides\":" + u1.to_json())
+    return apigateway_json_obj(parts)
+
+# Serialize JWTConfiguration to a compact JSON object (declaration order).
+def jwt_configuration_to_json(JWTConfiguration v) -> str:
+    list[str] parts = []
+    if v.Audience.is_some():
+        auto u0 = v.Audience.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(apigateway_json_str(x1))
+        parts.append("\"audience\":" + apigateway_json_arr(e1))
+    if v.Issuer.is_some():
+        auto u2 = v.Issuer.unwrap()
+        parts.append("\"issuer\":" + apigateway_json_str(u2))
+    return apigateway_json_obj(parts)
+
+# Serialize RoutingRuleCondition to a compact JSON object (declaration order).
+def routing_rule_condition_to_json(RoutingRuleCondition v) -> str:
+    list[str] parts = []
+    if v.MatchBasePaths.is_some():
+        auto u0 = v.MatchBasePaths.unwrap()
+        parts.append("\"matchBasePaths\":" + routing_rule_match_base_paths_to_json(u0))
+    if v.MatchHeaders.is_some():
+        auto u1 = v.MatchHeaders.unwrap()
+        parts.append("\"matchHeaders\":" + routing_rule_match_headers_to_json(u1))
+    return apigateway_json_obj(parts)
+
+# Serialize RoutingRuleMatchBasePaths to a compact JSON object (declaration order).
+def routing_rule_match_base_paths_to_json(RoutingRuleMatchBasePaths v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AnyOf:
+        e0.append(apigateway_json_str(x0))
+    parts.append("\"anyOf\":" + apigateway_json_arr(e0))
+    return apigateway_json_obj(parts)
+
+# Serialize RoutingRuleMatchHeaders to a compact JSON object (declaration order).
+def routing_rule_match_headers_to_json(RoutingRuleMatchHeaders v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AnyOf:
+        e0.append(x0.to_json())
+    parts.append("\"anyOf\":" + apigateway_json_arr(e0))
+    return apigateway_json_obj(parts)
+
+# Serialize Section to a compact JSON object (declaration order).
+def section_to_json(Section v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ProductRestEndpointPageArns:
+        e0.append(apigateway_json_str(x0))
+    parts.append("\"productRestEndpointPageArns\":" + apigateway_json_arr(e0))
+    parts.append("\"sectionName\":" + apigateway_json_str(v.SectionName))
+    return apigateway_json_obj(parts)
+
 # A bound ApiGatewayV2 client: credentials + region, threaded into every operation.
 struct ApiGatewayV2Client:
     core.Credentials creds
     str region
+
+    # CreateApi  POST /v2/apis
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_api(self, CreateApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApiKeySelectionExpression.is_some():
+            auto u0 = input.ApiKeySelectionExpression.unwrap()
+            parts.append("\"apiKeySelectionExpression\":" + apigateway_json_str(u0))
+        if input.CorsConfiguration.is_some():
+            auto u1 = input.CorsConfiguration.unwrap()
+            parts.append("\"corsConfiguration\":" + cors_to_json(u1))
+        if input.CredentialsArn.is_some():
+            auto u2 = input.CredentialsArn.unwrap()
+            parts.append("\"credentialsArn\":" + apigateway_json_str(u2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u3))
+        if input.DisableSchemaValidation.is_some():
+            auto u4 = input.DisableSchemaValidation.unwrap()
+            parts.append("\"disableSchemaValidation\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.DisableExecuteApiEndpoint.is_some():
+            auto u5 = input.DisableExecuteApiEndpoint.unwrap()
+            parts.append("\"disableExecuteApiEndpoint\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.IpAddressType.is_some():
+            auto u6 = input.IpAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u6.to_json())
+        parts.append("\"name\":" + apigateway_json_str(input.Name))
+        parts.append("\"protocolType\":" + input.ProtocolType.to_json())
+        if input.RouteKey.is_some():
+            auto u7 = input.RouteKey.unwrap()
+            parts.append("\"routeKey\":" + apigateway_json_str(u7))
+        if input.RouteSelectionExpression.is_some():
+            auto u8 = input.RouteSelectionExpression.unwrap()
+            parts.append("\"routeSelectionExpression\":" + apigateway_json_str(u8))
+        if input.Tags.is_some():
+            auto u9 = input.Tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(apigateway_json_str(k10) + ":" + apigateway_json_str(u9[k10]))
+            parts.append("\"tags\":" + apigateway_json_obj(m10))
+        if input.Target.is_some():
+            auto u11 = input.Target.unwrap()
+            parts.append("\"target\":" + apigateway_json_str(u11))
+        if input.Version.is_some():
+            auto u12 = input.Version.unwrap()
+            parts.append("\"version\":" + apigateway_json_str(u12))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # CreateApiMapping  POST /v2/domainnames/{domainName}/apimappings
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
@@ -3093,6 +3415,44 @@ struct ApiGatewayV2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames/{domainName}/apimappings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateApiMappingDocument(ApiId=input.ApiId, ApiMappingKey=input.ApiMappingKey, Stage=input.Stage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateAuthorizer  POST /v2/apis/{apiId}/authorizers
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_authorizer(self, CreateAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthorizerCredentialsArn.is_some():
+            auto u0 = input.AuthorizerCredentialsArn.unwrap()
+            parts.append("\"authorizerCredentialsArn\":" + apigateway_json_str(u0))
+        if input.AuthorizerPayloadFormatVersion.is_some():
+            auto u1 = input.AuthorizerPayloadFormatVersion.unwrap()
+            parts.append("\"authorizerPayloadFormatVersion\":" + apigateway_json_str(u1))
+        if input.AuthorizerResultTtlInSeconds.is_some():
+            auto u2 = input.AuthorizerResultTtlInSeconds.unwrap()
+            parts.append("\"authorizerResultTtlInSeconds\":" + str(u2))
+        parts.append("\"authorizerType\":" + input.AuthorizerType.to_json())
+        if input.AuthorizerUri.is_some():
+            auto u3 = input.AuthorizerUri.unwrap()
+            parts.append("\"authorizerUri\":" + apigateway_json_str(u3))
+        if input.EnableSimpleResponses.is_some():
+            auto u4 = input.EnableSimpleResponses.unwrap()
+            parts.append("\"enableSimpleResponses\":" + json.dumps(JsonValue.Bool(u4)))
+        list[str] e5 = []
+        for x5 in input.IdentitySource:
+            e5.append(apigateway_json_str(x5))
+        parts.append("\"identitySource\":" + apigateway_json_arr(e5))
+        if input.IdentityValidationExpression.is_some():
+            auto u6 = input.IdentityValidationExpression.unwrap()
+            parts.append("\"identityValidationExpression\":" + apigateway_json_str(u6))
+        if input.JwtConfiguration.is_some():
+            auto u7 = input.JwtConfiguration.unwrap()
+            parts.append("\"jwtConfiguration\":" + jwt_configuration_to_json(u7))
+        parts.append("\"name\":" + apigateway_json_str(input.Name))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # CreateDeployment  POST /v2/apis/{apiId}/deployments
@@ -3106,6 +3466,137 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # CreateDomainName  POST /v2/domainnames
+    # errors: AccessDeniedException, BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_domain_name(self, CreateDomainNameRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainName\":" + apigateway_json_str(input.DomainName))
+        if input.DomainNameConfigurations.is_some():
+            auto u0 = input.DomainNameConfigurations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"domainNameConfigurations\":" + apigateway_json_arr(e1))
+        if input.MutualTlsAuthentication.is_some():
+            auto u2 = input.MutualTlsAuthentication.unwrap()
+            parts.append("\"mutualTlsAuthentication\":" + u2.to_json())
+        if input.RoutingMode.is_some():
+            auto u3 = input.RoutingMode.unwrap()
+            parts.append("\"routingMode\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(apigateway_json_str(k5) + ":" + apigateway_json_str(u4[k5]))
+            parts.append("\"tags\":" + apigateway_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateIntegration  POST /v2/apis/{apiId}/integrations
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_integration(self, CreateIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/integrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConnectionId.is_some():
+            auto u0 = input.ConnectionId.unwrap()
+            parts.append("\"connectionId\":" + apigateway_json_str(u0))
+        if input.ConnectionType.is_some():
+            auto u1 = input.ConnectionType.unwrap()
+            parts.append("\"connectionType\":" + u1.to_json())
+        if input.ContentHandlingStrategy.is_some():
+            auto u2 = input.ContentHandlingStrategy.unwrap()
+            parts.append("\"contentHandlingStrategy\":" + u2.to_json())
+        if input.CredentialsArn.is_some():
+            auto u3 = input.CredentialsArn.unwrap()
+            parts.append("\"credentialsArn\":" + apigateway_json_str(u3))
+        if input.Description.is_some():
+            auto u4 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u4))
+        if input.IntegrationMethod.is_some():
+            auto u5 = input.IntegrationMethod.unwrap()
+            parts.append("\"integrationMethod\":" + apigateway_json_str(u5))
+        if input.IntegrationSubtype.is_some():
+            auto u6 = input.IntegrationSubtype.unwrap()
+            parts.append("\"integrationSubtype\":" + apigateway_json_str(u6))
+        parts.append("\"integrationType\":" + input.IntegrationType.to_json())
+        if input.IntegrationUri.is_some():
+            auto u7 = input.IntegrationUri.unwrap()
+            parts.append("\"integrationUri\":" + apigateway_json_str(u7))
+        if input.PassthroughBehavior.is_some():
+            auto u8 = input.PassthroughBehavior.unwrap()
+            parts.append("\"passthroughBehavior\":" + u8.to_json())
+        if input.PayloadFormatVersion.is_some():
+            auto u9 = input.PayloadFormatVersion.unwrap()
+            parts.append("\"payloadFormatVersion\":" + apigateway_json_str(u9))
+        if input.RequestParameters.is_some():
+            auto u10 = input.RequestParameters.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(apigateway_json_str(k11) + ":" + apigateway_json_str(u10[k11]))
+            parts.append("\"requestParameters\":" + apigateway_json_obj(m11))
+        if input.RequestTemplates.is_some():
+            auto u12 = input.RequestTemplates.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(apigateway_json_str(k13) + ":" + apigateway_json_str(u12[k13]))
+            parts.append("\"requestTemplates\":" + apigateway_json_obj(m13))
+        if input.ResponseParameters.is_some():
+            auto u14 = input.ResponseParameters.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                list[str] m16 = []
+                for k16 in sorted(u14[k15].keys()):
+                    m16.append(apigateway_json_str(k16) + ":" + apigateway_json_str(u14[k15][k16]))
+                m15.append(apigateway_json_str(k15) + ":" + apigateway_json_obj(m16))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m15))
+        if input.TemplateSelectionExpression.is_some():
+            auto u17 = input.TemplateSelectionExpression.unwrap()
+            parts.append("\"templateSelectionExpression\":" + apigateway_json_str(u17))
+        if input.TimeoutInMillis.is_some():
+            auto u18 = input.TimeoutInMillis.unwrap()
+            parts.append("\"timeoutInMillis\":" + str(u18))
+        if input.TlsConfig.is_some():
+            auto u19 = input.TlsConfig.unwrap()
+            parts.append("\"tlsConfig\":" + u19.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateIntegrationResponse  POST /v2/apis/{apiId}/integrations/{integrationId}/integrationresponses
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_integration_response(self, CreateIntegrationResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["integrationId"] = input.IntegrationId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ContentHandlingStrategy.is_some():
+            auto u0 = input.ContentHandlingStrategy.unwrap()
+            parts.append("\"contentHandlingStrategy\":" + u0.to_json())
+        parts.append("\"integrationResponseKey\":" + apigateway_json_str(input.IntegrationResponseKey))
+        if input.ResponseParameters.is_some():
+            auto u1 = input.ResponseParameters.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m2))
+        if input.ResponseTemplates.is_some():
+            auto u3 = input.ResponseTemplates.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + apigateway_json_str(u3[k4]))
+            parts.append("\"responseTemplates\":" + apigateway_json_obj(m4))
+        if input.TemplateSelectionExpression.is_some():
+            auto u5 = input.TemplateSelectionExpression.unwrap()
+            parts.append("\"templateSelectionExpression\":" + apigateway_json_str(u5))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # CreateModel  POST /v2/apis/{apiId}/models
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
     def create_model(self, CreateModelRequest input) -> str:
@@ -3117,6 +3608,55 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # CreatePortal  POST /v2/portals
+    # errors: AccessDeniedException, BadRequestException, TooManyRequestsException
+    def create_portal(self, CreatePortalRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"authorization\":" + authorization_to_json(input.Authorization))
+        parts.append("\"endpointConfiguration\":" + endpoint_configuration_request_to_json(input.EndpointConfiguration))
+        if input.IncludedPortalProductArns.is_some():
+            auto u0 = input.IncludedPortalProductArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(apigateway_json_str(x1))
+            parts.append("\"includedPortalProductArns\":" + apigateway_json_arr(e1))
+        if input.LogoUri.is_some():
+            auto u2 = input.LogoUri.unwrap()
+            parts.append("\"logoUri\":" + apigateway_json_str(u2))
+        parts.append("\"portalContent\":" + input.PortalContent.to_json())
+        if input.RumAppMonitorName.is_some():
+            auto u3 = input.RumAppMonitorName.unwrap()
+            parts.append("\"rumAppMonitorName\":" + apigateway_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(apigateway_json_str(k5) + ":" + apigateway_json_str(u4[k5]))
+            parts.append("\"tags\":" + apigateway_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreatePortalProduct  POST /v2/portalproducts
+    # errors: AccessDeniedException, BadRequestException, TooManyRequestsException
+    def create_portal_product(self, CreatePortalProductRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        parts.append("\"displayName\":" + apigateway_json_str(input.DisplayName))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"tags\":" + apigateway_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # CreateProductPage  POST /v2/portalproducts/{portalProductId}/productpages
     # errors: AccessDeniedException, BadRequestException, NotFoundException, TooManyRequestsException
     def create_product_page(self, CreateProductPageRequest input) -> str:
@@ -3126,6 +3666,200 @@ struct ApiGatewayV2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts/{portalProductId}/productpages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateProductPageDocument(DisplayContent=input.DisplayContent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateProductRestEndpointPage  POST /v2/portalproducts/{portalProductId}/productrestendpointpages
+    # errors: AccessDeniedException, BadRequestException, NotFoundException, TooManyRequestsException
+    def create_product_rest_endpoint_page(self, CreateProductRestEndpointPageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["portalProductId"] = input.PortalProductId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DisplayContent.is_some():
+            auto u0 = input.DisplayContent.unwrap()
+            parts.append("\"displayContent\":" + endpoint_display_content_to_json(u0))
+        parts.append("\"restEndpointIdentifier\":" + input.RestEndpointIdentifier.to_json())
+        if input.TryItState.is_some():
+            auto u1 = input.TryItState.unwrap()
+            parts.append("\"tryItState\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateRoute  POST /v2/apis/{apiId}/routes
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_route(self, CreateRouteRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/routes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApiKeyRequired.is_some():
+            auto u0 = input.ApiKeyRequired.unwrap()
+            parts.append("\"apiKeyRequired\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.AuthorizationScopes.is_some():
+            auto u1 = input.AuthorizationScopes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(apigateway_json_str(x2))
+            parts.append("\"authorizationScopes\":" + apigateway_json_arr(e2))
+        if input.AuthorizationType.is_some():
+            auto u3 = input.AuthorizationType.unwrap()
+            parts.append("\"authorizationType\":" + u3.to_json())
+        if input.AuthorizerId.is_some():
+            auto u4 = input.AuthorizerId.unwrap()
+            parts.append("\"authorizerId\":" + apigateway_json_str(u4))
+        if input.ModelSelectionExpression.is_some():
+            auto u5 = input.ModelSelectionExpression.unwrap()
+            parts.append("\"modelSelectionExpression\":" + apigateway_json_str(u5))
+        if input.OperationName.is_some():
+            auto u6 = input.OperationName.unwrap()
+            parts.append("\"operationName\":" + apigateway_json_str(u6))
+        if input.RequestModels.is_some():
+            auto u7 = input.RequestModels.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(apigateway_json_str(k8) + ":" + apigateway_json_str(u7[k8]))
+            parts.append("\"requestModels\":" + apigateway_json_obj(m8))
+        if input.RequestParameters.is_some():
+            auto u9 = input.RequestParameters.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(apigateway_json_str(k10) + ":" + u9[k10].to_json())
+            parts.append("\"requestParameters\":" + apigateway_json_obj(m10))
+        parts.append("\"routeKey\":" + apigateway_json_str(input.RouteKey))
+        if input.RouteResponseSelectionExpression.is_some():
+            auto u11 = input.RouteResponseSelectionExpression.unwrap()
+            parts.append("\"routeResponseSelectionExpression\":" + apigateway_json_str(u11))
+        if input.Target.is_some():
+            auto u12 = input.Target.unwrap()
+            parts.append("\"target\":" + apigateway_json_str(u12))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateRouteResponse  POST /v2/apis/{apiId}/routes/{routeId}/routeresponses
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_route_response(self, CreateRouteResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["routeId"] = input.RouteId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ModelSelectionExpression.is_some():
+            auto u0 = input.ModelSelectionExpression.unwrap()
+            parts.append("\"modelSelectionExpression\":" + apigateway_json_str(u0))
+        if input.ResponseModels.is_some():
+            auto u1 = input.ResponseModels.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"responseModels\":" + apigateway_json_obj(m2))
+        if input.ResponseParameters.is_some():
+            auto u3 = input.ResponseParameters.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + u3[k4].to_json())
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m4))
+        parts.append("\"routeResponseKey\":" + apigateway_json_str(input.RouteResponseKey))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateRoutingRule  POST /v2/domainnames/{domainName}/routingrules
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_routing_rule(self, CreateRoutingRuleRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainName"] = input.DomainName
+        dict[str, str] query = {}
+        if input.DomainNameId.is_some():
+            query["domainNameId"] = input.DomainNameId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames/{domainName}/routingrules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Actions:
+            e0.append(x0.to_json())
+        parts.append("\"actions\":" + apigateway_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.Conditions:
+            e1.append(routing_rule_condition_to_json(x1))
+        parts.append("\"conditions\":" + apigateway_json_arr(e1))
+        parts.append("\"priority\":" + str(input.Priority))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateStage  POST /v2/apis/{apiId}/stages
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def create_stage(self, CreateStageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/stages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccessLogSettings.is_some():
+            auto u0 = input.AccessLogSettings.unwrap()
+            parts.append("\"accessLogSettings\":" + u0.to_json())
+        if input.AutoDeploy.is_some():
+            auto u1 = input.AutoDeploy.unwrap()
+            parts.append("\"autoDeploy\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.ClientCertificateId.is_some():
+            auto u2 = input.ClientCertificateId.unwrap()
+            parts.append("\"clientCertificateId\":" + apigateway_json_str(u2))
+        if input.DefaultRouteSettings.is_some():
+            auto u3 = input.DefaultRouteSettings.unwrap()
+            parts.append("\"defaultRouteSettings\":" + u3.to_json())
+        if input.DeploymentId.is_some():
+            auto u4 = input.DeploymentId.unwrap()
+            parts.append("\"deploymentId\":" + apigateway_json_str(u4))
+        if input.Description.is_some():
+            auto u5 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u5))
+        if input.RouteSettings.is_some():
+            auto u6 = input.RouteSettings.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(apigateway_json_str(k7) + ":" + u6[k7].to_json())
+            parts.append("\"routeSettings\":" + apigateway_json_obj(m7))
+        parts.append("\"stageName\":" + apigateway_json_str(input.StageName))
+        if input.StageVariables.is_some():
+            auto u8 = input.StageVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(apigateway_json_str(k9) + ":" + apigateway_json_str(u8[k9]))
+            parts.append("\"stageVariables\":" + apigateway_json_obj(m9))
+        if input.Tags.is_some():
+            auto u10 = input.Tags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(apigateway_json_str(k11) + ":" + apigateway_json_str(u10[k11]))
+            parts.append("\"tags\":" + apigateway_json_obj(m11))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateVpcLink  POST /v2/vpclinks
+    # errors: BadRequestException, TooManyRequestsException
+    def create_vpc_link(self, CreateVpcLinkRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/vpclinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + apigateway_json_str(input.Name))
+        if input.SecurityGroupIds.is_some():
+            auto u0 = input.SecurityGroupIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(apigateway_json_str(x1))
+            parts.append("\"securityGroupIds\":" + apigateway_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.SubnetIds:
+            e2.append(apigateway_json_str(x2))
+        parts.append("\"subnetIds\":" + apigateway_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + apigateway_json_str(u3[k4]))
+            parts.append("\"tags\":" + apigateway_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # DeleteAccessLogSettings  DELETE /v2/apis/{apiId}/stages/{stageName}/accesslogsettings
@@ -3835,6 +4569,30 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # PutRoutingRule  PUT /v2/domainnames/{domainName}/routingrules/{routingRuleId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def put_routing_rule(self, PutRoutingRuleRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainName"] = input.DomainName
+        labels["routingRuleId"] = input.RoutingRuleId
+        dict[str, str] query = {}
+        if input.DomainNameId.is_some():
+            query["domainNameId"] = input.DomainNameId.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Actions:
+            e0.append(x0.to_json())
+        parts.append("\"actions\":" + apigateway_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.Conditions:
+            e1.append(routing_rule_condition_to_json(x1))
+        parts.append("\"conditions\":" + apigateway_json_arr(e1))
+        parts.append("\"priority\":" + str(input.Priority))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # ResetAuthorizersCache  DELETE /v2/apis/{apiId}/stages/{stageName}/cache/authorizers
     # errors: NotFoundException, TooManyRequestsException
     def reset_authorizers_cache(self, ResetAuthorizersCacheRequest input) -> str:
@@ -3844,6 +4602,70 @@ struct ApiGatewayV2Client:
         labels["stageName"] = input.StageName
         auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/cache/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # TagResource  POST /v2/tags/{resource-arn}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(apigateway_json_str(k1) + ":" + apigateway_json_str(u0[k1]))
+            parts.append("\"tags\":" + apigateway_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateApi  PATCH /v2/apis/{apiId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_api(self, UpdateApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApiKeySelectionExpression.is_some():
+            auto u0 = input.ApiKeySelectionExpression.unwrap()
+            parts.append("\"apiKeySelectionExpression\":" + apigateway_json_str(u0))
+        if input.CorsConfiguration.is_some():
+            auto u1 = input.CorsConfiguration.unwrap()
+            parts.append("\"corsConfiguration\":" + cors_to_json(u1))
+        if input.CredentialsArn.is_some():
+            auto u2 = input.CredentialsArn.unwrap()
+            parts.append("\"credentialsArn\":" + apigateway_json_str(u2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u3))
+        if input.DisableSchemaValidation.is_some():
+            auto u4 = input.DisableSchemaValidation.unwrap()
+            parts.append("\"disableSchemaValidation\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.DisableExecuteApiEndpoint.is_some():
+            auto u5 = input.DisableExecuteApiEndpoint.unwrap()
+            parts.append("\"disableExecuteApiEndpoint\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.IpAddressType.is_some():
+            auto u6 = input.IpAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u6.to_json())
+        if input.Name.is_some():
+            auto u7 = input.Name.unwrap()
+            parts.append("\"name\":" + apigateway_json_str(u7))
+        if input.RouteKey.is_some():
+            auto u8 = input.RouteKey.unwrap()
+            parts.append("\"routeKey\":" + apigateway_json_str(u8))
+        if input.RouteSelectionExpression.is_some():
+            auto u9 = input.RouteSelectionExpression.unwrap()
+            parts.append("\"routeSelectionExpression\":" + apigateway_json_str(u9))
+        if input.Target.is_some():
+            auto u10 = input.Target.unwrap()
+            parts.append("\"target\":" + apigateway_json_str(u10))
+        if input.Version.is_some():
+            auto u11 = input.Version.unwrap()
+            parts.append("\"version\":" + apigateway_json_str(u11))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # UpdateApiMapping  PATCH /v2/domainnames/{domainName}/apimappings/{apiMappingId}
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
@@ -3855,6 +4677,51 @@ struct ApiGatewayV2Client:
         auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApiMappingDocument(ApiId=input.ApiId, ApiMappingKey=input.ApiMappingKey, Stage=input.Stage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateAuthorizer  PATCH /v2/apis/{apiId}/authorizers/{authorizerId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_authorizer(self, UpdateAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["authorizerId"] = input.AuthorizerId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthorizerCredentialsArn.is_some():
+            auto u0 = input.AuthorizerCredentialsArn.unwrap()
+            parts.append("\"authorizerCredentialsArn\":" + apigateway_json_str(u0))
+        if input.AuthorizerPayloadFormatVersion.is_some():
+            auto u1 = input.AuthorizerPayloadFormatVersion.unwrap()
+            parts.append("\"authorizerPayloadFormatVersion\":" + apigateway_json_str(u1))
+        if input.AuthorizerResultTtlInSeconds.is_some():
+            auto u2 = input.AuthorizerResultTtlInSeconds.unwrap()
+            parts.append("\"authorizerResultTtlInSeconds\":" + str(u2))
+        if input.AuthorizerType.is_some():
+            auto u3 = input.AuthorizerType.unwrap()
+            parts.append("\"authorizerType\":" + u3.to_json())
+        if input.AuthorizerUri.is_some():
+            auto u4 = input.AuthorizerUri.unwrap()
+            parts.append("\"authorizerUri\":" + apigateway_json_str(u4))
+        if input.EnableSimpleResponses.is_some():
+            auto u5 = input.EnableSimpleResponses.unwrap()
+            parts.append("\"enableSimpleResponses\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.IdentitySource.is_some():
+            auto u6 = input.IdentitySource.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(apigateway_json_str(x7))
+            parts.append("\"identitySource\":" + apigateway_json_arr(e7))
+        if input.IdentityValidationExpression.is_some():
+            auto u8 = input.IdentityValidationExpression.unwrap()
+            parts.append("\"identityValidationExpression\":" + apigateway_json_str(u8))
+        if input.JwtConfiguration.is_some():
+            auto u9 = input.JwtConfiguration.unwrap()
+            parts.append("\"jwtConfiguration\":" + jwt_configuration_to_json(u9))
+        if input.Name.is_some():
+            auto u10 = input.Name.unwrap()
+            parts.append("\"name\":" + apigateway_json_str(u10))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # UpdateDeployment  PATCH /v2/apis/{apiId}/deployments/{deploymentId}
@@ -3869,6 +4736,138 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # UpdateDomainName  PATCH /v2/domainnames/{domainName}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_domain_name(self, UpdateDomainNameRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DomainNameConfigurations.is_some():
+            auto u0 = input.DomainNameConfigurations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"domainNameConfigurations\":" + apigateway_json_arr(e1))
+        if input.MutualTlsAuthentication.is_some():
+            auto u2 = input.MutualTlsAuthentication.unwrap()
+            parts.append("\"mutualTlsAuthentication\":" + u2.to_json())
+        if input.RoutingMode.is_some():
+            auto u3 = input.RoutingMode.unwrap()
+            parts.append("\"routingMode\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateIntegration  PATCH /v2/apis/{apiId}/integrations/{integrationId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_integration(self, UpdateIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["integrationId"] = input.IntegrationId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConnectionId.is_some():
+            auto u0 = input.ConnectionId.unwrap()
+            parts.append("\"connectionId\":" + apigateway_json_str(u0))
+        if input.ConnectionType.is_some():
+            auto u1 = input.ConnectionType.unwrap()
+            parts.append("\"connectionType\":" + u1.to_json())
+        if input.ContentHandlingStrategy.is_some():
+            auto u2 = input.ContentHandlingStrategy.unwrap()
+            parts.append("\"contentHandlingStrategy\":" + u2.to_json())
+        if input.CredentialsArn.is_some():
+            auto u3 = input.CredentialsArn.unwrap()
+            parts.append("\"credentialsArn\":" + apigateway_json_str(u3))
+        if input.Description.is_some():
+            auto u4 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u4))
+        if input.IntegrationMethod.is_some():
+            auto u5 = input.IntegrationMethod.unwrap()
+            parts.append("\"integrationMethod\":" + apigateway_json_str(u5))
+        if input.IntegrationSubtype.is_some():
+            auto u6 = input.IntegrationSubtype.unwrap()
+            parts.append("\"integrationSubtype\":" + apigateway_json_str(u6))
+        if input.IntegrationType.is_some():
+            auto u7 = input.IntegrationType.unwrap()
+            parts.append("\"integrationType\":" + u7.to_json())
+        if input.IntegrationUri.is_some():
+            auto u8 = input.IntegrationUri.unwrap()
+            parts.append("\"integrationUri\":" + apigateway_json_str(u8))
+        if input.PassthroughBehavior.is_some():
+            auto u9 = input.PassthroughBehavior.unwrap()
+            parts.append("\"passthroughBehavior\":" + u9.to_json())
+        if input.PayloadFormatVersion.is_some():
+            auto u10 = input.PayloadFormatVersion.unwrap()
+            parts.append("\"payloadFormatVersion\":" + apigateway_json_str(u10))
+        if input.RequestParameters.is_some():
+            auto u11 = input.RequestParameters.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(apigateway_json_str(k12) + ":" + apigateway_json_str(u11[k12]))
+            parts.append("\"requestParameters\":" + apigateway_json_obj(m12))
+        if input.RequestTemplates.is_some():
+            auto u13 = input.RequestTemplates.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(apigateway_json_str(k14) + ":" + apigateway_json_str(u13[k14]))
+            parts.append("\"requestTemplates\":" + apigateway_json_obj(m14))
+        if input.ResponseParameters.is_some():
+            auto u15 = input.ResponseParameters.unwrap()
+            list[str] m16 = []
+            for k16 in sorted(u15.keys()):
+                list[str] m17 = []
+                for k17 in sorted(u15[k16].keys()):
+                    m17.append(apigateway_json_str(k17) + ":" + apigateway_json_str(u15[k16][k17]))
+                m16.append(apigateway_json_str(k16) + ":" + apigateway_json_obj(m17))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m16))
+        if input.TemplateSelectionExpression.is_some():
+            auto u18 = input.TemplateSelectionExpression.unwrap()
+            parts.append("\"templateSelectionExpression\":" + apigateway_json_str(u18))
+        if input.TimeoutInMillis.is_some():
+            auto u19 = input.TimeoutInMillis.unwrap()
+            parts.append("\"timeoutInMillis\":" + str(u19))
+        if input.TlsConfig.is_some():
+            auto u20 = input.TlsConfig.unwrap()
+            parts.append("\"tlsConfig\":" + u20.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateIntegrationResponse  PATCH /v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_integration_response(self, UpdateIntegrationResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["integrationId"] = input.IntegrationId
+        labels["integrationResponseId"] = input.IntegrationResponseId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ContentHandlingStrategy.is_some():
+            auto u0 = input.ContentHandlingStrategy.unwrap()
+            parts.append("\"contentHandlingStrategy\":" + u0.to_json())
+        if input.IntegrationResponseKey.is_some():
+            auto u1 = input.IntegrationResponseKey.unwrap()
+            parts.append("\"integrationResponseKey\":" + apigateway_json_str(u1))
+        if input.ResponseParameters.is_some():
+            auto u2 = input.ResponseParameters.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(apigateway_json_str(k3) + ":" + apigateway_json_str(u2[k3]))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m3))
+        if input.ResponseTemplates.is_some():
+            auto u4 = input.ResponseTemplates.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(apigateway_json_str(k5) + ":" + apigateway_json_str(u4[k5]))
+            parts.append("\"responseTemplates\":" + apigateway_json_obj(m5))
+        if input.TemplateSelectionExpression.is_some():
+            auto u6 = input.TemplateSelectionExpression.unwrap()
+            parts.append("\"templateSelectionExpression\":" + apigateway_json_str(u6))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # UpdateModel  PATCH /v2/apis/{apiId}/models/{modelId}
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
     def update_model(self, UpdateModelRequest input) -> str:
@@ -3881,6 +4880,58 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # UpdatePortal  PATCH /v2/portals/{portalId}
+    # errors: AccessDeniedException, BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_portal(self, UpdatePortalRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["portalId"] = input.PortalId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Authorization.is_some():
+            auto u0 = input.Authorization.unwrap()
+            parts.append("\"authorization\":" + authorization_to_json(u0))
+        if input.EndpointConfiguration.is_some():
+            auto u1 = input.EndpointConfiguration.unwrap()
+            parts.append("\"endpointConfiguration\":" + endpoint_configuration_request_to_json(u1))
+        if input.IncludedPortalProductArns.is_some():
+            auto u2 = input.IncludedPortalProductArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(apigateway_json_str(x3))
+            parts.append("\"includedPortalProductArns\":" + apigateway_json_arr(e3))
+        if input.LogoUri.is_some():
+            auto u4 = input.LogoUri.unwrap()
+            parts.append("\"logoUri\":" + apigateway_json_str(u4))
+        if input.PortalContent.is_some():
+            auto u5 = input.PortalContent.unwrap()
+            parts.append("\"portalContent\":" + u5.to_json())
+        if input.RumAppMonitorName.is_some():
+            auto u6 = input.RumAppMonitorName.unwrap()
+            parts.append("\"rumAppMonitorName\":" + apigateway_json_str(u6))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdatePortalProduct  PATCH /v2/portalproducts/{portalProductId}
+    # errors: AccessDeniedException, BadRequestException, NotFoundException, TooManyRequestsException
+    def update_portal_product(self, UpdatePortalProductRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["portalProductId"] = input.PortalProductId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        if input.DisplayName.is_some():
+            auto u1 = input.DisplayName.unwrap()
+            parts.append("\"displayName\":" + apigateway_json_str(u1))
+        if input.DisplayOrder.is_some():
+            auto u2 = input.DisplayOrder.unwrap()
+            parts.append("\"displayOrder\":" + display_order_to_json(u2))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # UpdateProductPage  PATCH /v2/portalproducts/{portalProductId}/productpages/{productPageId}
     # errors: AccessDeniedException, BadRequestException, NotFoundException, TooManyRequestsException
     def update_product_page(self, UpdateProductPageRequest input) -> str:
@@ -3891,6 +4942,151 @@ struct ApiGatewayV2Client:
         auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProductPageDocument(DisplayContent=input.DisplayContent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateProductRestEndpointPage  PATCH /v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}
+    # errors: AccessDeniedException, BadRequestException, NotFoundException, TooManyRequestsException
+    def update_product_rest_endpoint_page(self, UpdateProductRestEndpointPageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["portalProductId"] = input.PortalProductId
+        labels["productRestEndpointPageId"] = input.ProductRestEndpointPageId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DisplayContent.is_some():
+            auto u0 = input.DisplayContent.unwrap()
+            parts.append("\"displayContent\":" + endpoint_display_content_to_json(u0))
+        if input.TryItState.is_some():
+            auto u1 = input.TryItState.unwrap()
+            parts.append("\"tryItState\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateRoute  PATCH /v2/apis/{apiId}/routes/{routeId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_route(self, UpdateRouteRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["routeId"] = input.RouteId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApiKeyRequired.is_some():
+            auto u0 = input.ApiKeyRequired.unwrap()
+            parts.append("\"apiKeyRequired\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.AuthorizationScopes.is_some():
+            auto u1 = input.AuthorizationScopes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(apigateway_json_str(x2))
+            parts.append("\"authorizationScopes\":" + apigateway_json_arr(e2))
+        if input.AuthorizationType.is_some():
+            auto u3 = input.AuthorizationType.unwrap()
+            parts.append("\"authorizationType\":" + u3.to_json())
+        if input.AuthorizerId.is_some():
+            auto u4 = input.AuthorizerId.unwrap()
+            parts.append("\"authorizerId\":" + apigateway_json_str(u4))
+        if input.ModelSelectionExpression.is_some():
+            auto u5 = input.ModelSelectionExpression.unwrap()
+            parts.append("\"modelSelectionExpression\":" + apigateway_json_str(u5))
+        if input.OperationName.is_some():
+            auto u6 = input.OperationName.unwrap()
+            parts.append("\"operationName\":" + apigateway_json_str(u6))
+        if input.RequestModels.is_some():
+            auto u7 = input.RequestModels.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(apigateway_json_str(k8) + ":" + apigateway_json_str(u7[k8]))
+            parts.append("\"requestModels\":" + apigateway_json_obj(m8))
+        if input.RequestParameters.is_some():
+            auto u9 = input.RequestParameters.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(apigateway_json_str(k10) + ":" + u9[k10].to_json())
+            parts.append("\"requestParameters\":" + apigateway_json_obj(m10))
+        if input.RouteKey.is_some():
+            auto u11 = input.RouteKey.unwrap()
+            parts.append("\"routeKey\":" + apigateway_json_str(u11))
+        if input.RouteResponseSelectionExpression.is_some():
+            auto u12 = input.RouteResponseSelectionExpression.unwrap()
+            parts.append("\"routeResponseSelectionExpression\":" + apigateway_json_str(u12))
+        if input.Target.is_some():
+            auto u13 = input.Target.unwrap()
+            parts.append("\"target\":" + apigateway_json_str(u13))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateRouteResponse  PATCH /v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_route_response(self, UpdateRouteResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["routeId"] = input.RouteId
+        labels["routeResponseId"] = input.RouteResponseId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ModelSelectionExpression.is_some():
+            auto u0 = input.ModelSelectionExpression.unwrap()
+            parts.append("\"modelSelectionExpression\":" + apigateway_json_str(u0))
+        if input.ResponseModels.is_some():
+            auto u1 = input.ResponseModels.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"responseModels\":" + apigateway_json_obj(m2))
+        if input.ResponseParameters.is_some():
+            auto u3 = input.ResponseParameters.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + u3[k4].to_json())
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m4))
+        if input.RouteResponseKey.is_some():
+            auto u5 = input.RouteResponseKey.unwrap()
+            parts.append("\"routeResponseKey\":" + apigateway_json_str(u5))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateStage  PATCH /v2/apis/{apiId}/stages/{stageName}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def update_stage(self, UpdateStageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["stageName"] = input.StageName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccessLogSettings.is_some():
+            auto u0 = input.AccessLogSettings.unwrap()
+            parts.append("\"accessLogSettings\":" + u0.to_json())
+        if input.AutoDeploy.is_some():
+            auto u1 = input.AutoDeploy.unwrap()
+            parts.append("\"autoDeploy\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.ClientCertificateId.is_some():
+            auto u2 = input.ClientCertificateId.unwrap()
+            parts.append("\"clientCertificateId\":" + apigateway_json_str(u2))
+        if input.DefaultRouteSettings.is_some():
+            auto u3 = input.DefaultRouteSettings.unwrap()
+            parts.append("\"defaultRouteSettings\":" + u3.to_json())
+        if input.DeploymentId.is_some():
+            auto u4 = input.DeploymentId.unwrap()
+            parts.append("\"deploymentId\":" + apigateway_json_str(u4))
+        if input.Description.is_some():
+            auto u5 = input.Description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u5))
+        if input.RouteSettings.is_some():
+            auto u6 = input.RouteSettings.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(apigateway_json_str(k7) + ":" + u6[k7].to_json())
+            parts.append("\"routeSettings\":" + apigateway_json_obj(m7))
+        if input.StageVariables.is_some():
+            auto u8 = input.StageVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(apigateway_json_str(k9) + ":" + apigateway_json_str(u8[k9]))
+            parts.append("\"stageVariables\":" + apigateway_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # UpdateVpcLink  PATCH /v2/vpclinks/{vpcLinkId}

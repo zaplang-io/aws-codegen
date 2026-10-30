@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 24 operations — 14 with a generated method,
-#   10 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 24 operations — 24 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   70 structs (44 @derive(Json)), 20 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Timestream_InfluxDB awsJson protocol: version 1.0, API id "AmazonTimestreamInfluxDB".
 def timestream_influxdb_protocol() -> awsjson.AwsJson:
@@ -248,16 +249,18 @@ struct ConflictException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDbBackupInput:
     str name
     str dbResourceId
     Optional[int64] retentionDays
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDbBackupOutput:
     str id
     Optional[str] name
@@ -285,8 +288,9 @@ struct CreateDbBackupOutput:
     Optional[str] influxAuthParametersSecretArn
     Optional[MaintenanceSchedule] maintenanceSchedule
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], dbBackupConfigurations: list[DbBackupConfiguration], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], dbBackupConfigurations: list[DbBackupConfiguration], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDbClusterInput:
     str name
     Optional[str] username
@@ -315,8 +319,9 @@ struct CreateDbClusterOutput:
     Optional[str] dbClusterId
     Optional[ClusterStatus] dbClusterStatus
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], tags: dict[str, str], dbBackupConfigurations: list[DbBackupConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], tags: dict[str, str], dbBackupConfigurations: list[DbBackupConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDbInstanceInput:
     str name
     Optional[str] username
@@ -339,8 +344,9 @@ struct CreateDbInstanceInput:
     Optional[list[DbBackupConfiguration]] dbBackupConfigurations
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDbInstanceOutput:
     str id
     str name
@@ -370,8 +376,9 @@ struct CreateDbInstanceOutput:
     Optional[list[DbBackupConfigurationOutput]] dbBackupConfigurations
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDbParameterGroupInput:
     str name
     Optional[str] description
@@ -433,8 +440,9 @@ struct DbClusterSummary:
     Optional[int64] allocatedStorage
     Optional[EngineType] engineType
 
-# no @derive(Json): member(s) instanceModes: list[InstanceMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceModes: list[InstanceMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DbInstanceForClusterSummary:
     str id
     str name
@@ -475,8 +483,9 @@ struct DbParameterGroupSummary:
 struct DeleteDbBackupInput:
     str identifier
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDbBackupOutput:
     str id
     Optional[str] name
@@ -518,8 +527,9 @@ struct DeleteDbInstanceInput:
     str identifier
     Optional[bool] retainAutomatedBackups
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDbInstanceOutput:
     str id
     str name
@@ -558,8 +568,9 @@ struct Duration:
 struct GetDbBackupInput:
     str identifier
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDbBackupOutput:
     str id
     Optional[str] name
@@ -591,8 +602,9 @@ struct GetDbBackupOutput:
 struct GetDbClusterInput:
     str dbClusterId
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], dbBackupConfigurations: list[DbBackupConfigurationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], dbBackupConfigurations: list[DbBackupConfigurationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDbClusterOutput:
     str id
     str name
@@ -626,8 +638,9 @@ struct GetDbClusterOutput:
 struct GetDbInstanceInput:
     str identifier
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDbInstanceOutput:
     str id
     str name
@@ -821,8 +834,9 @@ struct ListDbBackupsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DbBackupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DbBackupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbBackupsOutput:
     list[DbBackupSummary] items
     Optional[str] nextToken
@@ -832,8 +846,9 @@ struct ListDbClustersInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DbClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DbClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbClustersOutput:
     list[DbClusterSummary] items
     Optional[str] nextToken
@@ -844,8 +859,9 @@ struct ListDbInstancesForClusterInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DbInstanceForClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DbInstanceForClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbInstancesForClusterOutput:
     list[DbInstanceForClusterSummary] items
     Optional[str] nextToken
@@ -855,8 +871,9 @@ struct ListDbInstancesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DbInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DbInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbInstancesOutput:
     list[DbInstanceSummary] items
     Optional[str] nextToken
@@ -866,8 +883,9 @@ struct ListDbParameterGroupsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DbParameterGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DbParameterGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDbParameterGroupsOutput:
     list[DbParameterGroupSummary] items
     Optional[str] nextToken
@@ -876,8 +894,9 @@ struct ListDbParameterGroupsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -901,8 +920,9 @@ struct PercentOrAbsoluteLong:
     Optional[str] percent
     Optional[int64] absolute
 
-# no @derive(Json): member(s) instanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootDbClusterInput:
     str dbClusterId
     Optional[list[str]] instanceIds
@@ -915,8 +935,9 @@ struct RebootDbClusterOutput:
 struct RebootDbInstanceInput:
     str identifier
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootDbInstanceOutput:
     str id
     str name
@@ -952,8 +973,9 @@ struct ResourceNotFoundException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], tags: dict[str, str], dbBackupConfigurations: list[DbBackupConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], tags: dict[str, str], dbBackupConfigurations: list[DbBackupConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreFromDbBackupInput:
     str name
     str dbBackupId
@@ -988,8 +1010,9 @@ struct S3Configuration:
 struct ServiceQuotaExceededException:
     str message
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
@@ -999,14 +1022,16 @@ struct ThrottlingException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
 
-# no @derive(Json): member(s) dbBackupConfigurations: list[DbBackupConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbBackupConfigurations: list[DbBackupConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDbClusterInput:
     str dbClusterId
     Optional[LogDeliveryConfiguration] logDeliveryConfiguration
@@ -1021,8 +1046,9 @@ struct UpdateDbClusterInput:
 struct UpdateDbClusterOutput:
     Optional[ClusterStatus] dbClusterStatus
 
-# no @derive(Json): member(s) dbBackupConfigurations: list[DbBackupConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dbBackupConfigurations: list[DbBackupConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDbInstanceInput:
     str identifier
     Optional[LogDeliveryConfiguration] logDeliveryConfiguration
@@ -1035,8 +1061,9 @@ struct UpdateDbInstanceInput:
     Optional[MaintenanceSchedule] maintenanceSchedule
     Optional[list[DbBackupConfiguration]] dbBackupConfigurations
 
-# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSubnetIds: list[str], vpcSecurityGroupIds: list[str], instanceModes: list[InstanceMode], dbBackupConfigurations: list[DbBackupConfigurationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDbInstanceOutput:
     str id
     str name
@@ -1105,23 +1132,395 @@ def timestream_influxdb_error_from_code(str code) -> Timestream_InfluxDBError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDbBackup (input CreateDbBackupInput)
-#   CreateDbCluster (input CreateDbClusterInput)
-#   CreateDbInstance (input CreateDbInstanceInput)
-#   CreateDbParameterGroup (input CreateDbParameterGroupInput)
-#   RebootDbCluster (input RebootDbClusterInput)
-#   RestoreFromDbBackup (input RestoreFromDbBackupInput)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDbCluster (input UpdateDbClusterInput)
-#   UpdateDbInstance (input UpdateDbInstanceInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def timestream_influxdb_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def timestream_influxdb_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def timestream_influxdb_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def timestream_influxdb_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateDbBackupInput to a compact JSON object (declaration order).
+def create_db_backup_input_to_json(CreateDbBackupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + timestream_influxdb_json_str(v.name))
+    parts.append("\"dbResourceId\":" + timestream_influxdb_json_str(v.dbResourceId))
+    if v.retentionDays.is_some():
+        auto u0 = v.retentionDays.unwrap()
+        parts.append("\"retentionDays\":" + str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(timestream_influxdb_json_str(k2) + ":" + timestream_influxdb_json_str(u1[k2]))
+        parts.append("\"tags\":" + timestream_influxdb_json_obj(m2))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize CreateDbClusterInput to a compact JSON object (declaration order).
+def create_db_cluster_input_to_json(CreateDbClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + timestream_influxdb_json_str(v.name))
+    if v.username.is_some():
+        auto u0 = v.username.unwrap()
+        parts.append("\"username\":" + timestream_influxdb_json_str(u0))
+    if v.password.is_some():
+        auto u1 = v.password.unwrap()
+        parts.append("\"password\":" + timestream_influxdb_json_str(u1))
+    if v.organization.is_some():
+        auto u2 = v.organization.unwrap()
+        parts.append("\"organization\":" + timestream_influxdb_json_str(u2))
+    if v.bucket.is_some():
+        auto u3 = v.bucket.unwrap()
+        parts.append("\"bucket\":" + timestream_influxdb_json_str(u3))
+    if v.port.is_some():
+        auto u4 = v.port.unwrap()
+        parts.append("\"port\":" + str(u4))
+    if v.dbParameterGroupIdentifier.is_some():
+        auto u5 = v.dbParameterGroupIdentifier.unwrap()
+        parts.append("\"dbParameterGroupIdentifier\":" + timestream_influxdb_json_str(u5))
+    parts.append("\"dbInstanceType\":" + v.dbInstanceType.to_json())
+    if v.dbStorageType.is_some():
+        auto u6 = v.dbStorageType.unwrap()
+        parts.append("\"dbStorageType\":" + u6.to_json())
+    if v.allocatedStorage.is_some():
+        auto u7 = v.allocatedStorage.unwrap()
+        parts.append("\"allocatedStorage\":" + str(u7))
+    if v.networkType.is_some():
+        auto u8 = v.networkType.unwrap()
+        parts.append("\"networkType\":" + u8.to_json())
+    if v.publiclyAccessible.is_some():
+        auto u9 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u9)))
+    list[str] e10 = []
+    for x10 in v.vpcSubnetIds:
+        e10.append(timestream_influxdb_json_str(x10))
+    parts.append("\"vpcSubnetIds\":" + timestream_influxdb_json_arr(e10))
+    list[str] e11 = []
+    for x11 in v.vpcSecurityGroupIds:
+        e11.append(timestream_influxdb_json_str(x11))
+    parts.append("\"vpcSecurityGroupIds\":" + timestream_influxdb_json_arr(e11))
+    if v.deploymentType.is_some():
+        auto u12 = v.deploymentType.unwrap()
+        parts.append("\"deploymentType\":" + timestream_influxdb_json_str(u12))
+    if v.failoverMode.is_some():
+        auto u13 = v.failoverMode.unwrap()
+        parts.append("\"failoverMode\":" + u13.to_json())
+    if v.logDeliveryConfiguration.is_some():
+        auto u14 = v.logDeliveryConfiguration.unwrap()
+        parts.append("\"logDeliveryConfiguration\":" + u14.to_json())
+    if v.maintenanceSchedule.is_some():
+        auto u15 = v.maintenanceSchedule.unwrap()
+        parts.append("\"maintenanceSchedule\":" + u15.to_json())
+    if v.dbBackupConfigurations.is_some():
+        auto u16 = v.dbBackupConfigurations.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"dbBackupConfigurations\":" + timestream_influxdb_json_arr(e17))
+    if v.kmsKeyId.is_some():
+        auto u18 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + timestream_influxdb_json_str(u18))
+    if v.tags.is_some():
+        auto u19 = v.tags.unwrap()
+        list[str] m20 = []
+        for k20 in sorted(u19.keys()):
+            m20.append(timestream_influxdb_json_str(k20) + ":" + timestream_influxdb_json_str(u19[k20]))
+        parts.append("\"tags\":" + timestream_influxdb_json_obj(m20))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize CreateDbInstanceInput to a compact JSON object (declaration order).
+def create_db_instance_input_to_json(CreateDbInstanceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + timestream_influxdb_json_str(v.name))
+    if v.username.is_some():
+        auto u0 = v.username.unwrap()
+        parts.append("\"username\":" + timestream_influxdb_json_str(u0))
+    parts.append("\"password\":" + timestream_influxdb_json_str(v.password))
+    if v.organization.is_some():
+        auto u1 = v.organization.unwrap()
+        parts.append("\"organization\":" + timestream_influxdb_json_str(u1))
+    if v.bucket.is_some():
+        auto u2 = v.bucket.unwrap()
+        parts.append("\"bucket\":" + timestream_influxdb_json_str(u2))
+    parts.append("\"dbInstanceType\":" + v.dbInstanceType.to_json())
+    list[str] e3 = []
+    for x3 in v.vpcSubnetIds:
+        e3.append(timestream_influxdb_json_str(x3))
+    parts.append("\"vpcSubnetIds\":" + timestream_influxdb_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.vpcSecurityGroupIds:
+        e4.append(timestream_influxdb_json_str(x4))
+    parts.append("\"vpcSecurityGroupIds\":" + timestream_influxdb_json_arr(e4))
+    if v.publiclyAccessible.is_some():
+        auto u5 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.dbStorageType.is_some():
+        auto u6 = v.dbStorageType.unwrap()
+        parts.append("\"dbStorageType\":" + u6.to_json())
+    parts.append("\"allocatedStorage\":" + str(v.allocatedStorage))
+    if v.dbParameterGroupIdentifier.is_some():
+        auto u7 = v.dbParameterGroupIdentifier.unwrap()
+        parts.append("\"dbParameterGroupIdentifier\":" + timestream_influxdb_json_str(u7))
+    if v.deploymentType.is_some():
+        auto u8 = v.deploymentType.unwrap()
+        parts.append("\"deploymentType\":" + u8.to_json())
+    if v.logDeliveryConfiguration.is_some():
+        auto u9 = v.logDeliveryConfiguration.unwrap()
+        parts.append("\"logDeliveryConfiguration\":" + u9.to_json())
+    if v.maintenanceSchedule.is_some():
+        auto u10 = v.maintenanceSchedule.unwrap()
+        parts.append("\"maintenanceSchedule\":" + u10.to_json())
+    if v.tags.is_some():
+        auto u11 = v.tags.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            m12.append(timestream_influxdb_json_str(k12) + ":" + timestream_influxdb_json_str(u11[k12]))
+        parts.append("\"tags\":" + timestream_influxdb_json_obj(m12))
+    if v.port.is_some():
+        auto u13 = v.port.unwrap()
+        parts.append("\"port\":" + str(u13))
+    if v.networkType.is_some():
+        auto u14 = v.networkType.unwrap()
+        parts.append("\"networkType\":" + u14.to_json())
+    if v.dbBackupConfigurations.is_some():
+        auto u15 = v.dbBackupConfigurations.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"dbBackupConfigurations\":" + timestream_influxdb_json_arr(e16))
+    if v.kmsKeyId.is_some():
+        auto u17 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + timestream_influxdb_json_str(u17))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize CreateDbParameterGroupInput to a compact JSON object (declaration order).
+def create_db_parameter_group_input_to_json(CreateDbParameterGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + timestream_influxdb_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + timestream_influxdb_json_str(u0))
+    if v.parameters.is_some():
+        auto u1 = v.parameters.unwrap()
+        parts.append("\"parameters\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(timestream_influxdb_json_str(k3) + ":" + timestream_influxdb_json_str(u2[k3]))
+        parts.append("\"tags\":" + timestream_influxdb_json_obj(m3))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize RebootDbClusterInput to a compact JSON object (declaration order).
+def reboot_db_cluster_input_to_json(RebootDbClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"dbClusterId\":" + timestream_influxdb_json_str(v.dbClusterId))
+    if v.instanceIds.is_some():
+        auto u0 = v.instanceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(timestream_influxdb_json_str(x1))
+        parts.append("\"instanceIds\":" + timestream_influxdb_json_arr(e1))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize RestoreFromDbBackupInput to a compact JSON object (declaration order).
+def restore_from_db_backup_input_to_json(RestoreFromDbBackupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + timestream_influxdb_json_str(v.name))
+    parts.append("\"dbBackupId\":" + timestream_influxdb_json_str(v.dbBackupId))
+    if v.restoreToTime.is_some():
+        auto u0 = v.restoreToTime.unwrap()
+        parts.append("\"restoreToTime\":" + timestream_influxdb_json_ts_iso(u0))
+    if v.restoreMode.is_some():
+        auto u1 = v.restoreMode.unwrap()
+        parts.append("\"restoreMode\":" + u1.to_json())
+    if v.vpcSubnetIds.is_some():
+        auto u2 = v.vpcSubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(timestream_influxdb_json_str(x3))
+        parts.append("\"vpcSubnetIds\":" + timestream_influxdb_json_arr(e3))
+    if v.vpcSecurityGroupIds.is_some():
+        auto u4 = v.vpcSecurityGroupIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(timestream_influxdb_json_str(x5))
+        parts.append("\"vpcSecurityGroupIds\":" + timestream_influxdb_json_arr(e5))
+    if v.publiclyAccessible.is_some():
+        auto u6 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.logDeliveryConfiguration.is_some():
+        auto u7 = v.logDeliveryConfiguration.unwrap()
+        parts.append("\"logDeliveryConfiguration\":" + u7.to_json())
+    if v.maintenanceSchedule.is_some():
+        auto u8 = v.maintenanceSchedule.unwrap()
+        parts.append("\"maintenanceSchedule\":" + u8.to_json())
+    if v.tags.is_some():
+        auto u9 = v.tags.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(timestream_influxdb_json_str(k10) + ":" + timestream_influxdb_json_str(u9[k10]))
+        parts.append("\"tags\":" + timestream_influxdb_json_obj(m10))
+    if v.port.is_some():
+        auto u11 = v.port.unwrap()
+        parts.append("\"port\":" + str(u11))
+    if v.networkType.is_some():
+        auto u12 = v.networkType.unwrap()
+        parts.append("\"networkType\":" + u12.to_json())
+    if v.deploymentType.is_some():
+        auto u13 = v.deploymentType.unwrap()
+        parts.append("\"deploymentType\":" + u13.to_json())
+    if v.dbBackupConfigurations.is_some():
+        auto u14 = v.dbBackupConfigurations.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"dbBackupConfigurations\":" + timestream_influxdb_json_arr(e15))
+    if v.kmsKeyId.is_some():
+        auto u16 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + timestream_influxdb_json_str(u16))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + timestream_influxdb_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(timestream_influxdb_json_str(k0) + ":" + timestream_influxdb_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + timestream_influxdb_json_obj(m0))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + timestream_influxdb_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(timestream_influxdb_json_str(x0))
+    parts.append("\"tagKeys\":" + timestream_influxdb_json_arr(e0))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize UpdateDbClusterInput to a compact JSON object (declaration order).
+def update_db_cluster_input_to_json(UpdateDbClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"dbClusterId\":" + timestream_influxdb_json_str(v.dbClusterId))
+    if v.logDeliveryConfiguration.is_some():
+        auto u0 = v.logDeliveryConfiguration.unwrap()
+        parts.append("\"logDeliveryConfiguration\":" + u0.to_json())
+    if v.dbParameterGroupIdentifier.is_some():
+        auto u1 = v.dbParameterGroupIdentifier.unwrap()
+        parts.append("\"dbParameterGroupIdentifier\":" + timestream_influxdb_json_str(u1))
+    if v.port.is_some():
+        auto u2 = v.port.unwrap()
+        parts.append("\"port\":" + str(u2))
+    if v.dbInstanceType.is_some():
+        auto u3 = v.dbInstanceType.unwrap()
+        parts.append("\"dbInstanceType\":" + u3.to_json())
+    if v.failoverMode.is_some():
+        auto u4 = v.failoverMode.unwrap()
+        parts.append("\"failoverMode\":" + u4.to_json())
+    if v.maintenanceSchedule.is_some():
+        auto u5 = v.maintenanceSchedule.unwrap()
+        parts.append("\"maintenanceSchedule\":" + u5.to_json())
+    if v.dbBackupConfigurations.is_some():
+        auto u6 = v.dbBackupConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"dbBackupConfigurations\":" + timestream_influxdb_json_arr(e7))
+    return timestream_influxdb_json_obj(parts)
+
+# Serialize UpdateDbInstanceInput to a compact JSON object (declaration order).
+def update_db_instance_input_to_json(UpdateDbInstanceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"identifier\":" + timestream_influxdb_json_str(v.identifier))
+    if v.logDeliveryConfiguration.is_some():
+        auto u0 = v.logDeliveryConfiguration.unwrap()
+        parts.append("\"logDeliveryConfiguration\":" + u0.to_json())
+    if v.dbParameterGroupIdentifier.is_some():
+        auto u1 = v.dbParameterGroupIdentifier.unwrap()
+        parts.append("\"dbParameterGroupIdentifier\":" + timestream_influxdb_json_str(u1))
+    if v.port.is_some():
+        auto u2 = v.port.unwrap()
+        parts.append("\"port\":" + str(u2))
+    if v.dbInstanceType.is_some():
+        auto u3 = v.dbInstanceType.unwrap()
+        parts.append("\"dbInstanceType\":" + u3.to_json())
+    if v.deploymentType.is_some():
+        auto u4 = v.deploymentType.unwrap()
+        parts.append("\"deploymentType\":" + u4.to_json())
+    if v.dbStorageType.is_some():
+        auto u5 = v.dbStorageType.unwrap()
+        parts.append("\"dbStorageType\":" + u5.to_json())
+    if v.allocatedStorage.is_some():
+        auto u6 = v.allocatedStorage.unwrap()
+        parts.append("\"allocatedStorage\":" + str(u6))
+    if v.maintenanceSchedule.is_some():
+        auto u7 = v.maintenanceSchedule.unwrap()
+        parts.append("\"maintenanceSchedule\":" + u7.to_json())
+    if v.dbBackupConfigurations.is_some():
+        auto u8 = v.dbBackupConfigurations.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"dbBackupConfigurations\":" + timestream_influxdb_json_arr(e9))
+    return timestream_influxdb_json_obj(parts)
 
 # A bound Timestream_InfluxDB client: credentials + region, threaded into every operation.
 struct Timestream_InfluxDBClient:
     core.Credentials creds
     str region
+
+    # CreateDbBackup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_db_backup(self, CreateDbBackupInput input) -> str:
+        auto body = create_db_backup_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "CreateDbBackup", body)
+
+    # CreateDbCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_db_cluster(self, CreateDbClusterInput input) -> str:
+        auto body = create_db_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "CreateDbCluster", body)
+
+    # CreateDbInstance
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_db_instance(self, CreateDbInstanceInput input) -> str:
+        auto body = create_db_instance_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "CreateDbInstance", body)
+
+    # CreateDbParameterGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_db_parameter_group(self, CreateDbParameterGroupInput input) -> str:
+        auto body = create_db_parameter_group_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "CreateDbParameterGroup", body)
 
     # DeleteDbBackup
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1201,11 +1600,47 @@ struct Timestream_InfluxDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # RebootDbCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def reboot_db_cluster(self, RebootDbClusterInput input) -> str:
+        auto body = reboot_db_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "RebootDbCluster", body)
+
     # RebootDbInstance
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reboot_db_instance(self, RebootDbInstanceInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "RebootDbInstance", body)
+
+    # RestoreFromDbBackup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def restore_from_db_backup(self, RestoreFromDbBackupInput input) -> str:
+        auto body = restore_from_db_backup_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "RestoreFromDbBackup", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDbCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_db_cluster(self, UpdateDbClusterInput input) -> str:
+        auto body = update_db_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "UpdateDbCluster", body)
+
+    # UpdateDbInstance
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_db_instance(self, UpdateDbInstanceInput input) -> str:
+        auto body = update_db_instance_input_to_json(input)
+        return awsjson.awsjson_request_now(timestream_influxdb_protocol(), self.creds, self.region, "UpdateDbInstance", body)
 
     # Paginator for ListDbBackups — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: items).

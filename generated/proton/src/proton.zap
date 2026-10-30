@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 87 operations — 70 with a generated method,
-#   17 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 87 operations — 87 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   234 structs (177 @derive(Json)), 19 enums, 7 error variants.
-#   18 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -332,8 +332,9 @@ struct CountsSummary:
     Optional[ResourceCountsSummary] serviceTemplates
     Optional[ResourceCountsSummary] services
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComponentInput:
     Optional[str] clientToken
     Optional[str] description
@@ -350,8 +351,9 @@ struct CreateComponentInput:
 struct CreateComponentOutput:
     Component component
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentAccountConnectionInput:
     Optional[str] clientToken
     Optional[str] codebuildRoleArn
@@ -365,8 +367,9 @@ struct CreateEnvironmentAccountConnectionInput:
 struct CreateEnvironmentAccountConnectionOutput:
     EnvironmentAccountConnection environmentAccountConnection
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentInput:
     Optional[str] codebuildRoleArn
     Optional[str] componentRoleArn
@@ -385,8 +388,9 @@ struct CreateEnvironmentInput:
 struct CreateEnvironmentOutput:
     Environment environment
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentTemplateInput:
     Optional[str] description
     Optional[str] displayName
@@ -399,8 +403,9 @@ struct CreateEnvironmentTemplateInput:
 struct CreateEnvironmentTemplateOutput:
     EnvironmentTemplate environmentTemplate
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentTemplateVersionInput:
     Optional[str] clientToken
     Optional[str] description
@@ -413,8 +418,9 @@ struct CreateEnvironmentTemplateVersionInput:
 struct CreateEnvironmentTemplateVersionOutput:
     EnvironmentTemplateVersion environmentTemplateVersion
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRepositoryInput:
     str connectionArn
     Optional[str] encryptionKey
@@ -426,8 +432,9 @@ struct CreateRepositoryInput:
 struct CreateRepositoryOutput:
     Repository repository
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceInput:
     Optional[str] branchName
     Optional[str] description
@@ -440,8 +447,9 @@ struct CreateServiceInput:
     Optional[str] templateMinorVersion
     str templateName
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceInstanceInput:
     Optional[str] clientToken
     str name
@@ -471,8 +479,9 @@ struct CreateServiceSyncConfigInput:
 struct CreateServiceSyncConfigOutput:
     Optional[ServiceSyncConfig] serviceSyncConfig
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceTemplateInput:
     Optional[str] description
     Optional[str] displayName
@@ -485,8 +494,9 @@ struct CreateServiceTemplateInput:
 struct CreateServiceTemplateOutput:
     ServiceTemplate serviceTemplate
 
-# no @derive(Json): member(s) compatibleEnvironmentTemplates: list[CompatibleEnvironmentTemplateInput], supportedComponentSources: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compatibleEnvironmentTemplates: list[CompatibleEnvironmentTemplateInput], supportedComponentSources: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceTemplateVersionInput:
     Optional[str] clientToken
     list[CompatibleEnvironmentTemplateInput] compatibleEnvironmentTemplates
@@ -497,8 +507,9 @@ struct CreateServiceTemplateVersionInput:
     Optional[list[Tag]] tags
     str templateName
 
-# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceTemplateVersionOutput:
     ServiceTemplateVersion serviceTemplateVersion
 
@@ -527,8 +538,9 @@ struct DeleteComponentOutput:
 struct DeleteDeploymentInput:
     str id
 
-# no @derive(Json): member(s) deployment: Deployment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployment: Deployment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDeploymentOutput:
     Optional[Deployment] deployment
 
@@ -605,8 +617,9 @@ struct DeleteServiceTemplateVersionInput:
     str minorVersion
     str templateName
 
-# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteServiceTemplateVersionOutput:
     Optional[ServiceTemplateVersion] serviceTemplateVersion
 
@@ -619,8 +632,9 @@ struct DeleteTemplateSyncConfigInput:
 struct DeleteTemplateSyncConfigOutput:
     Optional[TemplateSyncConfig] templateSyncConfig
 
-# no @derive(Json): member(s) initialState: DeploymentState, targetState: DeploymentState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) initialState: DeploymentState, targetState: DeploymentState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployment:
     str arn
     Optional[DateTime] completedAt
@@ -641,8 +655,9 @@ struct Deployment:
     DeploymentTargetResourceType targetResourceType
     Optional[DeploymentState] targetState
 
-# no @derive(Json): member(s) serviceInstance: ServiceInstanceState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceInstance: ServiceInstanceState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentState:
     Optional[ComponentState] component
     Optional[EnvironmentState] environment
@@ -826,8 +841,9 @@ struct GetDeploymentInput:
     Optional[str] serviceInstanceName
     Optional[str] serviceName
 
-# no @derive(Json): member(s) deployment: Deployment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployment: Deployment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentOutput:
     Optional[Deployment] deployment
 
@@ -881,8 +897,9 @@ struct GetRepositorySyncStatusInput:
     RepositoryProvider repositoryProvider
     SyncType syncType
 
-# no @derive(Json): member(s) latestSync: RepositorySyncAttempt not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) latestSync: RepositorySyncAttempt not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRepositorySyncStatusOutput:
     Optional[RepositorySyncAttempt] latestSync
 
@@ -913,8 +930,9 @@ struct GetServiceInstanceSyncStatusInput:
     str serviceInstanceName
     str serviceName
 
-# no @derive(Json): member(s) latestSuccessfulSync: ResourceSyncAttempt, latestSync: ResourceSyncAttempt not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) latestSuccessfulSync: ResourceSyncAttempt, latestSync: ResourceSyncAttempt not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceInstanceSyncStatusOutput:
     Optional[Revision] desiredState
     Optional[ResourceSyncAttempt] latestSuccessfulSync
@@ -929,8 +947,9 @@ struct GetServiceSyncBlockerSummaryInput:
     Optional[str] serviceInstanceName
     str serviceName
 
-# no @derive(Json): member(s) serviceSyncBlockerSummary: ServiceSyncBlockerSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceSyncBlockerSummary: ServiceSyncBlockerSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceSyncBlockerSummaryOutput:
     Optional[ServiceSyncBlockerSummary] serviceSyncBlockerSummary
 
@@ -956,8 +975,9 @@ struct GetServiceTemplateVersionInput:
     str minorVersion
     str templateName
 
-# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceTemplateVersionOutput:
     ServiceTemplateVersion serviceTemplateVersion
 
@@ -976,8 +996,9 @@ struct GetTemplateSyncStatusInput:
     TemplateType templateType
     str templateVersion
 
-# no @derive(Json): member(s) latestSuccessfulSync: ResourceSyncAttempt, latestSync: ResourceSyncAttempt not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) latestSuccessfulSync: ResourceSyncAttempt, latestSync: ResourceSyncAttempt not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemplateSyncStatusOutput:
     Optional[Revision] desiredState
     Optional[ResourceSyncAttempt] latestSuccessfulSync
@@ -993,8 +1014,9 @@ struct ListComponentOutputsInput:
     Optional[str] deploymentId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentOutputsOutput:
     Optional[str] nextToken
     list[Output] outputs
@@ -1004,8 +1026,9 @@ struct ListComponentProvisionedResourcesInput:
     str componentName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentProvisionedResourcesOutput:
     Optional[str] nextToken
     list[ProvisionedResource] provisionedResources
@@ -1018,8 +1041,9 @@ struct ListComponentsInput:
     Optional[str] serviceInstanceName
     Optional[str] serviceName
 
-# no @derive(Json): member(s) components: list[ComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) components: list[ComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentsOutput:
     list[ComponentSummary] components
     Optional[str] nextToken
@@ -1033,14 +1057,16 @@ struct ListDeploymentsInput:
     Optional[str] serviceInstanceName
     Optional[str] serviceName
 
-# no @derive(Json): member(s) deployments: list[DeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployments: list[DeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsOutput:
     list[DeploymentSummary] deployments
     Optional[str] nextToken
 
-# no @derive(Json): member(s) statuses: list[EnvironmentAccountConnectionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statuses: list[EnvironmentAccountConnectionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentAccountConnectionsInput:
     Optional[str] environmentName
     Optional[int64] maxResults
@@ -1048,8 +1074,9 @@ struct ListEnvironmentAccountConnectionsInput:
     EnvironmentAccountConnectionRequesterAccountType requestedBy
     Optional[list[EnvironmentAccountConnectionStatus]] statuses
 
-# no @derive(Json): member(s) environmentAccountConnections: list[EnvironmentAccountConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentAccountConnections: list[EnvironmentAccountConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentAccountConnectionsOutput:
     list[EnvironmentAccountConnectionSummary] environmentAccountConnections
     Optional[str] nextToken
@@ -1060,8 +1087,9 @@ struct ListEnvironmentOutputsInput:
     str environmentName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentOutputsOutput:
     Optional[str] nextToken
     list[Output] outputs
@@ -1071,8 +1099,9 @@ struct ListEnvironmentProvisionedResourcesInput:
     str environmentName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentProvisionedResourcesOutput:
     Optional[str] nextToken
     list[ProvisionedResource] provisionedResources
@@ -1084,8 +1113,9 @@ struct ListEnvironmentTemplateVersionsInput:
     Optional[str] nextToken
     str templateName
 
-# no @derive(Json): member(s) templateVersions: list[EnvironmentTemplateVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateVersions: list[EnvironmentTemplateVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentTemplateVersionsOutput:
     Optional[str] nextToken
     list[EnvironmentTemplateVersionSummary] templateVersions
@@ -1095,21 +1125,24 @@ struct ListEnvironmentTemplatesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) templates: list[EnvironmentTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[EnvironmentTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentTemplatesOutput:
     Optional[str] nextToken
     list[EnvironmentTemplateSummary] templates
 
-# no @derive(Json): member(s) environmentTemplates: list[EnvironmentTemplateFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentTemplates: list[EnvironmentTemplateFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsInput:
     Optional[list[EnvironmentTemplateFilter]] environmentTemplates
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) environments: list[EnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environments: list[EnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsOutput:
     list[EnvironmentSummary] environments
     Optional[str] nextToken
@@ -1119,8 +1152,9 @@ struct ListRepositoriesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) repositories: list[RepositorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[RepositorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoriesOutput:
     Optional[str] nextToken
     list[RepositorySummary] repositories
@@ -1132,8 +1166,9 @@ struct ListRepositorySyncDefinitionsInput:
     RepositoryProvider repositoryProvider
     SyncType syncType
 
-# no @derive(Json): member(s) syncDefinitions: list[RepositorySyncDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) syncDefinitions: list[RepositorySyncDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositorySyncDefinitionsOutput:
     Optional[str] nextToken
     list[RepositorySyncDefinition] syncDefinitions
@@ -1145,8 +1180,9 @@ struct ListServiceInstanceOutputsInput:
     str serviceInstanceName
     str serviceName
 
-# no @derive(Json): member(s) outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceInstanceOutputsOutput:
     Optional[str] nextToken
     list[Output] outputs
@@ -1157,8 +1193,9 @@ struct ListServiceInstanceProvisionedResourcesInput:
     str serviceInstanceName
     str serviceName
 
-# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceInstanceProvisionedResourcesOutput:
     Optional[str] nextToken
     list[ProvisionedResource] provisionedResources
@@ -1168,8 +1205,9 @@ struct ListServiceInstancesFilter:
     Optional[ListServiceInstancesFilterBy] key
     Optional[str] value
 
-# no @derive(Json): member(s) filters: list[ListServiceInstancesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ListServiceInstancesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceInstancesInput:
     Optional[list[ListServiceInstancesFilter]] filters
     Optional[int64] maxResults
@@ -1178,8 +1216,9 @@ struct ListServiceInstancesInput:
     Optional[ListServiceInstancesSortBy] sortBy
     Optional[SortOrder] sortOrder
 
-# no @derive(Json): member(s) serviceInstances: list[ServiceInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceInstances: list[ServiceInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceInstancesOutput:
     Optional[str] nextToken
     list[ServiceInstanceSummary] serviceInstances
@@ -1190,8 +1229,9 @@ struct ListServicePipelineOutputsInput:
     Optional[str] nextToken
     str serviceName
 
-# no @derive(Json): member(s) outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicePipelineOutputsOutput:
     Optional[str] nextToken
     list[Output] outputs
@@ -1201,8 +1241,9 @@ struct ListServicePipelineProvisionedResourcesInput:
     Optional[str] nextToken
     str serviceName
 
-# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[ProvisionedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicePipelineProvisionedResourcesOutput:
     Optional[str] nextToken
     list[ProvisionedResource] provisionedResources
@@ -1214,8 +1255,9 @@ struct ListServiceTemplateVersionsInput:
     Optional[str] nextToken
     str templateName
 
-# no @derive(Json): member(s) templateVersions: list[ServiceTemplateVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateVersions: list[ServiceTemplateVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceTemplateVersionsOutput:
     Optional[str] nextToken
     list[ServiceTemplateVersionSummary] templateVersions
@@ -1225,8 +1267,9 @@ struct ListServiceTemplatesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) templates: list[ServiceTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[ServiceTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceTemplatesOutput:
     Optional[str] nextToken
     list[ServiceTemplateSummary] templates
@@ -1236,8 +1279,9 @@ struct ListServicesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) services: list[ServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[ServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesOutput:
     Optional[str] nextToken
     list[ServiceSummary] services
@@ -1248,14 +1292,16 @@ struct ListTagsForResourceInput:
     Optional[str] nextToken
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[str] nextToken
     list[Tag] tags
 
-# no @derive(Json): member(s) outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyResourceDeploymentStatusChangeInput:
     Optional[str] deploymentId
     Optional[list[Output]] outputs
@@ -1315,8 +1361,9 @@ struct RepositorySummary:
     str name
     RepositoryProvider provider
 
-# no @derive(Json): member(s) events: list[RepositorySyncEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[RepositorySyncEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositorySyncAttempt:
     list[RepositorySyncEvent] events
     DateTime startedAt
@@ -1348,8 +1395,9 @@ struct ResourceCountsSummary:
 struct ResourceNotFoundException:
     str message
 
-# no @derive(Json): member(s) events: list[ResourceSyncEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[ResourceSyncEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSyncAttempt:
     list[ResourceSyncEvent] events
     Revision initialRevision
@@ -1413,8 +1461,9 @@ struct ServiceInstance:
     str templateMinorVersion
     str templateName
 
-# no @derive(Json): member(s) lastSuccessfulComponentDeploymentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lastSuccessfulComponentDeploymentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceInstanceState:
     Optional[list[str]] lastSuccessfulComponentDeploymentIds
     Optional[str] lastSuccessfulEnvironmentDeploymentId
@@ -1478,8 +1527,9 @@ struct ServiceSummary:
     Optional[str] statusMessage
     str templateName
 
-# no @derive(Json): member(s) latestBlockers: list[SyncBlocker] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) latestBlockers: list[SyncBlocker] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceSyncBlockerSummary:
     Optional[list[SyncBlocker]] latestBlockers
     Optional[str] serviceInstanceName
@@ -1516,8 +1566,9 @@ struct ServiceTemplateSummary:
     Optional[str] pipelineProvisioning
     Optional[str] recommendedVersion
 
-# no @derive(Json): member(s) compatibleEnvironmentTemplates: list[CompatibleEnvironmentTemplate], supportedComponentSources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compatibleEnvironmentTemplates: list[CompatibleEnvironmentTemplate], supportedComponentSources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceTemplateVersion:
     str arn
     list[CompatibleEnvironmentTemplate] compatibleEnvironmentTemplates
@@ -1546,8 +1597,9 @@ struct ServiceTemplateVersionSummary:
     Optional[str] statusMessage
     str templateName
 
-# no @derive(Json): member(s) contexts: list[SyncBlockerContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contexts: list[SyncBlockerContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyncBlocker:
     Optional[list[SyncBlockerContext]] contexts
     DateTime createdAt
@@ -1568,8 +1620,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     list[Tag] tags
@@ -1596,8 +1649,9 @@ struct TemplateVersionSourceInput:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
@@ -1725,8 +1779,9 @@ struct UpdateServiceSyncBlockerInput:
     str id
     str resolvedReason
 
-# no @derive(Json): member(s) serviceSyncBlocker: SyncBlocker not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceSyncBlocker: SyncBlocker not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceSyncBlockerOutput:
     Optional[str] serviceInstanceName
     str serviceName
@@ -1754,8 +1809,9 @@ struct UpdateServiceTemplateInput:
 struct UpdateServiceTemplateOutput:
     ServiceTemplate serviceTemplate
 
-# no @derive(Json): member(s) compatibleEnvironmentTemplates: list[CompatibleEnvironmentTemplateInput], supportedComponentSources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compatibleEnvironmentTemplates: list[CompatibleEnvironmentTemplateInput], supportedComponentSources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceTemplateVersionInput:
     Optional[list[CompatibleEnvironmentTemplateInput]] compatibleEnvironmentTemplates
     Optional[str] description
@@ -1765,8 +1821,9 @@ struct UpdateServiceTemplateVersionInput:
     Optional[list[str]] supportedComponentSources
     str templateName
 
-# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceTemplateVersion: ServiceTemplateVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceTemplateVersionOutput:
     ServiceTemplateVersion serviceTemplateVersion
 
@@ -1821,31 +1878,431 @@ def proton_error_from_code(str code) -> ProtonError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateComponent (input CreateComponentInput)
-#   CreateEnvironment (input CreateEnvironmentInput)
-#   CreateEnvironmentAccountConnection (input CreateEnvironmentAccountConnectionInput)
-#   CreateEnvironmentTemplate (input CreateEnvironmentTemplateInput)
-#   CreateEnvironmentTemplateVersion (input CreateEnvironmentTemplateVersionInput)
-#   CreateRepository (input CreateRepositoryInput)
-#   CreateService (input CreateServiceInput)
-#   CreateServiceInstance (input CreateServiceInstanceInput)
-#   CreateServiceTemplate (input CreateServiceTemplateInput)
-#   CreateServiceTemplateVersion (input CreateServiceTemplateVersionInput)
-#   ListEnvironmentAccountConnections (input ListEnvironmentAccountConnectionsInput)
-#   ListEnvironments (input ListEnvironmentsInput)
-#   ListServiceInstances (input ListServiceInstancesInput)
-#   NotifyResourceDeploymentStatusChange (input NotifyResourceDeploymentStatusChangeInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateServiceTemplateVersion (input UpdateServiceTemplateVersionInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def proton_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListEnvironmentAccountConnections (input not derivable (no generated method))
-#   ListEnvironments (input not derivable (no generated method))
-#   ListServiceInstances (input not derivable (no generated method))
+def proton_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def proton_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateComponentInput to a compact JSON object (declaration order).
+def create_component_input_to_json(CreateComponentInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + proton_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u1))
+    if v.environmentName.is_some():
+        auto u2 = v.environmentName.unwrap()
+        parts.append("\"environmentName\":" + proton_json_str(u2))
+    parts.append("\"manifest\":" + proton_json_str(v.manifest))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    if v.serviceInstanceName.is_some():
+        auto u3 = v.serviceInstanceName.unwrap()
+        parts.append("\"serviceInstanceName\":" + proton_json_str(u3))
+    if v.serviceName.is_some():
+        auto u4 = v.serviceName.unwrap()
+        parts.append("\"serviceName\":" + proton_json_str(u4))
+    if v.serviceSpec.is_some():
+        auto u5 = v.serviceSpec.unwrap()
+        parts.append("\"serviceSpec\":" + proton_json_str(u5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e7))
+    parts.append("\"templateFile\":" + proton_json_str(v.templateFile))
+    return proton_json_obj(parts)
+
+# Serialize CreateEnvironmentAccountConnectionInput to a compact JSON object (declaration order).
+def create_environment_account_connection_input_to_json(CreateEnvironmentAccountConnectionInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + proton_json_str(u0))
+    if v.codebuildRoleArn.is_some():
+        auto u1 = v.codebuildRoleArn.unwrap()
+        parts.append("\"codebuildRoleArn\":" + proton_json_str(u1))
+    if v.componentRoleArn.is_some():
+        auto u2 = v.componentRoleArn.unwrap()
+        parts.append("\"componentRoleArn\":" + proton_json_str(u2))
+    parts.append("\"environmentName\":" + proton_json_str(v.environmentName))
+    parts.append("\"managementAccountId\":" + proton_json_str(v.managementAccountId))
+    if v.roleArn.is_some():
+        auto u3 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + proton_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e5))
+    return proton_json_obj(parts)
+
+# Serialize CreateEnvironmentInput to a compact JSON object (declaration order).
+def create_environment_input_to_json(CreateEnvironmentInput v) -> str:
+    list[str] parts = []
+    if v.codebuildRoleArn.is_some():
+        auto u0 = v.codebuildRoleArn.unwrap()
+        parts.append("\"codebuildRoleArn\":" + proton_json_str(u0))
+    if v.componentRoleArn.is_some():
+        auto u1 = v.componentRoleArn.unwrap()
+        parts.append("\"componentRoleArn\":" + proton_json_str(u1))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u2))
+    if v.environmentAccountConnectionId.is_some():
+        auto u3 = v.environmentAccountConnectionId.unwrap()
+        parts.append("\"environmentAccountConnectionId\":" + proton_json_str(u3))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    if v.protonServiceRoleArn.is_some():
+        auto u4 = v.protonServiceRoleArn.unwrap()
+        parts.append("\"protonServiceRoleArn\":" + proton_json_str(u4))
+    if v.provisioningRepository.is_some():
+        auto u5 = v.provisioningRepository.unwrap()
+        parts.append("\"provisioningRepository\":" + u5.to_json())
+    parts.append("\"spec\":" + proton_json_str(v.spec))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e7))
+    parts.append("\"templateMajorVersion\":" + proton_json_str(v.templateMajorVersion))
+    if v.templateMinorVersion.is_some():
+        auto u8 = v.templateMinorVersion.unwrap()
+        parts.append("\"templateMinorVersion\":" + proton_json_str(u8))
+    parts.append("\"templateName\":" + proton_json_str(v.templateName))
+    return proton_json_obj(parts)
+
+# Serialize CreateEnvironmentTemplateInput to a compact JSON object (declaration order).
+def create_environment_template_input_to_json(CreateEnvironmentTemplateInput v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u0))
+    if v.displayName.is_some():
+        auto u1 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + proton_json_str(u1))
+    if v.encryptionKey.is_some():
+        auto u2 = v.encryptionKey.unwrap()
+        parts.append("\"encryptionKey\":" + proton_json_str(u2))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    if v.provisioning.is_some():
+        auto u3 = v.provisioning.unwrap()
+        parts.append("\"provisioning\":" + proton_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e5))
+    return proton_json_obj(parts)
+
+# Serialize CreateEnvironmentTemplateVersionInput to a compact JSON object (declaration order).
+def create_environment_template_version_input_to_json(CreateEnvironmentTemplateVersionInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + proton_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u1))
+    if v.majorVersion.is_some():
+        auto u2 = v.majorVersion.unwrap()
+        parts.append("\"majorVersion\":" + proton_json_str(u2))
+    parts.append("\"source\":" + v.source.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e4))
+    parts.append("\"templateName\":" + proton_json_str(v.templateName))
+    return proton_json_obj(parts)
+
+# Serialize CreateRepositoryInput to a compact JSON object (declaration order).
+def create_repository_input_to_json(CreateRepositoryInput v) -> str:
+    list[str] parts = []
+    parts.append("\"connectionArn\":" + proton_json_str(v.connectionArn))
+    if v.encryptionKey.is_some():
+        auto u0 = v.encryptionKey.unwrap()
+        parts.append("\"encryptionKey\":" + proton_json_str(u0))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    parts.append("\"provider\":" + v.provider.to_json())
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e2))
+    return proton_json_obj(parts)
+
+# Serialize CreateServiceInput to a compact JSON object (declaration order).
+def create_service_input_to_json(CreateServiceInput v) -> str:
+    list[str] parts = []
+    if v.branchName.is_some():
+        auto u0 = v.branchName.unwrap()
+        parts.append("\"branchName\":" + proton_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u1))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    if v.repositoryConnectionArn.is_some():
+        auto u2 = v.repositoryConnectionArn.unwrap()
+        parts.append("\"repositoryConnectionArn\":" + proton_json_str(u2))
+    if v.repositoryId.is_some():
+        auto u3 = v.repositoryId.unwrap()
+        parts.append("\"repositoryId\":" + proton_json_str(u3))
+    parts.append("\"spec\":" + proton_json_str(v.spec))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e5))
+    parts.append("\"templateMajorVersion\":" + proton_json_str(v.templateMajorVersion))
+    if v.templateMinorVersion.is_some():
+        auto u6 = v.templateMinorVersion.unwrap()
+        parts.append("\"templateMinorVersion\":" + proton_json_str(u6))
+    parts.append("\"templateName\":" + proton_json_str(v.templateName))
+    return proton_json_obj(parts)
+
+# Serialize CreateServiceInstanceInput to a compact JSON object (declaration order).
+def create_service_instance_input_to_json(CreateServiceInstanceInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + proton_json_str(u0))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    parts.append("\"serviceName\":" + proton_json_str(v.serviceName))
+    parts.append("\"spec\":" + proton_json_str(v.spec))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e2))
+    if v.templateMajorVersion.is_some():
+        auto u3 = v.templateMajorVersion.unwrap()
+        parts.append("\"templateMajorVersion\":" + proton_json_str(u3))
+    if v.templateMinorVersion.is_some():
+        auto u4 = v.templateMinorVersion.unwrap()
+        parts.append("\"templateMinorVersion\":" + proton_json_str(u4))
+    return proton_json_obj(parts)
+
+# Serialize CreateServiceTemplateInput to a compact JSON object (declaration order).
+def create_service_template_input_to_json(CreateServiceTemplateInput v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u0))
+    if v.displayName.is_some():
+        auto u1 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + proton_json_str(u1))
+    if v.encryptionKey.is_some():
+        auto u2 = v.encryptionKey.unwrap()
+        parts.append("\"encryptionKey\":" + proton_json_str(u2))
+    parts.append("\"name\":" + proton_json_str(v.name))
+    if v.pipelineProvisioning.is_some():
+        auto u3 = v.pipelineProvisioning.unwrap()
+        parts.append("\"pipelineProvisioning\":" + proton_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e5))
+    return proton_json_obj(parts)
+
+# Serialize CreateServiceTemplateVersionInput to a compact JSON object (declaration order).
+def create_service_template_version_input_to_json(CreateServiceTemplateVersionInput v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + proton_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.compatibleEnvironmentTemplates:
+        e1.append(x1.to_json())
+    parts.append("\"compatibleEnvironmentTemplates\":" + proton_json_arr(e1))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u2))
+    if v.majorVersion.is_some():
+        auto u3 = v.majorVersion.unwrap()
+        parts.append("\"majorVersion\":" + proton_json_str(u3))
+    parts.append("\"source\":" + v.source.to_json())
+    if v.supportedComponentSources.is_some():
+        auto u4 = v.supportedComponentSources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(proton_json_str(x5))
+        parts.append("\"supportedComponentSources\":" + proton_json_arr(e5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + proton_json_arr(e7))
+    parts.append("\"templateName\":" + proton_json_str(v.templateName))
+    return proton_json_obj(parts)
+
+# Serialize ListEnvironmentAccountConnectionsInput to a compact JSON object (declaration order).
+def list_environment_account_connections_input_to_json(ListEnvironmentAccountConnectionsInput v) -> str:
+    list[str] parts = []
+    if v.environmentName.is_some():
+        auto u0 = v.environmentName.unwrap()
+        parts.append("\"environmentName\":" + proton_json_str(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + proton_json_str(u2))
+    parts.append("\"requestedBy\":" + v.requestedBy.to_json())
+    if v.statuses.is_some():
+        auto u3 = v.statuses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"statuses\":" + proton_json_arr(e4))
+    return proton_json_obj(parts)
+
+# Serialize ListEnvironmentsInput to a compact JSON object (declaration order).
+def list_environments_input_to_json(ListEnvironmentsInput v) -> str:
+    list[str] parts = []
+    if v.environmentTemplates.is_some():
+        auto u0 = v.environmentTemplates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"environmentTemplates\":" + proton_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + proton_json_str(u3))
+    return proton_json_obj(parts)
+
+# Serialize ListServiceInstancesInput to a compact JSON object (declaration order).
+def list_service_instances_input_to_json(ListServiceInstancesInput v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filters\":" + proton_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + proton_json_str(u3))
+    if v.serviceName.is_some():
+        auto u4 = v.serviceName.unwrap()
+        parts.append("\"serviceName\":" + proton_json_str(u4))
+    if v.sortBy.is_some():
+        auto u5 = v.sortBy.unwrap()
+        parts.append("\"sortBy\":" + u5.to_json())
+    if v.sortOrder.is_some():
+        auto u6 = v.sortOrder.unwrap()
+        parts.append("\"sortOrder\":" + u6.to_json())
+    return proton_json_obj(parts)
+
+# Serialize NotifyResourceDeploymentStatusChangeInput to a compact JSON object (declaration order).
+def notify_resource_deployment_status_change_input_to_json(NotifyResourceDeploymentStatusChangeInput v) -> str:
+    list[str] parts = []
+    if v.deploymentId.is_some():
+        auto u0 = v.deploymentId.unwrap()
+        parts.append("\"deploymentId\":" + proton_json_str(u0))
+    if v.outputs.is_some():
+        auto u1 = v.outputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"outputs\":" + proton_json_arr(e2))
+    parts.append("\"resourceArn\":" + proton_json_str(v.resourceArn))
+    if v.status.is_some():
+        auto u3 = v.status.unwrap()
+        parts.append("\"status\":" + u3.to_json())
+    if v.statusMessage.is_some():
+        auto u4 = v.statusMessage.unwrap()
+        parts.append("\"statusMessage\":" + proton_json_str(u4))
+    return proton_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + proton_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + proton_json_arr(e0))
+    return proton_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + proton_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(proton_json_str(x0))
+    parts.append("\"tagKeys\":" + proton_json_arr(e0))
+    return proton_json_obj(parts)
+
+# Serialize UpdateServiceTemplateVersionInput to a compact JSON object (declaration order).
+def update_service_template_version_input_to_json(UpdateServiceTemplateVersionInput v) -> str:
+    list[str] parts = []
+    if v.compatibleEnvironmentTemplates.is_some():
+        auto u0 = v.compatibleEnvironmentTemplates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"compatibleEnvironmentTemplates\":" + proton_json_arr(e1))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + proton_json_str(u2))
+    parts.append("\"majorVersion\":" + proton_json_str(v.majorVersion))
+    parts.append("\"minorVersion\":" + proton_json_str(v.minorVersion))
+    if v.status.is_some():
+        auto u3 = v.status.unwrap()
+        parts.append("\"status\":" + u3.to_json())
+    if v.supportedComponentSources.is_some():
+        auto u4 = v.supportedComponentSources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(proton_json_str(x5))
+        parts.append("\"supportedComponentSources\":" + proton_json_arr(e5))
+    parts.append("\"templateName\":" + proton_json_str(v.templateName))
+    return proton_json_obj(parts)
 
 # A bound Proton client: credentials + region, threaded into every operation.
 struct ProtonClient:
@@ -1882,11 +2339,71 @@ struct ProtonClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CancelServicePipelineDeployment", body)
 
+    # CreateComponent
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_component(self, CreateComponentInput input) -> str:
+        auto body = create_component_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateComponent", body)
+
+    # CreateEnvironment
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment(self, CreateEnvironmentInput input) -> str:
+        auto body = create_environment_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateEnvironment", body)
+
+    # CreateEnvironmentAccountConnection
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment_account_connection(self, CreateEnvironmentAccountConnectionInput input) -> str:
+        auto body = create_environment_account_connection_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateEnvironmentAccountConnection", body)
+
+    # CreateEnvironmentTemplate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment_template(self, CreateEnvironmentTemplateInput input) -> str:
+        auto body = create_environment_template_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateEnvironmentTemplate", body)
+
+    # CreateEnvironmentTemplateVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment_template_version(self, CreateEnvironmentTemplateVersionInput input) -> str:
+        auto body = create_environment_template_version_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateEnvironmentTemplateVersion", body)
+
+    # CreateRepository
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_repository(self, CreateRepositoryInput input) -> str:
+        auto body = create_repository_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateRepository", body)
+
+    # CreateService
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service(self, CreateServiceInput input) -> str:
+        auto body = create_service_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateService", body)
+
+    # CreateServiceInstance
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_service_instance(self, CreateServiceInstanceInput input) -> str:
+        auto body = create_service_instance_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateServiceInstance", body)
+
     # CreateServiceSyncConfig
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_sync_config(self, CreateServiceSyncConfigInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateServiceSyncConfig", body)
+
+    # CreateServiceTemplate
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_template(self, CreateServiceTemplateInput input) -> str:
+        auto body = create_service_template_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateServiceTemplate", body)
+
+    # CreateServiceTemplateVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_template_version(self, CreateServiceTemplateVersionInput input) -> str:
+        auto body = create_service_template_version_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "CreateServiceTemplateVersion", body)
 
     # CreateTemplateSyncConfig
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -2104,6 +2621,12 @@ struct ProtonClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListDeployments", body)
 
+    # ListEnvironmentAccountConnections
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_environment_account_connections(self, ListEnvironmentAccountConnectionsInput input) -> str:
+        auto body = list_environment_account_connections_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListEnvironmentAccountConnections", body)
+
     # ListEnvironmentOutputs
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_environment_outputs(self, ListEnvironmentOutputsInput input) -> str:
@@ -2128,6 +2651,12 @@ struct ProtonClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListEnvironmentTemplates", body)
 
+    # ListEnvironments
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_environments(self, ListEnvironmentsInput input) -> str:
+        auto body = list_environments_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListEnvironments", body)
+
     # ListRepositories
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_repositories(self, ListRepositoriesInput input) -> str:
@@ -2151,6 +2680,12 @@ struct ProtonClient:
     def list_service_instance_provisioned_resources(self, ListServiceInstanceProvisionedResourcesInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListServiceInstanceProvisionedResources", body)
+
+    # ListServiceInstances
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_service_instances(self, ListServiceInstancesInput input) -> str:
+        auto body = list_service_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListServiceInstances", body)
 
     # ListServicePipelineOutputs
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2188,11 +2723,29 @@ struct ProtonClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # NotifyResourceDeploymentStatusChange
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def notify_resource_deployment_status_change(self, NotifyResourceDeploymentStatusChangeInput input) -> str:
+        auto body = notify_resource_deployment_status_change_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "NotifyResourceDeploymentStatusChange", body)
+
     # RejectEnvironmentAccountConnection
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reject_environment_account_connection(self, RejectEnvironmentAccountConnectionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "RejectEnvironmentAccountConnection", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAccountSettings
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -2266,6 +2819,12 @@ struct ProtonClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "UpdateServiceTemplate", body)
 
+    # UpdateServiceTemplateVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_service_template_version(self, UpdateServiceTemplateVersionInput input) -> str:
+        auto body = update_service_template_version_input_to_json(input)
+        return awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "UpdateServiceTemplateVersion", body)
+
     # UpdateTemplateSyncConfig
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_template_sync_config(self, UpdateTemplateSyncConfigInput input) -> str:
@@ -2321,6 +2880,20 @@ struct ProtonClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListDeployments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListEnvironmentAccountConnections — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: environmentAccountConnections).
+    def paginate_list_environment_account_connections(self, ListEnvironmentAccountConnectionsInput input):
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        while True:
+            auto body = list_environment_account_connections_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListEnvironmentAccountConnections", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -2384,6 +2957,20 @@ struct ProtonClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListEnvironments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: environments).
+    def paginate_list_environments(self, ListEnvironmentsInput input):
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        while True:
+            auto body = list_environments_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListEnvironments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListRepositories — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: repositories).
     def paginate_list_repositories(self, ListRepositoriesInput input):
@@ -2433,6 +3020,20 @@ struct ProtonClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListServiceInstanceProvisionedResources", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceInstances — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: serviceInstances).
+    def paginate_list_service_instances(self, ListServiceInstancesInput input):
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        while True:
+            auto body = list_service_instances_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(proton_protocol(), self.creds, self.region, "ListServiceInstances", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

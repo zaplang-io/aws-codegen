@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 13 operations — 7 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 13 operations — 10 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   51 structs (34 @derive(Json)), 7 enums, 6 error variants.
 #   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -129,8 +129,9 @@ struct BatchGetFindingsError:
 struct BatchGetFindingsRequest:
     list[FindingIdentifier] findingIdentifiers
 
-# no @derive(Json): member(s) findings: list[Finding], failedFindings: list[BatchGetFindingsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding], failedFindings: list[BatchGetFindingsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFindingsResponse:
     list[Finding] findings
     list[BatchGetFindingsError] failedFindings
@@ -175,8 +176,9 @@ struct CreateScanResponse:
 struct CreateUploadUrlRequest:
     str scanName
 
-# no @derive(Json): member(s) requestHeaders: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestHeaders: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUploadUrlResponse:
     str s3Url
     dict[str, str] requestHeaders
@@ -186,8 +188,9 @@ struct CreateUploadUrlResponse:
 struct EncryptionConfig:
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) codeSnippet: list[CodeLine] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeSnippet: list[CodeLine] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilePath:
     Optional[str] name
     Optional[str] path
@@ -195,8 +198,9 @@ struct FilePath:
     Optional[int64] endLine
     Optional[list[CodeLine]] codeSnippet
 
-# no @derive(Json): member(s) vulnerability: Vulnerability, remediation: Remediation, detectorTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vulnerability: Vulnerability, remediation: Remediation, detectorTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     Optional[DateTime] createdAt
     Optional[str] description
@@ -247,8 +251,9 @@ struct GetFindingsRequest:
     # wire string of the Status enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) findings: list[Finding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsResponse:
     Optional[list[Finding]] findings
     Optional[str] nextToken
@@ -258,8 +263,9 @@ struct GetFindingsResponse:
 struct GetMetricsSummaryRequest:
     DateTime date
 
-# no @derive(Json): member(s) metricsSummary: MetricsSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricsSummary: MetricsSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetricsSummaryResponse:
     Optional[MetricsSummary] metricsSummary
 
@@ -294,8 +300,9 @@ struct ListFindingsMetricsRequest:
     DateTime startDate
     DateTime endDate
 
-# no @derive(Json): member(s) findingsMetrics: list[AccountFindingsMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingsMetrics: list[AccountFindingsMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsMetricsResponse:
     Optional[list[AccountFindingsMetric]] findingsMetrics
     Optional[str] nextToken
@@ -306,8 +313,9 @@ struct ListScansRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) summaries: list[ScanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[ScanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScansResponse:
     Optional[list[ScanSummary]] summaries
     Optional[str] nextToken
@@ -317,13 +325,15 @@ struct ListScansResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) categoriesWithMostFindings: list[CategoryWithFindingNum], scansWithMostOpenFindings: list[ScanNameWithFindingNum], scansWithMostOpenCriticalFindings: list[ScanNameWithFindingNum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categoriesWithMostFindings: list[CategoryWithFindingNum], scansWithMostOpenFindings: list[ScanNameWithFindingNum], scansWithMostOpenCriticalFindings: list[ScanNameWithFindingNum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricsSummary:
     Optional[DateTime] date
     Optional[FindingMetricsValuePerSeverity] openFindings
@@ -336,8 +346,9 @@ struct Recommendation:
     Optional[str] text
     Optional[str] url
 
-# no @derive(Json): member(s) suggestedFixes: list[SuggestedFix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suggestedFixes: list[SuggestedFix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Remediation:
     Optional[Recommendation] recommendation
     Optional[list[SuggestedFix]] suggestedFixes
@@ -415,8 +426,9 @@ struct UpdateAccountConfigurationRequest:
 struct UpdateAccountConfigurationResponse:
     EncryptionConfig encryptionConfig
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str errorCode
     str message
@@ -428,8 +440,9 @@ struct ValidationExceptionField:
     str name
     str message
 
-# no @derive(Json): member(s) referenceUrls: list[str], relatedVulnerabilities: list[str], filePath: FilePath not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) referenceUrls: list[str], relatedVulnerabilities: list[str], filePath: FilePath not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vulnerability:
     Optional[list[str]] referenceUrls
     Optional[list[str]] relatedVulnerabilities
@@ -472,11 +485,8 @@ def codeguru_security_error_from_code(str code) -> CodeGuru_SecurityError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetFindings (document member `findingIdentifiers: list[FindingIdentifier]` is not serializable by derive)
-#   CreateScan (document member `tags: dict[str, str]` is not serializable by derive)
 #   GetMetricsSummary (httpQuery `date` has unsupported type DateTime)
 #   ListFindingsMetrics (httpQuery `startDate` has unsupported type DateTime)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -500,6 +510,45 @@ struct UpdateAccountConfigurationDocument:
 struct CodeGuru_SecurityClient:
     core.Credentials creds
     str region
+
+    # BatchGetFindings  POST /batchGetFindings
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_findings(self, BatchGetFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/batchGetFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.findingIdentifiers:
+            e0.append(x0.to_json())
+        parts.append("\"findingIdentifiers\":" + codeguru_security_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, codeguru_security_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_security_service(), self.region, host)
+
+    # CreateScan  POST /scans
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_scan(self, CreateScanRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/scans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + codeguru_security_json_str(u0))
+        parts.append("\"resourceId\":" + input.resourceId.to_json())
+        parts.append("\"scanName\":" + codeguru_security_json_str(input.scanName))
+        if input.scanType.is_some():
+            auto u1 = input.scanType.unwrap()
+            parts.append("\"scanType\":" + u1.to_json())
+        if input.analysisType.is_some():
+            auto u2 = input.analysisType.unwrap()
+            parts.append("\"analysisType\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(codeguru_security_json_str(k4) + ":" + codeguru_security_json_str(u3[k4]))
+            parts.append("\"tags\":" + codeguru_security_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, codeguru_security_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_security_service(), self.region, host)
 
     # CreateUploadUrl  POST /uploadUrl
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -565,6 +614,21 @@ struct CodeGuru_SecurityClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(codeguru_security_json_str(k0) + ":" + codeguru_security_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + codeguru_security_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, codeguru_security_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_security_service(), self.region, host)
 
     # UpdateAccountConfiguration  PUT /updateAccountConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

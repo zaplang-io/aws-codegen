@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 20 operations — 12 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 20 operations — 20 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   78 structs (50 @derive(Json)), 1 enums, 12 error variants.
-#   1 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -45,8 +45,9 @@ enum UploadStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) attachments: list[Attachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachments: list[Attachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddAttachmentsToSetRequest:
     Optional[str] attachmentSetId
     list[Attachment] attachments
@@ -57,8 +58,9 @@ struct AddAttachmentsToSetResponse:
     Optional[str] attachmentSetId
     Optional[str] expiryTime
 
-# no @derive(Json): member(s) ccEmailAddresses: list[str], uploadIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ccEmailAddresses: list[str], uploadIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddCommunicationToCaseRequest:
     Optional[str] caseId
     str communicationBody
@@ -105,8 +107,9 @@ struct AttachmentSetSizeLimitExceeded:
 struct CaseCreationLimitExceeded:
     Optional[str] message
 
-# no @derive(Json): member(s) recentCommunications: RecentCaseCommunications, ccEmailAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recentCommunications: RecentCaseCommunications, ccEmailAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaseDetails:
     Optional[str] caseId
     Optional[str] displayId
@@ -130,8 +133,9 @@ struct Category:
     Optional[str] code
     Optional[str] name
 
-# no @derive(Json): member(s) attachments: list[AttachmentDetails], attachmentSet: list[AttachmentDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachments: list[AttachmentDetails], attachmentSet: list[AttachmentDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Communication:
     Optional[str] caseId
     Optional[str] body
@@ -140,15 +144,17 @@ struct Communication:
     Optional[list[AttachmentDetails]] attachments
     Optional[list[AttachmentDetails]] attachmentSet
 
-# no @derive(Json): member(s) supportedHours: list[SupportedHour], datesWithoutSupport: list[DateInterval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedHours: list[SupportedHour], datesWithoutSupport: list[DateInterval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommunicationTypeOptions:
     Optional[str] type
     Optional[list[SupportedHour]] supportedHours
     Optional[list[DateInterval]] datesWithoutSupport
 
-# no @derive(Json): member(s) completedUploads: list[CompletedUpload] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) completedUploads: list[CompletedUpload] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompleteAttachmentUploadRequest:
     str uploadId
     list[CompletedUpload] completedUploads
@@ -163,8 +169,9 @@ struct CompletedUpload:
     int64 partIndex
     str eTag
 
-# no @derive(Json): member(s) ccEmailAddresses: list[str], uploadIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ccEmailAddresses: list[str], uploadIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCaseRequest:
     str subject
     Optional[str] serviceCode
@@ -211,8 +218,9 @@ struct DescribeAttachmentUploadStatusResponse:
     str fileName
     Optional[UploadProgress] uploadProgress
 
-# no @derive(Json): member(s) caseIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) caseIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCasesRequest:
     Optional[list[str]] caseIdList
     Optional[str] displayId
@@ -225,8 +233,9 @@ struct DescribeCasesRequest:
     Optional[bool] includeCommunications
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) cases: list[CaseDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cases: list[CaseDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCasesResponse:
     Optional[list[CaseDetails]] cases
     Optional[str] nextToken
@@ -240,8 +249,9 @@ struct DescribeCommunicationsRequest:
     Optional[int64] maxResults
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) communications: list[Communication] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) communications: list[Communication] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCommunicationsResponse:
     Optional[list[Communication]] communications
     Optional[str] nextToken
@@ -254,21 +264,24 @@ struct DescribeCreateCaseOptionsRequest:
     str categoryCode
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) communicationTypes: list[CommunicationTypeOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) communicationTypes: list[CommunicationTypeOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCreateCaseOptionsResponse:
     Optional[str] languageAvailability
     Optional[list[CommunicationTypeOptions]] communicationTypes
 
-# no @derive(Json): member(s) serviceCodeList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceCodeList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServicesRequest:
     Optional[list[str]] serviceCodeList
     Optional[str] language
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) services: list[Service] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[Service] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServicesResponse:
     Optional[list[Service]] services
 
@@ -277,8 +290,9 @@ struct DescribeSeverityLevelsRequest:
     Optional[str] language
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) severityLevels: list[SeverityLevel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) severityLevels: list[SeverityLevel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSeverityLevelsResponse:
     Optional[list[SeverityLevel]] severityLevels
 
@@ -289,18 +303,21 @@ struct DescribeSupportedLanguagesRequest:
     str categoryCode
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) supportedLanguages: list[SupportedLanguage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedLanguages: list[SupportedLanguage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSupportedLanguagesResponse:
     Optional[list[SupportedLanguage]] supportedLanguages
 
-# no @derive(Json): member(s) checkIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) checkIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustedAdvisorCheckRefreshStatusesRequest:
     list[str] checkIds
 
-# no @derive(Json): member(s) statuses: list[TrustedAdvisorCheckRefreshStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statuses: list[TrustedAdvisorCheckRefreshStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustedAdvisorCheckRefreshStatusesResponse:
     list[TrustedAdvisorCheckRefreshStatus] statuses
 
@@ -309,18 +326,21 @@ struct DescribeTrustedAdvisorCheckResultRequest:
     str checkId
     Optional[str] language
 
-# no @derive(Json): member(s) result: TrustedAdvisorCheckResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) result: TrustedAdvisorCheckResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustedAdvisorCheckResultResponse:
     Optional[TrustedAdvisorCheckResult] result
 
-# no @derive(Json): member(s) checkIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) checkIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustedAdvisorCheckSummariesRequest:
     list[str] checkIds
 
-# no @derive(Json): member(s) summaries: list[TrustedAdvisorCheckSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summaries: list[TrustedAdvisorCheckSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustedAdvisorCheckSummariesResponse:
     list[TrustedAdvisorCheckSummary] summaries
 
@@ -328,8 +348,9 @@ struct DescribeTrustedAdvisorCheckSummariesResponse:
 struct DescribeTrustedAdvisorChecksRequest:
     str language
 
-# no @derive(Json): member(s) checks: list[TrustedAdvisorCheckDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) checks: list[TrustedAdvisorCheckDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustedAdvisorChecksResponse:
     list[TrustedAdvisorCheckDescription] checks
 
@@ -360,8 +381,9 @@ struct GetAttachmentUploadLinksRequest:
     Optional[UploadRange] uploadRange
     Optional[bool] dryRun
 
-# no @derive(Json): member(s) uploadUrls: list[UploadUrl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) uploadUrls: list[UploadUrl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAttachmentUploadLinksResponse:
     str uploadId
     int64 partSizeBytes
@@ -373,8 +395,9 @@ struct GetAttachmentUploadLinksResponse:
 struct InternalServerError:
     Optional[str] message
 
-# no @derive(Json): member(s) communications: list[Communication] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) communications: list[Communication] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecentCaseCommunications:
     Optional[list[Communication]] communications
     Optional[str] nextToken
@@ -397,8 +420,9 @@ struct ResolveCaseResponse:
     Optional[str] initialCaseStatus
     Optional[str] finalCaseStatus
 
-# no @derive(Json): member(s) categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     Optional[str] code
     Optional[str] name
@@ -420,8 +444,9 @@ struct SupportedLanguage:
     Optional[str] language
     Optional[str] display
 
-# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThrottlingException:
     Optional[str] message
     Optional[list[ThrottlingReason]] throttlingReasons
@@ -435,8 +460,9 @@ struct ThrottlingReason:
 struct TrustedAdvisorCategorySpecificSummary:
     Optional[TrustedAdvisorCostOptimizingSummary] costOptimizing
 
-# no @derive(Json): member(s) metadata: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustedAdvisorCheckDescription:
     str id
     str name
@@ -450,8 +476,9 @@ struct TrustedAdvisorCheckRefreshStatus:
     str status
     int64 millisUntilNextRefreshable
 
-# no @derive(Json): member(s) flaggedResources: list[TrustedAdvisorResourceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flaggedResources: list[TrustedAdvisorResourceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustedAdvisorCheckResult:
     str checkId
     str timestamp
@@ -474,8 +501,9 @@ struct TrustedAdvisorCostOptimizingSummary:
     float64 estimatedMonthlySavings
     float64 estimatedPercentMonthlySavings
 
-# no @derive(Json): member(s) metadata: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustedAdvisorResourceDetail:
     str status
     Optional[str] region
@@ -559,25 +587,232 @@ def support_error_from_code(str code) -> SupportError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddAttachmentsToSet (input AddAttachmentsToSetRequest)
-#   AddCommunicationToCase (input AddCommunicationToCaseRequest)
-#   CompleteAttachmentUpload (input CompleteAttachmentUploadRequest)
-#   CreateCase (input CreateCaseRequest)
-#   DescribeCases (input DescribeCasesRequest)
-#   DescribeServices (input DescribeServicesRequest)
-#   DescribeTrustedAdvisorCheckRefreshStatuses (input DescribeTrustedAdvisorCheckRefreshStatusesRequest)
-#   DescribeTrustedAdvisorCheckSummaries (input DescribeTrustedAdvisorCheckSummariesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def support_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeCases (input not derivable (no generated method))
+def support_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def support_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddAttachmentsToSetRequest to a compact JSON object (declaration order).
+def add_attachments_to_set_request_to_json(AddAttachmentsToSetRequest v) -> str:
+    list[str] parts = []
+    if v.attachmentSetId.is_some():
+        auto u0 = v.attachmentSetId.unwrap()
+        parts.append("\"attachmentSetId\":" + support_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.attachments:
+        e1.append(x1.to_json())
+    parts.append("\"attachments\":" + support_json_arr(e1))
+    if v.dryRun.is_some():
+        auto u2 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u2)))
+    return support_json_obj(parts)
+
+# Serialize AddCommunicationToCaseRequest to a compact JSON object (declaration order).
+def add_communication_to_case_request_to_json(AddCommunicationToCaseRequest v) -> str:
+    list[str] parts = []
+    if v.caseId.is_some():
+        auto u0 = v.caseId.unwrap()
+        parts.append("\"caseId\":" + support_json_str(u0))
+    parts.append("\"communicationBody\":" + support_json_str(v.communicationBody))
+    if v.ccEmailAddresses.is_some():
+        auto u1 = v.ccEmailAddresses.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(support_json_str(x2))
+        parts.append("\"ccEmailAddresses\":" + support_json_arr(e2))
+    if v.attachmentSetId.is_some():
+        auto u3 = v.attachmentSetId.unwrap()
+        parts.append("\"attachmentSetId\":" + support_json_str(u3))
+    if v.uploadIds.is_some():
+        auto u4 = v.uploadIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(support_json_str(x5))
+        parts.append("\"uploadIds\":" + support_json_arr(e5))
+    if v.dryRun.is_some():
+        auto u6 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u6)))
+    return support_json_obj(parts)
+
+# Serialize CompleteAttachmentUploadRequest to a compact JSON object (declaration order).
+def complete_attachment_upload_request_to_json(CompleteAttachmentUploadRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"uploadId\":" + support_json_str(v.uploadId))
+    list[str] e0 = []
+    for x0 in v.completedUploads:
+        e0.append(x0.to_json())
+    parts.append("\"completedUploads\":" + support_json_arr(e0))
+    if v.dryRun.is_some():
+        auto u1 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u1)))
+    return support_json_obj(parts)
+
+# Serialize CreateCaseRequest to a compact JSON object (declaration order).
+def create_case_request_to_json(CreateCaseRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"subject\":" + support_json_str(v.subject))
+    if v.serviceCode.is_some():
+        auto u0 = v.serviceCode.unwrap()
+        parts.append("\"serviceCode\":" + support_json_str(u0))
+    if v.severityCode.is_some():
+        auto u1 = v.severityCode.unwrap()
+        parts.append("\"severityCode\":" + support_json_str(u1))
+    if v.categoryCode.is_some():
+        auto u2 = v.categoryCode.unwrap()
+        parts.append("\"categoryCode\":" + support_json_str(u2))
+    parts.append("\"communicationBody\":" + support_json_str(v.communicationBody))
+    if v.ccEmailAddresses.is_some():
+        auto u3 = v.ccEmailAddresses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(support_json_str(x4))
+        parts.append("\"ccEmailAddresses\":" + support_json_arr(e4))
+    if v.language.is_some():
+        auto u5 = v.language.unwrap()
+        parts.append("\"language\":" + support_json_str(u5))
+    if v.issueType.is_some():
+        auto u6 = v.issueType.unwrap()
+        parts.append("\"issueType\":" + support_json_str(u6))
+    if v.attachmentSetId.is_some():
+        auto u7 = v.attachmentSetId.unwrap()
+        parts.append("\"attachmentSetId\":" + support_json_str(u7))
+    if v.uploadIds.is_some():
+        auto u8 = v.uploadIds.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(support_json_str(x9))
+        parts.append("\"uploadIds\":" + support_json_arr(e9))
+    if v.dryRun.is_some():
+        auto u10 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u10)))
+    return support_json_obj(parts)
+
+# Serialize DescribeCasesRequest to a compact JSON object (declaration order).
+def describe_cases_request_to_json(DescribeCasesRequest v) -> str:
+    list[str] parts = []
+    if v.caseIdList.is_some():
+        auto u0 = v.caseIdList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(support_json_str(x1))
+        parts.append("\"caseIdList\":" + support_json_arr(e1))
+    if v.displayId.is_some():
+        auto u2 = v.displayId.unwrap()
+        parts.append("\"displayId\":" + support_json_str(u2))
+    if v.afterTime.is_some():
+        auto u3 = v.afterTime.unwrap()
+        parts.append("\"afterTime\":" + support_json_str(u3))
+    if v.beforeTime.is_some():
+        auto u4 = v.beforeTime.unwrap()
+        parts.append("\"beforeTime\":" + support_json_str(u4))
+    if v.includeResolvedCases.is_some():
+        auto u5 = v.includeResolvedCases.unwrap()
+        parts.append("\"includeResolvedCases\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.nextToken.is_some():
+        auto u6 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + support_json_str(u6))
+    if v.maxResults.is_some():
+        auto u7 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u7))
+    if v.language.is_some():
+        auto u8 = v.language.unwrap()
+        parts.append("\"language\":" + support_json_str(u8))
+    if v.includeCommunications.is_some():
+        auto u9 = v.includeCommunications.unwrap()
+        parts.append("\"includeCommunications\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.dryRun.is_some():
+        auto u10 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u10)))
+    return support_json_obj(parts)
+
+# Serialize DescribeServicesRequest to a compact JSON object (declaration order).
+def describe_services_request_to_json(DescribeServicesRequest v) -> str:
+    list[str] parts = []
+    if v.serviceCodeList.is_some():
+        auto u0 = v.serviceCodeList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(support_json_str(x1))
+        parts.append("\"serviceCodeList\":" + support_json_arr(e1))
+    if v.language.is_some():
+        auto u2 = v.language.unwrap()
+        parts.append("\"language\":" + support_json_str(u2))
+    if v.dryRun.is_some():
+        auto u3 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u3)))
+    return support_json_obj(parts)
+
+# Serialize DescribeTrustedAdvisorCheckRefreshStatusesRequest to a compact JSON object (declaration order).
+def describe_trusted_advisor_check_refresh_statuses_request_to_json(DescribeTrustedAdvisorCheckRefreshStatusesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.checkIds:
+        e0.append(support_json_str(x0))
+    parts.append("\"checkIds\":" + support_json_arr(e0))
+    return support_json_obj(parts)
+
+# Serialize DescribeTrustedAdvisorCheckSummariesRequest to a compact JSON object (declaration order).
+def describe_trusted_advisor_check_summaries_request_to_json(DescribeTrustedAdvisorCheckSummariesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.checkIds:
+        e0.append(support_json_str(x0))
+    parts.append("\"checkIds\":" + support_json_arr(e0))
+    return support_json_obj(parts)
 
 # A bound Support client: credentials + region, threaded into every operation.
 struct SupportClient:
     core.Credentials creds
     str region
+
+    # AddAttachmentsToSet
+    # errors: AttachmentLimitExceeded, AttachmentSetExpired, AttachmentSetIdNotFound, AttachmentSetSizeLimitExceeded, DryRunOperationException, InternalServerError
+    def add_attachments_to_set(self, AddAttachmentsToSetRequest input) -> str:
+        auto body = add_attachments_to_set_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "AddAttachmentsToSet", body)
+
+    # AddCommunicationToCase
+    # errors: AttachmentSetExpired, AttachmentSetIdNotFound, CaseIdNotFound, DryRunOperationException, InternalServerError
+    def add_communication_to_case(self, AddCommunicationToCaseRequest input) -> str:
+        auto body = add_communication_to_case_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "AddCommunicationToCase", body)
+
+    # CompleteAttachmentUpload
+    # errors: DryRunOperationException, InternalServerError, UploadIdNotFound
+    def complete_attachment_upload(self, CompleteAttachmentUploadRequest input) -> str:
+        auto body = complete_attachment_upload_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "CompleteAttachmentUpload", body)
+
+    # CreateCase
+    # errors: AttachmentSetExpired, AttachmentSetIdNotFound, CaseCreationLimitExceeded, DryRunOperationException, InternalServerError
+    def create_case(self, CreateCaseRequest input) -> str:
+        auto body = create_case_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "CreateCase", body)
 
     # DescribeAttachment
     # errors: AttachmentIdNotFound, DescribeAttachmentLimitExceeded, DryRunOperationException, InternalServerError
@@ -591,6 +826,12 @@ struct SupportClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeAttachmentUploadStatus", body)
 
+    # DescribeCases
+    # errors: CaseIdNotFound, DryRunOperationException, InternalServerError
+    def describe_cases(self, DescribeCasesRequest input) -> str:
+        auto body = describe_cases_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeCases", body)
+
     # DescribeCommunications
     # errors: CaseIdNotFound, DryRunOperationException, InternalServerError
     def describe_communications(self, DescribeCommunicationsRequest input) -> str:
@@ -602,6 +843,12 @@ struct SupportClient:
     def describe_create_case_options(self, DescribeCreateCaseOptionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeCreateCaseOptions", body)
+
+    # DescribeServices
+    # errors: DryRunOperationException, InternalServerError
+    def describe_services(self, DescribeServicesRequest input) -> str:
+        auto body = describe_services_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeServices", body)
 
     # DescribeSeverityLevels
     # errors: DryRunOperationException, InternalServerError
@@ -615,11 +862,23 @@ struct SupportClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeSupportedLanguages", body)
 
+    # DescribeTrustedAdvisorCheckRefreshStatuses
+    # errors: InternalServerError, ThrottlingException
+    def describe_trusted_advisor_check_refresh_statuses(self, DescribeTrustedAdvisorCheckRefreshStatusesRequest input) -> str:
+        auto body = describe_trusted_advisor_check_refresh_statuses_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeTrustedAdvisorCheckRefreshStatuses", body)
+
     # DescribeTrustedAdvisorCheckResult
     # errors: InternalServerError, ThrottlingException
     def describe_trusted_advisor_check_result(self, DescribeTrustedAdvisorCheckResultRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeTrustedAdvisorCheckResult", body)
+
+    # DescribeTrustedAdvisorCheckSummaries
+    # errors: InternalServerError, ThrottlingException
+    def describe_trusted_advisor_check_summaries(self, DescribeTrustedAdvisorCheckSummariesRequest input) -> str:
+        auto body = describe_trusted_advisor_check_summaries_request_to_json(input)
+        return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeTrustedAdvisorCheckSummaries", body)
 
     # DescribeTrustedAdvisorChecks
     # errors: InternalServerError, ThrottlingException
@@ -650,6 +909,20 @@ struct SupportClient:
     def resolve_case(self, ResolveCaseRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "ResolveCase", body)
+
+    # Paginator for DescribeCases — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: cases).
+    def paginate_describe_cases(self, DescribeCasesRequest input):
+        auto host = endpoints.regional_host(support_protocol().service, self.region)
+        while True:
+            auto body = describe_cases_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(support_protocol(), self.creds, self.region, "DescribeCases", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for DescribeCommunications — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: communications).

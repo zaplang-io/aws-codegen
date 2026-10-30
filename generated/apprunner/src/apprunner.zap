@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 37 operations — 28 with a generated method,
-#   9 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 37 operations — 37 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   113 structs (74 @derive(Json)), 17 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -199,8 +199,9 @@ struct AssociateCustomDomainRequest:
     str DomainName
     Optional[bool] EnableWWWSubdomain
 
-# no @derive(Json): member(s) CustomDomain: CustomDomain, VpcDNSTargets: list[VpcDNSTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomDomain: CustomDomain, VpcDNSTargets: list[VpcDNSTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateCustomDomainResponse:
     str DNSTarget
     str ServiceArn
@@ -244,14 +245,16 @@ struct CertificateValidationRecord:
     Optional[str] Value
     Optional[CertificateValidationRecordStatus] Status
 
-# no @derive(Json): member(s) CodeConfigurationValues: CodeConfigurationValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeConfigurationValues: CodeConfigurationValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeConfiguration:
     ConfigurationSource ConfigurationSource
     Optional[CodeConfigurationValues] CodeConfigurationValues
 
-# no @derive(Json): member(s) RuntimeEnvironmentVariables: dict[str, str], RuntimeEnvironmentSecrets: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuntimeEnvironmentVariables: dict[str, str], RuntimeEnvironmentSecrets: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeConfigurationValues:
     Runtime Runtime
     Optional[str] BuildCommand
@@ -260,8 +263,9 @@ struct CodeConfigurationValues:
     Optional[dict[str, str]] RuntimeEnvironmentVariables
     Optional[dict[str, str]] RuntimeEnvironmentSecrets
 
-# no @derive(Json): member(s) CodeConfiguration: CodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeConfiguration: CodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeRepository:
     str RepositoryUrl
     SourceCodeVersion SourceCodeVersion
@@ -284,8 +288,9 @@ struct ConnectionSummary:
     Optional[ConnectionStatus] Status
     Optional[DateTime] CreatedAt
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAutoScalingConfigurationRequest:
     str AutoScalingConfigurationName
     Optional[int64] MaxConcurrency
@@ -297,8 +302,9 @@ struct CreateAutoScalingConfigurationRequest:
 struct CreateAutoScalingConfigurationResponse:
     AutoScalingConfiguration AutoScalingConfiguration
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionRequest:
     str ConnectionName
     ProviderType ProviderType
@@ -308,8 +314,9 @@ struct CreateConnectionRequest:
 struct CreateConnectionResponse:
     Connection Connection
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateObservabilityConfigurationRequest:
     str ObservabilityConfigurationName
     Optional[TraceConfiguration] TraceConfiguration
@@ -319,8 +326,9 @@ struct CreateObservabilityConfigurationRequest:
 struct CreateObservabilityConfigurationResponse:
     ObservabilityConfiguration ObservabilityConfiguration
 
-# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceRequest:
     str ServiceName
     SourceConfiguration SourceConfiguration
@@ -332,27 +340,31 @@ struct CreateServiceRequest:
     Optional[NetworkConfiguration] NetworkConfiguration
     Optional[ServiceObservabilityConfiguration] ObservabilityConfiguration
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceResponse:
     Service Service
     str OperationId
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcConnectorRequest:
     str VpcConnectorName
     list[str] Subnets
     Optional[list[str]] SecurityGroups
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) VpcConnector: VpcConnector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConnector: VpcConnector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcConnectorResponse:
     VpcConnector VpcConnector
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcIngressConnectionRequest:
     str ServiceArn
     str VpcIngressConnectionName
@@ -363,8 +375,9 @@ struct CreateVpcIngressConnectionRequest:
 struct CreateVpcIngressConnectionResponse:
     VpcIngressConnection VpcIngressConnection
 
-# no @derive(Json): member(s) CertificateValidationRecords: list[CertificateValidationRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateValidationRecords: list[CertificateValidationRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDomain:
     str DomainName
     bool EnableWWWSubdomain
@@ -400,8 +413,9 @@ struct DeleteObservabilityConfigurationResponse:
 struct DeleteServiceRequest:
     str ServiceArn
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteServiceResponse:
     Service Service
     str OperationId
@@ -410,8 +424,9 @@ struct DeleteServiceResponse:
 struct DeleteVpcConnectorRequest:
     str VpcConnectorArn
 
-# no @derive(Json): member(s) VpcConnector: VpcConnector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConnector: VpcConnector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVpcConnectorResponse:
     VpcConnector VpcConnector
 
@@ -437,8 +452,9 @@ struct DescribeCustomDomainsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CustomDomains: list[CustomDomain], VpcDNSTargets: list[VpcDNSTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomDomains: list[CustomDomain], VpcDNSTargets: list[VpcDNSTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomDomainsResponse:
     str DNSTarget
     str ServiceArn
@@ -458,8 +474,9 @@ struct DescribeObservabilityConfigurationResponse:
 struct DescribeServiceRequest:
     str ServiceArn
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceResponse:
     Service Service
 
@@ -467,8 +484,9 @@ struct DescribeServiceResponse:
 struct DescribeVpcConnectorRequest:
     str VpcConnectorArn
 
-# no @derive(Json): member(s) VpcConnector: VpcConnector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConnector: VpcConnector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVpcConnectorResponse:
     VpcConnector VpcConnector
 
@@ -485,8 +503,9 @@ struct DisassociateCustomDomainRequest:
     str ServiceArn
     str DomainName
 
-# no @derive(Json): member(s) CustomDomain: CustomDomain, VpcDNSTargets: list[VpcDNSTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomDomain: CustomDomain, VpcDNSTargets: list[VpcDNSTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateCustomDomainResponse:
     str DNSTarget
     str ServiceArn
@@ -511,16 +530,18 @@ struct HealthCheckConfiguration:
     Optional[int64] HealthyThreshold
     Optional[int64] UnhealthyThreshold
 
-# no @derive(Json): member(s) RuntimeEnvironmentVariables: dict[str, str], RuntimeEnvironmentSecrets: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuntimeEnvironmentVariables: dict[str, str], RuntimeEnvironmentSecrets: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageConfiguration:
     Optional[dict[str, str]] RuntimeEnvironmentVariables
     Optional[str] StartCommand
     Optional[str] Port
     Optional[dict[str, str]] RuntimeEnvironmentSecrets
 
-# no @derive(Json): member(s) ImageConfiguration: ImageConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageConfiguration: ImageConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageRepository:
     str ImageIdentifier
     Optional[ImageConfiguration] ImageConfiguration
@@ -560,8 +581,9 @@ struct ListAutoScalingConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AutoScalingConfigurationSummaryList: list[AutoScalingConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoScalingConfigurationSummaryList: list[AutoScalingConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutoScalingConfigurationsResponse:
     list[AutoScalingConfigurationSummary] AutoScalingConfigurationSummaryList
     Optional[str] NextToken
@@ -572,8 +594,9 @@ struct ListConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectionSummaryList: list[ConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionSummaryList: list[ConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionsResponse:
     list[ConnectionSummary] ConnectionSummaryList
     Optional[str] NextToken
@@ -585,8 +608,9 @@ struct ListObservabilityConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ObservabilityConfigurationSummaryList: list[ObservabilityConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObservabilityConfigurationSummaryList: list[ObservabilityConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObservabilityConfigurationsResponse:
     list[ObservabilityConfigurationSummary] ObservabilityConfigurationSummaryList
     Optional[str] NextToken
@@ -597,8 +621,9 @@ struct ListOperationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) OperationSummaryList: list[OperationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationSummaryList: list[OperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationsResponse:
     Optional[list[OperationSummary]] OperationSummaryList
     Optional[str] NextToken
@@ -609,8 +634,9 @@ struct ListServicesForAutoScalingConfigurationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesForAutoScalingConfigurationResponse:
     list[str] ServiceArnList
     Optional[str] NextToken
@@ -620,8 +646,9 @@ struct ListServicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ServiceSummaryList: list[ServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceSummaryList: list[ServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesResponse:
     list[ServiceSummary] ServiceSummaryList
     Optional[str] NextToken
@@ -630,8 +657,9 @@ struct ListServicesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -640,8 +668,9 @@ struct ListVpcConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VpcConnectors: list[VpcConnector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConnectors: list[VpcConnector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcConnectorsResponse:
     list[VpcConnector] VpcConnectors
     Optional[str] NextToken
@@ -657,8 +686,9 @@ struct ListVpcIngressConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VpcIngressConnectionSummaryList: list[VpcIngressConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcIngressConnectionSummaryList: list[VpcIngressConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcIngressConnectionsResponse:
     list[VpcIngressConnectionSummary] VpcIngressConnectionSummaryList
     Optional[str] NextToken
@@ -700,8 +730,9 @@ struct OperationSummary:
 struct PauseServiceRequest:
     str ServiceArn
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PauseServiceResponse:
     Service Service
     Optional[str] OperationId
@@ -714,14 +745,16 @@ struct ResourceNotFoundException:
 struct ResumeServiceRequest:
     str ServiceArn
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResumeServiceResponse:
     Service Service
     Optional[str] OperationId
 
-# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     str ServiceName
     str ServiceId
@@ -763,8 +796,9 @@ struct SourceCodeVersion:
     str Type
     str Value
 
-# no @derive(Json): member(s) CodeRepository: CodeRepository, ImageRepository: ImageRepository not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeRepository: CodeRepository, ImageRepository: ImageRepository not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfiguration:
     Optional[CodeRepository] CodeRepository
     Optional[ImageRepository] ImageRepository
@@ -784,8 +818,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -799,8 +834,9 @@ struct TagResourceResponse:
 struct TraceConfiguration:
     str Vendor
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -818,8 +854,9 @@ struct UpdateDefaultAutoScalingConfigurationRequest:
 struct UpdateDefaultAutoScalingConfigurationResponse:
     AutoScalingConfiguration AutoScalingConfiguration
 
-# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceRequest:
     str ServiceArn
     Optional[SourceConfiguration] SourceConfiguration
@@ -829,8 +866,9 @@ struct UpdateServiceRequest:
     Optional[NetworkConfiguration] NetworkConfiguration
     Optional[ServiceObservabilityConfiguration] ObservabilityConfiguration
 
-# no @derive(Json): member(s) Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceResponse:
     Service Service
     str OperationId
@@ -844,8 +882,9 @@ struct UpdateVpcIngressConnectionRequest:
 struct UpdateVpcIngressConnectionResponse:
     VpcIngressConnection VpcIngressConnection
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConnector:
     Optional[str] VpcConnectorName
     Optional[str] VpcConnectorArn
@@ -907,17 +946,294 @@ def apprunner_error_from_code(str code) -> AppRunnerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAutoScalingConfiguration (input CreateAutoScalingConfigurationRequest)
-#   CreateConnection (input CreateConnectionRequest)
-#   CreateObservabilityConfiguration (input CreateObservabilityConfigurationRequest)
-#   CreateService (input CreateServiceRequest)
-#   CreateVpcConnector (input CreateVpcConnectorRequest)
-#   CreateVpcIngressConnection (input CreateVpcIngressConnectionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateService (input UpdateServiceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def apprunner_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def apprunner_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def apprunner_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CodeConfiguration to a compact JSON object (declaration order).
+def code_configuration_to_json(CodeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationSource\":" + v.ConfigurationSource.to_json())
+    if v.CodeConfigurationValues.is_some():
+        auto u0 = v.CodeConfigurationValues.unwrap()
+        parts.append("\"CodeConfigurationValues\":" + code_configuration_values_to_json(u0))
+    return apprunner_json_obj(parts)
+
+# Serialize CodeConfigurationValues to a compact JSON object (declaration order).
+def code_configuration_values_to_json(CodeConfigurationValues v) -> str:
+    list[str] parts = []
+    parts.append("\"Runtime\":" + v.Runtime.to_json())
+    if v.BuildCommand.is_some():
+        auto u0 = v.BuildCommand.unwrap()
+        parts.append("\"BuildCommand\":" + apprunner_json_str(u0))
+    if v.StartCommand.is_some():
+        auto u1 = v.StartCommand.unwrap()
+        parts.append("\"StartCommand\":" + apprunner_json_str(u1))
+    if v.Port.is_some():
+        auto u2 = v.Port.unwrap()
+        parts.append("\"Port\":" + apprunner_json_str(u2))
+    if v.RuntimeEnvironmentVariables.is_some():
+        auto u3 = v.RuntimeEnvironmentVariables.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(apprunner_json_str(k4) + ":" + apprunner_json_str(u3[k4]))
+        parts.append("\"RuntimeEnvironmentVariables\":" + apprunner_json_obj(m4))
+    if v.RuntimeEnvironmentSecrets.is_some():
+        auto u5 = v.RuntimeEnvironmentSecrets.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(apprunner_json_str(k6) + ":" + apprunner_json_str(u5[k6]))
+        parts.append("\"RuntimeEnvironmentSecrets\":" + apprunner_json_obj(m6))
+    return apprunner_json_obj(parts)
+
+# Serialize CodeRepository to a compact JSON object (declaration order).
+def code_repository_to_json(CodeRepository v) -> str:
+    list[str] parts = []
+    parts.append("\"RepositoryUrl\":" + apprunner_json_str(v.RepositoryUrl))
+    parts.append("\"SourceCodeVersion\":" + v.SourceCodeVersion.to_json())
+    if v.CodeConfiguration.is_some():
+        auto u0 = v.CodeConfiguration.unwrap()
+        parts.append("\"CodeConfiguration\":" + code_configuration_to_json(u0))
+    if v.SourceDirectory.is_some():
+        auto u1 = v.SourceDirectory.unwrap()
+        parts.append("\"SourceDirectory\":" + apprunner_json_str(u1))
+    return apprunner_json_obj(parts)
+
+# Serialize CreateAutoScalingConfigurationRequest to a compact JSON object (declaration order).
+def create_auto_scaling_configuration_request_to_json(CreateAutoScalingConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AutoScalingConfigurationName\":" + apprunner_json_str(v.AutoScalingConfigurationName))
+    if v.MaxConcurrency.is_some():
+        auto u0 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + str(u0))
+    if v.MinSize.is_some():
+        auto u1 = v.MinSize.unwrap()
+        parts.append("\"MinSize\":" + str(u1))
+    if v.MaxSize.is_some():
+        auto u2 = v.MaxSize.unwrap()
+        parts.append("\"MaxSize\":" + str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + apprunner_json_arr(e4))
+    return apprunner_json_obj(parts)
+
+# Serialize CreateConnectionRequest to a compact JSON object (declaration order).
+def create_connection_request_to_json(CreateConnectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectionName\":" + apprunner_json_str(v.ConnectionName))
+    parts.append("\"ProviderType\":" + v.ProviderType.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + apprunner_json_arr(e1))
+    return apprunner_json_obj(parts)
+
+# Serialize CreateObservabilityConfigurationRequest to a compact JSON object (declaration order).
+def create_observability_configuration_request_to_json(CreateObservabilityConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ObservabilityConfigurationName\":" + apprunner_json_str(v.ObservabilityConfigurationName))
+    if v.TraceConfiguration.is_some():
+        auto u0 = v.TraceConfiguration.unwrap()
+        parts.append("\"TraceConfiguration\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + apprunner_json_arr(e2))
+    return apprunner_json_obj(parts)
+
+# Serialize CreateServiceRequest to a compact JSON object (declaration order).
+def create_service_request_to_json(CreateServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceName\":" + apprunner_json_str(v.ServiceName))
+    parts.append("\"SourceConfiguration\":" + source_configuration_to_json(v.SourceConfiguration))
+    if v.InstanceConfiguration.is_some():
+        auto u0 = v.InstanceConfiguration.unwrap()
+        parts.append("\"InstanceConfiguration\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + apprunner_json_arr(e2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
+    if v.HealthCheckConfiguration.is_some():
+        auto u4 = v.HealthCheckConfiguration.unwrap()
+        parts.append("\"HealthCheckConfiguration\":" + u4.to_json())
+    if v.AutoScalingConfigurationArn.is_some():
+        auto u5 = v.AutoScalingConfigurationArn.unwrap()
+        parts.append("\"AutoScalingConfigurationArn\":" + apprunner_json_str(u5))
+    if v.NetworkConfiguration.is_some():
+        auto u6 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + u6.to_json())
+    if v.ObservabilityConfiguration.is_some():
+        auto u7 = v.ObservabilityConfiguration.unwrap()
+        parts.append("\"ObservabilityConfiguration\":" + u7.to_json())
+    return apprunner_json_obj(parts)
+
+# Serialize CreateVpcConnectorRequest to a compact JSON object (declaration order).
+def create_vpc_connector_request_to_json(CreateVpcConnectorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcConnectorName\":" + apprunner_json_str(v.VpcConnectorName))
+    list[str] e0 = []
+    for x0 in v.Subnets:
+        e0.append(apprunner_json_str(x0))
+    parts.append("\"Subnets\":" + apprunner_json_arr(e0))
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(apprunner_json_str(x2))
+        parts.append("\"SecurityGroups\":" + apprunner_json_arr(e2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + apprunner_json_arr(e4))
+    return apprunner_json_obj(parts)
+
+# Serialize CreateVpcIngressConnectionRequest to a compact JSON object (declaration order).
+def create_vpc_ingress_connection_request_to_json(CreateVpcIngressConnectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceArn\":" + apprunner_json_str(v.ServiceArn))
+    parts.append("\"VpcIngressConnectionName\":" + apprunner_json_str(v.VpcIngressConnectionName))
+    parts.append("\"IngressVpcConfiguration\":" + v.IngressVpcConfiguration.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + apprunner_json_arr(e1))
+    return apprunner_json_obj(parts)
+
+# Serialize ImageConfiguration to a compact JSON object (declaration order).
+def image_configuration_to_json(ImageConfiguration v) -> str:
+    list[str] parts = []
+    if v.RuntimeEnvironmentVariables.is_some():
+        auto u0 = v.RuntimeEnvironmentVariables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(apprunner_json_str(k1) + ":" + apprunner_json_str(u0[k1]))
+        parts.append("\"RuntimeEnvironmentVariables\":" + apprunner_json_obj(m1))
+    if v.StartCommand.is_some():
+        auto u2 = v.StartCommand.unwrap()
+        parts.append("\"StartCommand\":" + apprunner_json_str(u2))
+    if v.Port.is_some():
+        auto u3 = v.Port.unwrap()
+        parts.append("\"Port\":" + apprunner_json_str(u3))
+    if v.RuntimeEnvironmentSecrets.is_some():
+        auto u4 = v.RuntimeEnvironmentSecrets.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(apprunner_json_str(k5) + ":" + apprunner_json_str(u4[k5]))
+        parts.append("\"RuntimeEnvironmentSecrets\":" + apprunner_json_obj(m5))
+    return apprunner_json_obj(parts)
+
+# Serialize ImageRepository to a compact JSON object (declaration order).
+def image_repository_to_json(ImageRepository v) -> str:
+    list[str] parts = []
+    parts.append("\"ImageIdentifier\":" + apprunner_json_str(v.ImageIdentifier))
+    if v.ImageConfiguration.is_some():
+        auto u0 = v.ImageConfiguration.unwrap()
+        parts.append("\"ImageConfiguration\":" + image_configuration_to_json(u0))
+    parts.append("\"ImageRepositoryType\":" + v.ImageRepositoryType.to_json())
+    return apprunner_json_obj(parts)
+
+# Serialize SourceConfiguration to a compact JSON object (declaration order).
+def source_configuration_to_json(SourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.CodeRepository.is_some():
+        auto u0 = v.CodeRepository.unwrap()
+        parts.append("\"CodeRepository\":" + code_repository_to_json(u0))
+    if v.ImageRepository.is_some():
+        auto u1 = v.ImageRepository.unwrap()
+        parts.append("\"ImageRepository\":" + image_repository_to_json(u1))
+    if v.AutoDeploymentsEnabled.is_some():
+        auto u2 = v.AutoDeploymentsEnabled.unwrap()
+        parts.append("\"AutoDeploymentsEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.AuthenticationConfiguration.is_some():
+        auto u3 = v.AuthenticationConfiguration.unwrap()
+        parts.append("\"AuthenticationConfiguration\":" + u3.to_json())
+    return apprunner_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + apprunner_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + apprunner_json_arr(e0))
+    return apprunner_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + apprunner_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(apprunner_json_str(x0))
+    parts.append("\"TagKeys\":" + apprunner_json_arr(e0))
+    return apprunner_json_obj(parts)
+
+# Serialize UpdateServiceRequest to a compact JSON object (declaration order).
+def update_service_request_to_json(UpdateServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceArn\":" + apprunner_json_str(v.ServiceArn))
+    if v.SourceConfiguration.is_some():
+        auto u0 = v.SourceConfiguration.unwrap()
+        parts.append("\"SourceConfiguration\":" + source_configuration_to_json(u0))
+    if v.InstanceConfiguration.is_some():
+        auto u1 = v.InstanceConfiguration.unwrap()
+        parts.append("\"InstanceConfiguration\":" + u1.to_json())
+    if v.AutoScalingConfigurationArn.is_some():
+        auto u2 = v.AutoScalingConfigurationArn.unwrap()
+        parts.append("\"AutoScalingConfigurationArn\":" + apprunner_json_str(u2))
+    if v.HealthCheckConfiguration.is_some():
+        auto u3 = v.HealthCheckConfiguration.unwrap()
+        parts.append("\"HealthCheckConfiguration\":" + u3.to_json())
+    if v.NetworkConfiguration.is_some():
+        auto u4 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + u4.to_json())
+    if v.ObservabilityConfiguration.is_some():
+        auto u5 = v.ObservabilityConfiguration.unwrap()
+        parts.append("\"ObservabilityConfiguration\":" + u5.to_json())
+    return apprunner_json_obj(parts)
 
 # A bound AppRunner client: credentials + region, threaded into every operation.
 struct AppRunnerClient:
@@ -929,6 +1245,42 @@ struct AppRunnerClient:
     def associate_custom_domain(self, AssociateCustomDomainRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "AssociateCustomDomain", body)
+
+    # CreateAutoScalingConfiguration
+    # errors: InternalServiceErrorException, InvalidRequestException, ServiceQuotaExceededException
+    def create_auto_scaling_configuration(self, CreateAutoScalingConfigurationRequest input) -> str:
+        auto body = create_auto_scaling_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "CreateAutoScalingConfiguration", body)
+
+    # CreateConnection
+    # errors: InternalServiceErrorException, InvalidRequestException, ServiceQuotaExceededException
+    def create_connection(self, CreateConnectionRequest input) -> str:
+        auto body = create_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "CreateConnection", body)
+
+    # CreateObservabilityConfiguration
+    # errors: InternalServiceErrorException, InvalidRequestException, ServiceQuotaExceededException
+    def create_observability_configuration(self, CreateObservabilityConfigurationRequest input) -> str:
+        auto body = create_observability_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "CreateObservabilityConfiguration", body)
+
+    # CreateService
+    # errors: InternalServiceErrorException, InvalidRequestException, ServiceQuotaExceededException
+    def create_service(self, CreateServiceRequest input) -> str:
+        auto body = create_service_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "CreateService", body)
+
+    # CreateVpcConnector
+    # errors: InternalServiceErrorException, InvalidRequestException, ServiceQuotaExceededException
+    def create_vpc_connector(self, CreateVpcConnectorRequest input) -> str:
+        auto body = create_vpc_connector_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "CreateVpcConnector", body)
+
+    # CreateVpcIngressConnection
+    # errors: InternalServiceErrorException, InvalidRequestException, InvalidStateException, ServiceQuotaExceededException
+    def create_vpc_ingress_connection(self, CreateVpcIngressConnectionRequest input) -> str:
+        auto body = create_vpc_ingress_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "CreateVpcIngressConnection", body)
 
     # DeleteAutoScalingConfiguration
     # errors: InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException
@@ -1080,11 +1432,29 @@ struct AppRunnerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "StartDeployment", body)
 
+    # TagResource
+    # errors: InternalServiceErrorException, InvalidRequestException, InvalidStateException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalServiceErrorException, InvalidRequestException, InvalidStateException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateDefaultAutoScalingConfiguration
     # errors: InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException
     def update_default_auto_scaling_configuration(self, UpdateDefaultAutoScalingConfigurationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "UpdateDefaultAutoScalingConfiguration", body)
+
+    # UpdateService
+    # errors: InternalServiceErrorException, InvalidRequestException, InvalidStateException, ResourceNotFoundException
+    def update_service(self, UpdateServiceRequest input) -> str:
+        auto body = update_service_request_to_json(input)
+        return awsjson.awsjson_request_now(apprunner_protocol(), self.creds, self.region, "UpdateService", body)
 
     # UpdateVpcIngressConnection
     # errors: InternalServiceErrorException, InvalidRequestException, InvalidStateException, ResourceNotFoundException

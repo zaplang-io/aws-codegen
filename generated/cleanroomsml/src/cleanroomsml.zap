@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 59 operations — 46 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 59 operations — 58 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   186 structs (106 @derive(Json)), 27 enums, 7 error variants.
 #   16 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The CleanRoomsML rest-json protocol: SigV4 service "cleanrooms-ml" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -499,8 +500,9 @@ enum WorkerComputeType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) details: list[AccessBudgetDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[AccessBudgetDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessBudget:
     str resourceArn
     list[AccessBudgetDetails] details
@@ -539,8 +541,9 @@ struct AudienceExportJobSummary:
     Optional[StatusDetails] statusDetails
     Optional[str] outputLocation
 
-# no @derive(Json): member(s) sqlParameters: ProtectedQuerySQLParameters, sqlComputeConfiguration: ComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sqlParameters: ProtectedQuerySQLParameters, sqlComputeConfiguration: ComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudienceGenerationJobDataSource:
     Optional[S3ConfigMap] dataSource
     str roleArn
@@ -573,8 +576,9 @@ struct AudienceModelSummary:
     AudienceModelStatus status
     Optional[str] description
 
-# no @derive(Json): member(s) relevanceMetrics: list[RelevanceMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relevanceMetrics: list[RelevanceMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudienceQualityMetrics:
     list[RelevanceMetric] relevanceMetrics
     Optional[float64] recallMetric
@@ -584,8 +588,9 @@ struct AudienceSize:
     AudienceSizeType type
     int64 value
 
-# no @derive(Json): member(s) audienceSizeBins: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audienceSizeBins: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudienceSizeConfig:
     AudienceSizeType audienceSizeType
     list[int64] audienceSizeBins
@@ -617,8 +622,9 @@ struct CollaborationConfiguredModelAlgorithmAssociationSummary:
     str configuredModelAlgorithmArn
     str creatorAccountId
 
-# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationMLInputChannelSummary:
     DateTime createTime
     DateTime updateTime
@@ -632,8 +638,9 @@ struct CollaborationMLInputChannelSummary:
     Optional[str] description
     Optional[PayerConfiguration] payerConfiguration
 
-# no @derive(Json): member(s) outputConfiguration: TrainedModelExportOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: TrainedModelExportOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationTrainedModelExportJobSummary:
     DateTime createTime
     DateTime updateTime
@@ -648,8 +655,9 @@ struct CollaborationTrainedModelExportJobSummary:
     str membershipIdentifier
     str collaborationIdentifier
 
-# no @derive(Json): member(s) outputConfiguration: InferenceOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: InferenceOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationTrainedModelInferenceJobSummary:
     str trainedModelInferenceJobArn
     Optional[str] configuredModelAlgorithmAssociationArn
@@ -670,8 +678,9 @@ struct CollaborationTrainedModelInferenceJobSummary:
     DateTime updateTime
     str creatorAccountId
 
-# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollaborationTrainedModelSummary:
     DateTime createTime
     DateTime updateTime
@@ -687,19 +696,22 @@ struct CollaborationTrainedModelSummary:
     str creatorAccountId
     Optional[str] mlModelTrainingPayerAccountId
 
-# no @derive(Json): member(s) columnMapping: list[SyntheticDataColumnProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnMapping: list[SyntheticDataColumnProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnClassificationDetails:
     list[SyntheticDataColumnProperties] columnMapping
 
-# no @derive(Json): member(s) columnTypes: list[ColumnType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnTypes: list[ColumnType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnSchema:
     str columnName
     list[ColumnType] columnTypes
 
-# no @derive(Json): member(s) worker: WorkerComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) worker: WorkerComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeConfiguration:
     Optional[WorkerComputeConfiguration] worker
 
@@ -748,8 +760,9 @@ struct ConfiguredModelAlgorithmSummary:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) entrypoint: list[str], arguments: list[str], metricDefinitions: list[MetricDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entrypoint: list[str], arguments: list[str], metricDefinitions: list[MetricDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerConfig:
     str imageUri
     Optional[list[str]] entrypoint
@@ -870,13 +883,15 @@ struct CreateTrainingDatasetRequest:
 struct CreateTrainingDatasetResponse:
     str trainingDatasetArn
 
-# no @derive(Json): member(s) customDataIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customDataIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomEntityConfig:
     list[str] customDataIdentifiers
 
-# no @derive(Json): member(s) membershipInferenceAttackScores: list[MembershipInferenceAttackScore] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) membershipInferenceAttackScores: list[MembershipInferenceAttackScore] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataPrivacyScores:
     list[MembershipInferenceAttackScore] membershipInferenceAttackScores
 
@@ -884,14 +899,16 @@ struct DataPrivacyScores:
 struct DataSource:
     GlueDataSource glueDataSource
 
-# no @derive(Json): member(s) inputConfig: DatasetInputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputConfig: DatasetInputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Dataset:
     str type
     DatasetInputConfig inputConfig
 
-# no @derive(Json): member(s) schema: list[ColumnSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schema: list[ColumnSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetInputConfig:
     list[ColumnSchema] schema
     DataSource dataSource
@@ -959,8 +976,9 @@ struct Destination:
 struct GetAudienceGenerationJobRequest:
     str audienceGenerationJobArn
 
-# no @derive(Json): member(s) seedAudience: AudienceGenerationJobDataSource, metrics: AudienceQualityMetrics, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) seedAudience: AudienceGenerationJobDataSource, metrics: AudienceQualityMetrics, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAudienceGenerationJobResponse:
     DateTime createTime
     DateTime updateTime
@@ -983,8 +1001,9 @@ struct GetAudienceGenerationJobResponse:
 struct GetAudienceModelRequest:
     str audienceModelArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAudienceModelResponse:
     DateTime createTime
     DateTime updateTime
@@ -1005,8 +1024,9 @@ struct GetCollaborationConfiguredModelAlgorithmAssociationRequest:
     str configuredModelAlgorithmAssociationArn
     str collaborationIdentifier
 
-# no @derive(Json): member(s) privacyConfiguration: PrivacyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyConfiguration: PrivacyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationConfiguredModelAlgorithmAssociationResponse:
     DateTime createTime
     DateTime updateTime
@@ -1025,8 +1045,9 @@ struct GetCollaborationMLInputChannelRequest:
     str mlInputChannelArn
     str collaborationIdentifier
 
-# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str], privacyBudgets: PrivacyBudgets, syntheticDataConfiguration: SyntheticDataConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str], privacyBudgets: PrivacyBudgets, syntheticDataConfiguration: SyntheticDataConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationMLInputChannelResponse:
     str membershipIdentifier
     str collaborationIdentifier
@@ -1052,8 +1073,9 @@ struct GetCollaborationTrainedModelRequest:
     str collaborationIdentifier
     Optional[str] versionIdentifier
 
-# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCollaborationTrainedModelResponse:
     str membershipIdentifier
     str collaborationIdentifier
@@ -1094,8 +1116,9 @@ struct GetConfiguredAudienceModelPolicyResponse:
 struct GetConfiguredAudienceModelRequest:
     str configuredAudienceModelArn
 
-# no @derive(Json): member(s) sharedAudienceMetrics: list[SharedAudienceMetrics], audienceSizeConfig: AudienceSizeConfig, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sharedAudienceMetrics: list[SharedAudienceMetrics], audienceSizeConfig: AudienceSizeConfig, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredAudienceModelResponse:
     DateTime createTime
     DateTime updateTime
@@ -1117,8 +1140,9 @@ struct GetConfiguredModelAlgorithmAssociationRequest:
     str configuredModelAlgorithmAssociationArn
     str membershipIdentifier
 
-# no @derive(Json): member(s) privacyConfiguration: PrivacyConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privacyConfiguration: PrivacyConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredModelAlgorithmAssociationResponse:
     DateTime createTime
     DateTime updateTime
@@ -1136,8 +1160,9 @@ struct GetConfiguredModelAlgorithmAssociationResponse:
 struct GetConfiguredModelAlgorithmRequest:
     str configuredModelAlgorithmArn
 
-# no @derive(Json): member(s) trainingContainerConfig: ContainerConfig, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainingContainerConfig: ContainerConfig, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfiguredModelAlgorithmResponse:
     DateTime createTime
     DateTime updateTime
@@ -1170,8 +1195,9 @@ struct GetMLInputChannelRequest:
     str mlInputChannelArn
     str membershipIdentifier
 
-# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str], privacyBudgets: PrivacyBudgets, syntheticDataConfiguration: SyntheticDataConfiguration, inputChannel: InputChannel, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str], privacyBudgets: PrivacyBudgets, syntheticDataConfiguration: SyntheticDataConfiguration, inputChannel: InputChannel, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLInputChannelResponse:
     str membershipIdentifier
     str collaborationIdentifier
@@ -1201,8 +1227,9 @@ struct GetTrainedModelInferenceJobRequest:
     str membershipIdentifier
     str trainedModelInferenceJobArn
 
-# no @derive(Json): member(s) outputConfiguration: InferenceOutputConfiguration, environment: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: InferenceOutputConfiguration, environment: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrainedModelInferenceJobResponse:
     DateTime createTime
     DateTime updateTime
@@ -1236,8 +1263,9 @@ struct GetTrainedModelRequest:
     str membershipIdentifier
     Optional[str] versionIdentifier
 
-# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput], hyperparameters: dict[str, str], environment: dict[str, str], tags: dict[str, str], dataChannels: list[ModelTrainingDataChannel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput], hyperparameters: dict[str, str], environment: dict[str, str], tags: dict[str, str], dataChannels: list[ModelTrainingDataChannel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrainedModelResponse:
     str membershipIdentifier
     str collaborationIdentifier
@@ -1271,8 +1299,9 @@ struct GetTrainedModelResponse:
 struct GetTrainingDatasetRequest:
     str trainingDatasetArn
 
-# no @derive(Json): member(s) trainingData: list[Dataset], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainingData: list[Dataset], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrainingDatasetResponse:
     DateTime createTime
     DateTime updateTime
@@ -1310,8 +1339,9 @@ struct InferenceContainerConfig:
 struct InferenceContainerExecutionParameters:
     Optional[int64] maxPayloadInMB
 
-# no @derive(Json): member(s) members: list[InferenceReceiverMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) members: list[InferenceReceiverMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceOutputConfiguration:
     Optional[str] accept
     list[InferenceReceiverMember] members
@@ -1325,14 +1355,16 @@ struct InferenceResourceConfig:
     InferenceInstanceType instanceType
     Optional[int64] instanceCount
 
-# no @derive(Json): member(s) dataSource: InputChannelDataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSource: InputChannelDataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputChannel:
     InputChannelDataSource dataSource
     str roleArn
 
-# no @derive(Json): member(s) protectedQueryInputParameters: ProtectedQueryInputParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protectedQueryInputParameters: ProtectedQueryInputParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputChannelDataSource:
     Optional[ProtectedQueryInputParameters] protectedQueryInputParameters
 
@@ -1347,8 +1379,9 @@ struct ListAudienceExportJobsRequest:
     Optional[int64] maxResults
     Optional[str] audienceGenerationJobArn
 
-# no @derive(Json): member(s) audienceExportJobs: list[AudienceExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audienceExportJobs: list[AudienceExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAudienceExportJobsResponse:
     Optional[str] nextToken
     list[AudienceExportJobSummary] audienceExportJobs
@@ -1361,8 +1394,9 @@ struct ListAudienceGenerationJobsRequest:
     Optional[str] configuredAudienceModelArn
     Optional[str] collaborationId
 
-# no @derive(Json): member(s) audienceGenerationJobs: list[AudienceGenerationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audienceGenerationJobs: list[AudienceGenerationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAudienceGenerationJobsResponse:
     Optional[str] nextToken
     list[AudienceGenerationJobSummary] audienceGenerationJobs
@@ -1373,8 +1407,9 @@ struct ListAudienceModelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) audienceModels: list[AudienceModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) audienceModels: list[AudienceModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAudienceModelsResponse:
     Optional[str] nextToken
     list[AudienceModelSummary] audienceModels
@@ -1386,8 +1421,9 @@ struct ListCollaborationConfiguredModelAlgorithmAssociationsRequest:
     Optional[int64] maxResults
     str collaborationIdentifier
 
-# no @derive(Json): member(s) collaborationConfiguredModelAlgorithmAssociations: list[CollaborationConfiguredModelAlgorithmAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationConfiguredModelAlgorithmAssociations: list[CollaborationConfiguredModelAlgorithmAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationConfiguredModelAlgorithmAssociationsResponse:
     Optional[str] nextToken
     list[CollaborationConfiguredModelAlgorithmAssociationSummary] collaborationConfiguredModelAlgorithmAssociations
@@ -1399,8 +1435,9 @@ struct ListCollaborationMLInputChannelsRequest:
     Optional[int64] maxResults
     str collaborationIdentifier
 
-# no @derive(Json): member(s) collaborationMLInputChannelsList: list[CollaborationMLInputChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationMLInputChannelsList: list[CollaborationMLInputChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationMLInputChannelsResponse:
     Optional[str] nextToken
     list[CollaborationMLInputChannelSummary] collaborationMLInputChannelsList
@@ -1414,8 +1451,9 @@ struct ListCollaborationTrainedModelExportJobsRequest:
     str trainedModelArn
     Optional[str] trainedModelVersionIdentifier
 
-# no @derive(Json): member(s) collaborationTrainedModelExportJobs: list[CollaborationTrainedModelExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationTrainedModelExportJobs: list[CollaborationTrainedModelExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationTrainedModelExportJobsResponse:
     Optional[str] nextToken
     list[CollaborationTrainedModelExportJobSummary] collaborationTrainedModelExportJobs
@@ -1429,8 +1467,9 @@ struct ListCollaborationTrainedModelInferenceJobsRequest:
     Optional[str] trainedModelArn
     Optional[str] trainedModelVersionIdentifier
 
-# no @derive(Json): member(s) collaborationTrainedModelInferenceJobs: list[CollaborationTrainedModelInferenceJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationTrainedModelInferenceJobs: list[CollaborationTrainedModelInferenceJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationTrainedModelInferenceJobsResponse:
     Optional[str] nextToken
     list[CollaborationTrainedModelInferenceJobSummary] collaborationTrainedModelInferenceJobs
@@ -1442,8 +1481,9 @@ struct ListCollaborationTrainedModelsRequest:
     Optional[int64] maxResults
     str collaborationIdentifier
 
-# no @derive(Json): member(s) collaborationTrainedModels: list[CollaborationTrainedModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) collaborationTrainedModels: list[CollaborationTrainedModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollaborationTrainedModelsResponse:
     Optional[str] nextToken
     list[CollaborationTrainedModelSummary] collaborationTrainedModels
@@ -1454,8 +1494,9 @@ struct ListConfiguredAudienceModelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) configuredAudienceModels: list[ConfiguredAudienceModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredAudienceModels: list[ConfiguredAudienceModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfiguredAudienceModelsResponse:
     Optional[str] nextToken
     list[ConfiguredAudienceModelSummary] configuredAudienceModels
@@ -1467,8 +1508,9 @@ struct ListConfiguredModelAlgorithmAssociationsRequest:
     Optional[int64] maxResults
     str membershipIdentifier
 
-# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[ConfiguredModelAlgorithmAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[ConfiguredModelAlgorithmAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfiguredModelAlgorithmAssociationsResponse:
     Optional[str] nextToken
     list[ConfiguredModelAlgorithmAssociationSummary] configuredModelAlgorithmAssociations
@@ -1479,8 +1521,9 @@ struct ListConfiguredModelAlgorithmsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) configuredModelAlgorithms: list[ConfiguredModelAlgorithmSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredModelAlgorithms: list[ConfiguredModelAlgorithmSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfiguredModelAlgorithmsResponse:
     Optional[str] nextToken
     list[ConfiguredModelAlgorithmSummary] configuredModelAlgorithms
@@ -1492,8 +1535,9 @@ struct ListMLInputChannelsRequest:
     Optional[int64] maxResults
     str membershipIdentifier
 
-# no @derive(Json): member(s) mlInputChannelsList: list[MLInputChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mlInputChannelsList: list[MLInputChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLInputChannelsResponse:
     Optional[str] nextToken
     list[MLInputChannelSummary] mlInputChannelsList
@@ -1503,8 +1547,9 @@ struct ListMLInputChannelsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -1517,8 +1562,9 @@ struct ListTrainedModelInferenceJobsRequest:
     Optional[str] trainedModelArn
     Optional[str] trainedModelVersionIdentifier
 
-# no @derive(Json): member(s) trainedModelInferenceJobs: list[TrainedModelInferenceJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainedModelInferenceJobs: list[TrainedModelInferenceJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainedModelInferenceJobsResponse:
     Optional[str] nextToken
     list[TrainedModelInferenceJobSummary] trainedModelInferenceJobs
@@ -1533,8 +1579,9 @@ struct ListTrainedModelVersionsRequest:
     # wire string of the TrainedModelStatus enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) trainedModels: list[TrainedModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainedModels: list[TrainedModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainedModelVersionsResponse:
     Optional[str] nextToken
     list[TrainedModelSummary] trainedModels
@@ -1546,8 +1593,9 @@ struct ListTrainedModelsRequest:
     Optional[int64] maxResults
     str membershipIdentifier
 
-# no @derive(Json): member(s) trainedModels: list[TrainedModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainedModels: list[TrainedModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainedModelsResponse:
     Optional[str] nextToken
     list[TrainedModelSummary] trainedModels
@@ -1558,28 +1606,32 @@ struct ListTrainingDatasetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) trainingDatasets: list[TrainingDatasetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainingDatasets: list[TrainingDatasetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrainingDatasetsResponse:
     Optional[str] nextToken
     list[TrainingDatasetSummary] trainingDatasets
 
-# no @derive(Json): member(s) entitiesToRedact: list[EntityType], customEntityConfig: CustomEntityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entitiesToRedact: list[EntityType], customEntityConfig: CustomEntityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogRedactionConfiguration:
     list[EntityType] entitiesToRedact
     Optional[CustomEntityConfig] customEntityConfig
 
-# no @derive(Json): member(s) allowedAccountIds: list[str], logRedactionConfiguration: LogRedactionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAccountIds: list[str], logRedactionConfiguration: LogRedactionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogsConfigurationPolicy:
     list[str] allowedAccountIds
     Optional[str] filterPattern
     Optional[LogType] logType
     Optional[LogRedactionConfiguration] logRedactionConfiguration
 
-# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuredModelAlgorithmAssociations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MLInputChannelSummary:
     DateTime createTime
     DateTime updateTime
@@ -1598,8 +1650,9 @@ struct MLOutputConfiguration:
     Optional[Destination] destination
     str roleArn
 
-# no @derive(Json): member(s) columnClassification: ColumnClassificationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnClassification: ColumnClassificationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MLSyntheticDataParameters:
     float64 epsilon
     float64 maxMembershipInferenceAttackScore
@@ -1634,32 +1687,37 @@ struct PayerConfiguration:
     Optional[str] computePayerAccountId
     Optional[str] syntheticDataPayerAccountId
 
-# no @derive(Json): member(s) accessBudgets: list[AccessBudget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessBudgets: list[AccessBudget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyBudgets:
     Optional[list[AccessBudget]] accessBudgets
 
-# no @derive(Json): member(s) policies: PrivacyConfigurationPolicies not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: PrivacyConfigurationPolicies not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyConfiguration:
     PrivacyConfigurationPolicies policies
 
-# no @derive(Json): member(s) trainedModels: TrainedModelsConfigurationPolicy, trainedModelExports: TrainedModelExportsConfigurationPolicy, trainedModelInferenceJobs: TrainedModelInferenceJobsConfigurationPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainedModels: TrainedModelsConfigurationPolicy, trainedModelExports: TrainedModelExportsConfigurationPolicy, trainedModelInferenceJobs: TrainedModelInferenceJobsConfigurationPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivacyConfigurationPolicies:
     Optional[TrainedModelsConfigurationPolicy] trainedModels
     Optional[TrainedModelExportsConfigurationPolicy] trainedModelExports
     Optional[TrainedModelInferenceJobsConfigurationPolicy] trainedModelInferenceJobs
 
-# no @derive(Json): member(s) sqlParameters: ProtectedQuerySQLParameters, computeConfiguration: ComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sqlParameters: ProtectedQuerySQLParameters, computeConfiguration: ComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQueryInputParameters:
     ProtectedQuerySQLParameters sqlParameters
     Optional[ComputeConfiguration] computeConfiguration
     Optional[ResultFormat] resultFormat
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectedQuerySQLParameters:
     Optional[str] queryString
     Optional[str] analysisTemplateArn
@@ -1779,14 +1837,16 @@ struct SyntheticDataColumnProperties:
     SyntheticDataColumnType columnType
     bool isPredictiveValue
 
-# no @derive(Json): member(s) syntheticDataParameters: MLSyntheticDataParameters, syntheticDataEvaluationScores: SyntheticDataEvaluationScores not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) syntheticDataParameters: MLSyntheticDataParameters, syntheticDataEvaluationScores: SyntheticDataEvaluationScores not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyntheticDataConfiguration:
     MLSyntheticDataParameters syntheticDataParameters
     Optional[SyntheticDataEvaluationScores] syntheticDataEvaluationScores
 
-# no @derive(Json): member(s) dataPrivacyScores: DataPrivacyScores not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataPrivacyScores: DataPrivacyScores not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyntheticDataEvaluationScores:
     DataPrivacyScores dataPrivacyScores
 
@@ -1810,8 +1870,9 @@ struct TrainedModelArtifactMaxSize:
     str unit
     float64 value
 
-# no @derive(Json): member(s) members: list[TrainedModelExportReceiverMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) members: list[TrainedModelExportReceiverMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainedModelExportOutputConfiguration:
     list[TrainedModelExportReceiverMember] members
 
@@ -1819,8 +1880,9 @@ struct TrainedModelExportOutputConfiguration:
 struct TrainedModelExportReceiverMember:
     str accountId
 
-# no @derive(Json): member(s) filesToExport: list[TrainedModelExportFileType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filesToExport: list[TrainedModelExportFileType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainedModelExportsConfigurationPolicy:
     TrainedModelExportsMaxSize maxSize
     list[TrainedModelExportFileType] filesToExport
@@ -1830,8 +1892,9 @@ struct TrainedModelExportsMaxSize:
     str unit
     float64 value
 
-# no @derive(Json): member(s) outputConfiguration: InferenceOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: InferenceOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainedModelInferenceJobSummary:
     str trainedModelInferenceJobArn
     Optional[str] configuredModelAlgorithmAssociationArn
@@ -1851,8 +1914,9 @@ struct TrainedModelInferenceJobSummary:
     DateTime createTime
     DateTime updateTime
 
-# no @derive(Json): member(s) containerLogs: list[LogsConfigurationPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerLogs: list[LogsConfigurationPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainedModelInferenceJobsConfigurationPolicy:
     Optional[list[LogsConfigurationPolicy]] containerLogs
     Optional[TrainedModelInferenceMaxOutputSize] maxOutputSize
@@ -1862,8 +1926,9 @@ struct TrainedModelInferenceMaxOutputSize:
     str unit
     float64 value
 
-# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incrementalTrainingDataChannels: list[IncrementalTrainingDataChannelOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainedModelSummary:
     DateTime createTime
     DateTime updateTime
@@ -1878,8 +1943,9 @@ struct TrainedModelSummary:
     str configuredModelAlgorithmAssociationArn
     Optional[str] mlModelTrainingPayerAccountId
 
-# no @derive(Json): member(s) containerLogs: list[LogsConfigurationPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerLogs: list[LogsConfigurationPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainedModelsConfigurationPolicy:
     Optional[list[LogsConfigurationPolicy]] containerLogs
     Optional[MetricsConfigurationPolicy] containerMetrics
@@ -1926,15 +1992,17 @@ struct UpdateConfiguredAudienceModelResponse:
 struct ValidationException:
     str message
 
-# no @derive(Json): member(s) properties: WorkerComputeConfigurationProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: WorkerComputeConfigurationProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkerComputeConfiguration:
     Optional[WorkerComputeType] type
     Optional[int64] number
     Optional[WorkerComputeConfigurationProperties] properties
 
-# no @derive(Json): member(s) spark: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spark: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkerComputeConfigurationProperties:
     Optional[dict[str, str]] spark
 
@@ -1976,19 +2044,7 @@ def cleanrooms_ml_error_from_code(str code) -> CleanRoomsMLError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAudienceModel (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateConfiguredAudienceModel (document member `sharedAudienceMetrics: list[SharedAudienceMetrics]` is not serializable by derive)
-#   CreateConfiguredModelAlgorithm (document member `trainingContainerConfig: ContainerConfig` is not serializable by derive)
-#   CreateConfiguredModelAlgorithmAssociation (document member `privacyConfiguration: PrivacyConfiguration` is not serializable by derive)
-#   CreateMLInputChannel (document member `configuredModelAlgorithmAssociations: list[str]` is not serializable by derive)
-#   CreateTrainedModel (document member `hyperparameters: dict[str, str]` is not serializable by derive)
-#   CreateTrainingDataset (document member `trainingData: list[Dataset]` is not serializable by derive)
-#   StartAudienceGenerationJob (document member `seedAudience: AudienceGenerationJobDataSource` is not serializable by derive)
-#   StartTrainedModelExportJob (document member `outputConfiguration: TrainedModelExportOutputConfiguration` is not serializable by derive)
-#   StartTrainedModelInferenceJob (document member `outputConfiguration: InferenceOutputConfiguration` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateConfiguredAudienceModel (document member `sharedAudienceMetrics: list[SharedAudienceMetrics]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2012,6 +2068,314 @@ struct StartAudienceExportJobDocument:
     str audienceGenerationJobArn
     AudienceSize audienceSize
     Optional[str] description
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cleanrooms_ml_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cleanrooms_ml_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cleanrooms_ml_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def cleanrooms_ml_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AudienceGenerationJobDataSource to a compact JSON object (declaration order).
+def audience_generation_job_data_source_to_json(AudienceGenerationJobDataSource v) -> str:
+    list[str] parts = []
+    if v.dataSource.is_some():
+        auto u0 = v.dataSource.unwrap()
+        parts.append("\"dataSource\":" + u0.to_json())
+    parts.append("\"roleArn\":" + cleanrooms_ml_json_str(v.roleArn))
+    if v.sqlParameters.is_some():
+        auto u1 = v.sqlParameters.unwrap()
+        parts.append("\"sqlParameters\":" + protected_query_sql_parameters_to_json(u1))
+    if v.sqlComputeConfiguration.is_some():
+        auto u2 = v.sqlComputeConfiguration.unwrap()
+        parts.append("\"sqlComputeConfiguration\":" + compute_configuration_to_json(u2))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize AudienceSizeConfig to a compact JSON object (declaration order).
+def audience_size_config_to_json(AudienceSizeConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"audienceSizeType\":" + v.audienceSizeType.to_json())
+    list[str] e0 = []
+    for x0 in v.audienceSizeBins:
+        e0.append(str(x0))
+    parts.append("\"audienceSizeBins\":" + cleanrooms_ml_json_arr(e0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize ColumnSchema to a compact JSON object (declaration order).
+def column_schema_to_json(ColumnSchema v) -> str:
+    list[str] parts = []
+    parts.append("\"columnName\":" + cleanrooms_ml_json_str(v.columnName))
+    list[str] e0 = []
+    for x0 in v.columnTypes:
+        e0.append(x0.to_json())
+    parts.append("\"columnTypes\":" + cleanrooms_ml_json_arr(e0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize ComputeConfiguration to a compact JSON object (declaration order).
+def compute_configuration_to_json(ComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.worker.is_some():
+        auto u0 = v.worker.unwrap()
+        parts.append("\"worker\":" + worker_compute_configuration_to_json(u0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize ContainerConfig to a compact JSON object (declaration order).
+def container_config_to_json(ContainerConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"imageUri\":" + cleanrooms_ml_json_str(v.imageUri))
+    if v.entrypoint.is_some():
+        auto u0 = v.entrypoint.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cleanrooms_ml_json_str(x1))
+        parts.append("\"entrypoint\":" + cleanrooms_ml_json_arr(e1))
+    if v.arguments.is_some():
+        auto u2 = v.arguments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cleanrooms_ml_json_str(x3))
+        parts.append("\"arguments\":" + cleanrooms_ml_json_arr(e3))
+    if v.metricDefinitions.is_some():
+        auto u4 = v.metricDefinitions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"metricDefinitions\":" + cleanrooms_ml_json_arr(e5))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize CustomEntityConfig to a compact JSON object (declaration order).
+def custom_entity_config_to_json(CustomEntityConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.customDataIdentifiers:
+        e0.append(cleanrooms_ml_json_str(x0))
+    parts.append("\"customDataIdentifiers\":" + cleanrooms_ml_json_arr(e0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize Dataset to a compact JSON object (declaration order).
+def dataset_to_json(Dataset v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + cleanrooms_ml_json_str(v.type))
+    parts.append("\"inputConfig\":" + dataset_input_config_to_json(v.inputConfig))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize DatasetInputConfig to a compact JSON object (declaration order).
+def dataset_input_config_to_json(DatasetInputConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.schema:
+        e0.append(column_schema_to_json(x0))
+    parts.append("\"schema\":" + cleanrooms_ml_json_arr(e0))
+    parts.append("\"dataSource\":" + v.dataSource.to_json())
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize InferenceOutputConfiguration to a compact JSON object (declaration order).
+def inference_output_configuration_to_json(InferenceOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.accept.is_some():
+        auto u0 = v.accept.unwrap()
+        parts.append("\"accept\":" + cleanrooms_ml_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.members:
+        e1.append(x1.to_json())
+    parts.append("\"members\":" + cleanrooms_ml_json_arr(e1))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize InputChannel to a compact JSON object (declaration order).
+def input_channel_to_json(InputChannel v) -> str:
+    list[str] parts = []
+    parts.append("\"dataSource\":" + input_channel_data_source_to_json(v.dataSource))
+    parts.append("\"roleArn\":" + cleanrooms_ml_json_str(v.roleArn))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize InputChannelDataSource to a compact JSON object (declaration order).
+def input_channel_data_source_to_json(InputChannelDataSource v) -> str:
+    list[str] parts = []
+    if v.protectedQueryInputParameters.is_some():
+        auto u0 = v.protectedQueryInputParameters.unwrap()
+        parts.append("\"protectedQueryInputParameters\":" + protected_query_input_parameters_to_json(u0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize LogRedactionConfiguration to a compact JSON object (declaration order).
+def log_redaction_configuration_to_json(LogRedactionConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entitiesToRedact:
+        e0.append(x0.to_json())
+    parts.append("\"entitiesToRedact\":" + cleanrooms_ml_json_arr(e0))
+    if v.customEntityConfig.is_some():
+        auto u1 = v.customEntityConfig.unwrap()
+        parts.append("\"customEntityConfig\":" + custom_entity_config_to_json(u1))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize LogsConfigurationPolicy to a compact JSON object (declaration order).
+def logs_configuration_policy_to_json(LogsConfigurationPolicy v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.allowedAccountIds:
+        e0.append(cleanrooms_ml_json_str(x0))
+    parts.append("\"allowedAccountIds\":" + cleanrooms_ml_json_arr(e0))
+    if v.filterPattern.is_some():
+        auto u1 = v.filterPattern.unwrap()
+        parts.append("\"filterPattern\":" + cleanrooms_ml_json_str(u1))
+    if v.logType.is_some():
+        auto u2 = v.logType.unwrap()
+        parts.append("\"logType\":" + u2.to_json())
+    if v.logRedactionConfiguration.is_some():
+        auto u3 = v.logRedactionConfiguration.unwrap()
+        parts.append("\"logRedactionConfiguration\":" + log_redaction_configuration_to_json(u3))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize PrivacyConfiguration to a compact JSON object (declaration order).
+def privacy_configuration_to_json(PrivacyConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"policies\":" + privacy_configuration_policies_to_json(v.policies))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize PrivacyConfigurationPolicies to a compact JSON object (declaration order).
+def privacy_configuration_policies_to_json(PrivacyConfigurationPolicies v) -> str:
+    list[str] parts = []
+    if v.trainedModels.is_some():
+        auto u0 = v.trainedModels.unwrap()
+        parts.append("\"trainedModels\":" + trained_models_configuration_policy_to_json(u0))
+    if v.trainedModelExports.is_some():
+        auto u1 = v.trainedModelExports.unwrap()
+        parts.append("\"trainedModelExports\":" + trained_model_exports_configuration_policy_to_json(u1))
+    if v.trainedModelInferenceJobs.is_some():
+        auto u2 = v.trainedModelInferenceJobs.unwrap()
+        parts.append("\"trainedModelInferenceJobs\":" + trained_model_inference_jobs_configuration_policy_to_json(u2))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize ProtectedQueryInputParameters to a compact JSON object (declaration order).
+def protected_query_input_parameters_to_json(ProtectedQueryInputParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"sqlParameters\":" + protected_query_sql_parameters_to_json(v.sqlParameters))
+    if v.computeConfiguration.is_some():
+        auto u0 = v.computeConfiguration.unwrap()
+        parts.append("\"computeConfiguration\":" + compute_configuration_to_json(u0))
+    if v.resultFormat.is_some():
+        auto u1 = v.resultFormat.unwrap()
+        parts.append("\"resultFormat\":" + u1.to_json())
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize ProtectedQuerySQLParameters to a compact JSON object (declaration order).
+def protected_query_sql_parameters_to_json(ProtectedQuerySQLParameters v) -> str:
+    list[str] parts = []
+    if v.queryString.is_some():
+        auto u0 = v.queryString.unwrap()
+        parts.append("\"queryString\":" + cleanrooms_ml_json_str(u0))
+    if v.analysisTemplateArn.is_some():
+        auto u1 = v.analysisTemplateArn.unwrap()
+        parts.append("\"analysisTemplateArn\":" + cleanrooms_ml_json_str(u1))
+    if v.parameters.is_some():
+        auto u2 = v.parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cleanrooms_ml_json_str(k3) + ":" + cleanrooms_ml_json_str(u2[k3]))
+        parts.append("\"parameters\":" + cleanrooms_ml_json_obj(m3))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize TrainedModelExportOutputConfiguration to a compact JSON object (declaration order).
+def trained_model_export_output_configuration_to_json(TrainedModelExportOutputConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.members:
+        e0.append(x0.to_json())
+    parts.append("\"members\":" + cleanrooms_ml_json_arr(e0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize TrainedModelExportsConfigurationPolicy to a compact JSON object (declaration order).
+def trained_model_exports_configuration_policy_to_json(TrainedModelExportsConfigurationPolicy v) -> str:
+    list[str] parts = []
+    parts.append("\"maxSize\":" + v.maxSize.to_json())
+    list[str] e0 = []
+    for x0 in v.filesToExport:
+        e0.append(x0.to_json())
+    parts.append("\"filesToExport\":" + cleanrooms_ml_json_arr(e0))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize TrainedModelInferenceJobsConfigurationPolicy to a compact JSON object (declaration order).
+def trained_model_inference_jobs_configuration_policy_to_json(TrainedModelInferenceJobsConfigurationPolicy v) -> str:
+    list[str] parts = []
+    if v.containerLogs.is_some():
+        auto u0 = v.containerLogs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_configuration_policy_to_json(x1))
+        parts.append("\"containerLogs\":" + cleanrooms_ml_json_arr(e1))
+    if v.maxOutputSize.is_some():
+        auto u2 = v.maxOutputSize.unwrap()
+        parts.append("\"maxOutputSize\":" + u2.to_json())
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize TrainedModelsConfigurationPolicy to a compact JSON object (declaration order).
+def trained_models_configuration_policy_to_json(TrainedModelsConfigurationPolicy v) -> str:
+    list[str] parts = []
+    if v.containerLogs.is_some():
+        auto u0 = v.containerLogs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_configuration_policy_to_json(x1))
+        parts.append("\"containerLogs\":" + cleanrooms_ml_json_arr(e1))
+    if v.containerMetrics.is_some():
+        auto u2 = v.containerMetrics.unwrap()
+        parts.append("\"containerMetrics\":" + u2.to_json())
+    if v.maxArtifactSize.is_some():
+        auto u3 = v.maxArtifactSize.unwrap()
+        parts.append("\"maxArtifactSize\":" + u3.to_json())
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize WorkerComputeConfiguration to a compact JSON object (declaration order).
+def worker_compute_configuration_to_json(WorkerComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.number.is_some():
+        auto u1 = v.number.unwrap()
+        parts.append("\"number\":" + str(u1))
+    if v.properties.is_some():
+        auto u2 = v.properties.unwrap()
+        parts.append("\"properties\":" + worker_compute_configuration_properties_to_json(u2))
+    return cleanrooms_ml_json_obj(parts)
+
+# Serialize WorkerComputeConfigurationProperties to a compact JSON object (declaration order).
+def worker_compute_configuration_properties_to_json(WorkerComputeConfigurationProperties v) -> str:
+    list[str] parts = []
+    if v.spark.is_some():
+        auto u0 = v.spark.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cleanrooms_ml_json_str(k1) + ":" + cleanrooms_ml_json_str(u0[k1]))
+        parts.append("\"spark\":" + cleanrooms_ml_json_obj(m1))
+    return cleanrooms_ml_json_obj(parts)
 
 # A bound CleanRoomsML client: credentials + region, threaded into every operation.
 struct CleanRoomsMLClient:
@@ -2040,6 +2404,237 @@ struct CleanRoomsMLClient:
         labels["trainedModelInferenceJobArn"] = input.trainedModelInferenceJobArn
         auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/trained-model-inference-jobs/{trainedModelInferenceJobArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_ml_service(), self.region, host)
+
+    # CreateAudienceModel  POST /audience-model
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_audience_model(self, CreateAudienceModelRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/audience-model", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.trainingDataStartTime.is_some():
+            auto u0 = input.trainingDataStartTime.unwrap()
+            parts.append("\"trainingDataStartTime\":" + cleanrooms_ml_json_ts_iso(u0))
+        if input.trainingDataEndTime.is_some():
+            auto u1 = input.trainingDataEndTime.unwrap()
+            parts.append("\"trainingDataEndTime\":" + cleanrooms_ml_json_ts_iso(u1))
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"trainingDatasetArn\":" + cleanrooms_ml_json_str(input.trainingDatasetArn))
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_ml_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(cleanrooms_ml_json_str(k4) + ":" + cleanrooms_ml_json_str(u3[k4]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m4))
+        if input.description.is_some():
+            auto u5 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u5))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # CreateConfiguredAudienceModel  POST /configured-audience-model
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_audience_model(self, CreateConfiguredAudienceModelRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configured-audience-model", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"audienceModelArn\":" + cleanrooms_ml_json_str(input.audienceModelArn))
+        parts.append("\"outputConfig\":" + input.outputConfig.to_json())
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.sharedAudienceMetrics:
+            e1.append(x1.to_json())
+        parts.append("\"sharedAudienceMetrics\":" + cleanrooms_ml_json_arr(e1))
+        if input.minMatchingSeedSize.is_some():
+            auto u2 = input.minMatchingSeedSize.unwrap()
+            parts.append("\"minMatchingSeedSize\":" + str(u2))
+        if input.audienceSizeConfig.is_some():
+            auto u3 = input.audienceSizeConfig.unwrap()
+            parts.append("\"audienceSizeConfig\":" + audience_size_config_to_json(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(cleanrooms_ml_json_str(k5) + ":" + cleanrooms_ml_json_str(u4[k5]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m5))
+        if input.childResourceTagOnCreatePolicy.is_some():
+            auto u6 = input.childResourceTagOnCreatePolicy.unwrap()
+            parts.append("\"childResourceTagOnCreatePolicy\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # CreateConfiguredModelAlgorithm  POST /configured-model-algorithms
+    # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_model_algorithm(self, CreateConfiguredModelAlgorithmRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configured-model-algorithms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u0))
+        parts.append("\"roleArn\":" + cleanrooms_ml_json_str(input.roleArn))
+        if input.trainingContainerConfig.is_some():
+            auto u1 = input.trainingContainerConfig.unwrap()
+            parts.append("\"trainingContainerConfig\":" + container_config_to_json(u1))
+        if input.inferenceContainerConfig.is_some():
+            auto u2 = input.inferenceContainerConfig.unwrap()
+            parts.append("\"inferenceContainerConfig\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(cleanrooms_ml_json_str(k4) + ":" + cleanrooms_ml_json_str(u3[k4]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m4))
+        if input.kmsKeyArn.is_some():
+            auto u5 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_ml_json_str(u5))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # CreateConfiguredModelAlgorithmAssociation  POST /memberships/{membershipIdentifier}/configured-model-algorithm-associations
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configured_model_algorithm_association(self, CreateConfiguredModelAlgorithmAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configured-model-algorithm-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"configuredModelAlgorithmArn\":" + cleanrooms_ml_json_str(input.configuredModelAlgorithmArn))
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u0))
+        if input.privacyConfiguration.is_some():
+            auto u1 = input.privacyConfiguration.unwrap()
+            parts.append("\"privacyConfiguration\":" + privacy_configuration_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(cleanrooms_ml_json_str(k3) + ":" + cleanrooms_ml_json_str(u2[k3]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # CreateMLInputChannel  POST /memberships/{membershipIdentifier}/ml-input-channels
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_ml_input_channel(self, CreateMLInputChannelRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/ml-input-channels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.configuredModelAlgorithmAssociations:
+            e0.append(cleanrooms_ml_json_str(x0))
+        parts.append("\"configuredModelAlgorithmAssociations\":" + cleanrooms_ml_json_arr(e0))
+        parts.append("\"inputChannel\":" + input_channel_to_json(input.inputChannel))
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"retentionInDays\":" + str(input.retentionInDays))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u1))
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_ml_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(cleanrooms_ml_json_str(k4) + ":" + cleanrooms_ml_json_str(u3[k4]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m4))
+        if input.payerConfiguration.is_some():
+            auto u5 = input.payerConfiguration.unwrap()
+            parts.append("\"payerConfiguration\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # CreateTrainedModel  POST /memberships/{membershipIdentifier}/trained-models
+    # errors: AccessDeniedException, ConflictException, InternalServiceException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_trained_model(self, CreateTrainedModelRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/trained-models", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"configuredModelAlgorithmAssociationArn\":" + cleanrooms_ml_json_str(input.configuredModelAlgorithmAssociationArn))
+        if input.hyperparameters.is_some():
+            auto u0 = input.hyperparameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(cleanrooms_ml_json_str(k1) + ":" + cleanrooms_ml_json_str(u0[k1]))
+            parts.append("\"hyperparameters\":" + cleanrooms_ml_json_obj(m1))
+        if input.environment.is_some():
+            auto u2 = input.environment.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(cleanrooms_ml_json_str(k3) + ":" + cleanrooms_ml_json_str(u2[k3]))
+            parts.append("\"environment\":" + cleanrooms_ml_json_obj(m3))
+        parts.append("\"resourceConfig\":" + input.resourceConfig.to_json())
+        if input.stoppingCondition.is_some():
+            auto u4 = input.stoppingCondition.unwrap()
+            parts.append("\"stoppingCondition\":" + u4.to_json())
+        if input.incrementalTrainingDataChannels.is_some():
+            auto u5 = input.incrementalTrainingDataChannels.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"incrementalTrainingDataChannels\":" + cleanrooms_ml_json_arr(e6))
+        list[str] e7 = []
+        for x7 in input.dataChannels:
+            e7.append(x7.to_json())
+        parts.append("\"dataChannels\":" + cleanrooms_ml_json_arr(e7))
+        if input.trainingInputMode.is_some():
+            auto u8 = input.trainingInputMode.unwrap()
+            parts.append("\"trainingInputMode\":" + u8.to_json())
+        if input.description.is_some():
+            auto u9 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u9))
+        if input.kmsKeyArn.is_some():
+            auto u10 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_ml_json_str(u10))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(cleanrooms_ml_json_str(k12) + ":" + cleanrooms_ml_json_str(u11[k12]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m12))
+        if input.mlModelTrainingPayerAccountId.is_some():
+            auto u13 = input.mlModelTrainingPayerAccountId.unwrap()
+            parts.append("\"mlModelTrainingPayerAccountId\":" + cleanrooms_ml_json_str(u13))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # CreateTrainingDataset  POST /training-dataset
+    # errors: AccessDeniedException, ConflictException, ThrottlingException, ValidationException
+    def create_training_dataset(self, CreateTrainingDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/training-dataset", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"roleArn\":" + cleanrooms_ml_json_str(input.roleArn))
+        list[str] e0 = []
+        for x0 in input.trainingData:
+            e0.append(dataset_to_json(x0))
+        parts.append("\"trainingData\":" + cleanrooms_ml_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(cleanrooms_ml_json_str(k2) + ":" + cleanrooms_ml_json_str(u1[k2]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m2))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u3))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
 
     # DeleteAudienceGenerationJob  DELETE /audience-generation-job/{audienceGenerationJobArn}
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2546,6 +3141,146 @@ struct CleanRoomsMLClient:
         auto b = binding.HttpBinding(method="POST", path_template="/audience-export-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartAudienceExportJobDocument(name=input.name, audienceGenerationJobArn=input.audienceGenerationJobArn, audienceSize=input.audienceSize, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # StartAudienceGenerationJob  POST /audience-generation-job
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_audience_generation_job(self, StartAudienceGenerationJobRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/audience-generation-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"configuredAudienceModelArn\":" + cleanrooms_ml_json_str(input.configuredAudienceModelArn))
+        parts.append("\"seedAudience\":" + audience_generation_job_data_source_to_json(input.seedAudience))
+        if input.includeSeedInOutput.is_some():
+            auto u0 = input.includeSeedInOutput.unwrap()
+            parts.append("\"includeSeedInOutput\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.collaborationId.is_some():
+            auto u1 = input.collaborationId.unwrap()
+            parts.append("\"collaborationId\":" + cleanrooms_ml_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(cleanrooms_ml_json_str(k4) + ":" + cleanrooms_ml_json_str(u3[k4]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # StartTrainedModelExportJob  POST /memberships/{membershipIdentifier}/trained-models/{trainedModelArn}/export-jobs
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_trained_model_export_job(self, StartTrainedModelExportJobRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["trainedModelArn"] = input.trainedModelArn
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/trained-models/{trainedModelArn}/export-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        if input.trainedModelVersionIdentifier.is_some():
+            auto u0 = input.trainedModelVersionIdentifier.unwrap()
+            parts.append("\"trainedModelVersionIdentifier\":" + cleanrooms_ml_json_str(u0))
+        parts.append("\"outputConfiguration\":" + trained_model_export_output_configuration_to_json(input.outputConfiguration))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u1))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # StartTrainedModelInferenceJob  POST /memberships/{membershipIdentifier}/trained-model-inference-jobs
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_trained_model_inference_job(self, StartTrainedModelInferenceJobRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipIdentifier"] = input.membershipIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/trained-model-inference-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + cleanrooms_ml_json_str(input.name))
+        parts.append("\"trainedModelArn\":" + cleanrooms_ml_json_str(input.trainedModelArn))
+        if input.trainedModelVersionIdentifier.is_some():
+            auto u0 = input.trainedModelVersionIdentifier.unwrap()
+            parts.append("\"trainedModelVersionIdentifier\":" + cleanrooms_ml_json_str(u0))
+        if input.configuredModelAlgorithmAssociationArn.is_some():
+            auto u1 = input.configuredModelAlgorithmAssociationArn.unwrap()
+            parts.append("\"configuredModelAlgorithmAssociationArn\":" + cleanrooms_ml_json_str(u1))
+        parts.append("\"resourceConfig\":" + input.resourceConfig.to_json())
+        parts.append("\"outputConfiguration\":" + inference_output_configuration_to_json(input.outputConfiguration))
+        parts.append("\"dataSource\":" + input.dataSource.to_json())
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u2))
+        if input.containerExecutionParameters.is_some():
+            auto u3 = input.containerExecutionParameters.unwrap()
+            parts.append("\"containerExecutionParameters\":" + u3.to_json())
+        if input.environment.is_some():
+            auto u4 = input.environment.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(cleanrooms_ml_json_str(k5) + ":" + cleanrooms_ml_json_str(u4[k5]))
+            parts.append("\"environment\":" + cleanrooms_ml_json_obj(m5))
+        if input.kmsKeyArn.is_some():
+            auto u6 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + cleanrooms_ml_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(cleanrooms_ml_json_str(k8) + ":" + cleanrooms_ml_json_str(u7[k8]))
+            parts.append("\"tags\":" + cleanrooms_ml_json_obj(m8))
+        if input.mlModelInferencePayerAccountId.is_some():
+            auto u9 = input.mlModelInferencePayerAccountId.unwrap()
+            parts.append("\"mlModelInferencePayerAccountId\":" + cleanrooms_ml_json_str(u9))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(cleanrooms_ml_json_str(k0) + ":" + cleanrooms_ml_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + cleanrooms_ml_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
+
+    # UpdateConfiguredAudienceModel  PATCH /configured-audience-model/{configuredAudienceModelArn}
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_configured_audience_model(self, UpdateConfiguredAudienceModelRequest input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_ml_service(), self.region)
+        dict[str, str] labels = {}
+        labels["configuredAudienceModelArn"] = input.configuredAudienceModelArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configured-audience-model/{configuredAudienceModelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.outputConfig.is_some():
+            auto u0 = input.outputConfig.unwrap()
+            parts.append("\"outputConfig\":" + u0.to_json())
+        if input.audienceModelArn.is_some():
+            auto u1 = input.audienceModelArn.unwrap()
+            parts.append("\"audienceModelArn\":" + cleanrooms_ml_json_str(u1))
+        if input.sharedAudienceMetrics.is_some():
+            auto u2 = input.sharedAudienceMetrics.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"sharedAudienceMetrics\":" + cleanrooms_ml_json_arr(e3))
+        if input.minMatchingSeedSize.is_some():
+            auto u4 = input.minMatchingSeedSize.unwrap()
+            parts.append("\"minMatchingSeedSize\":" + str(u4))
+        if input.audienceSizeConfig.is_some():
+            auto u5 = input.audienceSizeConfig.unwrap()
+            parts.append("\"audienceSizeConfig\":" + audience_size_config_to_json(u5))
+        if input.description.is_some():
+            auto u6 = input.description.unwrap()
+            parts.append("\"description\":" + cleanrooms_ml_json_str(u6))
+        auto bp = restjson.rest_json_document(b, cleanrooms_ml_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cleanrooms_ml_service(), self.region, host)
 
     # Paginator for ListAudienceExportJobs — yields each Response page, threading the

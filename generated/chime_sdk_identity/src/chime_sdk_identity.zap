@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 25 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 30 operations — 30 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   82 structs (71 @derive(Json)), 7 enums, 9 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -386,8 +386,9 @@ struct ListAppInstanceAdminsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppInstanceAdmins: list[AppInstanceAdminSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppInstanceAdmins: list[AppInstanceAdminSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppInstanceAdminsResponse:
     Optional[str] AppInstanceArn
     Optional[list[AppInstanceAdminSummary]] AppInstanceAdmins
@@ -400,8 +401,9 @@ struct ListAppInstanceBotsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppInstanceBots: list[AppInstanceBotSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppInstanceBots: list[AppInstanceBotSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppInstanceBotsResponse:
     Optional[str] AppInstanceArn
     Optional[list[AppInstanceBotSummary]] AppInstanceBots
@@ -414,8 +416,9 @@ struct ListAppInstanceUserEndpointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppInstanceUserEndpoints: list[AppInstanceUserEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppInstanceUserEndpoints: list[AppInstanceUserEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppInstanceUserEndpointsResponse:
     Optional[list[AppInstanceUserEndpointSummary]] AppInstanceUserEndpoints
     Optional[str] NextToken
@@ -427,8 +430,9 @@ struct ListAppInstanceUsersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppInstanceUsers: list[AppInstanceUserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppInstanceUsers: list[AppInstanceUserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppInstanceUsersResponse:
     Optional[str] AppInstanceArn
     Optional[list[AppInstanceUserSummary]] AppInstanceUsers
@@ -440,8 +444,9 @@ struct ListAppInstancesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppInstances: list[AppInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppInstances: list[AppInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppInstancesResponse:
     Optional[list[AppInstanceSummary]] AppInstances
     Optional[str] NextToken
@@ -451,8 +456,9 @@ struct ListAppInstancesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -629,15 +635,6 @@ def identity_chime_error_from_code(str code) -> Chime_SDK_IdentityError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateAppInstance (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateAppInstanceBot (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateAppInstanceUser (document member `Tags: list[Tag]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -696,6 +693,26 @@ struct Chime_SDK_IdentityClient:
     core.Credentials creds
     str region
 
+    # CreateAppInstance  POST /app-instances
+    # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_app_instance(self, CreateAppInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(identity_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + identity_chime_json_str(input.Name))
+        if input.Metadata.is_some():
+            auto u0 = input.Metadata.unwrap()
+            parts.append("\"Metadata\":" + identity_chime_json_str(u0))
+        parts.append("\"ClientRequestToken\":" + identity_chime_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + identity_chime_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, identity_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
+
     # CreateAppInstanceAdmin  POST /app-instances/{appInstanceArn}/admins
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_app_instance_admin(self, CreateAppInstanceAdminRequest input) -> str:
@@ -705,6 +722,55 @@ struct Chime_SDK_IdentityClient:
         auto b = binding.HttpBinding(method="POST", path_template="/app-instances/{appInstanceArn}/admins", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAppInstanceAdminDocument(AppInstanceAdminArn=input.AppInstanceAdminArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
+
+    # CreateAppInstanceBot  POST /app-instance-bots
+    # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_app_instance_bot(self, CreateAppInstanceBotRequest input) -> str:
+        auto host = endpoints.regional_host(identity_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-bots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AppInstanceArn\":" + identity_chime_json_str(input.AppInstanceArn))
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + identity_chime_json_str(u0))
+        if input.Metadata.is_some():
+            auto u1 = input.Metadata.unwrap()
+            parts.append("\"Metadata\":" + identity_chime_json_str(u1))
+        parts.append("\"ClientRequestToken\":" + identity_chime_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + identity_chime_json_arr(e3))
+        parts.append("\"Configuration\":" + input.Configuration.to_json())
+        auto bp = restjson.rest_json_document(b, identity_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
+
+    # CreateAppInstanceUser  POST /app-instance-users
+    # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_app_instance_user(self, CreateAppInstanceUserRequest input) -> str:
+        auto host = endpoints.regional_host(identity_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-users", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AppInstanceArn\":" + identity_chime_json_str(input.AppInstanceArn))
+        parts.append("\"AppInstanceUserId\":" + identity_chime_json_str(input.AppInstanceUserId))
+        parts.append("\"Name\":" + identity_chime_json_str(input.Name))
+        if input.Metadata.is_some():
+            auto u0 = input.Metadata.unwrap()
+            parts.append("\"Metadata\":" + identity_chime_json_str(u0))
+        parts.append("\"ClientRequestToken\":" + identity_chime_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + identity_chime_json_arr(e2))
+        if input.ExpirationSettings.is_some():
+            auto u3 = input.ExpirationSettings.unwrap()
+            parts.append("\"ExpirationSettings\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, identity_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
 
     # DeleteAppInstance  DELETE /app-instances/{appInstanceArn}
@@ -916,6 +982,34 @@ struct Chime_SDK_IdentityClient:
         auto b = binding.HttpBinding(method="POST", path_template="/app-instance-users/{appInstanceUserArn}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterAppInstanceUserEndpointDocument(Name=input.Name, Type=input.Type, ResourceArn=input.ResourceArn, EndpointAttributes=input.EndpointAttributes, ClientRequestToken=input.ClientRequestToken, AllowMessages=input.AllowMessages)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
+
+    # TagResource  POST /tags?operation=tag-resource
+    # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(identity_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + identity_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + identity_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, identity_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
+
+    # UntagResource  POST /tags?operation=untag-resource
+    # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(identity_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + identity_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(identity_chime_json_str(x0))
+        parts.append("\"TagKeys\":" + identity_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, identity_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
 
     # UpdateAppInstance  PUT /app-instances/{appInstanceArn}

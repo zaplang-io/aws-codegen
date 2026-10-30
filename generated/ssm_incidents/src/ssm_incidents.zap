@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 18 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 30 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   109 structs (72 @derive(Json)), 8 enums, 7 error variants.
-#   5 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The SSM_Incidents rest-json protocol: SigV4 service "ssm-incidents" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -117,8 +118,9 @@ enum VariableType:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) ssmAutomation: SsmAutomation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ssmAutomation: SsmAutomation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[SsmAutomation] ssmAutomation
 
@@ -127,8 +129,9 @@ struct AddRegionAction:
     str regionName
     Optional[str] sseKmsKeyId
 
-# no @derive(Json): member(s) integerValues: list[int64], stringValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integerValues: list[int64], stringValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValueList:
     Optional[list[int64]] integerValues
     Optional[list[str]] stringValues
@@ -149,14 +152,16 @@ struct BatchGetIncidentFindingsInput:
     list[str] findingIds
     str incidentRecordArn
 
-# no @derive(Json): member(s) errors: list[BatchGetIncidentFindingsError], findings: list[Finding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchGetIncidentFindingsError], findings: list[Finding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetIncidentFindingsOutput:
     list[BatchGetIncidentFindingsError] errors
     list[Finding] findings
 
-# no @derive(Json): member(s) chatbotSns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) chatbotSns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChatChannel:
     Optional[list[str]] chatbotSns
     Optional[EmptyChatChannel] empty
@@ -174,8 +179,9 @@ struct CodeDeployDeployment:
     Optional[DateTime] endTime
     DateTime startTime
 
-# no @derive(Json): member(s) equals: AttributeValueList not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) equals: AttributeValueList not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Condition:
     Optional[DateTime] after
     Optional[DateTime] before
@@ -301,8 +307,9 @@ struct EventReference:
     Optional[str] relatedItemId
     Optional[str] resource
 
-# no @derive(Json): member(s) eventReferences: list[EventReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventReferences: list[EventReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSummary:
     str eventId
     Optional[list[EventReference]] eventReferences
@@ -311,8 +318,9 @@ struct EventSummary:
     DateTime eventUpdatedTime
     str incidentRecordArn
 
-# no @derive(Json): member(s) condition: Condition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) condition: Condition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Condition condition
     str key
@@ -339,8 +347,9 @@ struct FindingSummary:
 struct GetIncidentRecordInput:
     str arn
 
-# no @derive(Json): member(s) incidentRecord: IncidentRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incidentRecord: IncidentRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIncidentRecordOutput:
     IncidentRecord incidentRecord
 
@@ -349,8 +358,9 @@ struct GetIncidentRecordOutput:
 struct GetReplicationSetInput:
     str arn
 
-# no @derive(Json): member(s) replicationSet: ReplicationSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationSet: ReplicationSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReplicationSetOutput:
     ReplicationSet replicationSet
 
@@ -361,8 +371,9 @@ struct GetResourcePoliciesInput:
     Optional[str] nextToken
     str resourceArn
 
-# no @derive(Json): member(s) resourcePolicies: list[ResourcePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcePolicies: list[ResourcePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcePoliciesOutput:
     Optional[str] nextToken
     list[ResourcePolicy] resourcePolicies
@@ -372,8 +383,9 @@ struct GetResourcePoliciesOutput:
 struct GetResponsePlanInput:
     str arn
 
-# no @derive(Json): member(s) actions: list[Action], chatChannel: ChatChannel, engagements: list[str], incidentTemplate: IncidentTemplate, integrations: list[Integration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[Action], chatChannel: ChatChannel, engagements: list[str], incidentTemplate: IncidentTemplate, integrations: list[Integration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResponsePlanOutput:
     Optional[list[Action]] actions
     str arn
@@ -390,13 +402,15 @@ struct GetTimelineEventInput:
     str eventId
     str incidentRecordArn
 
-# no @derive(Json): member(s) event: TimelineEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) event: TimelineEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTimelineEventOutput:
     TimelineEvent event
 
-# no @derive(Json): member(s) automationExecutions: list[AutomationExecution], chatChannel: ChatChannel, notificationTargets: list[NotificationTargetItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) automationExecutions: list[AutomationExecution], chatChannel: ChatChannel, notificationTargets: list[NotificationTargetItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IncidentRecord:
     str arn
     Optional[list[AutomationExecution]] automationExecutions
@@ -430,8 +444,9 @@ struct IncidentRecordSummary:
     IncidentRecordStatus status
     str title
 
-# no @derive(Json): member(s) incidentTags: dict[str, str], notificationTargets: list[NotificationTargetItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incidentTags: dict[str, str], notificationTargets: list[NotificationTargetItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IncidentTemplate:
     Optional[str] dedupeString
     int64 impact
@@ -467,8 +482,9 @@ struct ListIncidentFindingsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) findings: list[FindingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[FindingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIncidentFindingsOutput:
     list[FindingSummary] findings
     Optional[str] nextToken
@@ -480,8 +496,9 @@ struct ListIncidentRecordsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) incidentRecordSummaries: list[IncidentRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) incidentRecordSummaries: list[IncidentRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIncidentRecordsOutput:
     list[IncidentRecordSummary] incidentRecordSummaries
     Optional[str] nextToken
@@ -493,8 +510,9 @@ struct ListRelatedItemsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) relatedItems: list[RelatedItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relatedItems: list[RelatedItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRelatedItemsOutput:
     Optional[str] nextToken
     list[RelatedItem] relatedItems
@@ -505,8 +523,9 @@ struct ListReplicationSetsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) replicationSetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationSetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReplicationSetsOutput:
     Optional[str] nextToken
     list[str] replicationSetArns
@@ -517,8 +536,9 @@ struct ListResponsePlansInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) responsePlanSummaries: list[ResponsePlanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responsePlanSummaries: list[ResponsePlanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResponsePlansOutput:
     Optional[str] nextToken
     list[ResponsePlanSummary] responsePlanSummaries
@@ -528,8 +548,9 @@ struct ListResponsePlansOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -543,8 +564,9 @@ struct ListTimelineEventsInput:
     Optional[str] sortBy
     Optional[SortOrder] sortOrder
 
-# no @derive(Json): member(s) eventSummaries: list[EventSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventSummaries: list[EventSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTimelineEventsOutput:
     list[EventSummary] eventSummaries
     Optional[str] nextToken
@@ -601,8 +623,9 @@ struct RelatedItemsUpdate:
     Optional[RelatedItem] itemToAdd
     Optional[ItemIdentifier] itemToRemove
 
-# no @derive(Json): member(s) regionMap: dict[str, RegionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regionMap: dict[str, RegionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationSet:
     Optional[str] arn
     str createdBy
@@ -639,8 +662,9 @@ struct ServiceQuotaExceededException:
     Optional[ResourceType] resourceType
     str serviceCode
 
-# no @derive(Json): member(s) dynamicParameters: dict[str, DynamicSsmParameterValue], parameters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dynamicParameters: dict[str, DynamicSsmParameterValue], parameters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SsmAutomation:
     str documentName
     Optional[str] documentVersion
@@ -680,8 +704,9 @@ struct ThrottlingException:
     str quotaCode
     str serviceCode
 
-# no @derive(Json): member(s) eventReferences: list[EventReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventReferences: list[EventReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimelineEvent:
     str eventData
     str eventId
@@ -847,24 +872,7 @@ def ssm_incidents_error_from_code(str code) -> SSM_IncidentsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetIncidentFindings (document member `findingIds: list[str]` is not serializable by derive)
-#   CreateReplicationSet (document member `regions: dict[str, RegionMapInputValue]` is not serializable by derive)
-#   CreateResponsePlan (document member `actions: list[Action]` is not serializable by derive)
-#   CreateTimelineEvent (document member `eventReferences: list[EventReference]` is not serializable by derive)
-#   ListIncidentRecords (document member `filters: list[Filter]` is not serializable by derive)
-#   ListTimelineEvents (document member `filters: list[Filter]` is not serializable by derive)
-#   StartIncident (document member `relatedItems: list[RelatedItem]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateIncidentRecord (document member `chatChannel: ChatChannel` is not serializable by derive)
-#   UpdateReplicationSet (document member `actions: list[UpdateReplicationSetAction]` is not serializable by derive)
-#   UpdateResponsePlan (document member `actions: list[Action]` is not serializable by derive)
-#   UpdateTimelineEvent (document member `eventReferences: list[EventReference]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListIncidentRecords (operation not generated)
-#   ListTimelineEvents (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -943,10 +951,255 @@ struct UpdateRelatedItemsDocument:
     str incidentRecordArn
     RelatedItemsUpdate relatedItemsUpdate
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ssm_incidents_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ssm_incidents_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ssm_incidents_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Action to a compact JSON object (declaration order).
+def action_to_json(Action v) -> str:
+    list[str] parts = []
+    if v.ssmAutomation.is_some():
+        auto u0 = v.ssmAutomation.unwrap()
+        parts.append("\"ssmAutomation\":" + ssm_automation_to_json(u0))
+    return ssm_incidents_json_obj(parts)
+
+# Serialize AttributeValueList to a compact JSON object (declaration order).
+def attribute_value_list_to_json(AttributeValueList v) -> str:
+    list[str] parts = []
+    if v.integerValues.is_some():
+        auto u0 = v.integerValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"integerValues\":" + ssm_incidents_json_arr(e1))
+    if v.stringValues.is_some():
+        auto u2 = v.stringValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ssm_incidents_json_str(x3))
+        parts.append("\"stringValues\":" + ssm_incidents_json_arr(e3))
+    return ssm_incidents_json_obj(parts)
+
+# Serialize ChatChannel to a compact JSON object (declaration order).
+def chat_channel_to_json(ChatChannel v) -> str:
+    list[str] parts = []
+    if v.chatbotSns.is_some():
+        auto u0 = v.chatbotSns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ssm_incidents_json_str(x1))
+        parts.append("\"chatbotSns\":" + ssm_incidents_json_arr(e1))
+    if v.empty.is_some():
+        auto u2 = v.empty.unwrap()
+        parts.append("\"empty\":" + u2.to_json())
+    return ssm_incidents_json_obj(parts)
+
+# Serialize Condition to a compact JSON object (declaration order).
+def condition_to_json(Condition v) -> str:
+    list[str] parts = []
+    if v.after.is_some():
+        auto u0 = v.after.unwrap()
+        parts.append("\"after\":" + str(datetime.to_timestamp(u0)))
+    if v.before.is_some():
+        auto u1 = v.before.unwrap()
+        parts.append("\"before\":" + str(datetime.to_timestamp(u1)))
+    if v.equals.is_some():
+        auto u2 = v.equals.unwrap()
+        parts.append("\"equals\":" + attribute_value_list_to_json(u2))
+    return ssm_incidents_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"condition\":" + condition_to_json(v.condition))
+    parts.append("\"key\":" + ssm_incidents_json_str(v.key))
+    return ssm_incidents_json_obj(parts)
+
+# Serialize IncidentTemplate to a compact JSON object (declaration order).
+def incident_template_to_json(IncidentTemplate v) -> str:
+    list[str] parts = []
+    if v.dedupeString.is_some():
+        auto u0 = v.dedupeString.unwrap()
+        parts.append("\"dedupeString\":" + ssm_incidents_json_str(u0))
+    parts.append("\"impact\":" + str(v.impact))
+    if v.incidentTags.is_some():
+        auto u1 = v.incidentTags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(ssm_incidents_json_str(k2) + ":" + ssm_incidents_json_str(u1[k2]))
+        parts.append("\"incidentTags\":" + ssm_incidents_json_obj(m2))
+    if v.notificationTargets.is_some():
+        auto u3 = v.notificationTargets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"notificationTargets\":" + ssm_incidents_json_arr(e4))
+    if v.summary.is_some():
+        auto u5 = v.summary.unwrap()
+        parts.append("\"summary\":" + ssm_incidents_json_str(u5))
+    parts.append("\"title\":" + ssm_incidents_json_str(v.title))
+    return ssm_incidents_json_obj(parts)
+
+# Serialize SsmAutomation to a compact JSON object (declaration order).
+def ssm_automation_to_json(SsmAutomation v) -> str:
+    list[str] parts = []
+    parts.append("\"documentName\":" + ssm_incidents_json_str(v.documentName))
+    if v.documentVersion.is_some():
+        auto u0 = v.documentVersion.unwrap()
+        parts.append("\"documentVersion\":" + ssm_incidents_json_str(u0))
+    if v.dynamicParameters.is_some():
+        auto u1 = v.dynamicParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(ssm_incidents_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"dynamicParameters\":" + ssm_incidents_json_obj(m2))
+    if v.parameters.is_some():
+        auto u3 = v.parameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(ssm_incidents_json_str(x5))
+            m4.append(ssm_incidents_json_str(k4) + ":" + ssm_incidents_json_arr(e5))
+        parts.append("\"parameters\":" + ssm_incidents_json_obj(m4))
+    parts.append("\"roleArn\":" + ssm_incidents_json_str(v.roleArn))
+    if v.targetAccount.is_some():
+        auto u6 = v.targetAccount.unwrap()
+        parts.append("\"targetAccount\":" + u6.to_json())
+    return ssm_incidents_json_obj(parts)
+
 # A bound SSM_Incidents client: credentials + region, threaded into every operation.
 struct SSM_IncidentsClient:
     core.Credentials creds
     str region
+
+    # BatchGetIncidentFindings  POST /batchGetIncidentFindings
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_incident_findings(self, BatchGetIncidentFindingsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/batchGetIncidentFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.findingIds:
+            e0.append(ssm_incidents_json_str(x0))
+        parts.append("\"findingIds\":" + ssm_incidents_json_arr(e0))
+        parts.append("\"incidentRecordArn\":" + ssm_incidents_json_str(input.incidentRecordArn))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # CreateReplicationSet  POST /createReplicationSet
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_replication_set(self, CreateReplicationSetInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createReplicationSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u0))
+        list[str] m1 = []
+        for k1 in sorted(input.regions.keys()):
+            m1.append(ssm_incidents_json_str(k1) + ":" + input.regions[k1].to_json())
+        parts.append("\"regions\":" + ssm_incidents_json_obj(m1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(ssm_incidents_json_str(k3) + ":" + ssm_incidents_json_str(u2[k3]))
+            parts.append("\"tags\":" + ssm_incidents_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # CreateResponsePlan  POST /createResponsePlan
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_response_plan(self, CreateResponsePlanInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createResponsePlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.actions.is_some():
+            auto u0 = input.actions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(action_to_json(x1))
+            parts.append("\"actions\":" + ssm_incidents_json_arr(e1))
+        if input.chatChannel.is_some():
+            auto u2 = input.chatChannel.unwrap()
+            parts.append("\"chatChannel\":" + chat_channel_to_json(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u3))
+        if input.displayName.is_some():
+            auto u4 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + ssm_incidents_json_str(u4))
+        if input.engagements.is_some():
+            auto u5 = input.engagements.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(ssm_incidents_json_str(x6))
+            parts.append("\"engagements\":" + ssm_incidents_json_arr(e6))
+        parts.append("\"incidentTemplate\":" + incident_template_to_json(input.incidentTemplate))
+        if input.integrations.is_some():
+            auto u7 = input.integrations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"integrations\":" + ssm_incidents_json_arr(e8))
+        parts.append("\"name\":" + ssm_incidents_json_str(input.name))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(ssm_incidents_json_str(k10) + ":" + ssm_incidents_json_str(u9[k10]))
+            parts.append("\"tags\":" + ssm_incidents_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # CreateTimelineEvent  POST /createTimelineEvent
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_timeline_event(self, CreateTimelineEventInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createTimelineEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u0))
+        parts.append("\"eventData\":" + ssm_incidents_json_str(input.eventData))
+        if input.eventReferences.is_some():
+            auto u1 = input.eventReferences.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"eventReferences\":" + ssm_incidents_json_arr(e2))
+        parts.append("\"eventTime\":" + str(datetime.to_timestamp(input.eventTime)))
+        parts.append("\"eventType\":" + ssm_incidents_json_str(input.eventType))
+        parts.append("\"incidentRecordArn\":" + ssm_incidents_json_str(input.incidentRecordArn))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
 
     # DeleteIncidentRecord  POST /deleteIncidentRecord
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -1050,6 +1303,27 @@ struct SSM_IncidentsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
 
+    # ListIncidentRecords  POST /listIncidentRecords
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_incident_records(self, ListIncidentRecordsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listIncidentRecords", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + ssm_incidents_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ssm_incidents_json_str(u3))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
     # ListRelatedItems  POST /listRelatedItems
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_related_items(self, ListRelatedItemsInput input) -> str:
@@ -1086,6 +1360,34 @@ struct SSM_IncidentsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
+    # ListTimelineEvents  POST /listTimelineEvents
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_timeline_events(self, ListTimelineEventsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listTimelineEvents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + ssm_incidents_json_arr(e1))
+        parts.append("\"incidentRecordArn\":" + ssm_incidents_json_str(input.incidentRecordArn))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ssm_incidents_json_str(u3))
+        if input.sortBy.is_some():
+            auto u4 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + ssm_incidents_json_str(u4))
+        if input.sortOrder.is_some():
+            auto u5 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
     # PutResourcePolicy  POST /putResourcePolicy
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyInput input) -> str:
@@ -1093,6 +1395,49 @@ struct SSM_IncidentsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/putResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policy=input.policy, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # StartIncident  POST /startIncident
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_incident(self, StartIncidentInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/startIncident", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u0))
+        if input.impact.is_some():
+            auto u1 = input.impact.unwrap()
+            parts.append("\"impact\":" + str(u1))
+        if input.relatedItems.is_some():
+            auto u2 = input.relatedItems.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"relatedItems\":" + ssm_incidents_json_arr(e3))
+        parts.append("\"responsePlanArn\":" + ssm_incidents_json_str(input.responsePlanArn))
+        if input.title.is_some():
+            auto u4 = input.title.unwrap()
+            parts.append("\"title\":" + ssm_incidents_json_str(u4))
+        if input.triggerDetails.is_some():
+            auto u5 = input.triggerDetails.unwrap()
+            parts.append("\"triggerDetails\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(ssm_incidents_json_str(k0) + ":" + ssm_incidents_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + ssm_incidents_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
 
     # UpdateDeletionProtection  POST /updateDeletionProtection
@@ -1104,6 +1449,40 @@ struct SSM_IncidentsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
 
+    # UpdateIncidentRecord  POST /updateIncidentRecord
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_incident_record(self, UpdateIncidentRecordInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateIncidentRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + ssm_incidents_json_str(input.arn))
+        if input.chatChannel.is_some():
+            auto u0 = input.chatChannel.unwrap()
+            parts.append("\"chatChannel\":" + chat_channel_to_json(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u1))
+        if input.impact.is_some():
+            auto u2 = input.impact.unwrap()
+            parts.append("\"impact\":" + str(u2))
+        if input.notificationTargets.is_some():
+            auto u3 = input.notificationTargets.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"notificationTargets\":" + ssm_incidents_json_arr(e4))
+        if input.status.is_some():
+            auto u5 = input.status.unwrap()
+            parts.append("\"status\":" + u5.to_json())
+        if input.summary.is_some():
+            auto u6 = input.summary.unwrap()
+            parts.append("\"summary\":" + ssm_incidents_json_str(u6))
+        if input.title.is_some():
+            auto u7 = input.title.unwrap()
+            parts.append("\"title\":" + ssm_incidents_json_str(u7))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
     # UpdateRelatedItems  POST /updateRelatedItems
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_related_items(self, UpdateRelatedItemsInput input) -> str:
@@ -1111,6 +1490,113 @@ struct SSM_IncidentsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/updateRelatedItems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRelatedItemsDocument(clientToken=input.clientToken, incidentRecordArn=input.incidentRecordArn, relatedItemsUpdate=input.relatedItemsUpdate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # UpdateReplicationSet  POST /updateReplicationSet
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_replication_set(self, UpdateReplicationSetInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateReplicationSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.actions:
+            e0.append(x0.to_json())
+        parts.append("\"actions\":" + ssm_incidents_json_arr(e0))
+        parts.append("\"arn\":" + ssm_incidents_json_str(input.arn))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u1))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # UpdateResponsePlan  POST /updateResponsePlan
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_response_plan(self, UpdateResponsePlanInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateResponsePlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.actions.is_some():
+            auto u0 = input.actions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(action_to_json(x1))
+            parts.append("\"actions\":" + ssm_incidents_json_arr(e1))
+        parts.append("\"arn\":" + ssm_incidents_json_str(input.arn))
+        if input.chatChannel.is_some():
+            auto u2 = input.chatChannel.unwrap()
+            parts.append("\"chatChannel\":" + chat_channel_to_json(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u3))
+        if input.displayName.is_some():
+            auto u4 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + ssm_incidents_json_str(u4))
+        if input.engagements.is_some():
+            auto u5 = input.engagements.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(ssm_incidents_json_str(x6))
+            parts.append("\"engagements\":" + ssm_incidents_json_arr(e6))
+        if input.incidentTemplateDedupeString.is_some():
+            auto u7 = input.incidentTemplateDedupeString.unwrap()
+            parts.append("\"incidentTemplateDedupeString\":" + ssm_incidents_json_str(u7))
+        if input.incidentTemplateImpact.is_some():
+            auto u8 = input.incidentTemplateImpact.unwrap()
+            parts.append("\"incidentTemplateImpact\":" + str(u8))
+        if input.incidentTemplateNotificationTargets.is_some():
+            auto u9 = input.incidentTemplateNotificationTargets.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"incidentTemplateNotificationTargets\":" + ssm_incidents_json_arr(e10))
+        if input.incidentTemplateSummary.is_some():
+            auto u11 = input.incidentTemplateSummary.unwrap()
+            parts.append("\"incidentTemplateSummary\":" + ssm_incidents_json_str(u11))
+        if input.incidentTemplateTags.is_some():
+            auto u12 = input.incidentTemplateTags.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(ssm_incidents_json_str(k13) + ":" + ssm_incidents_json_str(u12[k13]))
+            parts.append("\"incidentTemplateTags\":" + ssm_incidents_json_obj(m13))
+        if input.incidentTemplateTitle.is_some():
+            auto u14 = input.incidentTemplateTitle.unwrap()
+            parts.append("\"incidentTemplateTitle\":" + ssm_incidents_json_str(u14))
+        if input.integrations.is_some():
+            auto u15 = input.integrations.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"integrations\":" + ssm_incidents_json_arr(e16))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
+
+    # UpdateTimelineEvent  POST /updateTimelineEvent
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_timeline_event(self, UpdateTimelineEventInput input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateTimelineEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ssm_incidents_json_str(u0))
+        if input.eventData.is_some():
+            auto u1 = input.eventData.unwrap()
+            parts.append("\"eventData\":" + ssm_incidents_json_str(u1))
+        parts.append("\"eventId\":" + ssm_incidents_json_str(input.eventId))
+        if input.eventReferences.is_some():
+            auto u2 = input.eventReferences.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"eventReferences\":" + ssm_incidents_json_arr(e3))
+        if input.eventTime.is_some():
+            auto u4 = input.eventTime.unwrap()
+            parts.append("\"eventTime\":" + str(datetime.to_timestamp(u4)))
+        if input.eventType.is_some():
+            auto u5 = input.eventType.unwrap()
+            parts.append("\"eventType\":" + ssm_incidents_json_str(u5))
+        parts.append("\"incidentRecordArn\":" + ssm_incidents_json_str(input.incidentRecordArn))
+        auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
 
     # Paginator for GetResourcePolicies — yields each Response page, threading the
@@ -1132,6 +1618,19 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         while True:
             auto raw = self.list_incident_findings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListIncidentRecords — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: incidentRecordSummaries).
+    def paginate_list_incident_records(self, ListIncidentRecordsInput input):
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        while True:
+            auto raw = self.list_incident_records(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -1171,6 +1670,19 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         while True:
             auto raw = self.list_response_plans(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListTimelineEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: eventSummaries).
+    def paginate_list_timeline_events(self, ListTimelineEventsInput input):
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        while True:
+            auto raw = self.list_timeline_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

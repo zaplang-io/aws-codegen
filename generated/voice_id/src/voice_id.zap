@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 29 operations — 24 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 29 operations — 29 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   91 structs (63 @derive(Json)), 14 enums, 7 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -175,8 +175,9 @@ struct AssociateFraudsterRequest:
     str FraudsterId
     str WatchlistId
 
-# no @derive(Json): member(s) Fraudster: Fraudster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fraudster: Fraudster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFraudsterResponse:
     Optional[Fraudster] Fraudster
 
@@ -200,8 +201,9 @@ struct ConflictException:
     Optional[ConflictType] ConflictType
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainRequest:
     Optional[str] ClientToken
     Optional[str] Description
@@ -256,8 +258,9 @@ struct DescribeFraudsterRegistrationJobRequest:
     str DomainId
     str JobId
 
-# no @derive(Json): member(s) Job: FraudsterRegistrationJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: FraudsterRegistrationJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFraudsterRegistrationJobResponse:
     Optional[FraudsterRegistrationJob] Job
 
@@ -266,8 +269,9 @@ struct DescribeFraudsterRequest:
     str DomainId
     str FraudsterId
 
-# no @derive(Json): member(s) Fraudster: Fraudster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fraudster: Fraudster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFraudsterResponse:
     Optional[Fraudster] Fraudster
 
@@ -276,8 +280,9 @@ struct DescribeSpeakerEnrollmentJobRequest:
     str DomainId
     str JobId
 
-# no @derive(Json): member(s) Job: SpeakerEnrollmentJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: SpeakerEnrollmentJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSpeakerEnrollmentJobResponse:
     Optional[SpeakerEnrollmentJob] Job
 
@@ -305,8 +310,9 @@ struct DisassociateFraudsterRequest:
     str FraudsterId
     str WatchlistId
 
-# no @derive(Json): member(s) Fraudster: Fraudster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fraudster: Fraudster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateFraudsterResponse:
     Optional[Fraudster] Fraudster
 
@@ -336,14 +342,16 @@ struct DomainSummary:
     Optional[DateTime] UpdatedAt
     Optional[WatchlistDetails] WatchlistDetails
 
-# no @derive(Json): member(s) FraudDetectionConfig: EnrollmentJobFraudDetectionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FraudDetectionConfig: EnrollmentJobFraudDetectionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnrollmentConfig:
     Optional[ExistingEnrollmentAction] ExistingEnrollmentAction
     Optional[EnrollmentJobFraudDetectionConfig] FraudDetectionConfig
 
-# no @derive(Json): member(s) WatchlistIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WatchlistIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnrollmentJobFraudDetectionConfig:
     Optional[FraudDetectionAction] FraudDetectionAction
     Optional[int64] RiskThreshold
@@ -354,8 +362,9 @@ struct EvaluateSessionRequest:
     str DomainId
     str SessionNameOrId
 
-# no @derive(Json): member(s) FraudDetectionResult: FraudDetectionResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FraudDetectionResult: FraudDetectionResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateSessionResponse:
     Optional[AuthenticationResult] AuthenticationResult
     Optional[str] DomainId
@@ -374,8 +383,9 @@ struct FraudDetectionConfiguration:
     Optional[int64] RiskThreshold
     Optional[str] WatchlistId
 
-# no @derive(Json): member(s) Reasons: list[FraudDetectionReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reasons: list[FraudDetectionReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FraudDetectionResult:
     Optional[DateTime] AudioAggregationEndedAt
     Optional[DateTime] AudioAggregationStartedAt
@@ -390,16 +400,18 @@ struct FraudRiskDetails:
     KnownFraudsterRisk KnownFraudsterRisk
     VoiceSpoofingRisk VoiceSpoofingRisk
 
-# no @derive(Json): member(s) WatchlistIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WatchlistIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Fraudster:
     Optional[DateTime] CreatedAt
     Optional[str] DomainId
     Optional[str] GeneratedFraudsterId
     Optional[list[str]] WatchlistIds
 
-# no @derive(Json): member(s) RegistrationConfig: RegistrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationConfig: RegistrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FraudsterRegistrationJob:
     Optional[DateTime] CreatedAt
     Optional[str] DataAccessRoleArn
@@ -425,8 +437,9 @@ struct FraudsterRegistrationJobSummary:
     Optional[JobProgress] JobProgress
     Optional[FraudsterRegistrationJobStatus] JobStatus
 
-# no @derive(Json): member(s) WatchlistIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WatchlistIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FraudsterSummary:
     Optional[DateTime] CreatedAt
     Optional[str] DomainId
@@ -455,8 +468,9 @@ struct ListDomainsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DomainSummaries: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainSummaries: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     Optional[list[DomainSummary]] DomainSummaries
     Optional[str] NextToken
@@ -468,8 +482,9 @@ struct ListFraudsterRegistrationJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) JobSummaries: list[FraudsterRegistrationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobSummaries: list[FraudsterRegistrationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFraudsterRegistrationJobsResponse:
     Optional[list[FraudsterRegistrationJobSummary]] JobSummaries
     Optional[str] NextToken
@@ -481,8 +496,9 @@ struct ListFraudstersRequest:
     Optional[str] NextToken
     Optional[str] WatchlistId
 
-# no @derive(Json): member(s) FraudsterSummaries: list[FraudsterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FraudsterSummaries: list[FraudsterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFraudstersResponse:
     Optional[list[FraudsterSummary]] FraudsterSummaries
     Optional[str] NextToken
@@ -494,8 +510,9 @@ struct ListSpeakerEnrollmentJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) JobSummaries: list[SpeakerEnrollmentJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobSummaries: list[SpeakerEnrollmentJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpeakerEnrollmentJobsResponse:
     Optional[list[SpeakerEnrollmentJobSummary]] JobSummaries
     Optional[str] NextToken
@@ -506,8 +523,9 @@ struct ListSpeakersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SpeakerSummaries: list[SpeakerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpeakerSummaries: list[SpeakerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpeakersResponse:
     Optional[str] NextToken
     Optional[list[SpeakerSummary]] SpeakerSummaries
@@ -516,8 +534,9 @@ struct ListSpeakersResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -527,8 +546,9 @@ struct ListWatchlistsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WatchlistSummaries: list[WatchlistSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WatchlistSummaries: list[WatchlistSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWatchlistsResponse:
     Optional[str] NextToken
     Optional[list[WatchlistSummary]] WatchlistSummaries
@@ -547,8 +567,9 @@ struct OutputDataConfig:
     Optional[str] KmsKeyId
     str S3Uri
 
-# no @derive(Json): member(s) WatchlistIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WatchlistIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistrationConfig:
     Optional[DuplicateRegistrationAction] DuplicateRegistrationAction
     Optional[int64] FraudsterSimilarityThreshold
@@ -583,8 +604,9 @@ struct Speaker:
     Optional[SpeakerStatus] Status
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) EnrollmentConfig: EnrollmentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnrollmentConfig: EnrollmentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpeakerEnrollmentJob:
     Optional[DateTime] CreatedAt
     Optional[str] DataAccessRoleArn
@@ -620,8 +642,9 @@ struct SpeakerSummary:
     Optional[SpeakerStatus] Status
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) RegistrationConfig: RegistrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegistrationConfig: RegistrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartFraudsterRegistrationJobRequest:
     Optional[str] ClientToken
     str DataAccessRoleArn
@@ -631,13 +654,15 @@ struct StartFraudsterRegistrationJobRequest:
     OutputDataConfig OutputDataConfig
     Optional[RegistrationConfig] RegistrationConfig
 
-# no @derive(Json): member(s) Job: FraudsterRegistrationJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: FraudsterRegistrationJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartFraudsterRegistrationJobResponse:
     Optional[FraudsterRegistrationJob] Job
 
-# no @derive(Json): member(s) EnrollmentConfig: EnrollmentConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnrollmentConfig: EnrollmentConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSpeakerEnrollmentJobRequest:
     Optional[str] ClientToken
     str DataAccessRoleArn
@@ -647,8 +672,9 @@ struct StartSpeakerEnrollmentJobRequest:
     Optional[str] JobName
     OutputDataConfig OutputDataConfig
 
-# no @derive(Json): member(s) Job: SpeakerEnrollmentJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: SpeakerEnrollmentJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSpeakerEnrollmentJobResponse:
     Optional[SpeakerEnrollmentJob] Job
 
@@ -657,8 +683,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -672,8 +699,9 @@ struct TagResourceResponse:
 struct ThrottlingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -771,13 +799,155 @@ def voiceid_error_from_code(str code) -> Voice_IDError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDomain (input CreateDomainRequest)
-#   StartFraudsterRegistrationJob (input StartFraudsterRegistrationJobRequest)
-#   StartSpeakerEnrollmentJob (input StartSpeakerEnrollmentJobRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def voiceid_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def voiceid_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def voiceid_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateDomainRequest to a compact JSON object (declaration order).
+def create_domain_request_to_json(CreateDomainRequest v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + voiceid_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + voiceid_json_str(u1))
+    parts.append("\"Name\":" + voiceid_json_str(v.Name))
+    parts.append("\"ServerSideEncryptionConfiguration\":" + v.ServerSideEncryptionConfiguration.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + voiceid_json_arr(e3))
+    return voiceid_json_obj(parts)
+
+# Serialize EnrollmentConfig to a compact JSON object (declaration order).
+def enrollment_config_to_json(EnrollmentConfig v) -> str:
+    list[str] parts = []
+    if v.ExistingEnrollmentAction.is_some():
+        auto u0 = v.ExistingEnrollmentAction.unwrap()
+        parts.append("\"ExistingEnrollmentAction\":" + u0.to_json())
+    if v.FraudDetectionConfig.is_some():
+        auto u1 = v.FraudDetectionConfig.unwrap()
+        parts.append("\"FraudDetectionConfig\":" + enrollment_job_fraud_detection_config_to_json(u1))
+    return voiceid_json_obj(parts)
+
+# Serialize EnrollmentJobFraudDetectionConfig to a compact JSON object (declaration order).
+def enrollment_job_fraud_detection_config_to_json(EnrollmentJobFraudDetectionConfig v) -> str:
+    list[str] parts = []
+    if v.FraudDetectionAction.is_some():
+        auto u0 = v.FraudDetectionAction.unwrap()
+        parts.append("\"FraudDetectionAction\":" + u0.to_json())
+    if v.RiskThreshold.is_some():
+        auto u1 = v.RiskThreshold.unwrap()
+        parts.append("\"RiskThreshold\":" + str(u1))
+    if v.WatchlistIds.is_some():
+        auto u2 = v.WatchlistIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(voiceid_json_str(x3))
+        parts.append("\"WatchlistIds\":" + voiceid_json_arr(e3))
+    return voiceid_json_obj(parts)
+
+# Serialize RegistrationConfig to a compact JSON object (declaration order).
+def registration_config_to_json(RegistrationConfig v) -> str:
+    list[str] parts = []
+    if v.DuplicateRegistrationAction.is_some():
+        auto u0 = v.DuplicateRegistrationAction.unwrap()
+        parts.append("\"DuplicateRegistrationAction\":" + u0.to_json())
+    if v.FraudsterSimilarityThreshold.is_some():
+        auto u1 = v.FraudsterSimilarityThreshold.unwrap()
+        parts.append("\"FraudsterSimilarityThreshold\":" + str(u1))
+    if v.WatchlistIds.is_some():
+        auto u2 = v.WatchlistIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(voiceid_json_str(x3))
+        parts.append("\"WatchlistIds\":" + voiceid_json_arr(e3))
+    return voiceid_json_obj(parts)
+
+# Serialize StartFraudsterRegistrationJobRequest to a compact JSON object (declaration order).
+def start_fraudster_registration_job_request_to_json(StartFraudsterRegistrationJobRequest v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + voiceid_json_str(u0))
+    parts.append("\"DataAccessRoleArn\":" + voiceid_json_str(v.DataAccessRoleArn))
+    parts.append("\"DomainId\":" + voiceid_json_str(v.DomainId))
+    parts.append("\"InputDataConfig\":" + v.InputDataConfig.to_json())
+    if v.JobName.is_some():
+        auto u1 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + voiceid_json_str(u1))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    if v.RegistrationConfig.is_some():
+        auto u2 = v.RegistrationConfig.unwrap()
+        parts.append("\"RegistrationConfig\":" + registration_config_to_json(u2))
+    return voiceid_json_obj(parts)
+
+# Serialize StartSpeakerEnrollmentJobRequest to a compact JSON object (declaration order).
+def start_speaker_enrollment_job_request_to_json(StartSpeakerEnrollmentJobRequest v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + voiceid_json_str(u0))
+    parts.append("\"DataAccessRoleArn\":" + voiceid_json_str(v.DataAccessRoleArn))
+    parts.append("\"DomainId\":" + voiceid_json_str(v.DomainId))
+    if v.EnrollmentConfig.is_some():
+        auto u1 = v.EnrollmentConfig.unwrap()
+        parts.append("\"EnrollmentConfig\":" + enrollment_config_to_json(u1))
+    parts.append("\"InputDataConfig\":" + v.InputDataConfig.to_json())
+    if v.JobName.is_some():
+        auto u2 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + voiceid_json_str(u2))
+    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
+    return voiceid_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + voiceid_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + voiceid_json_arr(e0))
+    return voiceid_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + voiceid_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(voiceid_json_str(x0))
+    parts.append("\"TagKeys\":" + voiceid_json_arr(e0))
+    return voiceid_json_obj(parts)
 
 # A bound Voice_ID client: credentials + region, threaded into every operation.
 struct Voice_IDClient:
@@ -789,6 +959,12 @@ struct Voice_IDClient:
     def associate_fraudster(self, AssociateFraudsterRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "AssociateFraudster", body)
+
+    # CreateDomain
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_domain(self, CreateDomainRequest input) -> str:
+        auto body = create_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "CreateDomain", body)
 
     # CreateWatchlist
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -915,6 +1091,30 @@ struct Voice_IDClient:
     def opt_out_speaker(self, OptOutSpeakerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "OptOutSpeaker", body)
+
+    # StartFraudsterRegistrationJob
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_fraudster_registration_job(self, StartFraudsterRegistrationJobRequest input) -> str:
+        auto body = start_fraudster_registration_job_request_to_json(input)
+        return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "StartFraudsterRegistrationJob", body)
+
+    # StartSpeakerEnrollmentJob
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_speaker_enrollment_job(self, StartSpeakerEnrollmentJobRequest input) -> str:
+        auto body = start_speaker_enrollment_job_request_to_json(input)
+        return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "StartSpeakerEnrollmentJob", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(voiceid_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateDomain
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

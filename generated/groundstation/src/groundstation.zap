@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 26 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 40 operations — 38 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   164 structs (113 @derive(Json)), 21 enums, 6 error variants.
-#   7 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The GroundStation rest-json protocol: SigV4 service "groundstation" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -277,8 +278,9 @@ enum VersionStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) reservedCpuCores: list[int64], agentCpuCores: list[int64], componentVersions: list[ComponentVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reservedCpuCores: list[int64], agentCpuCores: list[int64], componentVersions: list[ComponentVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentDetails:
     str agentVersion
     str instanceId
@@ -287,8 +289,9 @@ struct AgentDetails:
     Optional[list[int64]] agentCpuCores
     list[ComponentVersion] componentVersions
 
-# no @derive(Json): member(s) signatureMap: dict[str, bool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signatureMap: dict[str, bool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregateStatus:
     AgentStatus status
     Optional[dict[str, bool]] signatureMap
@@ -327,8 +330,9 @@ struct AwsGroundStationAgentEndpoint:
     Optional[AgentStatus] agentStatus
     Optional[AuditResults] auditResults
 
-# no @derive(Json): member(s) data: AzElSegmentsData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: AzElSegmentsData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzElEphemeris:
     str groundStation
     AzElSegmentsData data
@@ -341,21 +345,24 @@ struct AzElEphemerisFilter:
 struct AzElProgramTrackSettings:
     str ephemerisId
 
-# no @derive(Json): member(s) azElList: list[TimeAzEl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azElList: list[TimeAzEl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzElSegment:
     DateTime referenceEpoch
     ISO8601TimeRange validTimeRange
     list[TimeAzEl] azElList
 
-# no @derive(Json): member(s) azElSegmentList: list[AzElSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azElSegmentList: list[AzElSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzElSegments:
     AngleUnits angleUnit
     list[AzElSegment] azElSegmentList
 
-# no @derive(Json): member(s) azElData: AzElSegments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) azElData: AzElSegments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzElSegmentsData:
     Optional[S3Object] s3Object
     Optional[AzElSegments] azElData
@@ -375,14 +382,16 @@ struct ComponentStatusData:
     Optional[int64] packetsDropped
     str dataflowId
 
-# no @derive(Json): member(s) versions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentVersion:
     str componentType
     list[str] versions
 
-# no @derive(Json): member(s) endpointDetails: EndpointDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpointDetails: EndpointDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigDetails:
     Optional[EndpointDetails] endpointDetails
     Optional[AntennaDemodDecodeDetails] antennaDemodDecodeDetails
@@ -417,8 +426,9 @@ struct ConnectionDetails:
     SocketAddress socketAddress
     Optional[int64] mtu
 
-# no @derive(Json): member(s) tags: dict[str, str], version: ContactVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], version: ContactVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactData:
     Optional[str] contactId
     Optional[str] missionProfileArn
@@ -447,8 +457,9 @@ struct ContactIdResponse:
 struct ContactReservationDetails:
     Optional[str] contactId
 
-# no @derive(Json): member(s) failureCodes: list[VersionFailureReasonCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureCodes: list[VersionFailureReasonCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactVersion:
     Optional[int64] versionId
     Optional[DateTime] created
@@ -517,8 +528,9 @@ struct CreateMissionProfileRequest:
     Optional[KmsKey] streamsKmsKey
     Optional[str] streamsKmsRole
 
-# no @derive(Json): member(s) source: Source, destination: Destination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: Source, destination: Destination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataflowDetail:
     Optional[Source] source
     Optional[Destination] destination
@@ -585,8 +597,9 @@ struct DependencyException:
 struct DescribeContactRequest:
     str contactId
 
-# no @derive(Json): member(s) tags: dict[str, str], dataflowList: list[DataflowDetail], version: ContactVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], dataflowList: list[DataflowDetail], version: ContactVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContactResponse:
     Optional[str] contactId
     Optional[str] missionProfileArn
@@ -614,8 +627,9 @@ struct DescribeContactVersionRequest:
     str contactId
     int64 versionId
 
-# no @derive(Json): member(s) tags: dict[str, str], dataflowList: list[DataflowDetail], version: ContactVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], dataflowList: list[DataflowDetail], version: ContactVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContactVersionResponse:
     Optional[str] contactId
     Optional[str] missionProfileArn
@@ -642,8 +656,9 @@ struct DescribeContactVersionResponse:
 struct DescribeEphemerisRequest:
     str ephemerisId
 
-# no @derive(Json): member(s) tags: dict[str, str], errorReasons: list[EphemerisErrorReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], errorReasons: list[EphemerisErrorReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEphemerisResponse:
     Optional[str] ephemerisId
     Optional[str] satelliteId
@@ -657,16 +672,18 @@ struct DescribeEphemerisResponse:
     Optional[EphemerisInvalidReason] invalidReason
     Optional[list[EphemerisErrorReason]] errorReasons
 
-# no @derive(Json): member(s) configDetails: ConfigDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configDetails: ConfigDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Destination:
     Optional[ConfigCapabilityType] configType
     Optional[str] configId
     Optional[ConfigDetails] configDetails
     Optional[str] dataflowDestinationRegion
 
-# no @derive(Json): member(s) publicIpAddresses: list[str], privateIpAddresses: list[str], capabilityArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) publicIpAddresses: list[str], privateIpAddresses: list[str], capabilityArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoveryData:
     list[str] publicIpAddresses
     list[str] privateIpAddresses
@@ -703,8 +720,9 @@ struct Elevation:
     float64 value
     AngleUnits unit
 
-# no @derive(Json): member(s) securityDetails: SecurityDetails, healthReasons: list[CapabilityHealthReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityDetails: SecurityDetails, healthReasons: list[CapabilityHealthReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointDetails:
     Optional[SecurityDetails] securityDetails
     Optional[DataflowEndpoint] endpoint
@@ -714,8 +732,9 @@ struct EndpointDetails:
     Optional[CapabilityHealth] healthStatus
     Optional[list[CapabilityHealthReason]] healthReasons
 
-# no @derive(Json): member(s) tle: TLEEphemeris, azEl: AzElEphemeris not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tle: TLEEphemeris, azEl: AzElEphemeris not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EphemerisData:
     Optional[TLEEphemeris] tle
     Optional[OEMEphemeris] oem
@@ -807,8 +826,9 @@ struct GetConfigRequest:
     # wire string of the ConfigCapabilityType enum (uri binding)
     str configType
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigResponse:
     str configId
     str configArn
@@ -822,8 +842,9 @@ struct GetConfigResponse:
 struct GetDataflowEndpointGroupRequest:
     str dataflowEndpointGroupId
 
-# no @derive(Json): member(s) endpointsDetails: list[EndpointDetails], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpointsDetails: list[EndpointDetails], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataflowEndpointGroupResponse:
     Optional[str] dataflowEndpointGroupId
     Optional[str] dataflowEndpointGroupArn
@@ -851,8 +872,9 @@ struct GetMinuteUsageResponse:
 struct GetMissionProfileRequest:
     str missionProfileId
 
-# no @derive(Json): member(s) dataflowEdges: list[list[str]], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataflowEdges: list[list[str]], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMissionProfileResponse:
     Optional[str] missionProfileId
     Optional[str] missionProfileArn
@@ -873,8 +895,9 @@ struct GetMissionProfileResponse:
 struct GetSatelliteRequest:
     str satelliteId
 
-# no @derive(Json): member(s) groundStations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groundStations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSatelliteResponse:
     Optional[str] satelliteId
     Optional[str] satelliteArn
@@ -932,8 +955,9 @@ struct ListAntennasRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) antennaList: list[AntennaListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) antennaList: list[AntennaListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAntennasResponse:
     list[AntennaListItem] antennaList
     Optional[str] nextToken
@@ -944,8 +968,9 @@ struct ListConfigsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) configList: list[ConfigListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configList: list[ConfigListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigsResponse:
     Optional[str] nextToken
     Optional[list[ConfigListItem]] configList
@@ -957,8 +982,9 @@ struct ListContactVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) contactVersionsList: list[ContactVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contactVersionsList: list[ContactVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactVersionsResponse:
     Optional[str] nextToken
     Optional[list[ContactVersion]] contactVersionsList
@@ -976,8 +1002,9 @@ struct ListContactsRequest:
     Optional[str] missionProfileArn
     Optional[EphemerisFilter] ephemeris
 
-# no @derive(Json): member(s) contactList: list[ContactData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contactList: list[ContactData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactsResponse:
     Optional[str] nextToken
     Optional[list[ContactData]] contactList
@@ -988,8 +1015,9 @@ struct ListDataflowEndpointGroupsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dataflowEndpointGroupList: list[DataflowEndpointListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataflowEndpointGroupList: list[DataflowEndpointListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataflowEndpointGroupsResponse:
     Optional[str] nextToken
     Optional[list[DataflowEndpointListItem]] dataflowEndpointGroupList
@@ -1005,8 +1033,9 @@ struct ListEphemeridesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ephemerides: list[EphemerisItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ephemerides: list[EphemerisItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEphemeridesResponse:
     Optional[str] nextToken
     Optional[list[EphemerisItem]] ephemerides
@@ -1021,8 +1050,9 @@ struct ListGroundStationReservationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) reservationList: list[GroundStationReservationListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reservationList: list[GroundStationReservationListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroundStationReservationsResponse:
     list[GroundStationReservationListItem] reservationList
     Optional[str] nextToken
@@ -1034,8 +1064,9 @@ struct ListGroundStationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) groundStationList: list[GroundStationData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groundStationList: list[GroundStationData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroundStationsResponse:
     Optional[str] nextToken
     Optional[list[GroundStationData]] groundStationList
@@ -1046,8 +1077,9 @@ struct ListMissionProfilesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) missionProfileList: list[MissionProfileListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) missionProfileList: list[MissionProfileListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMissionProfilesResponse:
     Optional[str] nextToken
     Optional[list[MissionProfileListItem]] missionProfileList
@@ -1058,8 +1090,9 @@ struct ListSatellitesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) satellites: list[SatelliteListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) satellites: list[SatelliteListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSatellitesResponse:
     Optional[str] nextToken
     Optional[list[SatelliteListItem]] satellites
@@ -1069,8 +1102,9 @@ struct ListSatellitesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1171,8 +1205,9 @@ struct S3RecordingDetails:
     Optional[str] bucketArn
     Optional[str] keyTemplate
 
-# no @derive(Json): member(s) groundStations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groundStations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SatelliteListItem:
     Optional[str] satelliteId
     Optional[str] satelliteArn
@@ -1180,8 +1215,9 @@ struct SatelliteListItem:
     Optional[list[str]] groundStations
     Optional[EphemerisMetaData] currentEphemeris
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityDetails:
     list[str] subnetIds
     list[str] securityGroupIds
@@ -1197,8 +1233,9 @@ struct SocketAddress:
     str name
     int64 port
 
-# no @derive(Json): member(s) configDetails: ConfigDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configDetails: ConfigDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Source:
     Optional[ConfigCapabilityType] configType
     Optional[str] configId
@@ -1217,8 +1254,9 @@ struct TLEData:
     str tleLine2
     TimeRange validTimeRange
 
-# no @derive(Json): member(s) tleData: list[TLEData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tleData: list[TLEData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TLEEphemeris:
     Optional[S3Object] s3Object
     Optional[list[TLEData]] tleData
@@ -1399,25 +1437,11 @@ def groundstation_error_from_code(str code) -> GroundStationError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConfig (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateDataflowEndpointGroup (document member `endpointDetails: list[EndpointDetails]` is not serializable by derive)
-#   CreateDataflowEndpointGroupV2 (document member `endpoints: list[CreateEndpointDetails]` is not serializable by derive)
-#   CreateEphemeris (document member `ephemeris: EphemerisData` is not serializable by derive)
-#   CreateMissionProfile (document member `dataflowEdges: list[list[str]]` is not serializable by derive)
-#   ListContacts (document member `statusList: list[ContactStatus]` is not serializable by derive)
-#   ListEphemerides (document member `statusList: list[EphemerisStatus]` is not serializable by derive)
 #   ListGroundStationReservations (httpQuery `startTime` has unsupported type DateTime)
-#   RegisterAgent (document member `discoveryData: DiscoveryData` is not serializable by derive)
-#   ReserveContact (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAgentStatus (document member `aggregateStatus: AggregateStatus` is not serializable by derive)
-#   UpdateMissionProfile (document member `dataflowEdges: list[list[str]]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   ListContacts (operation not generated)
-#   ListEphemerides (operation not generated)
 #   ListGroundStationReservations (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1449,6 +1473,213 @@ struct UpdateEphemerisDocument:
     Optional[str] name
     Optional[int64] priority
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def groundstation_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def groundstation_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def groundstation_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def groundstation_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AgentDetails to a compact JSON object (declaration order).
+def agent_details_to_json(AgentDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"agentVersion\":" + groundstation_json_str(v.agentVersion))
+    parts.append("\"instanceId\":" + groundstation_json_str(v.instanceId))
+    parts.append("\"instanceType\":" + groundstation_json_str(v.instanceType))
+    if v.reservedCpuCores.is_some():
+        auto u0 = v.reservedCpuCores.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"reservedCpuCores\":" + groundstation_json_arr(e1))
+    if v.agentCpuCores.is_some():
+        auto u2 = v.agentCpuCores.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"agentCpuCores\":" + groundstation_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.componentVersions:
+        e4.append(component_version_to_json(x4))
+    parts.append("\"componentVersions\":" + groundstation_json_arr(e4))
+    return groundstation_json_obj(parts)
+
+# Serialize AggregateStatus to a compact JSON object (declaration order).
+def aggregate_status_to_json(AggregateStatus v) -> str:
+    list[str] parts = []
+    parts.append("\"status\":" + v.status.to_json())
+    if v.signatureMap.is_some():
+        auto u0 = v.signatureMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(groundstation_json_str(k1) + ":" + json.dumps(JsonValue.Bool(u0[k1])))
+        parts.append("\"signatureMap\":" + groundstation_json_obj(m1))
+    return groundstation_json_obj(parts)
+
+# Serialize AzElEphemeris to a compact JSON object (declaration order).
+def az_el_ephemeris_to_json(AzElEphemeris v) -> str:
+    list[str] parts = []
+    parts.append("\"groundStation\":" + groundstation_json_str(v.groundStation))
+    parts.append("\"data\":" + az_el_segments_data_to_json(v.data))
+    return groundstation_json_obj(parts)
+
+# Serialize AzElSegment to a compact JSON object (declaration order).
+def az_el_segment_to_json(AzElSegment v) -> str:
+    list[str] parts = []
+    parts.append("\"referenceEpoch\":" + groundstation_json_ts_iso(v.referenceEpoch))
+    parts.append("\"validTimeRange\":" + v.validTimeRange.to_json())
+    list[str] e0 = []
+    for x0 in v.azElList:
+        e0.append(x0.to_json())
+    parts.append("\"azElList\":" + groundstation_json_arr(e0))
+    return groundstation_json_obj(parts)
+
+# Serialize AzElSegments to a compact JSON object (declaration order).
+def az_el_segments_to_json(AzElSegments v) -> str:
+    list[str] parts = []
+    parts.append("\"angleUnit\":" + v.angleUnit.to_json())
+    list[str] e0 = []
+    for x0 in v.azElSegmentList:
+        e0.append(az_el_segment_to_json(x0))
+    parts.append("\"azElSegmentList\":" + groundstation_json_arr(e0))
+    return groundstation_json_obj(parts)
+
+# Serialize AzElSegmentsData to a compact JSON object (declaration order).
+def az_el_segments_data_to_json(AzElSegmentsData v) -> str:
+    list[str] parts = []
+    if v.s3Object.is_some():
+        auto u0 = v.s3Object.unwrap()
+        parts.append("\"s3Object\":" + u0.to_json())
+    if v.azElData.is_some():
+        auto u1 = v.azElData.unwrap()
+        parts.append("\"azElData\":" + az_el_segments_to_json(u1))
+    return groundstation_json_obj(parts)
+
+# Serialize ComponentVersion to a compact JSON object (declaration order).
+def component_version_to_json(ComponentVersion v) -> str:
+    list[str] parts = []
+    parts.append("\"componentType\":" + groundstation_json_str(v.componentType))
+    list[str] e0 = []
+    for x0 in v.versions:
+        e0.append(groundstation_json_str(x0))
+    parts.append("\"versions\":" + groundstation_json_arr(e0))
+    return groundstation_json_obj(parts)
+
+# Serialize DiscoveryData to a compact JSON object (declaration order).
+def discovery_data_to_json(DiscoveryData v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.publicIpAddresses:
+        e0.append(groundstation_json_str(x0))
+    parts.append("\"publicIpAddresses\":" + groundstation_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.privateIpAddresses:
+        e1.append(groundstation_json_str(x1))
+    parts.append("\"privateIpAddresses\":" + groundstation_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.capabilityArns:
+        e2.append(groundstation_json_str(x2))
+    parts.append("\"capabilityArns\":" + groundstation_json_arr(e2))
+    return groundstation_json_obj(parts)
+
+# Serialize EndpointDetails to a compact JSON object (declaration order).
+def endpoint_details_to_json(EndpointDetails v) -> str:
+    list[str] parts = []
+    if v.securityDetails.is_some():
+        auto u0 = v.securityDetails.unwrap()
+        parts.append("\"securityDetails\":" + security_details_to_json(u0))
+    if v.endpoint.is_some():
+        auto u1 = v.endpoint.unwrap()
+        parts.append("\"endpoint\":" + u1.to_json())
+    if v.awsGroundStationAgentEndpoint.is_some():
+        auto u2 = v.awsGroundStationAgentEndpoint.unwrap()
+        parts.append("\"awsGroundStationAgentEndpoint\":" + u2.to_json())
+    if v.uplinkAwsGroundStationAgentEndpoint.is_some():
+        auto u3 = v.uplinkAwsGroundStationAgentEndpoint.unwrap()
+        parts.append("\"uplinkAwsGroundStationAgentEndpoint\":" + u3.to_json())
+    if v.downlinkAwsGroundStationAgentEndpoint.is_some():
+        auto u4 = v.downlinkAwsGroundStationAgentEndpoint.unwrap()
+        parts.append("\"downlinkAwsGroundStationAgentEndpoint\":" + u4.to_json())
+    if v.healthStatus.is_some():
+        auto u5 = v.healthStatus.unwrap()
+        parts.append("\"healthStatus\":" + u5.to_json())
+    if v.healthReasons.is_some():
+        auto u6 = v.healthReasons.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"healthReasons\":" + groundstation_json_arr(e7))
+    return groundstation_json_obj(parts)
+
+# Serialize EphemerisData to a compact JSON object (declaration order).
+def ephemeris_data_to_json(EphemerisData v) -> str:
+    list[str] parts = []
+    if v.tle.is_some():
+        auto u0 = v.tle.unwrap()
+        parts.append("\"tle\":" + tle_ephemeris_to_json(u0))
+    if v.oem.is_some():
+        auto u1 = v.oem.unwrap()
+        parts.append("\"oem\":" + u1.to_json())
+    if v.azEl.is_some():
+        auto u2 = v.azEl.unwrap()
+        parts.append("\"azEl\":" + az_el_ephemeris_to_json(u2))
+    return groundstation_json_obj(parts)
+
+# Serialize SecurityDetails to a compact JSON object (declaration order).
+def security_details_to_json(SecurityDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(groundstation_json_str(x0))
+    parts.append("\"subnetIds\":" + groundstation_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.securityGroupIds:
+        e1.append(groundstation_json_str(x1))
+    parts.append("\"securityGroupIds\":" + groundstation_json_arr(e1))
+    parts.append("\"roleArn\":" + groundstation_json_str(v.roleArn))
+    return groundstation_json_obj(parts)
+
+# Serialize TLEEphemeris to a compact JSON object (declaration order).
+def tle_ephemeris_to_json(TLEEphemeris v) -> str:
+    list[str] parts = []
+    if v.s3Object.is_some():
+        auto u0 = v.s3Object.unwrap()
+        parts.append("\"s3Object\":" + u0.to_json())
+    if v.tleData.is_some():
+        auto u1 = v.tleData.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tleData\":" + groundstation_json_arr(e2))
+    return groundstation_json_obj(parts)
+
 # A bound GroundStation client: credentials + region, threaded into every operation.
 struct GroundStationClient:
     core.Credentials creds
@@ -1462,6 +1693,147 @@ struct GroundStationClient:
         labels["contactId"] = input.contactId
         auto b = binding.HttpBinding(method="DELETE", path_template="/contact/{contactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
+
+    # CreateConfig  POST /config
+    # errors: DependencyException, InvalidParameterException, ResourceLimitExceededException, ResourceNotFoundException
+    def create_config(self, CreateConfigRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/config", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + groundstation_json_str(input.name))
+        parts.append("\"configData\":" + input.configData.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(groundstation_json_str(k1) + ":" + groundstation_json_str(u0[k1]))
+            parts.append("\"tags\":" + groundstation_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # CreateDataflowEndpointGroup  POST /dataflowEndpointGroup
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def create_dataflow_endpoint_group(self, CreateDataflowEndpointGroupRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/dataflowEndpointGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.endpointDetails:
+            e0.append(endpoint_details_to_json(x0))
+        parts.append("\"endpointDetails\":" + groundstation_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(groundstation_json_str(k2) + ":" + groundstation_json_str(u1[k2]))
+            parts.append("\"tags\":" + groundstation_json_obj(m2))
+        if input.contactPrePassDurationSeconds.is_some():
+            auto u3 = input.contactPrePassDurationSeconds.unwrap()
+            parts.append("\"contactPrePassDurationSeconds\":" + str(u3))
+        if input.contactPostPassDurationSeconds.is_some():
+            auto u4 = input.contactPostPassDurationSeconds.unwrap()
+            parts.append("\"contactPostPassDurationSeconds\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # CreateDataflowEndpointGroupV2  POST /dataflowEndpointGroupV2
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException
+    def create_dataflow_endpoint_group_v2(self, CreateDataflowEndpointGroupV2Request input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/dataflowEndpointGroupV2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.endpoints:
+            e0.append(x0.to_json())
+        parts.append("\"endpoints\":" + groundstation_json_arr(e0))
+        if input.contactPrePassDurationSeconds.is_some():
+            auto u1 = input.contactPrePassDurationSeconds.unwrap()
+            parts.append("\"contactPrePassDurationSeconds\":" + str(u1))
+        if input.contactPostPassDurationSeconds.is_some():
+            auto u2 = input.contactPostPassDurationSeconds.unwrap()
+            parts.append("\"contactPostPassDurationSeconds\":" + str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(groundstation_json_str(k4) + ":" + groundstation_json_str(u3[k4]))
+            parts.append("\"tags\":" + groundstation_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # CreateEphemeris  POST /ephemeris
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def create_ephemeris(self, CreateEphemerisRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ephemeris", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.satelliteId.is_some():
+            auto u0 = input.satelliteId.unwrap()
+            parts.append("\"satelliteId\":" + groundstation_json_str(u0))
+        if input.enabled.is_some():
+            auto u1 = input.enabled.unwrap()
+            parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.priority.is_some():
+            auto u2 = input.priority.unwrap()
+            parts.append("\"priority\":" + str(u2))
+        if input.expirationTime.is_some():
+            auto u3 = input.expirationTime.unwrap()
+            parts.append("\"expirationTime\":" + str(datetime.to_timestamp(u3)))
+        parts.append("\"name\":" + groundstation_json_str(input.name))
+        if input.kmsKeyArn.is_some():
+            auto u4 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + groundstation_json_str(u4))
+        if input.ephemeris.is_some():
+            auto u5 = input.ephemeris.unwrap()
+            parts.append("\"ephemeris\":" + ephemeris_data_to_json(u5))
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(groundstation_json_str(k7) + ":" + groundstation_json_str(u6[k7]))
+            parts.append("\"tags\":" + groundstation_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # CreateMissionProfile  POST /missionprofile
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def create_mission_profile(self, CreateMissionProfileRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/missionprofile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + groundstation_json_str(input.name))
+        if input.contactPrePassDurationSeconds.is_some():
+            auto u0 = input.contactPrePassDurationSeconds.unwrap()
+            parts.append("\"contactPrePassDurationSeconds\":" + str(u0))
+        if input.contactPostPassDurationSeconds.is_some():
+            auto u1 = input.contactPostPassDurationSeconds.unwrap()
+            parts.append("\"contactPostPassDurationSeconds\":" + str(u1))
+        parts.append("\"minimumViableContactDurationSeconds\":" + str(input.minimumViableContactDurationSeconds))
+        list[str] e2 = []
+        for x2 in input.dataflowEdges:
+            list[str] e3 = []
+            for x3 in x2:
+                e3.append(groundstation_json_str(x3))
+            e2.append(groundstation_json_arr(e3))
+        parts.append("\"dataflowEdges\":" + groundstation_json_arr(e2))
+        parts.append("\"trackingConfigArn\":" + groundstation_json_str(input.trackingConfigArn))
+        if input.telemetrySinkConfigArn.is_some():
+            auto u4 = input.telemetrySinkConfigArn.unwrap()
+            parts.append("\"telemetrySinkConfigArn\":" + groundstation_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(groundstation_json_str(k6) + ":" + groundstation_json_str(u5[k6]))
+            parts.append("\"tags\":" + groundstation_json_obj(m6))
+        if input.streamsKmsKey.is_some():
+            auto u7 = input.streamsKmsKey.unwrap()
+            parts.append("\"streamsKmsKey\":" + u7.to_json())
+        if input.streamsKmsRole.is_some():
+            auto u8 = input.streamsKmsRole.unwrap()
+            parts.append("\"streamsKmsRole\":" + groundstation_json_str(u8))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
 
     # DeleteConfig  DELETE /config/{configType}/{configId}
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
@@ -1633,6 +2005,39 @@ struct GroundStationClient:
         auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
+    # ListContacts  POST /contacts
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def list_contacts(self, ListContactsRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + groundstation_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.statusList:
+            e2.append(x2.to_json())
+        parts.append("\"statusList\":" + groundstation_json_arr(e2))
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(input.startTime)))
+        parts.append("\"endTime\":" + str(datetime.to_timestamp(input.endTime)))
+        if input.groundStation.is_some():
+            auto u3 = input.groundStation.unwrap()
+            parts.append("\"groundStation\":" + groundstation_json_str(u3))
+        if input.satelliteArn.is_some():
+            auto u4 = input.satelliteArn.unwrap()
+            parts.append("\"satelliteArn\":" + groundstation_json_str(u4))
+        if input.missionProfileArn.is_some():
+            auto u5 = input.missionProfileArn.unwrap()
+            parts.append("\"missionProfileArn\":" + groundstation_json_str(u5))
+        if input.ephemeris.is_some():
+            auto u6 = input.ephemeris.unwrap()
+            parts.append("\"ephemeris\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
     # ListDataflowEndpointGroups  GET /dataflowEndpointGroup
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def list_dataflow_endpoint_groups(self, ListDataflowEndpointGroupsRequest input) -> str:
@@ -1644,6 +2049,34 @@ struct GroundStationClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/dataflowEndpointGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
+
+    # ListEphemerides  POST /ephemerides
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def list_ephemerides(self, ListEphemeridesRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/ephemerides", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.satelliteId.is_some():
+            auto u0 = input.satelliteId.unwrap()
+            parts.append("\"satelliteId\":" + groundstation_json_str(u0))
+        if input.ephemerisType.is_some():
+            auto u1 = input.ephemerisType.unwrap()
+            parts.append("\"ephemerisType\":" + u1.to_json())
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(input.startTime)))
+        parts.append("\"endTime\":" + str(datetime.to_timestamp(input.endTime)))
+        if input.statusList.is_some():
+            auto u2 = input.statusList.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"statusList\":" + groundstation_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
 
     # ListGroundStations  GET /groundstation
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
@@ -1692,6 +2125,80 @@ struct GroundStationClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
+    # RegisterAgent  POST /agent
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def register_agent(self, RegisterAgentRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/agent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"discoveryData\":" + discovery_data_to_json(input.discoveryData))
+        parts.append("\"agentDetails\":" + agent_details_to_json(input.agentDetails))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(groundstation_json_str(k1) + ":" + groundstation_json_str(u0[k1]))
+            parts.append("\"tags\":" + groundstation_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # ReserveContact  POST /contact
+    # errors: DependencyException, InvalidParameterException, ResourceLimitExceededException, ResourceNotFoundException
+    def reserve_contact(self, ReserveContactRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/contact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"missionProfileArn\":" + groundstation_json_str(input.missionProfileArn))
+        if input.satelliteArn.is_some():
+            auto u0 = input.satelliteArn.unwrap()
+            parts.append("\"satelliteArn\":" + groundstation_json_str(u0))
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(input.startTime)))
+        parts.append("\"endTime\":" + str(datetime.to_timestamp(input.endTime)))
+        parts.append("\"groundStation\":" + groundstation_json_str(input.groundStation))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(groundstation_json_str(k2) + ":" + groundstation_json_str(u1[k2]))
+            parts.append("\"tags\":" + groundstation_json_obj(m2))
+        if input.trackingOverrides.is_some():
+            auto u3 = input.trackingOverrides.unwrap()
+            parts.append("\"trackingOverrides\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(groundstation_json_str(k0) + ":" + groundstation_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + groundstation_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # UpdateAgentStatus  PUT /agent/{agentId}
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def update_agent_status(self, UpdateAgentStatusRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentId"] = input.agentId
+        auto b = binding.HttpBinding(method="PUT", path_template="/agent/{agentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"taskId\":" + groundstation_json_str(input.taskId))
+        parts.append("\"aggregateStatus\":" + aggregate_status_to_json(input.aggregateStatus))
+        list[str] e0 = []
+        for x0 in input.componentStatuses:
+            e0.append(x0.to_json())
+        parts.append("\"componentStatuses\":" + groundstation_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
     # UpdateConfig  PUT /config/{configType}/{configId}
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def update_config(self, UpdateConfigRequest input) -> str:
@@ -1724,6 +2231,50 @@ struct GroundStationClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEphemerisDocument(enabled=input.enabled, name=input.name, priority=input.priority)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
+
+    # UpdateMissionProfile  PUT /missionprofile/{missionProfileId}
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def update_mission_profile(self, UpdateMissionProfileRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["missionProfileId"] = input.missionProfileId
+        auto b = binding.HttpBinding(method="PUT", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + groundstation_json_str(u0))
+        if input.contactPrePassDurationSeconds.is_some():
+            auto u1 = input.contactPrePassDurationSeconds.unwrap()
+            parts.append("\"contactPrePassDurationSeconds\":" + str(u1))
+        if input.contactPostPassDurationSeconds.is_some():
+            auto u2 = input.contactPostPassDurationSeconds.unwrap()
+            parts.append("\"contactPostPassDurationSeconds\":" + str(u2))
+        if input.minimumViableContactDurationSeconds.is_some():
+            auto u3 = input.minimumViableContactDurationSeconds.unwrap()
+            parts.append("\"minimumViableContactDurationSeconds\":" + str(u3))
+        if input.dataflowEdges.is_some():
+            auto u4 = input.dataflowEdges.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                list[str] e6 = []
+                for x6 in x5:
+                    e6.append(groundstation_json_str(x6))
+                e5.append(groundstation_json_arr(e6))
+            parts.append("\"dataflowEdges\":" + groundstation_json_arr(e5))
+        if input.trackingConfigArn.is_some():
+            auto u7 = input.trackingConfigArn.unwrap()
+            parts.append("\"trackingConfigArn\":" + groundstation_json_str(u7))
+        if input.telemetrySinkConfigArn.is_some():
+            auto u8 = input.telemetrySinkConfigArn.unwrap()
+            parts.append("\"telemetrySinkConfigArn\":" + groundstation_json_str(u8))
+        if input.streamsKmsKey.is_some():
+            auto u9 = input.streamsKmsKey.unwrap()
+            parts.append("\"streamsKmsKey\":" + u9.to_json())
+        if input.streamsKmsRole.is_some():
+            auto u10 = input.streamsKmsRole.unwrap()
+            parts.append("\"streamsKmsRole\":" + groundstation_json_str(u10))
+        auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
 
     # Paginator for ListAntennas — yields each Response page, threading the
@@ -1765,12 +2316,38 @@ struct GroundStationClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListContacts — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: contactList).
+    def paginate_list_contacts(self, ListContactsRequest input):
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        while True:
+            auto raw = self.list_contacts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListDataflowEndpointGroups — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: dataflowEndpointGroupList).
     def paginate_list_dataflow_endpoint_groups(self, ListDataflowEndpointGroupsRequest input):
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         while True:
             auto raw = self.list_dataflow_endpoint_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListEphemerides — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: ephemerides).
+    def paginate_list_ephemerides(self, ListEphemeridesRequest input):
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        while True:
+            auto raw = self.list_ephemerides(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

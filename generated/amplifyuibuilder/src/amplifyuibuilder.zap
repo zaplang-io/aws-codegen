@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 28 operations — 19 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 28 operations — 20 with a generated method,
+#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   125 structs (57 @derive(Json)), 12 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -147,8 +147,9 @@ enum StorageAccessLevel:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) type: ComponentProperty, url: ComponentProperty, anchor: ComponentProperty, target: ComponentProperty, global: ComponentProperty, id: ComponentProperty, fields: dict[str, ComponentProperty], state: MutationActionSetStateParameter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: ComponentProperty, url: ComponentProperty, anchor: ComponentProperty, target: ComponentProperty, global: ComponentProperty, id: ComponentProperty, fields: dict[str, ComponentProperty], state: MutationActionSetStateParameter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionParameters:
     Optional[ComponentProperty] type
     Optional[ComponentProperty] url
@@ -178,13 +179,15 @@ struct CodegenFeatureFlags:
     Optional[bool] isRelationshipSupported
     Optional[bool] isNonModelSupported
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenGenericDataEnum:
     list[str] values
 
-# no @derive(Json): member(s) relationship: CodegenGenericDataRelationshipType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationship: CodegenGenericDataRelationshipType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenGenericDataField:
     CodegenGenericDataFieldDataType dataType
     str dataTypeValue
@@ -193,20 +196,23 @@ struct CodegenGenericDataField:
     bool isArray
     Optional[CodegenGenericDataRelationshipType] relationship
 
-# no @derive(Json): member(s) fields: dict[str, CodegenGenericDataField], primaryKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: dict[str, CodegenGenericDataField], primaryKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenGenericDataModel:
     dict[str, CodegenGenericDataField] fields
     Optional[bool] isJoinTable
     list[str] primaryKeys
 
-# no @derive(Json): member(s) fields: dict[str, CodegenGenericDataField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: dict[str, CodegenGenericDataField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenGenericDataNonModel:
     dict[str, CodegenGenericDataField] fields
 
-# no @derive(Json): member(s) relatedModelFields: list[str], associatedFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relatedModelFields: list[str], associatedFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenGenericDataRelationshipType:
     GenericDataRelationshipType type
     str relatedModelName
@@ -218,8 +224,9 @@ struct CodegenGenericDataRelationshipType:
     Optional[list[str]] associatedFields
     Optional[bool] isHasManyIndex
 
-# no @derive(Json): member(s) renderConfig: CodegenJobRenderConfig, genericDataSchema: CodegenJobGenericDataSchema, tags: dict[str, str], dependencies: list[CodegenDependency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) renderConfig: CodegenJobRenderConfig, genericDataSchema: CodegenJobGenericDataSchema, tags: dict[str, str], dependencies: list[CodegenDependency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenJob:
     str id
     str appId
@@ -240,16 +247,18 @@ struct CodegenJob:
 struct CodegenJobAsset:
     Optional[str] downloadUrl
 
-# no @derive(Json): member(s) models: dict[str, CodegenGenericDataModel], enums: dict[str, CodegenGenericDataEnum], nonModels: dict[str, CodegenGenericDataNonModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: dict[str, CodegenGenericDataModel], enums: dict[str, CodegenGenericDataEnum], nonModels: dict[str, CodegenGenericDataNonModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenJobGenericDataSchema:
     str dataSourceType
     dict[str, CodegenGenericDataModel] models
     dict[str, CodegenGenericDataEnum] enums
     dict[str, CodegenGenericDataNonModel] nonModels
 
-# no @derive(Json): member(s) react: ReactStartCodegenJobData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) react: ReactStartCodegenJobData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodegenJobRenderConfig:
     Optional[ReactStartCodegenJobData] react
 
@@ -263,8 +272,9 @@ struct CodegenJobSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] modifiedAt
 
-# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], variants: list[ComponentVariant], overrides: dict[str, dict[str, str]], bindingProperties: dict[str, ComponentBindingPropertiesValue], collectionProperties: dict[str, ComponentDataConfiguration], tags: dict[str, str], events: dict[str, ComponentEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], variants: list[ComponentVariant], overrides: dict[str, dict[str, str]], bindingProperties: dict[str, ComponentBindingPropertiesValue], collectionProperties: dict[str, ComponentDataConfiguration], tags: dict[str, str], events: dict[str, ComponentEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Component:
     str appId
     str environmentName
@@ -284,15 +294,17 @@ struct Component:
     Optional[dict[str, ComponentEvent]] events
     Optional[str] schemaVersion
 
-# no @derive(Json): member(s) bindingProperties: ComponentBindingPropertiesValueProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bindingProperties: ComponentBindingPropertiesValueProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentBindingPropertiesValue:
     Optional[str] type
     Optional[ComponentBindingPropertiesValueProperties] bindingProperties
     Optional[str] defaultValue
 
-# no @derive(Json): member(s) predicates: list[Predicate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) predicates: list[Predicate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentBindingPropertiesValueProperties:
     Optional[str] model
     Optional[str] field
@@ -303,8 +315,9 @@ struct ComponentBindingPropertiesValueProperties:
     Optional[str] defaultValue
     Optional[str] slotName
 
-# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], events: dict[str, ComponentEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], events: dict[str, ComponentEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentChild:
     str componentType
     str name
@@ -313,8 +326,9 @@ struct ComponentChild:
     Optional[dict[str, ComponentEvent]] events
     Optional[str] sourceId
 
-# no @derive(Json): member(s) then: ComponentProperty, else: ComponentProperty not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) then: ComponentProperty, else: ComponentProperty not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentConditionProperty:
     Optional[str] property
     Optional[str] field
@@ -325,23 +339,26 @@ struct ComponentConditionProperty:
     Optional[ComponentProperty] else_
     Optional[str] operandType
 
-# no @derive(Json): member(s) sort: list[SortProperty], predicate: Predicate, identifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sort: list[SortProperty], predicate: Predicate, identifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentDataConfiguration:
     str model
     Optional[list[SortProperty]] sort
     Optional[Predicate] predicate
     Optional[list[str]] identifiers
 
-# no @derive(Json): member(s) parameters: ActionParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: ActionParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentEvent:
     Optional[str] action
     Optional[ActionParameters] parameters
     Optional[str] bindingEvent
 
-# no @derive(Json): member(s) bindings: dict[str, FormBindingElement], concat: list[ComponentProperty], condition: ComponentConditionProperty not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bindings: dict[str, FormBindingElement], concat: list[ComponentProperty], condition: ComponentConditionProperty not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentProperty:
     Optional[str] value
     Optional[ComponentPropertyBindingProperties] bindingProperties
@@ -372,14 +389,16 @@ struct ComponentSummary:
     str name
     str componentType
 
-# no @derive(Json): member(s) variantValues: dict[str, str], overrides: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variantValues: dict[str, str], overrides: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentVariant:
     Optional[dict[str, str]] variantValues
     Optional[dict[str, dict[str, str]]] overrides
 
-# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], variants: list[ComponentVariant], overrides: dict[str, dict[str, str]], bindingProperties: dict[str, ComponentBindingPropertiesValue], collectionProperties: dict[str, ComponentDataConfiguration], tags: dict[str, str], events: dict[str, ComponentEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], variants: list[ComponentVariant], overrides: dict[str, dict[str, str]], bindingProperties: dict[str, ComponentBindingPropertiesValue], collectionProperties: dict[str, ComponentDataConfiguration], tags: dict[str, str], events: dict[str, ComponentEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComponentData:
     str name
     Optional[str] sourceId
@@ -402,13 +421,15 @@ struct CreateComponentRequest:
     Optional[str] clientToken
     CreateComponentData componentToCreate
 
-# no @derive(Json): member(s) entity: Component not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: Component not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComponentResponse:
     Optional[Component] entity
 
-# no @derive(Json): member(s) fields: dict[str, FieldConfig], sectionalElements: dict[str, SectionalElement], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: dict[str, FieldConfig], sectionalElements: dict[str, SectionalElement], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFormData:
     str name
     FormDataTypeConfig dataType
@@ -429,13 +450,15 @@ struct CreateFormRequest:
     Optional[str] clientToken
     CreateFormData formToCreate
 
-# no @derive(Json): member(s) entity: Form not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: Form not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFormResponse:
     Optional[Form] entity
 
-# no @derive(Json): member(s) values: list[ThemeValues], overrides: list[ThemeValues], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[ThemeValues], overrides: list[ThemeValues], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateThemeData:
     str name
     list[ThemeValues] values
@@ -450,8 +473,9 @@ struct CreateThemeRequest:
     Optional[str] clientToken
     CreateThemeData themeToCreate
 
-# no @derive(Json): member(s) entity: Theme not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: Theme not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateThemeResponse:
     Optional[Theme] entity
 
@@ -506,8 +530,9 @@ struct ExportComponentsRequest:
     str environmentName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) entities: list[Component] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[Component] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportComponentsResponse:
     list[Component] entities
     Optional[str] nextToken
@@ -519,8 +544,9 @@ struct ExportFormsRequest:
     str environmentName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) entities: list[Form] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[Form] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportFormsResponse:
     list[Form] entities
     Optional[str] nextToken
@@ -532,14 +558,16 @@ struct ExportThemesRequest:
     str environmentName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) entities: list[Theme] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[Theme] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportThemesResponse:
     list[Theme] entities
     Optional[str] nextToken
 
-# no @derive(Json): member(s) inputType: FieldInputConfig, validations: list[FieldValidationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputType: FieldInputConfig, validations: list[FieldValidationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldConfig:
     Optional[str] label
     Optional[FieldPosition] position
@@ -547,8 +575,9 @@ struct FieldConfig:
     Optional[FieldInputConfig] inputType
     Optional[list[FieldValidationConfiguration]] validations
 
-# no @derive(Json): member(s) valueMappings: ValueMappings, fileUploaderConfig: FileUploaderFieldConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueMappings: ValueMappings, fileUploaderConfig: FileUploaderFieldConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldInputConfig:
     str type
     Optional[bool] required
@@ -573,16 +602,18 @@ struct FieldPosition:
     Optional[str] rightOf
     Optional[str] below
 
-# no @derive(Json): member(s) strValues: list[str], numValues: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) strValues: list[str], numValues: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldValidationConfiguration:
     str type
     Optional[list[str]] strValues
     Optional[list[int64]] numValues
     Optional[str] validationMessage
 
-# no @derive(Json): member(s) acceptedFileTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) acceptedFileTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileUploaderFieldConfig:
     StorageAccessLevel accessLevel
     list[str] acceptedFileTypes
@@ -591,8 +622,9 @@ struct FileUploaderFieldConfig:
     Optional[int64] maxFileCount
     Optional[int64] maxSize
 
-# no @derive(Json): member(s) fields: dict[str, FieldConfig], sectionalElements: dict[str, SectionalElement], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: dict[str, FieldConfig], sectionalElements: dict[str, SectionalElement], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Form:
     str appId
     str environmentName
@@ -640,8 +672,9 @@ struct FormInputBindingPropertiesValue:
 struct FormInputBindingPropertiesValueProperties:
     Optional[str] model
 
-# no @derive(Json): member(s) concat: list[FormInputValueProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) concat: list[FormInputValueProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FormInputValueProperty:
     Optional[str] value
     Optional[FormInputValuePropertyBindingProperties] bindingProperties
@@ -679,8 +712,9 @@ struct GetCodegenJobRequest:
     str environmentName
     str id
 
-# no @derive(Json): member(s) job: CodegenJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: CodegenJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodegenJobResponse:
     Optional[CodegenJob] job
 
@@ -691,8 +725,9 @@ struct GetComponentRequest:
     str environmentName
     str id
 
-# no @derive(Json): member(s) component: Component not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) component: Component not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComponentResponse:
     Optional[Component] component
 
@@ -703,8 +738,9 @@ struct GetFormRequest:
     str environmentName
     str id
 
-# no @derive(Json): member(s) form: Form not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) form: Form not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFormResponse:
     Optional[Form] form
 
@@ -714,8 +750,9 @@ struct GetMetadataRequest:
     str appId
     str environmentName
 
-# no @derive(Json): member(s) features: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) features: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetadataResponse:
     dict[str, str] features
 
@@ -726,8 +763,9 @@ struct GetThemeRequest:
     str environmentName
     str id
 
-# no @derive(Json): member(s) theme: Theme not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) theme: Theme not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetThemeResponse:
     Optional[Theme] theme
 
@@ -755,8 +793,9 @@ struct ListCodegenJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) entities: list[CodegenJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[CodegenJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodegenJobsResponse:
     list[CodegenJobSummary] entities
     Optional[str] nextToken
@@ -769,8 +808,9 @@ struct ListComponentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) entities: list[ComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[ComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentsResponse:
     list[ComponentSummary] entities
     Optional[str] nextToken
@@ -783,8 +823,9 @@ struct ListFormsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) entities: list[FormSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[FormSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFormsResponse:
     list[FormSummary] entities
     Optional[str] nextToken
@@ -794,8 +835,9 @@ struct ListFormsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -807,14 +849,16 @@ struct ListThemesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) entities: list[ThemeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[ThemeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThemesResponse:
     list[ThemeSummary] entities
     Optional[str] nextToken
 
-# no @derive(Json): member(s) set: ComponentProperty not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) set: ComponentProperty not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MutationActionSetStateParameter:
     str componentName
     str property
@@ -826,8 +870,9 @@ struct NoApiRenderConfig:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) or: list[Predicate], and: list[Predicate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) or: list[Predicate], and: list[Predicate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Predicate:
     # wire name "or" differs from field; derive rename is a #346 follow-up
     Optional[list[Predicate]] or_
@@ -850,8 +895,9 @@ struct PutMetadataFlagRequest:
     str featureName
     PutMetadataFlagBody body
 
-# no @derive(Json): member(s) dependencies: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactStartCodegenJobData:
     Optional[JSModule] module
     Optional[JSTarget] target
@@ -903,8 +949,9 @@ struct SortProperty:
     str field
     SortDirection direction
 
-# no @derive(Json): member(s) renderConfig: CodegenJobRenderConfig, genericDataSchema: CodegenJobGenericDataSchema, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) renderConfig: CodegenJobRenderConfig, genericDataSchema: CodegenJobGenericDataSchema, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCodegenJobData:
     CodegenJobRenderConfig renderConfig
     Optional[CodegenJobGenericDataSchema] genericDataSchema
@@ -920,8 +967,9 @@ struct StartCodegenJobRequest:
     Optional[str] clientToken
     StartCodegenJobData codegenJobToCreate
 
-# no @derive(Json): member(s) entity: CodegenJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: CodegenJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCodegenJobResponse:
     Optional[CodegenJob] entity
 
@@ -936,8 +984,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) values: list[ThemeValues], overrides: list[ThemeValues], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[ThemeValues], overrides: list[ThemeValues], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Theme:
     str appId
     str environmentName
@@ -956,14 +1005,16 @@ struct ThemeSummary:
     str id
     str name
 
-# no @derive(Json): member(s) children: list[ThemeValues] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) children: list[ThemeValues] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThemeValue:
     Optional[str] value
     Optional[list[ThemeValues]] children
 
-# no @derive(Json): member(s) value: ThemeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: ThemeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThemeValues:
     Optional[str] key
     Optional[ThemeValue] value
@@ -987,8 +1038,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], variants: list[ComponentVariant], overrides: dict[str, dict[str, str]], bindingProperties: dict[str, ComponentBindingPropertiesValue], collectionProperties: dict[str, ComponentDataConfiguration], events: dict[str, ComponentEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, ComponentProperty], children: list[ComponentChild], variants: list[ComponentVariant], overrides: dict[str, dict[str, str]], bindingProperties: dict[str, ComponentBindingPropertiesValue], collectionProperties: dict[str, ComponentDataConfiguration], events: dict[str, ComponentEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComponentData:
     Optional[str] id
     Optional[str] name
@@ -1012,13 +1064,15 @@ struct UpdateComponentRequest:
     Optional[str] clientToken
     UpdateComponentData updatedComponent
 
-# no @derive(Json): member(s) entity: Component not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: Component not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComponentResponse:
     Optional[Component] entity
 
-# no @derive(Json): member(s) fields: dict[str, FieldConfig], sectionalElements: dict[str, SectionalElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: dict[str, FieldConfig], sectionalElements: dict[str, SectionalElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFormData:
     Optional[str] name
     Optional[FormDataTypeConfig] dataType
@@ -1039,13 +1093,15 @@ struct UpdateFormRequest:
     Optional[str] clientToken
     UpdateFormData updatedForm
 
-# no @derive(Json): member(s) entity: Form not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: Form not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFormResponse:
     Optional[Form] entity
 
-# no @derive(Json): member(s) values: list[ThemeValues], overrides: list[ThemeValues] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[ThemeValues], overrides: list[ThemeValues] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateThemeData:
     Optional[str] id
     Optional[str] name
@@ -1061,19 +1117,22 @@ struct UpdateThemeRequest:
     Optional[str] clientToken
     UpdateThemeData updatedTheme
 
-# no @derive(Json): member(s) entity: Theme not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: Theme not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateThemeResponse:
     Optional[Theme] entity
 
-# no @derive(Json): member(s) displayValue: FormInputValueProperty, value: FormInputValueProperty not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) displayValue: FormInputValueProperty, value: FormInputValueProperty not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValueMapping:
     Optional[FormInputValueProperty] displayValue
     FormInputValueProperty value
 
-# no @derive(Json): member(s) values: list[ValueMapping], bindingProperties: dict[str, FormInputBindingPropertiesValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[ValueMapping], bindingProperties: dict[str, FormInputBindingPropertiesValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValueMappings:
     list[ValueMapping] values
     Optional[dict[str, FormInputBindingPropertiesValue]] bindingProperties
@@ -1120,7 +1179,6 @@ def amplifyuibuilder_error_from_code(str code) -> AmplifyUIBuilderError:
 #   CreateForm (httpPayload member `formToCreate` is a non-derivable structure)
 #   CreateTheme (httpPayload member `themeToCreate` is a non-derivable structure)
 #   StartCodegenJob (httpPayload member `codegenJobToCreate` is a non-derivable structure)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateComponent (httpPayload member `updatedComponent` is a non-derivable structure)
 #   UpdateForm (httpPayload member `updatedForm` is a non-derivable structure)
@@ -1356,6 +1414,21 @@ struct AmplifyUIBuilderClient:
         labels["provider"] = input.provider
         auto b = binding.HttpBinding(method="POST", path_template="/tokens/{provider}/refresh", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.refreshTokenBody.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, InvalidParameterException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(amplifyuibuilder_json_str(k0) + ":" + amplifyuibuilder_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + amplifyuibuilder_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, amplifyuibuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
     # Paginator for ExportComponents — yields each Response page, threading the

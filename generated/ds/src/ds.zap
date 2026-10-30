@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 80 operations — 54 with a generated method,
-#   26 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 80 operations — 80 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   249 structs (180 @derive(Json)), 32 enums, 40 error variants.
-#   10 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -351,8 +351,9 @@ struct AccessDeniedException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) IpRoutes: list[IpRoute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpRoutes: list[IpRoute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddIpRoutesRequest:
     str DirectoryId
     list[IpRoute] IpRoutes
@@ -363,8 +364,9 @@ struct AddIpRoutesResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VPCSettings: DirectoryVpcSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCSettings: DirectoryVpcSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddRegionRequest:
     str DirectoryId
     str RegionName
@@ -375,8 +377,9 @@ struct AddRegionResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToResourceRequest:
     str ResourceId
     list[Tag] Tags
@@ -386,8 +389,9 @@ struct AddTagsToResourceResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str], SubnetIds: list[str], SecurityGroupIds: list[str], SelfManagedInstanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerDnsIps: list[str], SubnetIds: list[str], SecurityGroupIds: list[str], SelfManagedInstanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Assessment:
     Optional[str] AssessmentId
     Optional[str] DirectoryId
@@ -405,8 +409,9 @@ struct Assessment:
     Optional[str] ReportType
     Optional[str] Version
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str], VpcSettings: DirectoryVpcSettings, InstanceIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerDnsIps: list[str], VpcSettings: DirectoryVpcSettings, InstanceIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentConfiguration:
     list[str] CustomerDnsIps
     str DnsName
@@ -414,14 +419,16 @@ struct AssessmentConfiguration:
     list[str] InstanceIds
     Optional[list[str]] SecurityGroupIds
 
-# no @derive(Json): member(s) Validations: list[AssessmentValidation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Validations: list[AssessmentValidation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentReport:
     Optional[str] DomainControllerIp
     Optional[list[AssessmentValidation]] Validations
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerDnsIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentSummary:
     Optional[str] AssessmentId
     Optional[str] DirectoryId
@@ -516,23 +523,26 @@ struct ClientException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) ComputerAttributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputerAttributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Computer:
     Optional[str] ComputerId
     Optional[str] ComputerName
     Optional[list[Attribute]] ComputerAttributes
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalForwarder:
     Optional[str] RemoteDomainName
     Optional[list[str]] DnsIpAddrs
     Optional[list[str]] DnsIpv6Addrs
     Optional[str] ReplicationScope
 
-# no @derive(Json): member(s) ConnectSettings: DirectoryConnectSettings, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectSettings: DirectoryConnectSettings, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectDirectoryRequest:
     str Name
     Optional[str] ShortName
@@ -557,8 +567,9 @@ struct CreateAliasResult:
     Optional[str] DirectoryId
     Optional[str] Alias
 
-# no @derive(Json): member(s) ComputerAttributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComputerAttributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComputerRequest:
     str DirectoryId
     str ComputerName
@@ -566,13 +577,15 @@ struct CreateComputerRequest:
     Optional[str] OrganizationalUnitDistinguishedName
     Optional[list[Attribute]] ComputerAttributes
 
-# no @derive(Json): member(s) Computer: Computer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Computer: Computer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComputerResult:
     Optional[Computer] Computer
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConditionalForwarderRequest:
     str DirectoryId
     str RemoteDomainName
@@ -584,8 +597,9 @@ struct CreateConditionalForwarderResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDirectoryRequest:
     str Name
     Optional[str] ShortName
@@ -600,8 +614,9 @@ struct CreateDirectoryRequest:
 struct CreateDirectoryResult:
     Optional[str] DirectoryId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHybridADRequest:
     str SecretArn
     str AssessmentId
@@ -621,8 +636,9 @@ struct CreateLogSubscriptionResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMicrosoftADRequest:
     str Name
     Optional[str] ShortName
@@ -646,8 +662,9 @@ struct CreateSnapshotRequest:
 struct CreateSnapshotResult:
     Optional[str] SnapshotId
 
-# no @derive(Json): member(s) ConditionalForwarderIpAddrs: list[str], ConditionalForwarderIpv6Addrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalForwarderIpAddrs: list[str], ConditionalForwarderIpv6Addrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrustRequest:
     str DirectoryId
     str RemoteDomainName
@@ -738,8 +755,9 @@ struct DeregisterEventTopicResult:
 struct DescribeADAssessmentRequest:
     str AssessmentId
 
-# no @derive(Json): member(s) Assessment: Assessment, AssessmentReports: list[AssessmentReport] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assessment: Assessment, AssessmentReports: list[AssessmentReport] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeADAssessmentResult:
     Optional[Assessment] Assessment
     Optional[list[AssessmentReport]] AssessmentReports
@@ -772,32 +790,37 @@ struct DescribeClientAuthenticationSettingsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ClientAuthenticationSettingsInfo: list[ClientAuthenticationSettingInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientAuthenticationSettingsInfo: list[ClientAuthenticationSettingInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClientAuthenticationSettingsResult:
     Optional[list[ClientAuthenticationSettingInfo]] ClientAuthenticationSettingsInfo
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RemoteDomainNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemoteDomainNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConditionalForwardersRequest:
     str DirectoryId
     Optional[list[str]] RemoteDomainNames
 
-# no @derive(Json): member(s) ConditionalForwarders: list[ConditionalForwarder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalForwarders: list[ConditionalForwarder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConditionalForwardersResult:
     Optional[list[ConditionalForwarder]] ConditionalForwarders
 
-# no @derive(Json): member(s) DirectoryIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectoryIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDirectoriesRequest:
     Optional[list[str]] DirectoryIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) DirectoryDescriptions: list[DirectoryDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectoryDescriptions: list[DirectoryDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDirectoriesResult:
     Optional[list[DirectoryDescription]] DirectoryDescriptions
     Optional[str] NextToken
@@ -810,28 +833,32 @@ struct DescribeDirectoryDataAccessRequest:
 struct DescribeDirectoryDataAccessResult:
     Optional[DataAccessStatus] DataAccessStatus
 
-# no @derive(Json): member(s) DomainControllerIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainControllerIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDomainControllersRequest:
     str DirectoryId
     Optional[list[str]] DomainControllerIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) DomainControllers: list[DomainController] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainControllers: list[DomainController] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDomainControllersResult:
     Optional[list[DomainController]] DomainControllers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TopicNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventTopicsRequest:
     Optional[str] DirectoryId
     Optional[list[str]] TopicNames
 
-# no @derive(Json): member(s) EventTopics: list[EventTopic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTopics: list[EventTopic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventTopicsResult:
     Optional[list[EventTopic]] EventTopics
 
@@ -841,8 +868,9 @@ struct DescribeHybridADUpdateRequest:
     Optional[HybridUpdateType] UpdateType
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UpdateActivities: HybridUpdateActivities not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateActivities: HybridUpdateActivities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHybridADUpdateResult:
     Optional[HybridUpdateActivities] UpdateActivities
     Optional[str] NextToken
@@ -854,8 +882,9 @@ struct DescribeLDAPSSettingsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) LDAPSSettingsInfo: list[LDAPSSettingInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LDAPSSettingsInfo: list[LDAPSSettingInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLDAPSSettingsResult:
     Optional[list[LDAPSSettingInfo]] LDAPSSettingsInfo
     Optional[str] NextToken
@@ -866,8 +895,9 @@ struct DescribeRegionsRequest:
     Optional[str] RegionName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RegionsDescription: list[RegionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionsDescription: list[RegionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRegionsResult:
     Optional[list[RegionDescription]] RegionsDescription
     Optional[str] NextToken
@@ -878,51 +908,58 @@ struct DescribeSettingsRequest:
     Optional[DirectoryConfigurationStatus] Status
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SettingEntries: list[SettingEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SettingEntries: list[SettingEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSettingsResult:
     Optional[str] DirectoryId
     Optional[list[SettingEntry]] SettingEntries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SharedDirectoryIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SharedDirectoryIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSharedDirectoriesRequest:
     str OwnerDirectoryId
     Optional[list[str]] SharedDirectoryIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) SharedDirectories: list[SharedDirectory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SharedDirectories: list[SharedDirectory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSharedDirectoriesResult:
     Optional[list[SharedDirectory]] SharedDirectories
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SnapshotIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnapshotIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSnapshotsRequest:
     Optional[str] DirectoryId
     Optional[list[str]] SnapshotIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Snapshots: list[Snapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshots: list[Snapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSnapshotsResult:
     Optional[list[Snapshot]] Snapshots
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrustIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrustIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustsRequest:
     Optional[str] DirectoryId
     Optional[list[str]] TrustIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Trusts: list[Trust] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Trusts: list[Trust] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrustsResult:
     Optional[list[Trust]] Trusts
     Optional[str] NextToken
@@ -934,8 +971,9 @@ struct DescribeUpdateDirectoryRequest:
     Optional[str] RegionName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UpdateActivities: list[UpdateInfoEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateActivities: list[UpdateInfoEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUpdateDirectoryResult:
     Optional[list[UpdateInfoEntry]] UpdateActivities
     Optional[str] NextToken
@@ -950,8 +988,9 @@ struct DirectoryAlreadySharedException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) SubnetIds: list[str], CustomerDnsIps: list[str], CustomerDnsIpsV6: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], CustomerDnsIps: list[str], CustomerDnsIpsV6: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectoryConnectSettings:
     str VpcId
     list[str] SubnetIds
@@ -959,8 +998,9 @@ struct DirectoryConnectSettings:
     Optional[list[str]] CustomerDnsIpsV6
     str CustomerUserName
 
-# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str], ConnectIps: list[str], ConnectIpsV6: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str], ConnectIps: list[str], ConnectIpsV6: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectoryConnectSettingsDescription:
     Optional[str] VpcId
     Optional[list[str]] SubnetIds
@@ -970,8 +1010,9 @@ struct DirectoryConnectSettingsDescription:
     Optional[list[str]] ConnectIps
     Optional[list[str]] ConnectIpsV6
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str], VpcSettings: DirectoryVpcSettingsDescription, ConnectSettings: DirectoryConnectSettingsDescription, RadiusSettings: RadiusSettings, OwnerDirectoryDescription: OwnerDirectoryDescription, RegionsInfo: RegionsInfo, HybridSettings: HybridSettingsDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str], VpcSettings: DirectoryVpcSettingsDescription, ConnectSettings: DirectoryConnectSettingsDescription, RadiusSettings: RadiusSettings, OwnerDirectoryDescription: OwnerDirectoryDescription, RegionsInfo: RegionsInfo, HybridSettings: HybridSettingsDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectoryDescription:
     Optional[str] DirectoryId
     Optional[str] Name
@@ -1044,14 +1085,16 @@ struct DirectoryUnavailableException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectoryVpcSettings:
     str VpcId
     list[str] SubnetIds
 
-# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectoryVpcSettingsDescription:
     Optional[str] VpcId
     Optional[list[str]] SubnetIds
@@ -1184,8 +1227,9 @@ struct EnableLDAPSResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) RadiusSettings: RadiusSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RadiusSettings: RadiusSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableRadiusRequest:
     str DirectoryId
     RadiusSettings RadiusSettings
@@ -1245,26 +1289,30 @@ struct GetSnapshotLimitsResult:
 struct HybridAdministratorAccountUpdate:
     str SecretArn
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str], InstanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerDnsIps: list[str], InstanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HybridCustomerInstancesSettings:
     list[str] CustomerDnsIps
     list[str] InstanceIds
 
-# no @derive(Json): member(s) SelfManagedDnsIpAddrs: list[str], SelfManagedInstanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedDnsIpAddrs: list[str], SelfManagedInstanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HybridSettingsDescription:
     Optional[list[str]] SelfManagedDnsIpAddrs
     Optional[list[str]] SelfManagedInstanceIds
 
-# no @derive(Json): member(s) SelfManagedInstances: list[HybridUpdateInfoEntry], HybridAdministratorAccount: list[HybridUpdateInfoEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedInstances: list[HybridUpdateInfoEntry], HybridAdministratorAccount: list[HybridUpdateInfoEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HybridUpdateActivities:
     Optional[list[HybridUpdateInfoEntry]] SelfManagedInstances
     Optional[list[HybridUpdateInfoEntry]] HybridAdministratorAccount
 
-# no @derive(Json): member(s) NewValue: HybridUpdateValue, PreviousValue: HybridUpdateValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewValue: HybridUpdateValue, PreviousValue: HybridUpdateValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HybridUpdateInfoEntry:
     Optional[UpdateStatus] Status
     Optional[str] StatusReason
@@ -1275,8 +1323,9 @@ struct HybridUpdateInfoEntry:
     Optional[DateTime] LastUpdatedDateTime
     Optional[str] AssessmentId
 
-# no @derive(Json): member(s) InstanceIds: list[str], DnsIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceIds: list[str], DnsIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HybridUpdateValue:
     Optional[list[str]] InstanceIds
     Optional[list[str]] DnsIps
@@ -1359,8 +1408,9 @@ struct ListADAssessmentsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Assessments: list[AssessmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assessments: list[AssessmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListADAssessmentsResult:
     Optional[list[AssessmentSummary]] Assessments
     Optional[str] NextToken
@@ -1371,8 +1421,9 @@ struct ListCertificatesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) CertificatesInfo: list[CertificateInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificatesInfo: list[CertificateInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificatesResult:
     Optional[str] NextToken
     Optional[list[CertificateInfo]] CertificatesInfo
@@ -1383,8 +1434,9 @@ struct ListIpRoutesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) IpRoutesInfo: list[IpRouteInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpRoutesInfo: list[IpRouteInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIpRoutesResult:
     Optional[list[IpRouteInfo]] IpRoutesInfo
     Optional[str] NextToken
@@ -1395,8 +1447,9 @@ struct ListLogSubscriptionsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) LogSubscriptions: list[LogSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogSubscriptions: list[LogSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLogSubscriptionsResult:
     Optional[list[LogSubscription]] LogSubscriptions
     Optional[str] NextToken
@@ -1407,8 +1460,9 @@ struct ListSchemaExtensionsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) SchemaExtensionsInfo: list[SchemaExtensionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaExtensionsInfo: list[SchemaExtensionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemaExtensionsResult:
     Optional[list[SchemaExtensionInfo]] SchemaExtensionsInfo
     Optional[str] NextToken
@@ -1419,8 +1473,9 @@ struct ListTagsForResourceRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -1431,8 +1486,9 @@ struct LogSubscription:
     Optional[str] LogGroupName
     Optional[DateTime] SubscriptionCreatedDateTime
 
-# no @derive(Json): member(s) CustomerDnsIpsV6: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomerDnsIpsV6: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkUpdateSettings:
     Optional[NetworkType] NetworkType
     Optional[list[str]] CustomerDnsIpsV6
@@ -1451,8 +1507,9 @@ struct OrganizationsException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str], VpcSettings: DirectoryVpcSettingsDescription, RadiusSettings: RadiusSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str], VpcSettings: DirectoryVpcSettingsDescription, RadiusSettings: RadiusSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OwnerDirectoryDescription:
     Optional[str] DirectoryId
     Optional[str] AccountId
@@ -1463,8 +1520,9 @@ struct OwnerDirectoryDescription:
     Optional[RadiusStatus] RadiusStatus
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) RadiusServers: list[str], RadiusServersIpv6: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RadiusServers: list[str], RadiusServersIpv6: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RadiusSettings:
     Optional[list[str]] RadiusServers
     Optional[list[str]] RadiusServersIpv6
@@ -1476,8 +1534,9 @@ struct RadiusSettings:
     Optional[str] DisplayLabel
     Optional[bool] UseSameUsername
 
-# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionDescription:
     Optional[str] DirectoryId
     Optional[str] RegionName
@@ -1494,8 +1553,9 @@ struct RegionLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) AdditionalRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionsInfo:
     Optional[str] PrimaryRegion
     Optional[list[str]] AdditionalRegions
@@ -1529,8 +1589,9 @@ struct RejectSharedDirectoryRequest:
 struct RejectSharedDirectoryResult:
     Optional[str] SharedDirectoryId
 
-# no @derive(Json): member(s) CidrIps: list[str], CidrIpv6s: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CidrIps: list[str], CidrIpv6s: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveIpRoutesRequest:
     str DirectoryId
     Optional[list[str]] CidrIps
@@ -1550,8 +1611,9 @@ struct RemoveRegionResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromResourceRequest:
     str ResourceId
     list[str] TagKeys
@@ -1601,8 +1663,9 @@ struct Setting:
     str Name
     str Value
 
-# no @derive(Json): member(s) RequestDetailedStatus: dict[str, DirectoryConfigurationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestDetailedStatus: dict[str, DirectoryConfigurationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SettingEntry:
     Optional[str] Type
     Optional[str] Name
@@ -1669,8 +1732,9 @@ struct SnapshotLimits:
     Optional[int64] ManualSnapshotsCurrentCount
     Optional[bool] ManualSnapshotsLimitReached
 
-# no @derive(Json): member(s) AssessmentConfiguration: AssessmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssessmentConfiguration: AssessmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartADAssessmentRequest:
     Optional[AssessmentConfiguration] AssessmentConfiguration
     Optional[str] DirectoryId
@@ -1738,8 +1802,9 @@ struct UnsupportedSettingsException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConditionalForwarderRequest:
     str DirectoryId
     str RemoteDomainName
@@ -1751,8 +1816,9 @@ struct UpdateConditionalForwarderResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) NetworkUpdateSettings: NetworkUpdateSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkUpdateSettings: NetworkUpdateSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDirectorySetupRequest:
     str DirectoryId
     UpdateType UpdateType
@@ -1766,8 +1832,9 @@ struct UpdateDirectorySetupResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SelfManagedInstancesSettings: HybridCustomerInstancesSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedInstancesSettings: HybridCustomerInstancesSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateHybridADRequest:
     str DirectoryId
     Optional[HybridAdministratorAccountUpdate] HybridAdministratorAccountUpdate
@@ -1799,8 +1866,9 @@ struct UpdateNumberOfDomainControllersResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) RadiusSettings: RadiusSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RadiusSettings: RadiusSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRadiusRequest:
     str DirectoryId
     RadiusSettings RadiusSettings
@@ -1810,8 +1878,9 @@ struct UpdateRadiusResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Settings: list[Setting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: list[Setting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSettingsRequest:
     str DirectoryId
     list[Setting] Settings
@@ -1980,42 +2049,569 @@ def ds_error_from_code(str code) -> Directory_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddIpRoutes (input AddIpRoutesRequest)
-#   AddRegion (input AddRegionRequest)
-#   AddTagsToResource (input AddTagsToResourceRequest)
-#   ConnectDirectory (input ConnectDirectoryRequest)
-#   CreateComputer (input CreateComputerRequest)
-#   CreateConditionalForwarder (input CreateConditionalForwarderRequest)
-#   CreateDirectory (input CreateDirectoryRequest)
-#   CreateHybridAD (input CreateHybridADRequest)
-#   CreateMicrosoftAD (input CreateMicrosoftADRequest)
-#   CreateTrust (input CreateTrustRequest)
-#   DescribeConditionalForwarders (input DescribeConditionalForwardersRequest)
-#   DescribeDirectories (input DescribeDirectoriesRequest)
-#   DescribeDomainControllers (input DescribeDomainControllersRequest)
-#   DescribeEventTopics (input DescribeEventTopicsRequest)
-#   DescribeSharedDirectories (input DescribeSharedDirectoriesRequest)
-#   DescribeSnapshots (input DescribeSnapshotsRequest)
-#   DescribeTrusts (input DescribeTrustsRequest)
-#   EnableRadius (input EnableRadiusRequest)
-#   RemoveIpRoutes (input RemoveIpRoutesRequest)
-#   RemoveTagsFromResource (input RemoveTagsFromResourceRequest)
-#   StartADAssessment (input StartADAssessmentRequest)
-#   UpdateConditionalForwarder (input UpdateConditionalForwarderRequest)
-#   UpdateDirectorySetup (input UpdateDirectorySetupRequest)
-#   UpdateHybridAD (input UpdateHybridADRequest)
-#   UpdateRadius (input UpdateRadiusRequest)
-#   UpdateSettings (input UpdateSettingsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ds_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeDirectories (input not derivable (no generated method))
-#   DescribeDomainControllers (input not derivable (no generated method))
-#   DescribeSharedDirectories (input not derivable (no generated method))
-#   DescribeSnapshots (input not derivable (no generated method))
-#   DescribeTrusts (input not derivable (no generated method))
+def ds_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ds_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddIpRoutesRequest to a compact JSON object (declaration order).
+def add_ip_routes_request_to_json(AddIpRoutesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    list[str] e0 = []
+    for x0 in v.IpRoutes:
+        e0.append(x0.to_json())
+    parts.append("\"IpRoutes\":" + ds_json_arr(e0))
+    if v.UpdateSecurityGroupForDirectoryControllers.is_some():
+        auto u1 = v.UpdateSecurityGroupForDirectoryControllers.unwrap()
+        parts.append("\"UpdateSecurityGroupForDirectoryControllers\":" + json.dumps(JsonValue.Bool(u1)))
+    return ds_json_obj(parts)
+
+# Serialize AddRegionRequest to a compact JSON object (declaration order).
+def add_region_request_to_json(AddRegionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"RegionName\":" + ds_json_str(v.RegionName))
+    parts.append("\"VPCSettings\":" + directory_vpc_settings_to_json(v.VPCSettings))
+    return ds_json_obj(parts)
+
+# Serialize AddTagsToResourceRequest to a compact JSON object (declaration order).
+def add_tags_to_resource_request_to_json(AddTagsToResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + ds_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + ds_json_arr(e0))
+    return ds_json_obj(parts)
+
+# Serialize AssessmentConfiguration to a compact JSON object (declaration order).
+def assessment_configuration_to_json(AssessmentConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CustomerDnsIps:
+        e0.append(ds_json_str(x0))
+    parts.append("\"CustomerDnsIps\":" + ds_json_arr(e0))
+    parts.append("\"DnsName\":" + ds_json_str(v.DnsName))
+    parts.append("\"VpcSettings\":" + directory_vpc_settings_to_json(v.VpcSettings))
+    list[str] e1 = []
+    for x1 in v.InstanceIds:
+        e1.append(ds_json_str(x1))
+    parts.append("\"InstanceIds\":" + ds_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ds_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + ds_json_arr(e3))
+    return ds_json_obj(parts)
+
+# Serialize ConnectDirectoryRequest to a compact JSON object (declaration order).
+def connect_directory_request_to_json(ConnectDirectoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ds_json_str(v.Name))
+    if v.ShortName.is_some():
+        auto u0 = v.ShortName.unwrap()
+        parts.append("\"ShortName\":" + ds_json_str(u0))
+    parts.append("\"Password\":" + ds_json_str(v.Password))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + ds_json_str(u1))
+    parts.append("\"Size\":" + v.Size.to_json())
+    parts.append("\"ConnectSettings\":" + directory_connect_settings_to_json(v.ConnectSettings))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + ds_json_arr(e3))
+    if v.NetworkType.is_some():
+        auto u4 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u4.to_json())
+    return ds_json_obj(parts)
+
+# Serialize CreateComputerRequest to a compact JSON object (declaration order).
+def create_computer_request_to_json(CreateComputerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"ComputerName\":" + ds_json_str(v.ComputerName))
+    parts.append("\"Password\":" + ds_json_str(v.Password))
+    if v.OrganizationalUnitDistinguishedName.is_some():
+        auto u0 = v.OrganizationalUnitDistinguishedName.unwrap()
+        parts.append("\"OrganizationalUnitDistinguishedName\":" + ds_json_str(u0))
+    if v.ComputerAttributes.is_some():
+        auto u1 = v.ComputerAttributes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ComputerAttributes\":" + ds_json_arr(e2))
+    return ds_json_obj(parts)
+
+# Serialize CreateConditionalForwarderRequest to a compact JSON object (declaration order).
+def create_conditional_forwarder_request_to_json(CreateConditionalForwarderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"RemoteDomainName\":" + ds_json_str(v.RemoteDomainName))
+    if v.DnsIpAddrs.is_some():
+        auto u0 = v.DnsIpAddrs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"DnsIpAddrs\":" + ds_json_arr(e1))
+    if v.DnsIpv6Addrs.is_some():
+        auto u2 = v.DnsIpv6Addrs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ds_json_str(x3))
+        parts.append("\"DnsIpv6Addrs\":" + ds_json_arr(e3))
+    return ds_json_obj(parts)
+
+# Serialize CreateDirectoryRequest to a compact JSON object (declaration order).
+def create_directory_request_to_json(CreateDirectoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ds_json_str(v.Name))
+    if v.ShortName.is_some():
+        auto u0 = v.ShortName.unwrap()
+        parts.append("\"ShortName\":" + ds_json_str(u0))
+    parts.append("\"Password\":" + ds_json_str(v.Password))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + ds_json_str(u1))
+    parts.append("\"Size\":" + v.Size.to_json())
+    if v.VpcSettings.is_some():
+        auto u2 = v.VpcSettings.unwrap()
+        parts.append("\"VpcSettings\":" + directory_vpc_settings_to_json(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + ds_json_arr(e4))
+    if v.NetworkType.is_some():
+        auto u5 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u5.to_json())
+    return ds_json_obj(parts)
+
+# Serialize CreateHybridADRequest to a compact JSON object (declaration order).
+def create_hybrid_ad_request_to_json(CreateHybridADRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SecretArn\":" + ds_json_str(v.SecretArn))
+    parts.append("\"AssessmentId\":" + ds_json_str(v.AssessmentId))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + ds_json_arr(e1))
+    return ds_json_obj(parts)
+
+# Serialize CreateMicrosoftADRequest to a compact JSON object (declaration order).
+def create_microsoft_ad_request_to_json(CreateMicrosoftADRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ds_json_str(v.Name))
+    if v.ShortName.is_some():
+        auto u0 = v.ShortName.unwrap()
+        parts.append("\"ShortName\":" + ds_json_str(u0))
+    parts.append("\"Password\":" + ds_json_str(v.Password))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + ds_json_str(u1))
+    parts.append("\"VpcSettings\":" + directory_vpc_settings_to_json(v.VpcSettings))
+    if v.Edition.is_some():
+        auto u2 = v.Edition.unwrap()
+        parts.append("\"Edition\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + ds_json_arr(e4))
+    if v.NetworkType.is_some():
+        auto u5 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u5.to_json())
+    return ds_json_obj(parts)
+
+# Serialize CreateTrustRequest to a compact JSON object (declaration order).
+def create_trust_request_to_json(CreateTrustRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"RemoteDomainName\":" + ds_json_str(v.RemoteDomainName))
+    parts.append("\"TrustPassword\":" + ds_json_str(v.TrustPassword))
+    parts.append("\"TrustDirection\":" + v.TrustDirection.to_json())
+    if v.TrustType.is_some():
+        auto u0 = v.TrustType.unwrap()
+        parts.append("\"TrustType\":" + u0.to_json())
+    if v.ConditionalForwarderIpAddrs.is_some():
+        auto u1 = v.ConditionalForwarderIpAddrs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ds_json_str(x2))
+        parts.append("\"ConditionalForwarderIpAddrs\":" + ds_json_arr(e2))
+    if v.ConditionalForwarderIpv6Addrs.is_some():
+        auto u3 = v.ConditionalForwarderIpv6Addrs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ds_json_str(x4))
+        parts.append("\"ConditionalForwarderIpv6Addrs\":" + ds_json_arr(e4))
+    if v.SelectiveAuth.is_some():
+        auto u5 = v.SelectiveAuth.unwrap()
+        parts.append("\"SelectiveAuth\":" + u5.to_json())
+    return ds_json_obj(parts)
+
+# Serialize DescribeConditionalForwardersRequest to a compact JSON object (declaration order).
+def describe_conditional_forwarders_request_to_json(DescribeConditionalForwardersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    if v.RemoteDomainNames.is_some():
+        auto u0 = v.RemoteDomainNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"RemoteDomainNames\":" + ds_json_arr(e1))
+    return ds_json_obj(parts)
+
+# Serialize DescribeDirectoriesRequest to a compact JSON object (declaration order).
+def describe_directories_request_to_json(DescribeDirectoriesRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryIds.is_some():
+        auto u0 = v.DirectoryIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"DirectoryIds\":" + ds_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ds_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return ds_json_obj(parts)
+
+# Serialize DescribeDomainControllersRequest to a compact JSON object (declaration order).
+def describe_domain_controllers_request_to_json(DescribeDomainControllersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    if v.DomainControllerIds.is_some():
+        auto u0 = v.DomainControllerIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"DomainControllerIds\":" + ds_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ds_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return ds_json_obj(parts)
+
+# Serialize DescribeEventTopicsRequest to a compact JSON object (declaration order).
+def describe_event_topics_request_to_json(DescribeEventTopicsRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + ds_json_str(u0))
+    if v.TopicNames.is_some():
+        auto u1 = v.TopicNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ds_json_str(x2))
+        parts.append("\"TopicNames\":" + ds_json_arr(e2))
+    return ds_json_obj(parts)
+
+# Serialize DescribeSharedDirectoriesRequest to a compact JSON object (declaration order).
+def describe_shared_directories_request_to_json(DescribeSharedDirectoriesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OwnerDirectoryId\":" + ds_json_str(v.OwnerDirectoryId))
+    if v.SharedDirectoryIds.is_some():
+        auto u0 = v.SharedDirectoryIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"SharedDirectoryIds\":" + ds_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ds_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return ds_json_obj(parts)
+
+# Serialize DescribeSnapshotsRequest to a compact JSON object (declaration order).
+def describe_snapshots_request_to_json(DescribeSnapshotsRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + ds_json_str(u0))
+    if v.SnapshotIds.is_some():
+        auto u1 = v.SnapshotIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ds_json_str(x2))
+        parts.append("\"SnapshotIds\":" + ds_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ds_json_str(u3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    return ds_json_obj(parts)
+
+# Serialize DescribeTrustsRequest to a compact JSON object (declaration order).
+def describe_trusts_request_to_json(DescribeTrustsRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + ds_json_str(u0))
+    if v.TrustIds.is_some():
+        auto u1 = v.TrustIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ds_json_str(x2))
+        parts.append("\"TrustIds\":" + ds_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ds_json_str(u3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    return ds_json_obj(parts)
+
+# Serialize DirectoryConnectSettings to a compact JSON object (declaration order).
+def directory_connect_settings_to_json(DirectoryConnectSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcId\":" + ds_json_str(v.VpcId))
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(ds_json_str(x0))
+    parts.append("\"SubnetIds\":" + ds_json_arr(e0))
+    if v.CustomerDnsIps.is_some():
+        auto u1 = v.CustomerDnsIps.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ds_json_str(x2))
+        parts.append("\"CustomerDnsIps\":" + ds_json_arr(e2))
+    if v.CustomerDnsIpsV6.is_some():
+        auto u3 = v.CustomerDnsIpsV6.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ds_json_str(x4))
+        parts.append("\"CustomerDnsIpsV6\":" + ds_json_arr(e4))
+    parts.append("\"CustomerUserName\":" + ds_json_str(v.CustomerUserName))
+    return ds_json_obj(parts)
+
+# Serialize DirectoryVpcSettings to a compact JSON object (declaration order).
+def directory_vpc_settings_to_json(DirectoryVpcSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcId\":" + ds_json_str(v.VpcId))
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(ds_json_str(x0))
+    parts.append("\"SubnetIds\":" + ds_json_arr(e0))
+    return ds_json_obj(parts)
+
+# Serialize EnableRadiusRequest to a compact JSON object (declaration order).
+def enable_radius_request_to_json(EnableRadiusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"RadiusSettings\":" + radius_settings_to_json(v.RadiusSettings))
+    return ds_json_obj(parts)
+
+# Serialize HybridCustomerInstancesSettings to a compact JSON object (declaration order).
+def hybrid_customer_instances_settings_to_json(HybridCustomerInstancesSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CustomerDnsIps:
+        e0.append(ds_json_str(x0))
+    parts.append("\"CustomerDnsIps\":" + ds_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.InstanceIds:
+        e1.append(ds_json_str(x1))
+    parts.append("\"InstanceIds\":" + ds_json_arr(e1))
+    return ds_json_obj(parts)
+
+# Serialize NetworkUpdateSettings to a compact JSON object (declaration order).
+def network_update_settings_to_json(NetworkUpdateSettings v) -> str:
+    list[str] parts = []
+    if v.NetworkType.is_some():
+        auto u0 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u0.to_json())
+    if v.CustomerDnsIpsV6.is_some():
+        auto u1 = v.CustomerDnsIpsV6.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ds_json_str(x2))
+        parts.append("\"CustomerDnsIpsV6\":" + ds_json_arr(e2))
+    return ds_json_obj(parts)
+
+# Serialize RadiusSettings to a compact JSON object (declaration order).
+def radius_settings_to_json(RadiusSettings v) -> str:
+    list[str] parts = []
+    if v.RadiusServers.is_some():
+        auto u0 = v.RadiusServers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"RadiusServers\":" + ds_json_arr(e1))
+    if v.RadiusServersIpv6.is_some():
+        auto u2 = v.RadiusServersIpv6.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ds_json_str(x3))
+        parts.append("\"RadiusServersIpv6\":" + ds_json_arr(e3))
+    if v.RadiusPort.is_some():
+        auto u4 = v.RadiusPort.unwrap()
+        parts.append("\"RadiusPort\":" + str(u4))
+    if v.RadiusTimeout.is_some():
+        auto u5 = v.RadiusTimeout.unwrap()
+        parts.append("\"RadiusTimeout\":" + str(u5))
+    if v.RadiusRetries.is_some():
+        auto u6 = v.RadiusRetries.unwrap()
+        parts.append("\"RadiusRetries\":" + str(u6))
+    if v.SharedSecret.is_some():
+        auto u7 = v.SharedSecret.unwrap()
+        parts.append("\"SharedSecret\":" + ds_json_str(u7))
+    if v.AuthenticationProtocol.is_some():
+        auto u8 = v.AuthenticationProtocol.unwrap()
+        parts.append("\"AuthenticationProtocol\":" + u8.to_json())
+    if v.DisplayLabel.is_some():
+        auto u9 = v.DisplayLabel.unwrap()
+        parts.append("\"DisplayLabel\":" + ds_json_str(u9))
+    if v.UseSameUsername.is_some():
+        auto u10 = v.UseSameUsername.unwrap()
+        parts.append("\"UseSameUsername\":" + json.dumps(JsonValue.Bool(u10)))
+    return ds_json_obj(parts)
+
+# Serialize RemoveIpRoutesRequest to a compact JSON object (declaration order).
+def remove_ip_routes_request_to_json(RemoveIpRoutesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    if v.CidrIps.is_some():
+        auto u0 = v.CidrIps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"CidrIps\":" + ds_json_arr(e1))
+    if v.CidrIpv6s.is_some():
+        auto u2 = v.CidrIpv6s.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ds_json_str(x3))
+        parts.append("\"CidrIpv6s\":" + ds_json_arr(e3))
+    return ds_json_obj(parts)
+
+# Serialize RemoveTagsFromResourceRequest to a compact JSON object (declaration order).
+def remove_tags_from_resource_request_to_json(RemoveTagsFromResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + ds_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(ds_json_str(x0))
+    parts.append("\"TagKeys\":" + ds_json_arr(e0))
+    return ds_json_obj(parts)
+
+# Serialize StartADAssessmentRequest to a compact JSON object (declaration order).
+def start_ad_assessment_request_to_json(StartADAssessmentRequest v) -> str:
+    list[str] parts = []
+    if v.AssessmentConfiguration.is_some():
+        auto u0 = v.AssessmentConfiguration.unwrap()
+        parts.append("\"AssessmentConfiguration\":" + assessment_configuration_to_json(u0))
+    if v.DirectoryId.is_some():
+        auto u1 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + ds_json_str(u1))
+    return ds_json_obj(parts)
+
+# Serialize UpdateConditionalForwarderRequest to a compact JSON object (declaration order).
+def update_conditional_forwarder_request_to_json(UpdateConditionalForwarderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"RemoteDomainName\":" + ds_json_str(v.RemoteDomainName))
+    if v.DnsIpAddrs.is_some():
+        auto u0 = v.DnsIpAddrs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ds_json_str(x1))
+        parts.append("\"DnsIpAddrs\":" + ds_json_arr(e1))
+    if v.DnsIpv6Addrs.is_some():
+        auto u2 = v.DnsIpv6Addrs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ds_json_str(x3))
+        parts.append("\"DnsIpv6Addrs\":" + ds_json_arr(e3))
+    return ds_json_obj(parts)
+
+# Serialize UpdateDirectorySetupRequest to a compact JSON object (declaration order).
+def update_directory_setup_request_to_json(UpdateDirectorySetupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"UpdateType\":" + v.UpdateType.to_json())
+    if v.OSUpdateSettings.is_some():
+        auto u0 = v.OSUpdateSettings.unwrap()
+        parts.append("\"OSUpdateSettings\":" + u0.to_json())
+    if v.DirectorySizeUpdateSettings.is_some():
+        auto u1 = v.DirectorySizeUpdateSettings.unwrap()
+        parts.append("\"DirectorySizeUpdateSettings\":" + u1.to_json())
+    if v.NetworkUpdateSettings.is_some():
+        auto u2 = v.NetworkUpdateSettings.unwrap()
+        parts.append("\"NetworkUpdateSettings\":" + network_update_settings_to_json(u2))
+    if v.CreateSnapshotBeforeUpdate.is_some():
+        auto u3 = v.CreateSnapshotBeforeUpdate.unwrap()
+        parts.append("\"CreateSnapshotBeforeUpdate\":" + json.dumps(JsonValue.Bool(u3)))
+    return ds_json_obj(parts)
+
+# Serialize UpdateHybridADRequest to a compact JSON object (declaration order).
+def update_hybrid_ad_request_to_json(UpdateHybridADRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    if v.HybridAdministratorAccountUpdate.is_some():
+        auto u0 = v.HybridAdministratorAccountUpdate.unwrap()
+        parts.append("\"HybridAdministratorAccountUpdate\":" + u0.to_json())
+    if v.SelfManagedInstancesSettings.is_some():
+        auto u1 = v.SelfManagedInstancesSettings.unwrap()
+        parts.append("\"SelfManagedInstancesSettings\":" + hybrid_customer_instances_settings_to_json(u1))
+    return ds_json_obj(parts)
+
+# Serialize UpdateRadiusRequest to a compact JSON object (declaration order).
+def update_radius_request_to_json(UpdateRadiusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    parts.append("\"RadiusSettings\":" + radius_settings_to_json(v.RadiusSettings))
+    return ds_json_obj(parts)
+
+# Serialize UpdateSettingsRequest to a compact JSON object (declaration order).
+def update_settings_request_to_json(UpdateSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+    list[str] e0 = []
+    for x0 in v.Settings:
+        e0.append(x0.to_json())
+    parts.append("\"Settings\":" + ds_json_arr(e0))
+    return ds_json_obj(parts)
 
 # A bound Directory_Service client: credentials + region, threaded into every operation.
 struct Directory_ServiceClient:
@@ -2028,11 +2624,35 @@ struct Directory_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AcceptSharedDirectory", body)
 
+    # AddIpRoutes
+    # errors: ClientException, DirectoryUnavailableException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, IpRouteLimitExceededException, ServiceException
+    def add_ip_routes(self, AddIpRoutesRequest input) -> str:
+        auto body = add_ip_routes_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AddIpRoutes", body)
+
+    # AddRegion
+    # errors: AccessDeniedException, ClientException, DirectoryAlreadyInRegionException, DirectoryDoesNotExistException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, RegionLimitExceededException, ServiceException, UnsupportedOperationException
+    def add_region(self, AddRegionRequest input) -> str:
+        auto body = add_region_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AddRegion", body)
+
+    # AddTagsToResource
+    # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, TagLimitExceededException
+    def add_tags_to_resource(self, AddTagsToResourceRequest input) -> str:
+        auto body = add_tags_to_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AddTagsToResource", body)
+
     # CancelSchemaExtension
     # errors: ClientException, EntityDoesNotExistException, ServiceException
     def cancel_schema_extension(self, CancelSchemaExtensionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CancelSchemaExtension", body)
+
+    # ConnectDirectory
+    # errors: ClientException, DirectoryLimitExceededException, InvalidParameterException, ServiceException
+    def connect_directory(self, ConnectDirectoryRequest input) -> str:
+        auto body = connect_directory_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ConnectDirectory", body)
 
     # CreateAlias
     # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException
@@ -2040,17 +2660,53 @@ struct Directory_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateAlias", body)
 
+    # CreateComputer
+    # errors: AuthenticationFailedException, ClientException, DirectoryUnavailableException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def create_computer(self, CreateComputerRequest input) -> str:
+        auto body = create_computer_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateComputer", body)
+
+    # CreateConditionalForwarder
+    # errors: ClientException, DirectoryUnavailableException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def create_conditional_forwarder(self, CreateConditionalForwarderRequest input) -> str:
+        auto body = create_conditional_forwarder_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateConditionalForwarder", body)
+
+    # CreateDirectory
+    # errors: ClientException, DirectoryLimitExceededException, InvalidParameterException, ServiceException
+    def create_directory(self, CreateDirectoryRequest input) -> str:
+        auto body = create_directory_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateDirectory", body)
+
+    # CreateHybridAD
+    # errors: ADAssessmentLimitExceededException, ClientException, DirectoryLimitExceededException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def create_hybrid_ad(self, CreateHybridADRequest input) -> str:
+        auto body = create_hybrid_ad_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateHybridAD", body)
+
     # CreateLogSubscription
     # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InsufficientPermissionsException, ServiceException, UnsupportedOperationException
     def create_log_subscription(self, CreateLogSubscriptionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateLogSubscription", body)
 
+    # CreateMicrosoftAD
+    # errors: ClientException, DirectoryLimitExceededException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def create_microsoft_ad(self, CreateMicrosoftADRequest input) -> str:
+        auto body = create_microsoft_ad_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateMicrosoftAD", body)
+
     # CreateSnapshot
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, SnapshotLimitExceededException
     def create_snapshot(self, CreateSnapshotRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateSnapshot", body)
+
+    # CreateTrust
+    # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def create_trust(self, CreateTrustRequest input) -> str:
+        auto body = create_trust_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateTrust", body)
 
     # DeleteADAssessment
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
@@ -2124,11 +2780,35 @@ struct Directory_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeClientAuthenticationSettings", body)
 
+    # DescribeConditionalForwarders
+    # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def describe_conditional_forwarders(self, DescribeConditionalForwardersRequest input) -> str:
+        auto body = describe_conditional_forwarders_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeConditionalForwarders", body)
+
+    # DescribeDirectories
+    # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
+    def describe_directories(self, DescribeDirectoriesRequest input) -> str:
+        auto body = describe_directories_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDirectories", body)
+
     # DescribeDirectoryDataAccess
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, ServiceException, UnsupportedOperationException
     def describe_directory_data_access(self, DescribeDirectoryDataAccessRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDirectoryDataAccess", body)
+
+    # DescribeDomainControllers
+    # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def describe_domain_controllers(self, DescribeDomainControllersRequest input) -> str:
+        auto body = describe_domain_controllers_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDomainControllers", body)
+
+    # DescribeEventTopics
+    # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
+    def describe_event_topics(self, DescribeEventTopicsRequest input) -> str:
+        auto body = describe_event_topics_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeEventTopics", body)
 
     # DescribeHybridADUpdate
     # errors: ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
@@ -2153,6 +2833,24 @@ struct Directory_ServiceClient:
     def describe_settings(self, DescribeSettingsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSettings", body)
+
+    # DescribeSharedDirectories
+    # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def describe_shared_directories(self, DescribeSharedDirectoriesRequest input) -> str:
+        auto body = describe_shared_directories_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSharedDirectories", body)
+
+    # DescribeSnapshots
+    # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
+    def describe_snapshots(self, DescribeSnapshotsRequest input) -> str:
+        auto body = describe_snapshots_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSnapshots", body)
+
+    # DescribeTrusts
+    # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def describe_trusts(self, DescribeTrustsRequest input) -> str:
+        auto body = describe_trusts_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeTrusts", body)
 
     # DescribeUpdateDirectory
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
@@ -2219,6 +2917,12 @@ struct Directory_ServiceClient:
     def enable_ldaps(self, EnableLDAPSRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableLDAPS", body)
+
+    # EnableRadius
+    # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException
+    def enable_radius(self, EnableRadiusRequest input) -> str:
+        auto body = enable_radius_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableRadius", body)
 
     # EnableSso
     # errors: AuthenticationFailedException, ClientException, EntityDoesNotExistException, InsufficientPermissionsException, ServiceException
@@ -2292,11 +2996,23 @@ struct Directory_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RejectSharedDirectory", body)
 
+    # RemoveIpRoutes
+    # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException
+    def remove_ip_routes(self, RemoveIpRoutesRequest input) -> str:
+        auto body = remove_ip_routes_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RemoveIpRoutes", body)
+
     # RemoveRegion
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, ServiceException, UnsupportedOperationException
     def remove_region(self, RemoveRegionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RemoveRegion", body)
+
+    # RemoveTagsFromResource
+    # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
+    def remove_tags_from_resource(self, RemoveTagsFromResourceRequest input) -> str:
+        auto body = remove_tags_from_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RemoveTagsFromResource", body)
 
     # ResetUserPassword
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidPasswordException, ServiceException, UnsupportedOperationException, UserDoesNotExistException
@@ -2316,6 +3032,12 @@ struct Directory_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ShareDirectory", body)
 
+    # StartADAssessment
+    # errors: ADAssessmentLimitExceededException, ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def start_ad_assessment(self, StartADAssessmentRequest input) -> str:
+        auto body = start_ad_assessment_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "StartADAssessment", body)
+
     # StartSchemaExtension
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, SnapshotLimitExceededException
     def start_schema_extension(self, StartSchemaExtensionRequest input) -> str:
@@ -2328,11 +3050,41 @@ struct Directory_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UnshareDirectory", body)
 
+    # UpdateConditionalForwarder
+    # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def update_conditional_forwarder(self, UpdateConditionalForwarderRequest input) -> str:
+        auto body = update_conditional_forwarder_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateConditionalForwarder", body)
+
+    # UpdateDirectorySetup
+    # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryInDesiredStateException, DirectoryUnavailableException, InvalidParameterException, ServiceException, SnapshotLimitExceededException, UnsupportedOperationException
+    def update_directory_setup(self, UpdateDirectorySetupRequest input) -> str:
+        auto body = update_directory_setup_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateDirectorySetup", body)
+
+    # UpdateHybridAD
+    # errors: ADAssessmentLimitExceededException, ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
+    def update_hybrid_ad(self, UpdateHybridADRequest input) -> str:
+        auto body = update_hybrid_ad_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateHybridAD", body)
+
     # UpdateNumberOfDomainControllers
     # errors: ClientException, DirectoryUnavailableException, DomainControllerLimitExceededException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
     def update_number_of_domain_controllers(self, UpdateNumberOfDomainControllersRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateNumberOfDomainControllers", body)
+
+    # UpdateRadius
+    # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
+    def update_radius(self, UpdateRadiusRequest input) -> str:
+        auto body = update_radius_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateRadius", body)
+
+    # UpdateSettings
+    # errors: ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, IncompatibleSettingsException, InvalidParameterException, ServiceException, UnsupportedOperationException, UnsupportedSettingsException
+    def update_settings(self, UpdateSettingsRequest input) -> str:
+        auto body = update_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateSettings", body)
 
     # UpdateTrust
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
@@ -2353,6 +3105,34 @@ struct Directory_ServiceClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeClientAuthenticationSettings", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeDirectories — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DirectoryDescriptions).
+    def paginate_describe_directories(self, DescribeDirectoriesRequest input):
+        auto host = endpoints.regional_host(ds_protocol().service, self.region)
+        while True:
+            auto body = describe_directories_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDirectories", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeDomainControllers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DomainControllers).
+    def paginate_describe_domain_controllers(self, DescribeDomainControllersRequest input):
+        auto host = endpoints.regional_host(ds_protocol().service, self.region)
+        while True:
+            auto body = describe_domain_controllers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDomainControllers", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -2381,6 +3161,48 @@ struct Directory_ServiceClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeRegions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSharedDirectories — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SharedDirectories).
+    def paginate_describe_shared_directories(self, DescribeSharedDirectoriesRequest input):
+        auto host = endpoints.regional_host(ds_protocol().service, self.region)
+        while True:
+            auto body = describe_shared_directories_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSharedDirectories", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSnapshots — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Snapshots).
+    def paginate_describe_snapshots(self, DescribeSnapshotsRequest input):
+        auto host = endpoints.regional_host(ds_protocol().service, self.region)
+        while True:
+            auto body = describe_snapshots_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSnapshots", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeTrusts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Trusts).
+    def paginate_describe_trusts(self, DescribeTrustsRequest input):
+        auto host = endpoints.regional_host(ds_protocol().service, self.region)
+        while True:
+            auto body = describe_trusts_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeTrusts", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

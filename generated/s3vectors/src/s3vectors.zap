@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 21 operations — 13 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 21 operations — 20 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (47 @derive(Json)), 3 enums, 13 error variants.
-#   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -163,13 +163,15 @@ struct GetIndexInput:
     Optional[str] indexName
     Optional[str] indexArn
 
-# no @derive(Json): member(s) index: Index not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) index: Index not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIndexOutput:
     Index index
 
-# no @derive(Json): member(s) data: VectorData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: VectorData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutputVector:
     str key
     Optional[VectorData] data
@@ -205,13 +207,15 @@ struct GetVectorsInput:
     Optional[bool] returnData
     Optional[bool] returnMetadata
 
-# no @derive(Json): member(s) vectors: list[GetOutputVector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vectors: list[GetOutputVector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVectorsOutput:
     list[GetOutputVector] vectors
 
-# no @derive(Json): member(s) metadataConfiguration: MetadataConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataConfiguration: MetadataConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Index:
     str vectorBucketName
     str indexName
@@ -260,14 +264,16 @@ struct ListIndexesInput:
     Optional[str] nextToken
     Optional[str] prefix
 
-# no @derive(Json): member(s) indexes: list[IndexSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) indexes: list[IndexSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndexesOutput:
     Optional[str] nextToken
     list[IndexSummary] indexes
 
-# no @derive(Json): member(s) data: VectorData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: VectorData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutputVector:
     str key
     Optional[VectorData] data
@@ -278,8 +284,9 @@ struct ListOutputVector:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     dict[str, str] tags
 
@@ -290,8 +297,9 @@ struct ListVectorBucketsInput:
     Optional[str] nextToken
     Optional[str] prefix
 
-# no @derive(Json): member(s) vectorBuckets: list[VectorBucketSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vectorBuckets: list[VectorBucketSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVectorBucketsOutput:
     Optional[str] nextToken
     list[VectorBucketSummary] vectorBuckets
@@ -309,14 +317,16 @@ struct ListVectorsInput:
     Optional[bool] returnData
     Optional[bool] returnMetadata
 
-# no @derive(Json): member(s) vectors: list[ListOutputVector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vectors: list[ListOutputVector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVectorsOutput:
     Optional[str] nextToken
     list[ListOutputVector] vectors
 
-# no @derive(Json): member(s) nonFilterableMetadataKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nonFilterableMetadataKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataConfiguration:
     list[str] nonFilterableMetadataKeys
 
@@ -324,8 +334,9 @@ struct MetadataConfiguration:
 struct NotFoundException:
     str message
 
-# no @derive(Json): member(s) data: VectorData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: VectorData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutInputVector:
     str key
     VectorData data
@@ -388,8 +399,9 @@ struct QueryVectorsInput:
     Optional[bool] returnDistance
     Optional[str] nextToken
 
-# no @derive(Json): member(s) vectors: list[QueryOutputVector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vectors: list[QueryOutputVector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryVectorsOutput:
     list[QueryOutputVector] vectors
     DistanceMetric distanceMetric
@@ -446,8 +458,9 @@ struct UpdateIndexModeOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -471,8 +484,9 @@ struct VectorBucketSummary:
     str vectorBucketArn
     DateTime creationTime
 
-# no @derive(Json): member(s) float32: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) float32: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorData:
     # wire name "float32" differs from field; derive rename is a #346 follow-up
     Optional[list[float64]] float32_
@@ -538,18 +552,7 @@ def s3vectors_error_from_code(str code) -> S3VectorsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateIndex (document member `metadataConfiguration: MetadataConfiguration` is not serializable by derive)
-#   CreateVectorBucket (document member `tags: dict[str, str]` is not serializable by derive)
-#   DeleteVectors (document member `keys: list[str]` is not serializable by derive)
-#   GetVectors (document member `keys: list[str]` is not serializable by derive)
-#   PutVectors (document member `vectors: list[PutInputVector]` is not serializable by derive)
-#   QueryVectors (document member `queryVector: VectorData` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   QueryVectors (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -643,10 +646,120 @@ struct UpdateIndexModeDocument:
     Optional[str] indexArn
     IndexMode indexMode
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def s3vectors_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def s3vectors_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def s3vectors_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize MetadataConfiguration to a compact JSON object (declaration order).
+def metadata_configuration_to_json(MetadataConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.nonFilterableMetadataKeys:
+        e0.append(s3vectors_json_str(x0))
+    parts.append("\"nonFilterableMetadataKeys\":" + s3vectors_json_arr(e0))
+    return s3vectors_json_obj(parts)
+
+# Serialize PutInputVector to a compact JSON object (declaration order).
+def put_input_vector_to_json(PutInputVector v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + s3vectors_json_str(v.key))
+    parts.append("\"data\":" + vector_data_to_json(v.data))
+    if v.metadata.is_some():
+        auto u0 = v.metadata.unwrap()
+        parts.append("\"metadata\":" + u0.to_json())
+    return s3vectors_json_obj(parts)
+
+# Serialize VectorData to a compact JSON object (declaration order).
+def vector_data_to_json(VectorData v) -> str:
+    list[str] parts = []
+    if v.float32_.is_some():
+        auto u0 = v.float32_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"float32\":" + s3vectors_json_arr(e1))
+    return s3vectors_json_obj(parts)
+
 # A bound S3Vectors client: credentials + region, threaded into every operation.
 struct S3VectorsClient:
     core.Credentials creds
     str region
+
+    # CreateIndex  POST /CreateIndex
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def create_index(self, CreateIndexInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vectorBucketName.is_some():
+            auto u0 = input.vectorBucketName.unwrap()
+            parts.append("\"vectorBucketName\":" + s3vectors_json_str(u0))
+        if input.vectorBucketArn.is_some():
+            auto u1 = input.vectorBucketArn.unwrap()
+            parts.append("\"vectorBucketArn\":" + s3vectors_json_str(u1))
+        parts.append("\"indexName\":" + s3vectors_json_str(input.indexName))
+        parts.append("\"dataType\":" + s3vectors_json_str(input.dataType))
+        parts.append("\"dimension\":" + str(input.dimension))
+        parts.append("\"distanceMetric\":" + input.distanceMetric.to_json())
+        if input.metadataConfiguration.is_some():
+            auto u2 = input.metadataConfiguration.unwrap()
+            parts.append("\"metadataConfiguration\":" + metadata_configuration_to_json(u2))
+        if input.encryptionConfiguration.is_some():
+            auto u3 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u3.to_json())
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(s3vectors_json_str(k5) + ":" + s3vectors_json_str(u4[k5]))
+            parts.append("\"tags\":" + s3vectors_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
+
+    # CreateVectorBucket  POST /CreateVectorBucket
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def create_vector_bucket(self, CreateVectorBucketInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateVectorBucket", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"vectorBucketName\":" + s3vectors_json_str(input.vectorBucketName))
+        if input.encryptionConfiguration.is_some():
+            auto u0 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(s3vectors_json_str(k2) + ":" + s3vectors_json_str(u1[k2]))
+            parts.append("\"tags\":" + s3vectors_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
 
     # DeleteIndex  POST /DeleteIndex
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
@@ -675,6 +788,28 @@ struct S3VectorsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
 
+    # DeleteVectors  POST /DeleteVectors
+    # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def delete_vectors(self, DeleteVectorsInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vectorBucketName.is_some():
+            auto u0 = input.vectorBucketName.unwrap()
+            parts.append("\"vectorBucketName\":" + s3vectors_json_str(u0))
+        if input.indexName.is_some():
+            auto u1 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + s3vectors_json_str(u1))
+        if input.indexArn.is_some():
+            auto u2 = input.indexArn.unwrap()
+            parts.append("\"indexArn\":" + s3vectors_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.keys:
+            e3.append(s3vectors_json_str(x3))
+        parts.append("\"keys\":" + s3vectors_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
+
     # GetIndex  POST /GetIndex
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def get_index(self, GetIndexInput input) -> str:
@@ -700,6 +835,34 @@ struct S3VectorsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/GetVectorBucketPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetVectorBucketPolicyDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
+
+    # GetVectors  POST /GetVectors
+    # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def get_vectors(self, GetVectorsInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vectorBucketName.is_some():
+            auto u0 = input.vectorBucketName.unwrap()
+            parts.append("\"vectorBucketName\":" + s3vectors_json_str(u0))
+        if input.indexName.is_some():
+            auto u1 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + s3vectors_json_str(u1))
+        if input.indexArn.is_some():
+            auto u2 = input.indexArn.unwrap()
+            parts.append("\"indexArn\":" + s3vectors_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.keys:
+            e3.append(s3vectors_json_str(x3))
+        parts.append("\"keys\":" + s3vectors_json_arr(e3))
+        if input.returnData.is_some():
+            auto u4 = input.returnData.unwrap()
+            parts.append("\"returnData\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.returnMetadata.is_some():
+            auto u5 = input.returnMetadata.unwrap()
+            parts.append("\"returnMetadata\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
 
     # ListIndexes  POST /ListIndexes
@@ -756,6 +919,78 @@ struct S3VectorsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
 
+    # PutVectors  POST /PutVectors
+    # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def put_vectors(self, PutVectorsInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vectorBucketName.is_some():
+            auto u0 = input.vectorBucketName.unwrap()
+            parts.append("\"vectorBucketName\":" + s3vectors_json_str(u0))
+        if input.indexName.is_some():
+            auto u1 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + s3vectors_json_str(u1))
+        if input.indexArn.is_some():
+            auto u2 = input.indexArn.unwrap()
+            parts.append("\"indexArn\":" + s3vectors_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.vectors:
+            e3.append(put_input_vector_to_json(x3))
+        parts.append("\"vectors\":" + s3vectors_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
+
+    # QueryVectors  POST /QueryVectors
+    # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def query_vectors(self, QueryVectorsInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/QueryVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vectorBucketName.is_some():
+            auto u0 = input.vectorBucketName.unwrap()
+            parts.append("\"vectorBucketName\":" + s3vectors_json_str(u0))
+        if input.indexName.is_some():
+            auto u1 = input.indexName.unwrap()
+            parts.append("\"indexName\":" + s3vectors_json_str(u1))
+        if input.indexArn.is_some():
+            auto u2 = input.indexArn.unwrap()
+            parts.append("\"indexArn\":" + s3vectors_json_str(u2))
+        parts.append("\"topK\":" + str(input.topK))
+        parts.append("\"queryVector\":" + vector_data_to_json(input.queryVector))
+        if input.filter.is_some():
+            auto u3 = input.filter.unwrap()
+            parts.append("\"filter\":" + u3.to_json())
+        if input.queryMode.is_some():
+            auto u4 = input.queryMode.unwrap()
+            parts.append("\"queryMode\":" + u4.to_json())
+        if input.returnMetadata.is_some():
+            auto u5 = input.returnMetadata.unwrap()
+            parts.append("\"returnMetadata\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.returnDistance.is_some():
+            auto u6 = input.returnDistance.unwrap()
+            parts.append("\"returnDistance\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.nextToken.is_some():
+            auto u7 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + s3vectors_json_str(u7))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(s3vectors_json_str(k0) + ":" + s3vectors_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + s3vectors_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
+
     # UpdateIndexMode  POST /UpdateIndexMode
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def update_index_mode(self, UpdateIndexModeInput input) -> str:
@@ -797,6 +1032,19 @@ struct S3VectorsClient:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
         while True:
             auto raw = self.list_vectors(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for QueryVectors — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: vectors).
+    def paginate_query_vectors(self, QueryVectorsInput input):
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        while True:
+            auto raw = self.query_vectors(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

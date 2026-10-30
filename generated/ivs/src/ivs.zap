@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 46 operations — 32 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 46 operations — 45 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   131 structs (67 @derive(Json)), 15 enums, 11 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -171,8 +171,9 @@ struct AccessDeniedException:
     Optional[str] xAmznErrorType
     Optional[str] exceptionMessage
 
-# no @derive(Json): member(s) mediaTailorPlaybackConfigurations: list[MediaTailorPlaybackConfiguration], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mediaTailorPlaybackConfigurations: list[MediaTailorPlaybackConfiguration], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdConfiguration:
     str arn
     Optional[str] name
@@ -180,8 +181,9 @@ struct AdConfiguration:
     Optional[PostRollConfiguration] postRollConfiguration
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) mediaTailorPlaybackConfigurations: list[MediaTailorPlaybackConfiguration], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mediaTailorPlaybackConfigurations: list[MediaTailorPlaybackConfiguration], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdConfigurationSummary:
     str arn
     Optional[str] name
@@ -208,8 +210,9 @@ struct BatchError:
 struct BatchGetChannelRequest:
     list[str] arns
 
-# no @derive(Json): member(s) channels: list[Channel], errors: list[BatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[Channel], errors: list[BatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetChannelResponse:
     Optional[str] accessControlAllowOrigin
     Optional[str] accessControlExposeHeaders
@@ -226,8 +229,9 @@ struct BatchGetChannelResponse:
 struct BatchGetStreamKeyRequest:
     list[str] arns
 
-# no @derive(Json): member(s) streamKeys: list[StreamKey], errors: list[BatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamKeys: list[StreamKey], errors: list[BatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetStreamKeyResponse:
     Optional[str] accessControlAllowOrigin
     Optional[str] accessControlExposeHeaders
@@ -251,8 +255,9 @@ struct BatchStartViewerSessionRevocationError:
 struct BatchStartViewerSessionRevocationRequest:
     list[BatchStartViewerSessionRevocationViewerSession] viewerSessions
 
-# no @derive(Json): member(s) errors: list[BatchStartViewerSessionRevocationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchStartViewerSessionRevocationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStartViewerSessionRevocationResponse:
     Optional[str] accessControlAllowOrigin
     Optional[str] accessControlExposeHeaders
@@ -269,8 +274,9 @@ struct BatchStartViewerSessionRevocationViewerSession:
     str viewerId
     Optional[int64] viewerSessionVersionsLessThanOrEqualTo
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Channel:
     Optional[str] arn
     Optional[str] name
@@ -302,8 +308,9 @@ struct ChannelNotBroadcasting:
     Optional[str] xAmznErrorType
     Optional[str] exceptionMessage
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelSummary:
     Optional[str] arn
     Optional[str] name
@@ -338,8 +345,9 @@ struct CreateAdConfigurationRequest:
     Optional[PostRollConfiguration] postRollConfiguration
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) adConfiguration: AdConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adConfiguration: AdConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAdConfigurationResponse:
     AdConfiguration adConfiguration
 
@@ -360,8 +368,9 @@ struct CreateChannelRequest:
     Optional[str] adConfigurationArn
     Optional[str] failoverSlateConfigurationArn
 
-# no @derive(Json): member(s) channel: Channel, streamKey: StreamKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channel: Channel, streamKey: StreamKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelResponse:
     # wire name "channel" differs from field; derive rename is a #346 follow-up
     Optional[Channel] channel_
@@ -376,8 +385,9 @@ struct CreateFailoverSlateConfigurationRequest:
     Optional[int64] maxSlateDisplaySeconds
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) failoverSlateConfiguration: FailoverSlateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failoverSlateConfiguration: FailoverSlateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFailoverSlateConfigurationResponse:
     FailoverSlateConfiguration failoverSlateConfiguration
 
@@ -390,8 +400,9 @@ struct CreatePlaybackRestrictionPolicyRequest:
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) playbackRestrictionPolicy: PlaybackRestrictionPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) playbackRestrictionPolicy: PlaybackRestrictionPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePlaybackRestrictionPolicyResponse:
     Optional[PlaybackRestrictionPolicy] playbackRestrictionPolicy
 
@@ -405,8 +416,9 @@ struct CreateRecordingConfigurationRequest:
     Optional[int64] recordingReconnectWindowSeconds
     Optional[RenditionConfiguration] renditionConfiguration
 
-# no @derive(Json): member(s) recordingConfiguration: RecordingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordingConfiguration: RecordingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecordingConfigurationResponse:
     Optional[RecordingConfiguration] recordingConfiguration
 
@@ -416,8 +428,9 @@ struct CreateStreamKeyRequest:
     str channelArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) streamKey: StreamKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamKey: StreamKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStreamKeyResponse:
     Optional[StreamKey] streamKey
 
@@ -465,8 +478,9 @@ struct DeleteStreamKeyRequest:
 struct DestinationConfiguration:
     Optional[S3DestinationConfiguration] s3
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailoverSlateConfiguration:
     str arn
     Optional[str] name
@@ -476,8 +490,9 @@ struct FailoverSlateConfiguration:
     FailoverSlateConfigurationState state
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailoverSlateConfigurationSummary:
     str arn
     Optional[str] name
@@ -492,8 +507,9 @@ struct FailoverSlateConfigurationSummary:
 struct GetAdConfigurationRequest:
     str arn
 
-# no @derive(Json): member(s) adConfiguration: AdConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adConfiguration: AdConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAdConfigurationResponse:
     Optional[AdConfiguration] adConfiguration
 
@@ -502,8 +518,9 @@ struct GetAdConfigurationResponse:
 struct GetChannelRequest:
     str arn
 
-# no @derive(Json): member(s) channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelResponse:
     # wire name "channel" differs from field; derive rename is a #346 follow-up
     Optional[Channel] channel_
@@ -513,8 +530,9 @@ struct GetChannelResponse:
 struct GetFailoverSlateConfigurationRequest:
     str arn
 
-# no @derive(Json): member(s) failoverSlateConfiguration: FailoverSlateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failoverSlateConfiguration: FailoverSlateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFailoverSlateConfigurationResponse:
     FailoverSlateConfiguration failoverSlateConfiguration
 
@@ -523,8 +541,9 @@ struct GetFailoverSlateConfigurationResponse:
 struct GetPlaybackKeyPairRequest:
     str arn
 
-# no @derive(Json): member(s) keyPair: PlaybackKeyPair not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPair: PlaybackKeyPair not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPlaybackKeyPairResponse:
     Optional[PlaybackKeyPair] keyPair
 
@@ -533,8 +552,9 @@ struct GetPlaybackKeyPairResponse:
 struct GetPlaybackRestrictionPolicyRequest:
     str arn
 
-# no @derive(Json): member(s) playbackRestrictionPolicy: PlaybackRestrictionPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) playbackRestrictionPolicy: PlaybackRestrictionPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPlaybackRestrictionPolicyResponse:
     Optional[PlaybackRestrictionPolicy] playbackRestrictionPolicy
 
@@ -543,8 +563,9 @@ struct GetPlaybackRestrictionPolicyResponse:
 struct GetRecordingConfigurationRequest:
     str arn
 
-# no @derive(Json): member(s) recordingConfiguration: RecordingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordingConfiguration: RecordingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecordingConfigurationResponse:
     Optional[RecordingConfiguration] recordingConfiguration
 
@@ -553,8 +574,9 @@ struct GetRecordingConfigurationResponse:
 struct GetStreamKeyRequest:
     str arn
 
-# no @derive(Json): member(s) streamKey: StreamKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamKey: StreamKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamKeyResponse:
     Optional[StreamKey] streamKey
 
@@ -573,8 +595,9 @@ struct GetStreamSessionRequest:
     str channelArn
     Optional[str] streamId
 
-# no @derive(Json): member(s) streamSession: StreamSession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamSession: StreamSession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamSessionResponse:
     Optional[StreamSession] streamSession
 
@@ -585,8 +608,9 @@ struct ImportPlaybackKeyPairRequest:
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) keyPair: PlaybackKeyPair not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPair: PlaybackKeyPair not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportPlaybackKeyPairResponse:
     Optional[PlaybackKeyPair] keyPair
 
@@ -595,8 +619,9 @@ struct IngestConfiguration:
     Optional[VideoConfiguration] video
     Optional[AudioConfiguration] audio
 
-# no @derive(Json): member(s) videoConfigurations: list[VideoConfiguration], audioConfigurations: list[AudioConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) videoConfigurations: list[VideoConfiguration], audioConfigurations: list[AudioConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestConfigurations:
     list[VideoConfiguration] videoConfigurations
     list[AudioConfiguration] audioConfigurations
@@ -633,8 +658,9 @@ struct ListAdConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) adConfigurations: list[AdConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adConfigurations: list[AdConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAdConfigurationsResponse:
     list[AdConfigurationSummary] adConfigurations
     Optional[str] nextToken
@@ -650,8 +676,9 @@ struct ListChannelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) channels: list[ChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[ChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     list[ChannelSummary] channels
     Optional[str] nextToken
@@ -662,8 +689,9 @@ struct ListFailoverSlateConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) failoverSlateConfigurations: list[FailoverSlateConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failoverSlateConfigurations: list[FailoverSlateConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFailoverSlateConfigurationsResponse:
     list[FailoverSlateConfigurationSummary] failoverSlateConfigurations
     Optional[str] nextToken
@@ -674,8 +702,9 @@ struct ListPlaybackKeyPairsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) keyPairs: list[PlaybackKeyPairSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPairs: list[PlaybackKeyPairSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPlaybackKeyPairsResponse:
     list[PlaybackKeyPairSummary] keyPairs
     Optional[str] nextToken
@@ -686,8 +715,9 @@ struct ListPlaybackRestrictionPoliciesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) playbackRestrictionPolicies: list[PlaybackRestrictionPolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) playbackRestrictionPolicies: list[PlaybackRestrictionPolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPlaybackRestrictionPoliciesResponse:
     list[PlaybackRestrictionPolicySummary] playbackRestrictionPolicies
     Optional[str] nextToken
@@ -698,8 +728,9 @@ struct ListRecordingConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) recordingConfigurations: list[RecordingConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordingConfigurations: list[RecordingConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecordingConfigurationsResponse:
     list[RecordingConfigurationSummary] recordingConfigurations
     Optional[str] nextToken
@@ -711,8 +742,9 @@ struct ListStreamKeysRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) streamKeys: list[StreamKeySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamKeys: list[StreamKeySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamKeysResponse:
     list[StreamKeySummary] streamKeys
     Optional[str] nextToken
@@ -724,8 +756,9 @@ struct ListStreamSessionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) streamSessions: list[StreamSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streamSessions: list[StreamSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamSessionsResponse:
     list[StreamSessionSummary] streamSessions
     Optional[str] nextToken
@@ -737,8 +770,9 @@ struct ListStreamsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) streams: list[StreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streams: list[StreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsResponse:
     list[StreamSummary] streams
     Optional[str] nextToken
@@ -748,8 +782,9 @@ struct ListStreamsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -775,23 +810,26 @@ struct PendingVerification:
     Optional[str] xAmznErrorType
     Optional[str] exceptionMessage
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PlaybackKeyPair:
     Optional[str] arn
     Optional[str] name
     Optional[str] fingerprint
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PlaybackKeyPairSummary:
     Optional[str] arn
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) allowedCountries: list[str], allowedOrigins: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedCountries: list[str], allowedOrigins: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PlaybackRestrictionPolicy:
     str arn
     list[str] allowedCountries
@@ -800,8 +838,9 @@ struct PlaybackRestrictionPolicy:
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) allowedCountries: list[str], allowedOrigins: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedCountries: list[str], allowedOrigins: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PlaybackRestrictionPolicySummary:
     str arn
     list[str] allowedCountries
@@ -821,8 +860,9 @@ struct PutMetadataRequest:
     str channelArn
     str metadata
 
-# no @derive(Json): member(s) tags: dict[str, str], thumbnailConfiguration: ThumbnailConfiguration, renditionConfiguration: RenditionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], thumbnailConfiguration: ThumbnailConfiguration, renditionConfiguration: RenditionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordingConfiguration:
     str arn
     Optional[str] name
@@ -833,8 +873,9 @@ struct RecordingConfiguration:
     Optional[int64] recordingReconnectWindowSeconds
     Optional[RenditionConfiguration] renditionConfiguration
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordingConfigurationSummary:
     str arn
     Optional[str] name
@@ -842,8 +883,9 @@ struct RecordingConfigurationSummary:
     RecordingConfigurationState state
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) renditions: list[RenditionConfigurationRendition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) renditions: list[RenditionConfigurationRendition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenditionConfiguration:
     Optional[RenditionConfigurationRenditionSelection] renditionSelection
     Optional[list[RenditionConfigurationRendition]] renditions
@@ -938,23 +980,26 @@ struct StreamEvent:
 struct StreamFilters:
     Optional[StreamHealth] health
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamKey:
     Optional[str] arn
     Optional[str] value
     Optional[str] channelArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamKeySummary:
     Optional[str] arn
     Optional[str] channelArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) channel: Channel, ingestConfigurations: IngestConfigurations, recordingConfiguration: RecordingConfiguration, truncatedEvents: list[StreamEvent], failoverSlateConfiguration: FailoverSlateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channel: Channel, ingestConfigurations: IngestConfigurations, recordingConfiguration: RecordingConfiguration, truncatedEvents: list[StreamEvent], failoverSlateConfiguration: FailoverSlateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamSession:
     Optional[str] streamId
     Optional[DateTime] startTime
@@ -1021,8 +1066,9 @@ struct ThrottlingException:
     Optional[str] xAmznErrorType
     Optional[str] exceptionMessage
 
-# no @derive(Json): member(s) storage: list[ThumbnailConfigurationStorage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) storage: list[ThumbnailConfigurationStorage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThumbnailConfiguration:
     Optional[RecordingMode] recordingMode
     Optional[int64] targetIntervalSeconds
@@ -1048,8 +1094,9 @@ struct UpdateAdConfigurationRequest:
     Optional[list[MediaTailorPlaybackConfiguration]] mediaTailorPlaybackConfigurations
     Optional[PostRollConfiguration] postRollConfiguration
 
-# no @derive(Json): member(s) adConfiguration: AdConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adConfiguration: AdConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAdConfigurationResponse:
     AdConfiguration adConfiguration
 
@@ -1070,8 +1117,9 @@ struct UpdateChannelRequest:
     Optional[str] adConfigurationArn
     Optional[str] failoverSlateConfigurationArn
 
-# no @derive(Json): member(s) channel: Channel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channel: Channel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelResponse:
     # wire name "channel" differs from field; derive rename is a #346 follow-up
     Optional[Channel] channel_
@@ -1085,8 +1133,9 @@ struct UpdateFailoverSlateConfigurationRequest:
     Optional[int64] minSlateDisplaySeconds
     Optional[int64] maxSlateDisplaySeconds
 
-# no @derive(Json): member(s) failoverSlateConfiguration: FailoverSlateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failoverSlateConfiguration: FailoverSlateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFailoverSlateConfigurationResponse:
     FailoverSlateConfiguration failoverSlateConfiguration
 
@@ -1099,8 +1148,9 @@ struct UpdatePlaybackRestrictionPolicyRequest:
     Optional[bool] enableStrictOriginEnforcement
     Optional[str] name
 
-# no @derive(Json): member(s) playbackRestrictionPolicy: PlaybackRestrictionPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) playbackRestrictionPolicy: PlaybackRestrictionPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePlaybackRestrictionPolicyResponse:
     Optional[PlaybackRestrictionPolicy] playbackRestrictionPolicy
 
@@ -1180,20 +1230,7 @@ def ivs_error_from_code(str code) -> ivsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetChannel (document member `arns: list[str]` is not serializable by derive)
-#   BatchGetStreamKey (document member `arns: list[str]` is not serializable by derive)
-#   BatchStartViewerSessionRevocation (document member `viewerSessions: list[BatchStartViewerSessionRevocationViewerSession]` is not serializable by derive)
-#   CreateAdConfiguration (document member `mediaTailorPlaybackConfigurations: list[MediaTailorPlaybackConfiguration]` is not serializable by derive)
-#   CreateChannel (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateFailoverSlateConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePlaybackRestrictionPolicy (document member `allowedCountries: list[str]` is not serializable by derive)
-#   CreateRecordingConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateStreamKey (document member `tags: dict[str, str]` is not serializable by derive)
-#   ImportPlaybackKeyPair (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAdConfiguration (document member `mediaTailorPlaybackConfigurations: list[MediaTailorPlaybackConfiguration]` is not serializable by derive)
-#   UpdatePlaybackRestrictionPolicy (document member `allowedCountries: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1393,10 +1430,293 @@ struct UpdateFailoverSlateConfigurationDocument:
     Optional[int64] minSlateDisplaySeconds
     Optional[int64] maxSlateDisplaySeconds
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ivs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ivs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ivs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize RenditionConfiguration to a compact JSON object (declaration order).
+def rendition_configuration_to_json(RenditionConfiguration v) -> str:
+    list[str] parts = []
+    if v.renditionSelection.is_some():
+        auto u0 = v.renditionSelection.unwrap()
+        parts.append("\"renditionSelection\":" + u0.to_json())
+    if v.renditions.is_some():
+        auto u1 = v.renditions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"renditions\":" + ivs_json_arr(e2))
+    return ivs_json_obj(parts)
+
+# Serialize ThumbnailConfiguration to a compact JSON object (declaration order).
+def thumbnail_configuration_to_json(ThumbnailConfiguration v) -> str:
+    list[str] parts = []
+    if v.recordingMode.is_some():
+        auto u0 = v.recordingMode.unwrap()
+        parts.append("\"recordingMode\":" + u0.to_json())
+    if v.targetIntervalSeconds.is_some():
+        auto u1 = v.targetIntervalSeconds.unwrap()
+        parts.append("\"targetIntervalSeconds\":" + str(u1))
+    if v.resolution.is_some():
+        auto u2 = v.resolution.unwrap()
+        parts.append("\"resolution\":" + u2.to_json())
+    if v.storage.is_some():
+        auto u3 = v.storage.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"storage\":" + ivs_json_arr(e4))
+    return ivs_json_obj(parts)
+
 # A bound ivs client: credentials + region, threaded into every operation.
 struct ivsClient:
     core.Credentials creds
     str region
+
+    # BatchGetChannel  POST /BatchGetChannel
+    # errors: AccessDeniedException, ServiceUnavailable, ValidationException
+    def batch_get_channel(self, BatchGetChannelRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.arns:
+            e0.append(ivs_json_str(x0))
+        parts.append("\"arns\":" + ivs_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # BatchGetStreamKey  POST /BatchGetStreamKey
+    # errors: AccessDeniedException, ServiceUnavailable, ValidationException
+    def batch_get_stream_key(self, BatchGetStreamKeyRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetStreamKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.arns:
+            e0.append(ivs_json_str(x0))
+        parts.append("\"arns\":" + ivs_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # BatchStartViewerSessionRevocation  POST /BatchStartViewerSessionRevocation
+    # errors: AccessDeniedException, PendingVerification, ThrottlingException, ValidationException
+    def batch_start_viewer_session_revocation(self, BatchStartViewerSessionRevocationRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchStartViewerSessionRevocation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.viewerSessions:
+            e0.append(x0.to_json())
+        parts.append("\"viewerSessions\":" + ivs_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # CreateAdConfiguration  POST /CreateAdConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_ad_configuration(self, CreateAdConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateAdConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.mediaTailorPlaybackConfigurations:
+            e1.append(x1.to_json())
+        parts.append("\"mediaTailorPlaybackConfigurations\":" + ivs_json_arr(e1))
+        if input.postRollConfiguration.is_some():
+            auto u2 = input.postRollConfiguration.unwrap()
+            parts.append("\"postRollConfiguration\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ivs_json_str(k4) + ":" + ivs_json_str(u3[k4]))
+            parts.append("\"tags\":" + ivs_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # CreateChannel  POST /CreateChannel
+    # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u0))
+        if input.latencyMode.is_some():
+            auto u1 = input.latencyMode.unwrap()
+            parts.append("\"latencyMode\":" + u1.to_json())
+        if input.type.is_some():
+            auto u2 = input.type.unwrap()
+            parts.append("\"type\":" + u2.to_json())
+        if input.authorized.is_some():
+            auto u3 = input.authorized.unwrap()
+            parts.append("\"authorized\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.recordingConfigurationArn.is_some():
+            auto u4 = input.recordingConfigurationArn.unwrap()
+            parts.append("\"recordingConfigurationArn\":" + ivs_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(ivs_json_str(k6) + ":" + ivs_json_str(u5[k6]))
+            parts.append("\"tags\":" + ivs_json_obj(m6))
+        if input.insecureIngest.is_some():
+            auto u7 = input.insecureIngest.unwrap()
+            parts.append("\"insecureIngest\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.preset.is_some():
+            auto u8 = input.preset.unwrap()
+            parts.append("\"preset\":" + u8.to_json())
+        if input.playbackRestrictionPolicyArn.is_some():
+            auto u9 = input.playbackRestrictionPolicyArn.unwrap()
+            parts.append("\"playbackRestrictionPolicyArn\":" + ivs_json_str(u9))
+        if input.multitrackInputConfiguration.is_some():
+            auto u10 = input.multitrackInputConfiguration.unwrap()
+            parts.append("\"multitrackInputConfiguration\":" + u10.to_json())
+        if input.containerFormat.is_some():
+            auto u11 = input.containerFormat.unwrap()
+            parts.append("\"containerFormat\":" + u11.to_json())
+        if input.adConfigurationArn.is_some():
+            auto u12 = input.adConfigurationArn.unwrap()
+            parts.append("\"adConfigurationArn\":" + ivs_json_str(u12))
+        if input.failoverSlateConfigurationArn.is_some():
+            auto u13 = input.failoverSlateConfigurationArn.unwrap()
+            parts.append("\"failoverSlateConfigurationArn\":" + ivs_json_str(u13))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # CreateFailoverSlateConfiguration  POST /CreateFailoverSlateConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_failover_slate_configuration(self, CreateFailoverSlateConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u0))
+        if input.activationThresholdSeconds.is_some():
+            auto u1 = input.activationThresholdSeconds.unwrap()
+            parts.append("\"activationThresholdSeconds\":" + str(u1))
+        if input.minSlateDisplaySeconds.is_some():
+            auto u2 = input.minSlateDisplaySeconds.unwrap()
+            parts.append("\"minSlateDisplaySeconds\":" + str(u2))
+        if input.maxSlateDisplaySeconds.is_some():
+            auto u3 = input.maxSlateDisplaySeconds.unwrap()
+            parts.append("\"maxSlateDisplaySeconds\":" + str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(ivs_json_str(k5) + ":" + ivs_json_str(u4[k5]))
+            parts.append("\"tags\":" + ivs_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # CreatePlaybackRestrictionPolicy  POST /CreatePlaybackRestrictionPolicy
+    # errors: AccessDeniedException, PendingVerification, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_playback_restriction_policy(self, CreatePlaybackRestrictionPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreatePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.allowedCountries.is_some():
+            auto u0 = input.allowedCountries.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ivs_json_str(x1))
+            parts.append("\"allowedCountries\":" + ivs_json_arr(e1))
+        if input.allowedOrigins.is_some():
+            auto u2 = input.allowedOrigins.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ivs_json_str(x3))
+            parts.append("\"allowedOrigins\":" + ivs_json_arr(e3))
+        if input.enableStrictOriginEnforcement.is_some():
+            auto u4 = input.enableStrictOriginEnforcement.unwrap()
+            parts.append("\"enableStrictOriginEnforcement\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.name.is_some():
+            auto u5 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u5))
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(ivs_json_str(k7) + ":" + ivs_json_str(u6[k7]))
+            parts.append("\"tags\":" + ivs_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # CreateRecordingConfiguration  POST /CreateRecordingConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ServiceQuotaExceededException, ValidationException
+    def create_recording_configuration(self, CreateRecordingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecordingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u0))
+        parts.append("\"destinationConfiguration\":" + input.destinationConfiguration.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(ivs_json_str(k2) + ":" + ivs_json_str(u1[k2]))
+            parts.append("\"tags\":" + ivs_json_obj(m2))
+        if input.thumbnailConfiguration.is_some():
+            auto u3 = input.thumbnailConfiguration.unwrap()
+            parts.append("\"thumbnailConfiguration\":" + thumbnail_configuration_to_json(u3))
+        if input.recordingReconnectWindowSeconds.is_some():
+            auto u4 = input.recordingReconnectWindowSeconds.unwrap()
+            parts.append("\"recordingReconnectWindowSeconds\":" + str(u4))
+        if input.renditionConfiguration.is_some():
+            auto u5 = input.renditionConfiguration.unwrap()
+            parts.append("\"renditionConfiguration\":" + rendition_configuration_to_json(u5))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # CreateStreamKey  POST /CreateStreamKey
+    # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_stream_key(self, CreateStreamKeyRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateStreamKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"channelArn\":" + ivs_json_str(input.channelArn))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(ivs_json_str(k1) + ":" + ivs_json_str(u0[k1]))
+            parts.append("\"tags\":" + ivs_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
 
     # DeleteAdConfiguration  POST /DeleteAdConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -1542,6 +1862,25 @@ struct ivsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
 
+    # ImportPlaybackKeyPair  POST /ImportPlaybackKeyPair
+    # errors: AccessDeniedException, ConflictException, PendingVerification, ServiceQuotaExceededException, ValidationException
+    def import_playback_key_pair(self, ImportPlaybackKeyPairRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ImportPlaybackKeyPair", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"publicKeyMaterial\":" + ivs_json_str(input.publicKeyMaterial))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(ivs_json_str(k2) + ":" + ivs_json_str(u1[k2]))
+            parts.append("\"tags\":" + ivs_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
     # InsertAdBreak  POST /InsertAdBreak
     # errors: AccessDeniedException, ChannelNotBroadcasting, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def insert_ad_break(self, InsertAdBreakRequest input) -> str:
@@ -1668,6 +2007,43 @@ struct ivsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(ivs_json_str(k0) + ":" + ivs_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + ivs_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # UpdateAdConfiguration  POST /UpdateAdConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_ad_configuration(self, UpdateAdConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateAdConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + ivs_json_str(input.arn))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u0))
+        if input.mediaTailorPlaybackConfigurations.is_some():
+            auto u1 = input.mediaTailorPlaybackConfigurations.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"mediaTailorPlaybackConfigurations\":" + ivs_json_arr(e2))
+        if input.postRollConfiguration.is_some():
+            auto u3 = input.postRollConfiguration.unwrap()
+            parts.append("\"postRollConfiguration\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
     # UpdateChannel  POST /UpdateChannel
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_channel(self, UpdateChannelRequest input) -> str:
@@ -1684,6 +2060,34 @@ struct ivsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFailoverSlateConfigurationDocument(arn=input.arn, name=input.name, activationThresholdSeconds=input.activationThresholdSeconds, minSlateDisplaySeconds=input.minSlateDisplaySeconds, maxSlateDisplaySeconds=input.maxSlateDisplaySeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
+
+    # UpdatePlaybackRestrictionPolicy  POST /UpdatePlaybackRestrictionPolicy
+    # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
+    def update_playback_restriction_policy(self, UpdatePlaybackRestrictionPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + ivs_json_str(input.arn))
+        if input.allowedCountries.is_some():
+            auto u0 = input.allowedCountries.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ivs_json_str(x1))
+            parts.append("\"allowedCountries\":" + ivs_json_arr(e1))
+        if input.allowedOrigins.is_some():
+            auto u2 = input.allowedOrigins.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ivs_json_str(x3))
+            parts.append("\"allowedOrigins\":" + ivs_json_arr(e3))
+        if input.enableStrictOriginEnforcement.is_some():
+            auto u4 = input.enableStrictOriginEnforcement.unwrap()
+            parts.append("\"enableStrictOriginEnforcement\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.name.is_some():
+            auto u5 = input.name.unwrap()
+            parts.append("\"name\":" + ivs_json_str(u5))
+        auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
 
     # Paginator for ListAdConfigurations — yields each Response page, threading the

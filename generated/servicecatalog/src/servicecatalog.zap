@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 90 operations — 69 with a generated method,
-#   21 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 90 operations — 85 with a generated method,
+#   5 skipped (input has a non-string-keyed map or free-form document member).
 #   248 structs (157 @derive(Json)), 30 enums, 8 error variants.
 #   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -366,25 +366,29 @@ struct AssociateTagOptionWithResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ServiceActionAssociations: list[ServiceActionAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionAssociations: list[ServiceActionAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateServiceActionWithProvisioningArtifactInput:
     list[ServiceActionAssociation] ServiceActionAssociations
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) FailedServiceActionAssociations: list[FailedServiceActionAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedServiceActionAssociations: list[FailedServiceActionAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateServiceActionWithProvisioningArtifactOutput:
     Optional[list[FailedServiceActionAssociation]] FailedServiceActionAssociations
 
-# no @derive(Json): member(s) ServiceActionAssociations: list[ServiceActionAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionAssociations: list[ServiceActionAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateServiceActionFromProvisioningArtifactInput:
     list[ServiceActionAssociation] ServiceActionAssociations
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) FailedServiceActionAssociations: list[FailedServiceActionAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedServiceActionAssociations: list[FailedServiceActionAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateServiceActionFromProvisioningArtifactOutput:
     Optional[list[FailedServiceActionAssociation]] FailedServiceActionAssociations
 
@@ -417,8 +421,9 @@ struct ConstraintSummary:
     Optional[str] Type
     Optional[str] Description
 
-# no @derive(Json): member(s) SourceProvisioningArtifactIdentifiers: list[dict[str, str]], CopyOptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceProvisioningArtifactIdentifiers: list[dict[str, str]], CopyOptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyProductInput:
     Optional[str] AcceptLanguage
     str SourceProductArn
@@ -448,8 +453,9 @@ struct CreateConstraintOutput:
     Optional[str] ConstraintParameters
     Optional[Status] Status
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortfolioInput:
     Optional[str] AcceptLanguage
     str DisplayName
@@ -458,8 +464,9 @@ struct CreatePortfolioInput:
     Optional[list[Tag]] Tags
     str IdempotencyToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePortfolioOutput:
     Optional[PortfolioDetail] PortfolioDetail
     Optional[list[Tag]] Tags
@@ -477,8 +484,9 @@ struct CreatePortfolioShareInput:
 struct CreatePortfolioShareOutput:
     Optional[str] PortfolioShareToken
 
-# no @derive(Json): member(s) Tags: list[Tag], ProvisioningArtifactParameters: ProvisioningArtifactProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ProvisioningArtifactParameters: ProvisioningArtifactProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProductInput:
     Optional[str] AcceptLanguage
     str Name
@@ -494,15 +502,17 @@ struct CreateProductInput:
     str IdempotencyToken
     Optional[SourceConnection] SourceConnection
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProductOutput:
     Optional[ProductViewDetail] ProductViewDetail
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) NotificationArns: list[str], ProvisioningParameters: list[UpdateProvisioningParameter], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationArns: list[str], ProvisioningParameters: list[UpdateProvisioningParameter], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProvisionedProductPlanInput:
     Optional[str] AcceptLanguage
     str PlanName
@@ -524,23 +534,26 @@ struct CreateProvisionedProductPlanOutput:
     Optional[str] ProvisionedProductName
     Optional[str] ProvisioningArtifactId
 
-# no @derive(Json): member(s) Parameters: ProvisioningArtifactProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: ProvisioningArtifactProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     str ProductId
     ProvisioningArtifactProperties Parameters
     str IdempotencyToken
 
-# no @derive(Json): member(s) Info: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Info: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProvisioningArtifactOutput:
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[dict[str, str]] Info
     Optional[Status] Status
 
-# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceActionInput:
     str Name
     str DefinitionType
@@ -549,8 +562,9 @@ struct CreateServiceActionInput:
     Optional[str] AcceptLanguage
     str IdempotencyToken
 
-# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceActionOutput:
     Optional[ServiceActionDetail] ServiceActionDetail
 
@@ -673,8 +687,9 @@ struct DescribePortfolioInput:
     Optional[str] AcceptLanguage
     str Id
 
-# no @derive(Json): member(s) Tags: list[Tag], TagOptions: list[TagOptionDetail], Budgets: list[BudgetDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], TagOptions: list[TagOptionDetail], Budgets: list[BudgetDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePortfolioOutput:
     Optional[PortfolioDetail] PortfolioDetail
     Optional[list[Tag]] Tags
@@ -685,8 +700,9 @@ struct DescribePortfolioOutput:
 struct DescribePortfolioShareStatusInput:
     str PortfolioShareToken
 
-# no @derive(Json): member(s) ShareDetails: ShareDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShareDetails: ShareDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePortfolioShareStatusOutput:
     Optional[str] PortfolioShareToken
     Optional[str] PortfolioId
@@ -701,8 +717,9 @@ struct DescribePortfolioSharesInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) PortfolioShareDetails: list[PortfolioShareDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortfolioShareDetails: list[PortfolioShareDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePortfolioSharesOutput:
     Optional[str] NextPageToken
     Optional[list[PortfolioShareDetail]] PortfolioShareDetails
@@ -714,8 +731,9 @@ struct DescribeProductAsAdminInput:
     Optional[str] Name
     Optional[str] SourcePortfolioId
 
-# no @derive(Json): member(s) ProvisioningArtifactSummaries: list[ProvisioningArtifactSummary], Tags: list[Tag], TagOptions: list[TagOptionDetail], Budgets: list[BudgetDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifactSummaries: list[ProvisioningArtifactSummary], Tags: list[Tag], TagOptions: list[TagOptionDetail], Budgets: list[BudgetDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProductAsAdminOutput:
     Optional[ProductViewDetail] ProductViewDetail
     Optional[list[ProvisioningArtifactSummary]] ProvisioningArtifactSummaries
@@ -729,8 +747,9 @@ struct DescribeProductInput:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) ProvisioningArtifacts: list[ProvisioningArtifact], Budgets: list[BudgetDetail], LaunchPaths: list[LaunchPath] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifacts: list[ProvisioningArtifact], Budgets: list[BudgetDetail], LaunchPaths: list[LaunchPath] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProductOutput:
     Optional[ProductViewSummary] ProductViewSummary
     Optional[list[ProvisioningArtifact]] ProvisioningArtifacts
@@ -742,8 +761,9 @@ struct DescribeProductViewInput:
     Optional[str] AcceptLanguage
     str Id
 
-# no @derive(Json): member(s) ProvisioningArtifacts: list[ProvisioningArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifacts: list[ProvisioningArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProductViewOutput:
     Optional[ProductViewSummary] ProductViewSummary
     Optional[list[ProvisioningArtifact]] ProvisioningArtifacts
@@ -754,8 +774,9 @@ struct DescribeProvisionedProductInput:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) CloudWatchDashboards: list[CloudWatchDashboard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchDashboards: list[CloudWatchDashboard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProvisionedProductOutput:
     Optional[ProvisionedProductDetail] ProvisionedProductDetail
     Optional[list[CloudWatchDashboard]] CloudWatchDashboards
@@ -767,8 +788,9 @@ struct DescribeProvisionedProductPlanInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProvisionedProductPlanDetails: ProvisionedProductPlanDetails, ResourceChanges: list[ResourceChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedProductPlanDetails: ProvisionedProductPlanDetails, ResourceChanges: list[ResourceChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProvisionedProductPlanOutput:
     Optional[ProvisionedProductPlanDetails] ProvisionedProductPlanDetails
     Optional[list[ResourceChange]] ResourceChanges
@@ -784,8 +806,9 @@ struct DescribeProvisioningArtifactInput:
     Optional[bool] Verbose
     Optional[bool] IncludeProvisioningArtifactParameters
 
-# no @derive(Json): member(s) Info: dict[str, str], ProvisioningArtifactParameters: list[ProvisioningArtifactParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Info: dict[str, str], ProvisioningArtifactParameters: list[ProvisioningArtifactParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProvisioningArtifactOutput:
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[dict[str, str]] Info
@@ -802,8 +825,9 @@ struct DescribeProvisioningParametersInput:
     Optional[str] PathId
     Optional[str] PathName
 
-# no @derive(Json): member(s) ProvisioningArtifactParameters: list[ProvisioningArtifactParameter], ConstraintSummaries: list[ConstraintSummary], UsageInstructions: list[UsageInstruction], TagOptions: list[TagOptionSummary], ProvisioningArtifactPreferences: ProvisioningArtifactPreferences, ProvisioningArtifactOutputs: list[ProvisioningArtifactOutput], ProvisioningArtifactOutputKeys: list[ProvisioningArtifactOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifactParameters: list[ProvisioningArtifactParameter], ConstraintSummaries: list[ConstraintSummary], UsageInstructions: list[UsageInstruction], TagOptions: list[TagOptionSummary], ProvisioningArtifactPreferences: ProvisioningArtifactPreferences, ProvisioningArtifactOutputs: list[ProvisioningArtifactOutput], ProvisioningArtifactOutputKeys: list[ProvisioningArtifactOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProvisioningParametersOutput:
     Optional[list[ProvisioningArtifactParameter]] ProvisioningArtifactParameters
     Optional[list[ConstraintSummary]] ConstraintSummaries
@@ -820,8 +844,9 @@ struct DescribeRecordInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail, RecordOutputs: list[RecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail, RecordOutputs: list[RecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecordOutput:
     Optional[RecordDetail] RecordDetail
     Optional[list[RecordOutput]] RecordOutputs
@@ -833,8 +858,9 @@ struct DescribeServiceActionExecutionParametersInput:
     str ServiceActionId
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionParameters: list[ExecutionParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionParameters: list[ExecutionParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceActionExecutionParametersOutput:
     Optional[list[ExecutionParameter]] ServiceActionParameters
 
@@ -843,8 +869,9 @@ struct DescribeServiceActionInput:
     str Id
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceActionOutput:
     Optional[ServiceActionDetail] ServiceActionDetail
 
@@ -947,13 +974,15 @@ struct ExecuteProvisionedProductPlanInput:
     str PlanId
     str IdempotencyToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteProvisionedProductPlanOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteProvisionedProductServiceActionInput:
     str ProvisionedProductId
     str ServiceActionId
@@ -961,13 +990,15 @@ struct ExecuteProvisionedProductServiceActionInput:
     Optional[str] AcceptLanguage
     Optional[dict[str, list[str]]] Parameters
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteProvisionedProductServiceActionOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) DefaultValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionParameter:
     Optional[str] Name
     Optional[str] Type
@@ -990,8 +1021,9 @@ struct GetAWSOrganizationsAccessStatusInput:
 struct GetAWSOrganizationsAccessStatusOutput:
     Optional[AccessStatus] AccessStatus
 
-# no @derive(Json): member(s) OutputKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProvisionedProductOutputsInput:
     Optional[str] AcceptLanguage
     Optional[str] ProvisionedProductId
@@ -1000,8 +1032,9 @@ struct GetProvisionedProductOutputsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Outputs: list[RecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[RecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProvisionedProductOutputsOutput:
     Optional[list[RecordOutput]] Outputs
     Optional[str] NextPageToken
@@ -1015,8 +1048,9 @@ struct ImportAsProvisionedProductInput:
     str PhysicalId
     str IdempotencyToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAsProvisionedProductOutput:
     Optional[RecordDetail] RecordDetail
 
@@ -1043,8 +1077,9 @@ struct LaunchPath:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) ConstraintSummaries: list[ConstraintSummary], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConstraintSummaries: list[ConstraintSummary], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchPathSummary:
     Optional[str] Id
     Optional[list[ConstraintSummary]] ConstraintSummaries
@@ -1063,8 +1098,9 @@ struct ListAcceptedPortfolioSharesInput:
     Optional[int64] PageSize
     Optional[PortfolioShareType] PortfolioShareType
 
-# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAcceptedPortfolioSharesOutput:
     Optional[list[PortfolioDetail]] PortfolioDetails
     Optional[str] NextPageToken
@@ -1076,8 +1112,9 @@ struct ListBudgetsForResourceInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Budgets: list[BudgetDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Budgets: list[BudgetDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBudgetsForResourceOutput:
     Optional[list[BudgetDetail]] Budgets
     Optional[str] NextPageToken
@@ -1090,8 +1127,9 @@ struct ListConstraintsForPortfolioInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ConstraintDetails: list[ConstraintDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConstraintDetails: list[ConstraintDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConstraintsForPortfolioOutput:
     Optional[list[ConstraintDetail]] ConstraintDetails
     Optional[str] NextPageToken
@@ -1103,8 +1141,9 @@ struct ListLaunchPathsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) LaunchPathSummaries: list[LaunchPathSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LaunchPathSummaries: list[LaunchPathSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLaunchPathsOutput:
     Optional[list[LaunchPathSummary]] LaunchPathSummaries
     Optional[str] NextPageToken
@@ -1117,8 +1156,9 @@ struct ListOrganizationPortfolioAccessInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) OrganizationNodes: list[OrganizationNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationNodes: list[OrganizationNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationPortfolioAccessOutput:
     Optional[list[OrganizationNode]] OrganizationNodes
     Optional[str] NextPageToken
@@ -1131,8 +1171,9 @@ struct ListPortfolioAccessInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) AccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortfolioAccessOutput:
     Optional[list[str]] AccountIds
     Optional[str] NextPageToken
@@ -1144,8 +1185,9 @@ struct ListPortfoliosForProductInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortfoliosForProductOutput:
     Optional[list[PortfolioDetail]] PortfolioDetails
     Optional[str] NextPageToken
@@ -1156,8 +1198,9 @@ struct ListPortfoliosInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortfoliosOutput:
     Optional[list[PortfolioDetail]] PortfolioDetails
     Optional[str] NextPageToken
@@ -1169,8 +1212,9 @@ struct ListPrincipalsForPortfolioInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Principals: list[Principal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[Principal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrincipalsForPortfolioOutput:
     Optional[list[Principal]] Principals
     Optional[str] NextPageToken
@@ -1183,8 +1227,9 @@ struct ListProvisionedProductPlansInput:
     Optional[str] PageToken
     Optional[AccessLevelFilter] AccessLevelFilter
 
-# no @derive(Json): member(s) ProvisionedProductPlans: list[ProvisionedProductPlanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedProductPlans: list[ProvisionedProductPlanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisionedProductPlansOutput:
     Optional[list[ProvisionedProductPlanSummary]] ProvisionedProductPlans
     Optional[str] NextPageToken
@@ -1196,8 +1241,9 @@ struct ListProvisioningArtifactsForServiceActionInput:
     Optional[str] PageToken
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ProvisioningArtifactViews: list[ProvisioningArtifactView] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifactViews: list[ProvisioningArtifactView] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisioningArtifactsForServiceActionOutput:
     Optional[list[ProvisioningArtifactView]] ProvisioningArtifactViews
     Optional[str] NextPageToken
@@ -1207,8 +1253,9 @@ struct ListProvisioningArtifactsInput:
     Optional[str] AcceptLanguage
     str ProductId
 
-# no @derive(Json): member(s) ProvisioningArtifactDetails: list[ProvisioningArtifactDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifactDetails: list[ProvisioningArtifactDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisioningArtifactsOutput:
     Optional[list[ProvisioningArtifactDetail]] ProvisioningArtifactDetails
     Optional[str] NextPageToken
@@ -1221,8 +1268,9 @@ struct ListRecordHistoryInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) RecordDetails: list[RecordDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetails: list[RecordDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecordHistoryOutput:
     Optional[list[RecordDetail]] RecordDetails
     Optional[str] NextPageToken
@@ -1239,8 +1287,9 @@ struct ListResourcesForTagOptionInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ResourceDetails: list[ResourceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceDetails: list[ResourceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesForTagOptionOutput:
     Optional[list[ResourceDetail]] ResourceDetails
     Optional[str] PageToken
@@ -1253,8 +1302,9 @@ struct ListServiceActionsForProvisioningArtifactInput:
     Optional[str] PageToken
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionSummaries: list[ServiceActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionSummaries: list[ServiceActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceActionsForProvisioningArtifactOutput:
     Optional[list[ServiceActionSummary]] ServiceActionSummaries
     Optional[str] NextPageToken
@@ -1265,8 +1315,9 @@ struct ListServiceActionsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ServiceActionSummaries: list[ServiceActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionSummaries: list[ServiceActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceActionsOutput:
     Optional[list[ServiceActionSummary]] ServiceActionSummaries
     Optional[str] NextPageToken
@@ -1278,8 +1329,9 @@ struct ListStackInstancesForProvisionedProductInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) StackInstances: list[StackInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackInstances: list[StackInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStackInstancesForProvisionedProductOutput:
     Optional[list[StackInstance]] StackInstances
     Optional[str] NextPageToken
@@ -1296,14 +1348,16 @@ struct ListTagOptionsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) TagOptionDetails: list[TagOptionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagOptionDetails: list[TagOptionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagOptionsOutput:
     Optional[list[TagOptionDetail]] TagOptionDetails
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Outputs: list[RecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[RecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyProvisionProductEngineWorkflowResultInput:
     str WorkflowToken
     str RecordId
@@ -1331,8 +1385,9 @@ struct NotifyTerminateProvisionedProductEngineWorkflowResultOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Outputs: list[RecordOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[RecordOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyUpdateProvisionedProductEngineWorkflowResultInput:
     str WorkflowToken
     str RecordId
@@ -1356,8 +1411,9 @@ struct OrganizationNode:
     Optional[OrganizationNodeType] Type
     Optional[str] Value
 
-# no @derive(Json): member(s) AllowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterConstraints:
     Optional[list[str]] AllowedValues
     Optional[str] AllowedPattern
@@ -1416,8 +1472,9 @@ struct ProductViewSummary:
     Optional[str] SupportDescription
     Optional[str] SupportUrl
 
-# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter], ProvisioningPreferences: ProvisioningPreferences, Tags: list[Tag], NotificationArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter], ProvisioningPreferences: ProvisioningPreferences, Tags: list[Tag], NotificationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionProductInput:
     Optional[str] AcceptLanguage
     Optional[str] ProductId
@@ -1433,13 +1490,15 @@ struct ProvisionProductInput:
     Optional[list[str]] NotificationArns
     str ProvisionToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionProductOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionedProductAttribute:
     Optional[str] Name
     Optional[str] Arn
@@ -1478,8 +1537,9 @@ struct ProvisionedProductDetail:
     Optional[str] ProvisioningArtifactId
     Optional[str] LaunchRoleArn
 
-# no @derive(Json): member(s) NotificationArns: list[str], ProvisioningParameters: list[UpdateProvisioningParameter], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationArns: list[str], ProvisioningParameters: list[UpdateProvisioningParameter], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionedProductPlanDetails:
     Optional[DateTime] CreatedTime
     Optional[str] PathId
@@ -1530,8 +1590,9 @@ struct ProvisioningArtifactOutput:
     Optional[str] Key
     Optional[str] Description
 
-# no @derive(Json): member(s) ParameterConstraints: ParameterConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterConstraints: ParameterConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisioningArtifactParameter:
     Optional[str] ParameterKey
     Optional[str] DefaultValue
@@ -1540,14 +1601,16 @@ struct ProvisioningArtifactParameter:
     Optional[str] Description
     Optional[ParameterConstraints] ParameterConstraints
 
-# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisioningArtifactPreferences:
     Optional[list[str]] StackSetAccounts
     Optional[list[str]] StackSetRegions
 
-# no @derive(Json): member(s) Info: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Info: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisioningArtifactProperties:
     Optional[str] Name
     Optional[str] Description
@@ -1555,8 +1618,9 @@ struct ProvisioningArtifactProperties:
     Optional[ProvisioningArtifactType] Type
     Optional[bool] DisableTemplateValidation
 
-# no @derive(Json): member(s) ProvisioningArtifactMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningArtifactMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisioningArtifactSummary:
     Optional[str] Id
     Optional[str] Name
@@ -1574,8 +1638,9 @@ struct ProvisioningParameter:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisioningPreferences:
     Optional[list[str]] StackSetAccounts
     Optional[list[str]] StackSetRegions
@@ -1584,8 +1649,9 @@ struct ProvisioningPreferences:
     Optional[int64] StackSetMaxConcurrencyCount
     Optional[int64] StackSetMaxConcurrencyPercentage
 
-# no @derive(Json): member(s) RecordErrors: list[RecordError], RecordTags: list[RecordTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordErrors: list[RecordError], RecordTags: list[RecordTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordDetail:
     Optional[str] RecordId
     Optional[str] ProvisionedProductName
@@ -1629,8 +1695,9 @@ struct RejectPortfolioShareOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Scope: list[ResourceAttribute], Details: list[ResourceChangeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scope: list[ResourceAttribute], Details: list[ResourceChangeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceChange:
     Optional[ChangeAction] Action
     Optional[str] LogicalResourceId
@@ -1677,14 +1744,16 @@ struct ScanProvisionedProductsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProvisionedProducts: list[ProvisionedProductDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedProducts: list[ProvisionedProductDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanProvisionedProductsOutput:
     Optional[list[ProvisionedProductDetail]] ProvisionedProducts
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filters: dict[ProductViewFilterBy, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[ProductViewFilterBy, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProductsAsAdminInput:
     Optional[str] AcceptLanguage
     Optional[str] PortfolioId
@@ -1695,14 +1764,16 @@ struct SearchProductsAsAdminInput:
     Optional[int64] PageSize
     Optional[str] ProductSource
 
-# no @derive(Json): member(s) ProductViewDetails: list[ProductViewDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductViewDetails: list[ProductViewDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProductsAsAdminOutput:
     Optional[list[ProductViewDetail]] ProductViewDetails
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filters: dict[ProductViewFilterBy, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[ProductViewFilterBy, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProductsInput:
     Optional[str] AcceptLanguage
     Optional[dict[ProductViewFilterBy, list[str]]] Filters
@@ -1711,15 +1782,17 @@ struct SearchProductsInput:
     Optional[SortOrder] SortOrder
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProductViewSummaries: list[ProductViewSummary], ProductViewAggregations: dict[str, list[ProductViewAggregationValue]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductViewSummaries: list[ProductViewSummary], ProductViewAggregations: dict[str, list[ProductViewAggregationValue]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProductsOutput:
     Optional[list[ProductViewSummary]] ProductViewSummaries
     Optional[dict[str, list[ProductViewAggregationValue]]] ProductViewAggregations
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProvisionedProductsInput:
     Optional[str] AcceptLanguage
     Optional[AccessLevelFilter] AccessLevelFilter
@@ -1729,8 +1802,9 @@ struct SearchProvisionedProductsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProvisionedProducts: list[ProvisionedProductAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedProducts: list[ProvisionedProductAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProvisionedProductsOutput:
     Optional[list[ProvisionedProductAttribute]] ProvisionedProducts
     Optional[int64] TotalResultsCount
@@ -1742,8 +1816,9 @@ struct ServiceActionAssociation:
     str ProductId
     str ProvisioningArtifactId
 
-# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceActionDetail:
     Optional[ServiceActionSummary] ServiceActionSummary
     Optional[dict[ServiceActionDefinitionKey, str]] Definition
@@ -1755,14 +1830,16 @@ struct ServiceActionSummary:
     Optional[str] Description
     Optional[str] DefinitionType
 
-# no @derive(Json): member(s) SuccessfulShares: list[str], ShareErrors: list[ShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulShares: list[str], ShareErrors: list[ShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShareDetails:
     Optional[list[str]] SuccessfulShares
     Optional[list[ShareError]] ShareErrors
 
-# no @derive(Json): member(s) Accounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShareError:
     Optional[list[str]] Accounts
     Optional[str] Message
@@ -1807,8 +1884,9 @@ struct TagOptionNotMigratedException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagOptionSummary:
     Optional[str] Key
     Optional[list[str]] Values
@@ -1822,8 +1900,9 @@ struct TerminateProvisionedProductInput:
     Optional[str] AcceptLanguage
     Optional[bool] RetainPhysicalResources
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateProvisionedProductOutput:
     Optional[RecordDetail] RecordDetail
 
@@ -1845,8 +1924,9 @@ struct UpdateConstraintOutput:
     Optional[str] ConstraintParameters
     Optional[Status] Status
 
-# no @derive(Json): member(s) AddTags: list[Tag], RemoveTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddTags: list[Tag], RemoveTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortfolioInput:
     Optional[str] AcceptLanguage
     str Id
@@ -1856,8 +1936,9 @@ struct UpdatePortfolioInput:
     Optional[list[Tag]] AddTags
     Optional[list[str]] RemoveTags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortfolioOutput:
     Optional[PortfolioDetail] PortfolioDetail
     Optional[list[Tag]] Tags
@@ -1876,8 +1957,9 @@ struct UpdatePortfolioShareOutput:
     Optional[str] PortfolioShareToken
     Optional[ShareStatus] Status
 
-# no @derive(Json): member(s) AddTags: list[Tag], RemoveTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddTags: list[Tag], RemoveTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProductInput:
     Optional[str] AcceptLanguage
     str Id
@@ -1892,14 +1974,16 @@ struct UpdateProductInput:
     Optional[list[str]] RemoveTags
     Optional[SourceConnection] SourceConnection
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProductOutput:
     Optional[ProductViewDetail] ProductViewDetail
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ProvisioningParameters: list[UpdateProvisioningParameter], ProvisioningPreferences: UpdateProvisioningPreferences, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisioningParameters: list[UpdateProvisioningParameter], ProvisioningPreferences: UpdateProvisioningPreferences, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisionedProductInput:
     Optional[str] AcceptLanguage
     Optional[str] ProvisionedProductName
@@ -1915,21 +1999,24 @@ struct UpdateProvisionedProductInput:
     Optional[list[Tag]] Tags
     str UpdateToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisionedProductOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) ProvisionedProductProperties: dict[PropertyKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedProductProperties: dict[PropertyKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisionedProductPropertiesInput:
     Optional[str] AcceptLanguage
     str ProvisionedProductId
     dict[PropertyKey, str] ProvisionedProductProperties
     str IdempotencyToken
 
-# no @derive(Json): member(s) ProvisionedProductProperties: dict[PropertyKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedProductProperties: dict[PropertyKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisionedProductPropertiesOutput:
     Optional[str] ProvisionedProductId
     Optional[dict[PropertyKey, str]] ProvisionedProductProperties
@@ -1946,8 +2033,9 @@ struct UpdateProvisioningArtifactInput:
     Optional[bool] Active
     Optional[ProvisioningArtifactGuidance] Guidance
 
-# no @derive(Json): member(s) Info: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Info: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisioningArtifactOutput:
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[dict[str, str]] Info
@@ -1959,8 +2047,9 @@ struct UpdateProvisioningParameter:
     Optional[str] Value
     Optional[bool] UsePreviousValue
 
-# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProvisioningPreferences:
     Optional[list[str]] StackSetAccounts
     Optional[list[str]] StackSetRegions
@@ -1970,8 +2059,9 @@ struct UpdateProvisioningPreferences:
     Optional[int64] StackSetMaxConcurrencyPercentage
     Optional[StackSetOperationType] StackSetOperationType
 
-# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceActionInput:
     str Id
     Optional[str] Name
@@ -1979,8 +2069,9 @@ struct UpdateServiceActionInput:
     Optional[str] Description
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceActionOutput:
     Optional[ServiceActionDetail] ServiceActionDetail
 
@@ -2036,33 +2127,580 @@ def servicecatalog_error_from_code(str code) -> Service_CatalogError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchAssociateServiceActionWithProvisioningArtifact (input BatchAssociateServiceActionWithProvisioningArtifactInput)
-#   BatchDisassociateServiceActionFromProvisioningArtifact (input BatchDisassociateServiceActionFromProvisioningArtifactInput)
-#   CopyProduct (input CopyProductInput)
-#   CreatePortfolio (input CreatePortfolioInput)
-#   CreateProduct (input CreateProductInput)
-#   CreateProvisionedProductPlan (input CreateProvisionedProductPlanInput)
-#   CreateProvisioningArtifact (input CreateProvisioningArtifactInput)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateServiceAction (input CreateServiceActionInput)
-#   ExecuteProvisionedProductServiceAction (input ExecuteProvisionedProductServiceActionInput)
-#   GetProvisionedProductOutputs (input GetProvisionedProductOutputsInput)
-#   NotifyProvisionProductEngineWorkflowResult (input NotifyProvisionProductEngineWorkflowResultInput)
-#   NotifyUpdateProvisionedProductEngineWorkflowResult (input NotifyUpdateProvisionedProductEngineWorkflowResultInput)
-#   ProvisionProduct (input ProvisionProductInput)
 #   SearchProducts (input SearchProductsInput)
 #   SearchProductsAsAdmin (input SearchProductsAsAdminInput)
-#   SearchProvisionedProducts (input SearchProvisionedProductsInput)
-#   UpdatePortfolio (input UpdatePortfolioInput)
-#   UpdateProduct (input UpdateProductInput)
-#   UpdateProvisionedProduct (input UpdateProvisionedProductInput)
 #   UpdateProvisionedProductProperties (input UpdateProvisionedProductPropertiesInput)
 #   UpdateServiceAction (input UpdateServiceActionInput)
 
 # Paginated operations (paginators-1.json) not surfaced in v0 — their input
 # is skipped above, or the continuation token is not a simple string field:
-#   SearchProductsAsAdmin (input not derivable (no generated method))
+#   SearchProductsAsAdmin (input not serializable (no generated method))
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def servicecatalog_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def servicecatalog_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def servicecatalog_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchAssociateServiceActionWithProvisioningArtifactInput to a compact JSON object (declaration order).
+def batch_associate_service_action_with_provisioning_artifact_input_to_json(BatchAssociateServiceActionWithProvisioningArtifactInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ServiceActionAssociations:
+        e0.append(x0.to_json())
+    parts.append("\"ServiceActionAssociations\":" + servicecatalog_json_arr(e0))
+    if v.AcceptLanguage.is_some():
+        auto u1 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u1))
+    return servicecatalog_json_obj(parts)
+
+# Serialize BatchDisassociateServiceActionFromProvisioningArtifactInput to a compact JSON object (declaration order).
+def batch_disassociate_service_action_from_provisioning_artifact_input_to_json(BatchDisassociateServiceActionFromProvisioningArtifactInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ServiceActionAssociations:
+        e0.append(x0.to_json())
+    parts.append("\"ServiceActionAssociations\":" + servicecatalog_json_arr(e0))
+    if v.AcceptLanguage.is_some():
+        auto u1 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u1))
+    return servicecatalog_json_obj(parts)
+
+# Serialize CopyProductInput to a compact JSON object (declaration order).
+def copy_product_input_to_json(CopyProductInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"SourceProductArn\":" + servicecatalog_json_str(v.SourceProductArn))
+    if v.TargetProductId.is_some():
+        auto u1 = v.TargetProductId.unwrap()
+        parts.append("\"TargetProductId\":" + servicecatalog_json_str(u1))
+    if v.TargetProductName.is_some():
+        auto u2 = v.TargetProductName.unwrap()
+        parts.append("\"TargetProductName\":" + servicecatalog_json_str(u2))
+    if v.SourceProvisioningArtifactIdentifiers.is_some():
+        auto u3 = v.SourceProvisioningArtifactIdentifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            list[str] m5 = []
+            for k5 in sorted(x4.keys()):
+                m5.append(servicecatalog_json_str(k5) + ":" + servicecatalog_json_str(x4[k5]))
+            e4.append(servicecatalog_json_obj(m5))
+        parts.append("\"SourceProvisioningArtifactIdentifiers\":" + servicecatalog_json_arr(e4))
+    if v.CopyOptions.is_some():
+        auto u6 = v.CopyOptions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(servicecatalog_json_str(x7))
+        parts.append("\"CopyOptions\":" + servicecatalog_json_arr(e7))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize CreatePortfolioInput to a compact JSON object (declaration order).
+def create_portfolio_input_to_json(CreatePortfolioInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"DisplayName\":" + servicecatalog_json_str(v.DisplayName))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicecatalog_json_str(u1))
+    parts.append("\"ProviderName\":" + servicecatalog_json_str(v.ProviderName))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + servicecatalog_json_arr(e3))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize CreateProductInput to a compact JSON object (declaration order).
+def create_product_input_to_json(CreateProductInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"Name\":" + servicecatalog_json_str(v.Name))
+    parts.append("\"Owner\":" + servicecatalog_json_str(v.Owner))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicecatalog_json_str(u1))
+    if v.Distributor.is_some():
+        auto u2 = v.Distributor.unwrap()
+        parts.append("\"Distributor\":" + servicecatalog_json_str(u2))
+    if v.SupportDescription.is_some():
+        auto u3 = v.SupportDescription.unwrap()
+        parts.append("\"SupportDescription\":" + servicecatalog_json_str(u3))
+    if v.SupportEmail.is_some():
+        auto u4 = v.SupportEmail.unwrap()
+        parts.append("\"SupportEmail\":" + servicecatalog_json_str(u4))
+    if v.SupportUrl.is_some():
+        auto u5 = v.SupportUrl.unwrap()
+        parts.append("\"SupportUrl\":" + servicecatalog_json_str(u5))
+    parts.append("\"ProductType\":" + v.ProductType.to_json())
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + servicecatalog_json_arr(e7))
+    if v.ProvisioningArtifactParameters.is_some():
+        auto u8 = v.ProvisioningArtifactParameters.unwrap()
+        parts.append("\"ProvisioningArtifactParameters\":" + provisioning_artifact_properties_to_json(u8))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    if v.SourceConnection.is_some():
+        auto u9 = v.SourceConnection.unwrap()
+        parts.append("\"SourceConnection\":" + u9.to_json())
+    return servicecatalog_json_obj(parts)
+
+# Serialize CreateProvisionedProductPlanInput to a compact JSON object (declaration order).
+def create_provisioned_product_plan_input_to_json(CreateProvisionedProductPlanInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"PlanName\":" + servicecatalog_json_str(v.PlanName))
+    parts.append("\"PlanType\":" + servicecatalog_json_str(v.PlanType))
+    if v.NotificationArns.is_some():
+        auto u1 = v.NotificationArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(servicecatalog_json_str(x2))
+        parts.append("\"NotificationArns\":" + servicecatalog_json_arr(e2))
+    if v.PathId.is_some():
+        auto u3 = v.PathId.unwrap()
+        parts.append("\"PathId\":" + servicecatalog_json_str(u3))
+    parts.append("\"ProductId\":" + servicecatalog_json_str(v.ProductId))
+    parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(v.ProvisionedProductName))
+    parts.append("\"ProvisioningArtifactId\":" + servicecatalog_json_str(v.ProvisioningArtifactId))
+    if v.ProvisioningParameters.is_some():
+        auto u4 = v.ProvisioningParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ProvisioningParameters\":" + servicecatalog_json_arr(e5))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + servicecatalog_json_arr(e7))
+    return servicecatalog_json_obj(parts)
+
+# Serialize CreateProvisioningArtifactInput to a compact JSON object (declaration order).
+def create_provisioning_artifact_input_to_json(CreateProvisioningArtifactInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"ProductId\":" + servicecatalog_json_str(v.ProductId))
+    parts.append("\"Parameters\":" + provisioning_artifact_properties_to_json(v.Parameters))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize ExecuteProvisionedProductServiceActionInput to a compact JSON object (declaration order).
+def execute_provisioned_product_service_action_input_to_json(ExecuteProvisionedProductServiceActionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ProvisionedProductId\":" + servicecatalog_json_str(v.ProvisionedProductId))
+    parts.append("\"ServiceActionId\":" + servicecatalog_json_str(v.ServiceActionId))
+    parts.append("\"ExecuteToken\":" + servicecatalog_json_str(v.ExecuteToken))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(servicecatalog_json_str(x3))
+            m2.append(servicecatalog_json_str(k2) + ":" + servicecatalog_json_arr(e3))
+        parts.append("\"Parameters\":" + servicecatalog_json_obj(m2))
+    return servicecatalog_json_obj(parts)
+
+# Serialize GetProvisionedProductOutputsInput to a compact JSON object (declaration order).
+def get_provisioned_product_outputs_input_to_json(GetProvisionedProductOutputsInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    if v.ProvisionedProductId.is_some():
+        auto u1 = v.ProvisionedProductId.unwrap()
+        parts.append("\"ProvisionedProductId\":" + servicecatalog_json_str(u1))
+    if v.ProvisionedProductName.is_some():
+        auto u2 = v.ProvisionedProductName.unwrap()
+        parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(u2))
+    if v.OutputKeys.is_some():
+        auto u3 = v.OutputKeys.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(servicecatalog_json_str(x4))
+        parts.append("\"OutputKeys\":" + servicecatalog_json_arr(e4))
+    if v.PageSize.is_some():
+        auto u5 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u5))
+    if v.PageToken.is_some():
+        auto u6 = v.PageToken.unwrap()
+        parts.append("\"PageToken\":" + servicecatalog_json_str(u6))
+    return servicecatalog_json_obj(parts)
+
+# Serialize NotifyProvisionProductEngineWorkflowResultInput to a compact JSON object (declaration order).
+def notify_provision_product_engine_workflow_result_input_to_json(NotifyProvisionProductEngineWorkflowResultInput v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkflowToken\":" + servicecatalog_json_str(v.WorkflowToken))
+    parts.append("\"RecordId\":" + servicecatalog_json_str(v.RecordId))
+    parts.append("\"Status\":" + v.Status.to_json())
+    if v.FailureReason.is_some():
+        auto u0 = v.FailureReason.unwrap()
+        parts.append("\"FailureReason\":" + servicecatalog_json_str(u0))
+    if v.ResourceIdentifier.is_some():
+        auto u1 = v.ResourceIdentifier.unwrap()
+        parts.append("\"ResourceIdentifier\":" + u1.to_json())
+    if v.Outputs.is_some():
+        auto u2 = v.Outputs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Outputs\":" + servicecatalog_json_arr(e3))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize NotifyUpdateProvisionedProductEngineWorkflowResultInput to a compact JSON object (declaration order).
+def notify_update_provisioned_product_engine_workflow_result_input_to_json(NotifyUpdateProvisionedProductEngineWorkflowResultInput v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkflowToken\":" + servicecatalog_json_str(v.WorkflowToken))
+    parts.append("\"RecordId\":" + servicecatalog_json_str(v.RecordId))
+    parts.append("\"Status\":" + v.Status.to_json())
+    if v.FailureReason.is_some():
+        auto u0 = v.FailureReason.unwrap()
+        parts.append("\"FailureReason\":" + servicecatalog_json_str(u0))
+    if v.Outputs.is_some():
+        auto u1 = v.Outputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Outputs\":" + servicecatalog_json_arr(e2))
+    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize ProvisionProductInput to a compact JSON object (declaration order).
+def provision_product_input_to_json(ProvisionProductInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    if v.ProductId.is_some():
+        auto u1 = v.ProductId.unwrap()
+        parts.append("\"ProductId\":" + servicecatalog_json_str(u1))
+    if v.ProductName.is_some():
+        auto u2 = v.ProductName.unwrap()
+        parts.append("\"ProductName\":" + servicecatalog_json_str(u2))
+    if v.ProvisioningArtifactId.is_some():
+        auto u3 = v.ProvisioningArtifactId.unwrap()
+        parts.append("\"ProvisioningArtifactId\":" + servicecatalog_json_str(u3))
+    if v.ProvisioningArtifactName.is_some():
+        auto u4 = v.ProvisioningArtifactName.unwrap()
+        parts.append("\"ProvisioningArtifactName\":" + servicecatalog_json_str(u4))
+    if v.PathId.is_some():
+        auto u5 = v.PathId.unwrap()
+        parts.append("\"PathId\":" + servicecatalog_json_str(u5))
+    if v.PathName.is_some():
+        auto u6 = v.PathName.unwrap()
+        parts.append("\"PathName\":" + servicecatalog_json_str(u6))
+    parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(v.ProvisionedProductName))
+    if v.ProvisioningParameters.is_some():
+        auto u7 = v.ProvisioningParameters.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"ProvisioningParameters\":" + servicecatalog_json_arr(e8))
+    if v.ProvisioningPreferences.is_some():
+        auto u9 = v.ProvisioningPreferences.unwrap()
+        parts.append("\"ProvisioningPreferences\":" + provisioning_preferences_to_json(u9))
+    if v.Tags.is_some():
+        auto u10 = v.Tags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Tags\":" + servicecatalog_json_arr(e11))
+    if v.NotificationArns.is_some():
+        auto u12 = v.NotificationArns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(servicecatalog_json_str(x13))
+        parts.append("\"NotificationArns\":" + servicecatalog_json_arr(e13))
+    parts.append("\"ProvisionToken\":" + servicecatalog_json_str(v.ProvisionToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize ProvisioningArtifactProperties to a compact JSON object (declaration order).
+def provisioning_artifact_properties_to_json(ProvisioningArtifactProperties v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + servicecatalog_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicecatalog_json_str(u1))
+    if v.Info.is_some():
+        auto u2 = v.Info.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(servicecatalog_json_str(k3) + ":" + servicecatalog_json_str(u2[k3]))
+        parts.append("\"Info\":" + servicecatalog_json_obj(m3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + u4.to_json())
+    if v.DisableTemplateValidation.is_some():
+        auto u5 = v.DisableTemplateValidation.unwrap()
+        parts.append("\"DisableTemplateValidation\":" + json.dumps(JsonValue.Bool(u5)))
+    return servicecatalog_json_obj(parts)
+
+# Serialize ProvisioningPreferences to a compact JSON object (declaration order).
+def provisioning_preferences_to_json(ProvisioningPreferences v) -> str:
+    list[str] parts = []
+    if v.StackSetAccounts.is_some():
+        auto u0 = v.StackSetAccounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(servicecatalog_json_str(x1))
+        parts.append("\"StackSetAccounts\":" + servicecatalog_json_arr(e1))
+    if v.StackSetRegions.is_some():
+        auto u2 = v.StackSetRegions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(servicecatalog_json_str(x3))
+        parts.append("\"StackSetRegions\":" + servicecatalog_json_arr(e3))
+    if v.StackSetFailureToleranceCount.is_some():
+        auto u4 = v.StackSetFailureToleranceCount.unwrap()
+        parts.append("\"StackSetFailureToleranceCount\":" + str(u4))
+    if v.StackSetFailureTolerancePercentage.is_some():
+        auto u5 = v.StackSetFailureTolerancePercentage.unwrap()
+        parts.append("\"StackSetFailureTolerancePercentage\":" + str(u5))
+    if v.StackSetMaxConcurrencyCount.is_some():
+        auto u6 = v.StackSetMaxConcurrencyCount.unwrap()
+        parts.append("\"StackSetMaxConcurrencyCount\":" + str(u6))
+    if v.StackSetMaxConcurrencyPercentage.is_some():
+        auto u7 = v.StackSetMaxConcurrencyPercentage.unwrap()
+        parts.append("\"StackSetMaxConcurrencyPercentage\":" + str(u7))
+    return servicecatalog_json_obj(parts)
+
+# Serialize SearchProvisionedProductsInput to a compact JSON object (declaration order).
+def search_provisioned_products_input_to_json(SearchProvisionedProductsInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    if v.AccessLevelFilter.is_some():
+        auto u1 = v.AccessLevelFilter.unwrap()
+        parts.append("\"AccessLevelFilter\":" + u1.to_json())
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(servicecatalog_json_str(x4))
+            m3.append(servicecatalog_json_str(k3) + ":" + servicecatalog_json_arr(e4))
+        parts.append("\"Filters\":" + servicecatalog_json_obj(m3))
+    if v.SortBy.is_some():
+        auto u5 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + servicecatalog_json_str(u5))
+    if v.SortOrder.is_some():
+        auto u6 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u6.to_json())
+    if v.PageSize.is_some():
+        auto u7 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u7))
+    if v.PageToken.is_some():
+        auto u8 = v.PageToken.unwrap()
+        parts.append("\"PageToken\":" + servicecatalog_json_str(u8))
+    return servicecatalog_json_obj(parts)
+
+# Serialize UpdatePortfolioInput to a compact JSON object (declaration order).
+def update_portfolio_input_to_json(UpdatePortfolioInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"Id\":" + servicecatalog_json_str(v.Id))
+    if v.DisplayName.is_some():
+        auto u1 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + servicecatalog_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicecatalog_json_str(u2))
+    if v.ProviderName.is_some():
+        auto u3 = v.ProviderName.unwrap()
+        parts.append("\"ProviderName\":" + servicecatalog_json_str(u3))
+    if v.AddTags.is_some():
+        auto u4 = v.AddTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"AddTags\":" + servicecatalog_json_arr(e5))
+    if v.RemoveTags.is_some():
+        auto u6 = v.RemoveTags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(servicecatalog_json_str(x7))
+        parts.append("\"RemoveTags\":" + servicecatalog_json_arr(e7))
+    return servicecatalog_json_obj(parts)
+
+# Serialize UpdateProductInput to a compact JSON object (declaration order).
+def update_product_input_to_json(UpdateProductInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    parts.append("\"Id\":" + servicecatalog_json_str(v.Id))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + servicecatalog_json_str(u1))
+    if v.Owner.is_some():
+        auto u2 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + servicecatalog_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + servicecatalog_json_str(u3))
+    if v.Distributor.is_some():
+        auto u4 = v.Distributor.unwrap()
+        parts.append("\"Distributor\":" + servicecatalog_json_str(u4))
+    if v.SupportDescription.is_some():
+        auto u5 = v.SupportDescription.unwrap()
+        parts.append("\"SupportDescription\":" + servicecatalog_json_str(u5))
+    if v.SupportEmail.is_some():
+        auto u6 = v.SupportEmail.unwrap()
+        parts.append("\"SupportEmail\":" + servicecatalog_json_str(u6))
+    if v.SupportUrl.is_some():
+        auto u7 = v.SupportUrl.unwrap()
+        parts.append("\"SupportUrl\":" + servicecatalog_json_str(u7))
+    if v.AddTags.is_some():
+        auto u8 = v.AddTags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"AddTags\":" + servicecatalog_json_arr(e9))
+    if v.RemoveTags.is_some():
+        auto u10 = v.RemoveTags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(servicecatalog_json_str(x11))
+        parts.append("\"RemoveTags\":" + servicecatalog_json_arr(e11))
+    if v.SourceConnection.is_some():
+        auto u12 = v.SourceConnection.unwrap()
+        parts.append("\"SourceConnection\":" + u12.to_json())
+    return servicecatalog_json_obj(parts)
+
+# Serialize UpdateProvisionedProductInput to a compact JSON object (declaration order).
+def update_provisioned_product_input_to_json(UpdateProvisionedProductInput v) -> str:
+    list[str] parts = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
+    if v.ProvisionedProductName.is_some():
+        auto u1 = v.ProvisionedProductName.unwrap()
+        parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(u1))
+    if v.ProvisionedProductId.is_some():
+        auto u2 = v.ProvisionedProductId.unwrap()
+        parts.append("\"ProvisionedProductId\":" + servicecatalog_json_str(u2))
+    if v.ProductId.is_some():
+        auto u3 = v.ProductId.unwrap()
+        parts.append("\"ProductId\":" + servicecatalog_json_str(u3))
+    if v.ProductName.is_some():
+        auto u4 = v.ProductName.unwrap()
+        parts.append("\"ProductName\":" + servicecatalog_json_str(u4))
+    if v.ProvisioningArtifactId.is_some():
+        auto u5 = v.ProvisioningArtifactId.unwrap()
+        parts.append("\"ProvisioningArtifactId\":" + servicecatalog_json_str(u5))
+    if v.ProvisioningArtifactName.is_some():
+        auto u6 = v.ProvisioningArtifactName.unwrap()
+        parts.append("\"ProvisioningArtifactName\":" + servicecatalog_json_str(u6))
+    if v.PathId.is_some():
+        auto u7 = v.PathId.unwrap()
+        parts.append("\"PathId\":" + servicecatalog_json_str(u7))
+    if v.PathName.is_some():
+        auto u8 = v.PathName.unwrap()
+        parts.append("\"PathName\":" + servicecatalog_json_str(u8))
+    if v.ProvisioningParameters.is_some():
+        auto u9 = v.ProvisioningParameters.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"ProvisioningParameters\":" + servicecatalog_json_arr(e10))
+    if v.ProvisioningPreferences.is_some():
+        auto u11 = v.ProvisioningPreferences.unwrap()
+        parts.append("\"ProvisioningPreferences\":" + update_provisioning_preferences_to_json(u11))
+    if v.Tags.is_some():
+        auto u12 = v.Tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Tags\":" + servicecatalog_json_arr(e13))
+    parts.append("\"UpdateToken\":" + servicecatalog_json_str(v.UpdateToken))
+    return servicecatalog_json_obj(parts)
+
+# Serialize UpdateProvisioningPreferences to a compact JSON object (declaration order).
+def update_provisioning_preferences_to_json(UpdateProvisioningPreferences v) -> str:
+    list[str] parts = []
+    if v.StackSetAccounts.is_some():
+        auto u0 = v.StackSetAccounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(servicecatalog_json_str(x1))
+        parts.append("\"StackSetAccounts\":" + servicecatalog_json_arr(e1))
+    if v.StackSetRegions.is_some():
+        auto u2 = v.StackSetRegions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(servicecatalog_json_str(x3))
+        parts.append("\"StackSetRegions\":" + servicecatalog_json_arr(e3))
+    if v.StackSetFailureToleranceCount.is_some():
+        auto u4 = v.StackSetFailureToleranceCount.unwrap()
+        parts.append("\"StackSetFailureToleranceCount\":" + str(u4))
+    if v.StackSetFailureTolerancePercentage.is_some():
+        auto u5 = v.StackSetFailureTolerancePercentage.unwrap()
+        parts.append("\"StackSetFailureTolerancePercentage\":" + str(u5))
+    if v.StackSetMaxConcurrencyCount.is_some():
+        auto u6 = v.StackSetMaxConcurrencyCount.unwrap()
+        parts.append("\"StackSetMaxConcurrencyCount\":" + str(u6))
+    if v.StackSetMaxConcurrencyPercentage.is_some():
+        auto u7 = v.StackSetMaxConcurrencyPercentage.unwrap()
+        parts.append("\"StackSetMaxConcurrencyPercentage\":" + str(u7))
+    if v.StackSetOperationType.is_some():
+        auto u8 = v.StackSetOperationType.unwrap()
+        parts.append("\"StackSetOperationType\":" + u8.to_json())
+    return servicecatalog_json_obj(parts)
 
 # A bound Service_Catalog client: credentials + region, threaded into every operation.
 struct Service_CatalogClient:
@@ -2105,17 +2743,59 @@ struct Service_CatalogClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AssociateTagOptionWithResource", body)
 
+    # BatchAssociateServiceActionWithProvisioningArtifact
+    # errors: InvalidParametersException
+    def batch_associate_service_action_with_provisioning_artifact(self, BatchAssociateServiceActionWithProvisioningArtifactInput input) -> str:
+        auto body = batch_associate_service_action_with_provisioning_artifact_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "BatchAssociateServiceActionWithProvisioningArtifact", body)
+
+    # BatchDisassociateServiceActionFromProvisioningArtifact
+    # errors: InvalidParametersException
+    def batch_disassociate_service_action_from_provisioning_artifact(self, BatchDisassociateServiceActionFromProvisioningArtifactInput input) -> str:
+        auto body = batch_disassociate_service_action_from_provisioning_artifact_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "BatchDisassociateServiceActionFromProvisioningArtifact", body)
+
+    # CopyProduct
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def copy_product(self, CopyProductInput input) -> str:
+        auto body = copy_product_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CopyProduct", body)
+
     # CreateConstraint
     # errors: DuplicateResourceException, InvalidParametersException, LimitExceededException, ResourceNotFoundException
     def create_constraint(self, CreateConstraintInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateConstraint", body)
 
+    # CreatePortfolio
+    # errors: InvalidParametersException, LimitExceededException, TagOptionNotMigratedException
+    def create_portfolio(self, CreatePortfolioInput input) -> str:
+        auto body = create_portfolio_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreatePortfolio", body)
+
     # CreatePortfolioShare
     # errors: InvalidParametersException, InvalidStateException, LimitExceededException, OperationNotSupportedException, ResourceNotFoundException
     def create_portfolio_share(self, CreatePortfolioShareInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreatePortfolioShare", body)
+
+    # CreateProduct
+    # errors: InvalidParametersException, LimitExceededException, TagOptionNotMigratedException
+    def create_product(self, CreateProductInput input) -> str:
+        auto body = create_product_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateProduct", body)
+
+    # CreateProvisionedProductPlan
+    # errors: InvalidParametersException, InvalidStateException, ResourceNotFoundException
+    def create_provisioned_product_plan(self, CreateProvisionedProductPlanInput input) -> str:
+        auto body = create_provisioned_product_plan_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateProvisionedProductPlan", body)
+
+    # CreateProvisioningArtifact
+    # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException
+    def create_provisioning_artifact(self, CreateProvisioningArtifactInput input) -> str:
+        auto body = create_provisioning_artifact_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateProvisioningArtifact", body)
 
     # CreateTagOption
     # errors: DuplicateResourceException, LimitExceededException, TagOptionNotMigratedException
@@ -2315,11 +2995,23 @@ struct Service_CatalogClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ExecuteProvisionedProductPlan", body)
 
+    # ExecuteProvisionedProductServiceAction
+    # errors: InvalidParametersException, InvalidStateException, ResourceNotFoundException
+    def execute_provisioned_product_service_action(self, ExecuteProvisionedProductServiceActionInput input) -> str:
+        auto body = execute_provisioned_product_service_action_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ExecuteProvisionedProductServiceAction", body)
+
     # GetAWSOrganizationsAccessStatus
     # errors: OperationNotSupportedException, ResourceNotFoundException
     def get_aws_organizations_access_status(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "GetAWSOrganizationsAccessStatus", body)
+
+    # GetProvisionedProductOutputs
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def get_provisioned_product_outputs(self, GetProvisionedProductOutputsInput input) -> str:
+        auto body = get_provisioned_product_outputs_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "GetProvisionedProductOutputs", body)
 
     # ImportAsProvisionedProduct
     # errors: DuplicateResourceException, InvalidParametersException, InvalidStateException, ResourceNotFoundException
@@ -2435,11 +3127,29 @@ struct Service_CatalogClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListTagOptions", body)
 
+    # NotifyProvisionProductEngineWorkflowResult
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def notify_provision_product_engine_workflow_result(self, NotifyProvisionProductEngineWorkflowResultInput input) -> str:
+        auto body = notify_provision_product_engine_workflow_result_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "NotifyProvisionProductEngineWorkflowResult", body)
+
     # NotifyTerminateProvisionedProductEngineWorkflowResult
     # errors: InvalidParametersException, ResourceNotFoundException
     def notify_terminate_provisioned_product_engine_workflow_result(self, NotifyTerminateProvisionedProductEngineWorkflowResultInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "NotifyTerminateProvisionedProductEngineWorkflowResult", body)
+
+    # NotifyUpdateProvisionedProductEngineWorkflowResult
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def notify_update_provisioned_product_engine_workflow_result(self, NotifyUpdateProvisionedProductEngineWorkflowResultInput input) -> str:
+        auto body = notify_update_provisioned_product_engine_workflow_result_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "NotifyUpdateProvisionedProductEngineWorkflowResult", body)
+
+    # ProvisionProduct
+    # errors: DuplicateResourceException, InvalidParametersException, ResourceNotFoundException
+    def provision_product(self, ProvisionProductInput input) -> str:
+        auto body = provision_product_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ProvisionProduct", body)
 
     # RejectPortfolioShare
     # errors: ResourceNotFoundException
@@ -2453,6 +3163,12 @@ struct Service_CatalogClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ScanProvisionedProducts", body)
 
+    # SearchProvisionedProducts
+    # errors: InvalidParametersException
+    def search_provisioned_products(self, SearchProvisionedProductsInput input) -> str:
+        auto body = search_provisioned_products_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "SearchProvisionedProducts", body)
+
     # TerminateProvisionedProduct
     # errors: ResourceNotFoundException
     def terminate_provisioned_product(self, TerminateProvisionedProductInput input) -> str:
@@ -2465,11 +3181,29 @@ struct Service_CatalogClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateConstraint", body)
 
+    # UpdatePortfolio
+    # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException, TagOptionNotMigratedException
+    def update_portfolio(self, UpdatePortfolioInput input) -> str:
+        auto body = update_portfolio_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdatePortfolio", body)
+
     # UpdatePortfolioShare
     # errors: InvalidParametersException, InvalidStateException, OperationNotSupportedException, ResourceNotFoundException
     def update_portfolio_share(self, UpdatePortfolioShareInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdatePortfolioShare", body)
+
+    # UpdateProduct
+    # errors: InvalidParametersException, ResourceNotFoundException, TagOptionNotMigratedException
+    def update_product(self, UpdateProductInput input) -> str:
+        auto body = update_product_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateProduct", body)
+
+    # UpdateProvisionedProduct
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def update_provisioned_product(self, UpdateProvisionedProductInput input) -> str:
+        auto body = update_provisioned_product_input_to_json(input)
+        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateProvisionedProduct", body)
 
     # UpdateProvisioningArtifact
     # errors: InvalidParametersException, ResourceNotFoundException

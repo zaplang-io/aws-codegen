@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 1 operations — 0 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 1 operations — 1 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   11 structs (9 @derive(Json)), 0 enums, 6 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -78,8 +78,9 @@ struct PutAuditEventsRequest:
     str channelArn
     Optional[str] externalId
 
-# no @derive(Json): member(s) failed: list[ResultErrorEntry], successful: list[AuditEventResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failed: list[ResultErrorEntry], successful: list[AuditEventResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAuditEventsResponse:
     list[ResultErrorEntry] failed
     list[AuditEventResultEntry] successful
@@ -126,17 +127,28 @@ def cloudtrail_data_error_from_code(str code) -> CloudTrail_DataError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   PutAuditEvents (document member `auditEvents: list[AuditEvent]` is not serializable by derive)
-
 # A bound CloudTrail_Data client: credentials + region, threaded into every operation.
 struct CloudTrail_DataClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # PutAuditEvents  POST /PutAuditEvents
+    # errors: ChannelInsufficientPermission, ChannelNotFound, ChannelUnsupportedSchema, DuplicatedAuditEventId, InvalidChannelARN, UnsupportedOperationException
+    def put_audit_events(self, PutAuditEventsRequest input) -> str:
+        auto host = endpoints.regional_host(cloudtrail_data_service(), self.region)
+        dict[str, str] query = {}
+        query["channelArn"] = input.channelArn
+        if input.externalId.is_some():
+            query["externalId"] = input.externalId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutAuditEvents", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.auditEvents:
+            e0.append(x0.to_json())
+        parts.append("\"auditEvents\":" + cloudtrail_data_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cloudtrail_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cloudtrail_data_service(), self.region, host)
+
 # Construct a CloudTrail_DataClient bound to credentials + region.
 def cloudtrail_data_client(core.Credentials creds, str region) -> CloudTrail_DataClient:
     return CloudTrail_DataClient(creds=creds, region=region)

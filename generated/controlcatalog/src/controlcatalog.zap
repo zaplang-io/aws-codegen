@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 2 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   39 structs (22 @derive(Json)), 7 enums, 5 error variants.
-#   1 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -111,8 +111,9 @@ struct AssociatedObjectiveSummary:
     Optional[str] Arn
     Optional[str] Name
 
-# no @derive(Json): member(s) Objectives: list[ObjectiveResourceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Objectives: list[ObjectiveResourceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommonControlFilter:
     Optional[list[ObjectiveResourceFilter]] Objectives
 
@@ -130,8 +131,9 @@ struct CommonControlSummary:
     DateTime CreateTime
     DateTime LastUpdateTime
 
-# no @derive(Json): member(s) Implementations: ImplementationFilter, GovernedProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Implementations: ImplementationFilter, GovernedProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlFilter:
     Optional[ImplementationFilter] Implementations
     Optional[list[str]] GovernedProviders
@@ -142,8 +144,9 @@ struct ControlMapping:
     MappingType MappingType
     Mapping Mapping
 
-# no @derive(Json): member(s) ControlArns: list[str], CommonControlArns: list[str], MappingTypes: list[MappingType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlArns: list[str], CommonControlArns: list[str], MappingTypes: list[MappingType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlMappingFilter:
     Optional[list[str]] ControlArns
     Optional[list[str]] CommonControlArns
@@ -154,8 +157,9 @@ struct ControlParameter:
     str Name
     Optional[ControlParameterRequirement] Requirement
 
-# no @derive(Json): member(s) Aliases: list[str], GovernedResources: list[str], GovernedProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[str], GovernedResources: list[str], GovernedProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlSummary:
     str Arn
     Optional[list[str]] Aliases
@@ -191,8 +195,9 @@ struct FrameworkMappingDetails:
 struct GetControlRequest:
     str ControlArn
 
-# no @derive(Json): member(s) Aliases: list[str], RegionConfiguration: RegionConfiguration, Parameters: list[ControlParameter], GovernedResources: list[str], GovernedProviders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[str], RegionConfiguration: RegionConfiguration, Parameters: list[ControlParameter], GovernedResources: list[str], GovernedProviders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetControlResponse:
     str Arn
     Optional[list[str]] Aliases
@@ -213,8 +218,9 @@ struct ImplementationDetails:
     str Type
     Optional[str] Identifier
 
-# no @derive(Json): member(s) Types: list[str], Identifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str], Identifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImplementationFilter:
     Optional[list[str]] Types
     Optional[list[str]] Identifiers
@@ -235,8 +241,9 @@ struct ListCommonControlsRequest:
     Optional[str] NextToken
     Optional[CommonControlFilter] CommonControlFilter
 
-# no @derive(Json): member(s) CommonControls: list[CommonControlSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommonControls: list[CommonControlSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommonControlsResponse:
     list[CommonControlSummary] CommonControls
     Optional[str] NextToken
@@ -248,8 +255,9 @@ struct ListControlMappingsRequest:
     Optional[int64] MaxResults
     Optional[ControlMappingFilter] Filter
 
-# no @derive(Json): member(s) ControlMappings: list[ControlMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlMappings: list[ControlMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlMappingsResponse:
     list[ControlMapping] ControlMappings
     Optional[str] NextToken
@@ -261,8 +269,9 @@ struct ListControlsRequest:
     Optional[int64] MaxResults
     Optional[ControlFilter] Filter
 
-# no @derive(Json): member(s) Controls: list[ControlSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Controls: list[ControlSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlsResponse:
     list[ControlSummary] Controls
     Optional[str] NextToken
@@ -273,8 +282,9 @@ struct ListDomainsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Domains: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     list[DomainSummary] Domains
     Optional[str] NextToken
@@ -286,8 +296,9 @@ struct ListObjectivesRequest:
     Optional[str] NextToken
     Optional[ObjectiveFilter] ObjectiveFilter
 
-# no @derive(Json): member(s) Objectives: list[ObjectiveSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Objectives: list[ObjectiveSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectivesResponse:
     list[ObjectiveSummary] Objectives
     Optional[str] NextToken
@@ -298,8 +309,9 @@ struct Mapping:
     Optional[CommonControlMappingDetails] CommonControl
     Optional[RelatedControlMappingDetails] RelatedControl
 
-# no @derive(Json): member(s) Domains: list[DomainResourceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[DomainResourceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ObjectiveFilter:
     Optional[list[DomainResourceFilter]] Domains
 
@@ -316,8 +328,9 @@ struct ObjectiveSummary:
     DateTime CreateTime
     DateTime LastUpdateTime
 
-# no @derive(Json): member(s) DeployableRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeployableRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionConfiguration:
     ControlScope Scope
     Optional[list[str]] DeployableRegions
@@ -368,21 +381,6 @@ def controlcatalog_error_from_code(str code) -> ControlCatalogError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListCommonControls (document member `CommonControlFilter: CommonControlFilter` is not serializable by derive)
-#   ListControlMappings (document member `Filter: ControlMappingFilter` is not serializable by derive)
-#   ListControls (document member `Filter: ControlFilter` is not serializable by derive)
-#   ListObjectives (document member `ObjectiveFilter: ObjectiveFilter` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListCommonControls (operation not generated)
-#   ListControlMappings (operation not generated)
-#   ListControls (operation not generated)
-#   ListObjectives (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -390,6 +388,112 @@ def controlcatalog_error_from_code(str code) -> ControlCatalogError:
 struct GetControlDocument:
     # document members of GetControl
     str ControlArn
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def controlcatalog_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def controlcatalog_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def controlcatalog_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CommonControlFilter to a compact JSON object (declaration order).
+def common_control_filter_to_json(CommonControlFilter v) -> str:
+    list[str] parts = []
+    if v.Objectives.is_some():
+        auto u0 = v.Objectives.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Objectives\":" + controlcatalog_json_arr(e1))
+    return controlcatalog_json_obj(parts)
+
+# Serialize ControlFilter to a compact JSON object (declaration order).
+def control_filter_to_json(ControlFilter v) -> str:
+    list[str] parts = []
+    if v.Implementations.is_some():
+        auto u0 = v.Implementations.unwrap()
+        parts.append("\"Implementations\":" + implementation_filter_to_json(u0))
+    if v.GovernedProviders.is_some():
+        auto u1 = v.GovernedProviders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(controlcatalog_json_str(x2))
+        parts.append("\"GovernedProviders\":" + controlcatalog_json_arr(e2))
+    return controlcatalog_json_obj(parts)
+
+# Serialize ControlMappingFilter to a compact JSON object (declaration order).
+def control_mapping_filter_to_json(ControlMappingFilter v) -> str:
+    list[str] parts = []
+    if v.ControlArns.is_some():
+        auto u0 = v.ControlArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(controlcatalog_json_str(x1))
+        parts.append("\"ControlArns\":" + controlcatalog_json_arr(e1))
+    if v.CommonControlArns.is_some():
+        auto u2 = v.CommonControlArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(controlcatalog_json_str(x3))
+        parts.append("\"CommonControlArns\":" + controlcatalog_json_arr(e3))
+    if v.MappingTypes.is_some():
+        auto u4 = v.MappingTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"MappingTypes\":" + controlcatalog_json_arr(e5))
+    return controlcatalog_json_obj(parts)
+
+# Serialize ImplementationFilter to a compact JSON object (declaration order).
+def implementation_filter_to_json(ImplementationFilter v) -> str:
+    list[str] parts = []
+    if v.Types.is_some():
+        auto u0 = v.Types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(controlcatalog_json_str(x1))
+        parts.append("\"Types\":" + controlcatalog_json_arr(e1))
+    if v.Identifiers.is_some():
+        auto u2 = v.Identifiers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(controlcatalog_json_str(x3))
+        parts.append("\"Identifiers\":" + controlcatalog_json_arr(e3))
+    return controlcatalog_json_obj(parts)
+
+# Serialize ObjectiveFilter to a compact JSON object (declaration order).
+def objective_filter_to_json(ObjectiveFilter v) -> str:
+    list[str] parts = []
+    if v.Domains.is_some():
+        auto u0 = v.Domains.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Domains\":" + controlcatalog_json_arr(e1))
+    return controlcatalog_json_obj(parts)
 
 # A bound ControlCatalog client: credentials + region, threaded into every operation.
 struct ControlCatalogClient:
@@ -405,6 +509,57 @@ struct ControlCatalogClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controlcatalog_service(), self.region, host)
 
+    # ListCommonControls  POST /common-controls
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_common_controls(self, ListCommonControlsRequest input) -> str:
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/common-controls", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CommonControlFilter.is_some():
+            auto u0 = input.CommonControlFilter.unwrap()
+            parts.append("\"CommonControlFilter\":" + common_control_filter_to_json(u0))
+        auto bp = restjson.rest_json_document(b, controlcatalog_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controlcatalog_service(), self.region, host)
+
+    # ListControlMappings  POST /list-control-mappings
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_control_mappings(self, ListControlMappingsRequest input) -> str:
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/list-control-mappings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filter.is_some():
+            auto u0 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + control_mapping_filter_to_json(u0))
+        auto bp = restjson.rest_json_document(b, controlcatalog_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controlcatalog_service(), self.region, host)
+
+    # ListControls  POST /list-controls
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_controls(self, ListControlsRequest input) -> str:
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/list-controls", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filter.is_some():
+            auto u0 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + control_filter_to_json(u0))
+        auto bp = restjson.rest_json_document(b, controlcatalog_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controlcatalog_service(), self.region, host)
+
     # ListDomains  POST /domains
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_domains(self, ListDomainsRequest input) -> str:
@@ -417,12 +572,81 @@ struct ControlCatalogClient:
         auto b = binding.HttpBinding(method="POST", path_template="/domains", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, controlcatalog_service(), self.region, host)
 
+    # ListObjectives  POST /objectives
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_objectives(self, ListObjectivesRequest input) -> str:
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/objectives", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ObjectiveFilter.is_some():
+            auto u0 = input.ObjectiveFilter.unwrap()
+            parts.append("\"ObjectiveFilter\":" + objective_filter_to_json(u0))
+        auto bp = restjson.rest_json_document(b, controlcatalog_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, controlcatalog_service(), self.region, host)
+
+    # Paginator for ListCommonControls — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: CommonControls).
+    def paginate_list_common_controls(self, ListCommonControlsRequest input):
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        while True:
+            auto raw = self.list_common_controls(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListControlMappings — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ControlMappings).
+    def paginate_list_control_mappings(self, ListControlMappingsRequest input):
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        while True:
+            auto raw = self.list_control_mappings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListControls — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Controls).
+    def paginate_list_controls(self, ListControlsRequest input):
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        while True:
+            auto raw = self.list_controls(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListDomains — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Domains).
     def paginate_list_domains(self, ListDomainsRequest input):
         auto host = endpoints.regional_host(controlcatalog_service(), self.region)
         while True:
             auto raw = self.list_domains(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListObjectives — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Objectives).
+    def paginate_list_objectives(self, ListObjectivesRequest input):
+        auto host = endpoints.regional_host(controlcatalog_service(), self.region)
+        while True:
+            auto raw = self.list_objectives(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

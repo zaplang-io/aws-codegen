@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 33 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 44 operations — 37 with a generated method,
+#   7 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   126 structs (89 @derive(Json)), 32 enums, 25 error variants.
-#   8 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -385,8 +385,9 @@ struct ActivateUserRequest:
 struct ActivateUserResponse:
     Optional[User] User
 
-# no @derive(Json): member(s) Participants: Participants not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Participants: Participants not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Activity:
     Optional[ActivityType] Type
     Optional[DateTime] TimeStamp
@@ -406,8 +407,9 @@ struct AddResourcePermissionsRequest:
     list[SharePrincipal] Principals
     Optional[NotificationOptions] NotificationOptions
 
-# no @derive(Json): member(s) ShareResults: list[ShareResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShareResults: list[ShareResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddResourcePermissionsResponse:
     Optional[list[ShareResult]] ShareResults
 
@@ -476,8 +478,9 @@ struct CreateFolderRequest:
     Optional[str] Name
     str ParentFolderId
 
-# no @derive(Json): member(s) Metadata: FolderMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: FolderMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFolderResponse:
     Optional[FolderMetadata] Metadata
 
@@ -629,8 +632,9 @@ struct DescribeActivitiesRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) UserActivities: list[Activity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserActivities: list[Activity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActivitiesResponse:
     Optional[list[Activity]] UserActivities
     Optional[str] Marker
@@ -644,8 +648,9 @@ struct DescribeCommentsRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Comments: list[Comment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Comments: list[Comment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCommentsResponse:
     Optional[list[Comment]] Comments
     Optional[str] Marker
@@ -660,8 +665,9 @@ struct DescribeDocumentVersionsRequest:
     Optional[str] Include
     Optional[str] Fields
 
-# no @derive(Json): member(s) DocumentVersions: list[DocumentVersionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentVersions: list[DocumentVersionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDocumentVersionsResponse:
     Optional[list[DocumentVersionMetadata]] DocumentVersions
     Optional[str] Marker
@@ -681,8 +687,9 @@ struct DescribeFolderContentsRequest:
     Optional[str] Type
     Optional[str] Include
 
-# no @derive(Json): member(s) Folders: list[FolderMetadata], Documents: list[DocumentMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Folders: list[FolderMetadata], Documents: list[DocumentMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFolderContentsResponse:
     Optional[list[FolderMetadata]] Folders
     Optional[list[DocumentMetadata]] Documents
@@ -697,8 +704,9 @@ struct DescribeGroupsRequest:
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Groups: list[GroupMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGroupsResponse:
     Optional[list[GroupMetadata]] Groups
     Optional[str] Marker
@@ -710,8 +718,9 @@ struct DescribeNotificationSubscriptionsRequest:
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Subscriptions: list[Subscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscriptions: list[Subscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotificationSubscriptionsResponse:
     Optional[list[Subscription]] Subscriptions
     Optional[str] Marker
@@ -725,8 +734,9 @@ struct DescribeResourcePermissionsRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Principals: list[Principal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[Principal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResourcePermissionsResponse:
     Optional[list[Principal]] Principals
     Optional[str] Marker
@@ -738,8 +748,9 @@ struct DescribeRootFoldersRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Folders: list[FolderMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Folders: list[FolderMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRootFoldersResponse:
     Optional[list[FolderMetadata]] Folders
     Optional[str] Marker
@@ -761,8 +772,9 @@ struct DescribeUsersRequest:
     Optional[int64] Limit
     Optional[str] Fields
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUsersResponse:
     Optional[list[User]] Users
     Optional[int64] TotalNumberOfUsers
@@ -772,8 +784,9 @@ struct DescribeUsersResponse:
 struct DocumentLockedForCommentsException:
     Optional[str] Message
 
-# no @derive(Json): member(s) LatestVersionMetadata: DocumentVersionMetadata, Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LatestVersionMetadata: DocumentVersionMetadata, Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentMetadata:
     Optional[str] Id
     Optional[str] CreatorId
@@ -784,8 +797,9 @@ struct DocumentMetadata:
     Optional[ResourceStateType] ResourceState
     Optional[list[str]] Labels
 
-# no @derive(Json): member(s) Thumbnail: dict[DocumentThumbnailType, str], Source: dict[DocumentSourceType, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Thumbnail: dict[DocumentThumbnailType, str], Source: dict[DocumentSourceType, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentVersionMetadata:
     Optional[str] Id
     Optional[str] Name
@@ -809,8 +823,9 @@ struct DraftUploadOutOfSyncException:
 struct EntityAlreadyExistsException:
     Optional[str] Message
 
-# no @derive(Json): member(s) EntityIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityNotExistsException:
     Optional[str] Message
     Optional[list[str]] EntityIds
@@ -819,8 +834,9 @@ struct EntityNotExistsException:
 struct FailedDependencyException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TextLocales: list[LanguageCodeType], ContentCategories: list[ContentCategoryType], ResourceTypes: list[SearchResourceType], Labels: list[str], Principals: list[SearchPrincipalType], AncestorIds: list[str], SearchCollectionTypes: list[SearchCollectionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextLocales: list[LanguageCodeType], ContentCategories: list[ContentCategoryType], ResourceTypes: list[SearchResourceType], Labels: list[str], Principals: list[SearchPrincipalType], AncestorIds: list[str], SearchCollectionTypes: list[SearchCollectionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filters:
     Optional[list[LanguageCodeType]] TextLocales
     Optional[list[ContentCategoryType]] ContentCategories
@@ -833,8 +849,9 @@ struct Filters:
     Optional[DateRangeType] CreatedRange
     Optional[DateRangeType] ModifiedRange
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FolderMetadata:
     Optional[str] Id
     Optional[str] Name
@@ -866,8 +883,9 @@ struct GetDocumentPathRequest:
     Optional[str] Fields
     Optional[str] Marker
 
-# no @derive(Json): member(s) Path: ResourcePath not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Path: ResourcePath not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDocumentPathResponse:
     Optional[ResourcePath] Path
 
@@ -878,8 +896,9 @@ struct GetDocumentRequest:
     str DocumentId
     Optional[bool] IncludeCustomMetadata
 
-# no @derive(Json): member(s) Metadata: DocumentMetadata, CustomMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: DocumentMetadata, CustomMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDocumentResponse:
     Optional[DocumentMetadata] Metadata
     Optional[dict[str, str]] CustomMetadata
@@ -893,8 +912,9 @@ struct GetDocumentVersionRequest:
     Optional[str] Fields
     Optional[bool] IncludeCustomMetadata
 
-# no @derive(Json): member(s) Metadata: DocumentVersionMetadata, CustomMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: DocumentVersionMetadata, CustomMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDocumentVersionResponse:
     Optional[DocumentVersionMetadata] Metadata
     Optional[dict[str, str]] CustomMetadata
@@ -908,8 +928,9 @@ struct GetFolderPathRequest:
     Optional[str] Fields
     Optional[str] Marker
 
-# no @derive(Json): member(s) Path: ResourcePath not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Path: ResourcePath not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFolderPathResponse:
     Optional[ResourcePath] Path
 
@@ -920,8 +941,9 @@ struct GetFolderRequest:
     str FolderId
     Optional[bool] IncludeCustomMetadata
 
-# no @derive(Json): member(s) Metadata: FolderMetadata, CustomMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: FolderMetadata, CustomMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFolderResponse:
     Optional[FolderMetadata] Metadata
     Optional[dict[str, str]] CustomMetadata
@@ -935,8 +957,9 @@ struct GetResourcesRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Folders: list[FolderMetadata], Documents: list[DocumentMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Folders: list[FolderMetadata], Documents: list[DocumentMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcesResponse:
     Optional[list[FolderMetadata]] Folders
     Optional[list[DocumentMetadata]] Documents
@@ -963,8 +986,9 @@ struct InitiateDocumentVersionUploadRequest:
     Optional[int64] DocumentSizeInBytes
     Optional[str] ParentFolderId
 
-# no @derive(Json): member(s) Metadata: DocumentMetadata, UploadMetadata: UploadMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: DocumentMetadata, UploadMetadata: UploadMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InitiateDocumentVersionUploadResponse:
     Optional[DocumentMetadata] Metadata
     Optional[UploadMetadata] UploadMetadata
@@ -999,8 +1023,9 @@ struct NotificationOptions:
     Optional[bool] SendEmail
     Optional[str] EmailMessage
 
-# no @derive(Json): member(s) Users: list[UserMetadata], Groups: list[GroupMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserMetadata], Groups: list[GroupMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Participants:
     Optional[list[UserMetadata]] Users
     Optional[list[GroupMetadata]] Groups
@@ -1010,8 +1035,9 @@ struct PermissionInfo:
     Optional[RoleType] Role
     Optional[RolePermissionType] Type
 
-# no @derive(Json): member(s) Roles: list[PermissionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: list[PermissionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Principal:
     Optional[str] Id
     Optional[PrincipalType] Type
@@ -1054,8 +1080,9 @@ struct ResourceMetadata:
     Optional[UserMetadata] Owner
     Optional[str] ParentId
 
-# no @derive(Json): member(s) Components: list[ResourcePathComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Components: list[ResourcePathComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcePath:
     Optional[list[ResourcePathComponent]] Components
 
@@ -1064,8 +1091,9 @@ struct ResourcePathComponent:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) DocumentMetadata: DocumentMetadata, FolderMetadata: FolderMetadata, DocumentVersionMetadata: DocumentVersionMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentMetadata: DocumentMetadata, FolderMetadata: FolderMetadata, DocumentVersionMetadata: DocumentVersionMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseItem:
     Optional[ResponseItemType] ResourceType
     Optional[str] WebUrl
@@ -1080,8 +1108,9 @@ struct RestoreDocumentVersionsRequest:
     Optional[str] AuthenticationToken
     str DocumentId
 
-# no @derive(Json): member(s) Roles: list[PrincipalRoleType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: list[PrincipalRoleType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPrincipalType:
     str Id
     Optional[list[PrincipalRoleType]] Roles
@@ -1099,8 +1128,9 @@ struct SearchResourcesRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Items: list[ResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesResponse:
     Optional[list[ResponseItem]] Items
     Optional[str] Marker
@@ -1208,8 +1238,9 @@ struct UpdateUserRequest:
 struct UpdateUserResponse:
     Optional[User] User
 
-# no @derive(Json): member(s) SignedHeaders: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SignedHeaders: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UploadMetadata:
     Optional[str] UploadUrl
     Optional[dict[str, str]] SignedHeaders
@@ -1337,9 +1368,6 @@ def workdocs_error_from_code(str code) -> WorkDocsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddResourcePermissions (document member `Principals: list[SharePrincipal]` is not serializable by derive)
-#   CreateCustomMetadata (document member `CustomMetadata: dict[str, str]` is not serializable by derive)
-#   CreateLabels (document member `Labels: list[str]` is not serializable by derive)
 #   DeleteCustomMetadata (httpQuery `Keys` has unsupported type list[str])
 #   DeleteDocumentVersion (httpQuery `DeletePriorVersions` has unsupported type bool)
 #   DeleteLabels (httpQuery `Labels` has unsupported type list[str])
@@ -1347,12 +1375,10 @@ def workdocs_error_from_code(str code) -> WorkDocsError:
 #   GetDocument (httpQuery `IncludeCustomMetadata` has unsupported type bool)
 #   GetDocumentVersion (httpQuery `IncludeCustomMetadata` has unsupported type bool)
 #   GetFolder (httpQuery `IncludeCustomMetadata` has unsupported type bool)
-#   SearchResources (document member `QueryScopes: list[SearchQueryScopeType]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   DescribeActivities (operation not generated)
-#   SearchResources (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1432,6 +1458,104 @@ struct UpdateUserDocument:
     Optional[LocaleType] Locale
     Optional[BooleanEnumType] GrantPoweruserPrivileges
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def workdocs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def workdocs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def workdocs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Filters to a compact JSON object (declaration order).
+def filters_to_json(Filters v) -> str:
+    list[str] parts = []
+    if v.TextLocales.is_some():
+        auto u0 = v.TextLocales.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TextLocales\":" + workdocs_json_arr(e1))
+    if v.ContentCategories.is_some():
+        auto u2 = v.ContentCategories.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ContentCategories\":" + workdocs_json_arr(e3))
+    if v.ResourceTypes.is_some():
+        auto u4 = v.ResourceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ResourceTypes\":" + workdocs_json_arr(e5))
+    if v.Labels.is_some():
+        auto u6 = v.Labels.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(workdocs_json_str(x7))
+        parts.append("\"Labels\":" + workdocs_json_arr(e7))
+    if v.Principals.is_some():
+        auto u8 = v.Principals.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(search_principal_type_to_json(x9))
+        parts.append("\"Principals\":" + workdocs_json_arr(e9))
+    if v.AncestorIds.is_some():
+        auto u10 = v.AncestorIds.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(workdocs_json_str(x11))
+        parts.append("\"AncestorIds\":" + workdocs_json_arr(e11))
+    if v.SearchCollectionTypes.is_some():
+        auto u12 = v.SearchCollectionTypes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"SearchCollectionTypes\":" + workdocs_json_arr(e13))
+    if v.SizeRange.is_some():
+        auto u14 = v.SizeRange.unwrap()
+        parts.append("\"SizeRange\":" + u14.to_json())
+    if v.CreatedRange.is_some():
+        auto u15 = v.CreatedRange.unwrap()
+        parts.append("\"CreatedRange\":" + u15.to_json())
+    if v.ModifiedRange.is_some():
+        auto u16 = v.ModifiedRange.unwrap()
+        parts.append("\"ModifiedRange\":" + u16.to_json())
+    return workdocs_json_obj(parts)
+
+# Serialize SearchPrincipalType to a compact JSON object (declaration order).
+def search_principal_type_to_json(SearchPrincipalType v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + workdocs_json_str(v.Id))
+    if v.Roles.is_some():
+        auto u0 = v.Roles.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Roles\":" + workdocs_json_arr(e1))
+    return workdocs_json_obj(parts)
+
 # A bound WorkDocs client: credentials + region, threaded into every operation.
 struct WorkDocsClient:
     core.Credentials creds
@@ -1462,6 +1586,27 @@ struct WorkDocsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/api/v1/users/{UserId}/activation", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
+    # AddResourcePermissions  POST /api/v1/resources/{ResourceId}/permissions
+    # errors: FailedDependencyException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def add_resource_permissions(self, AddResourcePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Principals:
+            e0.append(x0.to_json())
+        parts.append("\"Principals\":" + workdocs_json_arr(e0))
+        if input.NotificationOptions.is_some():
+            auto u1 = input.NotificationOptions.unwrap()
+            parts.append("\"NotificationOptions\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, workdocs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
+
     # CreateComment  POST /api/v1/documents/{DocumentId}/versions/{VersionId}/comment
     # errors: DocumentLockedForCommentsException, EntityNotExistsException, FailedDependencyException, InvalidCommentOperationException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
     def create_comment(self, CreateCommentRequest input) -> str:
@@ -1477,6 +1622,27 @@ struct WorkDocsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
 
+    # CreateCustomMetadata  PUT /api/v1/resources/{ResourceId}/customMetadata
+    # errors: CustomMetadataLimitExceededException, EntityNotExistsException, FailedDependencyException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def create_custom_metadata(self, CreateCustomMetadataRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionid"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/resources/{ResourceId}/customMetadata", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.CustomMetadata.keys()):
+            m0.append(workdocs_json_str(k0) + ":" + workdocs_json_str(input.CustomMetadata[k0]))
+        parts.append("\"CustomMetadata\":" + workdocs_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, workdocs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
+
     # CreateFolder  POST /api/v1/folders
     # errors: ConcurrentModificationException, ConflictingOperationException, EntityAlreadyExistsException, EntityNotExistsException, FailedDependencyException, LimitExceededException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
     def create_folder(self, CreateFolderRequest input) -> str:
@@ -1487,6 +1653,24 @@ struct WorkDocsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/api/v1/folders", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFolderDocument(Name=input.Name, ParentFolderId=input.ParentFolderId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
+
+    # CreateLabels  PUT /api/v1/resources/{ResourceId}/labels
+    # errors: EntityNotExistsException, FailedDependencyException, ServiceUnavailableException, TooManyLabelsException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def create_labels(self, CreateLabelsRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/resources/{ResourceId}/labels", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Labels:
+            e0.append(workdocs_json_str(x0))
+        parts.append("\"Labels\":" + workdocs_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, workdocs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
 
     # CreateNotificationSubscription  POST /api/v1/organizations/{OrganizationId}/subscriptions
@@ -1872,6 +2056,51 @@ struct WorkDocsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documentVersions/restore/{DocumentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
+    # SearchResources  POST /api/v1/search
+    # errors: InvalidArgumentException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def search_resources(self, SearchResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/search", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueryText.is_some():
+            auto u0 = input.QueryText.unwrap()
+            parts.append("\"QueryText\":" + workdocs_json_str(u0))
+        if input.QueryScopes.is_some():
+            auto u1 = input.QueryScopes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"QueryScopes\":" + workdocs_json_arr(e2))
+        if input.OrganizationId.is_some():
+            auto u3 = input.OrganizationId.unwrap()
+            parts.append("\"OrganizationId\":" + workdocs_json_str(u3))
+        if input.AdditionalResponseFields.is_some():
+            auto u4 = input.AdditionalResponseFields.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(workdocs_json_str(x5))
+            parts.append("\"AdditionalResponseFields\":" + workdocs_json_arr(e5))
+        if input.Filters.is_some():
+            auto u6 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + filters_to_json(u6))
+        if input.OrderBy.is_some():
+            auto u7 = input.OrderBy.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"OrderBy\":" + workdocs_json_arr(e8))
+        if input.Limit.is_some():
+            auto u9 = input.Limit.unwrap()
+            parts.append("\"Limit\":" + str(u9))
+        if input.Marker.is_some():
+            auto u10 = input.Marker.unwrap()
+            parts.append("\"Marker\":" + workdocs_json_str(u10))
+        auto bp = restjson.rest_json_document(b, workdocs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
+
     # UpdateDocument  PATCH /api/v1/documents/{DocumentId}
     # errors: ConcurrentModificationException, ConflictingOperationException, EntityAlreadyExistsException, EntityNotExistsException, FailedDependencyException, LimitExceededException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
     def update_document(self, UpdateDocumentRequest input) -> str:
@@ -2026,6 +2255,19 @@ struct WorkDocsClient:
         auto host = endpoints.regional_host(workdocs_service(), self.region)
         while True:
             auto raw = self.describe_users(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for SearchResources — yields each Response page, threading the
+    # Marker -> Marker continuation token until it is absent (result key: Items).
+    def paginate_search_resources(self, SearchResourcesRequest input):
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        while True:
+            auto raw = self.search_resources(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 4 operations — 2 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 4 operations — 4 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   32 structs (26 @derive(Json)), 1 enums, 19 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -27,6 +27,7 @@
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
 import aws_core.awsjson
+import datetime
 
 # The Marketplace_Metering awsJson protocol: version 1.1, API id "AWSMPMeteringService".
 def metering_marketplace_protocol() -> awsjson.AwsJson:
@@ -44,14 +45,16 @@ enum UsageRecordResultStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) UsageRecords: list[UsageRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UsageRecords: list[UsageRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchMeterUsageRequest:
     list[UsageRecord] UsageRecords
     Optional[str] ProductCode
 
-# no @derive(Json): member(s) Results: list[UsageRecordResult], UnprocessedRecords: list[UsageRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[UsageRecordResult], UnprocessedRecords: list[UsageRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchMeterUsageResult:
     Optional[list[UsageRecordResult]] Results
     Optional[list[UsageRecord]] UnprocessedRecords
@@ -124,8 +127,9 @@ struct InvalidUsageDimensionException:
 struct Metadata:
     Optional[str] AgreementId
 
-# no @derive(Json): member(s) UsageAllocations: list[UsageAllocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UsageAllocations: list[UsageAllocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MeterUsageRequest:
     str ProductCode
     DateTime Timestamp
@@ -179,14 +183,16 @@ struct ThrottlingException:
 struct TimestampOutOfBoundsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageAllocation:
     int64 AllocatedUsageQuantity
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) UsageAllocations: list[UsageAllocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UsageAllocations: list[UsageAllocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageRecord:
     DateTime Timestamp
     Optional[str] CustomerIdentifier
@@ -196,8 +202,9 @@ struct UsageRecord:
     Optional[str] CustomerAWSAccountId
     Optional[str] LicenseArn
 
-# no @derive(Json): member(s) UsageRecord: UsageRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UsageRecord: UsageRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageRecordResult:
     Optional[UsageRecord] UsageRecord
     Optional[str] MeteringRecordId
@@ -273,15 +280,124 @@ def metering_marketplace_error_from_code(str code) -> Marketplace_MeteringError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchMeterUsage (input BatchMeterUsageRequest)
-#   MeterUsage (input MeterUsageRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def metering_marketplace_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def metering_marketplace_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def metering_marketplace_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchMeterUsageRequest to a compact JSON object (declaration order).
+def batch_meter_usage_request_to_json(BatchMeterUsageRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.UsageRecords:
+        e0.append(usage_record_to_json(x0))
+    parts.append("\"UsageRecords\":" + metering_marketplace_json_arr(e0))
+    if v.ProductCode.is_some():
+        auto u1 = v.ProductCode.unwrap()
+        parts.append("\"ProductCode\":" + metering_marketplace_json_str(u1))
+    return metering_marketplace_json_obj(parts)
+
+# Serialize MeterUsageRequest to a compact JSON object (declaration order).
+def meter_usage_request_to_json(MeterUsageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProductCode\":" + metering_marketplace_json_str(v.ProductCode))
+    parts.append("\"Timestamp\":" + str(datetime.to_timestamp(v.Timestamp)))
+    parts.append("\"UsageDimension\":" + metering_marketplace_json_str(v.UsageDimension))
+    if v.UsageQuantity.is_some():
+        auto u0 = v.UsageQuantity.unwrap()
+        parts.append("\"UsageQuantity\":" + str(u0))
+    if v.DryRun.is_some():
+        auto u1 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.UsageAllocations.is_some():
+        auto u2 = v.UsageAllocations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(usage_allocation_to_json(x3))
+        parts.append("\"UsageAllocations\":" + metering_marketplace_json_arr(e3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + metering_marketplace_json_str(u4))
+    return metering_marketplace_json_obj(parts)
+
+# Serialize UsageAllocation to a compact JSON object (declaration order).
+def usage_allocation_to_json(UsageAllocation v) -> str:
+    list[str] parts = []
+    parts.append("\"AllocatedUsageQuantity\":" + str(v.AllocatedUsageQuantity))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + metering_marketplace_json_arr(e1))
+    return metering_marketplace_json_obj(parts)
+
+# Serialize UsageRecord to a compact JSON object (declaration order).
+def usage_record_to_json(UsageRecord v) -> str:
+    list[str] parts = []
+    parts.append("\"Timestamp\":" + str(datetime.to_timestamp(v.Timestamp)))
+    if v.CustomerIdentifier.is_some():
+        auto u0 = v.CustomerIdentifier.unwrap()
+        parts.append("\"CustomerIdentifier\":" + metering_marketplace_json_str(u0))
+    parts.append("\"Dimension\":" + metering_marketplace_json_str(v.Dimension))
+    if v.Quantity.is_some():
+        auto u1 = v.Quantity.unwrap()
+        parts.append("\"Quantity\":" + str(u1))
+    if v.UsageAllocations.is_some():
+        auto u2 = v.UsageAllocations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(usage_allocation_to_json(x3))
+        parts.append("\"UsageAllocations\":" + metering_marketplace_json_arr(e3))
+    if v.CustomerAWSAccountId.is_some():
+        auto u4 = v.CustomerAWSAccountId.unwrap()
+        parts.append("\"CustomerAWSAccountId\":" + metering_marketplace_json_str(u4))
+    if v.LicenseArn.is_some():
+        auto u5 = v.LicenseArn.unwrap()
+        parts.append("\"LicenseArn\":" + metering_marketplace_json_str(u5))
+    return metering_marketplace_json_obj(parts)
 
 # A bound Marketplace_Metering client: credentials + region, threaded into every operation.
 struct Marketplace_MeteringClient:
     core.Credentials creds
     str region
+
+    # BatchMeterUsage
+    # errors: DisabledApiException, InternalServiceErrorException, InvalidCustomerIdentifierException, InvalidLicenseException, InvalidProductCodeException, InvalidTagException, InvalidUsageAllocationsException, InvalidUsageDimensionException, ThrottlingException, TimestampOutOfBoundsException
+    def batch_meter_usage(self, BatchMeterUsageRequest input) -> str:
+        auto body = batch_meter_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(metering_marketplace_protocol(), self.creds, self.region, "BatchMeterUsage", body)
+
+    # MeterUsage
+    # errors: CustomerNotEntitledException, DuplicateRequestException, IdempotencyConflictException, InternalServiceErrorException, InvalidEndpointRegionException, InvalidProductCodeException, InvalidTagException, InvalidUsageAllocationsException, InvalidUsageDimensionException, ThrottlingException, TimestampOutOfBoundsException
+    def meter_usage(self, MeterUsageRequest input) -> str:
+        auto body = meter_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(metering_marketplace_protocol(), self.creds, self.region, "MeterUsage", body)
 
     # RegisterUsage
     # errors: CustomerNotEntitledException, DisabledApiException, InternalServiceErrorException, InvalidProductCodeException, InvalidPublicKeyVersionException, InvalidRegionException, PlatformNotSupportedException, ThrottlingException

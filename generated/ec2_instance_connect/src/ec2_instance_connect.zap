@@ -14,12 +14,12 @@
 # Response.
 #
 # Coverage (v0, awsJson only): 2 operations — 2 with a generated method,
-#   0 skipped (input uses collections not yet serializable by derive).
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   16 structs (16 @derive(Json)), 0 enums, 12 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/

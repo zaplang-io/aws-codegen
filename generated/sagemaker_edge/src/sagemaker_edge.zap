@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 3 operations — 2 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 3 operations — 3 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   13 structs (8 @derive(Json)), 3 enums, 1 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Sagemaker_Edge rest-json protocol: SigV4 service "sagemaker" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -86,8 +87,9 @@ struct DeploymentModel:
     Optional[str] StatusReason
     Optional[str] RollbackFailureReason
 
-# no @derive(Json): member(s) DeploymentModels: list[DeploymentModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeploymentModels: list[DeploymentModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentResult:
     Optional[str] DeploymentName
     Optional[str] DeploymentStatus
@@ -96,8 +98,9 @@ struct DeploymentResult:
     Optional[DateTime] DeploymentEndTime
     Optional[list[DeploymentModel]] DeploymentModels
 
-# no @derive(Json): member(s) Definitions: list[Definition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definitions: list[Definition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EdgeDeployment:
     Optional[str] DeploymentName
     Optional[str] Type
@@ -117,8 +120,9 @@ struct GetDeploymentsRequest:
     str DeviceName
     str DeviceFleetName
 
-# no @derive(Json): member(s) Deployments: list[EdgeDeployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deployments: list[EdgeDeployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentsResult:
     Optional[list[EdgeDeployment]] Deployments
 
@@ -137,8 +141,9 @@ struct GetDeviceRegistrationResult:
 struct InternalServiceException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ModelMetrics: list[EdgeMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelMetrics: list[EdgeMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Model:
     Optional[str] ModelName
     Optional[str] ModelVersion
@@ -173,11 +178,6 @@ def edge_sagemaker_error_from_code(str code) -> Sagemaker_EdgeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   SendHeartbeat (document member `AgentMetrics: list[EdgeMetric]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -192,6 +192,85 @@ struct GetDeviceRegistrationDocument:
     # document members of GetDeviceRegistration
     str DeviceName
     str DeviceFleetName
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def edge_sagemaker_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def edge_sagemaker_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def edge_sagemaker_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DeploymentResult to a compact JSON object (declaration order).
+def deployment_result_to_json(DeploymentResult v) -> str:
+    list[str] parts = []
+    if v.DeploymentName.is_some():
+        auto u0 = v.DeploymentName.unwrap()
+        parts.append("\"DeploymentName\":" + edge_sagemaker_json_str(u0))
+    if v.DeploymentStatus.is_some():
+        auto u1 = v.DeploymentStatus.unwrap()
+        parts.append("\"DeploymentStatus\":" + edge_sagemaker_json_str(u1))
+    if v.DeploymentStatusMessage.is_some():
+        auto u2 = v.DeploymentStatusMessage.unwrap()
+        parts.append("\"DeploymentStatusMessage\":" + edge_sagemaker_json_str(u2))
+    if v.DeploymentStartTime.is_some():
+        auto u3 = v.DeploymentStartTime.unwrap()
+        parts.append("\"DeploymentStartTime\":" + str(datetime.to_timestamp(u3)))
+    if v.DeploymentEndTime.is_some():
+        auto u4 = v.DeploymentEndTime.unwrap()
+        parts.append("\"DeploymentEndTime\":" + str(datetime.to_timestamp(u4)))
+    if v.DeploymentModels.is_some():
+        auto u5 = v.DeploymentModels.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"DeploymentModels\":" + edge_sagemaker_json_arr(e6))
+    return edge_sagemaker_json_obj(parts)
+
+# Serialize Model to a compact JSON object (declaration order).
+def model_to_json(Model v) -> str:
+    list[str] parts = []
+    if v.ModelName.is_some():
+        auto u0 = v.ModelName.unwrap()
+        parts.append("\"ModelName\":" + edge_sagemaker_json_str(u0))
+    if v.ModelVersion.is_some():
+        auto u1 = v.ModelVersion.unwrap()
+        parts.append("\"ModelVersion\":" + edge_sagemaker_json_str(u1))
+    if v.LatestSampleTime.is_some():
+        auto u2 = v.LatestSampleTime.unwrap()
+        parts.append("\"LatestSampleTime\":" + str(datetime.to_timestamp(u2)))
+    if v.LatestInference.is_some():
+        auto u3 = v.LatestInference.unwrap()
+        parts.append("\"LatestInference\":" + str(datetime.to_timestamp(u3)))
+    if v.ModelMetrics.is_some():
+        auto u4 = v.ModelMetrics.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ModelMetrics\":" + edge_sagemaker_json_arr(e5))
+    return edge_sagemaker_json_obj(parts)
 
 # A bound Sagemaker_Edge client: credentials + region, threaded into every operation.
 struct Sagemaker_EdgeClient:
@@ -214,6 +293,33 @@ struct Sagemaker_EdgeClient:
         auto b = binding.HttpBinding(method="POST", path_template="/GetDeviceRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDeviceRegistrationDocument(DeviceName=input.DeviceName, DeviceFleetName=input.DeviceFleetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, edge_sagemaker_service(), self.region, host)
+
+    # SendHeartbeat  POST /SendHeartbeat
+    # errors: InternalServiceException
+    def send_heartbeat(self, SendHeartbeatRequest input) -> str:
+        auto host = endpoints.regional_host(edge_sagemaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/SendHeartbeat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AgentMetrics.is_some():
+            auto u0 = input.AgentMetrics.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"AgentMetrics\":" + edge_sagemaker_json_arr(e1))
+        if input.Models.is_some():
+            auto u2 = input.Models.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(model_to_json(x3))
+            parts.append("\"Models\":" + edge_sagemaker_json_arr(e3))
+        parts.append("\"AgentVersion\":" + edge_sagemaker_json_str(input.AgentVersion))
+        parts.append("\"DeviceName\":" + edge_sagemaker_json_str(input.DeviceName))
+        parts.append("\"DeviceFleetName\":" + edge_sagemaker_json_str(input.DeviceFleetName))
+        if input.DeploymentResult.is_some():
+            auto u4 = input.DeploymentResult.unwrap()
+            parts.append("\"DeploymentResult\":" + deployment_result_to_json(u4))
+        auto bp = restjson.rest_json_document(b, edge_sagemaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, edge_sagemaker_service(), self.region, host)
 
 # Construct a Sagemaker_EdgeClient bound to credentials + region.

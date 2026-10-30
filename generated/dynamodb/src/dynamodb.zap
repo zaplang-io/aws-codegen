@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 58 operations — 32 with a generated method,
-#   26 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 58 operations — 58 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   272 structs (136 @derive(Json)), 45 enums, 34 error variants.
 #   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,8 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
+import datetime
 
 # The DynamoDB awsJson protocol: version 1.0, API id "DynamoDB_20120810".
 def dynamodb_protocol() -> awsjson.AwsJson:
@@ -437,8 +439,9 @@ struct AttributeDefinition:
     str AttributeName
     ScalarAttributeType AttributeType
 
-# no @derive(Json): member(s) SS: list[str], NS: list[str], BS: list[bytes], M: dict[str, AttributeValue], L: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SS: list[str], NS: list[str], BS: list[bytes], M: dict[str, AttributeValue], L: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValue:
     Optional[str] S
     Optional[str] N
@@ -451,8 +454,9 @@ struct AttributeValue:
     Optional[bool] NULL
     Optional[bool] BOOL
 
-# no @derive(Json): member(s) Value: AttributeValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: AttributeValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValueUpdate:
     Optional[AttributeValue] Value
     Optional[AttributeAction] Action
@@ -467,8 +471,9 @@ struct AutoScalingPolicyUpdate:
     Optional[str] PolicyName
     AutoScalingTargetTrackingScalingPolicyConfigurationUpdate TargetTrackingScalingPolicyConfiguration
 
-# no @derive(Json): member(s) ScalingPolicies: list[AutoScalingPolicyDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPolicies: list[AutoScalingPolicyDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoScalingSettingsDescription:
     Optional[int64] MinimumUnits
     Optional[int64] MaximumUnits
@@ -498,8 +503,9 @@ struct AutoScalingTargetTrackingScalingPolicyConfigurationUpdate:
     Optional[int64] ScaleOutCooldown
     float64 TargetValue
 
-# no @derive(Json): member(s) SourceTableDetails: SourceTableDetails, SourceTableFeatureDetails: SourceTableFeatureDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTableDetails: SourceTableDetails, SourceTableFeatureDetails: SourceTableFeatureDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackupDescription:
     Optional[BackupDetails] BackupDetails
     Optional[SourceTableDetails] SourceTableDetails
@@ -536,62 +542,71 @@ struct BackupSummary:
     Optional[BackupType] BackupType
     Optional[int64] BackupSizeBytes
 
-# no @derive(Json): member(s) Statements: list[BatchStatementRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[BatchStatementRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchExecuteStatementInput:
     list[BatchStatementRequest] Statements
     Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
 
-# no @derive(Json): member(s) Responses: list[BatchStatementResponse], ConsumedCapacity: list[ConsumedCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Responses: list[BatchStatementResponse], ConsumedCapacity: list[ConsumedCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchExecuteStatementOutput:
     Optional[list[BatchStatementResponse]] Responses
     Optional[list[ConsumedCapacity]] ConsumedCapacity
 
-# no @derive(Json): member(s) RequestItems: dict[str, KeysAndAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestItems: dict[str, KeysAndAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetItemInput:
     dict[str, KeysAndAttributes] RequestItems
     Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
 
-# no @derive(Json): member(s) Responses: dict[str, list[dict[str, AttributeValue]]], UnprocessedKeys: dict[str, KeysAndAttributes], ConsumedCapacity: list[ConsumedCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Responses: dict[str, list[dict[str, AttributeValue]]], UnprocessedKeys: dict[str, KeysAndAttributes], ConsumedCapacity: list[ConsumedCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetItemOutput:
     Optional[dict[str, list[dict[str, AttributeValue]]]] Responses
     Optional[dict[str, KeysAndAttributes]] UnprocessedKeys
     Optional[list[ConsumedCapacity]] ConsumedCapacity
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStatementError:
     Optional[BatchStatementErrorCodeEnum] Code
     Optional[str] Message
     Optional[dict[str, AttributeValue]] Item
 
-# no @derive(Json): member(s) Parameters: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStatementRequest:
     str Statement
     Optional[list[AttributeValue]] Parameters
     Optional[bool] ConsistentRead
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Error: BatchStatementError, Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Error: BatchStatementError, Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStatementResponse:
     Optional[BatchStatementError] Error
     Optional[str] TableName
     Optional[dict[str, AttributeValue]] Item
 
-# no @derive(Json): member(s) RequestItems: dict[str, list[WriteRequest]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestItems: dict[str, list[WriteRequest]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteItemInput:
     dict[str, list[WriteRequest]] RequestItems
     Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
     Optional[ReturnItemCollectionMetrics] ReturnItemCollectionMetrics
 
-# no @derive(Json): member(s) UnprocessedItems: dict[str, list[WriteRequest]], ItemCollectionMetrics: dict[str, list[ItemCollectionMetrics]], ConsumedCapacity: list[ConsumedCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedItems: dict[str, list[WriteRequest]], ItemCollectionMetrics: dict[str, list[ItemCollectionMetrics]], ConsumedCapacity: list[ConsumedCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteItemOutput:
     Optional[dict[str, list[WriteRequest]]] UnprocessedItems
     Optional[dict[str, list[ItemCollectionMetrics]]] ItemCollectionMetrics
@@ -602,8 +617,9 @@ struct BillingModeSummary:
     Optional[BillingMode] BillingMode
     Optional[DateTime] LastUpdateToPayPerRequestDateTime
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancellationReason:
     Optional[dict[str, AttributeValue]] Item
     Optional[str] Code
@@ -615,14 +631,16 @@ struct Capacity:
     Optional[float64] WriteCapacityUnits
     Optional[float64] CapacityUnits
 
-# no @derive(Json): member(s) AttributeValueList: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeValueList: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Condition:
     Optional[list[AttributeValue]] AttributeValueList
     ComparisonOperator ComparisonOperator
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionCheck:
     dict[str, AttributeValue] Key
     str TableName
@@ -631,14 +649,16 @@ struct ConditionCheck:
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalCheckFailedException:
     Optional[str] message
     Optional[dict[str, AttributeValue]] Item
 
-# no @derive(Json): member(s) LocalSecondaryIndexes: dict[str, Capacity], GlobalSecondaryIndexes: dict[str, Capacity], VectorIndexes: dict[str, VectorCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LocalSecondaryIndexes: dict[str, Capacity], GlobalSecondaryIndexes: dict[str, Capacity], VectorIndexes: dict[str, VectorCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsumedCapacity:
     Optional[str] TableName
     Optional[float64] CapacityUnits
@@ -674,8 +694,9 @@ struct CreateBackupInput:
 struct CreateBackupOutput:
     Optional[BackupDetails] BackupDetails
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlobalSecondaryIndexAction:
     str IndexName
     list[KeySchemaElement] KeySchema
@@ -684,14 +705,16 @@ struct CreateGlobalSecondaryIndexAction:
     Optional[OnDemandThroughput] OnDemandThroughput
     Optional[WarmThroughput] WarmThroughput
 
-# no @derive(Json): member(s) ReplicationGroup: list[Replica] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationGroup: list[Replica] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlobalTableInput:
     str GlobalTableName
     list[Replica] ReplicationGroup
 
-# no @derive(Json): member(s) GlobalTableDescription: GlobalTableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalTableDescription: GlobalTableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlobalTableOutput:
     Optional[GlobalTableDescription] GlobalTableDescription
 
@@ -703,8 +726,9 @@ struct CreateGlobalTableWitnessGroupMemberAction:
 struct CreateReplicaAction:
     str RegionName
 
-# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReplicationGroupMemberAction:
     str RegionName
     Optional[str] KMSMasterKeyId
@@ -713,8 +737,9 @@ struct CreateReplicationGroupMemberAction:
     Optional[list[ReplicaGlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[TableClass] TableClassOverride
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndex], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], Tags: list[Tag], VectorIndexes: list[VectorIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndex], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], Tags: list[Tag], VectorIndexes: list[VectorIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTableInput:
     Optional[list[AttributeDefinition]] AttributeDefinitions
     str TableName
@@ -735,13 +760,15 @@ struct CreateTableInput:
     Optional[GlobalTableSettingsReplicationMode] GlobalTableSettingsReplicationMode
     Optional[list[VectorIndex]] VectorIndexes
 
-# no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableDescription: TableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTableOutput:
     Optional[TableDescription] TableDescription
 
-# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVectorIndexAction:
     str IndexName
     VectorAttributeDefinition VectorAttribute
@@ -750,14 +777,16 @@ struct CreateVectorIndexAction:
     int64 Dimensions
     VectorDistanceFunction DistanceFunction
 
-# no @derive(Json): member(s) HeaderList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeaderList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CsvOptions:
     Optional[str] Delimiter
     Optional[list[str]] HeaderList
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Delete:
     dict[str, AttributeValue] Key
     str TableName
@@ -770,8 +799,9 @@ struct Delete:
 struct DeleteBackupInput:
     str BackupArn
 
-# no @derive(Json): member(s) BackupDescription: BackupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupDescription: BackupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBackupOutput:
     Optional[BackupDescription] BackupDescription
 
@@ -783,8 +813,9 @@ struct DeleteGlobalSecondaryIndexAction:
 struct DeleteGlobalTableWitnessGroupMemberAction:
     str RegionName
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteItemInput:
     str TableName
     dict[str, AttributeValue] Key
@@ -798,8 +829,9 @@ struct DeleteItemInput:
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Attributes: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity, ItemCollectionMetrics: ItemCollectionMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity, ItemCollectionMetrics: ItemCollectionMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteItemOutput:
     Optional[dict[str, AttributeValue]] Attributes
     Optional[ConsumedCapacity] ConsumedCapacity
@@ -813,8 +845,9 @@ struct DeleteReplicaAction:
 struct DeleteReplicationGroupMemberAction:
     str RegionName
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRequest:
     dict[str, AttributeValue] Key
 
@@ -831,8 +864,9 @@ struct DeleteResourcePolicyOutput:
 struct DeleteTableInput:
     str TableName
 
-# no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableDescription: TableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTableOutput:
     Optional[TableDescription] TableDescription
 
@@ -844,8 +878,9 @@ struct DeleteVectorIndexAction:
 struct DescribeBackupInput:
     str BackupArn
 
-# no @derive(Json): member(s) BackupDescription: BackupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupDescription: BackupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupOutput:
     Optional[BackupDescription] BackupDescription
 
@@ -862,8 +897,9 @@ struct DescribeContributorInsightsInput:
     str TableName
     Optional[str] IndexName
 
-# no @derive(Json): member(s) ContributorInsightsRuleList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContributorInsightsRuleList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContributorInsightsOutput:
     Optional[str] TableName
     Optional[str] IndexName
@@ -878,8 +914,9 @@ struct DescribeEndpointsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointsResponse:
     list[Endpoint] Endpoints
 
@@ -887,8 +924,9 @@ struct DescribeEndpointsResponse:
 struct DescribeExportInput:
     str ExportArn
 
-# no @derive(Json): member(s) ExportDescription: ExportDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportDescription: ExportDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportOutput:
     Optional[ExportDescription] ExportDescription
 
@@ -896,8 +934,9 @@ struct DescribeExportOutput:
 struct DescribeGlobalTableInput:
     str GlobalTableName
 
-# no @derive(Json): member(s) GlobalTableDescription: GlobalTableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalTableDescription: GlobalTableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGlobalTableOutput:
     Optional[GlobalTableDescription] GlobalTableDescription
 
@@ -905,8 +944,9 @@ struct DescribeGlobalTableOutput:
 struct DescribeGlobalTableSettingsInput:
     str GlobalTableName
 
-# no @derive(Json): member(s) ReplicaSettings: list[ReplicaSettingsDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaSettings: list[ReplicaSettingsDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGlobalTableSettingsOutput:
     Optional[str] GlobalTableName
     Optional[list[ReplicaSettingsDescription]] ReplicaSettings
@@ -915,8 +955,9 @@ struct DescribeGlobalTableSettingsOutput:
 struct DescribeImportInput:
     str ImportArn
 
-# no @derive(Json): member(s) ImportTableDescription: ImportTableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportTableDescription: ImportTableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportOutput:
     ImportTableDescription ImportTableDescription
 
@@ -924,8 +965,9 @@ struct DescribeImportOutput:
 struct DescribeKinesisStreamingDestinationInput:
     str TableName
 
-# no @derive(Json): member(s) KinesisDataStreamDestinations: list[KinesisDataStreamDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KinesisDataStreamDestinations: list[KinesisDataStreamDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKinesisStreamingDestinationOutput:
     Optional[str] TableName
     Optional[list[KinesisDataStreamDestination]] KinesisDataStreamDestinations
@@ -946,8 +988,9 @@ struct DescribeLimitsOutput:
 struct DescribeTableInput:
     str TableName
 
-# no @derive(Json): member(s) Table: TableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: TableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTableOutput:
     Optional[TableDescription] Table
 
@@ -955,8 +998,9 @@ struct DescribeTableOutput:
 struct DescribeTableReplicaAutoScalingInput:
     str TableName
 
-# no @derive(Json): member(s) TableAutoScalingDescription: TableAutoScalingDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableAutoScalingDescription: TableAutoScalingDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTableReplicaAutoScalingOutput:
     Optional[TableAutoScalingDescription] TableAutoScalingDescription
 
@@ -986,8 +1030,9 @@ struct Endpoint:
     str Address
     int64 CachePeriodInMinutes
 
-# no @derive(Json): member(s) Parameters: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteStatementInput:
     str Statement
     Optional[list[AttributeValue]] Parameters
@@ -997,29 +1042,33 @@ struct ExecuteStatementInput:
     Optional[int64] Limit
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Items: list[dict[str, AttributeValue]], ConsumedCapacity: ConsumedCapacity, LastEvaluatedKey: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[dict[str, AttributeValue]], ConsumedCapacity: ConsumedCapacity, LastEvaluatedKey: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteStatementOutput:
     Optional[list[dict[str, AttributeValue]]] Items
     Optional[str] NextToken
     Optional[ConsumedCapacity] ConsumedCapacity
     Optional[dict[str, AttributeValue]] LastEvaluatedKey
 
-# no @derive(Json): member(s) TransactStatements: list[ParameterizedStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransactStatements: list[ParameterizedStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteTransactionInput:
     list[ParameterizedStatement] TransactStatements
     Optional[str] ClientRequestToken
     Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
 
-# no @derive(Json): member(s) Responses: list[ItemResponse], ConsumedCapacity: list[ConsumedCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Responses: list[ItemResponse], ConsumedCapacity: list[ConsumedCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteTransactionOutput:
     Optional[list[ItemResponse]] Responses
     Optional[list[ConsumedCapacity]] ConsumedCapacity
 
-# no @derive(Json): member(s) Value: AttributeValue, AttributeValueList: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: AttributeValue, AttributeValueList: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpectedAttributeValue:
     Optional[AttributeValue] Value
     Optional[bool] Exists
@@ -1030,8 +1079,9 @@ struct ExpectedAttributeValue:
 struct ExportConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) FilterSpecification: FilterSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterSpecification: FilterSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportDescription:
     Optional[str] ExportArn
     Optional[ExportStatus] ExportStatus
@@ -1066,8 +1116,9 @@ struct ExportSummary:
     Optional[ExportStatus] ExportStatus
     Optional[ExportType] ExportType
 
-# no @derive(Json): member(s) FilterSpecification: FilterSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterSpecification: FilterSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportTableToPointInTimeInput:
     str TableArn
     Optional[DateTime] ExportTime
@@ -1082,8 +1133,9 @@ struct ExportTableToPointInTimeInput:
     Optional[IncrementalExportSpecification] IncrementalExportSpecification
     Optional[FilterSpecification] FilterSpecification
 
-# no @derive(Json): member(s) ExportDescription: ExportDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportDescription: ExportDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportTableToPointInTimeOutput:
     Optional[ExportDescription] ExportDescription
 
@@ -1092,8 +1144,9 @@ struct FailureException:
     Optional[str] ExceptionName
     Optional[str] ExceptionDescription
 
-# no @derive(Json): member(s) ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterSpecification:
     Optional[str] FilterExpression
     Optional[str] ProjectionExpression
@@ -1101,16 +1154,18 @@ struct FilterSpecification:
     Optional[dict[str, str]] ExpressionAttributeNames
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Get:
     dict[str, AttributeValue] Key
     str TableName
     Optional[str] ProjectionExpression
     Optional[dict[str, str]] ExpressionAttributeNames
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], AttributesToGet: list[str], ExpressionAttributeNames: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], AttributesToGet: list[str], ExpressionAttributeNames: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetItemInput:
     str TableName
     dict[str, AttributeValue] Key
@@ -1120,8 +1175,9 @@ struct GetItemInput:
     Optional[str] ProjectionExpression
     Optional[dict[str, str]] ExpressionAttributeNames
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetItemOutput:
     Optional[dict[str, AttributeValue]] Item
     Optional[ConsumedCapacity] ConsumedCapacity
@@ -1135,8 +1191,9 @@ struct GetResourcePolicyOutput:
     Optional[str] Policy
     Optional[str] RevisionId
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalSecondaryIndex:
     str IndexName
     list[KeySchemaElement] KeySchema
@@ -1150,8 +1207,9 @@ struct GlobalSecondaryIndexAutoScalingUpdate:
     Optional[str] IndexName
     Optional[AutoScalingSettingsUpdate] ProvisionedWriteCapacityAutoScalingUpdate
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalSecondaryIndexDescription:
     Optional[str] IndexName
     Optional[list[KeySchemaElement]] KeySchema
@@ -1165,8 +1223,9 @@ struct GlobalSecondaryIndexDescription:
     Optional[OnDemandThroughput] OnDemandThroughput
     Optional[GlobalSecondaryIndexWarmThroughputDescription] WarmThroughput
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalSecondaryIndexInfo:
     Optional[str] IndexName
     Optional[list[KeySchemaElement]] KeySchema
@@ -1174,8 +1233,9 @@ struct GlobalSecondaryIndexInfo:
     Optional[ProvisionedThroughput] ProvisionedThroughput
     Optional[OnDemandThroughput] OnDemandThroughput
 
-# no @derive(Json): member(s) Create: CreateGlobalSecondaryIndexAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Create: CreateGlobalSecondaryIndexAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalSecondaryIndexUpdate:
     Optional[UpdateGlobalSecondaryIndexAction] Update
     Optional[CreateGlobalSecondaryIndexAction] Create
@@ -1187,8 +1247,9 @@ struct GlobalSecondaryIndexWarmThroughputDescription:
     Optional[int64] WriteUnitsPerSecond
     Optional[IndexStatus] Status
 
-# no @derive(Json): member(s) ReplicationGroup: list[Replica] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationGroup: list[Replica] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalTable:
     Optional[str] GlobalTableName
     Optional[list[Replica]] ReplicationGroup
@@ -1197,8 +1258,9 @@ struct GlobalTable:
 struct GlobalTableAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) ReplicationGroup: list[ReplicaDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicationGroup: list[ReplicaDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalTableDescription:
     Optional[list[ReplicaDescription]] ReplicationGroup
     Optional[str] GlobalTableArn
@@ -1249,8 +1311,9 @@ struct ImportSummary:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) InputFormatOptions: InputFormatOptions, TableCreationParameters: TableCreationParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputFormatOptions: InputFormatOptions, TableCreationParameters: TableCreationParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTableDescription:
     Optional[str] ImportArn
     Optional[ImportStatus] ImportStatus
@@ -1272,8 +1335,9 @@ struct ImportTableDescription:
     Optional[str] FailureCode
     Optional[str] FailureMessage
 
-# no @derive(Json): member(s) InputFormatOptions: InputFormatOptions, TableCreationParameters: TableCreationParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputFormatOptions: InputFormatOptions, TableCreationParameters: TableCreationParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTableInput:
     Optional[str] ClientToken
     S3BucketSource S3BucketSource
@@ -1282,8 +1346,9 @@ struct ImportTableInput:
     Optional[InputCompressionType] InputCompressionType
     TableCreationParameters TableCreationParameters
 
-# no @derive(Json): member(s) ImportTableDescription: ImportTableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportTableDescription: ImportTableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTableOutput:
     ImportTableDescription ImportTableDescription
 
@@ -1297,8 +1362,9 @@ struct IncrementalExportSpecification:
 struct IndexNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) Csv: CsvOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Csv: CsvOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputFormatOptions:
     Optional[CsvOptions] Csv
 
@@ -1314,8 +1380,9 @@ struct InvalidExportTimeException:
 struct InvalidRestoreTimeException:
     Optional[str] message
 
-# no @derive(Json): member(s) ItemCollectionKey: dict[str, AttributeValue], SizeEstimateRangeGB: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ItemCollectionKey: dict[str, AttributeValue], SizeEstimateRangeGB: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ItemCollectionMetrics:
     Optional[dict[str, AttributeValue]] ItemCollectionKey
     Optional[list[float64]] SizeEstimateRangeGB
@@ -1324,8 +1391,9 @@ struct ItemCollectionMetrics:
 struct ItemCollectionSizeLimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ItemResponse:
     Optional[dict[str, AttributeValue]] Item
 
@@ -1334,8 +1402,9 @@ struct KeySchemaElement:
     str AttributeName
     KeyType KeyType
 
-# no @derive(Json): member(s) Keys: list[dict[str, AttributeValue]], AttributesToGet: list[str], ExpressionAttributeNames: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[dict[str, AttributeValue]], AttributesToGet: list[str], ExpressionAttributeNames: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeysAndAttributes:
     list[dict[str, AttributeValue]] Keys
     Optional[list[str]] AttributesToGet
@@ -1376,8 +1445,9 @@ struct ListBackupsInput:
     Optional[str] ExclusiveStartBackupArn
     Optional[BackupTypeFilter] BackupType
 
-# no @derive(Json): member(s) BackupSummaries: list[BackupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupSummaries: list[BackupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackupsOutput:
     Optional[list[BackupSummary]] BackupSummaries
     Optional[str] LastEvaluatedBackupArn
@@ -1388,8 +1458,9 @@ struct ListContributorInsightsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContributorInsightsSummaries: list[ContributorInsightsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContributorInsightsSummaries: list[ContributorInsightsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContributorInsightsOutput:
     Optional[list[ContributorInsightsSummary]] ContributorInsightsSummaries
     Optional[str] NextToken
@@ -1400,8 +1471,9 @@ struct ListExportsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ExportSummaries: list[ExportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportSummaries: list[ExportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportsOutput:
     Optional[list[ExportSummary]] ExportSummaries
     Optional[str] NextToken
@@ -1412,8 +1484,9 @@ struct ListGlobalTablesInput:
     Optional[int64] Limit
     Optional[str] RegionName
 
-# no @derive(Json): member(s) GlobalTables: list[GlobalTable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalTables: list[GlobalTable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGlobalTablesOutput:
     Optional[list[GlobalTable]] GlobalTables
     Optional[str] LastEvaluatedGlobalTableName
@@ -1424,8 +1497,9 @@ struct ListImportsInput:
     Optional[int64] PageSize
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ImportSummaryList: list[ImportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportSummaryList: list[ImportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportsOutput:
     Optional[list[ImportSummary]] ImportSummaryList
     Optional[str] NextToken
@@ -1435,8 +1509,9 @@ struct ListTablesInput:
     Optional[str] ExclusiveStartTableName
     Optional[int64] Limit
 
-# no @derive(Json): member(s) TableNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTablesOutput:
     Optional[list[str]] TableNames
     Optional[str] LastEvaluatedTableName
@@ -1446,21 +1521,24 @@ struct ListTagsOfResourceInput:
     str ResourceArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsOfResourceOutput:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocalSecondaryIndex:
     str IndexName
     list[KeySchemaElement] KeySchema
     Projection Projection
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocalSecondaryIndexDescription:
     Optional[str] IndexName
     Optional[list[KeySchemaElement]] KeySchema
@@ -1469,8 +1547,9 @@ struct LocalSecondaryIndexDescription:
     Optional[int64] ItemCount
     Optional[str] IndexArn
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocalSecondaryIndexInfo:
     Optional[str] IndexName
     Optional[list[KeySchemaElement]] KeySchema
@@ -1485,8 +1564,9 @@ struct OnDemandThroughput:
 struct OnDemandThroughputOverride:
     Optional[int64] MaxReadRequestUnits
 
-# no @derive(Json): member(s) Parameters: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterizedStatement:
     str Statement
     Optional[list[AttributeValue]] Parameters
@@ -1512,8 +1592,9 @@ struct PointInTimeRecoveryUnavailableException:
 struct PolicyNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) NonKeyAttributes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NonKeyAttributes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Projection:
     Optional[ProjectionType] ProjectionType
     Optional[list[str]] NonKeyAttributes
@@ -1531,8 +1612,9 @@ struct ProvisionedThroughputDescription:
     Optional[int64] ReadCapacityUnits
     Optional[int64] WriteCapacityUnits
 
-# no @derive(Json): member(s) ThrottlingReasons: list[ThrottlingReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThrottlingReasons: list[ThrottlingReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionedThroughputExceededException:
     Optional[str] message
     Optional[list[ThrottlingReason]] ThrottlingReasons
@@ -1541,8 +1623,9 @@ struct ProvisionedThroughputExceededException:
 struct ProvisionedThroughputOverride:
     Optional[int64] ReadCapacityUnits
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Put:
     dict[str, AttributeValue] Item
     str TableName
@@ -1551,8 +1634,9 @@ struct Put:
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutItemInput:
     str TableName
     dict[str, AttributeValue] Item
@@ -1566,15 +1650,17 @@ struct PutItemInput:
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Attributes: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity, ItemCollectionMetrics: ItemCollectionMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity, ItemCollectionMetrics: ItemCollectionMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutItemOutput:
     Optional[dict[str, AttributeValue]] Attributes
     Optional[ConsumedCapacity] ConsumedCapacity
     Optional[ItemCollectionMetrics] ItemCollectionMetrics
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRequest:
     dict[str, AttributeValue] Item
 
@@ -1589,8 +1675,9 @@ struct PutResourcePolicyInput:
 struct PutResourcePolicyOutput:
     Optional[str] RevisionId
 
-# no @derive(Json): member(s) AttributesToGet: list[str], KeyConditions: dict[str, Condition], QueryFilter: dict[str, Condition], ExclusiveStartKey: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributesToGet: list[str], KeyConditions: dict[str, Condition], QueryFilter: dict[str, Condition], ExclusiveStartKey: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryInput:
     str TableName
     Optional[str] IndexName
@@ -1610,8 +1697,9 @@ struct QueryInput:
     Optional[dict[str, str]] ExpressionAttributeNames
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
 
-# no @derive(Json): member(s) Items: list[dict[str, AttributeValue]], LastEvaluatedKey: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[dict[str, AttributeValue]], LastEvaluatedKey: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryOutput:
     Optional[list[dict[str, AttributeValue]]] Items
     Optional[int64] Count
@@ -1627,8 +1715,9 @@ struct Replica:
 struct ReplicaAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndexAutoScalingDescription], ReplicaProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ReplicaProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndexAutoScalingDescription], ReplicaProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ReplicaProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaAutoScalingDescription:
     Optional[str] RegionName
     Optional[list[ReplicaGlobalSecondaryIndexAutoScalingDescription]] GlobalSecondaryIndexes
@@ -1636,15 +1725,17 @@ struct ReplicaAutoScalingDescription:
     Optional[AutoScalingSettingsDescription] ReplicaProvisionedWriteCapacityAutoScalingSettings
     Optional[ReplicaStatus] ReplicaStatus
 
-# no @derive(Json): member(s) ReplicaGlobalSecondaryIndexUpdates: list[ReplicaGlobalSecondaryIndexAutoScalingUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaGlobalSecondaryIndexUpdates: list[ReplicaGlobalSecondaryIndexAutoScalingUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaAutoScalingUpdate:
     str RegionName
     Optional[list[ReplicaGlobalSecondaryIndexAutoScalingUpdate]] ReplicaGlobalSecondaryIndexUpdates
     Optional[AutoScalingSettingsUpdate] ReplicaProvisionedReadCapacityAutoScalingUpdate
 
-# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndexDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndexDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaDescription:
     Optional[str] RegionName
     Optional[ReplicaStatus] ReplicaStatus
@@ -1666,8 +1757,9 @@ struct ReplicaGlobalSecondaryIndex:
     Optional[ProvisionedThroughputOverride] ProvisionedThroughputOverride
     Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
 
-# no @derive(Json): member(s) ProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaGlobalSecondaryIndexAutoScalingDescription:
     Optional[str] IndexName
     Optional[IndexStatus] IndexStatus
@@ -1686,8 +1778,9 @@ struct ReplicaGlobalSecondaryIndexDescription:
     Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
     Optional[GlobalSecondaryIndexWarmThroughputDescription] WarmThroughput
 
-# no @derive(Json): member(s) ProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaGlobalSecondaryIndexSettingsDescription:
     str IndexName
     Optional[IndexStatus] IndexStatus
@@ -1706,8 +1799,9 @@ struct ReplicaGlobalSecondaryIndexSettingsUpdate:
 struct ReplicaNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) ReplicaProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ReplicaProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription, ReplicaGlobalSecondaryIndexSettings: list[ReplicaGlobalSecondaryIndexSettingsDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ReplicaProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription, ReplicaGlobalSecondaryIndexSettings: list[ReplicaGlobalSecondaryIndexSettingsDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaSettingsDescription:
     str RegionName
     Optional[ReplicaStatus] ReplicaStatus
@@ -1719,8 +1813,9 @@ struct ReplicaSettingsDescription:
     Optional[list[ReplicaGlobalSecondaryIndexSettingsDescription]] ReplicaGlobalSecondaryIndexSettings
     Optional[TableClassSummary] ReplicaTableClassSummary
 
-# no @derive(Json): member(s) ReplicaGlobalSecondaryIndexSettingsUpdate: list[ReplicaGlobalSecondaryIndexSettingsUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaGlobalSecondaryIndexSettingsUpdate: list[ReplicaGlobalSecondaryIndexSettingsUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicaSettingsUpdate:
     str RegionName
     Optional[int64] ReplicaProvisionedReadCapacityUnits
@@ -1737,16 +1832,18 @@ struct ReplicaUpdate:
 struct ReplicatedWriteConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) Create: CreateReplicationGroupMemberAction, Update: UpdateReplicationGroupMemberAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Create: CreateReplicationGroupMemberAction, Update: UpdateReplicationGroupMemberAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationGroupUpdate:
     Optional[CreateReplicationGroupMemberAction] Create
     Optional[UpdateReplicationGroupMemberAction] Update
     Optional[DeleteReplicationGroupMemberAction] Delete
     Optional[DisassociateReplicationGroupMemberAction] Disassociate
 
-# no @derive(Json): member(s) ThrottlingReasons: list[ThrottlingReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThrottlingReasons: list[ThrottlingReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestLimitExceeded:
     Optional[str] message
     Optional[list[ThrottlingReason]] ThrottlingReasons
@@ -1766,8 +1863,9 @@ struct RestoreSummary:
     DateTime RestoreDateTime
     bool RestoreInProgress
 
-# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex], VectorIndexOverride: list[VectorIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex], VectorIndexOverride: list[VectorIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTableFromBackupInput:
     str TargetTableName
     str BackupArn
@@ -1779,13 +1877,15 @@ struct RestoreTableFromBackupInput:
     Optional[SSESpecification] SSESpecificationOverride
     Optional[list[VectorIndex]] VectorIndexOverride
 
-# no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableDescription: TableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTableFromBackupOutput:
     Optional[TableDescription] TableDescription
 
-# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex], VectorIndexOverride: list[VectorIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex], VectorIndexOverride: list[VectorIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTableToPointInTimeInput:
     Optional[str] SourceTableArn
     Optional[str] SourceTableName
@@ -1800,8 +1900,9 @@ struct RestoreTableToPointInTimeInput:
     Optional[SSESpecification] SSESpecificationOverride
     Optional[list[VectorIndex]] VectorIndexOverride
 
-# no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableDescription: TableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreTableToPointInTimeOutput:
     Optional[TableDescription] TableDescription
 
@@ -1824,8 +1925,9 @@ struct SSESpecification:
     Optional[SSEType] SSEType
     Optional[str] KMSMasterKeyId
 
-# no @derive(Json): member(s) AttributesToGet: list[str], ScanFilter: dict[str, Condition], ExclusiveStartKey: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributesToGet: list[str], ScanFilter: dict[str, Condition], ExclusiveStartKey: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanInput:
     str TableName
     Optional[str] IndexName
@@ -1844,8 +1946,9 @@ struct ScanInput:
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
     Optional[bool] ConsistentRead
 
-# no @derive(Json): member(s) Items: list[dict[str, AttributeValue]], LastEvaluatedKey: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[dict[str, AttributeValue]], LastEvaluatedKey: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanOutput:
     Optional[list[dict[str, AttributeValue]]] Items
     Optional[int64] Count
@@ -1853,8 +1956,9 @@ struct ScanOutput:
     Optional[dict[str, AttributeValue]] LastEvaluatedKey
     Optional[ConsumedCapacity] ConsumedCapacity
 
-# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResultItem:
     Optional[dict[str, AttributeValue]] Item
     Optional[float64] Score
@@ -1864,8 +1968,9 @@ struct SearchSchemaElement:
     str AttributeName
     SearchSchemaElementType SearchSchemaElementType
 
-# no @derive(Json): member(s) ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue], SearchVector: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue], SearchVector: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchVectorsInput:
     str TableName
     str IndexName
@@ -1877,14 +1982,16 @@ struct SearchVectorsInput:
     Optional[str] SearchConditionExpression
     int64 TopK
 
-# no @derive(Json): member(s) SearchResults: list[SearchResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchResults: list[SearchResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchVectorsOutput:
     Optional[VectorCapacity] ConsumedCapacity
     Optional[list[SearchResultItem]] SearchResults
 
-# no @derive(Json): member(s) KeySchema: list[KeySchemaElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[KeySchemaElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceTableDetails:
     str TableName
     str TableId
@@ -1897,8 +2004,9 @@ struct SourceTableDetails:
     Optional[int64] ItemCount
     Optional[BillingMode] BillingMode
 
-# no @derive(Json): member(s) LocalSecondaryIndexes: list[LocalSecondaryIndexInfo], GlobalSecondaryIndexes: list[GlobalSecondaryIndexInfo], VectorIndexes: list[VectorIndexInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LocalSecondaryIndexes: list[LocalSecondaryIndexInfo], GlobalSecondaryIndexes: list[GlobalSecondaryIndexInfo], VectorIndexes: list[VectorIndexInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceTableFeatureDetails:
     Optional[list[LocalSecondaryIndexInfo]] LocalSecondaryIndexes
     Optional[list[GlobalSecondaryIndexInfo]] GlobalSecondaryIndexes
@@ -1916,8 +2024,9 @@ struct StreamSpecification:
 struct TableAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Replicas: list[ReplicaAutoScalingDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replicas: list[ReplicaAutoScalingDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableAutoScalingDescription:
     Optional[str] TableName
     Optional[TableStatus] TableStatus
@@ -1928,8 +2037,9 @@ struct TableClassSummary:
     Optional[TableClass] TableClass
     Optional[DateTime] LastUpdateDateTime
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], VectorIndexes: list[VectorIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], VectorIndexes: list[VectorIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableCreationParameters:
     str TableName
     list[AttributeDefinition] AttributeDefinitions
@@ -1941,8 +2051,9 @@ struct TableCreationParameters:
     Optional[list[GlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[list[VectorIndex]] VectorIndexes
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndexDescription], GlobalSecondaryIndexes: list[GlobalSecondaryIndexDescription], Replicas: list[ReplicaDescription], GlobalTableWitnesses: list[GlobalTableWitnessDescription], VectorIndexes: list[VectorIndexDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndexDescription], GlobalSecondaryIndexes: list[GlobalSecondaryIndexDescription], Replicas: list[ReplicaDescription], GlobalTableWitnesses: list[GlobalTableWitnessDescription], VectorIndexes: list[VectorIndexDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableDescription:
     Optional[list[AttributeDefinition]] AttributeDefinitions
     Optional[str] TableName
@@ -1994,14 +2105,16 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceArn
     list[Tag] Tags
 
-# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThrottlingException:
     Optional[str] message
     Optional[list[ThrottlingReason]] throttlingReasons
@@ -2021,47 +2134,54 @@ struct TimeToLiveSpecification:
     bool Enabled
     str AttributeName
 
-# no @derive(Json): member(s) Get: Get not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Get: Get not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactGetItem:
     Get Get
 
-# no @derive(Json): member(s) TransactItems: list[TransactGetItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransactItems: list[TransactGetItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactGetItemsInput:
     list[TransactGetItem] TransactItems
     Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
 
-# no @derive(Json): member(s) ConsumedCapacity: list[ConsumedCapacity], Responses: list[ItemResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumedCapacity: list[ConsumedCapacity], Responses: list[ItemResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactGetItemsOutput:
     Optional[list[ConsumedCapacity]] ConsumedCapacity
     Optional[list[ItemResponse]] Responses
 
-# no @derive(Json): member(s) ConditionCheck: ConditionCheck, Put: Put, Delete: Delete, Update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionCheck: ConditionCheck, Put: Put, Delete: Delete, Update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactWriteItem:
     Optional[ConditionCheck] ConditionCheck
     Optional[Put] Put
     Optional[Delete] Delete
     Optional[Update] Update
 
-# no @derive(Json): member(s) TransactItems: list[TransactWriteItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransactItems: list[TransactWriteItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactWriteItemsInput:
     list[TransactWriteItem] TransactItems
     Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
     Optional[ReturnItemCollectionMetrics] ReturnItemCollectionMetrics
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) ConsumedCapacity: list[ConsumedCapacity], ItemCollectionMetrics: dict[str, list[ItemCollectionMetrics]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumedCapacity: list[ConsumedCapacity], ItemCollectionMetrics: dict[str, list[ItemCollectionMetrics]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactWriteItemsOutput:
     Optional[list[ConsumedCapacity]] ConsumedCapacity
     Optional[dict[str, list[ItemCollectionMetrics]]] ItemCollectionMetrics
 
-# no @derive(Json): member(s) CancellationReasons: list[CancellationReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CancellationReasons: list[CancellationReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransactionCanceledException:
     Optional[str] Message
     Optional[list[CancellationReason]] CancellationReasons
@@ -2074,14 +2194,16 @@ struct TransactionConflictException:
 struct TransactionInProgressException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceArn
     list[str] TagKeys
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Update:
     dict[str, AttributeValue] Key
     str UpdateExpression
@@ -2121,19 +2243,22 @@ struct UpdateGlobalSecondaryIndexAction:
     Optional[OnDemandThroughput] OnDemandThroughput
     Optional[WarmThroughput] WarmThroughput
 
-# no @derive(Json): member(s) ReplicaUpdates: list[ReplicaUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaUpdates: list[ReplicaUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlobalTableInput:
     str GlobalTableName
     list[ReplicaUpdate] ReplicaUpdates
 
-# no @derive(Json): member(s) GlobalTableDescription: GlobalTableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalTableDescription: GlobalTableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlobalTableOutput:
     Optional[GlobalTableDescription] GlobalTableDescription
 
-# no @derive(Json): member(s) GlobalTableGlobalSecondaryIndexSettingsUpdate: list[GlobalTableGlobalSecondaryIndexSettingsUpdate], ReplicaSettingsUpdate: list[ReplicaSettingsUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalTableGlobalSecondaryIndexSettingsUpdate: list[GlobalTableGlobalSecondaryIndexSettingsUpdate], ReplicaSettingsUpdate: list[ReplicaSettingsUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlobalTableSettingsInput:
     str GlobalTableName
     Optional[BillingMode] GlobalTableBillingMode
@@ -2142,14 +2267,16 @@ struct UpdateGlobalTableSettingsInput:
     Optional[list[GlobalTableGlobalSecondaryIndexSettingsUpdate]] GlobalTableGlobalSecondaryIndexSettingsUpdate
     Optional[list[ReplicaSettingsUpdate]] ReplicaSettingsUpdate
 
-# no @derive(Json): member(s) ReplicaSettings: list[ReplicaSettingsDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaSettings: list[ReplicaSettingsDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlobalTableSettingsOutput:
     Optional[str] GlobalTableName
     Optional[list[ReplicaSettingsDescription]] ReplicaSettings
 
-# no @derive(Json): member(s) Key: dict[str, AttributeValue], AttributeUpdates: dict[str, AttributeValueUpdate], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Key: dict[str, AttributeValue], AttributeUpdates: dict[str, AttributeValueUpdate], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateItemInput:
     str TableName
     dict[str, AttributeValue] Key
@@ -2165,8 +2292,9 @@ struct UpdateItemInput:
     Optional[dict[str, AttributeValue]] ExpressionAttributeValues
     Optional[ReturnValuesOnConditionCheckFailure] ReturnValuesOnConditionCheckFailure
 
-# no @derive(Json): member(s) Attributes: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity, ItemCollectionMetrics: ItemCollectionMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, AttributeValue], ConsumedCapacity: ConsumedCapacity, ItemCollectionMetrics: ItemCollectionMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateItemOutput:
     Optional[dict[str, AttributeValue]] Attributes
     Optional[ConsumedCapacity] ConsumedCapacity
@@ -2189,8 +2317,9 @@ struct UpdateKinesisStreamingDestinationOutput:
     Optional[DestinationStatus] DestinationStatus
     Optional[UpdateKinesisStreamingConfiguration] UpdateKinesisStreamingConfiguration
 
-# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReplicationGroupMemberAction:
     str RegionName
     Optional[str] KMSMasterKeyId
@@ -2199,8 +2328,9 @@ struct UpdateReplicationGroupMemberAction:
     Optional[list[ReplicaGlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[TableClass] TableClassOverride
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], GlobalSecondaryIndexUpdates: list[GlobalSecondaryIndexUpdate], ReplicaUpdates: list[ReplicationGroupUpdate], GlobalTableWitnessUpdates: list[GlobalTableWitnessGroupUpdate], VectorIndexUpdates: list[VectorIndexUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], GlobalSecondaryIndexUpdates: list[GlobalSecondaryIndexUpdate], ReplicaUpdates: list[ReplicationGroupUpdate], GlobalTableWitnessUpdates: list[GlobalTableWitnessGroupUpdate], VectorIndexUpdates: list[VectorIndexUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableInput:
     Optional[list[AttributeDefinition]] AttributeDefinitions
     str TableName
@@ -2220,21 +2350,24 @@ struct UpdateTableInput:
     Optional[bool] DisassociationProtectionEnabled
     Optional[list[VectorIndexUpdate]] VectorIndexUpdates
 
-# no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableDescription: TableDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableOutput:
     Optional[TableDescription] TableDescription
 
-# no @derive(Json): member(s) GlobalSecondaryIndexUpdates: list[GlobalSecondaryIndexAutoScalingUpdate], ReplicaUpdates: list[ReplicaAutoScalingUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexUpdates: list[GlobalSecondaryIndexAutoScalingUpdate], ReplicaUpdates: list[ReplicaAutoScalingUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableReplicaAutoScalingInput:
     Optional[list[GlobalSecondaryIndexAutoScalingUpdate]] GlobalSecondaryIndexUpdates
     str TableName
     Optional[AutoScalingSettingsUpdate] ProvisionedWriteCapacityAutoScalingUpdate
     Optional[list[ReplicaAutoScalingUpdate]] ReplicaUpdates
 
-# no @derive(Json): member(s) TableAutoScalingDescription: TableAutoScalingDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableAutoScalingDescription: TableAutoScalingDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableReplicaAutoScalingOutput:
     Optional[TableAutoScalingDescription] TableAutoScalingDescription
 
@@ -2256,8 +2389,9 @@ struct VectorCapacity:
     Optional[float64] VectorSearchRequestBytes
     Optional[float64] VectorWriteRequestBytes
 
-# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorIndex:
     str IndexName
     VectorAttributeDefinition VectorAttribute
@@ -2266,8 +2400,9 @@ struct VectorIndex:
     int64 Dimensions
     VectorDistanceFunction DistanceFunction
 
-# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorIndexDescription:
     Optional[str] IndexName
     Optional[list[SearchSchemaElement]] SearchSchema
@@ -2281,8 +2416,9 @@ struct VectorIndexDescription:
     Optional[int64] ItemCount
     Optional[str] IndexArn
 
-# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorIndexInfo:
     Optional[str] IndexName
     Optional[VectorAttributeDefinition] VectorAttribute
@@ -2291,8 +2427,9 @@ struct VectorIndexInfo:
     Optional[int64] Dimensions
     Optional[VectorDistanceFunction] DistanceFunction
 
-# no @derive(Json): member(s) Create: CreateVectorIndexAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Create: CreateVectorIndexAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorIndexUpdate:
     Optional[CreateVectorIndexAction] Create
     Optional[DeleteVectorIndexAction] Delete
@@ -2302,8 +2439,9 @@ struct WarmThroughput:
     Optional[int64] ReadUnitsPerSecond
     Optional[int64] WriteUnitsPerSecond
 
-# no @derive(Json): member(s) PutRequest: PutRequest, DeleteRequest: DeleteRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PutRequest: PutRequest, DeleteRequest: DeleteRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteRequest:
     Optional[PutRequest] PutRequest
     Optional[DeleteRequest] DeleteRequest
@@ -2423,44 +2561,1544 @@ def dynamodb_error_from_code(str code) -> DynamoDBError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchExecuteStatement (input BatchExecuteStatementInput)
-#   BatchGetItem (input BatchGetItemInput)
-#   BatchWriteItem (input BatchWriteItemInput)
-#   CreateGlobalTable (input CreateGlobalTableInput)
-#   CreateTable (input CreateTableInput)
-#   DeleteItem (input DeleteItemInput)
-#   ExecuteStatement (input ExecuteStatementInput)
-#   ExecuteTransaction (input ExecuteTransactionInput)
-#   ExportTableToPointInTime (input ExportTableToPointInTimeInput)
-#   GetItem (input GetItemInput)
-#   ImportTable (input ImportTableInput)
-#   PutItem (input PutItemInput)
-#   Query (input QueryInput)
-#   RestoreTableFromBackup (input RestoreTableFromBackupInput)
-#   RestoreTableToPointInTime (input RestoreTableToPointInTimeInput)
-#   Scan (input ScanInput)
-#   SearchVectors (input SearchVectorsInput)
-#   TagResource (input TagResourceInput)
-#   TransactGetItems (input TransactGetItemsInput)
-#   TransactWriteItems (input TransactWriteItemsInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateGlobalTable (input UpdateGlobalTableInput)
-#   UpdateGlobalTableSettings (input UpdateGlobalTableSettingsInput)
-#   UpdateItem (input UpdateItemInput)
-#   UpdateTable (input UpdateTableInput)
-#   UpdateTableReplicaAutoScaling (input UpdateTableReplicaAutoScalingInput)
-
 # Paginated operations (paginators-1.json) not surfaced in v0 — their input
 # is skipped above, or the continuation token is not a simple string field:
-#   Query (input not derivable (no generated method))
-#   Scan (input not derivable (no generated method))
+#   Query (input_token ExclusiveStartKey is not a string field)
+#   Scan (input_token ExclusiveStartKey is not a string field)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def dynamodb_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def dynamodb_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def dynamodb_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AttributeValue to a compact JSON object (declaration order).
+def attribute_value_to_json(AttributeValue v) -> str:
+    list[str] parts = []
+    if v.S.is_some():
+        auto u0 = v.S.unwrap()
+        parts.append("\"S\":" + dynamodb_json_str(u0))
+    if v.N.is_some():
+        auto u1 = v.N.unwrap()
+        parts.append("\"N\":" + dynamodb_json_str(u1))
+    if v.B.is_some():
+        auto u2 = v.B.unwrap()
+        parts.append("\"B\":" + dynamodb_json_str(base64.encode(u2)))
+    if v.SS.is_some():
+        auto u3 = v.SS.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dynamodb_json_str(x4))
+        parts.append("\"SS\":" + dynamodb_json_arr(e4))
+    if v.NS.is_some():
+        auto u5 = v.NS.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(dynamodb_json_str(x6))
+        parts.append("\"NS\":" + dynamodb_json_arr(e6))
+    if v.BS.is_some():
+        auto u7 = v.BS.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(dynamodb_json_str(base64.encode(x8)))
+        parts.append("\"BS\":" + dynamodb_json_arr(e8))
+    if v.M.is_some():
+        auto u9 = v.M.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(dynamodb_json_str(k10) + ":" + attribute_value_to_json(u9[k10]))
+        parts.append("\"M\":" + dynamodb_json_obj(m10))
+    if v.L.is_some():
+        auto u11 = v.L.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(attribute_value_to_json(x12))
+        parts.append("\"L\":" + dynamodb_json_arr(e12))
+    if v.NULL.is_some():
+        auto u13 = v.NULL.unwrap()
+        parts.append("\"NULL\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.BOOL.is_some():
+        auto u14 = v.BOOL.unwrap()
+        parts.append("\"BOOL\":" + json.dumps(JsonValue.Bool(u14)))
+    return dynamodb_json_obj(parts)
+
+# Serialize AttributeValueUpdate to a compact JSON object (declaration order).
+def attribute_value_update_to_json(AttributeValueUpdate v) -> str:
+    list[str] parts = []
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + attribute_value_to_json(u0))
+    if v.Action.is_some():
+        auto u1 = v.Action.unwrap()
+        parts.append("\"Action\":" + u1.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize BatchExecuteStatementInput to a compact JSON object (declaration order).
+def batch_execute_statement_input_to_json(BatchExecuteStatementInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Statements:
+        e0.append(batch_statement_request_to_json(x0))
+    parts.append("\"Statements\":" + dynamodb_json_arr(e0))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u1 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u1.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize BatchGetItemInput to a compact JSON object (declaration order).
+def batch_get_item_input_to_json(BatchGetItemInput v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.RequestItems.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + keys_and_attributes_to_json(v.RequestItems[k0]))
+    parts.append("\"RequestItems\":" + dynamodb_json_obj(m0))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u1 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u1.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize BatchStatementRequest to a compact JSON object (declaration order).
+def batch_statement_request_to_json(BatchStatementRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Statement\":" + dynamodb_json_str(v.Statement))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_value_to_json(x1))
+        parts.append("\"Parameters\":" + dynamodb_json_arr(e1))
+    if v.ConsistentRead.is_some():
+        auto u2 = v.ConsistentRead.unwrap()
+        parts.append("\"ConsistentRead\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u3 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u3.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize BatchWriteItemInput to a compact JSON object (declaration order).
+def batch_write_item_input_to_json(BatchWriteItemInput v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.RequestItems.keys()):
+        list[str] e1 = []
+        for x1 in v.RequestItems[k0]:
+            e1.append(write_request_to_json(x1))
+        m0.append(dynamodb_json_str(k0) + ":" + dynamodb_json_arr(e1))
+    parts.append("\"RequestItems\":" + dynamodb_json_obj(m0))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u2 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u2.to_json())
+    if v.ReturnItemCollectionMetrics.is_some():
+        auto u3 = v.ReturnItemCollectionMetrics.unwrap()
+        parts.append("\"ReturnItemCollectionMetrics\":" + u3.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize Condition to a compact JSON object (declaration order).
+def condition_to_json(Condition v) -> str:
+    list[str] parts = []
+    if v.AttributeValueList.is_some():
+        auto u0 = v.AttributeValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_value_to_json(x1))
+        parts.append("\"AttributeValueList\":" + dynamodb_json_arr(e1))
+    parts.append("\"ComparisonOperator\":" + v.ComparisonOperator.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize ConditionCheck to a compact JSON object (declaration order).
+def condition_check_to_json(ConditionCheck v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    parts.append("\"ConditionExpression\":" + dynamodb_json_str(v.ConditionExpression))
+    if v.ExpressionAttributeNames.is_some():
+        auto u1 = v.ExpressionAttributeNames.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(dynamodb_json_str(k2) + ":" + dynamodb_json_str(u1[k2]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m2))
+    if v.ExpressionAttributeValues.is_some():
+        auto u3 = v.ExpressionAttributeValues.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(dynamodb_json_str(k4) + ":" + attribute_value_to_json(u3[k4]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m4))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u5 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u5.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize CreateGlobalSecondaryIndexAction to a compact JSON object (declaration order).
+def create_global_secondary_index_action_to_json(CreateGlobalSecondaryIndexAction v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexName\":" + dynamodb_json_str(v.IndexName))
+    list[str] e0 = []
+    for x0 in v.KeySchema:
+        e0.append(x0.to_json())
+    parts.append("\"KeySchema\":" + dynamodb_json_arr(e0))
+    parts.append("\"Projection\":" + projection_to_json(v.Projection))
+    if v.ProvisionedThroughput.is_some():
+        auto u1 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u1.to_json())
+    if v.OnDemandThroughput.is_some():
+        auto u2 = v.OnDemandThroughput.unwrap()
+        parts.append("\"OnDemandThroughput\":" + u2.to_json())
+    if v.WarmThroughput.is_some():
+        auto u3 = v.WarmThroughput.unwrap()
+        parts.append("\"WarmThroughput\":" + u3.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize CreateGlobalTableInput to a compact JSON object (declaration order).
+def create_global_table_input_to_json(CreateGlobalTableInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GlobalTableName\":" + dynamodb_json_str(v.GlobalTableName))
+    list[str] e0 = []
+    for x0 in v.ReplicationGroup:
+        e0.append(x0.to_json())
+    parts.append("\"ReplicationGroup\":" + dynamodb_json_arr(e0))
+    return dynamodb_json_obj(parts)
+
+# Serialize CreateReplicationGroupMemberAction to a compact JSON object (declaration order).
+def create_replication_group_member_action_to_json(CreateReplicationGroupMemberAction v) -> str:
+    list[str] parts = []
+    parts.append("\"RegionName\":" + dynamodb_json_str(v.RegionName))
+    if v.KMSMasterKeyId.is_some():
+        auto u0 = v.KMSMasterKeyId.unwrap()
+        parts.append("\"KMSMasterKeyId\":" + dynamodb_json_str(u0))
+    if v.ProvisionedThroughputOverride.is_some():
+        auto u1 = v.ProvisionedThroughputOverride.unwrap()
+        parts.append("\"ProvisionedThroughputOverride\":" + u1.to_json())
+    if v.OnDemandThroughputOverride.is_some():
+        auto u2 = v.OnDemandThroughputOverride.unwrap()
+        parts.append("\"OnDemandThroughputOverride\":" + u2.to_json())
+    if v.GlobalSecondaryIndexes.is_some():
+        auto u3 = v.GlobalSecondaryIndexes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"GlobalSecondaryIndexes\":" + dynamodb_json_arr(e4))
+    if v.TableClassOverride.is_some():
+        auto u5 = v.TableClassOverride.unwrap()
+        parts.append("\"TableClassOverride\":" + u5.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize CreateTableInput to a compact JSON object (declaration order).
+def create_table_input_to_json(CreateTableInput v) -> str:
+    list[str] parts = []
+    if v.AttributeDefinitions.is_some():
+        auto u0 = v.AttributeDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributeDefinitions\":" + dynamodb_json_arr(e1))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.KeySchema.is_some():
+        auto u2 = v.KeySchema.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"KeySchema\":" + dynamodb_json_arr(e3))
+    if v.LocalSecondaryIndexes.is_some():
+        auto u4 = v.LocalSecondaryIndexes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(local_secondary_index_to_json(x5))
+        parts.append("\"LocalSecondaryIndexes\":" + dynamodb_json_arr(e5))
+    if v.GlobalSecondaryIndexes.is_some():
+        auto u6 = v.GlobalSecondaryIndexes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(global_secondary_index_to_json(x7))
+        parts.append("\"GlobalSecondaryIndexes\":" + dynamodb_json_arr(e7))
+    if v.BillingMode.is_some():
+        auto u8 = v.BillingMode.unwrap()
+        parts.append("\"BillingMode\":" + u8.to_json())
+    if v.ProvisionedThroughput.is_some():
+        auto u9 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u9.to_json())
+    if v.StreamSpecification.is_some():
+        auto u10 = v.StreamSpecification.unwrap()
+        parts.append("\"StreamSpecification\":" + u10.to_json())
+    if v.SSESpecification.is_some():
+        auto u11 = v.SSESpecification.unwrap()
+        parts.append("\"SSESpecification\":" + u11.to_json())
+    if v.Tags.is_some():
+        auto u12 = v.Tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Tags\":" + dynamodb_json_arr(e13))
+    if v.TableClass.is_some():
+        auto u14 = v.TableClass.unwrap()
+        parts.append("\"TableClass\":" + u14.to_json())
+    if v.DeletionProtectionEnabled.is_some():
+        auto u15 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.WarmThroughput.is_some():
+        auto u16 = v.WarmThroughput.unwrap()
+        parts.append("\"WarmThroughput\":" + u16.to_json())
+    if v.ResourcePolicy.is_some():
+        auto u17 = v.ResourcePolicy.unwrap()
+        parts.append("\"ResourcePolicy\":" + dynamodb_json_str(u17))
+    if v.OnDemandThroughput.is_some():
+        auto u18 = v.OnDemandThroughput.unwrap()
+        parts.append("\"OnDemandThroughput\":" + u18.to_json())
+    if v.GlobalTableSourceArn.is_some():
+        auto u19 = v.GlobalTableSourceArn.unwrap()
+        parts.append("\"GlobalTableSourceArn\":" + dynamodb_json_str(u19))
+    if v.GlobalTableSettingsReplicationMode.is_some():
+        auto u20 = v.GlobalTableSettingsReplicationMode.unwrap()
+        parts.append("\"GlobalTableSettingsReplicationMode\":" + u20.to_json())
+    if v.VectorIndexes.is_some():
+        auto u21 = v.VectorIndexes.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(vector_index_to_json(x22))
+        parts.append("\"VectorIndexes\":" + dynamodb_json_arr(e22))
+    return dynamodb_json_obj(parts)
+
+# Serialize CreateVectorIndexAction to a compact JSON object (declaration order).
+def create_vector_index_action_to_json(CreateVectorIndexAction v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexName\":" + dynamodb_json_str(v.IndexName))
+    parts.append("\"VectorAttribute\":" + v.VectorAttribute.to_json())
+    if v.SearchSchema.is_some():
+        auto u0 = v.SearchSchema.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SearchSchema\":" + dynamodb_json_arr(e1))
+    parts.append("\"Projection\":" + projection_to_json(v.Projection))
+    parts.append("\"Dimensions\":" + str(v.Dimensions))
+    parts.append("\"DistanceFunction\":" + v.DistanceFunction.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize CsvOptions to a compact JSON object (declaration order).
+def csv_options_to_json(CsvOptions v) -> str:
+    list[str] parts = []
+    if v.Delimiter.is_some():
+        auto u0 = v.Delimiter.unwrap()
+        parts.append("\"Delimiter\":" + dynamodb_json_str(u0))
+    if v.HeaderList.is_some():
+        auto u1 = v.HeaderList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dynamodb_json_str(x2))
+        parts.append("\"HeaderList\":" + dynamodb_json_arr(e2))
+    return dynamodb_json_obj(parts)
+
+# Serialize Delete to a compact JSON object (declaration order).
+def delete_to_json(Delete v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.ConditionExpression.is_some():
+        auto u1 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + dynamodb_json_str(u1))
+    if v.ExpressionAttributeNames.is_some():
+        auto u2 = v.ExpressionAttributeNames.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(dynamodb_json_str(k3) + ":" + dynamodb_json_str(u2[k3]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m3))
+    if v.ExpressionAttributeValues.is_some():
+        auto u4 = v.ExpressionAttributeValues.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(dynamodb_json_str(k5) + ":" + attribute_value_to_json(u4[k5]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m5))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u6 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u6.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize DeleteItemInput to a compact JSON object (declaration order).
+def delete_item_input_to_json(DeleteItemInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    if v.Expected.is_some():
+        auto u1 = v.Expected.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(dynamodb_json_str(k2) + ":" + expected_attribute_value_to_json(u1[k2]))
+        parts.append("\"Expected\":" + dynamodb_json_obj(m2))
+    if v.ConditionalOperator.is_some():
+        auto u3 = v.ConditionalOperator.unwrap()
+        parts.append("\"ConditionalOperator\":" + u3.to_json())
+    if v.ReturnValues.is_some():
+        auto u4 = v.ReturnValues.unwrap()
+        parts.append("\"ReturnValues\":" + u4.to_json())
+    if v.ReturnConsumedCapacity.is_some():
+        auto u5 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u5.to_json())
+    if v.ReturnItemCollectionMetrics.is_some():
+        auto u6 = v.ReturnItemCollectionMetrics.unwrap()
+        parts.append("\"ReturnItemCollectionMetrics\":" + u6.to_json())
+    if v.ConditionExpression.is_some():
+        auto u7 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + dynamodb_json_str(u7))
+    if v.ExpressionAttributeNames.is_some():
+        auto u8 = v.ExpressionAttributeNames.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(dynamodb_json_str(k9) + ":" + dynamodb_json_str(u8[k9]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m9))
+    if v.ExpressionAttributeValues.is_some():
+        auto u10 = v.ExpressionAttributeValues.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(dynamodb_json_str(k11) + ":" + attribute_value_to_json(u10[k11]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m11))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u12 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u12.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize DeleteRequest to a compact JSON object (declaration order).
+def delete_request_to_json(DeleteRequest v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    return dynamodb_json_obj(parts)
+
+# Serialize ExecuteStatementInput to a compact JSON object (declaration order).
+def execute_statement_input_to_json(ExecuteStatementInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Statement\":" + dynamodb_json_str(v.Statement))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_value_to_json(x1))
+        parts.append("\"Parameters\":" + dynamodb_json_arr(e1))
+    if v.ConsistentRead.is_some():
+        auto u2 = v.ConsistentRead.unwrap()
+        parts.append("\"ConsistentRead\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + dynamodb_json_str(u3))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u4 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u4.to_json())
+    if v.Limit.is_some():
+        auto u5 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u5))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u6 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u6.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize ExecuteTransactionInput to a compact JSON object (declaration order).
+def execute_transaction_input_to_json(ExecuteTransactionInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TransactStatements:
+        e0.append(parameterized_statement_to_json(x0))
+    parts.append("\"TransactStatements\":" + dynamodb_json_arr(e0))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + dynamodb_json_str(u1))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u2 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u2.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize ExpectedAttributeValue to a compact JSON object (declaration order).
+def expected_attribute_value_to_json(ExpectedAttributeValue v) -> str:
+    list[str] parts = []
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + attribute_value_to_json(u0))
+    if v.Exists.is_some():
+        auto u1 = v.Exists.unwrap()
+        parts.append("\"Exists\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ComparisonOperator.is_some():
+        auto u2 = v.ComparisonOperator.unwrap()
+        parts.append("\"ComparisonOperator\":" + u2.to_json())
+    if v.AttributeValueList.is_some():
+        auto u3 = v.AttributeValueList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(attribute_value_to_json(x4))
+        parts.append("\"AttributeValueList\":" + dynamodb_json_arr(e4))
+    return dynamodb_json_obj(parts)
+
+# Serialize ExportTableToPointInTimeInput to a compact JSON object (declaration order).
+def export_table_to_point_in_time_input_to_json(ExportTableToPointInTimeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableArn\":" + dynamodb_json_str(v.TableArn))
+    if v.ExportTime.is_some():
+        auto u0 = v.ExportTime.unwrap()
+        parts.append("\"ExportTime\":" + str(datetime.to_timestamp(u0)))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + dynamodb_json_str(u1))
+    parts.append("\"S3Bucket\":" + dynamodb_json_str(v.S3Bucket))
+    if v.S3BucketOwner.is_some():
+        auto u2 = v.S3BucketOwner.unwrap()
+        parts.append("\"S3BucketOwner\":" + dynamodb_json_str(u2))
+    if v.S3Prefix.is_some():
+        auto u3 = v.S3Prefix.unwrap()
+        parts.append("\"S3Prefix\":" + dynamodb_json_str(u3))
+    if v.S3SseAlgorithm.is_some():
+        auto u4 = v.S3SseAlgorithm.unwrap()
+        parts.append("\"S3SseAlgorithm\":" + u4.to_json())
+    if v.S3SseKmsKeyId.is_some():
+        auto u5 = v.S3SseKmsKeyId.unwrap()
+        parts.append("\"S3SseKmsKeyId\":" + dynamodb_json_str(u5))
+    if v.ExportFormat.is_some():
+        auto u6 = v.ExportFormat.unwrap()
+        parts.append("\"ExportFormat\":" + u6.to_json())
+    if v.ExportType.is_some():
+        auto u7 = v.ExportType.unwrap()
+        parts.append("\"ExportType\":" + u7.to_json())
+    if v.IncrementalExportSpecification.is_some():
+        auto u8 = v.IncrementalExportSpecification.unwrap()
+        parts.append("\"IncrementalExportSpecification\":" + u8.to_json())
+    if v.FilterSpecification.is_some():
+        auto u9 = v.FilterSpecification.unwrap()
+        parts.append("\"FilterSpecification\":" + filter_specification_to_json(u9))
+    return dynamodb_json_obj(parts)
+
+# Serialize FilterSpecification to a compact JSON object (declaration order).
+def filter_specification_to_json(FilterSpecification v) -> str:
+    list[str] parts = []
+    if v.FilterExpression.is_some():
+        auto u0 = v.FilterExpression.unwrap()
+        parts.append("\"FilterExpression\":" + dynamodb_json_str(u0))
+    if v.ProjectionExpression.is_some():
+        auto u1 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u1))
+    if v.KeyConditionExpression.is_some():
+        auto u2 = v.KeyConditionExpression.unwrap()
+        parts.append("\"KeyConditionExpression\":" + dynamodb_json_str(u2))
+    if v.ExpressionAttributeNames.is_some():
+        auto u3 = v.ExpressionAttributeNames.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(dynamodb_json_str(k4) + ":" + dynamodb_json_str(u3[k4]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m4))
+    if v.ExpressionAttributeValues.is_some():
+        auto u5 = v.ExpressionAttributeValues.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(dynamodb_json_str(k6) + ":" + attribute_value_to_json(u5[k6]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m6))
+    return dynamodb_json_obj(parts)
+
+# Serialize Get to a compact JSON object (declaration order).
+def get_to_json(Get v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.ProjectionExpression.is_some():
+        auto u1 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u1))
+    if v.ExpressionAttributeNames.is_some():
+        auto u2 = v.ExpressionAttributeNames.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(dynamodb_json_str(k3) + ":" + dynamodb_json_str(u2[k3]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m3))
+    return dynamodb_json_obj(parts)
+
+# Serialize GetItemInput to a compact JSON object (declaration order).
+def get_item_input_to_json(GetItemInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    if v.AttributesToGet.is_some():
+        auto u1 = v.AttributesToGet.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dynamodb_json_str(x2))
+        parts.append("\"AttributesToGet\":" + dynamodb_json_arr(e2))
+    if v.ConsistentRead.is_some():
+        auto u3 = v.ConsistentRead.unwrap()
+        parts.append("\"ConsistentRead\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u4 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u4.to_json())
+    if v.ProjectionExpression.is_some():
+        auto u5 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u5))
+    if v.ExpressionAttributeNames.is_some():
+        auto u6 = v.ExpressionAttributeNames.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(dynamodb_json_str(k7) + ":" + dynamodb_json_str(u6[k7]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m7))
+    return dynamodb_json_obj(parts)
+
+# Serialize GlobalSecondaryIndex to a compact JSON object (declaration order).
+def global_secondary_index_to_json(GlobalSecondaryIndex v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexName\":" + dynamodb_json_str(v.IndexName))
+    list[str] e0 = []
+    for x0 in v.KeySchema:
+        e0.append(x0.to_json())
+    parts.append("\"KeySchema\":" + dynamodb_json_arr(e0))
+    parts.append("\"Projection\":" + projection_to_json(v.Projection))
+    if v.ProvisionedThroughput.is_some():
+        auto u1 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u1.to_json())
+    if v.OnDemandThroughput.is_some():
+        auto u2 = v.OnDemandThroughput.unwrap()
+        parts.append("\"OnDemandThroughput\":" + u2.to_json())
+    if v.WarmThroughput.is_some():
+        auto u3 = v.WarmThroughput.unwrap()
+        parts.append("\"WarmThroughput\":" + u3.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize GlobalSecondaryIndexUpdate to a compact JSON object (declaration order).
+def global_secondary_index_update_to_json(GlobalSecondaryIndexUpdate v) -> str:
+    list[str] parts = []
+    if v.Update.is_some():
+        auto u0 = v.Update.unwrap()
+        parts.append("\"Update\":" + u0.to_json())
+    if v.Create.is_some():
+        auto u1 = v.Create.unwrap()
+        parts.append("\"Create\":" + create_global_secondary_index_action_to_json(u1))
+    if v.Delete.is_some():
+        auto u2 = v.Delete.unwrap()
+        parts.append("\"Delete\":" + u2.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize ImportTableInput to a compact JSON object (declaration order).
+def import_table_input_to_json(ImportTableInput v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + dynamodb_json_str(u0))
+    parts.append("\"S3BucketSource\":" + v.S3BucketSource.to_json())
+    parts.append("\"InputFormat\":" + v.InputFormat.to_json())
+    if v.InputFormatOptions.is_some():
+        auto u1 = v.InputFormatOptions.unwrap()
+        parts.append("\"InputFormatOptions\":" + input_format_options_to_json(u1))
+    if v.InputCompressionType.is_some():
+        auto u2 = v.InputCompressionType.unwrap()
+        parts.append("\"InputCompressionType\":" + u2.to_json())
+    parts.append("\"TableCreationParameters\":" + table_creation_parameters_to_json(v.TableCreationParameters))
+    return dynamodb_json_obj(parts)
+
+# Serialize InputFormatOptions to a compact JSON object (declaration order).
+def input_format_options_to_json(InputFormatOptions v) -> str:
+    list[str] parts = []
+    if v.Csv.is_some():
+        auto u0 = v.Csv.unwrap()
+        parts.append("\"Csv\":" + csv_options_to_json(u0))
+    return dynamodb_json_obj(parts)
+
+# Serialize KeysAndAttributes to a compact JSON object (declaration order).
+def keys_and_attributes_to_json(KeysAndAttributes v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Keys:
+        list[str] m1 = []
+        for k1 in sorted(x0.keys()):
+            m1.append(dynamodb_json_str(k1) + ":" + attribute_value_to_json(x0[k1]))
+        e0.append(dynamodb_json_obj(m1))
+    parts.append("\"Keys\":" + dynamodb_json_arr(e0))
+    if v.AttributesToGet.is_some():
+        auto u2 = v.AttributesToGet.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(dynamodb_json_str(x3))
+        parts.append("\"AttributesToGet\":" + dynamodb_json_arr(e3))
+    if v.ConsistentRead.is_some():
+        auto u4 = v.ConsistentRead.unwrap()
+        parts.append("\"ConsistentRead\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ProjectionExpression.is_some():
+        auto u5 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u5))
+    if v.ExpressionAttributeNames.is_some():
+        auto u6 = v.ExpressionAttributeNames.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(dynamodb_json_str(k7) + ":" + dynamodb_json_str(u6[k7]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m7))
+    return dynamodb_json_obj(parts)
+
+# Serialize LocalSecondaryIndex to a compact JSON object (declaration order).
+def local_secondary_index_to_json(LocalSecondaryIndex v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexName\":" + dynamodb_json_str(v.IndexName))
+    list[str] e0 = []
+    for x0 in v.KeySchema:
+        e0.append(x0.to_json())
+    parts.append("\"KeySchema\":" + dynamodb_json_arr(e0))
+    parts.append("\"Projection\":" + projection_to_json(v.Projection))
+    return dynamodb_json_obj(parts)
+
+# Serialize ParameterizedStatement to a compact JSON object (declaration order).
+def parameterized_statement_to_json(ParameterizedStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"Statement\":" + dynamodb_json_str(v.Statement))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_value_to_json(x1))
+        parts.append("\"Parameters\":" + dynamodb_json_arr(e1))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u2 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u2.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize Projection to a compact JSON object (declaration order).
+def projection_to_json(Projection v) -> str:
+    list[str] parts = []
+    if v.ProjectionType.is_some():
+        auto u0 = v.ProjectionType.unwrap()
+        parts.append("\"ProjectionType\":" + u0.to_json())
+    if v.NonKeyAttributes.is_some():
+        auto u1 = v.NonKeyAttributes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dynamodb_json_str(x2))
+        parts.append("\"NonKeyAttributes\":" + dynamodb_json_arr(e2))
+    return dynamodb_json_obj(parts)
+
+# Serialize Put to a compact JSON object (declaration order).
+def put_to_json(Put v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Item.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Item[k0]))
+    parts.append("\"Item\":" + dynamodb_json_obj(m0))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.ConditionExpression.is_some():
+        auto u1 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + dynamodb_json_str(u1))
+    if v.ExpressionAttributeNames.is_some():
+        auto u2 = v.ExpressionAttributeNames.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(dynamodb_json_str(k3) + ":" + dynamodb_json_str(u2[k3]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m3))
+    if v.ExpressionAttributeValues.is_some():
+        auto u4 = v.ExpressionAttributeValues.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(dynamodb_json_str(k5) + ":" + attribute_value_to_json(u4[k5]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m5))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u6 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u6.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize PutItemInput to a compact JSON object (declaration order).
+def put_item_input_to_json(PutItemInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    list[str] m0 = []
+    for k0 in sorted(v.Item.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Item[k0]))
+    parts.append("\"Item\":" + dynamodb_json_obj(m0))
+    if v.Expected.is_some():
+        auto u1 = v.Expected.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(dynamodb_json_str(k2) + ":" + expected_attribute_value_to_json(u1[k2]))
+        parts.append("\"Expected\":" + dynamodb_json_obj(m2))
+    if v.ReturnValues.is_some():
+        auto u3 = v.ReturnValues.unwrap()
+        parts.append("\"ReturnValues\":" + u3.to_json())
+    if v.ReturnConsumedCapacity.is_some():
+        auto u4 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u4.to_json())
+    if v.ReturnItemCollectionMetrics.is_some():
+        auto u5 = v.ReturnItemCollectionMetrics.unwrap()
+        parts.append("\"ReturnItemCollectionMetrics\":" + u5.to_json())
+    if v.ConditionalOperator.is_some():
+        auto u6 = v.ConditionalOperator.unwrap()
+        parts.append("\"ConditionalOperator\":" + u6.to_json())
+    if v.ConditionExpression.is_some():
+        auto u7 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + dynamodb_json_str(u7))
+    if v.ExpressionAttributeNames.is_some():
+        auto u8 = v.ExpressionAttributeNames.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(dynamodb_json_str(k9) + ":" + dynamodb_json_str(u8[k9]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m9))
+    if v.ExpressionAttributeValues.is_some():
+        auto u10 = v.ExpressionAttributeValues.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(dynamodb_json_str(k11) + ":" + attribute_value_to_json(u10[k11]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m11))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u12 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u12.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize PutRequest to a compact JSON object (declaration order).
+def put_request_to_json(PutRequest v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Item.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Item[k0]))
+    parts.append("\"Item\":" + dynamodb_json_obj(m0))
+    return dynamodb_json_obj(parts)
+
+# Serialize QueryInput to a compact JSON object (declaration order).
+def query_input_to_json(QueryInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.IndexName.is_some():
+        auto u0 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + dynamodb_json_str(u0))
+    if v.Select.is_some():
+        auto u1 = v.Select.unwrap()
+        parts.append("\"Select\":" + u1.to_json())
+    if v.AttributesToGet.is_some():
+        auto u2 = v.AttributesToGet.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(dynamodb_json_str(x3))
+        parts.append("\"AttributesToGet\":" + dynamodb_json_arr(e3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    if v.ConsistentRead.is_some():
+        auto u5 = v.ConsistentRead.unwrap()
+        parts.append("\"ConsistentRead\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.KeyConditions.is_some():
+        auto u6 = v.KeyConditions.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(dynamodb_json_str(k7) + ":" + condition_to_json(u6[k7]))
+        parts.append("\"KeyConditions\":" + dynamodb_json_obj(m7))
+    if v.QueryFilter.is_some():
+        auto u8 = v.QueryFilter.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(dynamodb_json_str(k9) + ":" + condition_to_json(u8[k9]))
+        parts.append("\"QueryFilter\":" + dynamodb_json_obj(m9))
+    if v.ConditionalOperator.is_some():
+        auto u10 = v.ConditionalOperator.unwrap()
+        parts.append("\"ConditionalOperator\":" + u10.to_json())
+    if v.ScanIndexForward.is_some():
+        auto u11 = v.ScanIndexForward.unwrap()
+        parts.append("\"ScanIndexForward\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.ExclusiveStartKey.is_some():
+        auto u12 = v.ExclusiveStartKey.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(dynamodb_json_str(k13) + ":" + attribute_value_to_json(u12[k13]))
+        parts.append("\"ExclusiveStartKey\":" + dynamodb_json_obj(m13))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u14 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u14.to_json())
+    if v.ProjectionExpression.is_some():
+        auto u15 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u15))
+    if v.FilterExpression.is_some():
+        auto u16 = v.FilterExpression.unwrap()
+        parts.append("\"FilterExpression\":" + dynamodb_json_str(u16))
+    if v.KeyConditionExpression.is_some():
+        auto u17 = v.KeyConditionExpression.unwrap()
+        parts.append("\"KeyConditionExpression\":" + dynamodb_json_str(u17))
+    if v.ExpressionAttributeNames.is_some():
+        auto u18 = v.ExpressionAttributeNames.unwrap()
+        list[str] m19 = []
+        for k19 in sorted(u18.keys()):
+            m19.append(dynamodb_json_str(k19) + ":" + dynamodb_json_str(u18[k19]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m19))
+    if v.ExpressionAttributeValues.is_some():
+        auto u20 = v.ExpressionAttributeValues.unwrap()
+        list[str] m21 = []
+        for k21 in sorted(u20.keys()):
+            m21.append(dynamodb_json_str(k21) + ":" + attribute_value_to_json(u20[k21]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m21))
+    return dynamodb_json_obj(parts)
+
+# Serialize ReplicaAutoScalingUpdate to a compact JSON object (declaration order).
+def replica_auto_scaling_update_to_json(ReplicaAutoScalingUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"RegionName\":" + dynamodb_json_str(v.RegionName))
+    if v.ReplicaGlobalSecondaryIndexUpdates.is_some():
+        auto u0 = v.ReplicaGlobalSecondaryIndexUpdates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ReplicaGlobalSecondaryIndexUpdates\":" + dynamodb_json_arr(e1))
+    if v.ReplicaProvisionedReadCapacityAutoScalingUpdate.is_some():
+        auto u2 = v.ReplicaProvisionedReadCapacityAutoScalingUpdate.unwrap()
+        parts.append("\"ReplicaProvisionedReadCapacityAutoScalingUpdate\":" + u2.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize ReplicaSettingsUpdate to a compact JSON object (declaration order).
+def replica_settings_update_to_json(ReplicaSettingsUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"RegionName\":" + dynamodb_json_str(v.RegionName))
+    if v.ReplicaProvisionedReadCapacityUnits.is_some():
+        auto u0 = v.ReplicaProvisionedReadCapacityUnits.unwrap()
+        parts.append("\"ReplicaProvisionedReadCapacityUnits\":" + str(u0))
+    if v.ReplicaProvisionedReadCapacityAutoScalingSettingsUpdate.is_some():
+        auto u1 = v.ReplicaProvisionedReadCapacityAutoScalingSettingsUpdate.unwrap()
+        parts.append("\"ReplicaProvisionedReadCapacityAutoScalingSettingsUpdate\":" + u1.to_json())
+    if v.ReplicaGlobalSecondaryIndexSettingsUpdate.is_some():
+        auto u2 = v.ReplicaGlobalSecondaryIndexSettingsUpdate.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ReplicaGlobalSecondaryIndexSettingsUpdate\":" + dynamodb_json_arr(e3))
+    if v.ReplicaTableClass.is_some():
+        auto u4 = v.ReplicaTableClass.unwrap()
+        parts.append("\"ReplicaTableClass\":" + u4.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize ReplicationGroupUpdate to a compact JSON object (declaration order).
+def replication_group_update_to_json(ReplicationGroupUpdate v) -> str:
+    list[str] parts = []
+    if v.Create.is_some():
+        auto u0 = v.Create.unwrap()
+        parts.append("\"Create\":" + create_replication_group_member_action_to_json(u0))
+    if v.Update.is_some():
+        auto u1 = v.Update.unwrap()
+        parts.append("\"Update\":" + update_replication_group_member_action_to_json(u1))
+    if v.Delete.is_some():
+        auto u2 = v.Delete.unwrap()
+        parts.append("\"Delete\":" + u2.to_json())
+    if v.Disassociate.is_some():
+        auto u3 = v.Disassociate.unwrap()
+        parts.append("\"Disassociate\":" + u3.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize RestoreTableFromBackupInput to a compact JSON object (declaration order).
+def restore_table_from_backup_input_to_json(RestoreTableFromBackupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TargetTableName\":" + dynamodb_json_str(v.TargetTableName))
+    parts.append("\"BackupArn\":" + dynamodb_json_str(v.BackupArn))
+    if v.BillingModeOverride.is_some():
+        auto u0 = v.BillingModeOverride.unwrap()
+        parts.append("\"BillingModeOverride\":" + u0.to_json())
+    if v.GlobalSecondaryIndexOverride.is_some():
+        auto u1 = v.GlobalSecondaryIndexOverride.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(global_secondary_index_to_json(x2))
+        parts.append("\"GlobalSecondaryIndexOverride\":" + dynamodb_json_arr(e2))
+    if v.LocalSecondaryIndexOverride.is_some():
+        auto u3 = v.LocalSecondaryIndexOverride.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(local_secondary_index_to_json(x4))
+        parts.append("\"LocalSecondaryIndexOverride\":" + dynamodb_json_arr(e4))
+    if v.ProvisionedThroughputOverride.is_some():
+        auto u5 = v.ProvisionedThroughputOverride.unwrap()
+        parts.append("\"ProvisionedThroughputOverride\":" + u5.to_json())
+    if v.OnDemandThroughputOverride.is_some():
+        auto u6 = v.OnDemandThroughputOverride.unwrap()
+        parts.append("\"OnDemandThroughputOverride\":" + u6.to_json())
+    if v.SSESpecificationOverride.is_some():
+        auto u7 = v.SSESpecificationOverride.unwrap()
+        parts.append("\"SSESpecificationOverride\":" + u7.to_json())
+    if v.VectorIndexOverride.is_some():
+        auto u8 = v.VectorIndexOverride.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(vector_index_to_json(x9))
+        parts.append("\"VectorIndexOverride\":" + dynamodb_json_arr(e9))
+    return dynamodb_json_obj(parts)
+
+# Serialize RestoreTableToPointInTimeInput to a compact JSON object (declaration order).
+def restore_table_to_point_in_time_input_to_json(RestoreTableToPointInTimeInput v) -> str:
+    list[str] parts = []
+    if v.SourceTableArn.is_some():
+        auto u0 = v.SourceTableArn.unwrap()
+        parts.append("\"SourceTableArn\":" + dynamodb_json_str(u0))
+    if v.SourceTableName.is_some():
+        auto u1 = v.SourceTableName.unwrap()
+        parts.append("\"SourceTableName\":" + dynamodb_json_str(u1))
+    parts.append("\"TargetTableName\":" + dynamodb_json_str(v.TargetTableName))
+    if v.UseLatestRestorableTime.is_some():
+        auto u2 = v.UseLatestRestorableTime.unwrap()
+        parts.append("\"UseLatestRestorableTime\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.RestoreDateTime.is_some():
+        auto u3 = v.RestoreDateTime.unwrap()
+        parts.append("\"RestoreDateTime\":" + str(datetime.to_timestamp(u3)))
+    if v.BillingModeOverride.is_some():
+        auto u4 = v.BillingModeOverride.unwrap()
+        parts.append("\"BillingModeOverride\":" + u4.to_json())
+    if v.GlobalSecondaryIndexOverride.is_some():
+        auto u5 = v.GlobalSecondaryIndexOverride.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(global_secondary_index_to_json(x6))
+        parts.append("\"GlobalSecondaryIndexOverride\":" + dynamodb_json_arr(e6))
+    if v.LocalSecondaryIndexOverride.is_some():
+        auto u7 = v.LocalSecondaryIndexOverride.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(local_secondary_index_to_json(x8))
+        parts.append("\"LocalSecondaryIndexOverride\":" + dynamodb_json_arr(e8))
+    if v.ProvisionedThroughputOverride.is_some():
+        auto u9 = v.ProvisionedThroughputOverride.unwrap()
+        parts.append("\"ProvisionedThroughputOverride\":" + u9.to_json())
+    if v.OnDemandThroughputOverride.is_some():
+        auto u10 = v.OnDemandThroughputOverride.unwrap()
+        parts.append("\"OnDemandThroughputOverride\":" + u10.to_json())
+    if v.SSESpecificationOverride.is_some():
+        auto u11 = v.SSESpecificationOverride.unwrap()
+        parts.append("\"SSESpecificationOverride\":" + u11.to_json())
+    if v.VectorIndexOverride.is_some():
+        auto u12 = v.VectorIndexOverride.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(vector_index_to_json(x13))
+        parts.append("\"VectorIndexOverride\":" + dynamodb_json_arr(e13))
+    return dynamodb_json_obj(parts)
+
+# Serialize ScanInput to a compact JSON object (declaration order).
+def scan_input_to_json(ScanInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.IndexName.is_some():
+        auto u0 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + dynamodb_json_str(u0))
+    if v.AttributesToGet.is_some():
+        auto u1 = v.AttributesToGet.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dynamodb_json_str(x2))
+        parts.append("\"AttributesToGet\":" + dynamodb_json_arr(e2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    if v.Select.is_some():
+        auto u4 = v.Select.unwrap()
+        parts.append("\"Select\":" + u4.to_json())
+    if v.ScanFilter.is_some():
+        auto u5 = v.ScanFilter.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(dynamodb_json_str(k6) + ":" + condition_to_json(u5[k6]))
+        parts.append("\"ScanFilter\":" + dynamodb_json_obj(m6))
+    if v.ConditionalOperator.is_some():
+        auto u7 = v.ConditionalOperator.unwrap()
+        parts.append("\"ConditionalOperator\":" + u7.to_json())
+    if v.ExclusiveStartKey.is_some():
+        auto u8 = v.ExclusiveStartKey.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(dynamodb_json_str(k9) + ":" + attribute_value_to_json(u8[k9]))
+        parts.append("\"ExclusiveStartKey\":" + dynamodb_json_obj(m9))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u10 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u10.to_json())
+    if v.TotalSegments.is_some():
+        auto u11 = v.TotalSegments.unwrap()
+        parts.append("\"TotalSegments\":" + str(u11))
+    if v.Segment.is_some():
+        auto u12 = v.Segment.unwrap()
+        parts.append("\"Segment\":" + str(u12))
+    if v.ProjectionExpression.is_some():
+        auto u13 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u13))
+    if v.FilterExpression.is_some():
+        auto u14 = v.FilterExpression.unwrap()
+        parts.append("\"FilterExpression\":" + dynamodb_json_str(u14))
+    if v.ExpressionAttributeNames.is_some():
+        auto u15 = v.ExpressionAttributeNames.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(dynamodb_json_str(k16) + ":" + dynamodb_json_str(u15[k16]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m16))
+    if v.ExpressionAttributeValues.is_some():
+        auto u17 = v.ExpressionAttributeValues.unwrap()
+        list[str] m18 = []
+        for k18 in sorted(u17.keys()):
+            m18.append(dynamodb_json_str(k18) + ":" + attribute_value_to_json(u17[k18]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m18))
+    if v.ConsistentRead.is_some():
+        auto u19 = v.ConsistentRead.unwrap()
+        parts.append("\"ConsistentRead\":" + json.dumps(JsonValue.Bool(u19)))
+    return dynamodb_json_obj(parts)
+
+# Serialize SearchVectorsInput to a compact JSON object (declaration order).
+def search_vectors_input_to_json(SearchVectorsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    parts.append("\"IndexName\":" + dynamodb_json_str(v.IndexName))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u0 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u0.to_json())
+    if v.ExpressionAttributeNames.is_some():
+        auto u1 = v.ExpressionAttributeNames.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(dynamodb_json_str(k2) + ":" + dynamodb_json_str(u1[k2]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m2))
+    if v.ExpressionAttributeValues.is_some():
+        auto u3 = v.ExpressionAttributeValues.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(dynamodb_json_str(k4) + ":" + attribute_value_to_json(u3[k4]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m4))
+    if v.ProjectionExpression.is_some():
+        auto u5 = v.ProjectionExpression.unwrap()
+        parts.append("\"ProjectionExpression\":" + dynamodb_json_str(u5))
+    list[str] e6 = []
+    for x6 in v.SearchVector:
+        e6.append(attribute_value_to_json(x6))
+    parts.append("\"SearchVector\":" + dynamodb_json_arr(e6))
+    if v.SearchConditionExpression.is_some():
+        auto u7 = v.SearchConditionExpression.unwrap()
+        parts.append("\"SearchConditionExpression\":" + dynamodb_json_str(u7))
+    parts.append("\"TopK\":" + str(v.TopK))
+    return dynamodb_json_obj(parts)
+
+# Serialize TableCreationParameters to a compact JSON object (declaration order).
+def table_creation_parameters_to_json(TableCreationParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    list[str] e0 = []
+    for x0 in v.AttributeDefinitions:
+        e0.append(x0.to_json())
+    parts.append("\"AttributeDefinitions\":" + dynamodb_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.KeySchema:
+        e1.append(x1.to_json())
+    parts.append("\"KeySchema\":" + dynamodb_json_arr(e1))
+    if v.BillingMode.is_some():
+        auto u2 = v.BillingMode.unwrap()
+        parts.append("\"BillingMode\":" + u2.to_json())
+    if v.ProvisionedThroughput.is_some():
+        auto u3 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u3.to_json())
+    if v.OnDemandThroughput.is_some():
+        auto u4 = v.OnDemandThroughput.unwrap()
+        parts.append("\"OnDemandThroughput\":" + u4.to_json())
+    if v.SSESpecification.is_some():
+        auto u5 = v.SSESpecification.unwrap()
+        parts.append("\"SSESpecification\":" + u5.to_json())
+    if v.GlobalSecondaryIndexes.is_some():
+        auto u6 = v.GlobalSecondaryIndexes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(global_secondary_index_to_json(x7))
+        parts.append("\"GlobalSecondaryIndexes\":" + dynamodb_json_arr(e7))
+    if v.VectorIndexes.is_some():
+        auto u8 = v.VectorIndexes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(vector_index_to_json(x9))
+        parts.append("\"VectorIndexes\":" + dynamodb_json_arr(e9))
+    return dynamodb_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + dynamodb_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + dynamodb_json_arr(e0))
+    return dynamodb_json_obj(parts)
+
+# Serialize TransactGetItem to a compact JSON object (declaration order).
+def transact_get_item_to_json(TransactGetItem v) -> str:
+    list[str] parts = []
+    parts.append("\"Get\":" + get_to_json(v.Get))
+    return dynamodb_json_obj(parts)
+
+# Serialize TransactGetItemsInput to a compact JSON object (declaration order).
+def transact_get_items_input_to_json(TransactGetItemsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TransactItems:
+        e0.append(transact_get_item_to_json(x0))
+    parts.append("\"TransactItems\":" + dynamodb_json_arr(e0))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u1 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u1.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize TransactWriteItem to a compact JSON object (declaration order).
+def transact_write_item_to_json(TransactWriteItem v) -> str:
+    list[str] parts = []
+    if v.ConditionCheck.is_some():
+        auto u0 = v.ConditionCheck.unwrap()
+        parts.append("\"ConditionCheck\":" + condition_check_to_json(u0))
+    if v.Put.is_some():
+        auto u1 = v.Put.unwrap()
+        parts.append("\"Put\":" + put_to_json(u1))
+    if v.Delete.is_some():
+        auto u2 = v.Delete.unwrap()
+        parts.append("\"Delete\":" + delete_to_json(u2))
+    if v.Update.is_some():
+        auto u3 = v.Update.unwrap()
+        parts.append("\"Update\":" + update_to_json(u3))
+    return dynamodb_json_obj(parts)
+
+# Serialize TransactWriteItemsInput to a compact JSON object (declaration order).
+def transact_write_items_input_to_json(TransactWriteItemsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TransactItems:
+        e0.append(transact_write_item_to_json(x0))
+    parts.append("\"TransactItems\":" + dynamodb_json_arr(e0))
+    if v.ReturnConsumedCapacity.is_some():
+        auto u1 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u1.to_json())
+    if v.ReturnItemCollectionMetrics.is_some():
+        auto u2 = v.ReturnItemCollectionMetrics.unwrap()
+        parts.append("\"ReturnItemCollectionMetrics\":" + u2.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u3 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + dynamodb_json_str(u3))
+    return dynamodb_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + dynamodb_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(dynamodb_json_str(x0))
+    parts.append("\"TagKeys\":" + dynamodb_json_arr(e0))
+    return dynamodb_json_obj(parts)
+
+# Serialize Update to a compact JSON object (declaration order).
+def update_to_json(Update v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    parts.append("\"UpdateExpression\":" + dynamodb_json_str(v.UpdateExpression))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.ConditionExpression.is_some():
+        auto u1 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + dynamodb_json_str(u1))
+    if v.ExpressionAttributeNames.is_some():
+        auto u2 = v.ExpressionAttributeNames.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(dynamodb_json_str(k3) + ":" + dynamodb_json_str(u2[k3]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m3))
+    if v.ExpressionAttributeValues.is_some():
+        auto u4 = v.ExpressionAttributeValues.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(dynamodb_json_str(k5) + ":" + attribute_value_to_json(u4[k5]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m5))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u6 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u6.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize UpdateGlobalTableInput to a compact JSON object (declaration order).
+def update_global_table_input_to_json(UpdateGlobalTableInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GlobalTableName\":" + dynamodb_json_str(v.GlobalTableName))
+    list[str] e0 = []
+    for x0 in v.ReplicaUpdates:
+        e0.append(x0.to_json())
+    parts.append("\"ReplicaUpdates\":" + dynamodb_json_arr(e0))
+    return dynamodb_json_obj(parts)
+
+# Serialize UpdateGlobalTableSettingsInput to a compact JSON object (declaration order).
+def update_global_table_settings_input_to_json(UpdateGlobalTableSettingsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GlobalTableName\":" + dynamodb_json_str(v.GlobalTableName))
+    if v.GlobalTableBillingMode.is_some():
+        auto u0 = v.GlobalTableBillingMode.unwrap()
+        parts.append("\"GlobalTableBillingMode\":" + u0.to_json())
+    if v.GlobalTableProvisionedWriteCapacityUnits.is_some():
+        auto u1 = v.GlobalTableProvisionedWriteCapacityUnits.unwrap()
+        parts.append("\"GlobalTableProvisionedWriteCapacityUnits\":" + str(u1))
+    if v.GlobalTableProvisionedWriteCapacityAutoScalingSettingsUpdate.is_some():
+        auto u2 = v.GlobalTableProvisionedWriteCapacityAutoScalingSettingsUpdate.unwrap()
+        parts.append("\"GlobalTableProvisionedWriteCapacityAutoScalingSettingsUpdate\":" + u2.to_json())
+    if v.GlobalTableGlobalSecondaryIndexSettingsUpdate.is_some():
+        auto u3 = v.GlobalTableGlobalSecondaryIndexSettingsUpdate.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"GlobalTableGlobalSecondaryIndexSettingsUpdate\":" + dynamodb_json_arr(e4))
+    if v.ReplicaSettingsUpdate.is_some():
+        auto u5 = v.ReplicaSettingsUpdate.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(replica_settings_update_to_json(x6))
+        parts.append("\"ReplicaSettingsUpdate\":" + dynamodb_json_arr(e6))
+    return dynamodb_json_obj(parts)
+
+# Serialize UpdateItemInput to a compact JSON object (declaration order).
+def update_item_input_to_json(UpdateItemInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    list[str] m0 = []
+    for k0 in sorted(v.Key.keys()):
+        m0.append(dynamodb_json_str(k0) + ":" + attribute_value_to_json(v.Key[k0]))
+    parts.append("\"Key\":" + dynamodb_json_obj(m0))
+    if v.AttributeUpdates.is_some():
+        auto u1 = v.AttributeUpdates.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(dynamodb_json_str(k2) + ":" + attribute_value_update_to_json(u1[k2]))
+        parts.append("\"AttributeUpdates\":" + dynamodb_json_obj(m2))
+    if v.Expected.is_some():
+        auto u3 = v.Expected.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(dynamodb_json_str(k4) + ":" + expected_attribute_value_to_json(u3[k4]))
+        parts.append("\"Expected\":" + dynamodb_json_obj(m4))
+    if v.ConditionalOperator.is_some():
+        auto u5 = v.ConditionalOperator.unwrap()
+        parts.append("\"ConditionalOperator\":" + u5.to_json())
+    if v.ReturnValues.is_some():
+        auto u6 = v.ReturnValues.unwrap()
+        parts.append("\"ReturnValues\":" + u6.to_json())
+    if v.ReturnConsumedCapacity.is_some():
+        auto u7 = v.ReturnConsumedCapacity.unwrap()
+        parts.append("\"ReturnConsumedCapacity\":" + u7.to_json())
+    if v.ReturnItemCollectionMetrics.is_some():
+        auto u8 = v.ReturnItemCollectionMetrics.unwrap()
+        parts.append("\"ReturnItemCollectionMetrics\":" + u8.to_json())
+    if v.UpdateExpression.is_some():
+        auto u9 = v.UpdateExpression.unwrap()
+        parts.append("\"UpdateExpression\":" + dynamodb_json_str(u9))
+    if v.ConditionExpression.is_some():
+        auto u10 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + dynamodb_json_str(u10))
+    if v.ExpressionAttributeNames.is_some():
+        auto u11 = v.ExpressionAttributeNames.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            m12.append(dynamodb_json_str(k12) + ":" + dynamodb_json_str(u11[k12]))
+        parts.append("\"ExpressionAttributeNames\":" + dynamodb_json_obj(m12))
+    if v.ExpressionAttributeValues.is_some():
+        auto u13 = v.ExpressionAttributeValues.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(dynamodb_json_str(k14) + ":" + attribute_value_to_json(u13[k14]))
+        parts.append("\"ExpressionAttributeValues\":" + dynamodb_json_obj(m14))
+    if v.ReturnValuesOnConditionCheckFailure.is_some():
+        auto u15 = v.ReturnValuesOnConditionCheckFailure.unwrap()
+        parts.append("\"ReturnValuesOnConditionCheckFailure\":" + u15.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize UpdateReplicationGroupMemberAction to a compact JSON object (declaration order).
+def update_replication_group_member_action_to_json(UpdateReplicationGroupMemberAction v) -> str:
+    list[str] parts = []
+    parts.append("\"RegionName\":" + dynamodb_json_str(v.RegionName))
+    if v.KMSMasterKeyId.is_some():
+        auto u0 = v.KMSMasterKeyId.unwrap()
+        parts.append("\"KMSMasterKeyId\":" + dynamodb_json_str(u0))
+    if v.ProvisionedThroughputOverride.is_some():
+        auto u1 = v.ProvisionedThroughputOverride.unwrap()
+        parts.append("\"ProvisionedThroughputOverride\":" + u1.to_json())
+    if v.OnDemandThroughputOverride.is_some():
+        auto u2 = v.OnDemandThroughputOverride.unwrap()
+        parts.append("\"OnDemandThroughputOverride\":" + u2.to_json())
+    if v.GlobalSecondaryIndexes.is_some():
+        auto u3 = v.GlobalSecondaryIndexes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"GlobalSecondaryIndexes\":" + dynamodb_json_arr(e4))
+    if v.TableClassOverride.is_some():
+        auto u5 = v.TableClassOverride.unwrap()
+        parts.append("\"TableClassOverride\":" + u5.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize UpdateTableInput to a compact JSON object (declaration order).
+def update_table_input_to_json(UpdateTableInput v) -> str:
+    list[str] parts = []
+    if v.AttributeDefinitions.is_some():
+        auto u0 = v.AttributeDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributeDefinitions\":" + dynamodb_json_arr(e1))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.BillingMode.is_some():
+        auto u2 = v.BillingMode.unwrap()
+        parts.append("\"BillingMode\":" + u2.to_json())
+    if v.ProvisionedThroughput.is_some():
+        auto u3 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u3.to_json())
+    if v.GlobalSecondaryIndexUpdates.is_some():
+        auto u4 = v.GlobalSecondaryIndexUpdates.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(global_secondary_index_update_to_json(x5))
+        parts.append("\"GlobalSecondaryIndexUpdates\":" + dynamodb_json_arr(e5))
+    if v.StreamSpecification.is_some():
+        auto u6 = v.StreamSpecification.unwrap()
+        parts.append("\"StreamSpecification\":" + u6.to_json())
+    if v.SSESpecification.is_some():
+        auto u7 = v.SSESpecification.unwrap()
+        parts.append("\"SSESpecification\":" + u7.to_json())
+    if v.ReplicaUpdates.is_some():
+        auto u8 = v.ReplicaUpdates.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(replication_group_update_to_json(x9))
+        parts.append("\"ReplicaUpdates\":" + dynamodb_json_arr(e9))
+    if v.TableClass.is_some():
+        auto u10 = v.TableClass.unwrap()
+        parts.append("\"TableClass\":" + u10.to_json())
+    if v.DeletionProtectionEnabled.is_some():
+        auto u11 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.MultiRegionConsistency.is_some():
+        auto u12 = v.MultiRegionConsistency.unwrap()
+        parts.append("\"MultiRegionConsistency\":" + u12.to_json())
+    if v.GlobalTableWitnessUpdates.is_some():
+        auto u13 = v.GlobalTableWitnessUpdates.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"GlobalTableWitnessUpdates\":" + dynamodb_json_arr(e14))
+    if v.OnDemandThroughput.is_some():
+        auto u15 = v.OnDemandThroughput.unwrap()
+        parts.append("\"OnDemandThroughput\":" + u15.to_json())
+    if v.WarmThroughput.is_some():
+        auto u16 = v.WarmThroughput.unwrap()
+        parts.append("\"WarmThroughput\":" + u16.to_json())
+    if v.GlobalTableSettingsReplicationMode.is_some():
+        auto u17 = v.GlobalTableSettingsReplicationMode.unwrap()
+        parts.append("\"GlobalTableSettingsReplicationMode\":" + u17.to_json())
+    if v.DisassociationProtectionEnabled.is_some():
+        auto u18 = v.DisassociationProtectionEnabled.unwrap()
+        parts.append("\"DisassociationProtectionEnabled\":" + json.dumps(JsonValue.Bool(u18)))
+    if v.VectorIndexUpdates.is_some():
+        auto u19 = v.VectorIndexUpdates.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(vector_index_update_to_json(x20))
+        parts.append("\"VectorIndexUpdates\":" + dynamodb_json_arr(e20))
+    return dynamodb_json_obj(parts)
+
+# Serialize UpdateTableReplicaAutoScalingInput to a compact JSON object (declaration order).
+def update_table_replica_auto_scaling_input_to_json(UpdateTableReplicaAutoScalingInput v) -> str:
+    list[str] parts = []
+    if v.GlobalSecondaryIndexUpdates.is_some():
+        auto u0 = v.GlobalSecondaryIndexUpdates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GlobalSecondaryIndexUpdates\":" + dynamodb_json_arr(e1))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.ProvisionedWriteCapacityAutoScalingUpdate.is_some():
+        auto u2 = v.ProvisionedWriteCapacityAutoScalingUpdate.unwrap()
+        parts.append("\"ProvisionedWriteCapacityAutoScalingUpdate\":" + u2.to_json())
+    if v.ReplicaUpdates.is_some():
+        auto u3 = v.ReplicaUpdates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(replica_auto_scaling_update_to_json(x4))
+        parts.append("\"ReplicaUpdates\":" + dynamodb_json_arr(e4))
+    return dynamodb_json_obj(parts)
+
+# Serialize VectorIndex to a compact JSON object (declaration order).
+def vector_index_to_json(VectorIndex v) -> str:
+    list[str] parts = []
+    parts.append("\"IndexName\":" + dynamodb_json_str(v.IndexName))
+    parts.append("\"VectorAttribute\":" + v.VectorAttribute.to_json())
+    if v.SearchSchema.is_some():
+        auto u0 = v.SearchSchema.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SearchSchema\":" + dynamodb_json_arr(e1))
+    parts.append("\"Projection\":" + projection_to_json(v.Projection))
+    parts.append("\"Dimensions\":" + str(v.Dimensions))
+    parts.append("\"DistanceFunction\":" + v.DistanceFunction.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize VectorIndexUpdate to a compact JSON object (declaration order).
+def vector_index_update_to_json(VectorIndexUpdate v) -> str:
+    list[str] parts = []
+    if v.Create.is_some():
+        auto u0 = v.Create.unwrap()
+        parts.append("\"Create\":" + create_vector_index_action_to_json(u0))
+    if v.Delete.is_some():
+        auto u1 = v.Delete.unwrap()
+        parts.append("\"Delete\":" + u1.to_json())
+    return dynamodb_json_obj(parts)
+
+# Serialize WriteRequest to a compact JSON object (declaration order).
+def write_request_to_json(WriteRequest v) -> str:
+    list[str] parts = []
+    if v.PutRequest.is_some():
+        auto u0 = v.PutRequest.unwrap()
+        parts.append("\"PutRequest\":" + put_request_to_json(u0))
+    if v.DeleteRequest.is_some():
+        auto u1 = v.DeleteRequest.unwrap()
+        parts.append("\"DeleteRequest\":" + delete_request_to_json(u1))
+    return dynamodb_json_obj(parts)
 
 # A bound DynamoDB client: credentials + region, threaded into every operation.
 struct DynamoDBClient:
     core.Credentials creds
     str region
+
+    # BatchExecuteStatement
+    # errors: InternalServerError, RequestLimitExceeded, ThrottlingException
+    def batch_execute_statement(self, BatchExecuteStatementInput input) -> str:
+        auto body = batch_execute_statement_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "BatchExecuteStatement", body)
+
+    # BatchGetItem
+    # errors: InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException
+    def batch_get_item(self, BatchGetItemInput input) -> str:
+        auto body = batch_get_item_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "BatchGetItem", body)
+
+    # BatchWriteItem
+    # errors: InternalServerError, ItemCollectionSizeLimitExceededException, ProvisionedThroughputExceededException, ReplicatedWriteConflictException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException
+    def batch_write_item(self, BatchWriteItemInput input) -> str:
+        auto body = batch_write_item_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "BatchWriteItem", body)
 
     # CreateBackup
     # errors: BackupInUseException, ContinuousBackupsUnavailableException, InternalServerError, LimitExceededException, TableInUseException, TableNotFoundException
@@ -2468,11 +4106,29 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "CreateBackup", body)
 
+    # CreateGlobalTable
+    # errors: GlobalTableAlreadyExistsException, InternalServerError, LimitExceededException, TableNotFoundException
+    def create_global_table(self, CreateGlobalTableInput input) -> str:
+        auto body = create_global_table_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "CreateGlobalTable", body)
+
+    # CreateTable
+    # errors: InternalServerError, LimitExceededException, ResourceInUseException
+    def create_table(self, CreateTableInput input) -> str:
+        auto body = create_table_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "CreateTable", body)
+
     # DeleteBackup
     # errors: BackupInUseException, BackupNotFoundException, InternalServerError, LimitExceededException
     def delete_backup(self, DeleteBackupInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "DeleteBackup", body)
+
+    # DeleteItem
+    # errors: ConditionalCheckFailedException, InternalServerError, ItemCollectionSizeLimitExceededException, ProvisionedThroughputExceededException, ReplicatedWriteConflictException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionConflictException
+    def delete_item(self, DeleteItemInput input) -> str:
+        auto body = delete_item_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "DeleteItem", body)
 
     # DeleteResourcePolicy
     # errors: InternalServerError, LimitExceededException, PolicyNotFoundException, ResourceInUseException, ResourceNotFoundException
@@ -2575,11 +4231,41 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "EnableKinesisStreamingDestination", body)
 
+    # ExecuteStatement
+    # errors: ConditionalCheckFailedException, DuplicateItemException, InternalServerError, ItemCollectionSizeLimitExceededException, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionConflictException
+    def execute_statement(self, ExecuteStatementInput input) -> str:
+        auto body = execute_statement_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ExecuteStatement", body)
+
+    # ExecuteTransaction
+    # errors: IdempotentParameterMismatchException, InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionCanceledException, TransactionInProgressException
+    def execute_transaction(self, ExecuteTransactionInput input) -> str:
+        auto body = execute_transaction_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ExecuteTransaction", body)
+
+    # ExportTableToPointInTime
+    # errors: ExportConflictException, InternalServerError, InvalidExportTimeException, LimitExceededException, PointInTimeRecoveryUnavailableException, TableNotFoundException
+    def export_table_to_point_in_time(self, ExportTableToPointInTimeInput input) -> str:
+        auto body = export_table_to_point_in_time_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ExportTableToPointInTime", body)
+
+    # GetItem
+    # errors: InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException
+    def get_item(self, GetItemInput input) -> str:
+        auto body = get_item_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "GetItem", body)
+
     # GetResourcePolicy
     # errors: InternalServerError, PolicyNotFoundException, ResourceNotFoundException
     def get_resource_policy(self, GetResourcePolicyInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "GetResourcePolicy", body)
+
+    # ImportTable
+    # errors: ImportConflictException, LimitExceededException, ResourceInUseException
+    def import_table(self, ImportTableInput input) -> str:
+        auto body = import_table_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ImportTable", body)
 
     # ListBackups
     # errors: InternalServerError
@@ -2623,11 +4309,71 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListTagsOfResource", body)
 
+    # PutItem
+    # errors: ConditionalCheckFailedException, InternalServerError, ItemCollectionSizeLimitExceededException, ProvisionedThroughputExceededException, ReplicatedWriteConflictException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionConflictException
+    def put_item(self, PutItemInput input) -> str:
+        auto body = put_item_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "PutItem", body)
+
     # PutResourcePolicy
     # errors: InternalServerError, LimitExceededException, PolicyNotFoundException, ResourceInUseException, ResourceNotFoundException
     def put_resource_policy(self, PutResourcePolicyInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+
+    # Query
+    # errors: InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException
+    def query(self, QueryInput input) -> str:
+        auto body = query_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "Query", body)
+
+    # RestoreTableFromBackup
+    # errors: BackupInUseException, BackupNotFoundException, InternalServerError, LimitExceededException, TableAlreadyExistsException, TableInUseException
+    def restore_table_from_backup(self, RestoreTableFromBackupInput input) -> str:
+        auto body = restore_table_from_backup_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "RestoreTableFromBackup", body)
+
+    # RestoreTableToPointInTime
+    # errors: InternalServerError, InvalidRestoreTimeException, LimitExceededException, PointInTimeRecoveryUnavailableException, TableAlreadyExistsException, TableInUseException, TableNotFoundException
+    def restore_table_to_point_in_time(self, RestoreTableToPointInTimeInput input) -> str:
+        auto body = restore_table_to_point_in_time_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "RestoreTableToPointInTime", body)
+
+    # Scan
+    # errors: InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException
+    def scan(self, ScanInput input) -> str:
+        auto body = scan_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "Scan", body)
+
+    # SearchVectors
+    # errors: InternalServerError, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException
+    def search_vectors(self, SearchVectorsInput input) -> str:
+        auto body = search_vectors_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "SearchVectors", body)
+
+    # TagResource
+    # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "TagResource", body)
+
+    # TransactGetItems
+    # errors: InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionCanceledException
+    def transact_get_items(self, TransactGetItemsInput input) -> str:
+        auto body = transact_get_items_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "TransactGetItems", body)
+
+    # TransactWriteItems
+    # errors: IdempotentParameterMismatchException, InternalServerError, ProvisionedThroughputExceededException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionCanceledException, TransactionInProgressException
+    def transact_write_items(self, TransactWriteItemsInput input) -> str:
+        auto body = transact_write_items_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "TransactWriteItems", body)
+
+    # UntagResource
+    # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateContinuousBackups
     # errors: ContinuousBackupsUnavailableException, InternalServerError, TableNotFoundException
@@ -2641,11 +4387,41 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateContributorInsights", body)
 
+    # UpdateGlobalTable
+    # errors: GlobalTableNotFoundException, InternalServerError, ReplicaAlreadyExistsException, ReplicaNotFoundException, TableNotFoundException
+    def update_global_table(self, UpdateGlobalTableInput input) -> str:
+        auto body = update_global_table_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateGlobalTable", body)
+
+    # UpdateGlobalTableSettings
+    # errors: GlobalTableNotFoundException, IndexNotFoundException, InternalServerError, LimitExceededException, ReplicaNotFoundException, ResourceInUseException
+    def update_global_table_settings(self, UpdateGlobalTableSettingsInput input) -> str:
+        auto body = update_global_table_settings_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateGlobalTableSettings", body)
+
+    # UpdateItem
+    # errors: ConditionalCheckFailedException, InternalServerError, ItemCollectionSizeLimitExceededException, ProvisionedThroughputExceededException, ReplicatedWriteConflictException, RequestLimitExceeded, ResourceNotFoundException, ThrottlingException, TransactionConflictException
+    def update_item(self, UpdateItemInput input) -> str:
+        auto body = update_item_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateItem", body)
+
     # UpdateKinesisStreamingDestination
     # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
     def update_kinesis_streaming_destination(self, UpdateKinesisStreamingDestinationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateKinesisStreamingDestination", body)
+
+    # UpdateTable
+    # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def update_table(self, UpdateTableInput input) -> str:
+        auto body = update_table_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateTable", body)
+
+    # UpdateTableReplicaAutoScaling
+    # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def update_table_replica_auto_scaling(self, UpdateTableReplicaAutoScalingInput input) -> str:
+        auto body = update_table_replica_auto_scaling_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateTableReplicaAutoScaling", body)
 
     # UpdateTimeToLive
     # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 4 operations — 2 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 4 operations — 4 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   19 structs (15 @derive(Json)), 2 enums, 8 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -88,8 +88,9 @@ struct ListRoutingControlsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RoutingControls: list[RoutingControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingControls: list[RoutingControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoutingControlsResponse:
     list[RoutingControl] RoutingControls
     Optional[str] NextToken
@@ -127,8 +128,9 @@ struct UpdateRoutingControlStateEntry:
     str RoutingControlArn
     RoutingControlState RoutingControlState
 
-# no @derive(Json): member(s) SafetyRulesToOverride: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SafetyRulesToOverride: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRoutingControlStateRequest:
     str RoutingControlArn
     RoutingControlState RoutingControlState
@@ -139,8 +141,9 @@ struct UpdateRoutingControlStateResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) UpdateRoutingControlStateEntries: list[UpdateRoutingControlStateEntry], SafetyRulesToOverride: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateRoutingControlStateEntries: list[UpdateRoutingControlStateEntry], SafetyRulesToOverride: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRoutingControlStatesRequest:
     list[UpdateRoutingControlStateEntry] UpdateRoutingControlStateEntries
     Optional[list[str]] SafetyRulesToOverride
@@ -150,8 +153,9 @@ struct UpdateRoutingControlStatesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -199,10 +203,63 @@ def route53_recovery_cluster_error_from_code(str code) -> Route53_Recovery_Clust
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   UpdateRoutingControlState (input UpdateRoutingControlStateRequest)
-#   UpdateRoutingControlStates (input UpdateRoutingControlStatesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def route53_recovery_cluster_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def route53_recovery_cluster_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def route53_recovery_cluster_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize UpdateRoutingControlStateRequest to a compact JSON object (declaration order).
+def update_routing_control_state_request_to_json(UpdateRoutingControlStateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RoutingControlArn\":" + route53_recovery_cluster_json_str(v.RoutingControlArn))
+    parts.append("\"RoutingControlState\":" + v.RoutingControlState.to_json())
+    if v.SafetyRulesToOverride.is_some():
+        auto u0 = v.SafetyRulesToOverride.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(route53_recovery_cluster_json_str(x1))
+        parts.append("\"SafetyRulesToOverride\":" + route53_recovery_cluster_json_arr(e1))
+    return route53_recovery_cluster_json_obj(parts)
+
+# Serialize UpdateRoutingControlStatesRequest to a compact JSON object (declaration order).
+def update_routing_control_states_request_to_json(UpdateRoutingControlStatesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.UpdateRoutingControlStateEntries:
+        e0.append(x0.to_json())
+    parts.append("\"UpdateRoutingControlStateEntries\":" + route53_recovery_cluster_json_arr(e0))
+    if v.SafetyRulesToOverride.is_some():
+        auto u1 = v.SafetyRulesToOverride.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(route53_recovery_cluster_json_str(x2))
+        parts.append("\"SafetyRulesToOverride\":" + route53_recovery_cluster_json_arr(e2))
+    return route53_recovery_cluster_json_obj(parts)
 
 # A bound Route53_Recovery_Cluster client: credentials + region, threaded into every operation.
 struct Route53_Recovery_ClusterClient:
@@ -220,6 +277,18 @@ struct Route53_Recovery_ClusterClient:
     def list_routing_controls(self, ListRoutingControlsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53_recovery_cluster_protocol(), self.creds, self.region, "ListRoutingControls", body)
+
+    # UpdateRoutingControlState
+    # errors: AccessDeniedException, ConflictException, EndpointTemporarilyUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_routing_control_state(self, UpdateRoutingControlStateRequest input) -> str:
+        auto body = update_routing_control_state_request_to_json(input)
+        return awsjson.awsjson_request_now(route53_recovery_cluster_protocol(), self.creds, self.region, "UpdateRoutingControlState", body)
+
+    # UpdateRoutingControlStates
+    # errors: AccessDeniedException, ConflictException, EndpointTemporarilyUnavailableException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def update_routing_control_states(self, UpdateRoutingControlStatesRequest input) -> str:
+        auto body = update_routing_control_states_request_to_json(input)
+        return awsjson.awsjson_request_now(route53_recovery_cluster_protocol(), self.creds, self.region, "UpdateRoutingControlStates", body)
 
     # Paginator for ListRoutingControls — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: RoutingControls).

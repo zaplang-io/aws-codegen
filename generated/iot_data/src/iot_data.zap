@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 11 operations — 7 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   34 structs (31 @derive(Json)), 1 enums, 12 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -139,8 +139,9 @@ struct ListNamedShadowsForThingRequest:
     Optional[str] nextToken
     Optional[int64] pageSize
 
-# no @derive(Json): member(s) results: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamedShadowsForThingResponse:
     Optional[list[str]] results
     Optional[str] nextToken
@@ -152,8 +153,9 @@ struct ListRetainedMessagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) retainedTopics: list[RetainedMessageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) retainedTopics: list[RetainedMessageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRetainedMessagesResponse:
     Optional[list[RetainedMessageSummary]] retainedTopics
     Optional[str] nextToken
@@ -165,8 +167,9 @@ struct ListSubscriptionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) subscriptions: list[SubscriptionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptions: list[SubscriptionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionsResponse:
     Optional[list[SubscriptionSummary]] subscriptions
     Optional[str] nextToken

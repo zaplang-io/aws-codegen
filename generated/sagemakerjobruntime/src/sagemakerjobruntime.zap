@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 4 operations — 3 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 4 operations — 4 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   15 structs (14 @derive(Json)), 1 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -162,11 +162,6 @@ def job_runtime_sagemaker_error_from_code(str code) -> SagemakerJobRuntimeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UpdateReward (document member `Rewards: list[float64]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -213,6 +208,25 @@ struct SagemakerJobRuntimeClient:
         headers["X-Amzn-SageMaker-Trajectory-Id"] = input.TrajectoryId
         auto b = binding.HttpBinding(method="POST", path_template="/sample-with-response-stream", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, job_runtime_sagemaker_service(), self.region, host)
+
+    # UpdateReward  POST /update-reward
+    # errors: AccessDeniedException, ConflictException, InternalServiceError, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_reward(self, UpdateRewardRequest input) -> str:
+        auto host = endpoints.regional_host(job_runtime_sagemaker_service(), self.region)
+        dict[str, str] headers = {}
+        headers["X-Amzn-SageMaker-Job-Arn"] = input.JobArn
+        auto b = binding.HttpBinding(method="POST", path_template="/update-reward", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TrajectoryId\":" + job_runtime_sagemaker_json_str(input.TrajectoryId))
+        list[str] e0 = []
+        for x0 in input.Rewards:
+            e0.append(str(x0))
+        parts.append("\"Rewards\":" + job_runtime_sagemaker_json_arr(e0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + job_runtime_sagemaker_json_str(u1))
+        auto bp = restjson.rest_json_document(b, job_runtime_sagemaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, job_runtime_sagemaker_service(), self.region, host)
 
 # Construct a SagemakerJobRuntimeClient bound to credentials + region.

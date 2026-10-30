@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 0 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 5 operations — 5 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   14 structs (7 @derive(Json)), 0 enums, 3 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Personalize_Events rest-json protocol: SigV4 service "personalize" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -45,8 +46,9 @@ struct Action:
     str actionId
     Optional[str] properties
 
-# no @derive(Json): member(s) impression: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) impression: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionInteraction:
     str actionId
     Optional[str] userId
@@ -58,8 +60,9 @@ struct ActionInteraction:
     Optional[list[str]] impression
     Optional[str] properties
 
-# no @derive(Json): member(s) impression: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) impression: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[str] eventId
     str eventType
@@ -152,21 +155,173 @@ def personalize_events_error_from_code(str code) -> Personalize_EventsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   PutActionInteractions (document member `actionInteractions: list[ActionInteraction]` is not serializable by derive)
-#   PutActions (document member `actions: list[Action]` is not serializable by derive)
-#   PutEvents (document member `eventList: list[Event]` is not serializable by derive)
-#   PutItems (document member `items: list[Item]` is not serializable by derive)
-#   PutUsers (document member `users: list[User]` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def personalize_events_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def personalize_events_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def personalize_events_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActionInteraction to a compact JSON object (declaration order).
+def action_interaction_to_json(ActionInteraction v) -> str:
+    list[str] parts = []
+    parts.append("\"actionId\":" + personalize_events_json_str(v.actionId))
+    if v.userId.is_some():
+        auto u0 = v.userId.unwrap()
+        parts.append("\"userId\":" + personalize_events_json_str(u0))
+    parts.append("\"sessionId\":" + personalize_events_json_str(v.sessionId))
+    parts.append("\"timestamp\":" + str(datetime.to_timestamp(v.timestamp)))
+    parts.append("\"eventType\":" + personalize_events_json_str(v.eventType))
+    if v.eventId.is_some():
+        auto u1 = v.eventId.unwrap()
+        parts.append("\"eventId\":" + personalize_events_json_str(u1))
+    if v.recommendationId.is_some():
+        auto u2 = v.recommendationId.unwrap()
+        parts.append("\"recommendationId\":" + personalize_events_json_str(u2))
+    if v.impression.is_some():
+        auto u3 = v.impression.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(personalize_events_json_str(x4))
+        parts.append("\"impression\":" + personalize_events_json_arr(e4))
+    if v.properties.is_some():
+        auto u5 = v.properties.unwrap()
+        parts.append("\"properties\":" + personalize_events_json_str(u5))
+    return personalize_events_json_obj(parts)
+
+# Serialize Event to a compact JSON object (declaration order).
+def event_to_json(Event v) -> str:
+    list[str] parts = []
+    if v.eventId.is_some():
+        auto u0 = v.eventId.unwrap()
+        parts.append("\"eventId\":" + personalize_events_json_str(u0))
+    parts.append("\"eventType\":" + personalize_events_json_str(v.eventType))
+    if v.eventValue.is_some():
+        auto u1 = v.eventValue.unwrap()
+        parts.append("\"eventValue\":" + str(u1))
+    if v.itemId.is_some():
+        auto u2 = v.itemId.unwrap()
+        parts.append("\"itemId\":" + personalize_events_json_str(u2))
+    if v.properties.is_some():
+        auto u3 = v.properties.unwrap()
+        parts.append("\"properties\":" + personalize_events_json_str(u3))
+    parts.append("\"sentAt\":" + str(datetime.to_timestamp(v.sentAt)))
+    if v.recommendationId.is_some():
+        auto u4 = v.recommendationId.unwrap()
+        parts.append("\"recommendationId\":" + personalize_events_json_str(u4))
+    if v.impression.is_some():
+        auto u5 = v.impression.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(personalize_events_json_str(x6))
+        parts.append("\"impression\":" + personalize_events_json_arr(e6))
+    if v.metricAttribution.is_some():
+        auto u7 = v.metricAttribution.unwrap()
+        parts.append("\"metricAttribution\":" + u7.to_json())
+    return personalize_events_json_obj(parts)
 
 # A bound Personalize_Events client: credentials + region, threaded into every operation.
 struct Personalize_EventsClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # PutActionInteractions  POST /action-interactions
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
+    def put_action_interactions(self, PutActionInteractionsRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_events_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/action-interactions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"trackingId\":" + personalize_events_json_str(input.trackingId))
+        list[str] e0 = []
+        for x0 in input.actionInteractions:
+            e0.append(action_interaction_to_json(x0))
+        parts.append("\"actionInteractions\":" + personalize_events_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, personalize_events_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_events_service(), self.region, host)
+
+    # PutActions  POST /actions
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
+    def put_actions(self, PutActionsRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_events_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/actions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"datasetArn\":" + personalize_events_json_str(input.datasetArn))
+        list[str] e0 = []
+        for x0 in input.actions:
+            e0.append(x0.to_json())
+        parts.append("\"actions\":" + personalize_events_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, personalize_events_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_events_service(), self.region, host)
+
+    # PutEvents  POST /events
+    # errors: InvalidInputException
+    def put_events(self, PutEventsRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_events_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"trackingId\":" + personalize_events_json_str(input.trackingId))
+        if input.userId.is_some():
+            auto u0 = input.userId.unwrap()
+            parts.append("\"userId\":" + personalize_events_json_str(u0))
+        parts.append("\"sessionId\":" + personalize_events_json_str(input.sessionId))
+        list[str] e1 = []
+        for x1 in input.eventList:
+            e1.append(event_to_json(x1))
+        parts.append("\"eventList\":" + personalize_events_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, personalize_events_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_events_service(), self.region, host)
+
+    # PutItems  POST /items
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
+    def put_items(self, PutItemsRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_events_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/items", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"datasetArn\":" + personalize_events_json_str(input.datasetArn))
+        list[str] e0 = []
+        for x0 in input.items:
+            e0.append(x0.to_json())
+        parts.append("\"items\":" + personalize_events_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, personalize_events_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_events_service(), self.region, host)
+
+    # PutUsers  POST /users
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
+    def put_users(self, PutUsersRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_events_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/users", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"datasetArn\":" + personalize_events_json_str(input.datasetArn))
+        list[str] e0 = []
+        for x0 in input.users:
+            e0.append(x0.to_json())
+        parts.append("\"users\":" + personalize_events_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, personalize_events_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_events_service(), self.region, host)
+
 # Construct a Personalize_EventsClient bound to credentials + region.
 def personalize_events_client(core.Credentials creds, str region) -> Personalize_EventsClient:
     return Personalize_EventsClient(creds=creds, region=region)

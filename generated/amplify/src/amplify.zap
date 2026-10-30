@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 28 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 37 operations — 36 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   101 structs (64 @derive(Json)), 12 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -156,8 +156,9 @@ enum WafStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) tags: dict[str, str], environmentVariables: dict[str, str], customRules: list[CustomRule], autoBranchCreationPatterns: list[str], autoBranchCreationConfig: AutoBranchCreationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], environmentVariables: dict[str, str], customRules: list[CustomRule], autoBranchCreationPatterns: list[str], autoBranchCreationConfig: AutoBranchCreationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct App:
     str appId
     str appArn
@@ -194,8 +195,9 @@ struct Artifact:
     str artifactFileName
     str artifactId
 
-# no @derive(Json): member(s) environmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoBranchCreationConfig:
     Optional[Stage] stage
     Optional[str] framework
@@ -225,8 +227,9 @@ struct BackendEnvironment:
 struct BadRequestException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: dict[str, str], environmentVariables: dict[str, str], customDomains: list[str], associatedResources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], environmentVariables: dict[str, str], customDomains: list[str], associatedResources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Branch:
     str branchArn
     str branchName
@@ -300,8 +303,9 @@ struct CreateAppRequest:
     Optional[JobConfig] jobConfig
     Optional[CacheConfig] cacheConfig
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppResult:
     App app
 
@@ -342,8 +346,9 @@ struct CreateBranchRequest:
     Optional[Backend] backend
     Optional[str] computeRoleArn
 
-# no @derive(Json): member(s) branch: Branch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branch: Branch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBranchResult:
     Branch branch
 
@@ -354,8 +359,9 @@ struct CreateDeploymentRequest:
     str branchName
     Optional[dict[str, str]] fileMap
 
-# no @derive(Json): member(s) fileUploadUrls: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileUploadUrls: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeploymentResult:
     Optional[str] jobId
     dict[str, str] fileUploadUrls
@@ -372,8 +378,9 @@ struct CreateDomainAssociationRequest:
     Optional[str] autoSubDomainIAMRole
     Optional[CertificateSettings] certificateSettings
 
-# no @derive(Json): member(s) domainAssociation: DomainAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainAssociation: DomainAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainAssociationResult:
     DomainAssociation domainAssociation
 
@@ -400,8 +407,9 @@ struct CustomRule:
 struct DeleteAppRequest:
     str appId
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAppResult:
     App app
 
@@ -421,8 +429,9 @@ struct DeleteBranchRequest:
     str appId
     str branchName
 
-# no @derive(Json): member(s) branch: Branch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branch: Branch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBranchResult:
     Branch branch
 
@@ -432,8 +441,9 @@ struct DeleteDomainAssociationRequest:
     str appId
     str domainName
 
-# no @derive(Json): member(s) domainAssociation: DomainAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainAssociation: DomainAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDomainAssociationResult:
     DomainAssociation domainAssociation
 
@@ -461,8 +471,9 @@ struct DeleteWebhookResult:
 struct DependentServiceFailureException:
     Optional[str] message
 
-# no @derive(Json): member(s) autoSubDomainCreationPatterns: list[str], subDomains: list[SubDomain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoSubDomainCreationPatterns: list[str], subDomains: list[SubDomain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainAssociation:
     str domainAssociationArn
     str domainName
@@ -493,8 +504,9 @@ struct GenerateAccessLogsResult:
 struct GetAppRequest:
     str appId
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAppResult:
     App app
 
@@ -524,8 +536,9 @@ struct GetBranchRequest:
     str appId
     str branchName
 
-# no @derive(Json): member(s) branch: Branch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branch: Branch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBranchResult:
     Branch branch
 
@@ -535,8 +548,9 @@ struct GetDomainAssociationRequest:
     str appId
     str domainName
 
-# no @derive(Json): member(s) domainAssociation: DomainAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainAssociation: DomainAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainAssociationResult:
     DomainAssociation domainAssociation
 
@@ -547,8 +561,9 @@ struct GetJobRequest:
     str branchName
     str jobId
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResult:
     Job job
 
@@ -565,8 +580,9 @@ struct GetWebhookResult:
 struct InternalFailureException:
     Optional[str] message
 
-# no @derive(Json): member(s) steps: list[Step] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[Step] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     JobSummary summary
     list[Step] steps
@@ -599,8 +615,9 @@ struct ListAppsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) apps: list[App] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apps: list[App] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppsResult:
     list[App] apps
     Optional[str] nextToken
@@ -614,8 +631,9 @@ struct ListArtifactsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) artifacts: list[Artifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: list[Artifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListArtifactsResult:
     list[Artifact] artifacts
     Optional[str] nextToken
@@ -628,8 +646,9 @@ struct ListBackendEnvironmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) backendEnvironments: list[BackendEnvironment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) backendEnvironments: list[BackendEnvironment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackendEnvironmentsResult:
     list[BackendEnvironment] backendEnvironments
     Optional[str] nextToken
@@ -641,8 +660,9 @@ struct ListBranchesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) branches: list[Branch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branches: list[Branch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBranchesResult:
     list[Branch] branches
     Optional[str] nextToken
@@ -654,8 +674,9 @@ struct ListDomainAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) domainAssociations: list[DomainAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainAssociations: list[DomainAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainAssociationsResult:
     list[DomainAssociation] domainAssociations
     Optional[str] nextToken
@@ -668,8 +689,9 @@ struct ListJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) jobSummaries: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaries: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResult:
     list[JobSummary] jobSummaries
     Optional[str] nextToken
@@ -679,8 +701,9 @@ struct ListJobsResult:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -691,8 +714,9 @@ struct ListWebhooksRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) webhooks: list[Webhook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhooks: list[Webhook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebhooksResult:
     list[Webhook] webhooks
     Optional[str] nextToken
@@ -742,8 +766,9 @@ struct StartJobRequest:
 struct StartJobResult:
     JobSummary jobSummary
 
-# no @derive(Json): member(s) screenshots: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) screenshots: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Step:
     str stepName
     DateTime startTime
@@ -831,8 +856,9 @@ struct UpdateAppRequest:
     Optional[JobConfig] jobConfig
     Optional[CacheConfig] cacheConfig
 
-# no @derive(Json): member(s) app: App not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) app: App not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppResult:
     App app
 
@@ -860,8 +886,9 @@ struct UpdateBranchRequest:
     Optional[Backend] backend
     Optional[str] computeRoleArn
 
-# no @derive(Json): member(s) branch: Branch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branch: Branch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBranchResult:
     Branch branch
 
@@ -876,8 +903,9 @@ struct UpdateDomainAssociationRequest:
     Optional[str] autoSubDomainIAMRole
     Optional[CertificateSettings] certificateSettings
 
-# no @derive(Json): member(s) domainAssociation: DomainAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainAssociation: DomainAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainAssociationResult:
     DomainAssociation domainAssociation
 
@@ -947,15 +975,7 @@ def amplify_error_from_code(str code) -> AmplifyError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApp (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   CreateBranch (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   CreateDeployment (document member `fileMap: dict[str, str]` is not serializable by derive)
-#   CreateDomainAssociation (document member `subDomainSettings: list[SubDomainSetting]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateApp (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   UpdateBranch (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   UpdateDomainAssociation (document member `subDomainSettings: list[SubDomainSetting]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1003,10 +1023,163 @@ struct UpdateWebhookDocument:
     Optional[str] branchName
     Optional[str] description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def amplify_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def amplify_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def amplify_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AutoBranchCreationConfig to a compact JSON object (declaration order).
+def auto_branch_creation_config_to_json(AutoBranchCreationConfig v) -> str:
+    list[str] parts = []
+    if v.stage.is_some():
+        auto u0 = v.stage.unwrap()
+        parts.append("\"stage\":" + u0.to_json())
+    if v.framework.is_some():
+        auto u1 = v.framework.unwrap()
+        parts.append("\"framework\":" + amplify_json_str(u1))
+    if v.enableAutoBuild.is_some():
+        auto u2 = v.enableAutoBuild.unwrap()
+        parts.append("\"enableAutoBuild\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.environmentVariables.is_some():
+        auto u3 = v.environmentVariables.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(amplify_json_str(k4) + ":" + amplify_json_str(u3[k4]))
+        parts.append("\"environmentVariables\":" + amplify_json_obj(m4))
+    if v.basicAuthCredentials.is_some():
+        auto u5 = v.basicAuthCredentials.unwrap()
+        parts.append("\"basicAuthCredentials\":" + amplify_json_str(u5))
+    if v.enableBasicAuth.is_some():
+        auto u6 = v.enableBasicAuth.unwrap()
+        parts.append("\"enableBasicAuth\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.enablePerformanceMode.is_some():
+        auto u7 = v.enablePerformanceMode.unwrap()
+        parts.append("\"enablePerformanceMode\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.buildSpec.is_some():
+        auto u8 = v.buildSpec.unwrap()
+        parts.append("\"buildSpec\":" + amplify_json_str(u8))
+    if v.enablePullRequestPreview.is_some():
+        auto u9 = v.enablePullRequestPreview.unwrap()
+        parts.append("\"enablePullRequestPreview\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.pullRequestEnvironmentName.is_some():
+        auto u10 = v.pullRequestEnvironmentName.unwrap()
+        parts.append("\"pullRequestEnvironmentName\":" + amplify_json_str(u10))
+    return amplify_json_obj(parts)
+
 # A bound Amplify client: credentials + region, threaded into every operation.
 struct AmplifyClient:
     core.Credentials creds
     str region
+
+    # CreateApp  POST /apps
+    # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, LimitExceededException, UnauthorizedException
+    def create_app(self, CreateAppRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/apps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + amplify_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + amplify_json_str(u0))
+        if input.repository.is_some():
+            auto u1 = input.repository.unwrap()
+            parts.append("\"repository\":" + amplify_json_str(u1))
+        if input.platform.is_some():
+            auto u2 = input.platform.unwrap()
+            parts.append("\"platform\":" + u2.to_json())
+        if input.computeRoleArn.is_some():
+            auto u3 = input.computeRoleArn.unwrap()
+            parts.append("\"computeRoleArn\":" + amplify_json_str(u3))
+        if input.iamServiceRoleArn.is_some():
+            auto u4 = input.iamServiceRoleArn.unwrap()
+            parts.append("\"iamServiceRoleArn\":" + amplify_json_str(u4))
+        if input.oauthToken.is_some():
+            auto u5 = input.oauthToken.unwrap()
+            parts.append("\"oauthToken\":" + amplify_json_str(u5))
+        if input.accessToken.is_some():
+            auto u6 = input.accessToken.unwrap()
+            parts.append("\"accessToken\":" + amplify_json_str(u6))
+        if input.environmentVariables.is_some():
+            auto u7 = input.environmentVariables.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(amplify_json_str(k8) + ":" + amplify_json_str(u7[k8]))
+            parts.append("\"environmentVariables\":" + amplify_json_obj(m8))
+        if input.enableBranchAutoBuild.is_some():
+            auto u9 = input.enableBranchAutoBuild.unwrap()
+            parts.append("\"enableBranchAutoBuild\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.enableBranchAutoDeletion.is_some():
+            auto u10 = input.enableBranchAutoDeletion.unwrap()
+            parts.append("\"enableBranchAutoDeletion\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.enableBasicAuth.is_some():
+            auto u11 = input.enableBasicAuth.unwrap()
+            parts.append("\"enableBasicAuth\":" + json.dumps(JsonValue.Bool(u11)))
+        if input.basicAuthCredentials.is_some():
+            auto u12 = input.basicAuthCredentials.unwrap()
+            parts.append("\"basicAuthCredentials\":" + amplify_json_str(u12))
+        if input.customRules.is_some():
+            auto u13 = input.customRules.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(x14.to_json())
+            parts.append("\"customRules\":" + amplify_json_arr(e14))
+        if input.tags.is_some():
+            auto u15 = input.tags.unwrap()
+            list[str] m16 = []
+            for k16 in sorted(u15.keys()):
+                m16.append(amplify_json_str(k16) + ":" + amplify_json_str(u15[k16]))
+            parts.append("\"tags\":" + amplify_json_obj(m16))
+        if input.buildSpec.is_some():
+            auto u17 = input.buildSpec.unwrap()
+            parts.append("\"buildSpec\":" + amplify_json_str(u17))
+        if input.customHeaders.is_some():
+            auto u18 = input.customHeaders.unwrap()
+            parts.append("\"customHeaders\":" + amplify_json_str(u18))
+        if input.enableAutoBranchCreation.is_some():
+            auto u19 = input.enableAutoBranchCreation.unwrap()
+            parts.append("\"enableAutoBranchCreation\":" + json.dumps(JsonValue.Bool(u19)))
+        if input.autoBranchCreationPatterns.is_some():
+            auto u20 = input.autoBranchCreationPatterns.unwrap()
+            list[str] e21 = []
+            for x21 in u20:
+                e21.append(amplify_json_str(x21))
+            parts.append("\"autoBranchCreationPatterns\":" + amplify_json_arr(e21))
+        if input.autoBranchCreationConfig.is_some():
+            auto u22 = input.autoBranchCreationConfig.unwrap()
+            parts.append("\"autoBranchCreationConfig\":" + auto_branch_creation_config_to_json(u22))
+        if input.jobConfig.is_some():
+            auto u23 = input.jobConfig.unwrap()
+            parts.append("\"jobConfig\":" + u23.to_json())
+        if input.cacheConfig.is_some():
+            auto u24 = input.cacheConfig.unwrap()
+            parts.append("\"cacheConfig\":" + u24.to_json())
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
 
     # CreateBackendEnvironment  POST /apps/{appId}/backendenvironments
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException, UnauthorizedException
@@ -1017,6 +1190,130 @@ struct AmplifyClient:
         auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/backendenvironments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBackendEnvironmentDocument(environmentName=input.environmentName, stackName=input.stackName, deploymentArtifacts=input.deploymentArtifacts)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
+
+    # CreateBranch  POST /apps/{appId}/branches
+    # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, LimitExceededException, NotFoundException, UnauthorizedException
+    def create_branch(self, CreateBranchRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"branchName\":" + amplify_json_str(input.branchName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + amplify_json_str(u0))
+        if input.stage.is_some():
+            auto u1 = input.stage.unwrap()
+            parts.append("\"stage\":" + u1.to_json())
+        if input.framework.is_some():
+            auto u2 = input.framework.unwrap()
+            parts.append("\"framework\":" + amplify_json_str(u2))
+        if input.enableNotification.is_some():
+            auto u3 = input.enableNotification.unwrap()
+            parts.append("\"enableNotification\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.enableAutoBuild.is_some():
+            auto u4 = input.enableAutoBuild.unwrap()
+            parts.append("\"enableAutoBuild\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.enableSkewProtection.is_some():
+            auto u5 = input.enableSkewProtection.unwrap()
+            parts.append("\"enableSkewProtection\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.environmentVariables.is_some():
+            auto u6 = input.environmentVariables.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(amplify_json_str(k7) + ":" + amplify_json_str(u6[k7]))
+            parts.append("\"environmentVariables\":" + amplify_json_obj(m7))
+        if input.basicAuthCredentials.is_some():
+            auto u8 = input.basicAuthCredentials.unwrap()
+            parts.append("\"basicAuthCredentials\":" + amplify_json_str(u8))
+        if input.enableBasicAuth.is_some():
+            auto u9 = input.enableBasicAuth.unwrap()
+            parts.append("\"enableBasicAuth\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.enablePerformanceMode.is_some():
+            auto u10 = input.enablePerformanceMode.unwrap()
+            parts.append("\"enablePerformanceMode\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(amplify_json_str(k12) + ":" + amplify_json_str(u11[k12]))
+            parts.append("\"tags\":" + amplify_json_obj(m12))
+        if input.buildSpec.is_some():
+            auto u13 = input.buildSpec.unwrap()
+            parts.append("\"buildSpec\":" + amplify_json_str(u13))
+        if input.ttl.is_some():
+            auto u14 = input.ttl.unwrap()
+            parts.append("\"ttl\":" + amplify_json_str(u14))
+        if input.displayName.is_some():
+            auto u15 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + amplify_json_str(u15))
+        if input.enablePullRequestPreview.is_some():
+            auto u16 = input.enablePullRequestPreview.unwrap()
+            parts.append("\"enablePullRequestPreview\":" + json.dumps(JsonValue.Bool(u16)))
+        if input.pullRequestEnvironmentName.is_some():
+            auto u17 = input.pullRequestEnvironmentName.unwrap()
+            parts.append("\"pullRequestEnvironmentName\":" + amplify_json_str(u17))
+        if input.backendEnvironmentArn.is_some():
+            auto u18 = input.backendEnvironmentArn.unwrap()
+            parts.append("\"backendEnvironmentArn\":" + amplify_json_str(u18))
+        if input.backend.is_some():
+            auto u19 = input.backend.unwrap()
+            parts.append("\"backend\":" + u19.to_json())
+        if input.computeRoleArn.is_some():
+            auto u20 = input.computeRoleArn.unwrap()
+            parts.append("\"computeRoleArn\":" + amplify_json_str(u20))
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
+
+    # CreateDeployment  POST /apps/{appId}/branches/{branchName}/deployments
+    # errors: BadRequestException, InternalFailureException, LimitExceededException, UnauthorizedException
+    def create_deployment(self, CreateDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["branchName"] = input.branchName
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.fileMap.is_some():
+            auto u0 = input.fileMap.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(amplify_json_str(k1) + ":" + amplify_json_str(u0[k1]))
+            parts.append("\"fileMap\":" + amplify_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
+
+    # CreateDomainAssociation  POST /apps/{appId}/domains
+    # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, LimitExceededException, NotFoundException, UnauthorizedException
+    def create_domain_association(self, CreateDomainAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/domains", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainName\":" + amplify_json_str(input.domainName))
+        if input.enableAutoSubDomain.is_some():
+            auto u0 = input.enableAutoSubDomain.unwrap()
+            parts.append("\"enableAutoSubDomain\":" + json.dumps(JsonValue.Bool(u0)))
+        list[str] e1 = []
+        for x1 in input.subDomainSettings:
+            e1.append(x1.to_json())
+        parts.append("\"subDomainSettings\":" + amplify_json_arr(e1))
+        if input.autoSubDomainCreationPatterns.is_some():
+            auto u2 = input.autoSubDomainCreationPatterns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(amplify_json_str(x3))
+            parts.append("\"autoSubDomainCreationPatterns\":" + amplify_json_arr(e3))
+        if input.autoSubDomainIAMRole.is_some():
+            auto u4 = input.autoSubDomainIAMRole.unwrap()
+            parts.append("\"autoSubDomainIAMRole\":" + amplify_json_str(u4))
+        if input.certificateSettings.is_some():
+            auto u5 = input.certificateSettings.unwrap()
+            parts.append("\"certificateSettings\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
 
     # CreateWebhook  POST /apps/{appId}/webhooks
@@ -1312,6 +1609,206 @@ struct AmplifyClient:
         labels["jobId"] = input.jobId
         auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: BadRequestException, InternalFailureException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(amplify_json_str(k0) + ":" + amplify_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + amplify_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
+
+    # UpdateApp  POST /apps/{appId}
+    # errors: BadRequestException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_app(self, UpdateAppRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + amplify_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + amplify_json_str(u1))
+        if input.platform.is_some():
+            auto u2 = input.platform.unwrap()
+            parts.append("\"platform\":" + u2.to_json())
+        if input.computeRoleArn.is_some():
+            auto u3 = input.computeRoleArn.unwrap()
+            parts.append("\"computeRoleArn\":" + amplify_json_str(u3))
+        if input.iamServiceRoleArn.is_some():
+            auto u4 = input.iamServiceRoleArn.unwrap()
+            parts.append("\"iamServiceRoleArn\":" + amplify_json_str(u4))
+        if input.environmentVariables.is_some():
+            auto u5 = input.environmentVariables.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(amplify_json_str(k6) + ":" + amplify_json_str(u5[k6]))
+            parts.append("\"environmentVariables\":" + amplify_json_obj(m6))
+        if input.enableBranchAutoBuild.is_some():
+            auto u7 = input.enableBranchAutoBuild.unwrap()
+            parts.append("\"enableBranchAutoBuild\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.enableBranchAutoDeletion.is_some():
+            auto u8 = input.enableBranchAutoDeletion.unwrap()
+            parts.append("\"enableBranchAutoDeletion\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.enableBasicAuth.is_some():
+            auto u9 = input.enableBasicAuth.unwrap()
+            parts.append("\"enableBasicAuth\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.basicAuthCredentials.is_some():
+            auto u10 = input.basicAuthCredentials.unwrap()
+            parts.append("\"basicAuthCredentials\":" + amplify_json_str(u10))
+        if input.customRules.is_some():
+            auto u11 = input.customRules.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"customRules\":" + amplify_json_arr(e12))
+        if input.buildSpec.is_some():
+            auto u13 = input.buildSpec.unwrap()
+            parts.append("\"buildSpec\":" + amplify_json_str(u13))
+        if input.customHeaders.is_some():
+            auto u14 = input.customHeaders.unwrap()
+            parts.append("\"customHeaders\":" + amplify_json_str(u14))
+        if input.enableAutoBranchCreation.is_some():
+            auto u15 = input.enableAutoBranchCreation.unwrap()
+            parts.append("\"enableAutoBranchCreation\":" + json.dumps(JsonValue.Bool(u15)))
+        if input.autoBranchCreationPatterns.is_some():
+            auto u16 = input.autoBranchCreationPatterns.unwrap()
+            list[str] e17 = []
+            for x17 in u16:
+                e17.append(amplify_json_str(x17))
+            parts.append("\"autoBranchCreationPatterns\":" + amplify_json_arr(e17))
+        if input.autoBranchCreationConfig.is_some():
+            auto u18 = input.autoBranchCreationConfig.unwrap()
+            parts.append("\"autoBranchCreationConfig\":" + auto_branch_creation_config_to_json(u18))
+        if input.repository.is_some():
+            auto u19 = input.repository.unwrap()
+            parts.append("\"repository\":" + amplify_json_str(u19))
+        if input.oauthToken.is_some():
+            auto u20 = input.oauthToken.unwrap()
+            parts.append("\"oauthToken\":" + amplify_json_str(u20))
+        if input.accessToken.is_some():
+            auto u21 = input.accessToken.unwrap()
+            parts.append("\"accessToken\":" + amplify_json_str(u21))
+        if input.jobConfig.is_some():
+            auto u22 = input.jobConfig.unwrap()
+            parts.append("\"jobConfig\":" + u22.to_json())
+        if input.cacheConfig.is_some():
+            auto u23 = input.cacheConfig.unwrap()
+            parts.append("\"cacheConfig\":" + u23.to_json())
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
+
+    # UpdateBranch  POST /apps/{appId}/branches/{branchName}
+    # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_branch(self, UpdateBranchRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["branchName"] = input.branchName
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + amplify_json_str(u0))
+        if input.framework.is_some():
+            auto u1 = input.framework.unwrap()
+            parts.append("\"framework\":" + amplify_json_str(u1))
+        if input.stage.is_some():
+            auto u2 = input.stage.unwrap()
+            parts.append("\"stage\":" + u2.to_json())
+        if input.enableNotification.is_some():
+            auto u3 = input.enableNotification.unwrap()
+            parts.append("\"enableNotification\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.enableAutoBuild.is_some():
+            auto u4 = input.enableAutoBuild.unwrap()
+            parts.append("\"enableAutoBuild\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.enableSkewProtection.is_some():
+            auto u5 = input.enableSkewProtection.unwrap()
+            parts.append("\"enableSkewProtection\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.environmentVariables.is_some():
+            auto u6 = input.environmentVariables.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(amplify_json_str(k7) + ":" + amplify_json_str(u6[k7]))
+            parts.append("\"environmentVariables\":" + amplify_json_obj(m7))
+        if input.basicAuthCredentials.is_some():
+            auto u8 = input.basicAuthCredentials.unwrap()
+            parts.append("\"basicAuthCredentials\":" + amplify_json_str(u8))
+        if input.enableBasicAuth.is_some():
+            auto u9 = input.enableBasicAuth.unwrap()
+            parts.append("\"enableBasicAuth\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.enablePerformanceMode.is_some():
+            auto u10 = input.enablePerformanceMode.unwrap()
+            parts.append("\"enablePerformanceMode\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.buildSpec.is_some():
+            auto u11 = input.buildSpec.unwrap()
+            parts.append("\"buildSpec\":" + amplify_json_str(u11))
+        if input.ttl.is_some():
+            auto u12 = input.ttl.unwrap()
+            parts.append("\"ttl\":" + amplify_json_str(u12))
+        if input.displayName.is_some():
+            auto u13 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + amplify_json_str(u13))
+        if input.enablePullRequestPreview.is_some():
+            auto u14 = input.enablePullRequestPreview.unwrap()
+            parts.append("\"enablePullRequestPreview\":" + json.dumps(JsonValue.Bool(u14)))
+        if input.pullRequestEnvironmentName.is_some():
+            auto u15 = input.pullRequestEnvironmentName.unwrap()
+            parts.append("\"pullRequestEnvironmentName\":" + amplify_json_str(u15))
+        if input.backendEnvironmentArn.is_some():
+            auto u16 = input.backendEnvironmentArn.unwrap()
+            parts.append("\"backendEnvironmentArn\":" + amplify_json_str(u16))
+        if input.backend.is_some():
+            auto u17 = input.backend.unwrap()
+            parts.append("\"backend\":" + u17.to_json())
+        if input.computeRoleArn.is_some():
+            auto u18 = input.computeRoleArn.unwrap()
+            parts.append("\"computeRoleArn\":" + amplify_json_str(u18))
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
+
+    # UpdateDomainAssociation  POST /apps/{appId}/domains/{domainName}
+    # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, NotFoundException, UnauthorizedException
+    def update_domain_association(self, UpdateDomainAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["domainName"] = input.domainName
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.enableAutoSubDomain.is_some():
+            auto u0 = input.enableAutoSubDomain.unwrap()
+            parts.append("\"enableAutoSubDomain\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.subDomainSettings.is_some():
+            auto u1 = input.subDomainSettings.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"subDomainSettings\":" + amplify_json_arr(e2))
+        if input.autoSubDomainCreationPatterns.is_some():
+            auto u3 = input.autoSubDomainCreationPatterns.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(amplify_json_str(x4))
+            parts.append("\"autoSubDomainCreationPatterns\":" + amplify_json_arr(e4))
+        if input.autoSubDomainIAMRole.is_some():
+            auto u5 = input.autoSubDomainIAMRole.unwrap()
+            parts.append("\"autoSubDomainIAMRole\":" + amplify_json_str(u5))
+        if input.certificateSettings.is_some():
+            auto u6 = input.certificateSettings.unwrap()
+            parts.append("\"certificateSettings\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
 
     # UpdateWebhook  POST /webhooks/{webhookId}
     # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, NotFoundException, UnauthorizedException

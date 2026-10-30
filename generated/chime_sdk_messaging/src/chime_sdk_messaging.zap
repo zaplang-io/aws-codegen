@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 51 operations — 40 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 51 operations — 50 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   136 structs (101 @derive(Json)), 15 enums, 9 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -181,8 +181,9 @@ struct BadRequestException:
     Optional[ErrorCode] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) Members: list[Identity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Identity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchChannelMemberships:
     Optional[Identity] InvitedBy
     Optional[ChannelMembershipType] Type
@@ -205,8 +206,9 @@ struct BatchCreateChannelMembershipRequest:
     str ChimeBearer
     Optional[str] SubChannelId
 
-# no @derive(Json): member(s) BatchChannelMemberships: BatchChannelMemberships, Errors: list[BatchCreateChannelMembershipError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BatchChannelMemberships: BatchChannelMemberships, Errors: list[BatchCreateChannelMembershipError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateChannelMembershipResponse:
     Optional[BatchChannelMemberships] BatchChannelMemberships
     Optional[list[BatchCreateChannelMembershipError]] Errors
@@ -245,8 +247,9 @@ struct ChannelBan:
 struct ChannelBanSummary:
     Optional[Identity] Member
 
-# no @derive(Json): member(s) Processors: list[Processor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Processors: list[Processor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelFlow:
     Optional[str] ChannelFlowArn
     Optional[list[Processor]] Processors
@@ -267,8 +270,9 @@ struct ChannelFlowCallbackResponse:
     Optional[str] ChannelArn
     Optional[str] CallbackId
 
-# no @derive(Json): member(s) Processors: list[Processor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Processors: list[Processor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelFlowSummary:
     Optional[str] ChannelFlowArn
     Optional[str] Name
@@ -297,8 +301,9 @@ struct ChannelMembershipPreferences:
 struct ChannelMembershipSummary:
     Optional[Identity] Member
 
-# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], Target: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], Target: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelMessage:
     Optional[str] ChannelArn
     Optional[str] MessageId
@@ -317,8 +322,9 @@ struct ChannelMessage:
     Optional[str] ContentType
     Optional[list[Target]] Target
 
-# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelMessageCallback:
     str MessageId
     Optional[str] Content
@@ -333,8 +339,9 @@ struct ChannelMessageStatusStructure:
     Optional[ChannelMessageStatus] Value
     Optional[str] Detail
 
-# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], Target: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], Target: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelMessageSummary:
     Optional[str] MessageId
     Optional[str] Content
@@ -514,8 +521,9 @@ struct DescribeChannelBanResponse:
 struct DescribeChannelFlowRequest:
     str ChannelFlowArn
 
-# no @derive(Json): member(s) ChannelFlow: ChannelFlow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelFlow: ChannelFlow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelFlowResponse:
     Optional[ChannelFlow] ChannelFlow
 
@@ -618,8 +626,9 @@ struct GetChannelMessageRequest:
     str ChimeBearer
     Optional[str] SubChannelId
 
-# no @derive(Json): member(s) ChannelMessage: ChannelMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelMessage: ChannelMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelMessageResponse:
     Optional[ChannelMessage] ChannelMessage
 
@@ -650,8 +659,9 @@ struct GetMessagingSessionEndpointResponse:
 struct GetMessagingStreamingConfigurationsRequest:
     str AppInstanceArn
 
-# no @derive(Json): member(s) StreamingConfigurations: list[StreamingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingConfigurations: list[StreamingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMessagingStreamingConfigurationsResponse:
     Optional[list[StreamingConfiguration]] StreamingConfigurations
 
@@ -673,8 +683,9 @@ struct ListChannelBansRequest:
     Optional[str] NextToken
     str ChimeBearer
 
-# no @derive(Json): member(s) ChannelBans: list[ChannelBanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelBans: list[ChannelBanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelBansResponse:
     Optional[str] ChannelArn
     Optional[str] NextToken
@@ -687,8 +698,9 @@ struct ListChannelFlowsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ChannelFlows: list[ChannelFlowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelFlows: list[ChannelFlowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelFlowsResponse:
     Optional[list[ChannelFlowSummary]] ChannelFlows
     Optional[str] NextToken
@@ -701,8 +713,9 @@ struct ListChannelMembershipsForAppInstanceUserRequest:
     Optional[str] NextToken
     str ChimeBearer
 
-# no @derive(Json): member(s) ChannelMemberships: list[ChannelMembershipForAppInstanceUserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelMemberships: list[ChannelMembershipForAppInstanceUserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelMembershipsForAppInstanceUserResponse:
     Optional[list[ChannelMembershipForAppInstanceUserSummary]] ChannelMemberships
     Optional[str] NextToken
@@ -718,8 +731,9 @@ struct ListChannelMembershipsRequest:
     str ChimeBearer
     Optional[str] SubChannelId
 
-# no @derive(Json): member(s) ChannelMemberships: list[ChannelMembershipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelMemberships: list[ChannelMembershipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelMembershipsResponse:
     Optional[str] ChannelArn
     Optional[list[ChannelMembershipSummary]] ChannelMemberships
@@ -738,8 +752,9 @@ struct ListChannelMessagesRequest:
     str ChimeBearer
     Optional[str] SubChannelId
 
-# no @derive(Json): member(s) ChannelMessages: list[ChannelMessageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelMessages: list[ChannelMessageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelMessagesResponse:
     Optional[str] ChannelArn
     Optional[str] NextToken
@@ -754,8 +769,9 @@ struct ListChannelModeratorsRequest:
     Optional[str] NextToken
     str ChimeBearer
 
-# no @derive(Json): member(s) ChannelModerators: list[ChannelModeratorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelModerators: list[ChannelModeratorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelModeratorsResponse:
     Optional[str] ChannelArn
     Optional[str] NextToken
@@ -768,8 +784,9 @@ struct ListChannelsAssociatedWithChannelFlowRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[ChannelAssociatedWithFlowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelAssociatedWithFlowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsAssociatedWithChannelFlowResponse:
     Optional[list[ChannelAssociatedWithFlowSummary]] Channels
     Optional[str] NextToken
@@ -782,8 +799,9 @@ struct ListChannelsModeratedByAppInstanceUserRequest:
     Optional[str] NextToken
     str ChimeBearer
 
-# no @derive(Json): member(s) Channels: list[ChannelModeratedByAppInstanceUserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelModeratedByAppInstanceUserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsModeratedByAppInstanceUserResponse:
     Optional[list[ChannelModeratedByAppInstanceUserSummary]] Channels
     Optional[str] NextToken
@@ -798,8 +816,9 @@ struct ListChannelsRequest:
     Optional[str] NextToken
     str ChimeBearer
 
-# no @derive(Json): member(s) Channels: list[ChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[list[ChannelSummary]] Channels
     Optional[str] NextToken
@@ -812,8 +831,9 @@ struct ListSubChannelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SubChannels: list[SubChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubChannels: list[SubChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubChannelsResponse:
     Optional[str] ChannelArn
     Optional[list[SubChannelSummary]] SubChannels
@@ -824,13 +844,15 @@ struct ListSubChannelsResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) StringValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageAttributeValue:
     Optional[list[str]] StringValues
 
@@ -897,8 +919,9 @@ struct PutMessagingStreamingConfigurationsRequest:
     str AppInstanceArn
     list[StreamingConfiguration] StreamingConfigurations
 
-# no @derive(Json): member(s) StreamingConfigurations: list[StreamingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamingConfigurations: list[StreamingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutMessagingStreamingConfigurationsResponse:
     Optional[list[StreamingConfiguration]] StreamingConfigurations
 
@@ -929,14 +952,16 @@ struct SearchChannelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[ChannelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchChannelsResponse:
     Optional[list[ChannelSummary]] Channels
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchField:
     str Key
     list[str] Values
@@ -1112,17 +1137,7 @@ def messaging_chime_error_from_code(str code) -> Chime_SDK_MessagingError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateChannelMembership (document member `MemberArns: list[str]` is not serializable by derive)
-#   ChannelFlowCallback (document member `ChannelMessage: ChannelMessageCallback` is not serializable by derive)
-#   CreateChannel (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateChannelFlow (document member `Processors: list[Processor]` is not serializable by derive)
 #   ListChannelMessages (httpQuery `NotBefore` has unsupported type DateTime)
-#   PutMessagingStreamingConfigurations (document member `StreamingConfigurations: list[StreamingConfiguration]` is not serializable by derive)
-#   SearchChannels (document member `Fields: list[SearchField]` is not serializable by derive)
-#   SendChannelMessage (document member `MessageAttributes: dict[str, MessageAttributeValue]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateChannelFlow (document member `Processors: list[Processor]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1179,6 +1194,85 @@ struct UpdateChannelMessageDocument:
     Optional[str] SubChannelId
     Optional[str] ContentType
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def messaging_chime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def messaging_chime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def messaging_chime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ChannelMessageCallback to a compact JSON object (declaration order).
+def channel_message_callback_to_json(ChannelMessageCallback v) -> str:
+    list[str] parts = []
+    parts.append("\"MessageId\":" + messaging_chime_json_str(v.MessageId))
+    if v.Content.is_some():
+        auto u0 = v.Content.unwrap()
+        parts.append("\"Content\":" + messaging_chime_json_str(u0))
+    if v.Metadata.is_some():
+        auto u1 = v.Metadata.unwrap()
+        parts.append("\"Metadata\":" + messaging_chime_json_str(u1))
+    if v.PushNotification.is_some():
+        auto u2 = v.PushNotification.unwrap()
+        parts.append("\"PushNotification\":" + u2.to_json())
+    if v.MessageAttributes.is_some():
+        auto u3 = v.MessageAttributes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(messaging_chime_json_str(k4) + ":" + message_attribute_value_to_json(u3[k4]))
+        parts.append("\"MessageAttributes\":" + messaging_chime_json_obj(m4))
+    if v.SubChannelId.is_some():
+        auto u5 = v.SubChannelId.unwrap()
+        parts.append("\"SubChannelId\":" + messaging_chime_json_str(u5))
+    if v.ContentType.is_some():
+        auto u6 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + messaging_chime_json_str(u6))
+    return messaging_chime_json_obj(parts)
+
+# Serialize MessageAttributeValue to a compact JSON object (declaration order).
+def message_attribute_value_to_json(MessageAttributeValue v) -> str:
+    list[str] parts = []
+    if v.StringValues.is_some():
+        auto u0 = v.StringValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(messaging_chime_json_str(x1))
+        parts.append("\"StringValues\":" + messaging_chime_json_arr(e1))
+    return messaging_chime_json_obj(parts)
+
+# Serialize SearchField to a compact JSON object (declaration order).
+def search_field_to_json(SearchField v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + messaging_chime_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(messaging_chime_json_str(x0))
+    parts.append("\"Values\":" + messaging_chime_json_arr(e0))
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    return messaging_chime_json_obj(parts)
+
 # A bound Chime_SDK_Messaging client: credentials + region, threaded into every operation.
 struct Chime_SDK_MessagingClient:
     core.Credentials creds
@@ -1197,6 +1291,95 @@ struct Chime_SDK_MessagingClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
 
+    # BatchCreateChannelMembership  POST /channels/{channelArn}/memberships?operation=batch-create
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_create_channel_membership(self, BatchCreateChannelMembershipRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelArn"] = input.ChannelArn
+        dict[str, str] headers = {}
+        headers["x-amz-chime-bearer"] = input.ChimeBearer
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/memberships?operation=batch-create", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Type.is_some():
+            auto u0 = input.Type.unwrap()
+            parts.append("\"Type\":" + u0.to_json())
+        list[str] e1 = []
+        for x1 in input.MemberArns:
+            e1.append(messaging_chime_json_str(x1))
+        parts.append("\"MemberArns\":" + messaging_chime_json_arr(e1))
+        if input.SubChannelId.is_some():
+            auto u2 = input.SubChannelId.unwrap()
+            parts.append("\"SubChannelId\":" + messaging_chime_json_str(u2))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # ChannelFlowCallback  POST /channels/{channelArn}?operation=channel-flow-callback
+    # errors: BadRequestException, ConflictException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def channel_flow_callback(self, ChannelFlowCallbackRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelArn"] = input.ChannelArn
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}?operation=channel-flow-callback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CallbackId\":" + messaging_chime_json_str(input.CallbackId))
+        if input.DeleteResource.is_some():
+            auto u0 = input.DeleteResource.unwrap()
+            parts.append("\"DeleteResource\":" + json.dumps(JsonValue.Bool(u0)))
+        parts.append("\"ChannelMessage\":" + channel_message_callback_to_json(input.ChannelMessage))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # CreateChannel  POST /channels
+    # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-chime-bearer"] = input.ChimeBearer
+        auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AppInstanceArn\":" + messaging_chime_json_str(input.AppInstanceArn))
+        parts.append("\"Name\":" + messaging_chime_json_str(input.Name))
+        if input.Mode.is_some():
+            auto u0 = input.Mode.unwrap()
+            parts.append("\"Mode\":" + u0.to_json())
+        if input.Privacy.is_some():
+            auto u1 = input.Privacy.unwrap()
+            parts.append("\"Privacy\":" + u1.to_json())
+        if input.Metadata.is_some():
+            auto u2 = input.Metadata.unwrap()
+            parts.append("\"Metadata\":" + messaging_chime_json_str(u2))
+        parts.append("\"ClientRequestToken\":" + messaging_chime_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + messaging_chime_json_arr(e4))
+        if input.ChannelId.is_some():
+            auto u5 = input.ChannelId.unwrap()
+            parts.append("\"ChannelId\":" + messaging_chime_json_str(u5))
+        if input.MemberArns.is_some():
+            auto u6 = input.MemberArns.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(messaging_chime_json_str(x7))
+            parts.append("\"MemberArns\":" + messaging_chime_json_arr(e7))
+        if input.ModeratorArns.is_some():
+            auto u8 = input.ModeratorArns.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(messaging_chime_json_str(x9))
+            parts.append("\"ModeratorArns\":" + messaging_chime_json_arr(e9))
+        if input.ElasticChannelConfiguration.is_some():
+            auto u10 = input.ElasticChannelConfiguration.unwrap()
+            parts.append("\"ElasticChannelConfiguration\":" + u10.to_json())
+        if input.ExpirationSettings.is_some():
+            auto u11 = input.ExpirationSettings.unwrap()
+            parts.append("\"ExpirationSettings\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
     # CreateChannelBan  POST /channels/{channelArn}/bans
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_channel_ban(self, CreateChannelBanRequest input) -> str:
@@ -1208,6 +1391,28 @@ struct Chime_SDK_MessagingClient:
         auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/bans", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateChannelBanDocument(MemberArn=input.MemberArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # CreateChannelFlow  POST /channel-flows
+    # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_channel_flow(self, CreateChannelFlowRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/channel-flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AppInstanceArn\":" + messaging_chime_json_str(input.AppInstanceArn))
+        list[str] e0 = []
+        for x0 in input.Processors:
+            e0.append(x0.to_json())
+        parts.append("\"Processors\":" + messaging_chime_json_arr(e0))
+        parts.append("\"Name\":" + messaging_chime_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + messaging_chime_json_arr(e2))
+        parts.append("\"ClientRequestToken\":" + messaging_chime_json_str(input.ClientRequestToken))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
 
     # CreateChannelMembership  POST /channels/{channelArn}/memberships
@@ -1657,6 +1862,21 @@ struct Chime_SDK_MessagingClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
 
+    # PutMessagingStreamingConfigurations  PUT /app-instances/{appInstanceArn}/streaming-configurations
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def put_messaging_streaming_configurations(self, PutMessagingStreamingConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appInstanceArn"] = input.AppInstanceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.StreamingConfigurations:
+            e0.append(x0.to_json())
+        parts.append("\"StreamingConfigurations\":" + messaging_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
     # RedactChannelMessage  POST /channels/{channelArn}/messages/{messageId}?operation=redact
     # errors: BadRequestException, ConflictException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def redact_channel_message(self, RedactChannelMessageRequest input) -> str:
@@ -1671,6 +1891,96 @@ struct Chime_SDK_MessagingClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
 
+    # SearchChannels  POST /channels?operation=search
+    # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def search_channels(self, SearchChannelsRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.ChimeBearer.is_some():
+            headers["x-amz-chime-bearer"] = input.ChimeBearer.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels?operation=search", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Fields:
+            e0.append(search_field_to_json(x0))
+        parts.append("\"Fields\":" + messaging_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # SendChannelMessage  POST /channels/{channelArn}/messages
+    # errors: BadRequestException, ConflictException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def send_channel_message(self, SendChannelMessageRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelArn"] = input.ChannelArn
+        dict[str, str] headers = {}
+        headers["x-amz-chime-bearer"] = input.ChimeBearer
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/messages", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Content\":" + messaging_chime_json_str(input.Content))
+        parts.append("\"Type\":" + input.Type.to_json())
+        parts.append("\"Persistence\":" + input.Persistence.to_json())
+        if input.Metadata.is_some():
+            auto u0 = input.Metadata.unwrap()
+            parts.append("\"Metadata\":" + messaging_chime_json_str(u0))
+        parts.append("\"ClientRequestToken\":" + messaging_chime_json_str(input.ClientRequestToken))
+        if input.PushNotification.is_some():
+            auto u1 = input.PushNotification.unwrap()
+            parts.append("\"PushNotification\":" + u1.to_json())
+        if input.MessageAttributes.is_some():
+            auto u2 = input.MessageAttributes.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(messaging_chime_json_str(k3) + ":" + message_attribute_value_to_json(u2[k3]))
+            parts.append("\"MessageAttributes\":" + messaging_chime_json_obj(m3))
+        if input.SubChannelId.is_some():
+            auto u4 = input.SubChannelId.unwrap()
+            parts.append("\"SubChannelId\":" + messaging_chime_json_str(u4))
+        if input.ContentType.is_some():
+            auto u5 = input.ContentType.unwrap()
+            parts.append("\"ContentType\":" + messaging_chime_json_str(u5))
+        if input.Target.is_some():
+            auto u6 = input.Target.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Target\":" + messaging_chime_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # TagResource  POST /tags?operation=tag-resource
+    # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + messaging_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + messaging_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # UntagResource  POST /tags?operation=untag-resource
+    # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + messaging_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(messaging_chime_json_str(x0))
+        parts.append("\"TagKeys\":" + messaging_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
     # UpdateChannel  PUT /channels/{channelArn}
     # errors: BadRequestException, ConflictException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_channel(self, UpdateChannelRequest input) -> str:
@@ -1682,6 +1992,22 @@ struct Chime_SDK_MessagingClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(Name=input.Name, Mode=input.Mode, Metadata=input.Metadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
+
+    # UpdateChannelFlow  PUT /channel-flows/{channelFlowArn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_channel_flow(self, UpdateChannelFlowRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelFlowArn"] = input.ChannelFlowArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Processors:
+            e0.append(x0.to_json())
+        parts.append("\"Processors\":" + messaging_chime_json_arr(e0))
+        parts.append("\"Name\":" + messaging_chime_json_str(input.Name))
+        auto bp = restjson.rest_json_document(b, messaging_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
 
     # UpdateChannelMessage  PUT /channels/{channelArn}/messages/{messageId}

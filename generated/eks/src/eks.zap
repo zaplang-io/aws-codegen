@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 70 operations — 45 with a generated method,
-#   25 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 70 operations — 64 with a generated method,
+#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   313 structs (147 @derive(Json)), 46 enums, 15 error variants.
-#   11 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (4 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -610,8 +610,9 @@ struct AccessConfigResponse:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) kubernetesGroups: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kubernetesGroups: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessEntry:
     Optional[str] clusterName
     Optional[str] principalArn
@@ -628,20 +629,23 @@ struct AccessPolicy:
     Optional[str] name
     Optional[str] arn
 
-# no @derive(Json): member(s) namespaces: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessScope:
     Optional[AccessScopeType] type
     Optional[list[str]] namespaces
 
-# no @derive(Json): member(s) disabledServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disabledServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AckConfigRequest:
     Optional[bool] enableCrossNamespace
     Optional[list[str]] disabledServices
 
-# no @derive(Json): member(s) disabledServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disabledServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AckConfigResponse:
     Optional[bool] enableCrossNamespace
     Optional[list[str]] disabledServices
@@ -653,8 +657,9 @@ struct ActivateCertificateAuthorityRequest:
     str certificateAuthorityId
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActivateCertificateAuthorityResponse:
     Optional[Update] update
     Optional[CertificateAuthoritySummary] certificateAuthority
@@ -664,8 +669,9 @@ struct ActiveCertificateAuthority:
     Optional[str] id
     Optional[CertificateAuthorityActivatedBy] activatedBy
 
-# no @derive(Json): member(s) health: AddonHealth, tags: dict[str, str], podIdentityAssociations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) health: AddonHealth, tags: dict[str, str], podIdentityAssociations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Addon:
     Optional[str] addonName
     Optional[str] clusterName
@@ -684,19 +690,22 @@ struct Addon:
     Optional[list[str]] podIdentityAssociations
     Optional[AddonNamespaceConfigResponse] namespaceConfig
 
-# no @derive(Json): member(s) compatibleVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compatibleVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddonCompatibilityDetail:
     Optional[str] name
     Optional[list[str]] compatibleVersions
 
-# no @derive(Json): member(s) issues: list[AddonIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) issues: list[AddonIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddonHealth:
     Optional[list[AddonIssue]] issues
 
-# no @derive(Json): member(s) addonVersions: list[AddonVersionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addonVersions: list[AddonVersionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddonInfo:
     Optional[str] addonName
     Optional[str] type
@@ -706,8 +715,9 @@ struct AddonInfo:
     Optional[MarketplaceInformation] marketplaceInformation
     Optional[str] defaultNamespace
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddonIssue:
     Optional[AddonIssueCode] code
     Optional[str] message
@@ -726,14 +736,16 @@ struct AddonPodIdentityAssociations:
     str serviceAccount
     str roleArn
 
-# no @derive(Json): member(s) recommendedManagedPolicies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendedManagedPolicies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddonPodIdentityConfiguration:
     Optional[str] serviceAccount
     Optional[list[str]] recommendedManagedPolicies
 
-# no @derive(Json): member(s) architecture: list[str], computeTypes: list[str], compatibilities: list[Compatibility] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) architecture: list[str], computeTypes: list[str], compatibilities: list[Compatibility] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddonVersionInfo:
     Optional[str] addonVersion
     Optional[list[str]] architecture
@@ -742,8 +754,9 @@ struct AddonVersionInfo:
     Optional[bool] requiresConfiguration
     Optional[bool] requiresIamPermissions
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllowedValuesConstraint:
     Optional[list[str]] allowedValues
 
@@ -758,8 +771,9 @@ struct ArgoCdAwsIdcConfigResponse:
     Optional[str] idcRegion
     Optional[str] idcManagedApplicationArn
 
-# no @derive(Json): member(s) rbacRoleMappings: list[ArgoCdRoleMapping], networkAccess: ArgoCdNetworkAccessConfigRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rbacRoleMappings: list[ArgoCdRoleMapping], networkAccess: ArgoCdNetworkAccessConfigRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArgoCdConfigRequest:
     Optional[str] namespace
     ArgoCdAwsIdcConfigRequest awsIdc
@@ -767,8 +781,9 @@ struct ArgoCdConfigRequest:
     Optional[ArgoCdNetworkAccessConfigRequest] networkAccess
     Optional[str] endpointPrefix
 
-# no @derive(Json): member(s) rbacRoleMappings: list[ArgoCdRoleMapping], networkAccess: ArgoCdNetworkAccessConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rbacRoleMappings: list[ArgoCdRoleMapping], networkAccess: ArgoCdNetworkAccessConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArgoCdConfigResponse:
     Optional[str] namespace
     Optional[ArgoCdAwsIdcConfigResponse] awsIdc
@@ -777,18 +792,21 @@ struct ArgoCdConfigResponse:
     Optional[str] serverUrl
     Optional[str] endpointPrefix
 
-# no @derive(Json): member(s) vpceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArgoCdNetworkAccessConfigRequest:
     Optional[list[str]] vpceIds
 
-# no @derive(Json): member(s) vpceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArgoCdNetworkAccessConfigResponse:
     Optional[list[str]] vpceIds
 
-# no @derive(Json): member(s) identities: list[SsoIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identities: list[SsoIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ArgoCdRoleMapping:
     ArgoCdRole role
     list[SsoIdentity] identities
@@ -801,8 +819,9 @@ struct AssociateAccessPolicyRequest:
     str policyArn
     AccessScope accessScope
 
-# no @derive(Json): member(s) associatedAccessPolicy: AssociatedAccessPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedAccessPolicy: AssociatedAccessPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateAccessPolicyResponse:
     Optional[str] clusterName
     Optional[str] principalArn
@@ -815,8 +834,9 @@ struct AssociateEncryptionConfigRequest:
     list[EncryptionConfig] encryptionConfig
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateEncryptionConfigResponse:
     Optional[Update] update
 
@@ -828,14 +848,16 @@ struct AssociateIdentityProviderConfigRequest:
     Optional[dict[str, str]] tags
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateIdentityProviderConfigResponse:
     Optional[Update] update
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) accessScope: AccessScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessScope: AccessScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatedAccessPolicy:
     Optional[str] policyArn
     Optional[AccessScope] accessScope
@@ -861,8 +883,9 @@ struct CancelUpdateRequest:
     str updateId
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelUpdateResponse:
     Optional[Update] update
 
@@ -871,8 +894,9 @@ struct Cancellation:
     Optional[CancellationStatus] status
     Optional[str] reason
 
-# no @derive(Json): member(s) configuration: CapabilityConfigurationResponse, tags: dict[str, str], health: CapabilityHealth not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: CapabilityConfigurationResponse, tags: dict[str, str], health: CapabilityHealth not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Capability:
     Optional[str] capabilityName
     Optional[str] arn
@@ -888,20 +912,23 @@ struct Capability:
     Optional[DateTime] modifiedAt
     Optional[str] deletePropagationPolicy
 
-# no @derive(Json): member(s) argoCd: ArgoCdConfigRequest, ack: AckConfigRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) argoCd: ArgoCdConfigRequest, ack: AckConfigRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityConfigurationRequest:
     Optional[ArgoCdConfigRequest] argoCd
     Optional[AckConfigRequest] ack
 
-# no @derive(Json): member(s) argoCd: ArgoCdConfigResponse, ack: AckConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) argoCd: ArgoCdConfigResponse, ack: AckConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityConfigurationResponse:
     Optional[ArgoCdConfigResponse] argoCd
     Optional[AckConfigResponse] ack
 
-# no @derive(Json): member(s) issues: list[CapabilityIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) issues: list[CapabilityIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityHealth:
     Optional[list[CapabilityIssue]] issues
 
@@ -973,8 +1000,9 @@ struct ClientStat:
     Optional[int64] numberOfRequestsLast30Days
     Optional[DateTime] lastRequestTime
 
-# no @derive(Json): member(s) resourcesVpcConfig: VpcConfigResponse, logging: Logging, tags: dict[str, str], encryptionConfig: list[EncryptionConfig], health: ClusterHealth, outpostConfig: OutpostConfigResponse, remoteNetworkConfig: RemoteNetworkConfigResponse, computeConfig: ComputeConfigResponse, kubeSchedulerConfig: KubeSchedulerConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcesVpcConfig: VpcConfigResponse, logging: Logging, tags: dict[str, str], encryptionConfig: list[EncryptionConfig], health: ClusterHealth, outpostConfig: OutpostConfigResponse, remoteNetworkConfig: RemoteNetworkConfigResponse, computeConfig: ComputeConfigResponse, kubeSchedulerConfig: KubeSchedulerConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] name
     Optional[str] arn
@@ -1008,20 +1036,23 @@ struct Cluster:
     Optional[KubeSchedulerConfigResponse] kubeSchedulerConfig
     Optional[KubeControllerManagerConfigResponse] kubeControllerManagerConfig
 
-# no @derive(Json): member(s) issues: list[ClusterIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) issues: list[ClusterIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterHealth:
     Optional[list[ClusterIssue]] issues
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterIssue:
     Optional[ClusterIssueCode] code
     Optional[str] message
     Optional[list[str]] resourceIds
 
-# no @derive(Json): member(s) controlPlaneScalingTiers: list[ControlPlaneScalingTierInfo], controlPlaneComponentConfig: ControlPlaneConfigInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlPlaneScalingTiers: list[ControlPlaneScalingTierInfo], controlPlaneComponentConfig: ControlPlaneConfigInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterVersionInformation:
     Optional[str] clusterVersion
     Optional[str] clusterType
@@ -1036,22 +1067,25 @@ struct ClusterVersionInformation:
     Optional[list[ControlPlaneScalingTierInfo]] controlPlaneScalingTiers
     Optional[ControlPlaneConfigInfo] controlPlaneComponentConfig
 
-# no @derive(Json): member(s) platformVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) platformVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Compatibility:
     Optional[str] clusterVersion
     Optional[list[str]] platformVersions
     Optional[bool] defaultVersion
 
-# no @derive(Json): member(s) nodePools: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodePools: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeConfigRequest:
     Optional[bool] enabled
     Optional[list[str]] nodePools
     Optional[str] nodeRoleArn
 
-# no @derive(Json): member(s) nodePools: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodePools: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeConfigResponse:
     Optional[bool] enabled
     Optional[list[str]] nodePools
@@ -1070,8 +1104,9 @@ struct ConnectorConfigResponse:
     Optional[str] provider
     Optional[str] roleArn
 
-# no @derive(Json): member(s) kubeSchedulerConfig: KubeSchedulerVersionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kubeSchedulerConfig: KubeSchedulerVersionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlPlaneConfigInfo:
     Optional[KubeApiServerVersionConfig] kubeApiServerConfig
     Optional[KubeSchedulerVersionConfig] kubeSchedulerConfig
@@ -1091,8 +1126,9 @@ struct ControlPlanePlacementResponse:
 struct ControlPlaneScalingConfig:
     Optional[ProvisionedControlPlaneTier] tier
 
-# no @derive(Json): member(s) controlPlaneComponentConfigOverrides: ControlPlaneConfigInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlPlaneComponentConfigOverrides: ControlPlaneConfigInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlPlaneScalingTierInfo:
     Optional[str] tierName
     Optional[int64] apiRequestConcurrency
@@ -1120,8 +1156,9 @@ struct CreateAccessEntryRequest:
     Optional[str] username
     Optional[str] type
 
-# no @derive(Json): member(s) accessEntry: AccessEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessEntry: AccessEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccessEntryResponse:
     Optional[AccessEntry] accessEntry
 
@@ -1139,8 +1176,9 @@ struct CreateAddonRequest:
     Optional[list[AddonPodIdentityAssociations]] podIdentityAssociations
     Optional[AddonNamespaceConfigRequest] namespaceConfig
 
-# no @derive(Json): member(s) addon: Addon not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addon: Addon not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAddonResponse:
     Optional[Addon] addon
 
@@ -1156,8 +1194,9 @@ struct CreateCapabilityRequest:
     Optional[dict[str, str]] tags
     str deletePropagationPolicy
 
-# no @derive(Json): member(s) capability: Capability not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capability: Capability not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapabilityResponse:
     Optional[Capability] capability
 
@@ -1167,8 +1206,9 @@ struct CreateCertificateAuthorityRequest:
     str clusterName
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCertificateAuthorityResponse:
     Optional[Update] update
     Optional[CertificateAuthoritySummary] certificateAuthority
@@ -1199,8 +1239,9 @@ struct CreateClusterRequest:
     Optional[KubeSchedulerConfigRequest] kubeSchedulerConfig
     Optional[KubeControllerManagerConfigRequest] kubeControllerManagerConfig
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] cluster
 
@@ -1215,8 +1256,9 @@ struct CreateEksAnywhereSubscriptionRequest:
     Optional[str] clientRequestToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) subscription: EksAnywhereSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: EksAnywhereSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEksAnywhereSubscriptionResponse:
     Optional[EksAnywhereSubscription] subscription
 
@@ -1231,8 +1273,9 @@ struct CreateFargateProfileRequest:
     Optional[str] clientRequestToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) fargateProfile: FargateProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fargateProfile: FargateProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFargateProfileResponse:
     Optional[FargateProfile] fargateProfile
 
@@ -1260,8 +1303,9 @@ struct CreateNodegroupRequest:
     Optional[str] releaseVersion
     Optional[WarmPoolConfig] warmPoolConfig
 
-# no @derive(Json): member(s) nodegroup: Nodegroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodegroup: Nodegroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNodegroupResponse:
     Optional[Nodegroup] nodegroup
 
@@ -1278,8 +1322,9 @@ struct CreatePodIdentityAssociationRequest:
     Optional[str] targetRoleArn
     Optional[str] policy
 
-# no @derive(Json): member(s) association: PodIdentityAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: PodIdentityAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePodIdentityAssociationResponse:
     Optional[PodIdentityAssociation] association
 
@@ -1301,8 +1346,9 @@ struct DeleteAddonRequest:
     str addonName
     Optional[bool] preserve
 
-# no @derive(Json): member(s) addon: Addon not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addon: Addon not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAddonResponse:
     Optional[Addon] addon
 
@@ -1312,8 +1358,9 @@ struct DeleteCapabilityRequest:
     str clusterName
     str capabilityName
 
-# no @derive(Json): member(s) capability: Capability not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capability: Capability not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCapabilityResponse:
     Optional[Capability] capability
 
@@ -1324,8 +1371,9 @@ struct DeleteCertificateAuthorityRequest:
     str certificateAuthorityId
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCertificateAuthorityResponse:
     Optional[Update] update
     Optional[CertificateAuthoritySummary] certificateAuthority
@@ -1335,8 +1383,9 @@ struct DeleteCertificateAuthorityResponse:
 struct DeleteClusterRequest:
     str name
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] cluster
 
@@ -1345,8 +1394,9 @@ struct DeleteClusterResponse:
 struct DeleteEksAnywhereSubscriptionRequest:
     str id
 
-# no @derive(Json): member(s) subscription: EksAnywhereSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: EksAnywhereSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEksAnywhereSubscriptionResponse:
     Optional[EksAnywhereSubscription] subscription
 
@@ -1356,8 +1406,9 @@ struct DeleteFargateProfileRequest:
     str clusterName
     str fargateProfileName
 
-# no @derive(Json): member(s) fargateProfile: FargateProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fargateProfile: FargateProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFargateProfileResponse:
     Optional[FargateProfile] fargateProfile
 
@@ -1367,8 +1418,9 @@ struct DeleteNodegroupRequest:
     str clusterName
     str nodegroupName
 
-# no @derive(Json): member(s) nodegroup: Nodegroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodegroup: Nodegroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteNodegroupResponse:
     Optional[Nodegroup] nodegroup
 
@@ -1378,13 +1430,15 @@ struct DeletePodIdentityAssociationRequest:
     str clusterName
     str associationId
 
-# no @derive(Json): member(s) association: PodIdentityAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: PodIdentityAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePodIdentityAssociationResponse:
     Optional[PodIdentityAssociation] association
 
-# no @derive(Json): member(s) clientStats: list[ClientStat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientStats: list[ClientStat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeprecationDetail:
     Optional[str] usage
     Optional[str] replacedWith
@@ -1397,8 +1451,9 @@ struct DeprecationDetail:
 struct DeregisterClusterRequest:
     str name
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeregisterClusterResponse:
     Optional[Cluster] cluster
 
@@ -1408,8 +1463,9 @@ struct DescribeAccessEntryRequest:
     str clusterName
     str principalArn
 
-# no @derive(Json): member(s) accessEntry: AccessEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessEntry: AccessEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccessEntryResponse:
     Optional[AccessEntry] accessEntry
 
@@ -1419,8 +1475,9 @@ struct DescribeAddonConfigurationRequest:
     str addonName
     str addonVersion
 
-# no @derive(Json): member(s) podIdentityConfiguration: list[AddonPodIdentityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) podIdentityConfiguration: list[AddonPodIdentityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAddonConfigurationResponse:
     Optional[str] addonName
     Optional[str] addonVersion
@@ -1433,8 +1490,9 @@ struct DescribeAddonRequest:
     str clusterName
     str addonName
 
-# no @derive(Json): member(s) addon: Addon not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addon: Addon not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAddonResponse:
     Optional[Addon] addon
 
@@ -1449,8 +1507,9 @@ struct DescribeAddonVersionsRequest:
     Optional[list[str]] publishers
     Optional[list[str]] owners
 
-# no @derive(Json): member(s) addons: list[AddonInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addons: list[AddonInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAddonVersionsResponse:
     Optional[list[AddonInfo]] addons
     Optional[str] nextToken
@@ -1461,8 +1520,9 @@ struct DescribeCapabilityRequest:
     str clusterName
     str capabilityName
 
-# no @derive(Json): member(s) capability: Capability not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capability: Capability not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCapabilityResponse:
     Optional[Capability] capability
 
@@ -1481,8 +1541,9 @@ struct DescribeCertificateAuthorityResponse:
 struct DescribeClusterRequest:
     str name
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterResponse:
     Optional[Cluster] cluster
 
@@ -1500,8 +1561,9 @@ struct DescribeClusterVersionsRequest:
     # wire string of the VersionStatus enum (querystring binding)
     Optional[str] versionStatus
 
-# no @derive(Json): member(s) clusterVersions: list[ClusterVersionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusterVersions: list[ClusterVersionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterVersionsResponse:
     Optional[str] nextToken
     Optional[list[ClusterVersionInformation]] clusterVersions
@@ -1511,8 +1573,9 @@ struct DescribeClusterVersionsResponse:
 struct DescribeEksAnywhereSubscriptionRequest:
     str id
 
-# no @derive(Json): member(s) subscription: EksAnywhereSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: EksAnywhereSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEksAnywhereSubscriptionResponse:
     Optional[EksAnywhereSubscription] subscription
 
@@ -1522,8 +1585,9 @@ struct DescribeFargateProfileRequest:
     str clusterName
     str fargateProfileName
 
-# no @derive(Json): member(s) fargateProfile: FargateProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fargateProfile: FargateProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFargateProfileResponse:
     Optional[FargateProfile] fargateProfile
 
@@ -1533,8 +1597,9 @@ struct DescribeIdentityProviderConfigRequest:
     str clusterName
     IdentityProviderConfig identityProviderConfig
 
-# no @derive(Json): member(s) identityProviderConfig: IdentityProviderConfigResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityProviderConfig: IdentityProviderConfigResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIdentityProviderConfigResponse:
     Optional[IdentityProviderConfigResponse] identityProviderConfig
 
@@ -1544,8 +1609,9 @@ struct DescribeInsightRequest:
     str clusterName
     str id
 
-# no @derive(Json): member(s) insight: Insight not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) insight: Insight not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInsightResponse:
     Optional[Insight] insight
 
@@ -1567,8 +1633,9 @@ struct DescribeNodegroupRequest:
     str clusterName
     str nodegroupName
 
-# no @derive(Json): member(s) nodegroup: Nodegroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodegroup: Nodegroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNodegroupResponse:
     Optional[Nodegroup] nodegroup
 
@@ -1578,8 +1645,9 @@ struct DescribePodIdentityAssociationRequest:
     str clusterName
     str associationId
 
-# no @derive(Json): member(s) association: PodIdentityAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: PodIdentityAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePodIdentityAssociationResponse:
     Optional[PodIdentityAssociation] association
 
@@ -1592,8 +1660,9 @@ struct DescribeUpdateRequest:
     Optional[str] addonName
     Optional[str] capabilityName
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUpdateResponse:
     Optional[Update] update
 
@@ -1616,8 +1685,9 @@ struct DisassociateIdentityProviderConfigRequest:
     IdentityProviderConfig identityProviderConfig
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateIdentityProviderConfigResponse:
     Optional[Update] update
 
@@ -1631,8 +1701,9 @@ struct DurationParameterConfig:
     Optional[str] defaultValue
     Optional[DurationConstraints] constraints
 
-# no @derive(Json): member(s) licenseArns: list[str], licenses: list[License], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) licenseArns: list[str], licenses: list[License], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksAnywhereSubscription:
     Optional[str] id
     Optional[str] arn
@@ -1658,14 +1729,16 @@ struct ElasticLoadBalancing:
     Optional[bool] enabled
     Optional[GatewayApiConfiguration] gatewayApi
 
-# no @derive(Json): member(s) resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionConfig:
     Optional[list[str]] resources
     Optional[Provider] provider
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorDetail:
     Optional[ErrorCode] errorCode
     Optional[str] errorMessage
@@ -1679,8 +1752,9 @@ struct EtcdPlacementRequest:
 struct EtcdPlacementResponse:
     Optional[SpreadLevel] spreadLevel
 
-# no @derive(Json): member(s) subnets: list[str], selectors: list[FargateProfileSelector], tags: dict[str, str], health: FargateProfileHealth not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], selectors: list[FargateProfileSelector], tags: dict[str, str], health: FargateProfileHealth not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FargateProfile:
     Optional[str] fargateProfileName
     Optional[str] fargateProfileArn
@@ -1693,20 +1767,23 @@ struct FargateProfile:
     Optional[dict[str, str]] tags
     Optional[FargateProfileHealth] health
 
-# no @derive(Json): member(s) issues: list[FargateProfileIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) issues: list[FargateProfileIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FargateProfileHealth:
     Optional[list[FargateProfileIssue]] issues
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FargateProfileIssue:
     Optional[FargateProfileIssueCode] code
     Optional[str] message
     Optional[list[str]] resourceIds
 
-# no @derive(Json): member(s) labels: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labels: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FargateProfileSelector:
     Optional[str] namespace
     Optional[dict[str, str]] labels
@@ -1736,13 +1813,15 @@ struct IdentityProviderConfig:
     str type
     str name
 
-# no @derive(Json): member(s) oidc: OidcIdentityProviderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oidc: OidcIdentityProviderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityProviderConfigResponse:
     Optional[OidcIdentityProviderConfig] oidc
 
-# no @derive(Json): member(s) additionalInfo: dict[str, str], resources: list[InsightResourceDetail], categorySpecificSummary: InsightCategorySpecificSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalInfo: dict[str, str], resources: list[InsightResourceDetail], categorySpecificSummary: InsightCategorySpecificSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Insight:
     Optional[str] id
     Optional[str] name
@@ -1757,8 +1836,9 @@ struct Insight:
     Optional[list[InsightResourceDetail]] resources
     Optional[InsightCategorySpecificSummary] categorySpecificSummary
 
-# no @derive(Json): member(s) deprecationDetails: list[DeprecationDetail], addonCompatibilityDetails: list[AddonCompatibilityDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deprecationDetails: list[DeprecationDetail], addonCompatibilityDetails: list[AddonCompatibilityDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightCategorySpecificSummary:
     Optional[list[DeprecationDetail]] deprecationDetails
     Optional[list[AddonCompatibilityDetail]] addonCompatibilityDetails
@@ -1785,8 +1865,9 @@ struct InsightSummary:
     Optional[str] description
     Optional[InsightStatus] insightStatus
 
-# no @derive(Json): member(s) categories: list[Category], kubernetesVersions: list[str], statuses: list[InsightStatusValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[Category], kubernetesVersions: list[str], statuses: list[InsightStatusValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightsFilter:
     Optional[list[Category]] categories
     Optional[list[str]] kubernetesVersions
@@ -1829,8 +1910,9 @@ struct InvalidStateException:
     Optional[str] clusterName
     Optional[str] message
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Issue:
     Optional[NodegroupIssueCode] code
     Optional[str] message
@@ -1866,18 +1948,21 @@ struct KubeControllerManagerVersionConfig:
     Optional[PodGcControllerVersionConfig] podGcControllerConfig
     Optional[HorizontalPodAutoscalerControllerVersionConfig] horizontalPodAutoscalerControllerConfig
 
-# no @derive(Json): member(s) nodeResourcesFit: NodeResourcesFitConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeResourcesFit: NodeResourcesFitConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubeSchedulerConfigRequest:
     Optional[NodeResourcesFitConfig] nodeResourcesFit
 
-# no @derive(Json): member(s) nodeResourcesFit: NodeResourcesFitConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeResourcesFit: NodeResourcesFitConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubeSchedulerConfigResponse:
     Optional[NodeResourcesFitConfig] nodeResourcesFit
 
-# no @derive(Json): member(s) nodeResourcesFit: NodeResourcesFitVersionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeResourcesFit: NodeResourcesFitVersionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubeSchedulerVersionConfig:
     Optional[NodeResourcesFitVersionConfig] nodeResourcesFit
 
@@ -1913,8 +1998,9 @@ struct ListAccessEntriesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accessEntries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessEntries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessEntriesResponse:
     Optional[list[str]] accessEntries
     Optional[str] nextToken
@@ -1925,8 +2011,9 @@ struct ListAccessPoliciesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accessPolicies: list[AccessPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPolicies: list[AccessPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPoliciesResponse:
     Optional[list[AccessPolicy]] accessPolicies
     Optional[str] nextToken
@@ -1938,8 +2025,9 @@ struct ListAddonsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) addons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAddonsResponse:
     Optional[list[str]] addons
     Optional[str] nextToken
@@ -1952,8 +2040,9 @@ struct ListAssociatedAccessPoliciesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) associatedAccessPolicies: list[AssociatedAccessPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedAccessPolicies: list[AssociatedAccessPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedAccessPoliciesResponse:
     Optional[str] clusterName
     Optional[str] principalArn
@@ -1967,8 +2056,9 @@ struct ListCapabilitiesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) capabilities: list[CapabilitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[CapabilitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCapabilitiesResponse:
     Optional[list[CapabilitySummary]] capabilities
     Optional[str] nextToken
@@ -1980,8 +2070,9 @@ struct ListCertificateAuthoritiesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) certificateAuthorities: list[CertificateAuthoritySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAuthorities: list[CertificateAuthoritySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificateAuthoritiesResponse:
     Optional[list[CertificateAuthoritySummary]] certificateAuthorities
     Optional[str] nextToken
@@ -1993,8 +2084,9 @@ struct ListClustersRequest:
     Optional[str] nextToken
     Optional[list[str]] include
 
-# no @derive(Json): member(s) clusters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     Optional[list[str]] clusters
     Optional[str] nextToken
@@ -2006,8 +2098,9 @@ struct ListEksAnywhereSubscriptionsRequest:
     Optional[str] nextToken
     Optional[list[EksAnywhereSubscriptionStatus]] includeStatus
 
-# no @derive(Json): member(s) subscriptions: list[EksAnywhereSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptions: list[EksAnywhereSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEksAnywhereSubscriptionsResponse:
     Optional[list[EksAnywhereSubscription]] subscriptions
     Optional[str] nextToken
@@ -2019,8 +2112,9 @@ struct ListFargateProfilesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fargateProfileNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fargateProfileNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFargateProfilesResponse:
     Optional[list[str]] fargateProfileNames
     Optional[str] nextToken
@@ -2032,8 +2126,9 @@ struct ListIdentityProviderConfigsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) identityProviderConfigs: list[IdentityProviderConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityProviderConfigs: list[IdentityProviderConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityProviderConfigsResponse:
     Optional[list[IdentityProviderConfig]] identityProviderConfigs
     Optional[str] nextToken
@@ -2046,8 +2141,9 @@ struct ListInsightsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) insights: list[InsightSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) insights: list[InsightSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInsightsResponse:
     Optional[list[InsightSummary]] insights
     Optional[str] nextToken
@@ -2059,8 +2155,9 @@ struct ListNodegroupsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) nodegroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodegroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodegroupsResponse:
     Optional[list[str]] nodegroups
     Optional[str] nextToken
@@ -2074,8 +2171,9 @@ struct ListPodIdentityAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) associations: list[PodIdentityAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associations: list[PodIdentityAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPodIdentityAssociationsResponse:
     Optional[list[PodIdentityAssociationSummary]] associations
     Optional[str] nextToken
@@ -2085,8 +2183,9 @@ struct ListPodIdentityAssociationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -2100,20 +2199,23 @@ struct ListUpdatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) updateIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) updateIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUpdatesResponse:
     Optional[list[str]] updateIds
     Optional[str] nextToken
 
-# no @derive(Json): member(s) types: list[LogType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[LogType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogSetup:
     Optional[list[LogType]] types
     Optional[bool] enabled
 
-# no @derive(Json): member(s) clusterLogging: list[LogSetup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusterLogging: list[LogSetup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Logging:
     Optional[list[LogSetup]] clusterLogging
 
@@ -2122,8 +2224,9 @@ struct MarketplaceInformation:
     Optional[str] productId
     Optional[str] productUrl
 
-# no @derive(Json): member(s) nodeRepairConfigOverrides: list[NodeRepairConfigOverrides] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeRepairConfigOverrides: list[NodeRepairConfigOverrides] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeRepairConfig:
     Optional[bool] enabled
     Optional[int64] maxUnhealthyNodeThresholdCount
@@ -2139,18 +2242,21 @@ struct NodeRepairConfigOverrides:
     Optional[int64] minRepairWaitTimeMins
     Optional[RepairAction] repairAction
 
-# no @derive(Json): member(s) scoringStrategy: ScoringStrategy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scoringStrategy: ScoringStrategy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeResourcesFitConfig:
     Optional[ScoringStrategy] scoringStrategy
 
-# no @derive(Json): member(s) scoringStrategy: ScoringStrategyConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scoringStrategy: ScoringStrategyConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeResourcesFitVersionConfig:
     Optional[ScoringStrategyConfig] scoringStrategy
 
-# no @derive(Json): member(s) instanceTypes: list[str], subnets: list[str], remoteAccess: RemoteAccessConfig, labels: dict[str, str], taints: list[Taint], resources: NodegroupResources, health: NodegroupHealth, nodeRepairConfig: NodeRepairConfig, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceTypes: list[str], subnets: list[str], remoteAccess: RemoteAccessConfig, labels: dict[str, str], taints: list[Taint], resources: NodegroupResources, health: NodegroupHealth, nodeRepairConfig: NodeRepairConfig, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Nodegroup:
     Optional[str] nodegroupName
     Optional[str] nodegroupArn
@@ -2178,13 +2284,15 @@ struct Nodegroup:
     Optional[dict[str, str]] tags
     Optional[WarmPoolConfig] warmPoolConfig
 
-# no @derive(Json): member(s) issues: list[Issue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) issues: list[Issue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodegroupHealth:
     Optional[list[Issue]] issues
 
-# no @derive(Json): member(s) autoScalingGroups: list[AutoScalingGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoScalingGroups: list[AutoScalingGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodegroupResources:
     Optional[list[AutoScalingGroup]] autoScalingGroups
     Optional[str] remoteAccessSecurityGroup
@@ -2209,8 +2317,9 @@ struct NotFoundException:
 struct OIDC:
     Optional[str] issuer
 
-# no @derive(Json): member(s) requiredClaims: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredClaims: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OidcIdentityProviderConfig:
     Optional[str] identityProviderConfigName
     Optional[str] identityProviderConfigArn
@@ -2225,8 +2334,9 @@ struct OidcIdentityProviderConfig:
     Optional[dict[str, str]] tags
     Optional[configStatus] status
 
-# no @derive(Json): member(s) requiredClaims: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredClaims: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OidcIdentityProviderConfigRequest:
     str identityProviderConfigName
     str issuerUrl
@@ -2237,8 +2347,9 @@ struct OidcIdentityProviderConfigRequest:
     Optional[str] groupsPrefix
     Optional[dict[str, str]] requiredClaims
 
-# no @derive(Json): member(s) outpostArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outpostArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutpostConfigRequest:
     list[str] outpostArns
     str controlPlaneInstanceType
@@ -2246,8 +2357,9 @@ struct OutpostConfigRequest:
     Optional[str] etcdInstanceType
     Optional[EtcdPlacementRequest] etcdPlacement
 
-# no @derive(Json): member(s) outpostArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outpostArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutpostConfigResponse:
     list[str] outpostArns
     str controlPlaneInstanceType
@@ -2267,8 +2379,9 @@ struct PodGcControllerConfigResponse:
 struct PodGcControllerVersionConfig:
     Optional[IntegerParameterConfig] terminatedPodGcThreshold
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PodIdentityAssociation:
     Optional[str] clusterName
     Optional[str] namespace
@@ -2316,41 +2429,48 @@ struct RegisterClusterRequest:
     Optional[str] clientRequestToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterClusterResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) sourceSecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceSecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteAccessConfig:
     Optional[str] ec2SshKey
     Optional[list[str]] sourceSecurityGroups
 
-# no @derive(Json): member(s) remoteNodeNetworks: list[RemoteNodeNetwork], remotePodNetworks: list[RemotePodNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteNodeNetworks: list[RemoteNodeNetwork], remotePodNetworks: list[RemotePodNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteNetworkConfigRequest:
     Optional[list[RemoteNodeNetwork]] remoteNodeNetworks
     Optional[list[RemotePodNetwork]] remotePodNetworks
 
-# no @derive(Json): member(s) remoteNodeNetworks: list[RemoteNodeNetwork], remotePodNetworks: list[RemotePodNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteNodeNetworks: list[RemoteNodeNetwork], remotePodNetworks: list[RemotePodNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteNetworkConfigResponse:
     Optional[list[RemoteNodeNetwork]] remoteNodeNetworks
     Optional[list[RemotePodNetwork]] remotePodNetworks
 
-# no @derive(Json): member(s) cidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteNodeNetwork:
     Optional[list[str]] cidrs
 
-# no @derive(Json): member(s) cidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemotePodNetwork:
     Optional[list[str]] cidrs
 
-# no @derive(Json): member(s) name: AllowedValuesConstraint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) name: AllowedValuesConstraint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceConstraints:
     Optional[AllowedValuesConstraint] name
     Optional[IntegerRangeConstraint] weight
@@ -2391,20 +2511,23 @@ struct ResourceWeight:
 struct RollbackConfig:
     Optional[int64] timeoutMinutes
 
-# no @derive(Json): member(s) resources: list[ResourceWeight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[ResourceWeight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScoringStrategy:
     Optional[ScoringStrategyType] type
     Optional[list[ResourceWeight]] resources
 
-# no @derive(Json): member(s) defaultValue: ScoringStrategy, constraints: ScoringStrategyConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultValue: ScoringStrategy, constraints: ScoringStrategyConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScoringStrategyConfig:
     Optional[ScoringStrategy] defaultValue
     Optional[ScoringStrategyConstraints] constraints
 
-# no @derive(Json): member(s) scoringStrategy: AllowedValuesConstraint, resources: ResourceConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scoringStrategy: AllowedValuesConstraint, resources: ResourceConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScoringStrategyConstraints:
     Optional[AllowedValuesConstraint] scoringStrategy
     Optional[ResourceConstraints] resources
@@ -2471,8 +2594,9 @@ struct ThrottlingException:
     Optional[str] clusterName
     Optional[str] message
 
-# no @derive(Json): member(s) validZones: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validZones: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnsupportedAvailabilityZoneException:
     Optional[str] message
     Optional[str] clusterName
@@ -2490,8 +2614,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) params: list[UpdateParam], errors: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) params: list[UpdateParam], errors: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Update:
     Optional[str] id
     Optional[UpdateStatus] status
@@ -2514,13 +2639,15 @@ struct UpdateAccessEntryRequest:
     Optional[str] clientRequestToken
     Optional[str] username
 
-# no @derive(Json): member(s) accessEntry: AccessEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessEntry: AccessEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAccessEntryResponse:
     Optional[AccessEntry] accessEntry
 
-# no @derive(Json): member(s) disabledServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disabledServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAckConfig:
     Optional[bool] enableCrossNamespace
     Optional[list[str]] disabledServices
@@ -2537,19 +2664,22 @@ struct UpdateAddonRequest:
     Optional[str] configurationValues
     Optional[list[AddonPodIdentityAssociations]] podIdentityAssociations
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAddonResponse:
     Optional[Update] update
 
-# no @derive(Json): member(s) rbacRoleMappings: UpdateRoleMappings, networkAccess: ArgoCdNetworkAccessConfigRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rbacRoleMappings: UpdateRoleMappings, networkAccess: ArgoCdNetworkAccessConfigRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateArgoCdConfig:
     Optional[UpdateRoleMappings] rbacRoleMappings
     Optional[ArgoCdNetworkAccessConfigRequest] networkAccess
 
-# no @derive(Json): member(s) argoCd: UpdateArgoCdConfig, ack: UpdateAckConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) argoCd: UpdateArgoCdConfig, ack: UpdateAckConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapabilityConfiguration:
     Optional[UpdateArgoCdConfig] argoCd
     Optional[UpdateAckConfig] ack
@@ -2564,8 +2694,9 @@ struct UpdateCapabilityRequest:
     Optional[str] clientRequestToken
     Optional[str] deletePropagationPolicy
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapabilityResponse:
     Optional[Update] update
 
@@ -2589,8 +2720,9 @@ struct UpdateClusterConfigRequest:
     Optional[KubeSchedulerConfigRequest] kubeSchedulerConfig
     Optional[KubeControllerManagerConfigRequest] kubeControllerManagerConfig
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterConfigResponse:
     Optional[Update] update
 
@@ -2603,8 +2735,9 @@ struct UpdateClusterVersionRequest:
     Optional[bool] force
     Optional[RollbackConfig] rollbackConfig
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterVersionResponse:
     Optional[Update] update
 
@@ -2615,13 +2748,15 @@ struct UpdateEksAnywhereSubscriptionRequest:
     bool autoRenew
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) subscription: EksAnywhereSubscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: EksAnywhereSubscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEksAnywhereSubscriptionResponse:
     Optional[EksAnywhereSubscription] subscription
 
-# no @derive(Json): member(s) addOrUpdateLabels: dict[str, str], removeLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addOrUpdateLabels: dict[str, str], removeLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLabelsPayload:
     Optional[dict[str, str]] addOrUpdateLabels
     Optional[list[str]] removeLabels
@@ -2639,8 +2774,9 @@ struct UpdateNodegroupConfigRequest:
     Optional[WarmPoolConfig] warmPoolConfig
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNodegroupConfigResponse:
     Optional[Update] update
 
@@ -2655,8 +2791,9 @@ struct UpdateNodegroupVersionRequest:
     Optional[bool] force
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) update: Update not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) update: Update not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNodegroupVersionResponse:
     Optional[Update] update
 
@@ -2676,19 +2813,22 @@ struct UpdatePodIdentityAssociationRequest:
     Optional[str] targetRoleArn
     Optional[str] policy
 
-# no @derive(Json): member(s) association: PodIdentityAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: PodIdentityAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePodIdentityAssociationResponse:
     Optional[PodIdentityAssociation] association
 
-# no @derive(Json): member(s) addOrUpdateRoleMappings: list[ArgoCdRoleMapping], removeRoleMappings: list[ArgoCdRoleMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addOrUpdateRoleMappings: list[ArgoCdRoleMapping], removeRoleMappings: list[ArgoCdRoleMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRoleMappings:
     Optional[list[ArgoCdRoleMapping]] addOrUpdateRoleMappings
     Optional[list[ArgoCdRoleMapping]] removeRoleMappings
 
-# no @derive(Json): member(s) addOrUpdateTaints: list[Taint], removeTaints: list[Taint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addOrUpdateTaints: list[Taint], removeTaints: list[Taint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTaintsPayload:
     Optional[list[Taint]] addOrUpdateTaints
     Optional[list[Taint]] removeTaints
@@ -2701,8 +2841,9 @@ struct UpgradePolicyRequest:
 struct UpgradePolicyResponse:
     Optional[SupportType] supportType
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], publicAccessCidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], publicAccessCidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigRequest:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
@@ -2711,8 +2852,9 @@ struct VpcConfigRequest:
     Optional[list[str]] publicAccessCidrs
     Optional[ControlPlaneEgressModeType] controlPlaneEgressMode
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], publicAccessCidrs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], publicAccessCidrs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigResponse:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
@@ -2801,31 +2943,12 @@ def eks_error_from_code(str code) -> EKSError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateAccessPolicy (document member `accessScope: AccessScope` is not serializable by derive)
-#   AssociateEncryptionConfig (document member `encryptionConfig: list[EncryptionConfig]` is not serializable by derive)
-#   AssociateIdentityProviderConfig (document member `oidc: OidcIdentityProviderConfigRequest` is not serializable by derive)
-#   CreateAccessEntry (document member `kubernetesGroups: list[str]` is not serializable by derive)
-#   CreateAddon (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateCapability (document member `configuration: CapabilityConfigurationRequest` is not serializable by derive)
-#   CreateCluster (document member `resourcesVpcConfig: VpcConfigRequest` is not serializable by derive)
-#   CreateEksAnywhereSubscription (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateFargateProfile (document member `subnets: list[str]` is not serializable by derive)
-#   CreateNodegroup (document member `subnets: list[str]` is not serializable by derive)
-#   CreatePodIdentityAssociation (document member `tags: dict[str, str]` is not serializable by derive)
 #   DeleteAddon (httpQuery `preserve` has unsupported type bool)
 #   DescribeAddonVersions (httpQuery `types` has unsupported type list[str])
 #   DescribeClusterVersions (httpQuery `defaultOnly` has unsupported type bool)
 #   ListClusters (httpQuery `include` has unsupported type list[str])
 #   ListEksAnywhereSubscriptions (httpQuery `includeStatus` has unsupported type list[EksAnywhereSubscriptionStatus])
-#   ListInsights (document member `filter: InsightsFilter` is not serializable by derive)
-#   RegisterCluster (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAccessEntry (document member `kubernetesGroups: list[str]` is not serializable by derive)
-#   UpdateAddon (document member `podIdentityAssociations: list[AddonPodIdentityAssociations]` is not serializable by derive)
-#   UpdateCapability (document member `configuration: UpdateCapabilityConfiguration` is not serializable by derive)
-#   UpdateClusterConfig (document member `resourcesVpcConfig: VpcConfigRequest` is not serializable by derive)
-#   UpdateNodegroupConfig (document member `labels: UpdateLabelsPayload` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -2833,7 +2956,6 @@ def eks_error_from_code(str code) -> EKSError:
 #   DescribeClusterVersions (operation not generated)
 #   ListClusters (operation not generated)
 #   ListEksAnywhereSubscriptions (operation not generated)
-#   ListInsights (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2896,6 +3018,483 @@ struct UpdatePodIdentityAssociationDocument:
     Optional[str] targetRoleArn
     Optional[str] policy
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def eks_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def eks_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def eks_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccessScope to a compact JSON object (declaration order).
+def access_scope_to_json(AccessScope v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(eks_json_str(x2))
+        parts.append("\"namespaces\":" + eks_json_arr(e2))
+    return eks_json_obj(parts)
+
+# Serialize AckConfigRequest to a compact JSON object (declaration order).
+def ack_config_request_to_json(AckConfigRequest v) -> str:
+    list[str] parts = []
+    if v.enableCrossNamespace.is_some():
+        auto u0 = v.enableCrossNamespace.unwrap()
+        parts.append("\"enableCrossNamespace\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.disabledServices.is_some():
+        auto u1 = v.disabledServices.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(eks_json_str(x2))
+        parts.append("\"disabledServices\":" + eks_json_arr(e2))
+    return eks_json_obj(parts)
+
+# Serialize ArgoCdConfigRequest to a compact JSON object (declaration order).
+def argo_cd_config_request_to_json(ArgoCdConfigRequest v) -> str:
+    list[str] parts = []
+    if v.namespace.is_some():
+        auto u0 = v.namespace.unwrap()
+        parts.append("\"namespace\":" + eks_json_str(u0))
+    parts.append("\"awsIdc\":" + v.awsIdc.to_json())
+    if v.rbacRoleMappings.is_some():
+        auto u1 = v.rbacRoleMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(argo_cd_role_mapping_to_json(x2))
+        parts.append("\"rbacRoleMappings\":" + eks_json_arr(e2))
+    if v.networkAccess.is_some():
+        auto u3 = v.networkAccess.unwrap()
+        parts.append("\"networkAccess\":" + argo_cd_network_access_config_request_to_json(u3))
+    if v.endpointPrefix.is_some():
+        auto u4 = v.endpointPrefix.unwrap()
+        parts.append("\"endpointPrefix\":" + eks_json_str(u4))
+    return eks_json_obj(parts)
+
+# Serialize ArgoCdNetworkAccessConfigRequest to a compact JSON object (declaration order).
+def argo_cd_network_access_config_request_to_json(ArgoCdNetworkAccessConfigRequest v) -> str:
+    list[str] parts = []
+    if v.vpceIds.is_some():
+        auto u0 = v.vpceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(eks_json_str(x1))
+        parts.append("\"vpceIds\":" + eks_json_arr(e1))
+    return eks_json_obj(parts)
+
+# Serialize ArgoCdRoleMapping to a compact JSON object (declaration order).
+def argo_cd_role_mapping_to_json(ArgoCdRoleMapping v) -> str:
+    list[str] parts = []
+    parts.append("\"role\":" + v.role.to_json())
+    list[str] e0 = []
+    for x0 in v.identities:
+        e0.append(x0.to_json())
+    parts.append("\"identities\":" + eks_json_arr(e0))
+    return eks_json_obj(parts)
+
+# Serialize CapabilityConfigurationRequest to a compact JSON object (declaration order).
+def capability_configuration_request_to_json(CapabilityConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.argoCd.is_some():
+        auto u0 = v.argoCd.unwrap()
+        parts.append("\"argoCd\":" + argo_cd_config_request_to_json(u0))
+    if v.ack.is_some():
+        auto u1 = v.ack.unwrap()
+        parts.append("\"ack\":" + ack_config_request_to_json(u1))
+    return eks_json_obj(parts)
+
+# Serialize ComputeConfigRequest to a compact JSON object (declaration order).
+def compute_config_request_to_json(ComputeConfigRequest v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.nodePools.is_some():
+        auto u1 = v.nodePools.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(eks_json_str(x2))
+        parts.append("\"nodePools\":" + eks_json_arr(e2))
+    if v.nodeRoleArn.is_some():
+        auto u3 = v.nodeRoleArn.unwrap()
+        parts.append("\"nodeRoleArn\":" + eks_json_str(u3))
+    return eks_json_obj(parts)
+
+# Serialize EncryptionConfig to a compact JSON object (declaration order).
+def encryption_config_to_json(EncryptionConfig v) -> str:
+    list[str] parts = []
+    if v.resources.is_some():
+        auto u0 = v.resources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(eks_json_str(x1))
+        parts.append("\"resources\":" + eks_json_arr(e1))
+    if v.provider.is_some():
+        auto u2 = v.provider.unwrap()
+        parts.append("\"provider\":" + u2.to_json())
+    return eks_json_obj(parts)
+
+# Serialize FargateProfileSelector to a compact JSON object (declaration order).
+def fargate_profile_selector_to_json(FargateProfileSelector v) -> str:
+    list[str] parts = []
+    if v.namespace.is_some():
+        auto u0 = v.namespace.unwrap()
+        parts.append("\"namespace\":" + eks_json_str(u0))
+    if v.labels.is_some():
+        auto u1 = v.labels.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(eks_json_str(k2) + ":" + eks_json_str(u1[k2]))
+        parts.append("\"labels\":" + eks_json_obj(m2))
+    return eks_json_obj(parts)
+
+# Serialize InsightsFilter to a compact JSON object (declaration order).
+def insights_filter_to_json(InsightsFilter v) -> str:
+    list[str] parts = []
+    if v.categories.is_some():
+        auto u0 = v.categories.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"categories\":" + eks_json_arr(e1))
+    if v.kubernetesVersions.is_some():
+        auto u2 = v.kubernetesVersions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(eks_json_str(x3))
+        parts.append("\"kubernetesVersions\":" + eks_json_arr(e3))
+    if v.statuses.is_some():
+        auto u4 = v.statuses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"statuses\":" + eks_json_arr(e5))
+    return eks_json_obj(parts)
+
+# Serialize KubeSchedulerConfigRequest to a compact JSON object (declaration order).
+def kube_scheduler_config_request_to_json(KubeSchedulerConfigRequest v) -> str:
+    list[str] parts = []
+    if v.nodeResourcesFit.is_some():
+        auto u0 = v.nodeResourcesFit.unwrap()
+        parts.append("\"nodeResourcesFit\":" + node_resources_fit_config_to_json(u0))
+    return eks_json_obj(parts)
+
+# Serialize LogSetup to a compact JSON object (declaration order).
+def log_setup_to_json(LogSetup v) -> str:
+    list[str] parts = []
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + eks_json_arr(e1))
+    if v.enabled.is_some():
+        auto u2 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u2)))
+    return eks_json_obj(parts)
+
+# Serialize Logging to a compact JSON object (declaration order).
+def logging_to_json(Logging v) -> str:
+    list[str] parts = []
+    if v.clusterLogging.is_some():
+        auto u0 = v.clusterLogging.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(log_setup_to_json(x1))
+        parts.append("\"clusterLogging\":" + eks_json_arr(e1))
+    return eks_json_obj(parts)
+
+# Serialize NodeRepairConfig to a compact JSON object (declaration order).
+def node_repair_config_to_json(NodeRepairConfig v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.maxUnhealthyNodeThresholdCount.is_some():
+        auto u1 = v.maxUnhealthyNodeThresholdCount.unwrap()
+        parts.append("\"maxUnhealthyNodeThresholdCount\":" + str(u1))
+    if v.maxUnhealthyNodeThresholdPercentage.is_some():
+        auto u2 = v.maxUnhealthyNodeThresholdPercentage.unwrap()
+        parts.append("\"maxUnhealthyNodeThresholdPercentage\":" + str(u2))
+    if v.maxParallelNodesRepairedCount.is_some():
+        auto u3 = v.maxParallelNodesRepairedCount.unwrap()
+        parts.append("\"maxParallelNodesRepairedCount\":" + str(u3))
+    if v.maxParallelNodesRepairedPercentage.is_some():
+        auto u4 = v.maxParallelNodesRepairedPercentage.unwrap()
+        parts.append("\"maxParallelNodesRepairedPercentage\":" + str(u4))
+    if v.nodeRepairConfigOverrides.is_some():
+        auto u5 = v.nodeRepairConfigOverrides.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"nodeRepairConfigOverrides\":" + eks_json_arr(e6))
+    return eks_json_obj(parts)
+
+# Serialize NodeResourcesFitConfig to a compact JSON object (declaration order).
+def node_resources_fit_config_to_json(NodeResourcesFitConfig v) -> str:
+    list[str] parts = []
+    if v.scoringStrategy.is_some():
+        auto u0 = v.scoringStrategy.unwrap()
+        parts.append("\"scoringStrategy\":" + scoring_strategy_to_json(u0))
+    return eks_json_obj(parts)
+
+# Serialize OidcIdentityProviderConfigRequest to a compact JSON object (declaration order).
+def oidc_identity_provider_config_request_to_json(OidcIdentityProviderConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"identityProviderConfigName\":" + eks_json_str(v.identityProviderConfigName))
+    parts.append("\"issuerUrl\":" + eks_json_str(v.issuerUrl))
+    parts.append("\"clientId\":" + eks_json_str(v.clientId))
+    if v.usernameClaim.is_some():
+        auto u0 = v.usernameClaim.unwrap()
+        parts.append("\"usernameClaim\":" + eks_json_str(u0))
+    if v.usernamePrefix.is_some():
+        auto u1 = v.usernamePrefix.unwrap()
+        parts.append("\"usernamePrefix\":" + eks_json_str(u1))
+    if v.groupsClaim.is_some():
+        auto u2 = v.groupsClaim.unwrap()
+        parts.append("\"groupsClaim\":" + eks_json_str(u2))
+    if v.groupsPrefix.is_some():
+        auto u3 = v.groupsPrefix.unwrap()
+        parts.append("\"groupsPrefix\":" + eks_json_str(u3))
+    if v.requiredClaims.is_some():
+        auto u4 = v.requiredClaims.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(eks_json_str(k5) + ":" + eks_json_str(u4[k5]))
+        parts.append("\"requiredClaims\":" + eks_json_obj(m5))
+    return eks_json_obj(parts)
+
+# Serialize OutpostConfigRequest to a compact JSON object (declaration order).
+def outpost_config_request_to_json(OutpostConfigRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.outpostArns:
+        e0.append(eks_json_str(x0))
+    parts.append("\"outpostArns\":" + eks_json_arr(e0))
+    parts.append("\"controlPlaneInstanceType\":" + eks_json_str(v.controlPlaneInstanceType))
+    if v.controlPlanePlacement.is_some():
+        auto u1 = v.controlPlanePlacement.unwrap()
+        parts.append("\"controlPlanePlacement\":" + u1.to_json())
+    if v.etcdInstanceType.is_some():
+        auto u2 = v.etcdInstanceType.unwrap()
+        parts.append("\"etcdInstanceType\":" + eks_json_str(u2))
+    if v.etcdPlacement.is_some():
+        auto u3 = v.etcdPlacement.unwrap()
+        parts.append("\"etcdPlacement\":" + u3.to_json())
+    return eks_json_obj(parts)
+
+# Serialize RemoteAccessConfig to a compact JSON object (declaration order).
+def remote_access_config_to_json(RemoteAccessConfig v) -> str:
+    list[str] parts = []
+    if v.ec2SshKey.is_some():
+        auto u0 = v.ec2SshKey.unwrap()
+        parts.append("\"ec2SshKey\":" + eks_json_str(u0))
+    if v.sourceSecurityGroups.is_some():
+        auto u1 = v.sourceSecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(eks_json_str(x2))
+        parts.append("\"sourceSecurityGroups\":" + eks_json_arr(e2))
+    return eks_json_obj(parts)
+
+# Serialize RemoteNetworkConfigRequest to a compact JSON object (declaration order).
+def remote_network_config_request_to_json(RemoteNetworkConfigRequest v) -> str:
+    list[str] parts = []
+    if v.remoteNodeNetworks.is_some():
+        auto u0 = v.remoteNodeNetworks.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(remote_node_network_to_json(x1))
+        parts.append("\"remoteNodeNetworks\":" + eks_json_arr(e1))
+    if v.remotePodNetworks.is_some():
+        auto u2 = v.remotePodNetworks.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(remote_pod_network_to_json(x3))
+        parts.append("\"remotePodNetworks\":" + eks_json_arr(e3))
+    return eks_json_obj(parts)
+
+# Serialize RemoteNodeNetwork to a compact JSON object (declaration order).
+def remote_node_network_to_json(RemoteNodeNetwork v) -> str:
+    list[str] parts = []
+    if v.cidrs.is_some():
+        auto u0 = v.cidrs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(eks_json_str(x1))
+        parts.append("\"cidrs\":" + eks_json_arr(e1))
+    return eks_json_obj(parts)
+
+# Serialize RemotePodNetwork to a compact JSON object (declaration order).
+def remote_pod_network_to_json(RemotePodNetwork v) -> str:
+    list[str] parts = []
+    if v.cidrs.is_some():
+        auto u0 = v.cidrs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(eks_json_str(x1))
+        parts.append("\"cidrs\":" + eks_json_arr(e1))
+    return eks_json_obj(parts)
+
+# Serialize ScoringStrategy to a compact JSON object (declaration order).
+def scoring_strategy_to_json(ScoringStrategy v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.resources.is_some():
+        auto u1 = v.resources.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"resources\":" + eks_json_arr(e2))
+    return eks_json_obj(parts)
+
+# Serialize UpdateAckConfig to a compact JSON object (declaration order).
+def update_ack_config_to_json(UpdateAckConfig v) -> str:
+    list[str] parts = []
+    if v.enableCrossNamespace.is_some():
+        auto u0 = v.enableCrossNamespace.unwrap()
+        parts.append("\"enableCrossNamespace\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.disabledServices.is_some():
+        auto u1 = v.disabledServices.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(eks_json_str(x2))
+        parts.append("\"disabledServices\":" + eks_json_arr(e2))
+    return eks_json_obj(parts)
+
+# Serialize UpdateArgoCdConfig to a compact JSON object (declaration order).
+def update_argo_cd_config_to_json(UpdateArgoCdConfig v) -> str:
+    list[str] parts = []
+    if v.rbacRoleMappings.is_some():
+        auto u0 = v.rbacRoleMappings.unwrap()
+        parts.append("\"rbacRoleMappings\":" + update_role_mappings_to_json(u0))
+    if v.networkAccess.is_some():
+        auto u1 = v.networkAccess.unwrap()
+        parts.append("\"networkAccess\":" + argo_cd_network_access_config_request_to_json(u1))
+    return eks_json_obj(parts)
+
+# Serialize UpdateCapabilityConfiguration to a compact JSON object (declaration order).
+def update_capability_configuration_to_json(UpdateCapabilityConfiguration v) -> str:
+    list[str] parts = []
+    if v.argoCd.is_some():
+        auto u0 = v.argoCd.unwrap()
+        parts.append("\"argoCd\":" + update_argo_cd_config_to_json(u0))
+    if v.ack.is_some():
+        auto u1 = v.ack.unwrap()
+        parts.append("\"ack\":" + update_ack_config_to_json(u1))
+    return eks_json_obj(parts)
+
+# Serialize UpdateLabelsPayload to a compact JSON object (declaration order).
+def update_labels_payload_to_json(UpdateLabelsPayload v) -> str:
+    list[str] parts = []
+    if v.addOrUpdateLabels.is_some():
+        auto u0 = v.addOrUpdateLabels.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(eks_json_str(k1) + ":" + eks_json_str(u0[k1]))
+        parts.append("\"addOrUpdateLabels\":" + eks_json_obj(m1))
+    if v.removeLabels.is_some():
+        auto u2 = v.removeLabels.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(eks_json_str(x3))
+        parts.append("\"removeLabels\":" + eks_json_arr(e3))
+    return eks_json_obj(parts)
+
+# Serialize UpdateRoleMappings to a compact JSON object (declaration order).
+def update_role_mappings_to_json(UpdateRoleMappings v) -> str:
+    list[str] parts = []
+    if v.addOrUpdateRoleMappings.is_some():
+        auto u0 = v.addOrUpdateRoleMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(argo_cd_role_mapping_to_json(x1))
+        parts.append("\"addOrUpdateRoleMappings\":" + eks_json_arr(e1))
+    if v.removeRoleMappings.is_some():
+        auto u2 = v.removeRoleMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(argo_cd_role_mapping_to_json(x3))
+        parts.append("\"removeRoleMappings\":" + eks_json_arr(e3))
+    return eks_json_obj(parts)
+
+# Serialize UpdateTaintsPayload to a compact JSON object (declaration order).
+def update_taints_payload_to_json(UpdateTaintsPayload v) -> str:
+    list[str] parts = []
+    if v.addOrUpdateTaints.is_some():
+        auto u0 = v.addOrUpdateTaints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"addOrUpdateTaints\":" + eks_json_arr(e1))
+    if v.removeTaints.is_some():
+        auto u2 = v.removeTaints.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"removeTaints\":" + eks_json_arr(e3))
+    return eks_json_obj(parts)
+
+# Serialize VpcConfigRequest to a compact JSON object (declaration order).
+def vpc_config_request_to_json(VpcConfigRequest v) -> str:
+    list[str] parts = []
+    if v.subnetIds.is_some():
+        auto u0 = v.subnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(eks_json_str(x1))
+        parts.append("\"subnetIds\":" + eks_json_arr(e1))
+    if v.securityGroupIds.is_some():
+        auto u2 = v.securityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(eks_json_str(x3))
+        parts.append("\"securityGroupIds\":" + eks_json_arr(e3))
+    if v.endpointPublicAccess.is_some():
+        auto u4 = v.endpointPublicAccess.unwrap()
+        parts.append("\"endpointPublicAccess\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.endpointPrivateAccess.is_some():
+        auto u5 = v.endpointPrivateAccess.unwrap()
+        parts.append("\"endpointPrivateAccess\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.publicAccessCidrs.is_some():
+        auto u6 = v.publicAccessCidrs.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(eks_json_str(x7))
+        parts.append("\"publicAccessCidrs\":" + eks_json_arr(e7))
+    if v.controlPlaneEgressMode.is_some():
+        auto u8 = v.controlPlaneEgressMode.unwrap()
+        parts.append("\"controlPlaneEgressMode\":" + u8.to_json())
+    return eks_json_obj(parts)
+
 # A bound EKS client: credentials + region, threaded into every operation.
 struct EKSClient:
     core.Credentials creds
@@ -2913,6 +3512,59 @@ struct EKSClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
 
+    # AssociateAccessPolicy  POST /clusters/{name}/access-entries/{principalArn}/access-policies
+    # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServerException
+    def associate_access_policy(self, AssociateAccessPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        labels["principalArn"] = input.principalArn
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"policyArn\":" + eks_json_str(input.policyArn))
+        parts.append("\"accessScope\":" + access_scope_to_json(input.accessScope))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # AssociateEncryptionConfig  POST /clusters/{name}/encryption-config/associate
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServerException, ThrottlingException
+    def associate_encryption_config(self, AssociateEncryptionConfigRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/encryption-config/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.encryptionConfig:
+            e0.append(encryption_config_to_json(x0))
+        parts.append("\"encryptionConfig\":" + eks_json_arr(e0))
+        if input.clientRequestToken.is_some():
+            auto u1 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u1))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # AssociateIdentityProviderConfig  POST /clusters/{name}/identity-provider-configs/associate
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServerException, ThrottlingException
+    def associate_identity_provider_config(self, AssociateIdentityProviderConfigRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"oidc\":" + oidc_identity_provider_config_request_to_json(input.oidc))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(eks_json_str(k1) + ":" + eks_json_str(u0[k1]))
+            parts.append("\"tags\":" + eks_json_obj(m1))
+        if input.clientRequestToken.is_some():
+            auto u2 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u2))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
     # CancelUpdate  POST /clusters/{name}/updates/{updateId}/cancel-update
     # errors: ClientException, InvalidParameterException, InvalidRequestException, InvalidStateException, ResourceInUseException, ResourceNotFoundException, ServerException, ThrottlingException
     def cancel_update(self, CancelUpdateRequest input) -> str:
@@ -2925,6 +3577,108 @@ struct EKSClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
 
+    # CreateAccessEntry  POST /clusters/{name}/access-entries
+    # errors: InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ServerException
+    def create_access_entry(self, CreateAccessEntryRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"principalArn\":" + eks_json_str(input.principalArn))
+        if input.kubernetesGroups.is_some():
+            auto u0 = input.kubernetesGroups.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(eks_json_str(x1))
+            parts.append("\"kubernetesGroups\":" + eks_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(eks_json_str(k3) + ":" + eks_json_str(u2[k3]))
+            parts.append("\"tags\":" + eks_json_obj(m3))
+        if input.clientRequestToken.is_some():
+            auto u4 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u4))
+        if input.username.is_some():
+            auto u5 = input.username.unwrap()
+            parts.append("\"username\":" + eks_json_str(u5))
+        if input.type.is_some():
+            auto u6 = input.type.unwrap()
+            parts.append("\"type\":" + eks_json_str(u6))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreateAddon  POST /clusters/{name}/addons
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServerException
+    def create_addon(self, CreateAddonRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/addons", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"addonName\":" + eks_json_str(input.addonName))
+        if input.addonVersion.is_some():
+            auto u0 = input.addonVersion.unwrap()
+            parts.append("\"addonVersion\":" + eks_json_str(u0))
+        if input.serviceAccountRoleArn.is_some():
+            auto u1 = input.serviceAccountRoleArn.unwrap()
+            parts.append("\"serviceAccountRoleArn\":" + eks_json_str(u1))
+        if input.resolveConflicts.is_some():
+            auto u2 = input.resolveConflicts.unwrap()
+            parts.append("\"resolveConflicts\":" + u2.to_json())
+        if input.clientRequestToken.is_some():
+            auto u3 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(eks_json_str(k5) + ":" + eks_json_str(u4[k5]))
+            parts.append("\"tags\":" + eks_json_obj(m5))
+        if input.configurationValues.is_some():
+            auto u6 = input.configurationValues.unwrap()
+            parts.append("\"configurationValues\":" + eks_json_str(u6))
+        if input.podIdentityAssociations.is_some():
+            auto u7 = input.podIdentityAssociations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"podIdentityAssociations\":" + eks_json_arr(e8))
+        if input.namespaceConfig.is_some():
+            auto u9 = input.namespaceConfig.unwrap()
+            parts.append("\"namespaceConfig\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreateCapability  POST /clusters/{name}/capabilities
+    # errors: AccessDeniedException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ServerException, ThrottlingException
+    def create_capability(self, CreateCapabilityRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/capabilities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"capabilityName\":" + eks_json_str(input.capabilityName))
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u0))
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"roleArn\":" + eks_json_str(input.roleArn))
+        if input.configuration.is_some():
+            auto u1 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + capability_configuration_request_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(eks_json_str(k3) + ":" + eks_json_str(u2[k3]))
+            parts.append("\"tags\":" + eks_json_obj(m3))
+        parts.append("\"deletePropagationPolicy\":" + eks_json_str(input.deletePropagationPolicy))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
     # CreateCertificateAuthority  POST /clusters/{name}/certificate-authorities
     # errors: InvalidParameterException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ServerException, ServiceUnavailableException
     def create_certificate_authority(self, CreateCertificateAuthorityRequest input) -> str:
@@ -2934,6 +3688,253 @@ struct EKSClient:
         auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/certificate-authorities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCertificateAuthorityDocument(clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreateCluster  POST /clusters
+    # errors: ClientException, InvalidParameterException, ResourceInUseException, ResourceLimitExceededException, ServerException, ServiceUnavailableException, UnsupportedAvailabilityZoneException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + eks_json_str(input.name))
+        if input.version.is_some():
+            auto u0 = input.version.unwrap()
+            parts.append("\"version\":" + eks_json_str(u0))
+        parts.append("\"roleArn\":" + eks_json_str(input.roleArn))
+        parts.append("\"resourcesVpcConfig\":" + vpc_config_request_to_json(input.resourcesVpcConfig))
+        if input.kubernetesNetworkConfig.is_some():
+            auto u1 = input.kubernetesNetworkConfig.unwrap()
+            parts.append("\"kubernetesNetworkConfig\":" + u1.to_json())
+        if input.logging.is_some():
+            auto u2 = input.logging.unwrap()
+            parts.append("\"logging\":" + logging_to_json(u2))
+        if input.clientRequestToken.is_some():
+            auto u3 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(eks_json_str(k5) + ":" + eks_json_str(u4[k5]))
+            parts.append("\"tags\":" + eks_json_obj(m5))
+        if input.encryptionConfig.is_some():
+            auto u6 = input.encryptionConfig.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(encryption_config_to_json(x7))
+            parts.append("\"encryptionConfig\":" + eks_json_arr(e7))
+        if input.outpostConfig.is_some():
+            auto u8 = input.outpostConfig.unwrap()
+            parts.append("\"outpostConfig\":" + outpost_config_request_to_json(u8))
+        if input.accessConfig.is_some():
+            auto u9 = input.accessConfig.unwrap()
+            parts.append("\"accessConfig\":" + u9.to_json())
+        if input.bootstrapSelfManagedAddons.is_some():
+            auto u10 = input.bootstrapSelfManagedAddons.unwrap()
+            parts.append("\"bootstrapSelfManagedAddons\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.upgradePolicy.is_some():
+            auto u11 = input.upgradePolicy.unwrap()
+            parts.append("\"upgradePolicy\":" + u11.to_json())
+        if input.zonalShiftConfig.is_some():
+            auto u12 = input.zonalShiftConfig.unwrap()
+            parts.append("\"zonalShiftConfig\":" + u12.to_json())
+        if input.remoteNetworkConfig.is_some():
+            auto u13 = input.remoteNetworkConfig.unwrap()
+            parts.append("\"remoteNetworkConfig\":" + remote_network_config_request_to_json(u13))
+        if input.computeConfig.is_some():
+            auto u14 = input.computeConfig.unwrap()
+            parts.append("\"computeConfig\":" + compute_config_request_to_json(u14))
+        if input.storageConfig.is_some():
+            auto u15 = input.storageConfig.unwrap()
+            parts.append("\"storageConfig\":" + u15.to_json())
+        if input.deletionProtection.is_some():
+            auto u16 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u16)))
+        if input.controlPlaneScalingConfig.is_some():
+            auto u17 = input.controlPlaneScalingConfig.unwrap()
+            parts.append("\"controlPlaneScalingConfig\":" + u17.to_json())
+        if input.kubeApiServerConfig.is_some():
+            auto u18 = input.kubeApiServerConfig.unwrap()
+            parts.append("\"kubeApiServerConfig\":" + u18.to_json())
+        if input.kubeSchedulerConfig.is_some():
+            auto u19 = input.kubeSchedulerConfig.unwrap()
+            parts.append("\"kubeSchedulerConfig\":" + kube_scheduler_config_request_to_json(u19))
+        if input.kubeControllerManagerConfig.is_some():
+            auto u20 = input.kubeControllerManagerConfig.unwrap()
+            parts.append("\"kubeControllerManagerConfig\":" + u20.to_json())
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreateEksAnywhereSubscription  POST /eks-anywhere-subscriptions
+    # errors: ClientException, InvalidParameterException, ResourceLimitExceededException, ServerException, ServiceUnavailableException
+    def create_eks_anywhere_subscription(self, CreateEksAnywhereSubscriptionRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/eks-anywhere-subscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + eks_json_str(input.name))
+        parts.append("\"term\":" + input.term.to_json())
+        if input.licenseQuantity.is_some():
+            auto u0 = input.licenseQuantity.unwrap()
+            parts.append("\"licenseQuantity\":" + str(u0))
+        if input.licenseType.is_some():
+            auto u1 = input.licenseType.unwrap()
+            parts.append("\"licenseType\":" + eks_json_str(u1))
+        if input.autoRenew.is_some():
+            auto u2 = input.autoRenew.unwrap()
+            parts.append("\"autoRenew\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.clientRequestToken.is_some():
+            auto u3 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(eks_json_str(k5) + ":" + eks_json_str(u4[k5]))
+            parts.append("\"tags\":" + eks_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreateFargateProfile  POST /clusters/{name}/fargate-profiles
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceLimitExceededException, ServerException, UnsupportedAvailabilityZoneException
+    def create_fargate_profile(self, CreateFargateProfileRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/fargate-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"fargateProfileName\":" + eks_json_str(input.fargateProfileName))
+        parts.append("\"podExecutionRoleArn\":" + eks_json_str(input.podExecutionRoleArn))
+        if input.subnets.is_some():
+            auto u0 = input.subnets.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(eks_json_str(x1))
+            parts.append("\"subnets\":" + eks_json_arr(e1))
+        if input.selectors.is_some():
+            auto u2 = input.selectors.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(fargate_profile_selector_to_json(x3))
+            parts.append("\"selectors\":" + eks_json_arr(e3))
+        if input.clientRequestToken.is_some():
+            auto u4 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(eks_json_str(k6) + ":" + eks_json_str(u5[k6]))
+            parts.append("\"tags\":" + eks_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreateNodegroup  POST /clusters/{name}/node-groups
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ServerException, ServiceUnavailableException
+    def create_nodegroup(self, CreateNodegroupRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"nodegroupName\":" + eks_json_str(input.nodegroupName))
+        if input.scalingConfig.is_some():
+            auto u0 = input.scalingConfig.unwrap()
+            parts.append("\"scalingConfig\":" + u0.to_json())
+        if input.diskSize.is_some():
+            auto u1 = input.diskSize.unwrap()
+            parts.append("\"diskSize\":" + str(u1))
+        list[str] e2 = []
+        for x2 in input.subnets:
+            e2.append(eks_json_str(x2))
+        parts.append("\"subnets\":" + eks_json_arr(e2))
+        if input.instanceTypes.is_some():
+            auto u3 = input.instanceTypes.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(eks_json_str(x4))
+            parts.append("\"instanceTypes\":" + eks_json_arr(e4))
+        if input.amiType.is_some():
+            auto u5 = input.amiType.unwrap()
+            parts.append("\"amiType\":" + u5.to_json())
+        if input.remoteAccess.is_some():
+            auto u6 = input.remoteAccess.unwrap()
+            parts.append("\"remoteAccess\":" + remote_access_config_to_json(u6))
+        parts.append("\"nodeRole\":" + eks_json_str(input.nodeRole))
+        if input.labels.is_some():
+            auto u7 = input.labels.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(eks_json_str(k8) + ":" + eks_json_str(u7[k8]))
+            parts.append("\"labels\":" + eks_json_obj(m8))
+        if input.taints.is_some():
+            auto u9 = input.taints.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"taints\":" + eks_json_arr(e10))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(eks_json_str(k12) + ":" + eks_json_str(u11[k12]))
+            parts.append("\"tags\":" + eks_json_obj(m12))
+        if input.clientRequestToken.is_some():
+            auto u13 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u13))
+        if input.launchTemplate.is_some():
+            auto u14 = input.launchTemplate.unwrap()
+            parts.append("\"launchTemplate\":" + u14.to_json())
+        if input.updateConfig.is_some():
+            auto u15 = input.updateConfig.unwrap()
+            parts.append("\"updateConfig\":" + u15.to_json())
+        if input.nodeRepairConfig.is_some():
+            auto u16 = input.nodeRepairConfig.unwrap()
+            parts.append("\"nodeRepairConfig\":" + node_repair_config_to_json(u16))
+        if input.capacityType.is_some():
+            auto u17 = input.capacityType.unwrap()
+            parts.append("\"capacityType\":" + u17.to_json())
+        if input.version.is_some():
+            auto u18 = input.version.unwrap()
+            parts.append("\"version\":" + eks_json_str(u18))
+        if input.releaseVersion.is_some():
+            auto u19 = input.releaseVersion.unwrap()
+            parts.append("\"releaseVersion\":" + eks_json_str(u19))
+        if input.warmPoolConfig.is_some():
+            auto u20 = input.warmPoolConfig.unwrap()
+            parts.append("\"warmPoolConfig\":" + u20.to_json())
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # CreatePodIdentityAssociation  POST /clusters/{name}/pod-identity-associations
+    # errors: InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ServerException
+    def create_pod_identity_association(self, CreatePodIdentityAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/pod-identity-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"namespace\":" + eks_json_str(input.namespace))
+        parts.append("\"serviceAccount\":" + eks_json_str(input.serviceAccount))
+        parts.append("\"roleArn\":" + eks_json_str(input.roleArn))
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(eks_json_str(k2) + ":" + eks_json_str(u1[k2]))
+            parts.append("\"tags\":" + eks_json_obj(m2))
+        if input.disableSessionTags.is_some():
+            auto u3 = input.disableSessionTags.unwrap()
+            parts.append("\"disableSessionTags\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.targetRoleArn.is_some():
+            auto u4 = input.targetRoleArn.unwrap()
+            parts.append("\"targetRoleArn\":" + eks_json_str(u4))
+        if input.policy.is_some():
+            auto u5 = input.policy.unwrap()
+            parts.append("\"policy\":" + eks_json_str(u5))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
 
     # DeleteAccessEntry  DELETE /clusters/{name}/access-entries/{principalArn}
@@ -3306,6 +4307,26 @@ struct EKSClient:
         auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/identity-provider-configs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
+    # ListInsights  POST /clusters/{name}/insights
+    # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServerException
+    def list_insights(self, ListInsightsRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/insights", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + insights_filter_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + eks_json_str(u2))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
     # ListNodegroups  GET /clusters/{name}/node-groups
     # errors: ClientException, InvalidParameterException, ResourceNotFoundException, ServerException, ServiceUnavailableException
     def list_nodegroups(self, ListNodegroupsRequest input) -> str:
@@ -3367,6 +4388,26 @@ struct EKSClient:
         auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/updates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
+    # RegisterCluster  POST /cluster-registrations
+    # errors: AccessDeniedException, ClientException, InvalidParameterException, ResourceInUseException, ResourceLimitExceededException, ResourcePropagationDelayException, ServerException, ServiceUnavailableException
+    def register_cluster(self, RegisterClusterRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-registrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + eks_json_str(input.name))
+        parts.append("\"connectorConfig\":" + input.connectorConfig.to_json())
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(eks_json_str(k2) + ":" + eks_json_str(u1[k2]))
+            parts.append("\"tags\":" + eks_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
     # StartInsightsRefresh  POST /clusters/{name}/insights-refresh
     # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServerException
     def start_insights_refresh(self, StartInsightsRefreshRequest input) -> str:
@@ -3375,6 +4416,158 @@ struct EKSClient:
         labels["name"] = input.clusterName
         auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/insights-refresh", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: BadRequestException, NotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(eks_json_str(k0) + ":" + eks_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + eks_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # UpdateAccessEntry  POST /clusters/{name}/access-entries/{principalArn}
+    # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServerException
+    def update_access_entry(self, UpdateAccessEntryRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        labels["principalArn"] = input.principalArn
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.kubernetesGroups.is_some():
+            auto u0 = input.kubernetesGroups.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(eks_json_str(x1))
+            parts.append("\"kubernetesGroups\":" + eks_json_arr(e1))
+        if input.clientRequestToken.is_some():
+            auto u2 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u2))
+        if input.username.is_some():
+            auto u3 = input.username.unwrap()
+            parts.append("\"username\":" + eks_json_str(u3))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # UpdateAddon  POST /clusters/{name}/addons/{addonName}/update
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServerException
+    def update_addon(self, UpdateAddonRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        labels["addonName"] = input.addonName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/addons/{addonName}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.addonVersion.is_some():
+            auto u0 = input.addonVersion.unwrap()
+            parts.append("\"addonVersion\":" + eks_json_str(u0))
+        if input.serviceAccountRoleArn.is_some():
+            auto u1 = input.serviceAccountRoleArn.unwrap()
+            parts.append("\"serviceAccountRoleArn\":" + eks_json_str(u1))
+        if input.resolveConflicts.is_some():
+            auto u2 = input.resolveConflicts.unwrap()
+            parts.append("\"resolveConflicts\":" + u2.to_json())
+        if input.clientRequestToken.is_some():
+            auto u3 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u3))
+        if input.configurationValues.is_some():
+            auto u4 = input.configurationValues.unwrap()
+            parts.append("\"configurationValues\":" + eks_json_str(u4))
+        if input.podIdentityAssociations.is_some():
+            auto u5 = input.podIdentityAssociations.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"podIdentityAssociations\":" + eks_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # UpdateCapability  POST /clusters/{name}/capabilities/{capabilityName}
+    # errors: AccessDeniedException, InvalidParameterException, ResourceInUseException, ResourceNotFoundException, ServerException
+    def update_capability(self, UpdateCapabilityRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        labels["capabilityName"] = input.capabilityName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.roleArn.is_some():
+            auto u0 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + eks_json_str(u0))
+        if input.configuration.is_some():
+            auto u1 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + update_capability_configuration_to_json(u1))
+        if input.clientRequestToken.is_some():
+            auto u2 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u2))
+        if input.deletePropagationPolicy.is_some():
+            auto u3 = input.deletePropagationPolicy.unwrap()
+            parts.append("\"deletePropagationPolicy\":" + eks_json_str(u3))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # UpdateClusterConfig  POST /clusters/{name}/update-config
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServerException, ThrottlingException
+    def update_cluster_config(self, UpdateClusterConfigRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.name
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/update-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourcesVpcConfig.is_some():
+            auto u0 = input.resourcesVpcConfig.unwrap()
+            parts.append("\"resourcesVpcConfig\":" + vpc_config_request_to_json(u0))
+        if input.logging.is_some():
+            auto u1 = input.logging.unwrap()
+            parts.append("\"logging\":" + logging_to_json(u1))
+        if input.clientRequestToken.is_some():
+            auto u2 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u2))
+        if input.accessConfig.is_some():
+            auto u3 = input.accessConfig.unwrap()
+            parts.append("\"accessConfig\":" + u3.to_json())
+        if input.upgradePolicy.is_some():
+            auto u4 = input.upgradePolicy.unwrap()
+            parts.append("\"upgradePolicy\":" + u4.to_json())
+        if input.zonalShiftConfig.is_some():
+            auto u5 = input.zonalShiftConfig.unwrap()
+            parts.append("\"zonalShiftConfig\":" + u5.to_json())
+        if input.computeConfig.is_some():
+            auto u6 = input.computeConfig.unwrap()
+            parts.append("\"computeConfig\":" + compute_config_request_to_json(u6))
+        if input.kubernetesNetworkConfig.is_some():
+            auto u7 = input.kubernetesNetworkConfig.unwrap()
+            parts.append("\"kubernetesNetworkConfig\":" + u7.to_json())
+        if input.storageConfig.is_some():
+            auto u8 = input.storageConfig.unwrap()
+            parts.append("\"storageConfig\":" + u8.to_json())
+        if input.remoteNetworkConfig.is_some():
+            auto u9 = input.remoteNetworkConfig.unwrap()
+            parts.append("\"remoteNetworkConfig\":" + remote_network_config_request_to_json(u9))
+        if input.deletionProtection.is_some():
+            auto u10 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.controlPlaneScalingConfig.is_some():
+            auto u11 = input.controlPlaneScalingConfig.unwrap()
+            parts.append("\"controlPlaneScalingConfig\":" + u11.to_json())
+        if input.kubeApiServerConfig.is_some():
+            auto u12 = input.kubeApiServerConfig.unwrap()
+            parts.append("\"kubeApiServerConfig\":" + u12.to_json())
+        if input.kubeSchedulerConfig.is_some():
+            auto u13 = input.kubeSchedulerConfig.unwrap()
+            parts.append("\"kubeSchedulerConfig\":" + kube_scheduler_config_request_to_json(u13))
+        if input.kubeControllerManagerConfig.is_some():
+            auto u14 = input.kubeControllerManagerConfig.unwrap()
+            parts.append("\"kubeControllerManagerConfig\":" + u14.to_json())
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
 
     # UpdateClusterVersion  POST /clusters/{name}/updates
     # errors: ClientException, InvalidParameterException, InvalidRequestException, InvalidStateException, ResourceInUseException, ResourceNotFoundException, ServerException, ThrottlingException
@@ -3396,6 +4589,39 @@ struct EKSClient:
         auto b = binding.HttpBinding(method="POST", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEksAnywhereSubscriptionDocument(autoRenew=input.autoRenew, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # UpdateNodegroupConfig  POST /clusters/{name}/node-groups/{nodegroupName}/update-config
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServerException
+    def update_nodegroup_config(self, UpdateNodegroupConfigRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        labels["nodegroupName"] = input.nodegroupName
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups/{nodegroupName}/update-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.labels.is_some():
+            auto u0 = input.labels.unwrap()
+            parts.append("\"labels\":" + update_labels_payload_to_json(u0))
+        if input.taints.is_some():
+            auto u1 = input.taints.unwrap()
+            parts.append("\"taints\":" + update_taints_payload_to_json(u1))
+        if input.scalingConfig.is_some():
+            auto u2 = input.scalingConfig.unwrap()
+            parts.append("\"scalingConfig\":" + u2.to_json())
+        if input.updateConfig.is_some():
+            auto u3 = input.updateConfig.unwrap()
+            parts.append("\"updateConfig\":" + u3.to_json())
+        if input.nodeRepairConfig.is_some():
+            auto u4 = input.nodeRepairConfig.unwrap()
+            parts.append("\"nodeRepairConfig\":" + node_repair_config_to_json(u4))
+        if input.warmPoolConfig.is_some():
+            auto u5 = input.warmPoolConfig.unwrap()
+            parts.append("\"warmPoolConfig\":" + u5.to_json())
+        if input.clientRequestToken.is_some():
+            auto u6 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + eks_json_str(u6))
+        auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
 
     # UpdateNodegroupVersion  POST /clusters/{name}/node-groups/{nodegroupName}/update-version
@@ -3519,6 +4745,19 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         while True:
             auto raw = self.list_identity_provider_configs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListInsights — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: insights).
+    def paginate_list_insights(self, ListInsightsRequest input):
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        while True:
+            auto raw = self.list_insights(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

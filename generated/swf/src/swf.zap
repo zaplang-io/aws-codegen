@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 39 operations — 34 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 39 operations — 39 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   154 structs (133 @derive(Json)), 21 enums, 11 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -377,8 +377,9 @@ struct ActivityTypeInfo:
     DateTime creationDate
     Optional[DateTime] deprecationDate
 
-# no @derive(Json): member(s) typeInfos: list[ActivityTypeInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) typeInfos: list[ActivityTypeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActivityTypeInfos:
     list[ActivityTypeInfo] typeInfos
     Optional[str] nextPageToken
@@ -461,8 +462,9 @@ struct CompleteWorkflowExecutionFailedEventAttributes:
     CompleteWorkflowExecutionFailedCause cause
     int64 decisionTaskCompletedEventId
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContinueAsNewWorkflowExecutionDecisionAttributes:
     Optional[str] input
     Optional[str] executionStartToCloseTimeout
@@ -507,8 +509,9 @@ struct CountPendingDecisionTasksInput:
     str domain
     TaskList taskList
 
-# no @derive(Json): member(s) continueAsNewWorkflowExecutionDecisionAttributes: ContinueAsNewWorkflowExecutionDecisionAttributes, startChildWorkflowExecutionDecisionAttributes: StartChildWorkflowExecutionDecisionAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) continueAsNewWorkflowExecutionDecisionAttributes: ContinueAsNewWorkflowExecutionDecisionAttributes, startChildWorkflowExecutionDecisionAttributes: StartChildWorkflowExecutionDecisionAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Decision:
     DecisionType decisionType
     Optional[ScheduleActivityTaskDecisionAttributes] scheduleActivityTaskDecisionAttributes
@@ -525,8 +528,9 @@ struct Decision:
     Optional[StartChildWorkflowExecutionDecisionAttributes] startChildWorkflowExecutionDecisionAttributes
     Optional[ScheduleLambdaFunctionDecisionAttributes] scheduleLambdaFunctionDecisionAttributes
 
-# no @derive(Json): member(s) events: list[HistoryEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[HistoryEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecisionTask:
     str taskToken
     int64 startedEventId
@@ -633,8 +637,9 @@ struct DomainInfo:
     Optional[str] description
     Optional[str] arn
 
-# no @derive(Json): member(s) domainInfos: list[DomainInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainInfos: list[DomainInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainInfos:
     list[DomainInfo] domainInfos
     Optional[str] nextPageToken
@@ -672,14 +677,16 @@ struct GetWorkflowExecutionHistoryInput:
     Optional[int64] maximumPageSize
     Optional[bool] reverseOrder
 
-# no @derive(Json): member(s) events: list[HistoryEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[HistoryEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct History:
     list[HistoryEvent] events
     Optional[str] nextPageToken
 
-# no @derive(Json): member(s) workflowExecutionStartedEventAttributes: WorkflowExecutionStartedEventAttributes, workflowExecutionContinuedAsNewEventAttributes: WorkflowExecutionContinuedAsNewEventAttributes, startChildWorkflowExecutionInitiatedEventAttributes: StartChildWorkflowExecutionInitiatedEventAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowExecutionStartedEventAttributes: WorkflowExecutionStartedEventAttributes, workflowExecutionContinuedAsNewEventAttributes: WorkflowExecutionContinuedAsNewEventAttributes, startChildWorkflowExecutionInitiatedEventAttributes: StartChildWorkflowExecutionInitiatedEventAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistoryEvent:
     DateTime eventTimestamp
     EventType eventType
@@ -819,8 +826,9 @@ struct ListOpenWorkflowExecutionsInput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[ResourceTag]] tags
 
@@ -893,8 +901,9 @@ struct RegisterActivityTypeInput:
     Optional[str] defaultTaskScheduleToStartTimeout
     Optional[str] defaultTaskScheduleToCloseTimeout
 
-# no @derive(Json): member(s) tags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterDomainInput:
     str name
     Optional[str] description
@@ -973,8 +982,9 @@ struct RespondActivityTaskFailedInput:
     Optional[str] reason
     Optional[str] details
 
-# no @derive(Json): member(s) decisions: list[Decision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) decisions: list[Decision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RespondDecisionTaskCompletedInput:
     str taskToken
     Optional[list[Decision]] decisions
@@ -1055,8 +1065,9 @@ struct SignalWorkflowExecutionInput:
     str signalName
     Optional[str] input
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartChildWorkflowExecutionDecisionAttributes:
     WorkflowType workflowType
     str workflowId
@@ -1079,8 +1090,9 @@ struct StartChildWorkflowExecutionFailedEventAttributes:
     int64 decisionTaskCompletedEventId
     Optional[str] control
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartChildWorkflowExecutionInitiatedEventAttributes:
     str workflowId
     WorkflowType workflowType
@@ -1113,8 +1125,9 @@ struct StartTimerFailedEventAttributes:
     StartTimerFailedCause cause
     int64 decisionTaskCompletedEventId
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartWorkflowExecutionInput:
     str domain
     str workflowId
@@ -1132,8 +1145,9 @@ struct StartWorkflowExecutionInput:
 struct TagFilter:
     str tag
 
-# no @derive(Json): member(s) tags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     list[ResourceTag] tags
@@ -1203,8 +1217,9 @@ struct UndeprecateWorkflowTypeInput:
 struct UnknownResourceFault:
     Optional[str] message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
@@ -1243,8 +1258,9 @@ struct WorkflowExecutionConfiguration:
     ChildPolicy childPolicy
     Optional[str] lambdaRole
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowExecutionContinuedAsNewEventAttributes:
     Optional[str] input
     int64 decisionTaskCompletedEventId
@@ -1263,8 +1279,9 @@ struct WorkflowExecutionCount:
     int64 count
     Optional[bool] truncated
 
-# no @derive(Json): member(s) executionInfo: WorkflowExecutionInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionInfo: WorkflowExecutionInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowExecutionDetail:
     WorkflowExecutionInfo executionInfo
     WorkflowExecutionConfiguration executionConfiguration
@@ -1282,8 +1299,9 @@ struct WorkflowExecutionFailedEventAttributes:
 struct WorkflowExecutionFilter:
     str workflowId
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowExecutionInfo:
     WorkflowExecution execution
     WorkflowType workflowType
@@ -1295,8 +1313,9 @@ struct WorkflowExecutionInfo:
     Optional[list[str]] tagList
     Optional[bool] cancelRequested
 
-# no @derive(Json): member(s) executionInfos: list[WorkflowExecutionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionInfos: list[WorkflowExecutionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowExecutionInfos:
     list[WorkflowExecutionInfo] executionInfos
     Optional[str] nextPageToken
@@ -1316,8 +1335,9 @@ struct WorkflowExecutionSignaledEventAttributes:
     Optional[WorkflowExecution] externalWorkflowExecution
     Optional[int64] externalInitiatedEventId
 
-# no @derive(Json): member(s) tagList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowExecutionStartedEventAttributes:
     Optional[str] input
     Optional[str] executionStartToCloseTimeout
@@ -1376,8 +1396,9 @@ struct WorkflowTypeInfo:
     DateTime creationDate
     Optional[DateTime] deprecationDate
 
-# no @derive(Json): member(s) typeInfos: list[WorkflowTypeInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) typeInfos: list[WorkflowTypeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowTypeInfos:
     list[WorkflowTypeInfo] typeInfos
     Optional[str] nextPageToken
@@ -1428,13 +1449,244 @@ def swf_error_from_code(str code) -> SWFError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   RegisterDomain (input RegisterDomainInput)
-#   RespondDecisionTaskCompleted (input RespondDecisionTaskCompletedInput)
-#   StartWorkflowExecution (input StartWorkflowExecutionInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def swf_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def swf_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def swf_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ContinueAsNewWorkflowExecutionDecisionAttributes to a compact JSON object (declaration order).
+def continue_as_new_workflow_execution_decision_attributes_to_json(ContinueAsNewWorkflowExecutionDecisionAttributes v) -> str:
+    list[str] parts = []
+    if v.input.is_some():
+        auto u0 = v.input.unwrap()
+        parts.append("\"input\":" + swf_json_str(u0))
+    if v.executionStartToCloseTimeout.is_some():
+        auto u1 = v.executionStartToCloseTimeout.unwrap()
+        parts.append("\"executionStartToCloseTimeout\":" + swf_json_str(u1))
+    if v.taskList.is_some():
+        auto u2 = v.taskList.unwrap()
+        parts.append("\"taskList\":" + u2.to_json())
+    if v.taskPriority.is_some():
+        auto u3 = v.taskPriority.unwrap()
+        parts.append("\"taskPriority\":" + swf_json_str(u3))
+    if v.taskStartToCloseTimeout.is_some():
+        auto u4 = v.taskStartToCloseTimeout.unwrap()
+        parts.append("\"taskStartToCloseTimeout\":" + swf_json_str(u4))
+    if v.childPolicy.is_some():
+        auto u5 = v.childPolicy.unwrap()
+        parts.append("\"childPolicy\":" + u5.to_json())
+    if v.tagList.is_some():
+        auto u6 = v.tagList.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(swf_json_str(x7))
+        parts.append("\"tagList\":" + swf_json_arr(e7))
+    if v.workflowTypeVersion.is_some():
+        auto u8 = v.workflowTypeVersion.unwrap()
+        parts.append("\"workflowTypeVersion\":" + swf_json_str(u8))
+    if v.lambdaRole.is_some():
+        auto u9 = v.lambdaRole.unwrap()
+        parts.append("\"lambdaRole\":" + swf_json_str(u9))
+    return swf_json_obj(parts)
+
+# Serialize Decision to a compact JSON object (declaration order).
+def decision_to_json(Decision v) -> str:
+    list[str] parts = []
+    parts.append("\"decisionType\":" + v.decisionType.to_json())
+    if v.scheduleActivityTaskDecisionAttributes.is_some():
+        auto u0 = v.scheduleActivityTaskDecisionAttributes.unwrap()
+        parts.append("\"scheduleActivityTaskDecisionAttributes\":" + u0.to_json())
+    if v.requestCancelActivityTaskDecisionAttributes.is_some():
+        auto u1 = v.requestCancelActivityTaskDecisionAttributes.unwrap()
+        parts.append("\"requestCancelActivityTaskDecisionAttributes\":" + u1.to_json())
+    if v.completeWorkflowExecutionDecisionAttributes.is_some():
+        auto u2 = v.completeWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"completeWorkflowExecutionDecisionAttributes\":" + u2.to_json())
+    if v.failWorkflowExecutionDecisionAttributes.is_some():
+        auto u3 = v.failWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"failWorkflowExecutionDecisionAttributes\":" + u3.to_json())
+    if v.cancelWorkflowExecutionDecisionAttributes.is_some():
+        auto u4 = v.cancelWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"cancelWorkflowExecutionDecisionAttributes\":" + u4.to_json())
+    if v.continueAsNewWorkflowExecutionDecisionAttributes.is_some():
+        auto u5 = v.continueAsNewWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"continueAsNewWorkflowExecutionDecisionAttributes\":" + continue_as_new_workflow_execution_decision_attributes_to_json(u5))
+    if v.recordMarkerDecisionAttributes.is_some():
+        auto u6 = v.recordMarkerDecisionAttributes.unwrap()
+        parts.append("\"recordMarkerDecisionAttributes\":" + u6.to_json())
+    if v.startTimerDecisionAttributes.is_some():
+        auto u7 = v.startTimerDecisionAttributes.unwrap()
+        parts.append("\"startTimerDecisionAttributes\":" + u7.to_json())
+    if v.cancelTimerDecisionAttributes.is_some():
+        auto u8 = v.cancelTimerDecisionAttributes.unwrap()
+        parts.append("\"cancelTimerDecisionAttributes\":" + u8.to_json())
+    if v.signalExternalWorkflowExecutionDecisionAttributes.is_some():
+        auto u9 = v.signalExternalWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"signalExternalWorkflowExecutionDecisionAttributes\":" + u9.to_json())
+    if v.requestCancelExternalWorkflowExecutionDecisionAttributes.is_some():
+        auto u10 = v.requestCancelExternalWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"requestCancelExternalWorkflowExecutionDecisionAttributes\":" + u10.to_json())
+    if v.startChildWorkflowExecutionDecisionAttributes.is_some():
+        auto u11 = v.startChildWorkflowExecutionDecisionAttributes.unwrap()
+        parts.append("\"startChildWorkflowExecutionDecisionAttributes\":" + start_child_workflow_execution_decision_attributes_to_json(u11))
+    if v.scheduleLambdaFunctionDecisionAttributes.is_some():
+        auto u12 = v.scheduleLambdaFunctionDecisionAttributes.unwrap()
+        parts.append("\"scheduleLambdaFunctionDecisionAttributes\":" + u12.to_json())
+    return swf_json_obj(parts)
+
+# Serialize RegisterDomainInput to a compact JSON object (declaration order).
+def register_domain_input_to_json(RegisterDomainInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + swf_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + swf_json_str(u0))
+    parts.append("\"workflowExecutionRetentionPeriodInDays\":" + swf_json_str(v.workflowExecutionRetentionPeriodInDays))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + swf_json_arr(e2))
+    return swf_json_obj(parts)
+
+# Serialize RespondDecisionTaskCompletedInput to a compact JSON object (declaration order).
+def respond_decision_task_completed_input_to_json(RespondDecisionTaskCompletedInput v) -> str:
+    list[str] parts = []
+    parts.append("\"taskToken\":" + swf_json_str(v.taskToken))
+    if v.decisions.is_some():
+        auto u0 = v.decisions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(decision_to_json(x1))
+        parts.append("\"decisions\":" + swf_json_arr(e1))
+    if v.executionContext.is_some():
+        auto u2 = v.executionContext.unwrap()
+        parts.append("\"executionContext\":" + swf_json_str(u2))
+    if v.taskList.is_some():
+        auto u3 = v.taskList.unwrap()
+        parts.append("\"taskList\":" + u3.to_json())
+    if v.taskListScheduleToStartTimeout.is_some():
+        auto u4 = v.taskListScheduleToStartTimeout.unwrap()
+        parts.append("\"taskListScheduleToStartTimeout\":" + swf_json_str(u4))
+    return swf_json_obj(parts)
+
+# Serialize StartChildWorkflowExecutionDecisionAttributes to a compact JSON object (declaration order).
+def start_child_workflow_execution_decision_attributes_to_json(StartChildWorkflowExecutionDecisionAttributes v) -> str:
+    list[str] parts = []
+    parts.append("\"workflowType\":" + v.workflowType.to_json())
+    parts.append("\"workflowId\":" + swf_json_str(v.workflowId))
+    if v.control.is_some():
+        auto u0 = v.control.unwrap()
+        parts.append("\"control\":" + swf_json_str(u0))
+    if v.input.is_some():
+        auto u1 = v.input.unwrap()
+        parts.append("\"input\":" + swf_json_str(u1))
+    if v.executionStartToCloseTimeout.is_some():
+        auto u2 = v.executionStartToCloseTimeout.unwrap()
+        parts.append("\"executionStartToCloseTimeout\":" + swf_json_str(u2))
+    if v.taskList.is_some():
+        auto u3 = v.taskList.unwrap()
+        parts.append("\"taskList\":" + u3.to_json())
+    if v.taskPriority.is_some():
+        auto u4 = v.taskPriority.unwrap()
+        parts.append("\"taskPriority\":" + swf_json_str(u4))
+    if v.taskStartToCloseTimeout.is_some():
+        auto u5 = v.taskStartToCloseTimeout.unwrap()
+        parts.append("\"taskStartToCloseTimeout\":" + swf_json_str(u5))
+    if v.childPolicy.is_some():
+        auto u6 = v.childPolicy.unwrap()
+        parts.append("\"childPolicy\":" + u6.to_json())
+    if v.tagList.is_some():
+        auto u7 = v.tagList.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(swf_json_str(x8))
+        parts.append("\"tagList\":" + swf_json_arr(e8))
+    if v.lambdaRole.is_some():
+        auto u9 = v.lambdaRole.unwrap()
+        parts.append("\"lambdaRole\":" + swf_json_str(u9))
+    return swf_json_obj(parts)
+
+# Serialize StartWorkflowExecutionInput to a compact JSON object (declaration order).
+def start_workflow_execution_input_to_json(StartWorkflowExecutionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"domain\":" + swf_json_str(v.domain))
+    parts.append("\"workflowId\":" + swf_json_str(v.workflowId))
+    parts.append("\"workflowType\":" + v.workflowType.to_json())
+    if v.taskList.is_some():
+        auto u0 = v.taskList.unwrap()
+        parts.append("\"taskList\":" + u0.to_json())
+    if v.taskPriority.is_some():
+        auto u1 = v.taskPriority.unwrap()
+        parts.append("\"taskPriority\":" + swf_json_str(u1))
+    if v.input.is_some():
+        auto u2 = v.input.unwrap()
+        parts.append("\"input\":" + swf_json_str(u2))
+    if v.executionStartToCloseTimeout.is_some():
+        auto u3 = v.executionStartToCloseTimeout.unwrap()
+        parts.append("\"executionStartToCloseTimeout\":" + swf_json_str(u3))
+    if v.tagList.is_some():
+        auto u4 = v.tagList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(swf_json_str(x5))
+        parts.append("\"tagList\":" + swf_json_arr(e5))
+    if v.taskStartToCloseTimeout.is_some():
+        auto u6 = v.taskStartToCloseTimeout.unwrap()
+        parts.append("\"taskStartToCloseTimeout\":" + swf_json_str(u6))
+    if v.childPolicy.is_some():
+        auto u7 = v.childPolicy.unwrap()
+        parts.append("\"childPolicy\":" + u7.to_json())
+    if v.lambdaRole.is_some():
+        auto u8 = v.lambdaRole.unwrap()
+        parts.append("\"lambdaRole\":" + swf_json_str(u8))
+    return swf_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + swf_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + swf_json_arr(e0))
+    return swf_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + swf_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(swf_json_str(x0))
+    parts.append("\"tagKeys\":" + swf_json_arr(e0))
+    return swf_json_obj(parts)
 
 # A bound SWF client: credentials + region, threaded into every operation.
 struct SWFClient:
@@ -1585,6 +1837,12 @@ struct SWFClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "RegisterActivityType", body)
 
+    # RegisterDomain
+    # errors: DomainAlreadyExistsFault, LimitExceededFault, OperationNotPermittedFault, TooManyTagsFault
+    def register_domain(self, RegisterDomainInput input) -> str:
+        auto body = register_domain_input_to_json(input)
+        return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "RegisterDomain", body)
+
     # RegisterWorkflowType
     # errors: LimitExceededFault, OperationNotPermittedFault, TypeAlreadyExistsFault, UnknownResourceFault
     def register_workflow_type(self, RegisterWorkflowTypeInput input) -> str:
@@ -1615,11 +1873,29 @@ struct SWFClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "RespondActivityTaskFailed", body)
 
+    # RespondDecisionTaskCompleted
+    # errors: OperationNotPermittedFault, UnknownResourceFault
+    def respond_decision_task_completed(self, RespondDecisionTaskCompletedInput input) -> str:
+        auto body = respond_decision_task_completed_input_to_json(input)
+        return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "RespondDecisionTaskCompleted", body)
+
     # SignalWorkflowExecution
     # errors: OperationNotPermittedFault, UnknownResourceFault
     def signal_workflow_execution(self, SignalWorkflowExecutionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "SignalWorkflowExecution", body)
+
+    # StartWorkflowExecution
+    # errors: DefaultUndefinedFault, LimitExceededFault, OperationNotPermittedFault, TypeDeprecatedFault, UnknownResourceFault, WorkflowExecutionAlreadyStartedFault
+    def start_workflow_execution(self, StartWorkflowExecutionInput input) -> str:
+        auto body = start_workflow_execution_input_to_json(input)
+        return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "StartWorkflowExecution", body)
+
+    # TagResource
+    # errors: LimitExceededFault, OperationNotPermittedFault, TooManyTagsFault, UnknownResourceFault
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "TagResource", body)
 
     # TerminateWorkflowExecution
     # errors: OperationNotPermittedFault, UnknownResourceFault
@@ -1644,6 +1920,12 @@ struct SWFClient:
     def undeprecate_workflow_type(self, UndeprecateWorkflowTypeInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "UndeprecateWorkflowType", body)
+
+    # UntagResource
+    # errors: LimitExceededFault, OperationNotPermittedFault, UnknownResourceFault
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(swf_protocol(), self.creds, self.region, "UntagResource", body)
 
     # Paginator for GetWorkflowExecutionHistory — yields each Response page, threading the
     # nextPageToken -> nextPageToken continuation token until the output token is absent (result key: events).

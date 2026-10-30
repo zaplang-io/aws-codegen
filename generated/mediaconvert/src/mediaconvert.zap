@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 34 operations — 24 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 34 operations — 34 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   295 structs (198 @derive(Json)), 474 enums, 8 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -4254,8 +4254,9 @@ struct AssociateCertificateResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ChannelTags: list[AudioChannelTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelTags: list[AudioChannelTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioChannelTaggingSettings:
     Optional[AudioChannelTag] ChannelTag
     Optional[list[AudioChannelTag]] ChannelTags
@@ -4276,8 +4277,9 @@ struct AudioCodecSettings:
     Optional[VorbisSettings] VorbisSettings
     Optional[WavSettings] WavSettings
 
-# no @derive(Json): member(s) AudioChannelTaggingSettings: AudioChannelTaggingSettings, RemixSettings: RemixSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioChannelTaggingSettings: AudioChannelTaggingSettings, RemixSettings: RemixSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioDescription:
     Optional[AudioChannelTaggingSettings] AudioChannelTaggingSettings
     Optional[AudioNormalizationSettings] AudioNormalizationSettings
@@ -4317,8 +4319,9 @@ struct AudioProperties:
     Optional[int64] ObjectCount
     Optional[int64] SampleRate
 
-# no @derive(Json): member(s) Pids: list[int64], RemixSettings: RemixSettings, Streams: list[int64], Tracks: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pids: list[int64], RemixSettings: RemixSettings, Streams: list[int64], Tracks: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioSelector:
     Optional[AudioDurationCorrection] AudioDurationCorrection
     Optional[str] CustomLanguageCode
@@ -4335,13 +4338,15 @@ struct AudioSelector:
     Optional[list[int64]] Streams
     Optional[list[int64]] Tracks
 
-# no @derive(Json): member(s) AudioSelectorNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioSelectorNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioSelectorGroup:
     Optional[list[str]] AudioSelectorNames
 
-# no @derive(Json): member(s) AllowedRenditions: list[AllowedRenditionSize], ForceIncludeRenditions: list[ForceIncludeRenditionSize] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedRenditions: list[AllowedRenditionSize], ForceIncludeRenditions: list[ForceIncludeRenditionSize] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedAbrRule:
     Optional[list[AllowedRenditionSize]] AllowedRenditions
     Optional[list[ForceIncludeRenditionSize]] ForceIncludeRenditions
@@ -4349,8 +4354,9 @@ struct AutomatedAbrRule:
     Optional[MinTopRenditionSize] MinTopRenditionSize
     Optional[RuleType] Type
 
-# no @derive(Json): member(s) Rules: list[AutomatedAbrRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AutomatedAbrRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedAbrSettings:
     Optional[int64] MaxAbrBitrate
     Optional[float64] MaxQualityLevel
@@ -4358,8 +4364,9 @@ struct AutomatedAbrSettings:
     Optional[int64] MinAbrBitrate
     Optional[list[AutomatedAbrRule]] Rules
 
-# no @derive(Json): member(s) AbrSettings: AutomatedAbrSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AbrSettings: AutomatedAbrSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedEncodingSettings:
     Optional[AutomatedAbrSettings] AbrSettings
 
@@ -4368,8 +4375,9 @@ struct Av1QvbrSettings:
     Optional[int64] QvbrQualityLevel
     Optional[float64] QvbrQualityLevelFineTune
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Av1Settings:
     Optional[Av1AdaptiveQuantization] AdaptiveQuantization
     Optional[Av1BitDepth] BitDepth
@@ -4395,8 +4403,9 @@ struct Av1Settings:
 struct AvailBlanking:
     Optional[str] AvailBlankingImage
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AvcIntraSettings:
     Optional[AvcIntraClass] AvcIntraClass
     Optional[AvcIntraUhdSettings] AvcIntraUhdSettings
@@ -4462,8 +4471,9 @@ struct CancelJobResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DestinationSettings: CaptionDestinationSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationSettings: CaptionDestinationSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptionDescription:
     Optional[str] CaptionSelectorName
     Optional[str] CustomLanguageCode
@@ -4471,16 +4481,18 @@ struct CaptionDescription:
     Optional[LanguageCode] LanguageCode
     Optional[str] LanguageDescription
 
-# no @derive(Json): member(s) DestinationSettings: CaptionDestinationSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationSettings: CaptionDestinationSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptionDescriptionPreset:
     Optional[str] CustomLanguageCode
     Optional[CaptionDestinationSettings] DestinationSettings
     Optional[LanguageCode] LanguageCode
     Optional[str] LanguageDescription
 
-# no @derive(Json): member(s) TeletextDestinationSettings: TeletextDestinationSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TeletextDestinationSettings: TeletextDestinationSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptionDestinationSettings:
     Optional[BurninDestinationSettings] BurninDestinationSettings
     Optional[CaptionDestinationType] DestinationType
@@ -4515,8 +4527,9 @@ struct CaptionSourceSettings:
     Optional[TrackSourceSettings] TrackSourceSettings
     Optional[WebvttHlsSourceSettings] WebvttHlsSourceSettings
 
-# no @derive(Json): member(s) OutputChannels: list[OutputChannelMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputChannels: list[OutputChannelMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelMapping:
     Optional[list[OutputChannelMapping]] OutputChannels
 
@@ -4527,14 +4540,16 @@ struct ClipLimits:
     Optional[int64] MinimumRGBTolerance
     Optional[int64] MinimumYUV
 
-# no @derive(Json): member(s) SelectedOutputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedOutputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafAdditionalManifest:
     Optional[str] ManifestNameModifier
     Optional[list[str]] SelectedOutputs
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProviderCmaf not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProviderCmaf not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafEncryptionSettings:
     Optional[int64] ClearLeadSegments
     Optional[str] ConstantInitializationVector
@@ -4544,8 +4559,9 @@ struct CmafEncryptionSettings:
     Optional[StaticKeyProvider] StaticKeyProvider
     Optional[CmafKeyProviderType] Type
 
-# no @derive(Json): member(s) AdditionalManifests: list[CmafAdditionalManifest], DashAdaptationSetGrouping: list[str], Encryption: CmafEncryptionSettings, ImageBasedTrickPlayVariants: list[CmafImageBasedTrickPlayVariant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalManifests: list[CmafAdditionalManifest], DashAdaptationSetGrouping: list[str], Encryption: CmafEncryptionSettings, ImageBasedTrickPlayVariants: list[CmafImageBasedTrickPlayVariant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CmafGroupSettings:
     Optional[list[CmafAdditionalManifest]] AdditionalManifests
     Optional[str] BaseUrl
@@ -4663,8 +4679,9 @@ struct ColorCorrector:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tracks: list[Track] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tracks: list[Track] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Container:
     Optional[int64] BitRate
     Optional[float64] Duration
@@ -4672,8 +4689,9 @@ struct Container:
     Optional[str] StartTimecode
     Optional[list[Track]] Tracks
 
-# no @derive(Json): member(s) M2tsSettings: M2tsSettings, M3u8Settings: M3u8Settings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) M2tsSettings: M2tsSettings, M3u8Settings: M3u8Settings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerSettings:
     Optional[CmfcSettings] CmfcSettings
     Optional[ContainerType] Container
@@ -4708,8 +4726,9 @@ struct CreateJobRequest:
     Optional[dict[str, str]] Tags
     Optional[dict[str, str]] UserMetadata
 
-# no @derive(Json): member(s) Job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateJobResponse:
     Optional[Job] Job
 
@@ -4727,8 +4746,9 @@ struct CreateJobTemplateRequest:
     Optional[StatusUpdateInterval] StatusUpdateInterval
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) JobTemplate: JobTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobTemplate: JobTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateJobTemplateResponse:
     Optional[JobTemplate] JobTemplate
 
@@ -4741,8 +4761,9 @@ struct CreatePresetRequest:
     PresetSettings Settings
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Preset: Preset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Preset: Preset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePresetResponse:
     Optional[Preset] Preset
 
@@ -4758,8 +4779,9 @@ struct CreateQueueRequest:
     Optional[QueueStatus] Status
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQueueResponse:
     Optional[Queue] Queue
 
@@ -4774,20 +4796,23 @@ struct CreateResourceShareResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SelectedOutputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedOutputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashAdditionalManifest:
     Optional[str] ManifestNameModifier
     Optional[list[str]] SelectedOutputs
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashIsoEncryptionSettings:
     Optional[DashIsoPlaybackDeviceCompatibility] PlaybackDeviceCompatibility
     Optional[SpekeKeyProvider] SpekeKeyProvider
 
-# no @derive(Json): member(s) AdditionalManifests: list[DashAdditionalManifest], DashAdaptationSetGrouping: list[str], Encryption: DashIsoEncryptionSettings, ImageBasedTrickPlayVariants: list[DashIsoImageBasedTrickPlayVariant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalManifests: list[DashAdditionalManifest], DashAdaptationSetGrouping: list[str], Encryption: DashIsoEncryptionSettings, ImageBasedTrickPlayVariants: list[DashIsoImageBasedTrickPlayVariant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashIsoGroupSettings:
     Optional[list[DashAdditionalManifest]] AdditionalManifests
     Optional[DashIsoGroupAudioChannelConfigSchemeIdUri] AudioChannelConfigSchemeIdUri
@@ -4890,8 +4915,9 @@ struct DescribeEndpointsRequest:
     Optional[DescribeEndpointsMode] Mode
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointsResponse:
     Optional[list[Endpoint]] Endpoints
     Optional[str] NextToken
@@ -5044,8 +5070,9 @@ struct Eac3Settings:
     Optional[Eac3SurroundExMode] SurroundExMode
     Optional[Eac3SurroundMode] SurroundMode
 
-# no @derive(Json): member(s) Features: list[str], Feeds: list[ElementalInferenceFeed] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[str], Feeds: list[ElementalInferenceFeed] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElementalInferenceConfiguration:
     Optional[list[str]] Features
     Optional[list[ElementalInferenceFeed]] Feeds
@@ -5151,8 +5178,9 @@ struct FrameRate:
 struct GetJobRequest:
     str Id
 
-# no @derive(Json): member(s) Job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResponse:
     Optional[Job] Job
 
@@ -5161,8 +5189,9 @@ struct GetJobResponse:
 struct GetJobTemplateRequest:
     str Name
 
-# no @derive(Json): member(s) JobTemplate: JobTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobTemplate: JobTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobTemplateResponse:
     Optional[JobTemplate] JobTemplate
 
@@ -5171,8 +5200,9 @@ struct GetJobTemplateResponse:
 struct GetJobsQueryResultsRequest:
     str Id
 
-# no @derive(Json): member(s) Jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobsQueryResultsResponse:
     Optional[list[Job]] Jobs
     Optional[str] NextToken
@@ -5193,8 +5223,9 @@ struct GetPolicyResponse:
 struct GetPresetRequest:
     str Name
 
-# no @derive(Json): member(s) Preset: Preset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Preset: Preset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPresetResponse:
     Optional[Preset] Preset
 
@@ -5203,8 +5234,9 @@ struct GetPresetResponse:
 struct GetQueueRequest:
     str Name
 
-# no @derive(Json): member(s) Queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueueResponse:
     Optional[Queue] Queue
 
@@ -5221,8 +5253,9 @@ struct H264QvbrSettings:
     Optional[int64] QvbrQualityLevel
     Optional[float64] QvbrQualityLevelFineTune
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct H264Settings:
     Optional[H264AdaptiveQuantization] AdaptiveQuantization
     Optional[BandwidthReductionFilter] BandwidthReductionFilter
@@ -5280,8 +5313,9 @@ struct H265QvbrSettings:
     Optional[int64] QvbrQualityLevel
     Optional[float64] QvbrQualityLevelFineTune
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct H265Settings:
     Optional[H265AdaptiveQuantization] AdaptiveQuantization
     Optional[H265AlternateTransferFunctionSei] AlternateTransferFunctionSei
@@ -5362,8 +5396,9 @@ struct HdrMetadata:
     Optional[ContentLightLevel] ContentLightLevel
     Optional[MasteringDisplayColorVolume] MasteringDisplayColorVolume
 
-# no @derive(Json): member(s) SelectedOutputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedOutputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsAdditionalManifest:
     Optional[str] ManifestNameModifier
     Optional[list[str]] SelectedOutputs
@@ -5375,8 +5410,9 @@ struct HlsCaptionLanguageMapping:
     Optional[LanguageCode] LanguageCode
     Optional[str] LanguageDescription
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsEncryptionSettings:
     Optional[str] ConstantInitializationVector
     Optional[HlsEncryptionType] EncryptionMethod
@@ -5386,8 +5422,9 @@ struct HlsEncryptionSettings:
     Optional[StaticKeyProvider] StaticKeyProvider
     Optional[HlsKeyProviderType] Type
 
-# no @derive(Json): member(s) AdMarkers: list[HlsAdMarkers], AdditionalManifests: list[HlsAdditionalManifest], CaptionLanguageMappings: list[HlsCaptionLanguageMapping], Encryption: HlsEncryptionSettings, ImageBasedTrickPlayVariants: list[HlsImageBasedTrickPlayVariant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdMarkers: list[HlsAdMarkers], AdditionalManifests: list[HlsAdditionalManifest], CaptionLanguageMappings: list[HlsCaptionLanguageMapping], Encryption: HlsEncryptionSettings, ImageBasedTrickPlayVariants: list[HlsImageBasedTrickPlayVariant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HlsGroupSettings:
     Optional[list[HlsAdMarkers]] AdMarkers
     Optional[list[HlsAdditionalManifest]] AdditionalManifests
@@ -5468,8 +5505,9 @@ struct Id3Insertion:
     Optional[str] Id3
     Optional[str] Timecode
 
-# no @derive(Json): member(s) InsertableImages: list[InsertableImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsertableImages: list[InsertableImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageInserter:
     Optional[list[InsertableImage]] InsertableImages
     Optional[int64] SdrReferenceWhiteLevel
@@ -5479,8 +5517,9 @@ struct ImscDestinationSettings:
     Optional[ImscAccessibilitySubs] Accessibility
     Optional[ImscStylePassthrough] StylePassthrough
 
-# no @derive(Json): member(s) AudioSelectorGroups: dict[str, AudioSelectorGroup], AudioSelectors: dict[str, AudioSelector], CaptionSelectors: dict[str, CaptionSelector], DynamicAudioSelectors: dict[str, DynamicAudioSelector], ImageInserter: ImageInserter, InputClippings: list[InputClipping], MultiViewSettings: list[MultiViewSettings], SupplementalImps: list[str], VideoOverlays: list[VideoOverlay], VideoSelector: VideoSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioSelectorGroups: dict[str, AudioSelectorGroup], AudioSelectors: dict[str, AudioSelector], CaptionSelectors: dict[str, CaptionSelector], DynamicAudioSelectors: dict[str, DynamicAudioSelector], ImageInserter: ImageInserter, InputClippings: list[InputClipping], MultiViewSettings: list[MultiViewSettings], SupplementalImps: list[str], VideoOverlays: list[VideoOverlay], VideoSelector: VideoSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Input:
     Optional[AdvancedInputFilter] AdvancedInputFilter
     Optional[AdvancedInputFilterSettings] AdvancedInputFilterSettings
@@ -5530,8 +5569,9 @@ struct InputTamsSettings:
     Optional[str] SourceId
     Optional[str] Timerange
 
-# no @derive(Json): member(s) AudioSelectorGroups: dict[str, AudioSelectorGroup], AudioSelectors: dict[str, AudioSelector], CaptionSelectors: dict[str, CaptionSelector], DynamicAudioSelectors: dict[str, DynamicAudioSelector], ImageInserter: ImageInserter, InputClippings: list[InputClipping], MultiViewSettings: list[MultiViewSettings], VideoOverlays: list[VideoOverlay], VideoSelector: VideoSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioSelectorGroups: dict[str, AudioSelectorGroup], AudioSelectors: dict[str, AudioSelector], CaptionSelectors: dict[str, CaptionSelector], DynamicAudioSelectors: dict[str, DynamicAudioSelector], ImageInserter: ImageInserter, InputClippings: list[InputClipping], MultiViewSettings: list[MultiViewSettings], VideoOverlays: list[VideoOverlay], VideoSelector: VideoSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputTemplate:
     Optional[AdvancedInputFilter] AdvancedInputFilter
     Optional[AdvancedInputFilterSettings] AdvancedInputFilterSettings
@@ -5586,8 +5626,9 @@ struct InsertableImage:
 struct InternalServerErrorException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ElementalInferenceConfiguration: ElementalInferenceConfiguration, HopDestinations: list[HopDestination], Messages: JobMessages, OutputGroupDetails: list[OutputGroupDetail], QueueTransitions: list[QueueTransition], Settings: JobSettings, UserMetadata: dict[str, str], Warnings: list[WarningGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ElementalInferenceConfiguration: ElementalInferenceConfiguration, HopDestinations: list[HopDestination], Messages: JobMessages, OutputGroupDetails: list[OutputGroupDetail], QueueTransitions: list[QueueTransition], Settings: JobSettings, UserMetadata: dict[str, str], Warnings: list[WarningGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[AccelerationSettings] AccelerationSettings
     Optional[AccelerationStatus] AccelerationStatus
@@ -5627,14 +5668,16 @@ struct JobEngineVersion:
     Optional[DateTime] ExpirationDate
     Optional[str] Version
 
-# no @derive(Json): member(s) Info: list[str], Warning: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Info: list[str], Warning: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobMessages:
     Optional[list[str]] Info
     Optional[list[str]] Warning
 
-# no @derive(Json): member(s) ColorConversion3DLUTSettings: list[ColorConversion3DLUTSetting], Inputs: list[Input], MotionImageInserters: list[MotionImageInserter], OutputGroups: list[OutputGroup], TimedMetadataInsertion: TimedMetadataInsertion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColorConversion3DLUTSettings: list[ColorConversion3DLUTSetting], Inputs: list[Input], MotionImageInserters: list[MotionImageInserter], OutputGroups: list[OutputGroup], TimedMetadataInsertion: TimedMetadataInsertion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobSettings:
     Optional[int64] AdAvailOffset
     Optional[AvailBlanking] AvailBlanking
@@ -5652,8 +5695,9 @@ struct JobSettings:
     Optional[TimecodeConfig] TimecodeConfig
     Optional[TimedMetadataInsertion] TimedMetadataInsertion
 
-# no @derive(Json): member(s) HopDestinations: list[HopDestination], Settings: JobTemplateSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HopDestinations: list[HopDestination], Settings: JobTemplateSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobTemplate:
     Optional[AccelerationSettings] AccelerationSettings
     Optional[str] Arn
@@ -5669,8 +5713,9 @@ struct JobTemplate:
     Optional[StatusUpdateInterval] StatusUpdateInterval
     Optional[Type] Type
 
-# no @derive(Json): member(s) ColorConversion3DLUTSettings: list[ColorConversion3DLUTSetting], Inputs: list[InputTemplate], MotionImageInserters: list[MotionImageInserter], OutputGroups: list[OutputGroup], TimedMetadataInsertion: TimedMetadataInsertion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColorConversion3DLUTSettings: list[ColorConversion3DLUTSetting], Inputs: list[InputTemplate], MotionImageInserters: list[MotionImageInserter], OutputGroups: list[OutputGroup], TimedMetadataInsertion: TimedMetadataInsertion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobTemplateSettings:
     Optional[int64] AdAvailOffset
     Optional[AvailBlanking] AvailBlanking
@@ -5688,8 +5733,9 @@ struct JobTemplateSettings:
     Optional[TimecodeConfig] TimecodeConfig
     Optional[TimedMetadataInsertion] TimedMetadataInsertion
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobsQueryFilter:
     Optional[JobsQueryFilterKey] Key
     Optional[list[str]] Values
@@ -5721,8 +5767,9 @@ struct ListJobTemplatesRequest:
     # wire string of the Order enum (querystring binding)
     Optional[str] Order
 
-# no @derive(Json): member(s) JobTemplates: list[JobTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobTemplates: list[JobTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobTemplatesResponse:
     Optional[list[JobTemplate]] JobTemplates
     Optional[str] NextToken
@@ -5738,8 +5785,9 @@ struct ListJobsRequest:
     # wire string of the JobStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) Jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     Optional[list[Job]] Jobs
     Optional[str] NextToken
@@ -5755,8 +5803,9 @@ struct ListPresetsRequest:
     # wire string of the Order enum (querystring binding)
     Optional[str] Order
 
-# no @derive(Json): member(s) Presets: list[Preset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Presets: list[Preset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPresetsResponse:
     Optional[str] NextToken
     Optional[list[Preset]] Presets
@@ -5771,8 +5820,9 @@ struct ListQueuesRequest:
     # wire string of the Order enum (querystring binding)
     Optional[str] Order
 
-# no @derive(Json): member(s) Queues: list[Queue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queues: list[Queue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueuesResponse:
     Optional[str] NextToken
     Optional[list[Queue]] Queues
@@ -5784,8 +5834,9 @@ struct ListQueuesResponse:
 struct ListTagsForResourceRequest:
     str Arn
 
-# no @derive(Json): member(s) ResourceTags: ResourceTags not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: ResourceTags not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[ResourceTags] ResourceTags
 
@@ -5795,8 +5846,9 @@ struct ListVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Versions: list[JobEngineVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[JobEngineVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVersionsResponse:
     Optional[str] NextToken
     Optional[list[JobEngineVersion]] Versions
@@ -5805,8 +5857,9 @@ struct ListVersionsResponse:
 struct M2tsScte35Esam:
     Optional[int64] Scte35EsamPid
 
-# no @derive(Json): member(s) AudioPids: list[int64], DvbSubPids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioPids: list[int64], DvbSubPids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct M2tsSettings:
     Optional[M2tsAudioBufferModel] AudioBufferModel
     Optional[M2tsAudioDuration] AudioDuration
@@ -5852,8 +5905,9 @@ struct M2tsSettings:
     Optional[int64] TransportStreamId
     Optional[int64] VideoPid
 
-# no @derive(Json): member(s) AudioPids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioPids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct M3u8Settings:
     Optional[M3u8AudioDuration] AudioDuration
     Optional[int64] AudioFramesPerPes
@@ -5980,8 +6034,9 @@ struct MpdSettings:
     Optional[str] TimedMetadataSchemeIdUri
     Optional[str] TimedMetadataValue
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Mpeg2Settings:
     Optional[Mpeg2AdaptiveQuantization] AdaptiveQuantization
     Optional[int64] Bitrate
@@ -6020,19 +6075,22 @@ struct Mpeg2Settings:
     Optional[Mpeg2Telecine] Telecine
     Optional[Mpeg2TemporalAdaptiveQuantization] TemporalAdaptiveQuantization
 
-# no @derive(Json): member(s) SelectedOutputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedOutputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MsSmoothAdditionalManifest:
     Optional[str] ManifestNameModifier
     Optional[list[str]] SelectedOutputs
 
-# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpekeKeyProvider: SpekeKeyProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MsSmoothEncryptionSettings:
     Optional[SpekeKeyProvider] SpekeKeyProvider
 
-# no @derive(Json): member(s) AdditionalManifests: list[MsSmoothAdditionalManifest], Encryption: MsSmoothEncryptionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalManifests: list[MsSmoothAdditionalManifest], Encryption: MsSmoothEncryptionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MsSmoothGroupSettings:
     Optional[list[MsSmoothAdditionalManifest]] AdditionalManifests
     Optional[MsSmoothAudioDeduplication] AudioDeduplication
@@ -6124,8 +6182,9 @@ struct OpusSettings:
     Optional[int64] Channels
     Optional[int64] SampleRate
 
-# no @derive(Json): member(s) AudioDescriptions: list[AudioDescription], CaptionDescriptions: list[CaptionDescription], ContainerSettings: ContainerSettings, VideoDescription: VideoDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioDescriptions: list[AudioDescription], CaptionDescriptions: list[CaptionDescription], ContainerSettings: ContainerSettings, VideoDescription: VideoDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Output:
     Optional[list[AudioDescription]] AudioDescriptions
     Optional[list[CaptionDescription]] CaptionDescriptions
@@ -6136,8 +6195,9 @@ struct Output:
     Optional[str] Preset
     Optional[VideoDescription] VideoDescription
 
-# no @derive(Json): member(s) InputChannels: list[int64], InputChannelsFineTune: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputChannels: list[int64], InputChannelsFineTune: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputChannelMapping:
     Optional[list[int64]] InputChannels
     Optional[list[float64]] InputChannelsFineTune
@@ -6147,8 +6207,9 @@ struct OutputDetail:
     Optional[int64] DurationInMs
     Optional[VideoDetail] VideoDetails
 
-# no @derive(Json): member(s) AutomatedEncodingSettings: AutomatedEncodingSettings, OutputGroupSettings: OutputGroupSettings, Outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomatedEncodingSettings: AutomatedEncodingSettings, OutputGroupSettings: OutputGroupSettings, Outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputGroup:
     Optional[AutomatedEncodingSettings] AutomatedEncodingSettings
     Optional[str] CustomName
@@ -6156,13 +6217,15 @@ struct OutputGroup:
     Optional[OutputGroupSettings] OutputGroupSettings
     Optional[list[Output]] Outputs
 
-# no @derive(Json): member(s) OutputDetails: list[OutputDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputDetails: list[OutputDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputGroupDetail:
     Optional[list[OutputDetail]] OutputDetails
 
-# no @derive(Json): member(s) CmafGroupSettings: CmafGroupSettings, DashIsoGroupSettings: DashIsoGroupSettings, HlsGroupSettings: HlsGroupSettings, MsSmoothGroupSettings: MsSmoothGroupSettings, PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CmafGroupSettings: CmafGroupSettings, DashIsoGroupSettings: DashIsoGroupSettings, HlsGroupSettings: HlsGroupSettings, MsSmoothGroupSettings: MsSmoothGroupSettings, PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputGroupSettings:
     Optional[CmafGroupSettings] CmafGroupSettings
     Optional[DashIsoGroupSettings] DashIsoGroupSettings
@@ -6193,8 +6256,9 @@ struct Policy:
     Optional[InputPolicy] HttpsInputs
     Optional[InputPolicy] S3Inputs
 
-# no @derive(Json): member(s) Settings: PresetSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: PresetSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Preset:
     Optional[str] Arn
     Optional[str] Category
@@ -6205,8 +6269,9 @@ struct Preset:
     PresetSettings Settings
     Optional[Type] Type
 
-# no @derive(Json): member(s) AudioDescriptions: list[AudioDescription], CaptionDescriptions: list[CaptionDescriptionPreset], ContainerSettings: ContainerSettings, VideoDescription: VideoDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioDescriptions: list[AudioDescription], CaptionDescriptions: list[CaptionDescriptionPreset], ContainerSettings: ContainerSettings, VideoDescription: VideoDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PresetSettings:
     Optional[list[AudioDescription]] AudioDescriptions
     Optional[list[CaptionDescriptionPreset]] CaptionDescriptions
@@ -6222,20 +6287,23 @@ struct ProbeInputFile:
 struct ProbeRequest:
     Optional[list[ProbeInputFile]] InputFiles
 
-# no @derive(Json): member(s) ProbeResults: list[ProbeResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProbeResults: list[ProbeResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProbeResponse:
     Optional[list[ProbeResult]] ProbeResults
 
-# no @derive(Json): member(s) Container: Container, TrackMappings: list[TrackMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Container: Container, TrackMappings: list[TrackMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProbeResult:
     Optional[Container] Container
     Optional[Metadata] Metadata
     Optional[list[TrackMapping]] TrackMappings
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProresSettings:
     Optional[ProresChromaSampling] ChromaSampling
     Optional[ProresCodecProfile] CodecProfile
@@ -6261,8 +6329,9 @@ struct PutPolicyRequest:
 struct PutPolicyResponse:
     Optional[Policy] Policy
 
-# no @derive(Json): member(s) ServiceOverrides: list[ServiceOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceOverrides: list[ServiceOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Queue:
     Optional[str] Arn
     Optional[int64] ConcurrentJobs
@@ -6292,8 +6361,9 @@ struct Rectangle:
     Optional[int64] X
     Optional[int64] Y
 
-# no @derive(Json): member(s) ChannelMapping: ChannelMapping not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelMapping: ChannelMapping not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemixSettings:
     Optional[int64] AudioDescriptionAudioChannel
     Optional[int64] AudioDescriptionDataChannel
@@ -6316,8 +6386,9 @@ struct ReservationPlanSettings:
     RenewalType RenewalType
     int64 ReservedSlots
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceTags:
     Optional[str] Arn
     Optional[dict[str, str]] Tags
@@ -6354,8 +6425,9 @@ struct SearchJobsRequest:
     # wire string of the JobStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) Jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchJobsResponse:
     Optional[list[Job]] Jobs
     Optional[str] NextToken
@@ -6371,8 +6443,9 @@ struct ServiceOverride:
 struct ServiceQuotaExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SystemIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SystemIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpekeKeyProvider:
     Optional[str] CertificateArn
     Optional[EncryptionContractConfiguration] EncryptionContractConfiguration
@@ -6380,8 +6453,9 @@ struct SpekeKeyProvider:
     Optional[list[str]] SystemIds
     Optional[str] Url
 
-# no @derive(Json): member(s) DashSignaledSystemIds: list[str], HlsSignaledSystemIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashSignaledSystemIds: list[str], HlsSignaledSystemIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpekeKeyProviderCmaf:
     Optional[str] CertificateArn
     Optional[list[str]] DashSignaledSystemIds
@@ -6424,8 +6498,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PageTypes: list[TeletextPageType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PageTypes: list[TeletextPageType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TeletextDestinationSettings:
     Optional[str] PageNumber
     Optional[list[TeletextPageType]] PageTypes
@@ -6447,8 +6522,9 @@ struct TimecodeConfig:
     Optional[str] Start
     Optional[str] TimestampOffset
 
-# no @derive(Json): member(s) Id3Insertions: list[Id3Insertion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Id3Insertions: list[Id3Insertion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimedMetadataInsertion:
     Optional[list[Id3Insertion]] Id3Insertions
 
@@ -6472,8 +6548,9 @@ struct Track:
     Optional[TrackType] TrackType
     Optional[VideoProperties] VideoProperties
 
-# no @derive(Json): member(s) AudioTrackIndexes: list[int64], DataTrackIndexes: list[int64], VideoTrackIndexes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioTrackIndexes: list[int64], DataTrackIndexes: list[int64], VideoTrackIndexes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrackMapping:
     Optional[list[int64]] AudioTrackIndexes
     Optional[list[int64]] DataTrackIndexes
@@ -6536,8 +6613,9 @@ struct UpdateJobTemplateRequest:
     Optional[JobTemplateSettings] Settings
     Optional[StatusUpdateInterval] StatusUpdateInterval
 
-# no @derive(Json): member(s) JobTemplate: JobTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobTemplate: JobTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateJobTemplateResponse:
     Optional[JobTemplate] JobTemplate
 
@@ -6549,8 +6627,9 @@ struct UpdatePresetRequest:
     str Name
     Optional[PresetSettings] Settings
 
-# no @derive(Json): member(s) Preset: Preset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Preset: Preset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePresetResponse:
     Optional[Preset] Preset
 
@@ -6564,8 +6643,9 @@ struct UpdateQueueRequest:
     Optional[ReservationPlanSettings] ReservationPlanSettings
     Optional[QueueStatus] Status
 
-# no @derive(Json): member(s) Queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQueueResponse:
     Optional[Queue] Queue
 
@@ -6581,8 +6661,9 @@ struct Vc3Settings:
     Optional[Vc3Telecine] Telecine
     Optional[Vc3Class] Vc3Class
 
-# no @derive(Json): member(s) Av1Settings: Av1Settings, AvcIntraSettings: AvcIntraSettings, H264Settings: H264Settings, H265Settings: H265Settings, Mpeg2Settings: Mpeg2Settings, ProresSettings: ProresSettings, XavcSettings: XavcSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Av1Settings: Av1Settings, AvcIntraSettings: AvcIntraSettings, H264Settings: H264Settings, H265Settings: H265Settings, Mpeg2Settings: Mpeg2Settings, ProresSettings: ProresSettings, XavcSettings: XavcSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoCodecSettings:
     Optional[Av1Settings] Av1Settings
     Optional[AvcIntraSettings] AvcIntraSettings
@@ -6600,8 +6681,9 @@ struct VideoCodecSettings:
     Optional[Vp9Settings] Vp9Settings
     Optional[XavcSettings] XavcSettings
 
-# no @derive(Json): member(s) CodecSettings: VideoCodecSettings, VideoPreprocessors: VideoPreprocessor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodecSettings: VideoCodecSettings, VideoPreprocessors: VideoPreprocessor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoDescription:
     Optional[AfdSignaling] AfdSignaling
     Optional[AntiAlias] AntiAlias
@@ -6626,8 +6708,9 @@ struct VideoDetail:
     Optional[int64] HeightInPx
     Optional[int64] WidthInPx
 
-# no @derive(Json): member(s) Input: VideoOverlayInput, Transitions: list[VideoOverlayTransition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: VideoOverlayInput, Transitions: list[VideoOverlayTransition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoOverlay:
     Optional[VideoOverlayCrop] Crop
     Optional[str] EndTimecode
@@ -6645,8 +6728,9 @@ struct VideoOverlayCrop:
     Optional[int64] X
     Optional[int64] Y
 
-# no @derive(Json): member(s) AudioSelectors: dict[str, AudioSelector], InputClippings: list[VideoOverlayInputClipping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioSelectors: dict[str, AudioSelector], InputClippings: list[VideoOverlayInputClipping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoOverlayInput:
     Optional[dict[str, AudioSelector]] AudioSelectors
     Optional[str] FileInput
@@ -6674,8 +6758,9 @@ struct VideoOverlayTransition:
     Optional[str] EndTimecode
     Optional[str] StartTimecode
 
-# no @derive(Json): member(s) ImageInserter: ImageInserter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageInserter: ImageInserter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoPreprocessor:
     Optional[ColorCorrector] ColorCorrector
     Optional[Deinterlacer] Deinterlacer
@@ -6703,8 +6788,9 @@ struct VideoProperties:
     Optional[TransferCharacteristics] TransferCharacteristics
     Optional[int64] Width
 
-# no @derive(Json): member(s) Streams: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoSelector:
     Optional[AlphaBehavior] AlphaBehavior
     Optional[ColorSpace] ColorSpace
@@ -6817,8 +6903,9 @@ struct XavcHdProfileSettings:
     Optional[int64] Slices
     Optional[XavcHdProfileTelecine] Telecine
 
-# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PerFrameMetrics: list[FrameMetricType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct XavcSettings:
     Optional[XavcAdaptiveQuantization] AdaptiveQuantization
     Optional[XavcEntropyEncoding] EntropyEncoding
@@ -6876,20 +6963,6 @@ def mediaconvert_error_from_code(str code) -> MediaConvertError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateJob (document member `HopDestinations: list[HopDestination]` is not serializable by derive)
-#   CreateJobTemplate (document member `HopDestinations: list[HopDestination]` is not serializable by derive)
-#   CreatePreset (document member `Settings: PresetSettings` is not serializable by derive)
-#   CreateQueue (document member `Tags: dict[str, str]` is not serializable by derive)
-#   Probe (document member `InputFiles: list[ProbeInputFile]` is not serializable by derive)
-#   StartJobsQuery (document member `FilterList: list[JobsQueryFilter]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateJobTemplate (document member `HopDestinations: list[HopDestination]` is not serializable by derive)
-#   UpdatePreset (document member `Settings: PresetSettings` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -6925,6 +6998,2486 @@ struct UpdateQueueDocument:
     Optional[ReservationPlanSettings] ReservationPlanSettings
     Optional[QueueStatus] Status
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mediaconvert_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mediaconvert_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mediaconvert_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AudioChannelTaggingSettings to a compact JSON object (declaration order).
+def audio_channel_tagging_settings_to_json(AudioChannelTaggingSettings v) -> str:
+    list[str] parts = []
+    if v.ChannelTag.is_some():
+        auto u0 = v.ChannelTag.unwrap()
+        parts.append("\"channelTag\":" + u0.to_json())
+    if v.ChannelTags.is_some():
+        auto u1 = v.ChannelTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"channelTags\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize AudioDescription to a compact JSON object (declaration order).
+def audio_description_to_json(AudioDescription v) -> str:
+    list[str] parts = []
+    if v.AudioChannelTaggingSettings.is_some():
+        auto u0 = v.AudioChannelTaggingSettings.unwrap()
+        parts.append("\"audioChannelTaggingSettings\":" + audio_channel_tagging_settings_to_json(u0))
+    if v.AudioNormalizationSettings.is_some():
+        auto u1 = v.AudioNormalizationSettings.unwrap()
+        parts.append("\"audioNormalizationSettings\":" + u1.to_json())
+    if v.AudioPitchCorrectionSettings.is_some():
+        auto u2 = v.AudioPitchCorrectionSettings.unwrap()
+        parts.append("\"audioPitchCorrectionSettings\":" + u2.to_json())
+    if v.AudioSourceName.is_some():
+        auto u3 = v.AudioSourceName.unwrap()
+        parts.append("\"audioSourceName\":" + mediaconvert_json_str(u3))
+    if v.AudioType.is_some():
+        auto u4 = v.AudioType.unwrap()
+        parts.append("\"audioType\":" + str(u4))
+    if v.AudioTypeControl.is_some():
+        auto u5 = v.AudioTypeControl.unwrap()
+        parts.append("\"audioTypeControl\":" + u5.to_json())
+    if v.CodecSettings.is_some():
+        auto u6 = v.CodecSettings.unwrap()
+        parts.append("\"codecSettings\":" + u6.to_json())
+    if v.CustomLanguageCode.is_some():
+        auto u7 = v.CustomLanguageCode.unwrap()
+        parts.append("\"customLanguageCode\":" + mediaconvert_json_str(u7))
+    if v.LanguageCode.is_some():
+        auto u8 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + u8.to_json())
+    if v.LanguageCodeControl.is_some():
+        auto u9 = v.LanguageCodeControl.unwrap()
+        parts.append("\"languageCodeControl\":" + u9.to_json())
+    if v.RemixSettings.is_some():
+        auto u10 = v.RemixSettings.unwrap()
+        parts.append("\"remixSettings\":" + remix_settings_to_json(u10))
+    if v.StreamName.is_some():
+        auto u11 = v.StreamName.unwrap()
+        parts.append("\"streamName\":" + mediaconvert_json_str(u11))
+    return mediaconvert_json_obj(parts)
+
+# Serialize AudioSelector to a compact JSON object (declaration order).
+def audio_selector_to_json(AudioSelector v) -> str:
+    list[str] parts = []
+    if v.AudioDurationCorrection.is_some():
+        auto u0 = v.AudioDurationCorrection.unwrap()
+        parts.append("\"audioDurationCorrection\":" + u0.to_json())
+    if v.CustomLanguageCode.is_some():
+        auto u1 = v.CustomLanguageCode.unwrap()
+        parts.append("\"customLanguageCode\":" + mediaconvert_json_str(u1))
+    if v.DefaultSelection.is_some():
+        auto u2 = v.DefaultSelection.unwrap()
+        parts.append("\"defaultSelection\":" + u2.to_json())
+    if v.ExternalAudioFileInput.is_some():
+        auto u3 = v.ExternalAudioFileInput.unwrap()
+        parts.append("\"externalAudioFileInput\":" + mediaconvert_json_str(u3))
+    if v.HlsRenditionGroupSettings.is_some():
+        auto u4 = v.HlsRenditionGroupSettings.unwrap()
+        parts.append("\"hlsRenditionGroupSettings\":" + u4.to_json())
+    if v.LanguageCode.is_some():
+        auto u5 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + u5.to_json())
+    if v.Offset.is_some():
+        auto u6 = v.Offset.unwrap()
+        parts.append("\"offset\":" + str(u6))
+    if v.Pids.is_some():
+        auto u7 = v.Pids.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(str(x8))
+        parts.append("\"pids\":" + mediaconvert_json_arr(e8))
+    if v.ProgramSelection.is_some():
+        auto u9 = v.ProgramSelection.unwrap()
+        parts.append("\"programSelection\":" + str(u9))
+    if v.RemixSettings.is_some():
+        auto u10 = v.RemixSettings.unwrap()
+        parts.append("\"remixSettings\":" + remix_settings_to_json(u10))
+    if v.SelectorType.is_some():
+        auto u11 = v.SelectorType.unwrap()
+        parts.append("\"selectorType\":" + u11.to_json())
+    if v.Smpte337Passthrough.is_some():
+        auto u12 = v.Smpte337Passthrough.unwrap()
+        parts.append("\"smpte337Passthrough\":" + u12.to_json())
+    if v.Streams.is_some():
+        auto u13 = v.Streams.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(str(x14))
+        parts.append("\"streams\":" + mediaconvert_json_arr(e14))
+    if v.Tracks.is_some():
+        auto u15 = v.Tracks.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(str(x16))
+        parts.append("\"tracks\":" + mediaconvert_json_arr(e16))
+    return mediaconvert_json_obj(parts)
+
+# Serialize AudioSelectorGroup to a compact JSON object (declaration order).
+def audio_selector_group_to_json(AudioSelectorGroup v) -> str:
+    list[str] parts = []
+    if v.AudioSelectorNames.is_some():
+        auto u0 = v.AudioSelectorNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconvert_json_str(x1))
+        parts.append("\"audioSelectorNames\":" + mediaconvert_json_arr(e1))
+    return mediaconvert_json_obj(parts)
+
+# Serialize AutomatedAbrRule to a compact JSON object (declaration order).
+def automated_abr_rule_to_json(AutomatedAbrRule v) -> str:
+    list[str] parts = []
+    if v.AllowedRenditions.is_some():
+        auto u0 = v.AllowedRenditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"allowedRenditions\":" + mediaconvert_json_arr(e1))
+    if v.ForceIncludeRenditions.is_some():
+        auto u2 = v.ForceIncludeRenditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"forceIncludeRenditions\":" + mediaconvert_json_arr(e3))
+    if v.MinBottomRenditionSize.is_some():
+        auto u4 = v.MinBottomRenditionSize.unwrap()
+        parts.append("\"minBottomRenditionSize\":" + u4.to_json())
+    if v.MinTopRenditionSize.is_some():
+        auto u5 = v.MinTopRenditionSize.unwrap()
+        parts.append("\"minTopRenditionSize\":" + u5.to_json())
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        parts.append("\"type\":" + u6.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize AutomatedAbrSettings to a compact JSON object (declaration order).
+def automated_abr_settings_to_json(AutomatedAbrSettings v) -> str:
+    list[str] parts = []
+    if v.MaxAbrBitrate.is_some():
+        auto u0 = v.MaxAbrBitrate.unwrap()
+        parts.append("\"maxAbrBitrate\":" + str(u0))
+    if v.MaxQualityLevel.is_some():
+        auto u1 = v.MaxQualityLevel.unwrap()
+        parts.append("\"maxQualityLevel\":" + str(u1))
+    if v.MaxRenditions.is_some():
+        auto u2 = v.MaxRenditions.unwrap()
+        parts.append("\"maxRenditions\":" + str(u2))
+    if v.MinAbrBitrate.is_some():
+        auto u3 = v.MinAbrBitrate.unwrap()
+        parts.append("\"minAbrBitrate\":" + str(u3))
+    if v.Rules.is_some():
+        auto u4 = v.Rules.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(automated_abr_rule_to_json(x5))
+        parts.append("\"rules\":" + mediaconvert_json_arr(e5))
+    return mediaconvert_json_obj(parts)
+
+# Serialize AutomatedEncodingSettings to a compact JSON object (declaration order).
+def automated_encoding_settings_to_json(AutomatedEncodingSettings v) -> str:
+    list[str] parts = []
+    if v.AbrSettings.is_some():
+        auto u0 = v.AbrSettings.unwrap()
+        parts.append("\"abrSettings\":" + automated_abr_settings_to_json(u0))
+    return mediaconvert_json_obj(parts)
+
+# Serialize Av1Settings to a compact JSON object (declaration order).
+def av1_settings_to_json(Av1Settings v) -> str:
+    list[str] parts = []
+    if v.AdaptiveQuantization.is_some():
+        auto u0 = v.AdaptiveQuantization.unwrap()
+        parts.append("\"adaptiveQuantization\":" + u0.to_json())
+    if v.BitDepth.is_some():
+        auto u1 = v.BitDepth.unwrap()
+        parts.append("\"bitDepth\":" + u1.to_json())
+    if v.Bitrate.is_some():
+        auto u2 = v.Bitrate.unwrap()
+        parts.append("\"bitrate\":" + str(u2))
+    if v.FilmGrainSynthesis.is_some():
+        auto u3 = v.FilmGrainSynthesis.unwrap()
+        parts.append("\"filmGrainSynthesis\":" + u3.to_json())
+    if v.FramerateControl.is_some():
+        auto u4 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u4.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u5 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u5.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u6 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u6))
+    if v.FramerateNumerator.is_some():
+        auto u7 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u7))
+    if v.GopSize.is_some():
+        auto u8 = v.GopSize.unwrap()
+        parts.append("\"gopSize\":" + str(u8))
+    if v.MaxBitrate.is_some():
+        auto u9 = v.MaxBitrate.unwrap()
+        parts.append("\"maxBitrate\":" + str(u9))
+    if v.NumberBFramesBetweenReferenceFrames.is_some():
+        auto u10 = v.NumberBFramesBetweenReferenceFrames.unwrap()
+        parts.append("\"numberBFramesBetweenReferenceFrames\":" + str(u10))
+    if v.PerFrameMetrics.is_some():
+        auto u11 = v.PerFrameMetrics.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e12))
+    if v.QvbrSettings.is_some():
+        auto u13 = v.QvbrSettings.unwrap()
+        parts.append("\"qvbrSettings\":" + u13.to_json())
+    if v.RateControlMode.is_some():
+        auto u14 = v.RateControlMode.unwrap()
+        parts.append("\"rateControlMode\":" + u14.to_json())
+    if v.SceneChangeDetect.is_some():
+        auto u15 = v.SceneChangeDetect.unwrap()
+        parts.append("\"sceneChangeDetect\":" + u15.to_json())
+    if v.Slices.is_some():
+        auto u16 = v.Slices.unwrap()
+        parts.append("\"slices\":" + str(u16))
+    if v.SlidingWindowMs.is_some():
+        auto u17 = v.SlidingWindowMs.unwrap()
+        parts.append("\"slidingWindowMs\":" + str(u17))
+    if v.SlidingWindowPeakBitrate.is_some():
+        auto u18 = v.SlidingWindowPeakBitrate.unwrap()
+        parts.append("\"slidingWindowPeakBitrate\":" + str(u18))
+    if v.SpatialAdaptiveQuantization.is_some():
+        auto u19 = v.SpatialAdaptiveQuantization.unwrap()
+        parts.append("\"spatialAdaptiveQuantization\":" + u19.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize AvcIntraSettings to a compact JSON object (declaration order).
+def avc_intra_settings_to_json(AvcIntraSettings v) -> str:
+    list[str] parts = []
+    if v.AvcIntraClass.is_some():
+        auto u0 = v.AvcIntraClass.unwrap()
+        parts.append("\"avcIntraClass\":" + u0.to_json())
+    if v.AvcIntraUhdSettings.is_some():
+        auto u1 = v.AvcIntraUhdSettings.unwrap()
+        parts.append("\"avcIntraUhdSettings\":" + u1.to_json())
+    if v.FramerateControl.is_some():
+        auto u2 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u2.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u3 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u3.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u4 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u4))
+    if v.FramerateNumerator.is_some():
+        auto u5 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u5))
+    if v.InterlaceMode.is_some():
+        auto u6 = v.InterlaceMode.unwrap()
+        parts.append("\"interlaceMode\":" + u6.to_json())
+    if v.PerFrameMetrics.is_some():
+        auto u7 = v.PerFrameMetrics.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e8))
+    if v.ScanTypeConversionMode.is_some():
+        auto u9 = v.ScanTypeConversionMode.unwrap()
+        parts.append("\"scanTypeConversionMode\":" + u9.to_json())
+    if v.SlowPal.is_some():
+        auto u10 = v.SlowPal.unwrap()
+        parts.append("\"slowPal\":" + u10.to_json())
+    if v.Telecine.is_some():
+        auto u11 = v.Telecine.unwrap()
+        parts.append("\"telecine\":" + u11.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize CaptionDescription to a compact JSON object (declaration order).
+def caption_description_to_json(CaptionDescription v) -> str:
+    list[str] parts = []
+    if v.CaptionSelectorName.is_some():
+        auto u0 = v.CaptionSelectorName.unwrap()
+        parts.append("\"captionSelectorName\":" + mediaconvert_json_str(u0))
+    if v.CustomLanguageCode.is_some():
+        auto u1 = v.CustomLanguageCode.unwrap()
+        parts.append("\"customLanguageCode\":" + mediaconvert_json_str(u1))
+    if v.DestinationSettings.is_some():
+        auto u2 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + caption_destination_settings_to_json(u2))
+    if v.LanguageCode.is_some():
+        auto u3 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + u3.to_json())
+    if v.LanguageDescription.is_some():
+        auto u4 = v.LanguageDescription.unwrap()
+        parts.append("\"languageDescription\":" + mediaconvert_json_str(u4))
+    return mediaconvert_json_obj(parts)
+
+# Serialize CaptionDescriptionPreset to a compact JSON object (declaration order).
+def caption_description_preset_to_json(CaptionDescriptionPreset v) -> str:
+    list[str] parts = []
+    if v.CustomLanguageCode.is_some():
+        auto u0 = v.CustomLanguageCode.unwrap()
+        parts.append("\"customLanguageCode\":" + mediaconvert_json_str(u0))
+    if v.DestinationSettings.is_some():
+        auto u1 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + caption_destination_settings_to_json(u1))
+    if v.LanguageCode.is_some():
+        auto u2 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + u2.to_json())
+    if v.LanguageDescription.is_some():
+        auto u3 = v.LanguageDescription.unwrap()
+        parts.append("\"languageDescription\":" + mediaconvert_json_str(u3))
+    return mediaconvert_json_obj(parts)
+
+# Serialize CaptionDestinationSettings to a compact JSON object (declaration order).
+def caption_destination_settings_to_json(CaptionDestinationSettings v) -> str:
+    list[str] parts = []
+    if v.BurninDestinationSettings.is_some():
+        auto u0 = v.BurninDestinationSettings.unwrap()
+        parts.append("\"burninDestinationSettings\":" + u0.to_json())
+    if v.DestinationType.is_some():
+        auto u1 = v.DestinationType.unwrap()
+        parts.append("\"destinationType\":" + u1.to_json())
+    if v.DvbSubDestinationSettings.is_some():
+        auto u2 = v.DvbSubDestinationSettings.unwrap()
+        parts.append("\"dvbSubDestinationSettings\":" + u2.to_json())
+    if v.EmbeddedDestinationSettings.is_some():
+        auto u3 = v.EmbeddedDestinationSettings.unwrap()
+        parts.append("\"embeddedDestinationSettings\":" + u3.to_json())
+    if v.ImscDestinationSettings.is_some():
+        auto u4 = v.ImscDestinationSettings.unwrap()
+        parts.append("\"imscDestinationSettings\":" + u4.to_json())
+    if v.SccDestinationSettings.is_some():
+        auto u5 = v.SccDestinationSettings.unwrap()
+        parts.append("\"sccDestinationSettings\":" + u5.to_json())
+    if v.SrtDestinationSettings.is_some():
+        auto u6 = v.SrtDestinationSettings.unwrap()
+        parts.append("\"srtDestinationSettings\":" + u6.to_json())
+    if v.TeletextDestinationSettings.is_some():
+        auto u7 = v.TeletextDestinationSettings.unwrap()
+        parts.append("\"teletextDestinationSettings\":" + teletext_destination_settings_to_json(u7))
+    if v.TtmlDestinationSettings.is_some():
+        auto u8 = v.TtmlDestinationSettings.unwrap()
+        parts.append("\"ttmlDestinationSettings\":" + u8.to_json())
+    if v.WebvttDestinationSettings.is_some():
+        auto u9 = v.WebvttDestinationSettings.unwrap()
+        parts.append("\"webvttDestinationSettings\":" + u9.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize ChannelMapping to a compact JSON object (declaration order).
+def channel_mapping_to_json(ChannelMapping v) -> str:
+    list[str] parts = []
+    if v.OutputChannels.is_some():
+        auto u0 = v.OutputChannels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(output_channel_mapping_to_json(x1))
+        parts.append("\"outputChannels\":" + mediaconvert_json_arr(e1))
+    return mediaconvert_json_obj(parts)
+
+# Serialize CmafAdditionalManifest to a compact JSON object (declaration order).
+def cmaf_additional_manifest_to_json(CmafAdditionalManifest v) -> str:
+    list[str] parts = []
+    if v.ManifestNameModifier.is_some():
+        auto u0 = v.ManifestNameModifier.unwrap()
+        parts.append("\"manifestNameModifier\":" + mediaconvert_json_str(u0))
+    if v.SelectedOutputs.is_some():
+        auto u1 = v.SelectedOutputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mediaconvert_json_str(x2))
+        parts.append("\"selectedOutputs\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize CmafEncryptionSettings to a compact JSON object (declaration order).
+def cmaf_encryption_settings_to_json(CmafEncryptionSettings v) -> str:
+    list[str] parts = []
+    if v.ClearLeadSegments.is_some():
+        auto u0 = v.ClearLeadSegments.unwrap()
+        parts.append("\"clearLeadSegments\":" + str(u0))
+    if v.ConstantInitializationVector.is_some():
+        auto u1 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"constantInitializationVector\":" + mediaconvert_json_str(u1))
+    if v.EncryptionMethod.is_some():
+        auto u2 = v.EncryptionMethod.unwrap()
+        parts.append("\"encryptionMethod\":" + u2.to_json())
+    if v.InitializationVectorInManifest.is_some():
+        auto u3 = v.InitializationVectorInManifest.unwrap()
+        parts.append("\"initializationVectorInManifest\":" + u3.to_json())
+    if v.SpekeKeyProvider.is_some():
+        auto u4 = v.SpekeKeyProvider.unwrap()
+        parts.append("\"spekeKeyProvider\":" + speke_key_provider_cmaf_to_json(u4))
+    if v.StaticKeyProvider.is_some():
+        auto u5 = v.StaticKeyProvider.unwrap()
+        parts.append("\"staticKeyProvider\":" + u5.to_json())
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        parts.append("\"type\":" + u6.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize CmafGroupSettings to a compact JSON object (declaration order).
+def cmaf_group_settings_to_json(CmafGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AdditionalManifests.is_some():
+        auto u0 = v.AdditionalManifests.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cmaf_additional_manifest_to_json(x1))
+        parts.append("\"additionalManifests\":" + mediaconvert_json_arr(e1))
+    if v.BaseUrl.is_some():
+        auto u2 = v.BaseUrl.unwrap()
+        parts.append("\"baseUrl\":" + mediaconvert_json_str(u2))
+    if v.ClientCache.is_some():
+        auto u3 = v.ClientCache.unwrap()
+        parts.append("\"clientCache\":" + u3.to_json())
+    if v.CodecSpecification.is_some():
+        auto u4 = v.CodecSpecification.unwrap()
+        parts.append("\"codecSpecification\":" + u4.to_json())
+    if v.DashAdaptationSetGrouping.is_some():
+        auto u5 = v.DashAdaptationSetGrouping.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(mediaconvert_json_str(x6))
+        parts.append("\"dashAdaptationSetGrouping\":" + mediaconvert_json_arr(e6))
+    if v.DashIFrameTrickPlayNameModifier.is_some():
+        auto u7 = v.DashIFrameTrickPlayNameModifier.unwrap()
+        parts.append("\"dashIFrameTrickPlayNameModifier\":" + mediaconvert_json_str(u7))
+    if v.DashManifestStyle.is_some():
+        auto u8 = v.DashManifestStyle.unwrap()
+        parts.append("\"dashManifestStyle\":" + u8.to_json())
+    if v.Destination.is_some():
+        auto u9 = v.Destination.unwrap()
+        parts.append("\"destination\":" + mediaconvert_json_str(u9))
+    if v.DestinationSettings.is_some():
+        auto u10 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + u10.to_json())
+    if v.Encryption.is_some():
+        auto u11 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + cmaf_encryption_settings_to_json(u11))
+    if v.FragmentLength.is_some():
+        auto u12 = v.FragmentLength.unwrap()
+        parts.append("\"fragmentLength\":" + str(u12))
+    if v.ImageBasedTrickPlay.is_some():
+        auto u13 = v.ImageBasedTrickPlay.unwrap()
+        parts.append("\"imageBasedTrickPlay\":" + u13.to_json())
+    if v.ImageBasedTrickPlaySettings.is_some():
+        auto u14 = v.ImageBasedTrickPlaySettings.unwrap()
+        parts.append("\"imageBasedTrickPlaySettings\":" + u14.to_json())
+    if v.ImageBasedTrickPlayVariants.is_some():
+        auto u15 = v.ImageBasedTrickPlayVariants.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"imageBasedTrickPlayVariants\":" + mediaconvert_json_arr(e16))
+    if v.ManifestCompression.is_some():
+        auto u17 = v.ManifestCompression.unwrap()
+        parts.append("\"manifestCompression\":" + u17.to_json())
+    if v.ManifestDurationFormat.is_some():
+        auto u18 = v.ManifestDurationFormat.unwrap()
+        parts.append("\"manifestDurationFormat\":" + u18.to_json())
+    if v.MinBufferTime.is_some():
+        auto u19 = v.MinBufferTime.unwrap()
+        parts.append("\"minBufferTime\":" + str(u19))
+    if v.MinFinalSegmentLength.is_some():
+        auto u20 = v.MinFinalSegmentLength.unwrap()
+        parts.append("\"minFinalSegmentLength\":" + str(u20))
+    if v.MpdManifestBandwidthType.is_some():
+        auto u21 = v.MpdManifestBandwidthType.unwrap()
+        parts.append("\"mpdManifestBandwidthType\":" + u21.to_json())
+    if v.MpdProfile.is_some():
+        auto u22 = v.MpdProfile.unwrap()
+        parts.append("\"mpdProfile\":" + u22.to_json())
+    if v.PtsOffsetHandlingForBFrames.is_some():
+        auto u23 = v.PtsOffsetHandlingForBFrames.unwrap()
+        parts.append("\"ptsOffsetHandlingForBFrames\":" + u23.to_json())
+    if v.SegmentControl.is_some():
+        auto u24 = v.SegmentControl.unwrap()
+        parts.append("\"segmentControl\":" + u24.to_json())
+    if v.SegmentLength.is_some():
+        auto u25 = v.SegmentLength.unwrap()
+        parts.append("\"segmentLength\":" + str(u25))
+    if v.SegmentLengthControl.is_some():
+        auto u26 = v.SegmentLengthControl.unwrap()
+        parts.append("\"segmentLengthControl\":" + u26.to_json())
+    if v.StreamInfResolution.is_some():
+        auto u27 = v.StreamInfResolution.unwrap()
+        parts.append("\"streamInfResolution\":" + u27.to_json())
+    if v.TargetDurationCompatibilityMode.is_some():
+        auto u28 = v.TargetDurationCompatibilityMode.unwrap()
+        parts.append("\"targetDurationCompatibilityMode\":" + u28.to_json())
+    if v.VideoCompositionOffsets.is_some():
+        auto u29 = v.VideoCompositionOffsets.unwrap()
+        parts.append("\"videoCompositionOffsets\":" + u29.to_json())
+    if v.WriteDashManifest.is_some():
+        auto u30 = v.WriteDashManifest.unwrap()
+        parts.append("\"writeDashManifest\":" + u30.to_json())
+    if v.WriteHlsManifest.is_some():
+        auto u31 = v.WriteHlsManifest.unwrap()
+        parts.append("\"writeHlsManifest\":" + u31.to_json())
+    if v.WriteSegmentTimelineInRepresentation.is_some():
+        auto u32 = v.WriteSegmentTimelineInRepresentation.unwrap()
+        parts.append("\"writeSegmentTimelineInRepresentation\":" + u32.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize ContainerSettings to a compact JSON object (declaration order).
+def container_settings_to_json(ContainerSettings v) -> str:
+    list[str] parts = []
+    if v.CmfcSettings.is_some():
+        auto u0 = v.CmfcSettings.unwrap()
+        parts.append("\"cmfcSettings\":" + u0.to_json())
+    if v.Container.is_some():
+        auto u1 = v.Container.unwrap()
+        parts.append("\"container\":" + u1.to_json())
+    if v.F4vSettings.is_some():
+        auto u2 = v.F4vSettings.unwrap()
+        parts.append("\"f4vSettings\":" + u2.to_json())
+    if v.M2tsSettings.is_some():
+        auto u3 = v.M2tsSettings.unwrap()
+        parts.append("\"m2tsSettings\":" + m2ts_settings_to_json(u3))
+    if v.M3u8Settings.is_some():
+        auto u4 = v.M3u8Settings.unwrap()
+        parts.append("\"m3u8Settings\":" + m3u8_settings_to_json(u4))
+    if v.MovSettings.is_some():
+        auto u5 = v.MovSettings.unwrap()
+        parts.append("\"movSettings\":" + u5.to_json())
+    if v.Mp4Settings.is_some():
+        auto u6 = v.Mp4Settings.unwrap()
+        parts.append("\"mp4Settings\":" + u6.to_json())
+    if v.MpdSettings.is_some():
+        auto u7 = v.MpdSettings.unwrap()
+        parts.append("\"mpdSettings\":" + u7.to_json())
+    if v.MxfSettings.is_some():
+        auto u8 = v.MxfSettings.unwrap()
+        parts.append("\"mxfSettings\":" + u8.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize DashAdditionalManifest to a compact JSON object (declaration order).
+def dash_additional_manifest_to_json(DashAdditionalManifest v) -> str:
+    list[str] parts = []
+    if v.ManifestNameModifier.is_some():
+        auto u0 = v.ManifestNameModifier.unwrap()
+        parts.append("\"manifestNameModifier\":" + mediaconvert_json_str(u0))
+    if v.SelectedOutputs.is_some():
+        auto u1 = v.SelectedOutputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mediaconvert_json_str(x2))
+        parts.append("\"selectedOutputs\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize DashIsoEncryptionSettings to a compact JSON object (declaration order).
+def dash_iso_encryption_settings_to_json(DashIsoEncryptionSettings v) -> str:
+    list[str] parts = []
+    if v.PlaybackDeviceCompatibility.is_some():
+        auto u0 = v.PlaybackDeviceCompatibility.unwrap()
+        parts.append("\"playbackDeviceCompatibility\":" + u0.to_json())
+    if v.SpekeKeyProvider.is_some():
+        auto u1 = v.SpekeKeyProvider.unwrap()
+        parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(u1))
+    return mediaconvert_json_obj(parts)
+
+# Serialize DashIsoGroupSettings to a compact JSON object (declaration order).
+def dash_iso_group_settings_to_json(DashIsoGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AdditionalManifests.is_some():
+        auto u0 = v.AdditionalManifests.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dash_additional_manifest_to_json(x1))
+        parts.append("\"additionalManifests\":" + mediaconvert_json_arr(e1))
+    if v.AudioChannelConfigSchemeIdUri.is_some():
+        auto u2 = v.AudioChannelConfigSchemeIdUri.unwrap()
+        parts.append("\"audioChannelConfigSchemeIdUri\":" + u2.to_json())
+    if v.BaseUrl.is_some():
+        auto u3 = v.BaseUrl.unwrap()
+        parts.append("\"baseUrl\":" + mediaconvert_json_str(u3))
+    if v.DashAdaptationSetGrouping.is_some():
+        auto u4 = v.DashAdaptationSetGrouping.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediaconvert_json_str(x5))
+        parts.append("\"dashAdaptationSetGrouping\":" + mediaconvert_json_arr(e5))
+    if v.DashIFrameTrickPlayNameModifier.is_some():
+        auto u6 = v.DashIFrameTrickPlayNameModifier.unwrap()
+        parts.append("\"dashIFrameTrickPlayNameModifier\":" + mediaconvert_json_str(u6))
+    if v.DashManifestStyle.is_some():
+        auto u7 = v.DashManifestStyle.unwrap()
+        parts.append("\"dashManifestStyle\":" + u7.to_json())
+    if v.Destination.is_some():
+        auto u8 = v.Destination.unwrap()
+        parts.append("\"destination\":" + mediaconvert_json_str(u8))
+    if v.DestinationSettings.is_some():
+        auto u9 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + u9.to_json())
+    if v.Encryption.is_some():
+        auto u10 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + dash_iso_encryption_settings_to_json(u10))
+    if v.FragmentLength.is_some():
+        auto u11 = v.FragmentLength.unwrap()
+        parts.append("\"fragmentLength\":" + str(u11))
+    if v.HbbtvCompliance.is_some():
+        auto u12 = v.HbbtvCompliance.unwrap()
+        parts.append("\"hbbtvCompliance\":" + u12.to_json())
+    if v.ImageBasedTrickPlay.is_some():
+        auto u13 = v.ImageBasedTrickPlay.unwrap()
+        parts.append("\"imageBasedTrickPlay\":" + u13.to_json())
+    if v.ImageBasedTrickPlaySettings.is_some():
+        auto u14 = v.ImageBasedTrickPlaySettings.unwrap()
+        parts.append("\"imageBasedTrickPlaySettings\":" + u14.to_json())
+    if v.ImageBasedTrickPlayVariants.is_some():
+        auto u15 = v.ImageBasedTrickPlayVariants.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"imageBasedTrickPlayVariants\":" + mediaconvert_json_arr(e16))
+    if v.MinBufferTime.is_some():
+        auto u17 = v.MinBufferTime.unwrap()
+        parts.append("\"minBufferTime\":" + str(u17))
+    if v.MinFinalSegmentLength.is_some():
+        auto u18 = v.MinFinalSegmentLength.unwrap()
+        parts.append("\"minFinalSegmentLength\":" + str(u18))
+    if v.MpdManifestBandwidthType.is_some():
+        auto u19 = v.MpdManifestBandwidthType.unwrap()
+        parts.append("\"mpdManifestBandwidthType\":" + u19.to_json())
+    if v.MpdProfile.is_some():
+        auto u20 = v.MpdProfile.unwrap()
+        parts.append("\"mpdProfile\":" + u20.to_json())
+    if v.PtsOffsetHandlingForBFrames.is_some():
+        auto u21 = v.PtsOffsetHandlingForBFrames.unwrap()
+        parts.append("\"ptsOffsetHandlingForBFrames\":" + u21.to_json())
+    if v.SegmentControl.is_some():
+        auto u22 = v.SegmentControl.unwrap()
+        parts.append("\"segmentControl\":" + u22.to_json())
+    if v.SegmentLength.is_some():
+        auto u23 = v.SegmentLength.unwrap()
+        parts.append("\"segmentLength\":" + str(u23))
+    if v.SegmentLengthControl.is_some():
+        auto u24 = v.SegmentLengthControl.unwrap()
+        parts.append("\"segmentLengthControl\":" + u24.to_json())
+    if v.VideoCompositionOffsets.is_some():
+        auto u25 = v.VideoCompositionOffsets.unwrap()
+        parts.append("\"videoCompositionOffsets\":" + u25.to_json())
+    if v.WriteSegmentTimelineInRepresentation.is_some():
+        auto u26 = v.WriteSegmentTimelineInRepresentation.unwrap()
+        parts.append("\"writeSegmentTimelineInRepresentation\":" + u26.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize H264Settings to a compact JSON object (declaration order).
+def h264_settings_to_json(H264Settings v) -> str:
+    list[str] parts = []
+    if v.AdaptiveQuantization.is_some():
+        auto u0 = v.AdaptiveQuantization.unwrap()
+        parts.append("\"adaptiveQuantization\":" + u0.to_json())
+    if v.BandwidthReductionFilter.is_some():
+        auto u1 = v.BandwidthReductionFilter.unwrap()
+        parts.append("\"bandwidthReductionFilter\":" + u1.to_json())
+    if v.Bitrate.is_some():
+        auto u2 = v.Bitrate.unwrap()
+        parts.append("\"bitrate\":" + str(u2))
+    if v.CodecLevel.is_some():
+        auto u3 = v.CodecLevel.unwrap()
+        parts.append("\"codecLevel\":" + u3.to_json())
+    if v.CodecProfile.is_some():
+        auto u4 = v.CodecProfile.unwrap()
+        parts.append("\"codecProfile\":" + u4.to_json())
+    if v.DynamicSubGop.is_some():
+        auto u5 = v.DynamicSubGop.unwrap()
+        parts.append("\"dynamicSubGop\":" + u5.to_json())
+    if v.EndOfStreamMarkers.is_some():
+        auto u6 = v.EndOfStreamMarkers.unwrap()
+        parts.append("\"endOfStreamMarkers\":" + u6.to_json())
+    if v.EntropyEncoding.is_some():
+        auto u7 = v.EntropyEncoding.unwrap()
+        parts.append("\"entropyEncoding\":" + u7.to_json())
+    if v.ExplicitWeightedPrediction.is_some():
+        auto u8 = v.ExplicitWeightedPrediction.unwrap()
+        parts.append("\"explicitWeightedPrediction\":" + u8.to_json())
+    if v.FieldEncoding.is_some():
+        auto u9 = v.FieldEncoding.unwrap()
+        parts.append("\"fieldEncoding\":" + u9.to_json())
+    if v.FlickerAdaptiveQuantization.is_some():
+        auto u10 = v.FlickerAdaptiveQuantization.unwrap()
+        parts.append("\"flickerAdaptiveQuantization\":" + u10.to_json())
+    if v.FramerateControl.is_some():
+        auto u11 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u11.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u12 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u12.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u13 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u13))
+    if v.FramerateNumerator.is_some():
+        auto u14 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u14))
+    if v.GopBReference.is_some():
+        auto u15 = v.GopBReference.unwrap()
+        parts.append("\"gopBReference\":" + u15.to_json())
+    if v.GopClosedCadence.is_some():
+        auto u16 = v.GopClosedCadence.unwrap()
+        parts.append("\"gopClosedCadence\":" + str(u16))
+    if v.GopSize.is_some():
+        auto u17 = v.GopSize.unwrap()
+        parts.append("\"gopSize\":" + str(u17))
+    if v.GopSizeUnits.is_some():
+        auto u18 = v.GopSizeUnits.unwrap()
+        parts.append("\"gopSizeUnits\":" + u18.to_json())
+    if v.HrdBufferFinalFillPercentage.is_some():
+        auto u19 = v.HrdBufferFinalFillPercentage.unwrap()
+        parts.append("\"hrdBufferFinalFillPercentage\":" + str(u19))
+    if v.HrdBufferInitialFillPercentage.is_some():
+        auto u20 = v.HrdBufferInitialFillPercentage.unwrap()
+        parts.append("\"hrdBufferInitialFillPercentage\":" + str(u20))
+    if v.HrdBufferSize.is_some():
+        auto u21 = v.HrdBufferSize.unwrap()
+        parts.append("\"hrdBufferSize\":" + str(u21))
+    if v.InterlaceMode.is_some():
+        auto u22 = v.InterlaceMode.unwrap()
+        parts.append("\"interlaceMode\":" + u22.to_json())
+    if v.MaxBitrate.is_some():
+        auto u23 = v.MaxBitrate.unwrap()
+        parts.append("\"maxBitrate\":" + str(u23))
+    if v.MinIInterval.is_some():
+        auto u24 = v.MinIInterval.unwrap()
+        parts.append("\"minIInterval\":" + str(u24))
+    if v.NumberBFramesBetweenReferenceFrames.is_some():
+        auto u25 = v.NumberBFramesBetweenReferenceFrames.unwrap()
+        parts.append("\"numberBFramesBetweenReferenceFrames\":" + str(u25))
+    if v.NumberReferenceFrames.is_some():
+        auto u26 = v.NumberReferenceFrames.unwrap()
+        parts.append("\"numberReferenceFrames\":" + str(u26))
+    if v.ParControl.is_some():
+        auto u27 = v.ParControl.unwrap()
+        parts.append("\"parControl\":" + u27.to_json())
+    if v.ParDenominator.is_some():
+        auto u28 = v.ParDenominator.unwrap()
+        parts.append("\"parDenominator\":" + str(u28))
+    if v.ParNumerator.is_some():
+        auto u29 = v.ParNumerator.unwrap()
+        parts.append("\"parNumerator\":" + str(u29))
+    if v.PerFrameMetrics.is_some():
+        auto u30 = v.PerFrameMetrics.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e31))
+    if v.QualityTuningLevel.is_some():
+        auto u32 = v.QualityTuningLevel.unwrap()
+        parts.append("\"qualityTuningLevel\":" + u32.to_json())
+    if v.QvbrSettings.is_some():
+        auto u33 = v.QvbrSettings.unwrap()
+        parts.append("\"qvbrSettings\":" + u33.to_json())
+    if v.RateControlMode.is_some():
+        auto u34 = v.RateControlMode.unwrap()
+        parts.append("\"rateControlMode\":" + u34.to_json())
+    if v.RepeatPps.is_some():
+        auto u35 = v.RepeatPps.unwrap()
+        parts.append("\"repeatPps\":" + u35.to_json())
+    if v.SaliencyAwareEncoding.is_some():
+        auto u36 = v.SaliencyAwareEncoding.unwrap()
+        parts.append("\"saliencyAwareEncoding\":" + u36.to_json())
+    if v.ScanTypeConversionMode.is_some():
+        auto u37 = v.ScanTypeConversionMode.unwrap()
+        parts.append("\"scanTypeConversionMode\":" + u37.to_json())
+    if v.SceneChangeDetect.is_some():
+        auto u38 = v.SceneChangeDetect.unwrap()
+        parts.append("\"sceneChangeDetect\":" + u38.to_json())
+    if v.Slices.is_some():
+        auto u39 = v.Slices.unwrap()
+        parts.append("\"slices\":" + str(u39))
+    if v.SlidingWindowMs.is_some():
+        auto u40 = v.SlidingWindowMs.unwrap()
+        parts.append("\"slidingWindowMs\":" + str(u40))
+    if v.SlidingWindowPeakBitrate.is_some():
+        auto u41 = v.SlidingWindowPeakBitrate.unwrap()
+        parts.append("\"slidingWindowPeakBitrate\":" + str(u41))
+    if v.SlowPal.is_some():
+        auto u42 = v.SlowPal.unwrap()
+        parts.append("\"slowPal\":" + u42.to_json())
+    if v.Softness.is_some():
+        auto u43 = v.Softness.unwrap()
+        parts.append("\"softness\":" + str(u43))
+    if v.SpatialAdaptiveQuantization.is_some():
+        auto u44 = v.SpatialAdaptiveQuantization.unwrap()
+        parts.append("\"spatialAdaptiveQuantization\":" + u44.to_json())
+    if v.Syntax.is_some():
+        auto u45 = v.Syntax.unwrap()
+        parts.append("\"syntax\":" + u45.to_json())
+    if v.Telecine.is_some():
+        auto u46 = v.Telecine.unwrap()
+        parts.append("\"telecine\":" + u46.to_json())
+    if v.TemporalAdaptiveQuantization.is_some():
+        auto u47 = v.TemporalAdaptiveQuantization.unwrap()
+        parts.append("\"temporalAdaptiveQuantization\":" + u47.to_json())
+    if v.UnregisteredSeiTimecode.is_some():
+        auto u48 = v.UnregisteredSeiTimecode.unwrap()
+        parts.append("\"unregisteredSeiTimecode\":" + u48.to_json())
+    if v.WriteMp4PackagingType.is_some():
+        auto u49 = v.WriteMp4PackagingType.unwrap()
+        parts.append("\"writeMp4PackagingType\":" + u49.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize H265Settings to a compact JSON object (declaration order).
+def h265_settings_to_json(H265Settings v) -> str:
+    list[str] parts = []
+    if v.AdaptiveQuantization.is_some():
+        auto u0 = v.AdaptiveQuantization.unwrap()
+        parts.append("\"adaptiveQuantization\":" + u0.to_json())
+    if v.AlternateTransferFunctionSei.is_some():
+        auto u1 = v.AlternateTransferFunctionSei.unwrap()
+        parts.append("\"alternateTransferFunctionSei\":" + u1.to_json())
+    if v.BandwidthReductionFilter.is_some():
+        auto u2 = v.BandwidthReductionFilter.unwrap()
+        parts.append("\"bandwidthReductionFilter\":" + u2.to_json())
+    if v.Bitrate.is_some():
+        auto u3 = v.Bitrate.unwrap()
+        parts.append("\"bitrate\":" + str(u3))
+    if v.CodecLevel.is_some():
+        auto u4 = v.CodecLevel.unwrap()
+        parts.append("\"codecLevel\":" + u4.to_json())
+    if v.CodecProfile.is_some():
+        auto u5 = v.CodecProfile.unwrap()
+        parts.append("\"codecProfile\":" + u5.to_json())
+    if v.Deblocking.is_some():
+        auto u6 = v.Deblocking.unwrap()
+        parts.append("\"deblocking\":" + u6.to_json())
+    if v.DynamicSubGop.is_some():
+        auto u7 = v.DynamicSubGop.unwrap()
+        parts.append("\"dynamicSubGop\":" + u7.to_json())
+    if v.EndOfStreamMarkers.is_some():
+        auto u8 = v.EndOfStreamMarkers.unwrap()
+        parts.append("\"endOfStreamMarkers\":" + u8.to_json())
+    if v.FlickerAdaptiveQuantization.is_some():
+        auto u9 = v.FlickerAdaptiveQuantization.unwrap()
+        parts.append("\"flickerAdaptiveQuantization\":" + u9.to_json())
+    if v.FramerateControl.is_some():
+        auto u10 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u10.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u11 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u11.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u12 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u12))
+    if v.FramerateNumerator.is_some():
+        auto u13 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u13))
+    if v.GopBReference.is_some():
+        auto u14 = v.GopBReference.unwrap()
+        parts.append("\"gopBReference\":" + u14.to_json())
+    if v.GopClosedCadence.is_some():
+        auto u15 = v.GopClosedCadence.unwrap()
+        parts.append("\"gopClosedCadence\":" + str(u15))
+    if v.GopSize.is_some():
+        auto u16 = v.GopSize.unwrap()
+        parts.append("\"gopSize\":" + str(u16))
+    if v.GopSizeUnits.is_some():
+        auto u17 = v.GopSizeUnits.unwrap()
+        parts.append("\"gopSizeUnits\":" + u17.to_json())
+    if v.HrdBufferFinalFillPercentage.is_some():
+        auto u18 = v.HrdBufferFinalFillPercentage.unwrap()
+        parts.append("\"hrdBufferFinalFillPercentage\":" + str(u18))
+    if v.HrdBufferInitialFillPercentage.is_some():
+        auto u19 = v.HrdBufferInitialFillPercentage.unwrap()
+        parts.append("\"hrdBufferInitialFillPercentage\":" + str(u19))
+    if v.HrdBufferSize.is_some():
+        auto u20 = v.HrdBufferSize.unwrap()
+        parts.append("\"hrdBufferSize\":" + str(u20))
+    if v.InterlaceMode.is_some():
+        auto u21 = v.InterlaceMode.unwrap()
+        parts.append("\"interlaceMode\":" + u21.to_json())
+    if v.MaxBitrate.is_some():
+        auto u22 = v.MaxBitrate.unwrap()
+        parts.append("\"maxBitrate\":" + str(u22))
+    if v.MinIInterval.is_some():
+        auto u23 = v.MinIInterval.unwrap()
+        parts.append("\"minIInterval\":" + str(u23))
+    if v.MvOverPictureBoundaries.is_some():
+        auto u24 = v.MvOverPictureBoundaries.unwrap()
+        parts.append("\"mvOverPictureBoundaries\":" + u24.to_json())
+    if v.MvTemporalPredictor.is_some():
+        auto u25 = v.MvTemporalPredictor.unwrap()
+        parts.append("\"mvTemporalPredictor\":" + u25.to_json())
+    if v.NumberBFramesBetweenReferenceFrames.is_some():
+        auto u26 = v.NumberBFramesBetweenReferenceFrames.unwrap()
+        parts.append("\"numberBFramesBetweenReferenceFrames\":" + str(u26))
+    if v.NumberReferenceFrames.is_some():
+        auto u27 = v.NumberReferenceFrames.unwrap()
+        parts.append("\"numberReferenceFrames\":" + str(u27))
+    if v.ParControl.is_some():
+        auto u28 = v.ParControl.unwrap()
+        parts.append("\"parControl\":" + u28.to_json())
+    if v.ParDenominator.is_some():
+        auto u29 = v.ParDenominator.unwrap()
+        parts.append("\"parDenominator\":" + str(u29))
+    if v.ParNumerator.is_some():
+        auto u30 = v.ParNumerator.unwrap()
+        parts.append("\"parNumerator\":" + str(u30))
+    if v.PerFrameMetrics.is_some():
+        auto u31 = v.PerFrameMetrics.unwrap()
+        list[str] e32 = []
+        for x32 in u31:
+            e32.append(x32.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e32))
+    if v.QualityTuningLevel.is_some():
+        auto u33 = v.QualityTuningLevel.unwrap()
+        parts.append("\"qualityTuningLevel\":" + u33.to_json())
+    if v.QvbrSettings.is_some():
+        auto u34 = v.QvbrSettings.unwrap()
+        parts.append("\"qvbrSettings\":" + u34.to_json())
+    if v.RateControlMode.is_some():
+        auto u35 = v.RateControlMode.unwrap()
+        parts.append("\"rateControlMode\":" + u35.to_json())
+    if v.SampleAdaptiveOffsetFilterMode.is_some():
+        auto u36 = v.SampleAdaptiveOffsetFilterMode.unwrap()
+        parts.append("\"sampleAdaptiveOffsetFilterMode\":" + u36.to_json())
+    if v.ScanTypeConversionMode.is_some():
+        auto u37 = v.ScanTypeConversionMode.unwrap()
+        parts.append("\"scanTypeConversionMode\":" + u37.to_json())
+    if v.SceneChangeDetect.is_some():
+        auto u38 = v.SceneChangeDetect.unwrap()
+        parts.append("\"sceneChangeDetect\":" + u38.to_json())
+    if v.Slices.is_some():
+        auto u39 = v.Slices.unwrap()
+        parts.append("\"slices\":" + str(u39))
+    if v.SlidingWindowMs.is_some():
+        auto u40 = v.SlidingWindowMs.unwrap()
+        parts.append("\"slidingWindowMs\":" + str(u40))
+    if v.SlidingWindowPeakBitrate.is_some():
+        auto u41 = v.SlidingWindowPeakBitrate.unwrap()
+        parts.append("\"slidingWindowPeakBitrate\":" + str(u41))
+    if v.SlowPal.is_some():
+        auto u42 = v.SlowPal.unwrap()
+        parts.append("\"slowPal\":" + u42.to_json())
+    if v.SpatialAdaptiveQuantization.is_some():
+        auto u43 = v.SpatialAdaptiveQuantization.unwrap()
+        parts.append("\"spatialAdaptiveQuantization\":" + u43.to_json())
+    if v.Telecine.is_some():
+        auto u44 = v.Telecine.unwrap()
+        parts.append("\"telecine\":" + u44.to_json())
+    if v.TemporalAdaptiveQuantization.is_some():
+        auto u45 = v.TemporalAdaptiveQuantization.unwrap()
+        parts.append("\"temporalAdaptiveQuantization\":" + u45.to_json())
+    if v.TemporalIds.is_some():
+        auto u46 = v.TemporalIds.unwrap()
+        parts.append("\"temporalIds\":" + u46.to_json())
+    if v.TileHeight.is_some():
+        auto u47 = v.TileHeight.unwrap()
+        parts.append("\"tileHeight\":" + str(u47))
+    if v.TilePadding.is_some():
+        auto u48 = v.TilePadding.unwrap()
+        parts.append("\"tilePadding\":" + u48.to_json())
+    if v.TileWidth.is_some():
+        auto u49 = v.TileWidth.unwrap()
+        parts.append("\"tileWidth\":" + str(u49))
+    if v.Tiles.is_some():
+        auto u50 = v.Tiles.unwrap()
+        parts.append("\"tiles\":" + u50.to_json())
+    if v.TreeBlockSize.is_some():
+        auto u51 = v.TreeBlockSize.unwrap()
+        parts.append("\"treeBlockSize\":" + u51.to_json())
+    if v.UnregisteredSeiTimecode.is_some():
+        auto u52 = v.UnregisteredSeiTimecode.unwrap()
+        parts.append("\"unregisteredSeiTimecode\":" + u52.to_json())
+    if v.WriteMp4PackagingType.is_some():
+        auto u53 = v.WriteMp4PackagingType.unwrap()
+        parts.append("\"writeMp4PackagingType\":" + u53.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize HlsAdditionalManifest to a compact JSON object (declaration order).
+def hls_additional_manifest_to_json(HlsAdditionalManifest v) -> str:
+    list[str] parts = []
+    if v.ManifestNameModifier.is_some():
+        auto u0 = v.ManifestNameModifier.unwrap()
+        parts.append("\"manifestNameModifier\":" + mediaconvert_json_str(u0))
+    if v.SelectedOutputs.is_some():
+        auto u1 = v.SelectedOutputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mediaconvert_json_str(x2))
+        parts.append("\"selectedOutputs\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize HlsEncryptionSettings to a compact JSON object (declaration order).
+def hls_encryption_settings_to_json(HlsEncryptionSettings v) -> str:
+    list[str] parts = []
+    if v.ConstantInitializationVector.is_some():
+        auto u0 = v.ConstantInitializationVector.unwrap()
+        parts.append("\"constantInitializationVector\":" + mediaconvert_json_str(u0))
+    if v.EncryptionMethod.is_some():
+        auto u1 = v.EncryptionMethod.unwrap()
+        parts.append("\"encryptionMethod\":" + u1.to_json())
+    if v.InitializationVectorInManifest.is_some():
+        auto u2 = v.InitializationVectorInManifest.unwrap()
+        parts.append("\"initializationVectorInManifest\":" + u2.to_json())
+    if v.OfflineEncrypted.is_some():
+        auto u3 = v.OfflineEncrypted.unwrap()
+        parts.append("\"offlineEncrypted\":" + u3.to_json())
+    if v.SpekeKeyProvider.is_some():
+        auto u4 = v.SpekeKeyProvider.unwrap()
+        parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(u4))
+    if v.StaticKeyProvider.is_some():
+        auto u5 = v.StaticKeyProvider.unwrap()
+        parts.append("\"staticKeyProvider\":" + u5.to_json())
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        parts.append("\"type\":" + u6.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize HlsGroupSettings to a compact JSON object (declaration order).
+def hls_group_settings_to_json(HlsGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AdMarkers.is_some():
+        auto u0 = v.AdMarkers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"adMarkers\":" + mediaconvert_json_arr(e1))
+    if v.AdditionalManifests.is_some():
+        auto u2 = v.AdditionalManifests.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(hls_additional_manifest_to_json(x3))
+        parts.append("\"additionalManifests\":" + mediaconvert_json_arr(e3))
+    if v.AudioOnlyHeader.is_some():
+        auto u4 = v.AudioOnlyHeader.unwrap()
+        parts.append("\"audioOnlyHeader\":" + u4.to_json())
+    if v.BaseUrl.is_some():
+        auto u5 = v.BaseUrl.unwrap()
+        parts.append("\"baseUrl\":" + mediaconvert_json_str(u5))
+    if v.CaptionLanguageMappings.is_some():
+        auto u6 = v.CaptionLanguageMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"captionLanguageMappings\":" + mediaconvert_json_arr(e7))
+    if v.CaptionLanguageSetting.is_some():
+        auto u8 = v.CaptionLanguageSetting.unwrap()
+        parts.append("\"captionLanguageSetting\":" + u8.to_json())
+    if v.CaptionSegmentLengthControl.is_some():
+        auto u9 = v.CaptionSegmentLengthControl.unwrap()
+        parts.append("\"captionSegmentLengthControl\":" + u9.to_json())
+    if v.ClientCache.is_some():
+        auto u10 = v.ClientCache.unwrap()
+        parts.append("\"clientCache\":" + u10.to_json())
+    if v.CodecSpecification.is_some():
+        auto u11 = v.CodecSpecification.unwrap()
+        parts.append("\"codecSpecification\":" + u11.to_json())
+    if v.Destination.is_some():
+        auto u12 = v.Destination.unwrap()
+        parts.append("\"destination\":" + mediaconvert_json_str(u12))
+    if v.DestinationSettings.is_some():
+        auto u13 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + u13.to_json())
+    if v.DirectoryStructure.is_some():
+        auto u14 = v.DirectoryStructure.unwrap()
+        parts.append("\"directoryStructure\":" + u14.to_json())
+    if v.Encryption.is_some():
+        auto u15 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + hls_encryption_settings_to_json(u15))
+    if v.ImageBasedTrickPlay.is_some():
+        auto u16 = v.ImageBasedTrickPlay.unwrap()
+        parts.append("\"imageBasedTrickPlay\":" + u16.to_json())
+    if v.ImageBasedTrickPlaySettings.is_some():
+        auto u17 = v.ImageBasedTrickPlaySettings.unwrap()
+        parts.append("\"imageBasedTrickPlaySettings\":" + u17.to_json())
+    if v.ImageBasedTrickPlayVariants.is_some():
+        auto u18 = v.ImageBasedTrickPlayVariants.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"imageBasedTrickPlayVariants\":" + mediaconvert_json_arr(e19))
+    if v.ManifestCompression.is_some():
+        auto u20 = v.ManifestCompression.unwrap()
+        parts.append("\"manifestCompression\":" + u20.to_json())
+    if v.ManifestDurationFormat.is_some():
+        auto u21 = v.ManifestDurationFormat.unwrap()
+        parts.append("\"manifestDurationFormat\":" + u21.to_json())
+    if v.MinFinalSegmentLength.is_some():
+        auto u22 = v.MinFinalSegmentLength.unwrap()
+        parts.append("\"minFinalSegmentLength\":" + str(u22))
+    if v.MinSegmentLength.is_some():
+        auto u23 = v.MinSegmentLength.unwrap()
+        parts.append("\"minSegmentLength\":" + str(u23))
+    if v.OutputSelection.is_some():
+        auto u24 = v.OutputSelection.unwrap()
+        parts.append("\"outputSelection\":" + u24.to_json())
+    if v.ProgramDateTime.is_some():
+        auto u25 = v.ProgramDateTime.unwrap()
+        parts.append("\"programDateTime\":" + u25.to_json())
+    if v.ProgramDateTimePeriod.is_some():
+        auto u26 = v.ProgramDateTimePeriod.unwrap()
+        parts.append("\"programDateTimePeriod\":" + str(u26))
+    if v.ProgressiveWriteHlsManifest.is_some():
+        auto u27 = v.ProgressiveWriteHlsManifest.unwrap()
+        parts.append("\"progressiveWriteHlsManifest\":" + u27.to_json())
+    if v.SegmentControl.is_some():
+        auto u28 = v.SegmentControl.unwrap()
+        parts.append("\"segmentControl\":" + u28.to_json())
+    if v.SegmentLength.is_some():
+        auto u29 = v.SegmentLength.unwrap()
+        parts.append("\"segmentLength\":" + str(u29))
+    if v.SegmentLengthControl.is_some():
+        auto u30 = v.SegmentLengthControl.unwrap()
+        parts.append("\"segmentLengthControl\":" + u30.to_json())
+    if v.SegmentsPerSubdirectory.is_some():
+        auto u31 = v.SegmentsPerSubdirectory.unwrap()
+        parts.append("\"segmentsPerSubdirectory\":" + str(u31))
+    if v.StreamInfResolution.is_some():
+        auto u32 = v.StreamInfResolution.unwrap()
+        parts.append("\"streamInfResolution\":" + u32.to_json())
+    if v.TargetDurationCompatibilityMode.is_some():
+        auto u33 = v.TargetDurationCompatibilityMode.unwrap()
+        parts.append("\"targetDurationCompatibilityMode\":" + u33.to_json())
+    if v.TimedMetadataId3Frame.is_some():
+        auto u34 = v.TimedMetadataId3Frame.unwrap()
+        parts.append("\"timedMetadataId3Frame\":" + u34.to_json())
+    if v.TimedMetadataId3Period.is_some():
+        auto u35 = v.TimedMetadataId3Period.unwrap()
+        parts.append("\"timedMetadataId3Period\":" + str(u35))
+    if v.TimestampDeltaMilliseconds.is_some():
+        auto u36 = v.TimestampDeltaMilliseconds.unwrap()
+        parts.append("\"timestampDeltaMilliseconds\":" + str(u36))
+    return mediaconvert_json_obj(parts)
+
+# Serialize ImageInserter to a compact JSON object (declaration order).
+def image_inserter_to_json(ImageInserter v) -> str:
+    list[str] parts = []
+    if v.InsertableImages.is_some():
+        auto u0 = v.InsertableImages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"insertableImages\":" + mediaconvert_json_arr(e1))
+    if v.SdrReferenceWhiteLevel.is_some():
+        auto u2 = v.SdrReferenceWhiteLevel.unwrap()
+        parts.append("\"sdrReferenceWhiteLevel\":" + str(u2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize Input to a compact JSON object (declaration order).
+def input_to_json(Input v) -> str:
+    list[str] parts = []
+    if v.AdvancedInputFilter.is_some():
+        auto u0 = v.AdvancedInputFilter.unwrap()
+        parts.append("\"advancedInputFilter\":" + u0.to_json())
+    if v.AdvancedInputFilterSettings.is_some():
+        auto u1 = v.AdvancedInputFilterSettings.unwrap()
+        parts.append("\"advancedInputFilterSettings\":" + u1.to_json())
+    if v.AudioSelectorGroups.is_some():
+        auto u2 = v.AudioSelectorGroups.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(mediaconvert_json_str(k3) + ":" + audio_selector_group_to_json(u2[k3]))
+        parts.append("\"audioSelectorGroups\":" + mediaconvert_json_obj(m3))
+    if v.AudioSelectors.is_some():
+        auto u4 = v.AudioSelectors.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(mediaconvert_json_str(k5) + ":" + audio_selector_to_json(u4[k5]))
+        parts.append("\"audioSelectors\":" + mediaconvert_json_obj(m5))
+    if v.CaptionSelectors.is_some():
+        auto u6 = v.CaptionSelectors.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(mediaconvert_json_str(k7) + ":" + u6[k7].to_json())
+        parts.append("\"captionSelectors\":" + mediaconvert_json_obj(m7))
+    if v.Crop.is_some():
+        auto u8 = v.Crop.unwrap()
+        parts.append("\"crop\":" + u8.to_json())
+    if v.DeblockFilter.is_some():
+        auto u9 = v.DeblockFilter.unwrap()
+        parts.append("\"deblockFilter\":" + u9.to_json())
+    if v.DecryptionSettings.is_some():
+        auto u10 = v.DecryptionSettings.unwrap()
+        parts.append("\"decryptionSettings\":" + u10.to_json())
+    if v.DenoiseFilter.is_some():
+        auto u11 = v.DenoiseFilter.unwrap()
+        parts.append("\"denoiseFilter\":" + u11.to_json())
+    if v.DolbyVisionMetadataXml.is_some():
+        auto u12 = v.DolbyVisionMetadataXml.unwrap()
+        parts.append("\"dolbyVisionMetadataXml\":" + mediaconvert_json_str(u12))
+    if v.DynamicAudioSelectors.is_some():
+        auto u13 = v.DynamicAudioSelectors.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(mediaconvert_json_str(k14) + ":" + u13[k14].to_json())
+        parts.append("\"dynamicAudioSelectors\":" + mediaconvert_json_obj(m14))
+    if v.FileInput.is_some():
+        auto u15 = v.FileInput.unwrap()
+        parts.append("\"fileInput\":" + mediaconvert_json_str(u15))
+    if v.FilterEnable.is_some():
+        auto u16 = v.FilterEnable.unwrap()
+        parts.append("\"filterEnable\":" + u16.to_json())
+    if v.FilterStrength.is_some():
+        auto u17 = v.FilterStrength.unwrap()
+        parts.append("\"filterStrength\":" + str(u17))
+    if v.ImageInserter.is_some():
+        auto u18 = v.ImageInserter.unwrap()
+        parts.append("\"imageInserter\":" + image_inserter_to_json(u18))
+    if v.InputClippings.is_some():
+        auto u19 = v.InputClippings.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"inputClippings\":" + mediaconvert_json_arr(e20))
+    if v.InputScanType.is_some():
+        auto u21 = v.InputScanType.unwrap()
+        parts.append("\"inputScanType\":" + u21.to_json())
+    if v.MultiViewSettings.is_some():
+        auto u22 = v.MultiViewSettings.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"multiViewSettings\":" + mediaconvert_json_arr(e23))
+    if v.Position.is_some():
+        auto u24 = v.Position.unwrap()
+        parts.append("\"position\":" + u24.to_json())
+    if v.ProgramNumber.is_some():
+        auto u25 = v.ProgramNumber.unwrap()
+        parts.append("\"programNumber\":" + str(u25))
+    if v.PsiControl.is_some():
+        auto u26 = v.PsiControl.unwrap()
+        parts.append("\"psiControl\":" + u26.to_json())
+    if v.SupplementalImps.is_some():
+        auto u27 = v.SupplementalImps.unwrap()
+        list[str] e28 = []
+        for x28 in u27:
+            e28.append(mediaconvert_json_str(x28))
+        parts.append("\"supplementalImps\":" + mediaconvert_json_arr(e28))
+    if v.TamsSettings.is_some():
+        auto u29 = v.TamsSettings.unwrap()
+        parts.append("\"tamsSettings\":" + u29.to_json())
+    if v.TimecodeSource.is_some():
+        auto u30 = v.TimecodeSource.unwrap()
+        parts.append("\"timecodeSource\":" + u30.to_json())
+    if v.TimecodeStart.is_some():
+        auto u31 = v.TimecodeStart.unwrap()
+        parts.append("\"timecodeStart\":" + mediaconvert_json_str(u31))
+    if v.VideoGenerator.is_some():
+        auto u32 = v.VideoGenerator.unwrap()
+        parts.append("\"videoGenerator\":" + u32.to_json())
+    if v.VideoOverlays.is_some():
+        auto u33 = v.VideoOverlays.unwrap()
+        list[str] e34 = []
+        for x34 in u33:
+            e34.append(video_overlay_to_json(x34))
+        parts.append("\"videoOverlays\":" + mediaconvert_json_arr(e34))
+    if v.VideoSelector.is_some():
+        auto u35 = v.VideoSelector.unwrap()
+        parts.append("\"videoSelector\":" + video_selector_to_json(u35))
+    return mediaconvert_json_obj(parts)
+
+# Serialize InputTemplate to a compact JSON object (declaration order).
+def input_template_to_json(InputTemplate v) -> str:
+    list[str] parts = []
+    if v.AdvancedInputFilter.is_some():
+        auto u0 = v.AdvancedInputFilter.unwrap()
+        parts.append("\"advancedInputFilter\":" + u0.to_json())
+    if v.AdvancedInputFilterSettings.is_some():
+        auto u1 = v.AdvancedInputFilterSettings.unwrap()
+        parts.append("\"advancedInputFilterSettings\":" + u1.to_json())
+    if v.AudioSelectorGroups.is_some():
+        auto u2 = v.AudioSelectorGroups.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(mediaconvert_json_str(k3) + ":" + audio_selector_group_to_json(u2[k3]))
+        parts.append("\"audioSelectorGroups\":" + mediaconvert_json_obj(m3))
+    if v.AudioSelectors.is_some():
+        auto u4 = v.AudioSelectors.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(mediaconvert_json_str(k5) + ":" + audio_selector_to_json(u4[k5]))
+        parts.append("\"audioSelectors\":" + mediaconvert_json_obj(m5))
+    if v.CaptionSelectors.is_some():
+        auto u6 = v.CaptionSelectors.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(mediaconvert_json_str(k7) + ":" + u6[k7].to_json())
+        parts.append("\"captionSelectors\":" + mediaconvert_json_obj(m7))
+    if v.Crop.is_some():
+        auto u8 = v.Crop.unwrap()
+        parts.append("\"crop\":" + u8.to_json())
+    if v.DeblockFilter.is_some():
+        auto u9 = v.DeblockFilter.unwrap()
+        parts.append("\"deblockFilter\":" + u9.to_json())
+    if v.DenoiseFilter.is_some():
+        auto u10 = v.DenoiseFilter.unwrap()
+        parts.append("\"denoiseFilter\":" + u10.to_json())
+    if v.DolbyVisionMetadataXml.is_some():
+        auto u11 = v.DolbyVisionMetadataXml.unwrap()
+        parts.append("\"dolbyVisionMetadataXml\":" + mediaconvert_json_str(u11))
+    if v.DynamicAudioSelectors.is_some():
+        auto u12 = v.DynamicAudioSelectors.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(mediaconvert_json_str(k13) + ":" + u12[k13].to_json())
+        parts.append("\"dynamicAudioSelectors\":" + mediaconvert_json_obj(m13))
+    if v.FilterEnable.is_some():
+        auto u14 = v.FilterEnable.unwrap()
+        parts.append("\"filterEnable\":" + u14.to_json())
+    if v.FilterStrength.is_some():
+        auto u15 = v.FilterStrength.unwrap()
+        parts.append("\"filterStrength\":" + str(u15))
+    if v.ImageInserter.is_some():
+        auto u16 = v.ImageInserter.unwrap()
+        parts.append("\"imageInserter\":" + image_inserter_to_json(u16))
+    if v.InputClippings.is_some():
+        auto u17 = v.InputClippings.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"inputClippings\":" + mediaconvert_json_arr(e18))
+    if v.InputScanType.is_some():
+        auto u19 = v.InputScanType.unwrap()
+        parts.append("\"inputScanType\":" + u19.to_json())
+    if v.MultiViewSettings.is_some():
+        auto u20 = v.MultiViewSettings.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"multiViewSettings\":" + mediaconvert_json_arr(e21))
+    if v.Position.is_some():
+        auto u22 = v.Position.unwrap()
+        parts.append("\"position\":" + u22.to_json())
+    if v.ProgramNumber.is_some():
+        auto u23 = v.ProgramNumber.unwrap()
+        parts.append("\"programNumber\":" + str(u23))
+    if v.PsiControl.is_some():
+        auto u24 = v.PsiControl.unwrap()
+        parts.append("\"psiControl\":" + u24.to_json())
+    if v.TimecodeSource.is_some():
+        auto u25 = v.TimecodeSource.unwrap()
+        parts.append("\"timecodeSource\":" + u25.to_json())
+    if v.TimecodeStart.is_some():
+        auto u26 = v.TimecodeStart.unwrap()
+        parts.append("\"timecodeStart\":" + mediaconvert_json_str(u26))
+    if v.VideoOverlays.is_some():
+        auto u27 = v.VideoOverlays.unwrap()
+        list[str] e28 = []
+        for x28 in u27:
+            e28.append(video_overlay_to_json(x28))
+        parts.append("\"videoOverlays\":" + mediaconvert_json_arr(e28))
+    if v.VideoSelector.is_some():
+        auto u29 = v.VideoSelector.unwrap()
+        parts.append("\"videoSelector\":" + video_selector_to_json(u29))
+    return mediaconvert_json_obj(parts)
+
+# Serialize JobSettings to a compact JSON object (declaration order).
+def job_settings_to_json(JobSettings v) -> str:
+    list[str] parts = []
+    if v.AdAvailOffset.is_some():
+        auto u0 = v.AdAvailOffset.unwrap()
+        parts.append("\"adAvailOffset\":" + str(u0))
+    if v.AvailBlanking.is_some():
+        auto u1 = v.AvailBlanking.unwrap()
+        parts.append("\"availBlanking\":" + u1.to_json())
+    if v.ColorConversion3DLUTSettings.is_some():
+        auto u2 = v.ColorConversion3DLUTSettings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"colorConversion3DLUTSettings\":" + mediaconvert_json_arr(e3))
+    if v.Esam.is_some():
+        auto u4 = v.Esam.unwrap()
+        parts.append("\"esam\":" + u4.to_json())
+    if v.ExtendedDataServices.is_some():
+        auto u5 = v.ExtendedDataServices.unwrap()
+        parts.append("\"extendedDataServices\":" + u5.to_json())
+    if v.FollowSource.is_some():
+        auto u6 = v.FollowSource.unwrap()
+        parts.append("\"followSource\":" + str(u6))
+    if v.Inputs.is_some():
+        auto u7 = v.Inputs.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(input_to_json(x8))
+        parts.append("\"inputs\":" + mediaconvert_json_arr(e8))
+    if v.KantarWatermark.is_some():
+        auto u9 = v.KantarWatermark.unwrap()
+        parts.append("\"kantarWatermark\":" + u9.to_json())
+    if v.MotionImageInserter.is_some():
+        auto u10 = v.MotionImageInserter.unwrap()
+        parts.append("\"motionImageInserter\":" + u10.to_json())
+    if v.MotionImageInserters.is_some():
+        auto u11 = v.MotionImageInserters.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"motionImageInserters\":" + mediaconvert_json_arr(e12))
+    if v.NielsenConfiguration.is_some():
+        auto u13 = v.NielsenConfiguration.unwrap()
+        parts.append("\"nielsenConfiguration\":" + u13.to_json())
+    if v.NielsenNonLinearWatermark.is_some():
+        auto u14 = v.NielsenNonLinearWatermark.unwrap()
+        parts.append("\"nielsenNonLinearWatermark\":" + u14.to_json())
+    if v.OutputGroups.is_some():
+        auto u15 = v.OutputGroups.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(output_group_to_json(x16))
+        parts.append("\"outputGroups\":" + mediaconvert_json_arr(e16))
+    if v.TimecodeConfig.is_some():
+        auto u17 = v.TimecodeConfig.unwrap()
+        parts.append("\"timecodeConfig\":" + u17.to_json())
+    if v.TimedMetadataInsertion.is_some():
+        auto u18 = v.TimedMetadataInsertion.unwrap()
+        parts.append("\"timedMetadataInsertion\":" + timed_metadata_insertion_to_json(u18))
+    return mediaconvert_json_obj(parts)
+
+# Serialize JobTemplateSettings to a compact JSON object (declaration order).
+def job_template_settings_to_json(JobTemplateSettings v) -> str:
+    list[str] parts = []
+    if v.AdAvailOffset.is_some():
+        auto u0 = v.AdAvailOffset.unwrap()
+        parts.append("\"adAvailOffset\":" + str(u0))
+    if v.AvailBlanking.is_some():
+        auto u1 = v.AvailBlanking.unwrap()
+        parts.append("\"availBlanking\":" + u1.to_json())
+    if v.ColorConversion3DLUTSettings.is_some():
+        auto u2 = v.ColorConversion3DLUTSettings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"colorConversion3DLUTSettings\":" + mediaconvert_json_arr(e3))
+    if v.Esam.is_some():
+        auto u4 = v.Esam.unwrap()
+        parts.append("\"esam\":" + u4.to_json())
+    if v.ExtendedDataServices.is_some():
+        auto u5 = v.ExtendedDataServices.unwrap()
+        parts.append("\"extendedDataServices\":" + u5.to_json())
+    if v.FollowSource.is_some():
+        auto u6 = v.FollowSource.unwrap()
+        parts.append("\"followSource\":" + str(u6))
+    if v.Inputs.is_some():
+        auto u7 = v.Inputs.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(input_template_to_json(x8))
+        parts.append("\"inputs\":" + mediaconvert_json_arr(e8))
+    if v.KantarWatermark.is_some():
+        auto u9 = v.KantarWatermark.unwrap()
+        parts.append("\"kantarWatermark\":" + u9.to_json())
+    if v.MotionImageInserter.is_some():
+        auto u10 = v.MotionImageInserter.unwrap()
+        parts.append("\"motionImageInserter\":" + u10.to_json())
+    if v.MotionImageInserters.is_some():
+        auto u11 = v.MotionImageInserters.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"motionImageInserters\":" + mediaconvert_json_arr(e12))
+    if v.NielsenConfiguration.is_some():
+        auto u13 = v.NielsenConfiguration.unwrap()
+        parts.append("\"nielsenConfiguration\":" + u13.to_json())
+    if v.NielsenNonLinearWatermark.is_some():
+        auto u14 = v.NielsenNonLinearWatermark.unwrap()
+        parts.append("\"nielsenNonLinearWatermark\":" + u14.to_json())
+    if v.OutputGroups.is_some():
+        auto u15 = v.OutputGroups.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(output_group_to_json(x16))
+        parts.append("\"outputGroups\":" + mediaconvert_json_arr(e16))
+    if v.TimecodeConfig.is_some():
+        auto u17 = v.TimecodeConfig.unwrap()
+        parts.append("\"timecodeConfig\":" + u17.to_json())
+    if v.TimedMetadataInsertion.is_some():
+        auto u18 = v.TimedMetadataInsertion.unwrap()
+        parts.append("\"timedMetadataInsertion\":" + timed_metadata_insertion_to_json(u18))
+    return mediaconvert_json_obj(parts)
+
+# Serialize JobsQueryFilter to a compact JSON object (declaration order).
+def jobs_query_filter_to_json(JobsQueryFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"key\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mediaconvert_json_str(x2))
+        parts.append("\"values\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize M2tsSettings to a compact JSON object (declaration order).
+def m2ts_settings_to_json(M2tsSettings v) -> str:
+    list[str] parts = []
+    if v.AudioBufferModel.is_some():
+        auto u0 = v.AudioBufferModel.unwrap()
+        parts.append("\"audioBufferModel\":" + u0.to_json())
+    if v.AudioDuration.is_some():
+        auto u1 = v.AudioDuration.unwrap()
+        parts.append("\"audioDuration\":" + u1.to_json())
+    if v.AudioFramesPerPes.is_some():
+        auto u2 = v.AudioFramesPerPes.unwrap()
+        parts.append("\"audioFramesPerPes\":" + str(u2))
+    if v.AudioPids.is_some():
+        auto u3 = v.AudioPids.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(str(x4))
+        parts.append("\"audioPids\":" + mediaconvert_json_arr(e4))
+    if v.AudioPtsOffsetDelta.is_some():
+        auto u5 = v.AudioPtsOffsetDelta.unwrap()
+        parts.append("\"audioPtsOffsetDelta\":" + str(u5))
+    if v.Bitrate.is_some():
+        auto u6 = v.Bitrate.unwrap()
+        parts.append("\"bitrate\":" + str(u6))
+    if v.BufferModel.is_some():
+        auto u7 = v.BufferModel.unwrap()
+        parts.append("\"bufferModel\":" + u7.to_json())
+    if v.DataPTSControl.is_some():
+        auto u8 = v.DataPTSControl.unwrap()
+        parts.append("\"dataPTSControl\":" + u8.to_json())
+    if v.DvbNitSettings.is_some():
+        auto u9 = v.DvbNitSettings.unwrap()
+        parts.append("\"dvbNitSettings\":" + u9.to_json())
+    if v.DvbSdtSettings.is_some():
+        auto u10 = v.DvbSdtSettings.unwrap()
+        parts.append("\"dvbSdtSettings\":" + u10.to_json())
+    if v.DvbSubPids.is_some():
+        auto u11 = v.DvbSubPids.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(str(x12))
+        parts.append("\"dvbSubPids\":" + mediaconvert_json_arr(e12))
+    if v.DvbTdtSettings.is_some():
+        auto u13 = v.DvbTdtSettings.unwrap()
+        parts.append("\"dvbTdtSettings\":" + u13.to_json())
+    if v.DvbTeletextPid.is_some():
+        auto u14 = v.DvbTeletextPid.unwrap()
+        parts.append("\"dvbTeletextPid\":" + str(u14))
+    if v.EbpAudioInterval.is_some():
+        auto u15 = v.EbpAudioInterval.unwrap()
+        parts.append("\"ebpAudioInterval\":" + u15.to_json())
+    if v.EbpPlacement.is_some():
+        auto u16 = v.EbpPlacement.unwrap()
+        parts.append("\"ebpPlacement\":" + u16.to_json())
+    if v.EsRateInPes.is_some():
+        auto u17 = v.EsRateInPes.unwrap()
+        parts.append("\"esRateInPes\":" + u17.to_json())
+    if v.ForceTsVideoEbpOrder.is_some():
+        auto u18 = v.ForceTsVideoEbpOrder.unwrap()
+        parts.append("\"forceTsVideoEbpOrder\":" + u18.to_json())
+    if v.FragmentTime.is_some():
+        auto u19 = v.FragmentTime.unwrap()
+        parts.append("\"fragmentTime\":" + str(u19))
+    if v.KlvMetadata.is_some():
+        auto u20 = v.KlvMetadata.unwrap()
+        parts.append("\"klvMetadata\":" + u20.to_json())
+    if v.MaxPcrInterval.is_some():
+        auto u21 = v.MaxPcrInterval.unwrap()
+        parts.append("\"maxPcrInterval\":" + str(u21))
+    if v.MinEbpInterval.is_some():
+        auto u22 = v.MinEbpInterval.unwrap()
+        parts.append("\"minEbpInterval\":" + str(u22))
+    if v.NielsenId3.is_some():
+        auto u23 = v.NielsenId3.unwrap()
+        parts.append("\"nielsenId3\":" + u23.to_json())
+    if v.NullPacketBitrate.is_some():
+        auto u24 = v.NullPacketBitrate.unwrap()
+        parts.append("\"nullPacketBitrate\":" + str(u24))
+    if v.PatInterval.is_some():
+        auto u25 = v.PatInterval.unwrap()
+        parts.append("\"patInterval\":" + str(u25))
+    if v.PcrControl.is_some():
+        auto u26 = v.PcrControl.unwrap()
+        parts.append("\"pcrControl\":" + u26.to_json())
+    if v.PcrPid.is_some():
+        auto u27 = v.PcrPid.unwrap()
+        parts.append("\"pcrPid\":" + str(u27))
+    if v.PmtInterval.is_some():
+        auto u28 = v.PmtInterval.unwrap()
+        parts.append("\"pmtInterval\":" + str(u28))
+    if v.PmtPid.is_some():
+        auto u29 = v.PmtPid.unwrap()
+        parts.append("\"pmtPid\":" + str(u29))
+    if v.PreventBufferUnderflow.is_some():
+        auto u30 = v.PreventBufferUnderflow.unwrap()
+        parts.append("\"preventBufferUnderflow\":" + u30.to_json())
+    if v.PrivateMetadataPid.is_some():
+        auto u31 = v.PrivateMetadataPid.unwrap()
+        parts.append("\"privateMetadataPid\":" + str(u31))
+    if v.ProgramNumber.is_some():
+        auto u32 = v.ProgramNumber.unwrap()
+        parts.append("\"programNumber\":" + str(u32))
+    if v.PtsOffset.is_some():
+        auto u33 = v.PtsOffset.unwrap()
+        parts.append("\"ptsOffset\":" + str(u33))
+    if v.PtsOffsetMode.is_some():
+        auto u34 = v.PtsOffsetMode.unwrap()
+        parts.append("\"ptsOffsetMode\":" + u34.to_json())
+    if v.RateMode.is_some():
+        auto u35 = v.RateMode.unwrap()
+        parts.append("\"rateMode\":" + u35.to_json())
+    if v.Scte35Esam.is_some():
+        auto u36 = v.Scte35Esam.unwrap()
+        parts.append("\"scte35Esam\":" + u36.to_json())
+    if v.Scte35Pid.is_some():
+        auto u37 = v.Scte35Pid.unwrap()
+        parts.append("\"scte35Pid\":" + str(u37))
+    if v.Scte35Source.is_some():
+        auto u38 = v.Scte35Source.unwrap()
+        parts.append("\"scte35Source\":" + u38.to_json())
+    if v.SegmentationMarkers.is_some():
+        auto u39 = v.SegmentationMarkers.unwrap()
+        parts.append("\"segmentationMarkers\":" + u39.to_json())
+    if v.SegmentationStyle.is_some():
+        auto u40 = v.SegmentationStyle.unwrap()
+        parts.append("\"segmentationStyle\":" + u40.to_json())
+    if v.SegmentationTime.is_some():
+        auto u41 = v.SegmentationTime.unwrap()
+        parts.append("\"segmentationTime\":" + str(u41))
+    if v.TimedMetadataPid.is_some():
+        auto u42 = v.TimedMetadataPid.unwrap()
+        parts.append("\"timedMetadataPid\":" + str(u42))
+    if v.TransportStreamId.is_some():
+        auto u43 = v.TransportStreamId.unwrap()
+        parts.append("\"transportStreamId\":" + str(u43))
+    if v.VideoPid.is_some():
+        auto u44 = v.VideoPid.unwrap()
+        parts.append("\"videoPid\":" + str(u44))
+    return mediaconvert_json_obj(parts)
+
+# Serialize M3u8Settings to a compact JSON object (declaration order).
+def m3u8_settings_to_json(M3u8Settings v) -> str:
+    list[str] parts = []
+    if v.AudioDuration.is_some():
+        auto u0 = v.AudioDuration.unwrap()
+        parts.append("\"audioDuration\":" + u0.to_json())
+    if v.AudioFramesPerPes.is_some():
+        auto u1 = v.AudioFramesPerPes.unwrap()
+        parts.append("\"audioFramesPerPes\":" + str(u1))
+    if v.AudioPids.is_some():
+        auto u2 = v.AudioPids.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"audioPids\":" + mediaconvert_json_arr(e3))
+    if v.AudioPtsOffsetDelta.is_some():
+        auto u4 = v.AudioPtsOffsetDelta.unwrap()
+        parts.append("\"audioPtsOffsetDelta\":" + str(u4))
+    if v.DataPTSControl.is_some():
+        auto u5 = v.DataPTSControl.unwrap()
+        parts.append("\"dataPTSControl\":" + u5.to_json())
+    if v.MaxPcrInterval.is_some():
+        auto u6 = v.MaxPcrInterval.unwrap()
+        parts.append("\"maxPcrInterval\":" + str(u6))
+    if v.NielsenId3.is_some():
+        auto u7 = v.NielsenId3.unwrap()
+        parts.append("\"nielsenId3\":" + u7.to_json())
+    if v.PatInterval.is_some():
+        auto u8 = v.PatInterval.unwrap()
+        parts.append("\"patInterval\":" + str(u8))
+    if v.PcrControl.is_some():
+        auto u9 = v.PcrControl.unwrap()
+        parts.append("\"pcrControl\":" + u9.to_json())
+    if v.PcrPid.is_some():
+        auto u10 = v.PcrPid.unwrap()
+        parts.append("\"pcrPid\":" + str(u10))
+    if v.PmtInterval.is_some():
+        auto u11 = v.PmtInterval.unwrap()
+        parts.append("\"pmtInterval\":" + str(u11))
+    if v.PmtPid.is_some():
+        auto u12 = v.PmtPid.unwrap()
+        parts.append("\"pmtPid\":" + str(u12))
+    if v.PrivateMetadataPid.is_some():
+        auto u13 = v.PrivateMetadataPid.unwrap()
+        parts.append("\"privateMetadataPid\":" + str(u13))
+    if v.ProgramNumber.is_some():
+        auto u14 = v.ProgramNumber.unwrap()
+        parts.append("\"programNumber\":" + str(u14))
+    if v.PtsOffset.is_some():
+        auto u15 = v.PtsOffset.unwrap()
+        parts.append("\"ptsOffset\":" + str(u15))
+    if v.PtsOffsetMode.is_some():
+        auto u16 = v.PtsOffsetMode.unwrap()
+        parts.append("\"ptsOffsetMode\":" + u16.to_json())
+    if v.Scte35Pid.is_some():
+        auto u17 = v.Scte35Pid.unwrap()
+        parts.append("\"scte35Pid\":" + str(u17))
+    if v.Scte35Source.is_some():
+        auto u18 = v.Scte35Source.unwrap()
+        parts.append("\"scte35Source\":" + u18.to_json())
+    if v.TimedMetadata.is_some():
+        auto u19 = v.TimedMetadata.unwrap()
+        parts.append("\"timedMetadata\":" + u19.to_json())
+    if v.TimedMetadataPid.is_some():
+        auto u20 = v.TimedMetadataPid.unwrap()
+        parts.append("\"timedMetadataPid\":" + str(u20))
+    if v.TransportStreamId.is_some():
+        auto u21 = v.TransportStreamId.unwrap()
+        parts.append("\"transportStreamId\":" + str(u21))
+    if v.VideoPid.is_some():
+        auto u22 = v.VideoPid.unwrap()
+        parts.append("\"videoPid\":" + str(u22))
+    return mediaconvert_json_obj(parts)
+
+# Serialize Mpeg2Settings to a compact JSON object (declaration order).
+def mpeg2_settings_to_json(Mpeg2Settings v) -> str:
+    list[str] parts = []
+    if v.AdaptiveQuantization.is_some():
+        auto u0 = v.AdaptiveQuantization.unwrap()
+        parts.append("\"adaptiveQuantization\":" + u0.to_json())
+    if v.Bitrate.is_some():
+        auto u1 = v.Bitrate.unwrap()
+        parts.append("\"bitrate\":" + str(u1))
+    if v.CodecLevel.is_some():
+        auto u2 = v.CodecLevel.unwrap()
+        parts.append("\"codecLevel\":" + u2.to_json())
+    if v.CodecProfile.is_some():
+        auto u3 = v.CodecProfile.unwrap()
+        parts.append("\"codecProfile\":" + u3.to_json())
+    if v.DynamicSubGop.is_some():
+        auto u4 = v.DynamicSubGop.unwrap()
+        parts.append("\"dynamicSubGop\":" + u4.to_json())
+    if v.FramerateControl.is_some():
+        auto u5 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u5.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u6 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u6.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u7 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u7))
+    if v.FramerateNumerator.is_some():
+        auto u8 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u8))
+    if v.GopClosedCadence.is_some():
+        auto u9 = v.GopClosedCadence.unwrap()
+        parts.append("\"gopClosedCadence\":" + str(u9))
+    if v.GopSize.is_some():
+        auto u10 = v.GopSize.unwrap()
+        parts.append("\"gopSize\":" + str(u10))
+    if v.GopSizeUnits.is_some():
+        auto u11 = v.GopSizeUnits.unwrap()
+        parts.append("\"gopSizeUnits\":" + u11.to_json())
+    if v.HrdBufferFinalFillPercentage.is_some():
+        auto u12 = v.HrdBufferFinalFillPercentage.unwrap()
+        parts.append("\"hrdBufferFinalFillPercentage\":" + str(u12))
+    if v.HrdBufferInitialFillPercentage.is_some():
+        auto u13 = v.HrdBufferInitialFillPercentage.unwrap()
+        parts.append("\"hrdBufferInitialFillPercentage\":" + str(u13))
+    if v.HrdBufferSize.is_some():
+        auto u14 = v.HrdBufferSize.unwrap()
+        parts.append("\"hrdBufferSize\":" + str(u14))
+    if v.InterlaceMode.is_some():
+        auto u15 = v.InterlaceMode.unwrap()
+        parts.append("\"interlaceMode\":" + u15.to_json())
+    if v.IntraDcPrecision.is_some():
+        auto u16 = v.IntraDcPrecision.unwrap()
+        parts.append("\"intraDcPrecision\":" + u16.to_json())
+    if v.MaxBitrate.is_some():
+        auto u17 = v.MaxBitrate.unwrap()
+        parts.append("\"maxBitrate\":" + str(u17))
+    if v.MinIInterval.is_some():
+        auto u18 = v.MinIInterval.unwrap()
+        parts.append("\"minIInterval\":" + str(u18))
+    if v.NumberBFramesBetweenReferenceFrames.is_some():
+        auto u19 = v.NumberBFramesBetweenReferenceFrames.unwrap()
+        parts.append("\"numberBFramesBetweenReferenceFrames\":" + str(u19))
+    if v.ParControl.is_some():
+        auto u20 = v.ParControl.unwrap()
+        parts.append("\"parControl\":" + u20.to_json())
+    if v.ParDenominator.is_some():
+        auto u21 = v.ParDenominator.unwrap()
+        parts.append("\"parDenominator\":" + str(u21))
+    if v.ParNumerator.is_some():
+        auto u22 = v.ParNumerator.unwrap()
+        parts.append("\"parNumerator\":" + str(u22))
+    if v.PerFrameMetrics.is_some():
+        auto u23 = v.PerFrameMetrics.unwrap()
+        list[str] e24 = []
+        for x24 in u23:
+            e24.append(x24.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e24))
+    if v.QualityTuningLevel.is_some():
+        auto u25 = v.QualityTuningLevel.unwrap()
+        parts.append("\"qualityTuningLevel\":" + u25.to_json())
+    if v.RateControlMode.is_some():
+        auto u26 = v.RateControlMode.unwrap()
+        parts.append("\"rateControlMode\":" + u26.to_json())
+    if v.ScanTypeConversionMode.is_some():
+        auto u27 = v.ScanTypeConversionMode.unwrap()
+        parts.append("\"scanTypeConversionMode\":" + u27.to_json())
+    if v.SceneChangeDetect.is_some():
+        auto u28 = v.SceneChangeDetect.unwrap()
+        parts.append("\"sceneChangeDetect\":" + u28.to_json())
+    if v.SlidingWindowMs.is_some():
+        auto u29 = v.SlidingWindowMs.unwrap()
+        parts.append("\"slidingWindowMs\":" + str(u29))
+    if v.SlidingWindowPeakBitrate.is_some():
+        auto u30 = v.SlidingWindowPeakBitrate.unwrap()
+        parts.append("\"slidingWindowPeakBitrate\":" + str(u30))
+    if v.SlowPal.is_some():
+        auto u31 = v.SlowPal.unwrap()
+        parts.append("\"slowPal\":" + u31.to_json())
+    if v.Softness.is_some():
+        auto u32 = v.Softness.unwrap()
+        parts.append("\"softness\":" + str(u32))
+    if v.SpatialAdaptiveQuantization.is_some():
+        auto u33 = v.SpatialAdaptiveQuantization.unwrap()
+        parts.append("\"spatialAdaptiveQuantization\":" + u33.to_json())
+    if v.Syntax.is_some():
+        auto u34 = v.Syntax.unwrap()
+        parts.append("\"syntax\":" + u34.to_json())
+    if v.Telecine.is_some():
+        auto u35 = v.Telecine.unwrap()
+        parts.append("\"telecine\":" + u35.to_json())
+    if v.TemporalAdaptiveQuantization.is_some():
+        auto u36 = v.TemporalAdaptiveQuantization.unwrap()
+        parts.append("\"temporalAdaptiveQuantization\":" + u36.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize MsSmoothAdditionalManifest to a compact JSON object (declaration order).
+def ms_smooth_additional_manifest_to_json(MsSmoothAdditionalManifest v) -> str:
+    list[str] parts = []
+    if v.ManifestNameModifier.is_some():
+        auto u0 = v.ManifestNameModifier.unwrap()
+        parts.append("\"manifestNameModifier\":" + mediaconvert_json_str(u0))
+    if v.SelectedOutputs.is_some():
+        auto u1 = v.SelectedOutputs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mediaconvert_json_str(x2))
+        parts.append("\"selectedOutputs\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize MsSmoothEncryptionSettings to a compact JSON object (declaration order).
+def ms_smooth_encryption_settings_to_json(MsSmoothEncryptionSettings v) -> str:
+    list[str] parts = []
+    if v.SpekeKeyProvider.is_some():
+        auto u0 = v.SpekeKeyProvider.unwrap()
+        parts.append("\"spekeKeyProvider\":" + speke_key_provider_to_json(u0))
+    return mediaconvert_json_obj(parts)
+
+# Serialize MsSmoothGroupSettings to a compact JSON object (declaration order).
+def ms_smooth_group_settings_to_json(MsSmoothGroupSettings v) -> str:
+    list[str] parts = []
+    if v.AdditionalManifests.is_some():
+        auto u0 = v.AdditionalManifests.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ms_smooth_additional_manifest_to_json(x1))
+        parts.append("\"additionalManifests\":" + mediaconvert_json_arr(e1))
+    if v.AudioDeduplication.is_some():
+        auto u2 = v.AudioDeduplication.unwrap()
+        parts.append("\"audioDeduplication\":" + u2.to_json())
+    if v.Destination.is_some():
+        auto u3 = v.Destination.unwrap()
+        parts.append("\"destination\":" + mediaconvert_json_str(u3))
+    if v.DestinationSettings.is_some():
+        auto u4 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + u4.to_json())
+    if v.Encryption.is_some():
+        auto u5 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + ms_smooth_encryption_settings_to_json(u5))
+    if v.FragmentLength.is_some():
+        auto u6 = v.FragmentLength.unwrap()
+        parts.append("\"fragmentLength\":" + str(u6))
+    if v.FragmentLengthControl.is_some():
+        auto u7 = v.FragmentLengthControl.unwrap()
+        parts.append("\"fragmentLengthControl\":" + u7.to_json())
+    if v.ManifestEncoding.is_some():
+        auto u8 = v.ManifestEncoding.unwrap()
+        parts.append("\"manifestEncoding\":" + u8.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize Output to a compact JSON object (declaration order).
+def output_to_json(Output v) -> str:
+    list[str] parts = []
+    if v.AudioDescriptions.is_some():
+        auto u0 = v.AudioDescriptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(audio_description_to_json(x1))
+        parts.append("\"audioDescriptions\":" + mediaconvert_json_arr(e1))
+    if v.CaptionDescriptions.is_some():
+        auto u2 = v.CaptionDescriptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(caption_description_to_json(x3))
+        parts.append("\"captionDescriptions\":" + mediaconvert_json_arr(e3))
+    if v.ContainerSettings.is_some():
+        auto u4 = v.ContainerSettings.unwrap()
+        parts.append("\"containerSettings\":" + container_settings_to_json(u4))
+    if v.Extension.is_some():
+        auto u5 = v.Extension.unwrap()
+        parts.append("\"extension\":" + mediaconvert_json_str(u5))
+    if v.NameModifier.is_some():
+        auto u6 = v.NameModifier.unwrap()
+        parts.append("\"nameModifier\":" + mediaconvert_json_str(u6))
+    if v.OutputSettings.is_some():
+        auto u7 = v.OutputSettings.unwrap()
+        parts.append("\"outputSettings\":" + u7.to_json())
+    if v.Preset.is_some():
+        auto u8 = v.Preset.unwrap()
+        parts.append("\"preset\":" + mediaconvert_json_str(u8))
+    if v.VideoDescription.is_some():
+        auto u9 = v.VideoDescription.unwrap()
+        parts.append("\"videoDescription\":" + video_description_to_json(u9))
+    return mediaconvert_json_obj(parts)
+
+# Serialize OutputChannelMapping to a compact JSON object (declaration order).
+def output_channel_mapping_to_json(OutputChannelMapping v) -> str:
+    list[str] parts = []
+    if v.InputChannels.is_some():
+        auto u0 = v.InputChannels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"inputChannels\":" + mediaconvert_json_arr(e1))
+    if v.InputChannelsFineTune.is_some():
+        auto u2 = v.InputChannelsFineTune.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"inputChannelsFineTune\":" + mediaconvert_json_arr(e3))
+    return mediaconvert_json_obj(parts)
+
+# Serialize OutputGroup to a compact JSON object (declaration order).
+def output_group_to_json(OutputGroup v) -> str:
+    list[str] parts = []
+    if v.AutomatedEncodingSettings.is_some():
+        auto u0 = v.AutomatedEncodingSettings.unwrap()
+        parts.append("\"automatedEncodingSettings\":" + automated_encoding_settings_to_json(u0))
+    if v.CustomName.is_some():
+        auto u1 = v.CustomName.unwrap()
+        parts.append("\"customName\":" + mediaconvert_json_str(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"name\":" + mediaconvert_json_str(u2))
+    if v.OutputGroupSettings.is_some():
+        auto u3 = v.OutputGroupSettings.unwrap()
+        parts.append("\"outputGroupSettings\":" + output_group_settings_to_json(u3))
+    if v.Outputs.is_some():
+        auto u4 = v.Outputs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(output_to_json(x5))
+        parts.append("\"outputs\":" + mediaconvert_json_arr(e5))
+    return mediaconvert_json_obj(parts)
+
+# Serialize OutputGroupSettings to a compact JSON object (declaration order).
+def output_group_settings_to_json(OutputGroupSettings v) -> str:
+    list[str] parts = []
+    if v.CmafGroupSettings.is_some():
+        auto u0 = v.CmafGroupSettings.unwrap()
+        parts.append("\"cmafGroupSettings\":" + cmaf_group_settings_to_json(u0))
+    if v.DashIsoGroupSettings.is_some():
+        auto u1 = v.DashIsoGroupSettings.unwrap()
+        parts.append("\"dashIsoGroupSettings\":" + dash_iso_group_settings_to_json(u1))
+    if v.FileGroupSettings.is_some():
+        auto u2 = v.FileGroupSettings.unwrap()
+        parts.append("\"fileGroupSettings\":" + u2.to_json())
+    if v.HlsGroupSettings.is_some():
+        auto u3 = v.HlsGroupSettings.unwrap()
+        parts.append("\"hlsGroupSettings\":" + hls_group_settings_to_json(u3))
+    if v.MsSmoothGroupSettings.is_some():
+        auto u4 = v.MsSmoothGroupSettings.unwrap()
+        parts.append("\"msSmoothGroupSettings\":" + ms_smooth_group_settings_to_json(u4))
+    if v.PerFrameMetrics.is_some():
+        auto u5 = v.PerFrameMetrics.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e6))
+    if v.Type.is_some():
+        auto u7 = v.Type.unwrap()
+        parts.append("\"type\":" + u7.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize PresetSettings to a compact JSON object (declaration order).
+def preset_settings_to_json(PresetSettings v) -> str:
+    list[str] parts = []
+    if v.AudioDescriptions.is_some():
+        auto u0 = v.AudioDescriptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(audio_description_to_json(x1))
+        parts.append("\"audioDescriptions\":" + mediaconvert_json_arr(e1))
+    if v.CaptionDescriptions.is_some():
+        auto u2 = v.CaptionDescriptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(caption_description_preset_to_json(x3))
+        parts.append("\"captionDescriptions\":" + mediaconvert_json_arr(e3))
+    if v.ContainerSettings.is_some():
+        auto u4 = v.ContainerSettings.unwrap()
+        parts.append("\"containerSettings\":" + container_settings_to_json(u4))
+    if v.VideoDescription.is_some():
+        auto u5 = v.VideoDescription.unwrap()
+        parts.append("\"videoDescription\":" + video_description_to_json(u5))
+    return mediaconvert_json_obj(parts)
+
+# Serialize ProresSettings to a compact JSON object (declaration order).
+def prores_settings_to_json(ProresSettings v) -> str:
+    list[str] parts = []
+    if v.ChromaSampling.is_some():
+        auto u0 = v.ChromaSampling.unwrap()
+        parts.append("\"chromaSampling\":" + u0.to_json())
+    if v.CodecProfile.is_some():
+        auto u1 = v.CodecProfile.unwrap()
+        parts.append("\"codecProfile\":" + u1.to_json())
+    if v.FramerateControl.is_some():
+        auto u2 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u2.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u3 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u3.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u4 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u4))
+    if v.FramerateNumerator.is_some():
+        auto u5 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u5))
+    if v.InterlaceMode.is_some():
+        auto u6 = v.InterlaceMode.unwrap()
+        parts.append("\"interlaceMode\":" + u6.to_json())
+    if v.ParControl.is_some():
+        auto u7 = v.ParControl.unwrap()
+        parts.append("\"parControl\":" + u7.to_json())
+    if v.ParDenominator.is_some():
+        auto u8 = v.ParDenominator.unwrap()
+        parts.append("\"parDenominator\":" + str(u8))
+    if v.ParNumerator.is_some():
+        auto u9 = v.ParNumerator.unwrap()
+        parts.append("\"parNumerator\":" + str(u9))
+    if v.PerFrameMetrics.is_some():
+        auto u10 = v.PerFrameMetrics.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e11))
+    if v.ScanTypeConversionMode.is_some():
+        auto u12 = v.ScanTypeConversionMode.unwrap()
+        parts.append("\"scanTypeConversionMode\":" + u12.to_json())
+    if v.SlowPal.is_some():
+        auto u13 = v.SlowPal.unwrap()
+        parts.append("\"slowPal\":" + u13.to_json())
+    if v.Telecine.is_some():
+        auto u14 = v.Telecine.unwrap()
+        parts.append("\"telecine\":" + u14.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize RemixSettings to a compact JSON object (declaration order).
+def remix_settings_to_json(RemixSettings v) -> str:
+    list[str] parts = []
+    if v.AudioDescriptionAudioChannel.is_some():
+        auto u0 = v.AudioDescriptionAudioChannel.unwrap()
+        parts.append("\"audioDescriptionAudioChannel\":" + str(u0))
+    if v.AudioDescriptionDataChannel.is_some():
+        auto u1 = v.AudioDescriptionDataChannel.unwrap()
+        parts.append("\"audioDescriptionDataChannel\":" + str(u1))
+    if v.ChannelMapping.is_some():
+        auto u2 = v.ChannelMapping.unwrap()
+        parts.append("\"channelMapping\":" + channel_mapping_to_json(u2))
+    if v.ChannelsIn.is_some():
+        auto u3 = v.ChannelsIn.unwrap()
+        parts.append("\"channelsIn\":" + str(u3))
+    if v.ChannelsOut.is_some():
+        auto u4 = v.ChannelsOut.unwrap()
+        parts.append("\"channelsOut\":" + str(u4))
+    return mediaconvert_json_obj(parts)
+
+# Serialize SpekeKeyProvider to a compact JSON object (declaration order).
+def speke_key_provider_to_json(SpekeKeyProvider v) -> str:
+    list[str] parts = []
+    if v.CertificateArn.is_some():
+        auto u0 = v.CertificateArn.unwrap()
+        parts.append("\"certificateArn\":" + mediaconvert_json_str(u0))
+    if v.EncryptionContractConfiguration.is_some():
+        auto u1 = v.EncryptionContractConfiguration.unwrap()
+        parts.append("\"encryptionContractConfiguration\":" + u1.to_json())
+    if v.ResourceId.is_some():
+        auto u2 = v.ResourceId.unwrap()
+        parts.append("\"resourceId\":" + mediaconvert_json_str(u2))
+    if v.SystemIds.is_some():
+        auto u3 = v.SystemIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(mediaconvert_json_str(x4))
+        parts.append("\"systemIds\":" + mediaconvert_json_arr(e4))
+    if v.Url.is_some():
+        auto u5 = v.Url.unwrap()
+        parts.append("\"url\":" + mediaconvert_json_str(u5))
+    return mediaconvert_json_obj(parts)
+
+# Serialize SpekeKeyProviderCmaf to a compact JSON object (declaration order).
+def speke_key_provider_cmaf_to_json(SpekeKeyProviderCmaf v) -> str:
+    list[str] parts = []
+    if v.CertificateArn.is_some():
+        auto u0 = v.CertificateArn.unwrap()
+        parts.append("\"certificateArn\":" + mediaconvert_json_str(u0))
+    if v.DashSignaledSystemIds.is_some():
+        auto u1 = v.DashSignaledSystemIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mediaconvert_json_str(x2))
+        parts.append("\"dashSignaledSystemIds\":" + mediaconvert_json_arr(e2))
+    if v.EncryptionContractConfiguration.is_some():
+        auto u3 = v.EncryptionContractConfiguration.unwrap()
+        parts.append("\"encryptionContractConfiguration\":" + u3.to_json())
+    if v.HlsSignaledSystemIds.is_some():
+        auto u4 = v.HlsSignaledSystemIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediaconvert_json_str(x5))
+        parts.append("\"hlsSignaledSystemIds\":" + mediaconvert_json_arr(e5))
+    if v.ResourceId.is_some():
+        auto u6 = v.ResourceId.unwrap()
+        parts.append("\"resourceId\":" + mediaconvert_json_str(u6))
+    if v.Url.is_some():
+        auto u7 = v.Url.unwrap()
+        parts.append("\"url\":" + mediaconvert_json_str(u7))
+    return mediaconvert_json_obj(parts)
+
+# Serialize TeletextDestinationSettings to a compact JSON object (declaration order).
+def teletext_destination_settings_to_json(TeletextDestinationSettings v) -> str:
+    list[str] parts = []
+    if v.PageNumber.is_some():
+        auto u0 = v.PageNumber.unwrap()
+        parts.append("\"pageNumber\":" + mediaconvert_json_str(u0))
+    if v.PageTypes.is_some():
+        auto u1 = v.PageTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"pageTypes\":" + mediaconvert_json_arr(e2))
+    return mediaconvert_json_obj(parts)
+
+# Serialize TimedMetadataInsertion to a compact JSON object (declaration order).
+def timed_metadata_insertion_to_json(TimedMetadataInsertion v) -> str:
+    list[str] parts = []
+    if v.Id3Insertions.is_some():
+        auto u0 = v.Id3Insertions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"id3Insertions\":" + mediaconvert_json_arr(e1))
+    return mediaconvert_json_obj(parts)
+
+# Serialize VideoCodecSettings to a compact JSON object (declaration order).
+def video_codec_settings_to_json(VideoCodecSettings v) -> str:
+    list[str] parts = []
+    if v.Av1Settings.is_some():
+        auto u0 = v.Av1Settings.unwrap()
+        parts.append("\"av1Settings\":" + av1_settings_to_json(u0))
+    if v.AvcIntraSettings.is_some():
+        auto u1 = v.AvcIntraSettings.unwrap()
+        parts.append("\"avcIntraSettings\":" + avc_intra_settings_to_json(u1))
+    if v.Codec.is_some():
+        auto u2 = v.Codec.unwrap()
+        parts.append("\"codec\":" + u2.to_json())
+    if v.FrameCaptureSettings.is_some():
+        auto u3 = v.FrameCaptureSettings.unwrap()
+        parts.append("\"frameCaptureSettings\":" + u3.to_json())
+    if v.GifSettings.is_some():
+        auto u4 = v.GifSettings.unwrap()
+        parts.append("\"gifSettings\":" + u4.to_json())
+    if v.H264Settings.is_some():
+        auto u5 = v.H264Settings.unwrap()
+        parts.append("\"h264Settings\":" + h264_settings_to_json(u5))
+    if v.H265Settings.is_some():
+        auto u6 = v.H265Settings.unwrap()
+        parts.append("\"h265Settings\":" + h265_settings_to_json(u6))
+    if v.Mpeg2Settings.is_some():
+        auto u7 = v.Mpeg2Settings.unwrap()
+        parts.append("\"mpeg2Settings\":" + mpeg2_settings_to_json(u7))
+    if v.PassthroughSettings.is_some():
+        auto u8 = v.PassthroughSettings.unwrap()
+        parts.append("\"passthroughSettings\":" + u8.to_json())
+    if v.ProresSettings.is_some():
+        auto u9 = v.ProresSettings.unwrap()
+        parts.append("\"proresSettings\":" + prores_settings_to_json(u9))
+    if v.UncompressedSettings.is_some():
+        auto u10 = v.UncompressedSettings.unwrap()
+        parts.append("\"uncompressedSettings\":" + u10.to_json())
+    if v.Vc3Settings.is_some():
+        auto u11 = v.Vc3Settings.unwrap()
+        parts.append("\"vc3Settings\":" + u11.to_json())
+    if v.Vp8Settings.is_some():
+        auto u12 = v.Vp8Settings.unwrap()
+        parts.append("\"vp8Settings\":" + u12.to_json())
+    if v.Vp9Settings.is_some():
+        auto u13 = v.Vp9Settings.unwrap()
+        parts.append("\"vp9Settings\":" + u13.to_json())
+    if v.XavcSettings.is_some():
+        auto u14 = v.XavcSettings.unwrap()
+        parts.append("\"xavcSettings\":" + xavc_settings_to_json(u14))
+    return mediaconvert_json_obj(parts)
+
+# Serialize VideoDescription to a compact JSON object (declaration order).
+def video_description_to_json(VideoDescription v) -> str:
+    list[str] parts = []
+    if v.AfdSignaling.is_some():
+        auto u0 = v.AfdSignaling.unwrap()
+        parts.append("\"afdSignaling\":" + u0.to_json())
+    if v.AntiAlias.is_some():
+        auto u1 = v.AntiAlias.unwrap()
+        parts.append("\"antiAlias\":" + u1.to_json())
+    if v.ChromaPositionMode.is_some():
+        auto u2 = v.ChromaPositionMode.unwrap()
+        parts.append("\"chromaPositionMode\":" + u2.to_json())
+    if v.CodecSettings.is_some():
+        auto u3 = v.CodecSettings.unwrap()
+        parts.append("\"codecSettings\":" + video_codec_settings_to_json(u3))
+    if v.ColorMetadata.is_some():
+        auto u4 = v.ColorMetadata.unwrap()
+        parts.append("\"colorMetadata\":" + u4.to_json())
+    if v.Crop.is_some():
+        auto u5 = v.Crop.unwrap()
+        parts.append("\"crop\":" + u5.to_json())
+    if v.DropFrameTimecode.is_some():
+        auto u6 = v.DropFrameTimecode.unwrap()
+        parts.append("\"dropFrameTimecode\":" + u6.to_json())
+    if v.FixedAfd.is_some():
+        auto u7 = v.FixedAfd.unwrap()
+        parts.append("\"fixedAfd\":" + str(u7))
+    if v.Height.is_some():
+        auto u8 = v.Height.unwrap()
+        parts.append("\"height\":" + str(u8))
+    if v.Position.is_some():
+        auto u9 = v.Position.unwrap()
+        parts.append("\"position\":" + u9.to_json())
+    if v.RespondToAfd.is_some():
+        auto u10 = v.RespondToAfd.unwrap()
+        parts.append("\"respondToAfd\":" + u10.to_json())
+    if v.ScalingBehavior.is_some():
+        auto u11 = v.ScalingBehavior.unwrap()
+        parts.append("\"scalingBehavior\":" + u11.to_json())
+    if v.Sharpness.is_some():
+        auto u12 = v.Sharpness.unwrap()
+        parts.append("\"sharpness\":" + str(u12))
+    if v.TimecodeInsertion.is_some():
+        auto u13 = v.TimecodeInsertion.unwrap()
+        parts.append("\"timecodeInsertion\":" + u13.to_json())
+    if v.TimecodeTrack.is_some():
+        auto u14 = v.TimecodeTrack.unwrap()
+        parts.append("\"timecodeTrack\":" + u14.to_json())
+    if v.VideoPreprocessors.is_some():
+        auto u15 = v.VideoPreprocessors.unwrap()
+        parts.append("\"videoPreprocessors\":" + video_preprocessor_to_json(u15))
+    if v.Width.is_some():
+        auto u16 = v.Width.unwrap()
+        parts.append("\"width\":" + str(u16))
+    return mediaconvert_json_obj(parts)
+
+# Serialize VideoOverlay to a compact JSON object (declaration order).
+def video_overlay_to_json(VideoOverlay v) -> str:
+    list[str] parts = []
+    if v.Crop.is_some():
+        auto u0 = v.Crop.unwrap()
+        parts.append("\"crop\":" + u0.to_json())
+    if v.EndTimecode.is_some():
+        auto u1 = v.EndTimecode.unwrap()
+        parts.append("\"endTimecode\":" + mediaconvert_json_str(u1))
+    if v.InitialPosition.is_some():
+        auto u2 = v.InitialPosition.unwrap()
+        parts.append("\"initialPosition\":" + u2.to_json())
+    if v.Input.is_some():
+        auto u3 = v.Input.unwrap()
+        parts.append("\"input\":" + video_overlay_input_to_json(u3))
+    if v.Playback.is_some():
+        auto u4 = v.Playback.unwrap()
+        parts.append("\"playback\":" + u4.to_json())
+    if v.StartTimecode.is_some():
+        auto u5 = v.StartTimecode.unwrap()
+        parts.append("\"startTimecode\":" + mediaconvert_json_str(u5))
+    if v.Transitions.is_some():
+        auto u6 = v.Transitions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"transitions\":" + mediaconvert_json_arr(e7))
+    return mediaconvert_json_obj(parts)
+
+# Serialize VideoOverlayInput to a compact JSON object (declaration order).
+def video_overlay_input_to_json(VideoOverlayInput v) -> str:
+    list[str] parts = []
+    if v.AudioSelectors.is_some():
+        auto u0 = v.AudioSelectors.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(mediaconvert_json_str(k1) + ":" + audio_selector_to_json(u0[k1]))
+        parts.append("\"audioSelectors\":" + mediaconvert_json_obj(m1))
+    if v.FileInput.is_some():
+        auto u2 = v.FileInput.unwrap()
+        parts.append("\"fileInput\":" + mediaconvert_json_str(u2))
+    if v.InputClippings.is_some():
+        auto u3 = v.InputClippings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"inputClippings\":" + mediaconvert_json_arr(e4))
+    if v.TimecodeSource.is_some():
+        auto u5 = v.TimecodeSource.unwrap()
+        parts.append("\"timecodeSource\":" + u5.to_json())
+    if v.TimecodeStart.is_some():
+        auto u6 = v.TimecodeStart.unwrap()
+        parts.append("\"timecodeStart\":" + mediaconvert_json_str(u6))
+    return mediaconvert_json_obj(parts)
+
+# Serialize VideoPreprocessor to a compact JSON object (declaration order).
+def video_preprocessor_to_json(VideoPreprocessor v) -> str:
+    list[str] parts = []
+    if v.ColorCorrector.is_some():
+        auto u0 = v.ColorCorrector.unwrap()
+        parts.append("\"colorCorrector\":" + u0.to_json())
+    if v.Deinterlacer.is_some():
+        auto u1 = v.Deinterlacer.unwrap()
+        parts.append("\"deinterlacer\":" + u1.to_json())
+    if v.DolbyVision.is_some():
+        auto u2 = v.DolbyVision.unwrap()
+        parts.append("\"dolbyVision\":" + u2.to_json())
+    if v.DurationControl.is_some():
+        auto u3 = v.DurationControl.unwrap()
+        parts.append("\"durationControl\":" + u3.to_json())
+    if v.Hdr10Plus.is_some():
+        auto u4 = v.Hdr10Plus.unwrap()
+        parts.append("\"hdr10Plus\":" + u4.to_json())
+    if v.ImageInserter.is_some():
+        auto u5 = v.ImageInserter.unwrap()
+        parts.append("\"imageInserter\":" + image_inserter_to_json(u5))
+    if v.NoiseReducer.is_some():
+        auto u6 = v.NoiseReducer.unwrap()
+        parts.append("\"noiseReducer\":" + u6.to_json())
+    if v.PartnerWatermarking.is_some():
+        auto u7 = v.PartnerWatermarking.unwrap()
+        parts.append("\"partnerWatermarking\":" + u7.to_json())
+    if v.TimecodeBurnin.is_some():
+        auto u8 = v.TimecodeBurnin.unwrap()
+        parts.append("\"timecodeBurnin\":" + u8.to_json())
+    return mediaconvert_json_obj(parts)
+
+# Serialize VideoSelector to a compact JSON object (declaration order).
+def video_selector_to_json(VideoSelector v) -> str:
+    list[str] parts = []
+    if v.AlphaBehavior.is_some():
+        auto u0 = v.AlphaBehavior.unwrap()
+        parts.append("\"alphaBehavior\":" + u0.to_json())
+    if v.ColorSpace.is_some():
+        auto u1 = v.ColorSpace.unwrap()
+        parts.append("\"colorSpace\":" + u1.to_json())
+    if v.ColorSpaceUsage.is_some():
+        auto u2 = v.ColorSpaceUsage.unwrap()
+        parts.append("\"colorSpaceUsage\":" + u2.to_json())
+    if v.EmbeddedTimecodeOverride.is_some():
+        auto u3 = v.EmbeddedTimecodeOverride.unwrap()
+        parts.append("\"embeddedTimecodeOverride\":" + u3.to_json())
+    if v.Hdr10Metadata.is_some():
+        auto u4 = v.Hdr10Metadata.unwrap()
+        parts.append("\"hdr10Metadata\":" + u4.to_json())
+    if v.MaxLuminance.is_some():
+        auto u5 = v.MaxLuminance.unwrap()
+        parts.append("\"maxLuminance\":" + str(u5))
+    if v.PadVideo.is_some():
+        auto u6 = v.PadVideo.unwrap()
+        parts.append("\"padVideo\":" + u6.to_json())
+    if v.Pid.is_some():
+        auto u7 = v.Pid.unwrap()
+        parts.append("\"pid\":" + str(u7))
+    if v.ProgramNumber.is_some():
+        auto u8 = v.ProgramNumber.unwrap()
+        parts.append("\"programNumber\":" + str(u8))
+    if v.Rotate.is_some():
+        auto u9 = v.Rotate.unwrap()
+        parts.append("\"rotate\":" + u9.to_json())
+    if v.SampleRange.is_some():
+        auto u10 = v.SampleRange.unwrap()
+        parts.append("\"sampleRange\":" + u10.to_json())
+    if v.SelectorType.is_some():
+        auto u11 = v.SelectorType.unwrap()
+        parts.append("\"selectorType\":" + u11.to_json())
+    if v.Streams.is_some():
+        auto u12 = v.Streams.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(str(x13))
+        parts.append("\"streams\":" + mediaconvert_json_arr(e13))
+    return mediaconvert_json_obj(parts)
+
+# Serialize XavcSettings to a compact JSON object (declaration order).
+def xavc_settings_to_json(XavcSettings v) -> str:
+    list[str] parts = []
+    if v.AdaptiveQuantization.is_some():
+        auto u0 = v.AdaptiveQuantization.unwrap()
+        parts.append("\"adaptiveQuantization\":" + u0.to_json())
+    if v.EntropyEncoding.is_some():
+        auto u1 = v.EntropyEncoding.unwrap()
+        parts.append("\"entropyEncoding\":" + u1.to_json())
+    if v.FramerateControl.is_some():
+        auto u2 = v.FramerateControl.unwrap()
+        parts.append("\"framerateControl\":" + u2.to_json())
+    if v.FramerateConversionAlgorithm.is_some():
+        auto u3 = v.FramerateConversionAlgorithm.unwrap()
+        parts.append("\"framerateConversionAlgorithm\":" + u3.to_json())
+    if v.FramerateDenominator.is_some():
+        auto u4 = v.FramerateDenominator.unwrap()
+        parts.append("\"framerateDenominator\":" + str(u4))
+    if v.FramerateNumerator.is_some():
+        auto u5 = v.FramerateNumerator.unwrap()
+        parts.append("\"framerateNumerator\":" + str(u5))
+    if v.PerFrameMetrics.is_some():
+        auto u6 = v.PerFrameMetrics.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"perFrameMetrics\":" + mediaconvert_json_arr(e7))
+    if v.Profile.is_some():
+        auto u8 = v.Profile.unwrap()
+        parts.append("\"profile\":" + u8.to_json())
+    if v.SlowPal.is_some():
+        auto u9 = v.SlowPal.unwrap()
+        parts.append("\"slowPal\":" + u9.to_json())
+    if v.Softness.is_some():
+        auto u10 = v.Softness.unwrap()
+        parts.append("\"softness\":" + str(u10))
+    if v.SpatialAdaptiveQuantization.is_some():
+        auto u11 = v.SpatialAdaptiveQuantization.unwrap()
+        parts.append("\"spatialAdaptiveQuantization\":" + u11.to_json())
+    if v.TemporalAdaptiveQuantization.is_some():
+        auto u12 = v.TemporalAdaptiveQuantization.unwrap()
+        parts.append("\"temporalAdaptiveQuantization\":" + u12.to_json())
+    if v.Xavc4kIntraCbgProfileSettings.is_some():
+        auto u13 = v.Xavc4kIntraCbgProfileSettings.unwrap()
+        parts.append("\"xavc4kIntraCbgProfileSettings\":" + u13.to_json())
+    if v.Xavc4kIntraVbrProfileSettings.is_some():
+        auto u14 = v.Xavc4kIntraVbrProfileSettings.unwrap()
+        parts.append("\"xavc4kIntraVbrProfileSettings\":" + u14.to_json())
+    if v.Xavc4kProfileSettings.is_some():
+        auto u15 = v.Xavc4kProfileSettings.unwrap()
+        parts.append("\"xavc4kProfileSettings\":" + u15.to_json())
+    if v.XavcHdIntraCbgProfileSettings.is_some():
+        auto u16 = v.XavcHdIntraCbgProfileSettings.unwrap()
+        parts.append("\"xavcHdIntraCbgProfileSettings\":" + u16.to_json())
+    if v.XavcHdProfileSettings.is_some():
+        auto u17 = v.XavcHdProfileSettings.unwrap()
+        parts.append("\"xavcHdProfileSettings\":" + u17.to_json())
+    return mediaconvert_json_obj(parts)
+
 # A bound MediaConvert client: credentials + region, threaded into every operation.
 struct MediaConvertClient:
     core.Credentials creds
@@ -6947,6 +9500,160 @@ struct MediaConvertClient:
         labels["id"] = input.Id
         auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/jobs/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
+
+    # CreateJob  POST /2017-08-29/jobs
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_job(self, CreateJobRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccelerationSettings.is_some():
+            auto u0 = input.AccelerationSettings.unwrap()
+            parts.append("\"accelerationSettings\":" + u0.to_json())
+        if input.BillingTagsSource.is_some():
+            auto u1 = input.BillingTagsSource.unwrap()
+            parts.append("\"billingTagsSource\":" + u1.to_json())
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + mediaconvert_json_str(u2))
+        if input.HopDestinations.is_some():
+            auto u3 = input.HopDestinations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e4))
+        if input.JobEngineVersion.is_some():
+            auto u5 = input.JobEngineVersion.unwrap()
+            parts.append("\"jobEngineVersion\":" + mediaconvert_json_str(u5))
+        if input.JobTemplate.is_some():
+            auto u6 = input.JobTemplate.unwrap()
+            parts.append("\"jobTemplate\":" + mediaconvert_json_str(u6))
+        if input.Priority.is_some():
+            auto u7 = input.Priority.unwrap()
+            parts.append("\"priority\":" + str(u7))
+        if input.Queue.is_some():
+            auto u8 = input.Queue.unwrap()
+            parts.append("\"queue\":" + mediaconvert_json_str(u8))
+        parts.append("\"role\":" + mediaconvert_json_str(input.Role))
+        parts.append("\"settings\":" + job_settings_to_json(input.Settings))
+        if input.SimulateReservedQueue.is_some():
+            auto u9 = input.SimulateReservedQueue.unwrap()
+            parts.append("\"simulateReservedQueue\":" + u9.to_json())
+        if input.StatusUpdateInterval.is_some():
+            auto u10 = input.StatusUpdateInterval.unwrap()
+            parts.append("\"statusUpdateInterval\":" + u10.to_json())
+        if input.Tags.is_some():
+            auto u11 = input.Tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(mediaconvert_json_str(k12) + ":" + mediaconvert_json_str(u11[k12]))
+            parts.append("\"tags\":" + mediaconvert_json_obj(m12))
+        if input.UserMetadata.is_some():
+            auto u13 = input.UserMetadata.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(mediaconvert_json_str(k14) + ":" + mediaconvert_json_str(u13[k14]))
+            parts.append("\"userMetadata\":" + mediaconvert_json_obj(m14))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # CreateJobTemplate  POST /2017-08-29/jobTemplates
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_job_template(self, CreateJobTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccelerationSettings.is_some():
+            auto u0 = input.AccelerationSettings.unwrap()
+            parts.append("\"accelerationSettings\":" + u0.to_json())
+        if input.Category.is_some():
+            auto u1 = input.Category.unwrap()
+            parts.append("\"category\":" + mediaconvert_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconvert_json_str(u2))
+        if input.HopDestinations.is_some():
+            auto u3 = input.HopDestinations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e4))
+        parts.append("\"name\":" + mediaconvert_json_str(input.Name))
+        if input.Priority.is_some():
+            auto u5 = input.Priority.unwrap()
+            parts.append("\"priority\":" + str(u5))
+        if input.Queue.is_some():
+            auto u6 = input.Queue.unwrap()
+            parts.append("\"queue\":" + mediaconvert_json_str(u6))
+        parts.append("\"settings\":" + job_template_settings_to_json(input.Settings))
+        if input.StatusUpdateInterval.is_some():
+            auto u7 = input.StatusUpdateInterval.unwrap()
+            parts.append("\"statusUpdateInterval\":" + u7.to_json())
+        if input.Tags.is_some():
+            auto u8 = input.Tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(mediaconvert_json_str(k9) + ":" + mediaconvert_json_str(u8[k9]))
+            parts.append("\"tags\":" + mediaconvert_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # CreatePreset  POST /2017-08-29/presets
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_preset(self, CreatePresetRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/presets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Category.is_some():
+            auto u0 = input.Category.unwrap()
+            parts.append("\"category\":" + mediaconvert_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconvert_json_str(u1))
+        parts.append("\"name\":" + mediaconvert_json_str(input.Name))
+        parts.append("\"settings\":" + preset_settings_to_json(input.Settings))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(mediaconvert_json_str(k3) + ":" + mediaconvert_json_str(u2[k3]))
+            parts.append("\"tags\":" + mediaconvert_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # CreateQueue  POST /2017-08-29/queues
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_queue(self, CreateQueueRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/queues", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConcurrentJobs.is_some():
+            auto u0 = input.ConcurrentJobs.unwrap()
+            parts.append("\"concurrentJobs\":" + str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconvert_json_str(u1))
+        if input.MaximumConcurrentFeeds.is_some():
+            auto u2 = input.MaximumConcurrentFeeds.unwrap()
+            parts.append("\"maximumConcurrentFeeds\":" + str(u2))
+        parts.append("\"name\":" + mediaconvert_json_str(input.Name))
+        if input.PricingPlan.is_some():
+            auto u3 = input.PricingPlan.unwrap()
+            parts.append("\"pricingPlan\":" + u3.to_json())
+        if input.ReservationPlanSettings.is_some():
+            auto u4 = input.ReservationPlanSettings.unwrap()
+            parts.append("\"reservationPlanSettings\":" + u4.to_json())
+        if input.Status.is_some():
+            auto u5 = input.Status.unwrap()
+            parts.append("\"status\":" + u5.to_json())
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(mediaconvert_json_str(k7) + ":" + mediaconvert_json_str(u6[k7]))
+            parts.append("\"tags\":" + mediaconvert_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
 
     # CreateResourceShare  POST /2017-08-29/resourceShares
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
@@ -7152,6 +9859,21 @@ struct MediaConvertClient:
         auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
+    # Probe  POST /2017-08-29/probe
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException, UnprocessableEntityException
+    def probe(self, ProbeRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/probe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InputFiles.is_some():
+            auto u0 = input.InputFiles.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"inputFiles\":" + mediaconvert_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
     # PutPolicy  PUT /2017-08-29/policy
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def put_policy(self, PutPolicyRequest input) -> str:
@@ -7180,6 +9902,119 @@ struct MediaConvertClient:
             query["status"] = input.Status.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/search", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
+
+    # StartJobsQuery  POST /2017-08-29/jobsQueries
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def start_jobs_query(self, StartJobsQueryRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobsQueries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FilterList.is_some():
+            auto u0 = input.FilterList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(jobs_query_filter_to_json(x1))
+            parts.append("\"filterList\":" + mediaconvert_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + mediaconvert_json_str(u3))
+        if input.Order.is_some():
+            auto u4 = input.Order.unwrap()
+            parts.append("\"order\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # TagResource  POST /2017-08-29/tags
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + mediaconvert_json_str(input.Arn))
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mediaconvert_json_str(k0) + ":" + mediaconvert_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + mediaconvert_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # UntagResource  PUT /2017-08-29/tags/{arn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TagKeys.is_some():
+            auto u0 = input.TagKeys.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(mediaconvert_json_str(x1))
+            parts.append("\"tagKeys\":" + mediaconvert_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # UpdateJobTemplate  PUT /2017-08-29/jobTemplates/{name}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def update_job_template(self, UpdateJobTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccelerationSettings.is_some():
+            auto u0 = input.AccelerationSettings.unwrap()
+            parts.append("\"accelerationSettings\":" + u0.to_json())
+        if input.Category.is_some():
+            auto u1 = input.Category.unwrap()
+            parts.append("\"category\":" + mediaconvert_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconvert_json_str(u2))
+        if input.HopDestinations.is_some():
+            auto u3 = input.HopDestinations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e4))
+        if input.Priority.is_some():
+            auto u5 = input.Priority.unwrap()
+            parts.append("\"priority\":" + str(u5))
+        if input.Queue.is_some():
+            auto u6 = input.Queue.unwrap()
+            parts.append("\"queue\":" + mediaconvert_json_str(u6))
+        if input.Settings.is_some():
+            auto u7 = input.Settings.unwrap()
+            parts.append("\"settings\":" + job_template_settings_to_json(u7))
+        if input.StatusUpdateInterval.is_some():
+            auto u8 = input.StatusUpdateInterval.unwrap()
+            parts.append("\"statusUpdateInterval\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
+
+    # UpdatePreset  PUT /2017-08-29/presets/{name}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
+    def update_preset(self, UpdatePresetRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconvert_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Category.is_some():
+            auto u0 = input.Category.unwrap()
+            parts.append("\"category\":" + mediaconvert_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconvert_json_str(u1))
+        if input.Settings.is_some():
+            auto u2 = input.Settings.unwrap()
+            parts.append("\"settings\":" + preset_settings_to_json(u2))
+        auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
 
     # UpdateQueue  PUT /2017-08-29/queues/{name}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException

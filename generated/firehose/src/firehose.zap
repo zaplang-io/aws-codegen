@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 12 operations — 7 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 12 operations — 12 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   135 structs (76 @derive(Json)), 32 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -315,8 +315,9 @@ struct AmazonOpenSearchServerlessBufferingHints:
     Optional[int64] IntervalInSeconds
     Optional[int64] SizeInMBs
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonOpenSearchServerlessDestinationConfiguration:
     str RoleARN
     Optional[str] CollectionEndpoint
@@ -329,8 +330,9 @@ struct AmazonOpenSearchServerlessDestinationConfiguration:
     Optional[CloudWatchLoggingOptions] CloudWatchLoggingOptions
     Optional[VpcConfiguration] VpcConfiguration
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfigurationDescription: VpcConfigurationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfigurationDescription: VpcConfigurationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonOpenSearchServerlessDestinationDescription:
     Optional[str] RoleARN
     Optional[str] CollectionEndpoint
@@ -343,8 +345,9 @@ struct AmazonOpenSearchServerlessDestinationDescription:
     Optional[CloudWatchLoggingOptions] CloudWatchLoggingOptions
     Optional[VpcConfigurationDescription] VpcConfigurationDescription
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonOpenSearchServerlessDestinationUpdate:
     Optional[str] RoleARN
     Optional[str] CollectionEndpoint
@@ -364,8 +367,9 @@ struct AmazonopensearchserviceBufferingHints:
     Optional[int64] IntervalInSeconds
     Optional[int64] SizeInMBs
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonopensearchserviceDestinationConfiguration:
     str RoleARN
     Optional[str] DomainARN
@@ -382,8 +386,9 @@ struct AmazonopensearchserviceDestinationConfiguration:
     Optional[VpcConfiguration] VpcConfiguration
     Optional[DocumentIdOptions] DocumentIdOptions
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfigurationDescription: VpcConfigurationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfigurationDescription: VpcConfigurationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonopensearchserviceDestinationDescription:
     Optional[str] RoleARN
     Optional[str] DomainARN
@@ -400,8 +405,9 @@ struct AmazonopensearchserviceDestinationDescription:
     Optional[VpcConfigurationDescription] VpcConfigurationDescription
     Optional[DocumentIdOptions] DocumentIdOptions
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonopensearchserviceDestinationUpdate:
     Optional[str] RoleARN
     Optional[str] DomainARN
@@ -451,8 +457,9 @@ struct CopyCommand:
     Optional[str] DataTableColumns
     Optional[str] CopyOptions
 
-# no @derive(Json): member(s) ExtendedS3DestinationConfiguration: ExtendedS3DestinationConfiguration, RedshiftDestinationConfiguration: RedshiftDestinationConfiguration, ElasticsearchDestinationConfiguration: ElasticsearchDestinationConfiguration, AmazonopensearchserviceDestinationConfiguration: AmazonopensearchserviceDestinationConfiguration, SplunkDestinationConfiguration: SplunkDestinationConfiguration, HttpEndpointDestinationConfiguration: HttpEndpointDestinationConfiguration, Tags: list[Tag], AmazonOpenSearchServerlessDestinationConfiguration: AmazonOpenSearchServerlessDestinationConfiguration, SnowflakeDestinationConfiguration: SnowflakeDestinationConfiguration, IcebergDestinationConfiguration: IcebergDestinationConfiguration, DatabaseSourceConfiguration: DatabaseSourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtendedS3DestinationConfiguration: ExtendedS3DestinationConfiguration, RedshiftDestinationConfiguration: RedshiftDestinationConfiguration, ElasticsearchDestinationConfiguration: ElasticsearchDestinationConfiguration, AmazonopensearchserviceDestinationConfiguration: AmazonopensearchserviceDestinationConfiguration, SplunkDestinationConfiguration: SplunkDestinationConfiguration, HttpEndpointDestinationConfiguration: HttpEndpointDestinationConfiguration, Tags: list[Tag], AmazonOpenSearchServerlessDestinationConfiguration: AmazonOpenSearchServerlessDestinationConfiguration, SnowflakeDestinationConfiguration: SnowflakeDestinationConfiguration, IcebergDestinationConfiguration: IcebergDestinationConfiguration, DatabaseSourceConfiguration: DatabaseSourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeliveryStreamInput:
     str DeliveryStreamName
     Optional[DeliveryStreamType] DeliveryStreamType
@@ -477,22 +484,25 @@ struct CreateDeliveryStreamInput:
 struct CreateDeliveryStreamOutput:
     Optional[str] DeliveryStreamARN
 
-# no @derive(Json): member(s) InputFormatConfiguration: InputFormatConfiguration, OutputFormatConfiguration: OutputFormatConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputFormatConfiguration: InputFormatConfiguration, OutputFormatConfiguration: OutputFormatConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataFormatConversionConfiguration:
     Optional[SchemaConfiguration] SchemaConfiguration
     Optional[InputFormatConfiguration] InputFormatConfiguration
     Optional[OutputFormatConfiguration] OutputFormatConfiguration
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Include: list[str], Exclude: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Include: list[str], Exclude: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseColumnList:
     Optional[list[str]] Include
     Optional[list[str]] Exclude
 
-# no @derive(Json): member(s) Include: list[str], Exclude: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Include: list[str], Exclude: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseList:
     Optional[list[str]] Include
     Optional[list[str]] Exclude
@@ -510,8 +520,9 @@ struct DatabaseSnapshotInfo:
 struct DatabaseSourceAuthenticationConfiguration:
     SecretsManagerConfiguration SecretsManagerConfiguration
 
-# no @derive(Json): member(s) Databases: DatabaseList, Tables: DatabaseTableList, Columns: DatabaseColumnList, SurrogateKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Databases: DatabaseList, Tables: DatabaseTableList, Columns: DatabaseColumnList, SurrogateKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseSourceConfiguration:
     DatabaseType Type
     str Endpoint
@@ -525,8 +536,9 @@ struct DatabaseSourceConfiguration:
     DatabaseSourceAuthenticationConfiguration DatabaseSourceAuthenticationConfiguration
     DatabaseSourceVPCConfiguration DatabaseSourceVPCConfiguration
 
-# no @derive(Json): member(s) Databases: DatabaseList, Tables: DatabaseTableList, Columns: DatabaseColumnList, SurrogateKeys: list[str], SnapshotInfo: list[DatabaseSnapshotInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Databases: DatabaseList, Tables: DatabaseTableList, Columns: DatabaseColumnList, SurrogateKeys: list[str], SnapshotInfo: list[DatabaseSnapshotInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseSourceDescription:
     Optional[DatabaseType] Type
     Optional[str] Endpoint
@@ -545,8 +557,9 @@ struct DatabaseSourceDescription:
 struct DatabaseSourceVPCConfiguration:
     str VpcEndpointServiceName
 
-# no @derive(Json): member(s) Include: list[str], Exclude: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Include: list[str], Exclude: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseTableList:
     Optional[list[str]] Include
     Optional[list[str]] Exclude
@@ -561,8 +574,9 @@ struct DeleteDeliveryStreamOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Source: SourceDescription, Destinations: list[DestinationDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: SourceDescription, Destinations: list[DestinationDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeliveryStreamDescription:
     str DeliveryStreamName
     str DeliveryStreamARN
@@ -595,19 +609,22 @@ struct DescribeDeliveryStreamInput:
     Optional[int64] Limit
     Optional[str] ExclusiveStartDestinationId
 
-# no @derive(Json): member(s) DeliveryStreamDescription: DeliveryStreamDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryStreamDescription: DeliveryStreamDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryStreamOutput:
     DeliveryStreamDescription DeliveryStreamDescription
 
-# no @derive(Json): member(s) OpenXJsonSerDe: OpenXJsonSerDe, HiveJsonSerDe: HiveJsonSerDe not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpenXJsonSerDe: OpenXJsonSerDe, HiveJsonSerDe: HiveJsonSerDe not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deserializer:
     Optional[OpenXJsonSerDe] OpenXJsonSerDe
     Optional[HiveJsonSerDe] HiveJsonSerDe
 
-# no @derive(Json): member(s) ExtendedS3DestinationDescription: ExtendedS3DestinationDescription, RedshiftDestinationDescription: RedshiftDestinationDescription, ElasticsearchDestinationDescription: ElasticsearchDestinationDescription, AmazonopensearchserviceDestinationDescription: AmazonopensearchserviceDestinationDescription, SplunkDestinationDescription: SplunkDestinationDescription, HttpEndpointDestinationDescription: HttpEndpointDestinationDescription, SnowflakeDestinationDescription: SnowflakeDestinationDescription, AmazonOpenSearchServerlessDestinationDescription: AmazonOpenSearchServerlessDestinationDescription, IcebergDestinationDescription: IcebergDestinationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtendedS3DestinationDescription: ExtendedS3DestinationDescription, RedshiftDestinationDescription: RedshiftDestinationDescription, ElasticsearchDestinationDescription: ElasticsearchDestinationDescription, AmazonopensearchserviceDestinationDescription: AmazonopensearchserviceDestinationDescription, SplunkDestinationDescription: SplunkDestinationDescription, HttpEndpointDestinationDescription: HttpEndpointDestinationDescription, SnowflakeDestinationDescription: SnowflakeDestinationDescription, AmazonOpenSearchServerlessDestinationDescription: AmazonOpenSearchServerlessDestinationDescription, IcebergDestinationDescription: IcebergDestinationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationDescription:
     str DestinationId
     Optional[S3DestinationDescription] S3DestinationDescription
@@ -621,8 +638,9 @@ struct DestinationDescription:
     Optional[AmazonOpenSearchServerlessDestinationDescription] AmazonOpenSearchServerlessDestinationDescription
     Optional[IcebergDestinationDescription] IcebergDestinationDescription
 
-# no @derive(Json): member(s) UniqueKeys: list[str], PartitionSpec: PartitionSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UniqueKeys: list[str], PartitionSpec: PartitionSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationTableConfiguration:
     str DestinationTableName
     str DestinationDatabaseName
@@ -652,8 +670,9 @@ struct ElasticsearchBufferingHints:
     Optional[int64] IntervalInSeconds
     Optional[int64] SizeInMBs
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElasticsearchDestinationConfiguration:
     str RoleARN
     Optional[str] DomainARN
@@ -670,8 +689,9 @@ struct ElasticsearchDestinationConfiguration:
     Optional[VpcConfiguration] VpcConfiguration
     Optional[DocumentIdOptions] DocumentIdOptions
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfigurationDescription: VpcConfigurationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, VpcConfigurationDescription: VpcConfigurationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElasticsearchDestinationDescription:
     Optional[str] RoleARN
     Optional[str] DomainARN
@@ -688,8 +708,9 @@ struct ElasticsearchDestinationDescription:
     Optional[VpcConfigurationDescription] VpcConfigurationDescription
     Optional[DocumentIdOptions] DocumentIdOptions
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ElasticsearchDestinationUpdate:
     Optional[str] RoleARN
     Optional[str] DomainARN
@@ -713,8 +734,9 @@ struct EncryptionConfiguration:
     Optional[str] NoEncryptionConfig
     Optional[KMSEncryptionConfig] KMSEncryptionConfig
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, DataFormatConversionConfiguration: DataFormatConversionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, DataFormatConversionConfiguration: DataFormatConversionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtendedS3DestinationConfiguration:
     str RoleARN
     str BucketARN
@@ -732,8 +754,9 @@ struct ExtendedS3DestinationConfiguration:
     Optional[str] FileExtension
     Optional[str] CustomTimeZone
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, DataFormatConversionConfiguration: DataFormatConversionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, DataFormatConversionConfiguration: DataFormatConversionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtendedS3DestinationDescription:
     str RoleARN
     str BucketARN
@@ -751,8 +774,9 @@ struct ExtendedS3DestinationDescription:
     Optional[str] FileExtension
     Optional[str] CustomTimeZone
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, DataFormatConversionConfiguration: DataFormatConversionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration, DataFormatConversionConfiguration: DataFormatConversionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtendedS3DestinationUpdate:
     Optional[str] RoleARN
     Optional[str] BucketARN
@@ -775,8 +799,9 @@ struct FailureDescription:
     DeliveryStreamFailureType Type
     str Details
 
-# no @derive(Json): member(s) TimestampFormats: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimestampFormats: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HiveJsonSerDe:
     Optional[list[str]] TimestampFormats
 
@@ -801,8 +826,9 @@ struct HttpEndpointDescription:
     Optional[str] Url
     Optional[str] Name
 
-# no @derive(Json): member(s) RequestConfiguration: HttpEndpointRequestConfiguration, ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestConfiguration: HttpEndpointRequestConfiguration, ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpEndpointDestinationConfiguration:
     HttpEndpointConfiguration EndpointConfiguration
     Optional[HttpEndpointBufferingHints] BufferingHints
@@ -815,8 +841,9 @@ struct HttpEndpointDestinationConfiguration:
     S3DestinationConfiguration S3Configuration
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) RequestConfiguration: HttpEndpointRequestConfiguration, ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestConfiguration: HttpEndpointRequestConfiguration, ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpEndpointDestinationDescription:
     Optional[HttpEndpointDescription] EndpointConfiguration
     Optional[HttpEndpointBufferingHints] BufferingHints
@@ -829,8 +856,9 @@ struct HttpEndpointDestinationDescription:
     Optional[S3DestinationDescription] S3DestinationDescription
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) RequestConfiguration: HttpEndpointRequestConfiguration, ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestConfiguration: HttpEndpointRequestConfiguration, ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpEndpointDestinationUpdate:
     Optional[HttpEndpointConfiguration] EndpointConfiguration
     Optional[HttpEndpointBufferingHints] BufferingHints
@@ -843,8 +871,9 @@ struct HttpEndpointDestinationUpdate:
     Optional[S3DestinationUpdate] S3Update
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) CommonAttributes: list[HttpEndpointCommonAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommonAttributes: list[HttpEndpointCommonAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpEndpointRequestConfiguration:
     Optional[ContentEncoding] ContentEncoding
     Optional[list[HttpEndpointCommonAttribute]] CommonAttributes
@@ -853,8 +882,9 @@ struct HttpEndpointRequestConfiguration:
 struct HttpEndpointRetryOptions:
     Optional[int64] DurationInSeconds
 
-# no @derive(Json): member(s) DestinationTableConfigurationList: list[DestinationTableConfiguration], ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationTableConfigurationList: list[DestinationTableConfiguration], ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergDestinationConfiguration:
     Optional[list[DestinationTableConfiguration]] DestinationTableConfigurationList
     Optional[SchemaEvolutionConfiguration] SchemaEvolutionConfiguration
@@ -869,8 +899,9 @@ struct IcebergDestinationConfiguration:
     CatalogConfiguration CatalogConfiguration
     S3DestinationConfiguration S3Configuration
 
-# no @derive(Json): member(s) DestinationTableConfigurationList: list[DestinationTableConfiguration], ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationTableConfigurationList: list[DestinationTableConfiguration], ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergDestinationDescription:
     Optional[list[DestinationTableConfiguration]] DestinationTableConfigurationList
     Optional[SchemaEvolutionConfiguration] SchemaEvolutionConfiguration
@@ -885,8 +916,9 @@ struct IcebergDestinationDescription:
     Optional[CatalogConfiguration] CatalogConfiguration
     Optional[S3DestinationDescription] S3DestinationDescription
 
-# no @derive(Json): member(s) DestinationTableConfigurationList: list[DestinationTableConfiguration], ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationTableConfigurationList: list[DestinationTableConfiguration], ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergDestinationUpdate:
     Optional[list[DestinationTableConfiguration]] DestinationTableConfigurationList
     Optional[SchemaEvolutionConfiguration] SchemaEvolutionConfiguration
@@ -901,8 +933,9 @@ struct IcebergDestinationUpdate:
     Optional[CatalogConfiguration] CatalogConfiguration
     Optional[S3DestinationConfiguration] S3Configuration
 
-# no @derive(Json): member(s) Deserializer: Deserializer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deserializer: Deserializer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputFormatConfiguration:
     Optional[Deserializer] Deserializer
 
@@ -945,8 +978,9 @@ struct ListDeliveryStreamsInput:
     Optional[DeliveryStreamType] DeliveryStreamType
     Optional[str] ExclusiveStartDeliveryStreamName
 
-# no @derive(Json): member(s) DeliveryStreamNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryStreamNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeliveryStreamsOutput:
     list[str] DeliveryStreamNames
     bool HasMoreDeliveryStreams
@@ -957,8 +991,9 @@ struct ListTagsForDeliveryStreamInput:
     Optional[str] ExclusiveStartTagKey
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForDeliveryStreamOutput:
     list[Tag] Tags
     bool HasMoreTags
@@ -978,15 +1013,17 @@ struct MSKSourceDescription:
     Optional[DateTime] DeliveryStartTimestamp
     Optional[DateTime] ReadFromTimestamp
 
-# no @derive(Json): member(s) ColumnToJsonKeyMappings: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnToJsonKeyMappings: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenXJsonSerDe:
     Optional[bool] ConvertDotsInJsonKeysToUnderscores
     Optional[bool] CaseInsensitive
     Optional[dict[str, str]] ColumnToJsonKeyMappings
 
-# no @derive(Json): member(s) BloomFilterColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BloomFilterColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrcSerDe:
     Optional[int64] StripeSizeBytes
     Optional[int64] BlockSizeBytes
@@ -999,8 +1036,9 @@ struct OrcSerDe:
     Optional[float64] DictionaryKeyThreshold
     Optional[OrcFormatVersion] FormatVersion
 
-# no @derive(Json): member(s) Serializer: Serializer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Serializer: Serializer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputFormatConfiguration:
     Optional[Serializer] Serializer
 
@@ -1017,19 +1055,22 @@ struct ParquetSerDe:
 struct PartitionField:
     str SourceName
 
-# no @derive(Json): member(s) Identity: list[PartitionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identity: list[PartitionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionSpec:
     Optional[list[PartitionField]] Identity
 
-# no @derive(Json): member(s) Processors: list[Processor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Processors: list[Processor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessingConfiguration:
     Optional[bool] Enabled
     Optional[list[Processor]] Processors
 
-# no @derive(Json): member(s) Parameters: list[ProcessorParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[ProcessorParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Processor:
     ProcessorType Type
     Optional[list[ProcessorParameter]] Parameters
@@ -1039,14 +1080,16 @@ struct ProcessorParameter:
     ProcessorParameterName ParameterName
     str ParameterValue
 
-# no @derive(Json): member(s) Records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRecordBatchInput:
     str DeliveryStreamName
     list[Record] Records
 
-# no @derive(Json): member(s) RequestResponses: list[PutRecordBatchResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestResponses: list[PutRecordBatchResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRecordBatchOutput:
     int64 FailedPutCount
     Optional[bool] Encrypted
@@ -1072,8 +1115,9 @@ struct PutRecordOutput:
 struct Record:
     bytes Data
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftDestinationConfiguration:
     str RoleARN
     str ClusterJDBCURL
@@ -1088,8 +1132,9 @@ struct RedshiftDestinationConfiguration:
     Optional[CloudWatchLoggingOptions] CloudWatchLoggingOptions
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftDestinationDescription:
     str RoleARN
     str ClusterJDBCURL
@@ -1103,8 +1148,9 @@ struct RedshiftDestinationDescription:
     Optional[CloudWatchLoggingOptions] CloudWatchLoggingOptions
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftDestinationUpdate:
     Optional[str] RoleARN
     Optional[str] ClusterJDBCURL
@@ -1187,8 +1233,9 @@ struct SecretsManagerConfiguration:
     Optional[str] RoleARN
     bool Enabled
 
-# no @derive(Json): member(s) OrcSerDe: OrcSerDe not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrcSerDe: OrcSerDe not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Serializer:
     Optional[ParquetSerDe] ParquetSerDe
     Optional[OrcSerDe] OrcSerDe
@@ -1202,8 +1249,9 @@ struct SnowflakeBufferingHints:
     Optional[int64] SizeInMBs
     Optional[int64] IntervalInSeconds
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeDestinationConfiguration:
     str AccountUrl
     Optional[str] PrivateKey
@@ -1226,8 +1274,9 @@ struct SnowflakeDestinationConfiguration:
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
     Optional[SnowflakeBufferingHints] BufferingHints
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeDestinationDescription:
     Optional[str] AccountUrl
     Optional[str] User
@@ -1248,8 +1297,9 @@ struct SnowflakeDestinationDescription:
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
     Optional[SnowflakeBufferingHints] BufferingHints
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeDestinationUpdate:
     Optional[str] AccountUrl
     Optional[str] PrivateKey
@@ -1284,8 +1334,9 @@ struct SnowflakeRoleConfiguration:
 struct SnowflakeVpcConfiguration:
     str PrivateLinkVpceId
 
-# no @derive(Json): member(s) DatabaseSourceDescription: DatabaseSourceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseSourceDescription: DatabaseSourceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceDescription:
     Optional[DirectPutSourceDescription] DirectPutSourceDescription
     Optional[KinesisStreamSourceDescription] KinesisStreamSourceDescription
@@ -1297,8 +1348,9 @@ struct SplunkBufferingHints:
     Optional[int64] IntervalInSeconds
     Optional[int64] SizeInMBs
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplunkDestinationConfiguration:
     str HECEndpoint
     HECEndpointType HECEndpointType
@@ -1312,8 +1364,9 @@ struct SplunkDestinationConfiguration:
     Optional[SplunkBufferingHints] BufferingHints
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplunkDestinationDescription:
     Optional[str] HECEndpoint
     Optional[HECEndpointType] HECEndpointType
@@ -1327,8 +1380,9 @@ struct SplunkDestinationDescription:
     Optional[SplunkBufferingHints] BufferingHints
     Optional[SecretsManagerConfiguration] SecretsManagerConfiguration
 
-# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingConfiguration: ProcessingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplunkDestinationUpdate:
     Optional[str] HECEndpoint
     Optional[HECEndpointType] HECEndpointType
@@ -1374,8 +1428,9 @@ struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagDeliveryStreamInput:
     str DeliveryStreamName
     list[Tag] Tags
@@ -1385,8 +1440,9 @@ struct TagDeliveryStreamOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagDeliveryStreamInput:
     str DeliveryStreamName
     list[str] TagKeys
@@ -1396,8 +1452,9 @@ struct UntagDeliveryStreamOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ExtendedS3DestinationUpdate: ExtendedS3DestinationUpdate, RedshiftDestinationUpdate: RedshiftDestinationUpdate, ElasticsearchDestinationUpdate: ElasticsearchDestinationUpdate, AmazonopensearchserviceDestinationUpdate: AmazonopensearchserviceDestinationUpdate, SplunkDestinationUpdate: SplunkDestinationUpdate, HttpEndpointDestinationUpdate: HttpEndpointDestinationUpdate, AmazonOpenSearchServerlessDestinationUpdate: AmazonOpenSearchServerlessDestinationUpdate, SnowflakeDestinationUpdate: SnowflakeDestinationUpdate, IcebergDestinationUpdate: IcebergDestinationUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtendedS3DestinationUpdate: ExtendedS3DestinationUpdate, RedshiftDestinationUpdate: RedshiftDestinationUpdate, ElasticsearchDestinationUpdate: ElasticsearchDestinationUpdate, AmazonopensearchserviceDestinationUpdate: AmazonopensearchserviceDestinationUpdate, SplunkDestinationUpdate: SplunkDestinationUpdate, HttpEndpointDestinationUpdate: HttpEndpointDestinationUpdate, AmazonOpenSearchServerlessDestinationUpdate: AmazonOpenSearchServerlessDestinationUpdate, SnowflakeDestinationUpdate: SnowflakeDestinationUpdate, IcebergDestinationUpdate: IcebergDestinationUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDestinationInput:
     str DeliveryStreamName
     str CurrentDeliveryStreamVersionId
@@ -1418,15 +1475,17 @@ struct UpdateDestinationOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfiguration:
     list[str] SubnetIds
     str RoleARN
     list[str] SecurityGroupIds
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigurationDescription:
     list[str] SubnetIds
     str RoleARN
@@ -1470,18 +1529,1180 @@ def firehose_error_from_code(str code) -> FirehoseError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDeliveryStream (input CreateDeliveryStreamInput)
-#   PutRecordBatch (input PutRecordBatchInput)
-#   TagDeliveryStream (input TagDeliveryStreamInput)
-#   UntagDeliveryStream (input UntagDeliveryStreamInput)
-#   UpdateDestination (input UpdateDestinationInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def firehose_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def firehose_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def firehose_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AmazonOpenSearchServerlessDestinationConfiguration to a compact JSON object (declaration order).
+def amazon_open_search_serverless_destination_configuration_to_json(AmazonOpenSearchServerlessDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    if v.CollectionEndpoint.is_some():
+        auto u0 = v.CollectionEndpoint.unwrap()
+        parts.append("\"CollectionEndpoint\":" + firehose_json_str(u0))
+    parts.append("\"IndexName\":" + firehose_json_str(v.IndexName))
+    if v.BufferingHints.is_some():
+        auto u1 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u1.to_json())
+    if v.RetryOptions.is_some():
+        auto u2 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u2.to_json())
+    if v.S3BackupMode.is_some():
+        auto u3 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u3.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u4 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u4))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u5 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u5.to_json())
+    if v.VpcConfiguration.is_some():
+        auto u6 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + vpc_configuration_to_json(u6))
+    return firehose_json_obj(parts)
+
+# Serialize AmazonOpenSearchServerlessDestinationUpdate to a compact JSON object (declaration order).
+def amazon_open_search_serverless_destination_update_to_json(AmazonOpenSearchServerlessDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.RoleARN.is_some():
+        auto u0 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u0))
+    if v.CollectionEndpoint.is_some():
+        auto u1 = v.CollectionEndpoint.unwrap()
+        parts.append("\"CollectionEndpoint\":" + firehose_json_str(u1))
+    if v.IndexName.is_some():
+        auto u2 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + firehose_json_str(u2))
+    if v.BufferingHints.is_some():
+        auto u3 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u3.to_json())
+    if v.RetryOptions.is_some():
+        auto u4 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u4.to_json())
+    if v.S3Update.is_some():
+        auto u5 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u5.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u6 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u6))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u7 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u7.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize AmazonopensearchserviceDestinationConfiguration to a compact JSON object (declaration order).
+def amazonopensearchservice_destination_configuration_to_json(AmazonopensearchserviceDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    if v.DomainARN.is_some():
+        auto u0 = v.DomainARN.unwrap()
+        parts.append("\"DomainARN\":" + firehose_json_str(u0))
+    if v.ClusterEndpoint.is_some():
+        auto u1 = v.ClusterEndpoint.unwrap()
+        parts.append("\"ClusterEndpoint\":" + firehose_json_str(u1))
+    parts.append("\"IndexName\":" + firehose_json_str(v.IndexName))
+    if v.TypeName.is_some():
+        auto u2 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + firehose_json_str(u2))
+    if v.IndexRotationPeriod.is_some():
+        auto u3 = v.IndexRotationPeriod.unwrap()
+        parts.append("\"IndexRotationPeriod\":" + u3.to_json())
+    if v.BufferingHints.is_some():
+        auto u4 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u4.to_json())
+    if v.RetryOptions.is_some():
+        auto u5 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u5.to_json())
+    if v.S3BackupMode.is_some():
+        auto u6 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u6.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u7 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u7))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u8 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u8.to_json())
+    if v.VpcConfiguration.is_some():
+        auto u9 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + vpc_configuration_to_json(u9))
+    if v.DocumentIdOptions.is_some():
+        auto u10 = v.DocumentIdOptions.unwrap()
+        parts.append("\"DocumentIdOptions\":" + u10.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize AmazonopensearchserviceDestinationUpdate to a compact JSON object (declaration order).
+def amazonopensearchservice_destination_update_to_json(AmazonopensearchserviceDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.RoleARN.is_some():
+        auto u0 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u0))
+    if v.DomainARN.is_some():
+        auto u1 = v.DomainARN.unwrap()
+        parts.append("\"DomainARN\":" + firehose_json_str(u1))
+    if v.ClusterEndpoint.is_some():
+        auto u2 = v.ClusterEndpoint.unwrap()
+        parts.append("\"ClusterEndpoint\":" + firehose_json_str(u2))
+    if v.IndexName.is_some():
+        auto u3 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + firehose_json_str(u3))
+    if v.TypeName.is_some():
+        auto u4 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + firehose_json_str(u4))
+    if v.IndexRotationPeriod.is_some():
+        auto u5 = v.IndexRotationPeriod.unwrap()
+        parts.append("\"IndexRotationPeriod\":" + u5.to_json())
+    if v.BufferingHints.is_some():
+        auto u6 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u6.to_json())
+    if v.RetryOptions.is_some():
+        auto u7 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u7.to_json())
+    if v.S3Update.is_some():
+        auto u8 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u8.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u9 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u9))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u10 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u10.to_json())
+    if v.DocumentIdOptions.is_some():
+        auto u11 = v.DocumentIdOptions.unwrap()
+        parts.append("\"DocumentIdOptions\":" + u11.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize CreateDeliveryStreamInput to a compact JSON object (declaration order).
+def create_delivery_stream_input_to_json(CreateDeliveryStreamInput v) -> str:
+    list[str] parts = []
+    parts.append("\"DeliveryStreamName\":" + firehose_json_str(v.DeliveryStreamName))
+    if v.DeliveryStreamType.is_some():
+        auto u0 = v.DeliveryStreamType.unwrap()
+        parts.append("\"DeliveryStreamType\":" + u0.to_json())
+    if v.DirectPutSourceConfiguration.is_some():
+        auto u1 = v.DirectPutSourceConfiguration.unwrap()
+        parts.append("\"DirectPutSourceConfiguration\":" + u1.to_json())
+    if v.KinesisStreamSourceConfiguration.is_some():
+        auto u2 = v.KinesisStreamSourceConfiguration.unwrap()
+        parts.append("\"KinesisStreamSourceConfiguration\":" + u2.to_json())
+    if v.DeliveryStreamEncryptionConfigurationInput.is_some():
+        auto u3 = v.DeliveryStreamEncryptionConfigurationInput.unwrap()
+        parts.append("\"DeliveryStreamEncryptionConfigurationInput\":" + u3.to_json())
+    if v.S3DestinationConfiguration.is_some():
+        auto u4 = v.S3DestinationConfiguration.unwrap()
+        parts.append("\"S3DestinationConfiguration\":" + u4.to_json())
+    if v.ExtendedS3DestinationConfiguration.is_some():
+        auto u5 = v.ExtendedS3DestinationConfiguration.unwrap()
+        parts.append("\"ExtendedS3DestinationConfiguration\":" + extended_s3_destination_configuration_to_json(u5))
+    if v.RedshiftDestinationConfiguration.is_some():
+        auto u6 = v.RedshiftDestinationConfiguration.unwrap()
+        parts.append("\"RedshiftDestinationConfiguration\":" + redshift_destination_configuration_to_json(u6))
+    if v.ElasticsearchDestinationConfiguration.is_some():
+        auto u7 = v.ElasticsearchDestinationConfiguration.unwrap()
+        parts.append("\"ElasticsearchDestinationConfiguration\":" + elasticsearch_destination_configuration_to_json(u7))
+    if v.AmazonopensearchserviceDestinationConfiguration.is_some():
+        auto u8 = v.AmazonopensearchserviceDestinationConfiguration.unwrap()
+        parts.append("\"AmazonopensearchserviceDestinationConfiguration\":" + amazonopensearchservice_destination_configuration_to_json(u8))
+    if v.SplunkDestinationConfiguration.is_some():
+        auto u9 = v.SplunkDestinationConfiguration.unwrap()
+        parts.append("\"SplunkDestinationConfiguration\":" + splunk_destination_configuration_to_json(u9))
+    if v.HttpEndpointDestinationConfiguration.is_some():
+        auto u10 = v.HttpEndpointDestinationConfiguration.unwrap()
+        parts.append("\"HttpEndpointDestinationConfiguration\":" + http_endpoint_destination_configuration_to_json(u10))
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Tags\":" + firehose_json_arr(e12))
+    if v.AmazonOpenSearchServerlessDestinationConfiguration.is_some():
+        auto u13 = v.AmazonOpenSearchServerlessDestinationConfiguration.unwrap()
+        parts.append("\"AmazonOpenSearchServerlessDestinationConfiguration\":" + amazon_open_search_serverless_destination_configuration_to_json(u13))
+    if v.MSKSourceConfiguration.is_some():
+        auto u14 = v.MSKSourceConfiguration.unwrap()
+        parts.append("\"MSKSourceConfiguration\":" + u14.to_json())
+    if v.SnowflakeDestinationConfiguration.is_some():
+        auto u15 = v.SnowflakeDestinationConfiguration.unwrap()
+        parts.append("\"SnowflakeDestinationConfiguration\":" + snowflake_destination_configuration_to_json(u15))
+    if v.IcebergDestinationConfiguration.is_some():
+        auto u16 = v.IcebergDestinationConfiguration.unwrap()
+        parts.append("\"IcebergDestinationConfiguration\":" + iceberg_destination_configuration_to_json(u16))
+    if v.DatabaseSourceConfiguration.is_some():
+        auto u17 = v.DatabaseSourceConfiguration.unwrap()
+        parts.append("\"DatabaseSourceConfiguration\":" + database_source_configuration_to_json(u17))
+    return firehose_json_obj(parts)
+
+# Serialize DataFormatConversionConfiguration to a compact JSON object (declaration order).
+def data_format_conversion_configuration_to_json(DataFormatConversionConfiguration v) -> str:
+    list[str] parts = []
+    if v.SchemaConfiguration.is_some():
+        auto u0 = v.SchemaConfiguration.unwrap()
+        parts.append("\"SchemaConfiguration\":" + u0.to_json())
+    if v.InputFormatConfiguration.is_some():
+        auto u1 = v.InputFormatConfiguration.unwrap()
+        parts.append("\"InputFormatConfiguration\":" + input_format_configuration_to_json(u1))
+    if v.OutputFormatConfiguration.is_some():
+        auto u2 = v.OutputFormatConfiguration.unwrap()
+        parts.append("\"OutputFormatConfiguration\":" + output_format_configuration_to_json(u2))
+    if v.Enabled.is_some():
+        auto u3 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u3)))
+    return firehose_json_obj(parts)
+
+# Serialize DatabaseColumnList to a compact JSON object (declaration order).
+def database_column_list_to_json(DatabaseColumnList v) -> str:
+    list[str] parts = []
+    if v.Include.is_some():
+        auto u0 = v.Include.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(firehose_json_str(x1))
+        parts.append("\"Include\":" + firehose_json_arr(e1))
+    if v.Exclude.is_some():
+        auto u2 = v.Exclude.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(firehose_json_str(x3))
+        parts.append("\"Exclude\":" + firehose_json_arr(e3))
+    return firehose_json_obj(parts)
+
+# Serialize DatabaseList to a compact JSON object (declaration order).
+def database_list_to_json(DatabaseList v) -> str:
+    list[str] parts = []
+    if v.Include.is_some():
+        auto u0 = v.Include.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(firehose_json_str(x1))
+        parts.append("\"Include\":" + firehose_json_arr(e1))
+    if v.Exclude.is_some():
+        auto u2 = v.Exclude.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(firehose_json_str(x3))
+        parts.append("\"Exclude\":" + firehose_json_arr(e3))
+    return firehose_json_obj(parts)
+
+# Serialize DatabaseSourceConfiguration to a compact JSON object (declaration order).
+def database_source_configuration_to_json(DatabaseSourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"Endpoint\":" + firehose_json_str(v.Endpoint))
+    parts.append("\"Port\":" + str(v.Port))
+    if v.SSLMode.is_some():
+        auto u0 = v.SSLMode.unwrap()
+        parts.append("\"SSLMode\":" + u0.to_json())
+    parts.append("\"Databases\":" + database_list_to_json(v.Databases))
+    parts.append("\"Tables\":" + database_table_list_to_json(v.Tables))
+    if v.Columns.is_some():
+        auto u1 = v.Columns.unwrap()
+        parts.append("\"Columns\":" + database_column_list_to_json(u1))
+    if v.SurrogateKeys.is_some():
+        auto u2 = v.SurrogateKeys.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(firehose_json_str(x3))
+        parts.append("\"SurrogateKeys\":" + firehose_json_arr(e3))
+    parts.append("\"SnapshotWatermarkTable\":" + firehose_json_str(v.SnapshotWatermarkTable))
+    parts.append("\"DatabaseSourceAuthenticationConfiguration\":" + v.DatabaseSourceAuthenticationConfiguration.to_json())
+    parts.append("\"DatabaseSourceVPCConfiguration\":" + v.DatabaseSourceVPCConfiguration.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize DatabaseTableList to a compact JSON object (declaration order).
+def database_table_list_to_json(DatabaseTableList v) -> str:
+    list[str] parts = []
+    if v.Include.is_some():
+        auto u0 = v.Include.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(firehose_json_str(x1))
+        parts.append("\"Include\":" + firehose_json_arr(e1))
+    if v.Exclude.is_some():
+        auto u2 = v.Exclude.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(firehose_json_str(x3))
+        parts.append("\"Exclude\":" + firehose_json_arr(e3))
+    return firehose_json_obj(parts)
+
+# Serialize Deserializer to a compact JSON object (declaration order).
+def deserializer_to_json(Deserializer v) -> str:
+    list[str] parts = []
+    if v.OpenXJsonSerDe.is_some():
+        auto u0 = v.OpenXJsonSerDe.unwrap()
+        parts.append("\"OpenXJsonSerDe\":" + open_x_json_ser_de_to_json(u0))
+    if v.HiveJsonSerDe.is_some():
+        auto u1 = v.HiveJsonSerDe.unwrap()
+        parts.append("\"HiveJsonSerDe\":" + hive_json_ser_de_to_json(u1))
+    return firehose_json_obj(parts)
+
+# Serialize DestinationTableConfiguration to a compact JSON object (declaration order).
+def destination_table_configuration_to_json(DestinationTableConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationTableName\":" + firehose_json_str(v.DestinationTableName))
+    parts.append("\"DestinationDatabaseName\":" + firehose_json_str(v.DestinationDatabaseName))
+    if v.UniqueKeys.is_some():
+        auto u0 = v.UniqueKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(firehose_json_str(x1))
+        parts.append("\"UniqueKeys\":" + firehose_json_arr(e1))
+    if v.PartitionSpec.is_some():
+        auto u2 = v.PartitionSpec.unwrap()
+        parts.append("\"PartitionSpec\":" + partition_spec_to_json(u2))
+    if v.S3ErrorOutputPrefix.is_some():
+        auto u3 = v.S3ErrorOutputPrefix.unwrap()
+        parts.append("\"S3ErrorOutputPrefix\":" + firehose_json_str(u3))
+    return firehose_json_obj(parts)
+
+# Serialize ElasticsearchDestinationConfiguration to a compact JSON object (declaration order).
+def elasticsearch_destination_configuration_to_json(ElasticsearchDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    if v.DomainARN.is_some():
+        auto u0 = v.DomainARN.unwrap()
+        parts.append("\"DomainARN\":" + firehose_json_str(u0))
+    if v.ClusterEndpoint.is_some():
+        auto u1 = v.ClusterEndpoint.unwrap()
+        parts.append("\"ClusterEndpoint\":" + firehose_json_str(u1))
+    parts.append("\"IndexName\":" + firehose_json_str(v.IndexName))
+    if v.TypeName.is_some():
+        auto u2 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + firehose_json_str(u2))
+    if v.IndexRotationPeriod.is_some():
+        auto u3 = v.IndexRotationPeriod.unwrap()
+        parts.append("\"IndexRotationPeriod\":" + u3.to_json())
+    if v.BufferingHints.is_some():
+        auto u4 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u4.to_json())
+    if v.RetryOptions.is_some():
+        auto u5 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u5.to_json())
+    if v.S3BackupMode.is_some():
+        auto u6 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u6.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u7 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u7))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u8 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u8.to_json())
+    if v.VpcConfiguration.is_some():
+        auto u9 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + vpc_configuration_to_json(u9))
+    if v.DocumentIdOptions.is_some():
+        auto u10 = v.DocumentIdOptions.unwrap()
+        parts.append("\"DocumentIdOptions\":" + u10.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize ElasticsearchDestinationUpdate to a compact JSON object (declaration order).
+def elasticsearch_destination_update_to_json(ElasticsearchDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.RoleARN.is_some():
+        auto u0 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u0))
+    if v.DomainARN.is_some():
+        auto u1 = v.DomainARN.unwrap()
+        parts.append("\"DomainARN\":" + firehose_json_str(u1))
+    if v.ClusterEndpoint.is_some():
+        auto u2 = v.ClusterEndpoint.unwrap()
+        parts.append("\"ClusterEndpoint\":" + firehose_json_str(u2))
+    if v.IndexName.is_some():
+        auto u3 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + firehose_json_str(u3))
+    if v.TypeName.is_some():
+        auto u4 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + firehose_json_str(u4))
+    if v.IndexRotationPeriod.is_some():
+        auto u5 = v.IndexRotationPeriod.unwrap()
+        parts.append("\"IndexRotationPeriod\":" + u5.to_json())
+    if v.BufferingHints.is_some():
+        auto u6 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u6.to_json())
+    if v.RetryOptions.is_some():
+        auto u7 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u7.to_json())
+    if v.S3Update.is_some():
+        auto u8 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u8.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u9 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u9))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u10 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u10.to_json())
+    if v.DocumentIdOptions.is_some():
+        auto u11 = v.DocumentIdOptions.unwrap()
+        parts.append("\"DocumentIdOptions\":" + u11.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize ExtendedS3DestinationConfiguration to a compact JSON object (declaration order).
+def extended_s3_destination_configuration_to_json(ExtendedS3DestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    parts.append("\"BucketARN\":" + firehose_json_str(v.BucketARN))
+    if v.Prefix.is_some():
+        auto u0 = v.Prefix.unwrap()
+        parts.append("\"Prefix\":" + firehose_json_str(u0))
+    if v.ErrorOutputPrefix.is_some():
+        auto u1 = v.ErrorOutputPrefix.unwrap()
+        parts.append("\"ErrorOutputPrefix\":" + firehose_json_str(u1))
+    if v.BufferingHints.is_some():
+        auto u2 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u2.to_json())
+    if v.CompressionFormat.is_some():
+        auto u3 = v.CompressionFormat.unwrap()
+        parts.append("\"CompressionFormat\":" + u3.to_json())
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u4.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u5 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u5.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u6 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u6))
+    if v.S3BackupMode.is_some():
+        auto u7 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u7.to_json())
+    if v.S3BackupConfiguration.is_some():
+        auto u8 = v.S3BackupConfiguration.unwrap()
+        parts.append("\"S3BackupConfiguration\":" + u8.to_json())
+    if v.DataFormatConversionConfiguration.is_some():
+        auto u9 = v.DataFormatConversionConfiguration.unwrap()
+        parts.append("\"DataFormatConversionConfiguration\":" + data_format_conversion_configuration_to_json(u9))
+    if v.DynamicPartitioningConfiguration.is_some():
+        auto u10 = v.DynamicPartitioningConfiguration.unwrap()
+        parts.append("\"DynamicPartitioningConfiguration\":" + u10.to_json())
+    if v.FileExtension.is_some():
+        auto u11 = v.FileExtension.unwrap()
+        parts.append("\"FileExtension\":" + firehose_json_str(u11))
+    if v.CustomTimeZone.is_some():
+        auto u12 = v.CustomTimeZone.unwrap()
+        parts.append("\"CustomTimeZone\":" + firehose_json_str(u12))
+    return firehose_json_obj(parts)
+
+# Serialize ExtendedS3DestinationUpdate to a compact JSON object (declaration order).
+def extended_s3_destination_update_to_json(ExtendedS3DestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.RoleARN.is_some():
+        auto u0 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u0))
+    if v.BucketARN.is_some():
+        auto u1 = v.BucketARN.unwrap()
+        parts.append("\"BucketARN\":" + firehose_json_str(u1))
+    if v.Prefix.is_some():
+        auto u2 = v.Prefix.unwrap()
+        parts.append("\"Prefix\":" + firehose_json_str(u2))
+    if v.ErrorOutputPrefix.is_some():
+        auto u3 = v.ErrorOutputPrefix.unwrap()
+        parts.append("\"ErrorOutputPrefix\":" + firehose_json_str(u3))
+    if v.BufferingHints.is_some():
+        auto u4 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u4.to_json())
+    if v.CompressionFormat.is_some():
+        auto u5 = v.CompressionFormat.unwrap()
+        parts.append("\"CompressionFormat\":" + u5.to_json())
+    if v.EncryptionConfiguration.is_some():
+        auto u6 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u6.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u7 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u7.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u8 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u8))
+    if v.S3BackupMode.is_some():
+        auto u9 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u9.to_json())
+    if v.S3BackupUpdate.is_some():
+        auto u10 = v.S3BackupUpdate.unwrap()
+        parts.append("\"S3BackupUpdate\":" + u10.to_json())
+    if v.DataFormatConversionConfiguration.is_some():
+        auto u11 = v.DataFormatConversionConfiguration.unwrap()
+        parts.append("\"DataFormatConversionConfiguration\":" + data_format_conversion_configuration_to_json(u11))
+    if v.DynamicPartitioningConfiguration.is_some():
+        auto u12 = v.DynamicPartitioningConfiguration.unwrap()
+        parts.append("\"DynamicPartitioningConfiguration\":" + u12.to_json())
+    if v.FileExtension.is_some():
+        auto u13 = v.FileExtension.unwrap()
+        parts.append("\"FileExtension\":" + firehose_json_str(u13))
+    if v.CustomTimeZone.is_some():
+        auto u14 = v.CustomTimeZone.unwrap()
+        parts.append("\"CustomTimeZone\":" + firehose_json_str(u14))
+    return firehose_json_obj(parts)
+
+# Serialize HiveJsonSerDe to a compact JSON object (declaration order).
+def hive_json_ser_de_to_json(HiveJsonSerDe v) -> str:
+    list[str] parts = []
+    if v.TimestampFormats.is_some():
+        auto u0 = v.TimestampFormats.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(firehose_json_str(x1))
+        parts.append("\"TimestampFormats\":" + firehose_json_arr(e1))
+    return firehose_json_obj(parts)
+
+# Serialize HttpEndpointDestinationConfiguration to a compact JSON object (declaration order).
+def http_endpoint_destination_configuration_to_json(HttpEndpointDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointConfiguration\":" + v.EndpointConfiguration.to_json())
+    if v.BufferingHints.is_some():
+        auto u0 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u0.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u1 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u1.to_json())
+    if v.RequestConfiguration.is_some():
+        auto u2 = v.RequestConfiguration.unwrap()
+        parts.append("\"RequestConfiguration\":" + http_endpoint_request_configuration_to_json(u2))
+    if v.ProcessingConfiguration.is_some():
+        auto u3 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u3))
+    if v.RoleARN.is_some():
+        auto u4 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u4))
+    if v.RetryOptions.is_some():
+        auto u5 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u5.to_json())
+    if v.S3BackupMode.is_some():
+        auto u6 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u6.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u7 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u7.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize HttpEndpointDestinationUpdate to a compact JSON object (declaration order).
+def http_endpoint_destination_update_to_json(HttpEndpointDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.EndpointConfiguration.is_some():
+        auto u0 = v.EndpointConfiguration.unwrap()
+        parts.append("\"EndpointConfiguration\":" + u0.to_json())
+    if v.BufferingHints.is_some():
+        auto u1 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u1.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u2 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u2.to_json())
+    if v.RequestConfiguration.is_some():
+        auto u3 = v.RequestConfiguration.unwrap()
+        parts.append("\"RequestConfiguration\":" + http_endpoint_request_configuration_to_json(u3))
+    if v.ProcessingConfiguration.is_some():
+        auto u4 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u4))
+    if v.RoleARN.is_some():
+        auto u5 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u5))
+    if v.RetryOptions.is_some():
+        auto u6 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u6.to_json())
+    if v.S3BackupMode.is_some():
+        auto u7 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u7.to_json())
+    if v.S3Update.is_some():
+        auto u8 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u8.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u9 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u9.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize HttpEndpointRequestConfiguration to a compact JSON object (declaration order).
+def http_endpoint_request_configuration_to_json(HttpEndpointRequestConfiguration v) -> str:
+    list[str] parts = []
+    if v.ContentEncoding.is_some():
+        auto u0 = v.ContentEncoding.unwrap()
+        parts.append("\"ContentEncoding\":" + u0.to_json())
+    if v.CommonAttributes.is_some():
+        auto u1 = v.CommonAttributes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CommonAttributes\":" + firehose_json_arr(e2))
+    return firehose_json_obj(parts)
+
+# Serialize IcebergDestinationConfiguration to a compact JSON object (declaration order).
+def iceberg_destination_configuration_to_json(IcebergDestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.DestinationTableConfigurationList.is_some():
+        auto u0 = v.DestinationTableConfigurationList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(destination_table_configuration_to_json(x1))
+        parts.append("\"DestinationTableConfigurationList\":" + firehose_json_arr(e1))
+    if v.SchemaEvolutionConfiguration.is_some():
+        auto u2 = v.SchemaEvolutionConfiguration.unwrap()
+        parts.append("\"SchemaEvolutionConfiguration\":" + u2.to_json())
+    if v.TableCreationConfiguration.is_some():
+        auto u3 = v.TableCreationConfiguration.unwrap()
+        parts.append("\"TableCreationConfiguration\":" + u3.to_json())
+    if v.BufferingHints.is_some():
+        auto u4 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u4.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u5 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u5.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u6 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u6))
+    if v.S3BackupMode.is_some():
+        auto u7 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u7.to_json())
+    if v.RetryOptions.is_some():
+        auto u8 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u8.to_json())
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    if v.AppendOnly.is_some():
+        auto u9 = v.AppendOnly.unwrap()
+        parts.append("\"AppendOnly\":" + json.dumps(JsonValue.Bool(u9)))
+    parts.append("\"CatalogConfiguration\":" + v.CatalogConfiguration.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize IcebergDestinationUpdate to a compact JSON object (declaration order).
+def iceberg_destination_update_to_json(IcebergDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.DestinationTableConfigurationList.is_some():
+        auto u0 = v.DestinationTableConfigurationList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(destination_table_configuration_to_json(x1))
+        parts.append("\"DestinationTableConfigurationList\":" + firehose_json_arr(e1))
+    if v.SchemaEvolutionConfiguration.is_some():
+        auto u2 = v.SchemaEvolutionConfiguration.unwrap()
+        parts.append("\"SchemaEvolutionConfiguration\":" + u2.to_json())
+    if v.TableCreationConfiguration.is_some():
+        auto u3 = v.TableCreationConfiguration.unwrap()
+        parts.append("\"TableCreationConfiguration\":" + u3.to_json())
+    if v.BufferingHints.is_some():
+        auto u4 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u4.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u5 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u5.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u6 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u6))
+    if v.S3BackupMode.is_some():
+        auto u7 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u7.to_json())
+    if v.RetryOptions.is_some():
+        auto u8 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u8.to_json())
+    if v.RoleARN.is_some():
+        auto u9 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u9))
+    if v.AppendOnly.is_some():
+        auto u10 = v.AppendOnly.unwrap()
+        parts.append("\"AppendOnly\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.CatalogConfiguration.is_some():
+        auto u11 = v.CatalogConfiguration.unwrap()
+        parts.append("\"CatalogConfiguration\":" + u11.to_json())
+    if v.S3Configuration.is_some():
+        auto u12 = v.S3Configuration.unwrap()
+        parts.append("\"S3Configuration\":" + u12.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize InputFormatConfiguration to a compact JSON object (declaration order).
+def input_format_configuration_to_json(InputFormatConfiguration v) -> str:
+    list[str] parts = []
+    if v.Deserializer.is_some():
+        auto u0 = v.Deserializer.unwrap()
+        parts.append("\"Deserializer\":" + deserializer_to_json(u0))
+    return firehose_json_obj(parts)
+
+# Serialize OpenXJsonSerDe to a compact JSON object (declaration order).
+def open_x_json_ser_de_to_json(OpenXJsonSerDe v) -> str:
+    list[str] parts = []
+    if v.ConvertDotsInJsonKeysToUnderscores.is_some():
+        auto u0 = v.ConvertDotsInJsonKeysToUnderscores.unwrap()
+        parts.append("\"ConvertDotsInJsonKeysToUnderscores\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.CaseInsensitive.is_some():
+        auto u1 = v.CaseInsensitive.unwrap()
+        parts.append("\"CaseInsensitive\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ColumnToJsonKeyMappings.is_some():
+        auto u2 = v.ColumnToJsonKeyMappings.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(firehose_json_str(k3) + ":" + firehose_json_str(u2[k3]))
+        parts.append("\"ColumnToJsonKeyMappings\":" + firehose_json_obj(m3))
+    return firehose_json_obj(parts)
+
+# Serialize OrcSerDe to a compact JSON object (declaration order).
+def orc_ser_de_to_json(OrcSerDe v) -> str:
+    list[str] parts = []
+    if v.StripeSizeBytes.is_some():
+        auto u0 = v.StripeSizeBytes.unwrap()
+        parts.append("\"StripeSizeBytes\":" + str(u0))
+    if v.BlockSizeBytes.is_some():
+        auto u1 = v.BlockSizeBytes.unwrap()
+        parts.append("\"BlockSizeBytes\":" + str(u1))
+    if v.RowIndexStride.is_some():
+        auto u2 = v.RowIndexStride.unwrap()
+        parts.append("\"RowIndexStride\":" + str(u2))
+    if v.EnablePadding.is_some():
+        auto u3 = v.EnablePadding.unwrap()
+        parts.append("\"EnablePadding\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.PaddingTolerance.is_some():
+        auto u4 = v.PaddingTolerance.unwrap()
+        parts.append("\"PaddingTolerance\":" + str(u4))
+    if v.Compression.is_some():
+        auto u5 = v.Compression.unwrap()
+        parts.append("\"Compression\":" + u5.to_json())
+    if v.BloomFilterColumns.is_some():
+        auto u6 = v.BloomFilterColumns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(firehose_json_str(x7))
+        parts.append("\"BloomFilterColumns\":" + firehose_json_arr(e7))
+    if v.BloomFilterFalsePositiveProbability.is_some():
+        auto u8 = v.BloomFilterFalsePositiveProbability.unwrap()
+        parts.append("\"BloomFilterFalsePositiveProbability\":" + str(u8))
+    if v.DictionaryKeyThreshold.is_some():
+        auto u9 = v.DictionaryKeyThreshold.unwrap()
+        parts.append("\"DictionaryKeyThreshold\":" + str(u9))
+    if v.FormatVersion.is_some():
+        auto u10 = v.FormatVersion.unwrap()
+        parts.append("\"FormatVersion\":" + u10.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize OutputFormatConfiguration to a compact JSON object (declaration order).
+def output_format_configuration_to_json(OutputFormatConfiguration v) -> str:
+    list[str] parts = []
+    if v.Serializer.is_some():
+        auto u0 = v.Serializer.unwrap()
+        parts.append("\"Serializer\":" + serializer_to_json(u0))
+    return firehose_json_obj(parts)
+
+# Serialize PartitionSpec to a compact JSON object (declaration order).
+def partition_spec_to_json(PartitionSpec v) -> str:
+    list[str] parts = []
+    if v.Identity.is_some():
+        auto u0 = v.Identity.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Identity\":" + firehose_json_arr(e1))
+    return firehose_json_obj(parts)
+
+# Serialize ProcessingConfiguration to a compact JSON object (declaration order).
+def processing_configuration_to_json(ProcessingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Enabled.is_some():
+        auto u0 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Processors.is_some():
+        auto u1 = v.Processors.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(processor_to_json(x2))
+        parts.append("\"Processors\":" + firehose_json_arr(e2))
+    return firehose_json_obj(parts)
+
+# Serialize Processor to a compact JSON object (declaration order).
+def processor_to_json(Processor v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Parameters\":" + firehose_json_arr(e1))
+    return firehose_json_obj(parts)
+
+# Serialize PutRecordBatchInput to a compact JSON object (declaration order).
+def put_record_batch_input_to_json(PutRecordBatchInput v) -> str:
+    list[str] parts = []
+    parts.append("\"DeliveryStreamName\":" + firehose_json_str(v.DeliveryStreamName))
+    list[str] e0 = []
+    for x0 in v.Records:
+        e0.append(x0.to_json())
+    parts.append("\"Records\":" + firehose_json_arr(e0))
+    return firehose_json_obj(parts)
+
+# Serialize RedshiftDestinationConfiguration to a compact JSON object (declaration order).
+def redshift_destination_configuration_to_json(RedshiftDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    parts.append("\"ClusterJDBCURL\":" + firehose_json_str(v.ClusterJDBCURL))
+    parts.append("\"CopyCommand\":" + v.CopyCommand.to_json())
+    if v.Username.is_some():
+        auto u0 = v.Username.unwrap()
+        parts.append("\"Username\":" + firehose_json_str(u0))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        parts.append("\"Password\":" + firehose_json_str(u1))
+    if v.RetryOptions.is_some():
+        auto u2 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u2.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u3 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u3))
+    if v.S3BackupMode.is_some():
+        auto u4 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u4.to_json())
+    if v.S3BackupConfiguration.is_some():
+        auto u5 = v.S3BackupConfiguration.unwrap()
+        parts.append("\"S3BackupConfiguration\":" + u5.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u6 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u6.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u7 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u7.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize RedshiftDestinationUpdate to a compact JSON object (declaration order).
+def redshift_destination_update_to_json(RedshiftDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.RoleARN.is_some():
+        auto u0 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u0))
+    if v.ClusterJDBCURL.is_some():
+        auto u1 = v.ClusterJDBCURL.unwrap()
+        parts.append("\"ClusterJDBCURL\":" + firehose_json_str(u1))
+    if v.CopyCommand.is_some():
+        auto u2 = v.CopyCommand.unwrap()
+        parts.append("\"CopyCommand\":" + u2.to_json())
+    if v.Username.is_some():
+        auto u3 = v.Username.unwrap()
+        parts.append("\"Username\":" + firehose_json_str(u3))
+    if v.Password.is_some():
+        auto u4 = v.Password.unwrap()
+        parts.append("\"Password\":" + firehose_json_str(u4))
+    if v.RetryOptions.is_some():
+        auto u5 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u5.to_json())
+    if v.S3Update.is_some():
+        auto u6 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u6.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u7 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u7))
+    if v.S3BackupMode.is_some():
+        auto u8 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u8.to_json())
+    if v.S3BackupUpdate.is_some():
+        auto u9 = v.S3BackupUpdate.unwrap()
+        parts.append("\"S3BackupUpdate\":" + u9.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u10 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u10.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u11 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u11.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize Serializer to a compact JSON object (declaration order).
+def serializer_to_json(Serializer v) -> str:
+    list[str] parts = []
+    if v.ParquetSerDe.is_some():
+        auto u0 = v.ParquetSerDe.unwrap()
+        parts.append("\"ParquetSerDe\":" + u0.to_json())
+    if v.OrcSerDe.is_some():
+        auto u1 = v.OrcSerDe.unwrap()
+        parts.append("\"OrcSerDe\":" + orc_ser_de_to_json(u1))
+    return firehose_json_obj(parts)
+
+# Serialize SnowflakeDestinationConfiguration to a compact JSON object (declaration order).
+def snowflake_destination_configuration_to_json(SnowflakeDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"AccountUrl\":" + firehose_json_str(v.AccountUrl))
+    if v.PrivateKey.is_some():
+        auto u0 = v.PrivateKey.unwrap()
+        parts.append("\"PrivateKey\":" + firehose_json_str(u0))
+    if v.KeyPassphrase.is_some():
+        auto u1 = v.KeyPassphrase.unwrap()
+        parts.append("\"KeyPassphrase\":" + firehose_json_str(u1))
+    if v.User.is_some():
+        auto u2 = v.User.unwrap()
+        parts.append("\"User\":" + firehose_json_str(u2))
+    parts.append("\"Database\":" + firehose_json_str(v.Database))
+    parts.append("\"Schema\":" + firehose_json_str(v.Schema))
+    parts.append("\"Table\":" + firehose_json_str(v.Table))
+    if v.SnowflakeRoleConfiguration.is_some():
+        auto u3 = v.SnowflakeRoleConfiguration.unwrap()
+        parts.append("\"SnowflakeRoleConfiguration\":" + u3.to_json())
+    if v.DataLoadingOption.is_some():
+        auto u4 = v.DataLoadingOption.unwrap()
+        parts.append("\"DataLoadingOption\":" + u4.to_json())
+    if v.MetaDataColumnName.is_some():
+        auto u5 = v.MetaDataColumnName.unwrap()
+        parts.append("\"MetaDataColumnName\":" + firehose_json_str(u5))
+    if v.ContentColumnName.is_some():
+        auto u6 = v.ContentColumnName.unwrap()
+        parts.append("\"ContentColumnName\":" + firehose_json_str(u6))
+    if v.SnowflakeVpcConfiguration.is_some():
+        auto u7 = v.SnowflakeVpcConfiguration.unwrap()
+        parts.append("\"SnowflakeVpcConfiguration\":" + u7.to_json())
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u8 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u8.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u9 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u9))
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    if v.RetryOptions.is_some():
+        auto u10 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u10.to_json())
+    if v.S3BackupMode.is_some():
+        auto u11 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u11.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u12 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u12.to_json())
+    if v.BufferingHints.is_some():
+        auto u13 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u13.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize SnowflakeDestinationUpdate to a compact JSON object (declaration order).
+def snowflake_destination_update_to_json(SnowflakeDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.AccountUrl.is_some():
+        auto u0 = v.AccountUrl.unwrap()
+        parts.append("\"AccountUrl\":" + firehose_json_str(u0))
+    if v.PrivateKey.is_some():
+        auto u1 = v.PrivateKey.unwrap()
+        parts.append("\"PrivateKey\":" + firehose_json_str(u1))
+    if v.KeyPassphrase.is_some():
+        auto u2 = v.KeyPassphrase.unwrap()
+        parts.append("\"KeyPassphrase\":" + firehose_json_str(u2))
+    if v.User.is_some():
+        auto u3 = v.User.unwrap()
+        parts.append("\"User\":" + firehose_json_str(u3))
+    if v.Database.is_some():
+        auto u4 = v.Database.unwrap()
+        parts.append("\"Database\":" + firehose_json_str(u4))
+    if v.Schema.is_some():
+        auto u5 = v.Schema.unwrap()
+        parts.append("\"Schema\":" + firehose_json_str(u5))
+    if v.Table.is_some():
+        auto u6 = v.Table.unwrap()
+        parts.append("\"Table\":" + firehose_json_str(u6))
+    if v.SnowflakeRoleConfiguration.is_some():
+        auto u7 = v.SnowflakeRoleConfiguration.unwrap()
+        parts.append("\"SnowflakeRoleConfiguration\":" + u7.to_json())
+    if v.DataLoadingOption.is_some():
+        auto u8 = v.DataLoadingOption.unwrap()
+        parts.append("\"DataLoadingOption\":" + u8.to_json())
+    if v.MetaDataColumnName.is_some():
+        auto u9 = v.MetaDataColumnName.unwrap()
+        parts.append("\"MetaDataColumnName\":" + firehose_json_str(u9))
+    if v.ContentColumnName.is_some():
+        auto u10 = v.ContentColumnName.unwrap()
+        parts.append("\"ContentColumnName\":" + firehose_json_str(u10))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u11 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u11.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u12 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u12))
+    if v.RoleARN.is_some():
+        auto u13 = v.RoleARN.unwrap()
+        parts.append("\"RoleARN\":" + firehose_json_str(u13))
+    if v.RetryOptions.is_some():
+        auto u14 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u14.to_json())
+    if v.S3BackupMode.is_some():
+        auto u15 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u15.to_json())
+    if v.S3Update.is_some():
+        auto u16 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u16.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u17 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u17.to_json())
+    if v.BufferingHints.is_some():
+        auto u18 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u18.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize SplunkDestinationConfiguration to a compact JSON object (declaration order).
+def splunk_destination_configuration_to_json(SplunkDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"HECEndpoint\":" + firehose_json_str(v.HECEndpoint))
+    parts.append("\"HECEndpointType\":" + v.HECEndpointType.to_json())
+    if v.HECToken.is_some():
+        auto u0 = v.HECToken.unwrap()
+        parts.append("\"HECToken\":" + firehose_json_str(u0))
+    if v.HECAcknowledgmentTimeoutInSeconds.is_some():
+        auto u1 = v.HECAcknowledgmentTimeoutInSeconds.unwrap()
+        parts.append("\"HECAcknowledgmentTimeoutInSeconds\":" + str(u1))
+    if v.RetryOptions.is_some():
+        auto u2 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u2.to_json())
+    if v.S3BackupMode.is_some():
+        auto u3 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u3.to_json())
+    parts.append("\"S3Configuration\":" + v.S3Configuration.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u4 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u4))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u5 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u5.to_json())
+    if v.BufferingHints.is_some():
+        auto u6 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u6.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u7 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u7.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize SplunkDestinationUpdate to a compact JSON object (declaration order).
+def splunk_destination_update_to_json(SplunkDestinationUpdate v) -> str:
+    list[str] parts = []
+    if v.HECEndpoint.is_some():
+        auto u0 = v.HECEndpoint.unwrap()
+        parts.append("\"HECEndpoint\":" + firehose_json_str(u0))
+    if v.HECEndpointType.is_some():
+        auto u1 = v.HECEndpointType.unwrap()
+        parts.append("\"HECEndpointType\":" + u1.to_json())
+    if v.HECToken.is_some():
+        auto u2 = v.HECToken.unwrap()
+        parts.append("\"HECToken\":" + firehose_json_str(u2))
+    if v.HECAcknowledgmentTimeoutInSeconds.is_some():
+        auto u3 = v.HECAcknowledgmentTimeoutInSeconds.unwrap()
+        parts.append("\"HECAcknowledgmentTimeoutInSeconds\":" + str(u3))
+    if v.RetryOptions.is_some():
+        auto u4 = v.RetryOptions.unwrap()
+        parts.append("\"RetryOptions\":" + u4.to_json())
+    if v.S3BackupMode.is_some():
+        auto u5 = v.S3BackupMode.unwrap()
+        parts.append("\"S3BackupMode\":" + u5.to_json())
+    if v.S3Update.is_some():
+        auto u6 = v.S3Update.unwrap()
+        parts.append("\"S3Update\":" + u6.to_json())
+    if v.ProcessingConfiguration.is_some():
+        auto u7 = v.ProcessingConfiguration.unwrap()
+        parts.append("\"ProcessingConfiguration\":" + processing_configuration_to_json(u7))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u8 = v.CloudWatchLoggingOptions.unwrap()
+        parts.append("\"CloudWatchLoggingOptions\":" + u8.to_json())
+    if v.BufferingHints.is_some():
+        auto u9 = v.BufferingHints.unwrap()
+        parts.append("\"BufferingHints\":" + u9.to_json())
+    if v.SecretsManagerConfiguration.is_some():
+        auto u10 = v.SecretsManagerConfiguration.unwrap()
+        parts.append("\"SecretsManagerConfiguration\":" + u10.to_json())
+    return firehose_json_obj(parts)
+
+# Serialize TagDeliveryStreamInput to a compact JSON object (declaration order).
+def tag_delivery_stream_input_to_json(TagDeliveryStreamInput v) -> str:
+    list[str] parts = []
+    parts.append("\"DeliveryStreamName\":" + firehose_json_str(v.DeliveryStreamName))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + firehose_json_arr(e0))
+    return firehose_json_obj(parts)
+
+# Serialize UntagDeliveryStreamInput to a compact JSON object (declaration order).
+def untag_delivery_stream_input_to_json(UntagDeliveryStreamInput v) -> str:
+    list[str] parts = []
+    parts.append("\"DeliveryStreamName\":" + firehose_json_str(v.DeliveryStreamName))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(firehose_json_str(x0))
+    parts.append("\"TagKeys\":" + firehose_json_arr(e0))
+    return firehose_json_obj(parts)
+
+# Serialize UpdateDestinationInput to a compact JSON object (declaration order).
+def update_destination_input_to_json(UpdateDestinationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"DeliveryStreamName\":" + firehose_json_str(v.DeliveryStreamName))
+    parts.append("\"CurrentDeliveryStreamVersionId\":" + firehose_json_str(v.CurrentDeliveryStreamVersionId))
+    parts.append("\"DestinationId\":" + firehose_json_str(v.DestinationId))
+    if v.S3DestinationUpdate.is_some():
+        auto u0 = v.S3DestinationUpdate.unwrap()
+        parts.append("\"S3DestinationUpdate\":" + u0.to_json())
+    if v.ExtendedS3DestinationUpdate.is_some():
+        auto u1 = v.ExtendedS3DestinationUpdate.unwrap()
+        parts.append("\"ExtendedS3DestinationUpdate\":" + extended_s3_destination_update_to_json(u1))
+    if v.RedshiftDestinationUpdate.is_some():
+        auto u2 = v.RedshiftDestinationUpdate.unwrap()
+        parts.append("\"RedshiftDestinationUpdate\":" + redshift_destination_update_to_json(u2))
+    if v.ElasticsearchDestinationUpdate.is_some():
+        auto u3 = v.ElasticsearchDestinationUpdate.unwrap()
+        parts.append("\"ElasticsearchDestinationUpdate\":" + elasticsearch_destination_update_to_json(u3))
+    if v.AmazonopensearchserviceDestinationUpdate.is_some():
+        auto u4 = v.AmazonopensearchserviceDestinationUpdate.unwrap()
+        parts.append("\"AmazonopensearchserviceDestinationUpdate\":" + amazonopensearchservice_destination_update_to_json(u4))
+    if v.SplunkDestinationUpdate.is_some():
+        auto u5 = v.SplunkDestinationUpdate.unwrap()
+        parts.append("\"SplunkDestinationUpdate\":" + splunk_destination_update_to_json(u5))
+    if v.HttpEndpointDestinationUpdate.is_some():
+        auto u6 = v.HttpEndpointDestinationUpdate.unwrap()
+        parts.append("\"HttpEndpointDestinationUpdate\":" + http_endpoint_destination_update_to_json(u6))
+    if v.AmazonOpenSearchServerlessDestinationUpdate.is_some():
+        auto u7 = v.AmazonOpenSearchServerlessDestinationUpdate.unwrap()
+        parts.append("\"AmazonOpenSearchServerlessDestinationUpdate\":" + amazon_open_search_serverless_destination_update_to_json(u7))
+    if v.SnowflakeDestinationUpdate.is_some():
+        auto u8 = v.SnowflakeDestinationUpdate.unwrap()
+        parts.append("\"SnowflakeDestinationUpdate\":" + snowflake_destination_update_to_json(u8))
+    if v.IcebergDestinationUpdate.is_some():
+        auto u9 = v.IcebergDestinationUpdate.unwrap()
+        parts.append("\"IcebergDestinationUpdate\":" + iceberg_destination_update_to_json(u9))
+    return firehose_json_obj(parts)
+
+# Serialize VpcConfiguration to a compact JSON object (declaration order).
+def vpc_configuration_to_json(VpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(firehose_json_str(x0))
+    parts.append("\"SubnetIds\":" + firehose_json_arr(e0))
+    parts.append("\"RoleARN\":" + firehose_json_str(v.RoleARN))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(firehose_json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + firehose_json_arr(e1))
+    return firehose_json_obj(parts)
 
 # A bound Firehose client: credentials + region, threaded into every operation.
 struct FirehoseClient:
     core.Credentials creds
     str region
+
+    # CreateDeliveryStream
+    # errors: InvalidArgumentException, InvalidKMSResourceException, LimitExceededException, ResourceInUseException
+    def create_delivery_stream(self, CreateDeliveryStreamInput input) -> str:
+        auto body = create_delivery_stream_input_to_json(input)
+        return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "CreateDeliveryStream", body)
 
     # DeleteDeliveryStream
     # errors: ResourceInUseException, ResourceNotFoundException
@@ -1512,6 +2733,12 @@ struct FirehoseClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "PutRecord", body)
 
+    # PutRecordBatch
+    # errors: InvalidArgumentException, InvalidKMSResourceException, InvalidSourceException, ResourceNotFoundException, ServiceUnavailableException
+    def put_record_batch(self, PutRecordBatchInput input) -> str:
+        auto body = put_record_batch_input_to_json(input)
+        return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "PutRecordBatch", body)
+
     # StartDeliveryStreamEncryption
     # errors: InvalidArgumentException, InvalidKMSResourceException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
     def start_delivery_stream_encryption(self, StartDeliveryStreamEncryptionInput input) -> str:
@@ -1523,6 +2750,24 @@ struct FirehoseClient:
     def stop_delivery_stream_encryption(self, StopDeliveryStreamEncryptionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "StopDeliveryStreamEncryption", body)
+
+    # TagDeliveryStream
+    # errors: InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def tag_delivery_stream(self, TagDeliveryStreamInput input) -> str:
+        auto body = tag_delivery_stream_input_to_json(input)
+        return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "TagDeliveryStream", body)
+
+    # UntagDeliveryStream
+    # errors: InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def untag_delivery_stream(self, UntagDeliveryStreamInput input) -> str:
+        auto body = untag_delivery_stream_input_to_json(input)
+        return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "UntagDeliveryStream", body)
+
+    # UpdateDestination
+    # errors: ConcurrentModificationException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException
+    def update_destination(self, UpdateDestinationInput input) -> str:
+        auto body = update_destination_input_to_json(input)
+        return awsjson.awsjson_request_now(firehose_protocol(), self.creds, self.region, "UpdateDestination", body)
 
 # Construct a FirehoseClient bound to credentials + region.
 def firehose_client(core.Credentials creds, str region) -> FirehoseClient:

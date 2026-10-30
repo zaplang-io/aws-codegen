@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 6 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 14 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   71 structs (43 @derive(Json)), 13 enums, 9 error variants.
-#   0 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -368,8 +368,9 @@ struct ExperimentalCapabilities:
 struct GetDeviceRequest:
     str deviceArn
 
-# no @derive(Json): member(s) deviceQueueInfo: list[DeviceQueueInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deviceQueueInfo: list[DeviceQueueInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceResponse:
     str deviceArn
     str deviceName
@@ -385,8 +386,9 @@ struct GetJobRequest:
     str jobArn
     Optional[list[str]] additionalAttributeNames
 
-# no @derive(Json): member(s) hyperParameters: dict[str, str], inputDataConfig: list[InputFileConfig], events: list[JobEventDetails], tags: dict[str, str], associations: list[Association] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hyperParameters: dict[str, str], inputDataConfig: list[InputFileConfig], events: list[JobEventDetails], tags: dict[str, str], associations: list[Association] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResponse:
     JobPrimaryStatus status
     str jobArn
@@ -416,8 +418,9 @@ struct GetQuantumTaskRequest:
     str quantumTaskArn
     Optional[list[str]] additionalAttributeNames
 
-# no @derive(Json): member(s) tags: dict[str, str], associations: list[Association] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], associations: list[Association] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQuantumTaskResponse:
     str quantumTaskArn
     QuantumTaskStatus status
@@ -480,8 +483,9 @@ struct JobOutputDataConfig:
 struct JobStoppingCondition:
     Optional[int64] maxRuntimeInSeconds
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobSummary:
     JobPrimaryStatus status
     str jobArn
@@ -497,13 +501,15 @@ struct JobSummary:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) errors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProgramSetValidationFailure:
     int64 programIndex
     Optional[int64] inputsIndex
@@ -516,8 +522,9 @@ struct QuantumTaskQueueInfo:
     Optional[QueuePriority] queuePriority
     Optional[str] message
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuantumTaskSummary:
     str quantumTaskArn
     QuantumTaskStatus status
@@ -543,8 +550,9 @@ struct ScriptModeConfig:
     str s3Uri
     Optional[CompressionType] compressionType
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDevicesFilter:
     str name
     list[str] values
@@ -556,14 +564,16 @@ struct SearchDevicesRequest:
     Optional[int64] maxResults
     list[SearchDevicesFilter] filters
 
-# no @derive(Json): member(s) devices: list[DeviceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[DeviceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDevicesResponse:
     list[DeviceSummary] devices
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchJobsFilter:
     str name
     list[str] values
@@ -576,14 +586,16 @@ struct SearchJobsRequest:
     Optional[int64] maxResults
     list[SearchJobsFilter] filters
 
-# no @derive(Json): member(s) jobs: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchJobsResponse:
     list[JobSummary] jobs
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchQuantumTasksFilter:
     str name
     list[str] values
@@ -596,14 +608,16 @@ struct SearchQuantumTasksRequest:
     Optional[int64] maxResults
     list[SearchQuantumTasksFilter] filters
 
-# no @derive(Json): member(s) quantumTasks: list[QuantumTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quantumTasks: list[QuantumTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchQuantumTasksResponse:
     list[QuantumTaskSummary] quantumTasks
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSpendingLimitsFilter:
     str name
     list[str] values
@@ -616,8 +630,9 @@ struct SearchSpendingLimitsRequest:
     Optional[int64] maxResults
     Optional[list[SearchSpendingLimitsFilter]] filters
 
-# no @derive(Json): member(s) spendingLimits: list[SpendingLimitSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spendingLimits: list[SpendingLimitSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSpendingLimitsResponse:
     list[SpendingLimitSummary] spendingLimits
     Optional[str] nextToken
@@ -626,8 +641,9 @@ struct SearchSpendingLimitsResponse:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpendingLimitSummary:
     str spendingLimitArn
     str deviceArn
@@ -683,8 +699,9 @@ struct UpdateSpendingLimitResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) programSetValidationFailures: list[ProgramSetValidationFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) programSetValidationFailures: list[ProgramSetValidationFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[str] reason
@@ -734,24 +751,9 @@ def braket_error_from_code(str code) -> BraketError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateJob (document member `inputDataConfig: list[InputFileConfig]` is not serializable by derive)
-#   CreateQuantumTask (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateSpendingLimit (document member `tags: dict[str, str]` is not serializable by derive)
 #   GetJob (httpQuery `additionalAttributeNames` has unsupported type list[str])
 #   GetQuantumTask (httpQuery `additionalAttributeNames` has unsupported type list[str])
-#   SearchDevices (document member `filters: list[SearchDevicesFilter]` is not serializable by derive)
-#   SearchJobs (document member `filters: list[SearchJobsFilter]` is not serializable by derive)
-#   SearchQuantumTasks (document member `filters: list[SearchQuantumTasksFilter]` is not serializable by derive)
-#   SearchSpendingLimits (document member `filters: list[SearchSpendingLimitsFilter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchDevices (operation not generated)
-#   SearchJobs (operation not generated)
-#   SearchQuantumTasks (operation not generated)
-#   SearchSpendingLimits (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -767,6 +769,79 @@ struct UpdateSpendingLimitDocument:
     str clientToken
     Optional[str] spendingLimit
     Optional[TimePeriod] timePeriod
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def braket_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def braket_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def braket_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize SearchDevicesFilter to a compact JSON object (declaration order).
+def search_devices_filter_to_json(SearchDevicesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + braket_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(braket_json_str(x0))
+    parts.append("\"values\":" + braket_json_arr(e0))
+    return braket_json_obj(parts)
+
+# Serialize SearchJobsFilter to a compact JSON object (declaration order).
+def search_jobs_filter_to_json(SearchJobsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + braket_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(braket_json_str(x0))
+    parts.append("\"values\":" + braket_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return braket_json_obj(parts)
+
+# Serialize SearchQuantumTasksFilter to a compact JSON object (declaration order).
+def search_quantum_tasks_filter_to_json(SearchQuantumTasksFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + braket_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(braket_json_str(x0))
+    parts.append("\"values\":" + braket_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
+    return braket_json_obj(parts)
+
+# Serialize SearchSpendingLimitsFilter to a compact JSON object (declaration order).
+def search_spending_limits_filter_to_json(SearchSpendingLimitsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + braket_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(braket_json_str(x0))
+    parts.append("\"values\":" + braket_json_arr(e0))
+    parts.append("\"operator\":" + braket_json_str(v.operator))
+    return braket_json_obj(parts)
 
 # A bound Braket client: credentials + region, threaded into every operation.
 struct BraketClient:
@@ -791,6 +866,109 @@ struct BraketClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/quantum-task/{quantumTaskArn}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelQuantumTaskDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # CreateJob  POST /job
+    # errors: AccessDeniedException, ConflictException, DeviceOfflineException, DeviceRetiredException, InternalServiceException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_job(self, CreateJobRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + braket_json_str(input.clientToken))
+        parts.append("\"algorithmSpecification\":" + input.algorithmSpecification.to_json())
+        if input.inputDataConfig.is_some():
+            auto u0 = input.inputDataConfig.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"inputDataConfig\":" + braket_json_arr(e1))
+        parts.append("\"outputDataConfig\":" + input.outputDataConfig.to_json())
+        if input.checkpointConfig.is_some():
+            auto u2 = input.checkpointConfig.unwrap()
+            parts.append("\"checkpointConfig\":" + u2.to_json())
+        parts.append("\"jobName\":" + braket_json_str(input.jobName))
+        parts.append("\"roleArn\":" + braket_json_str(input.roleArn))
+        if input.stoppingCondition.is_some():
+            auto u3 = input.stoppingCondition.unwrap()
+            parts.append("\"stoppingCondition\":" + u3.to_json())
+        parts.append("\"instanceConfig\":" + input.instanceConfig.to_json())
+        if input.hyperParameters.is_some():
+            auto u4 = input.hyperParameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(braket_json_str(k5) + ":" + braket_json_str(u4[k5]))
+            parts.append("\"hyperParameters\":" + braket_json_obj(m5))
+        parts.append("\"deviceConfig\":" + input.deviceConfig.to_json())
+        if input.tags.is_some():
+            auto u6 = input.tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(braket_json_str(k7) + ":" + braket_json_str(u6[k7]))
+            parts.append("\"tags\":" + braket_json_obj(m7))
+        if input.associations.is_some():
+            auto u8 = input.associations.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"associations\":" + braket_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # CreateQuantumTask  POST /quantum-task
+    # errors: AccessDeniedException, DeviceOfflineException, DeviceRetiredException, InternalServiceException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_quantum_task(self, CreateQuantumTaskRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/quantum-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + braket_json_str(input.clientToken))
+        parts.append("\"deviceArn\":" + braket_json_str(input.deviceArn))
+        if input.deviceParameters.is_some():
+            auto u0 = input.deviceParameters.unwrap()
+            parts.append("\"deviceParameters\":" + braket_json_str(u0))
+        parts.append("\"shots\":" + str(input.shots))
+        parts.append("\"outputS3Bucket\":" + braket_json_str(input.outputS3Bucket))
+        parts.append("\"outputS3KeyPrefix\":" + braket_json_str(input.outputS3KeyPrefix))
+        parts.append("\"action\":" + braket_json_str(input.action))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(braket_json_str(k2) + ":" + braket_json_str(u1[k2]))
+            parts.append("\"tags\":" + braket_json_obj(m2))
+        if input.jobToken.is_some():
+            auto u3 = input.jobToken.unwrap()
+            parts.append("\"jobToken\":" + braket_json_str(u3))
+        if input.associations.is_some():
+            auto u4 = input.associations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"associations\":" + braket_json_arr(e5))
+        if input.experimentalCapabilities.is_some():
+            auto u6 = input.experimentalCapabilities.unwrap()
+            parts.append("\"experimentalCapabilities\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # CreateSpendingLimit  POST /spending-limit
+    # errors: AccessDeniedException, DeviceRetiredException, InternalServiceException, ThrottlingException, ValidationException
+    def create_spending_limit(self, CreateSpendingLimitRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/spending-limit", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + braket_json_str(input.clientToken))
+        parts.append("\"deviceArn\":" + braket_json_str(input.deviceArn))
+        parts.append("\"spendingLimit\":" + braket_json_str(input.spendingLimit))
+        if input.timePeriod.is_some():
+            auto u0 = input.timePeriod.unwrap()
+            parts.append("\"timePeriod\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(braket_json_str(k2) + ":" + braket_json_str(u1[k2]))
+            parts.append("\"tags\":" + braket_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
 
     # DeleteSpendingLimit  DELETE /spending-limit/{spendingLimitArn}/delete
@@ -820,6 +998,99 @@ struct BraketClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
 
+    # SearchDevices  POST /devices
+    # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
+    def search_devices(self, SearchDevicesRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/devices", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + braket_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        list[str] e2 = []
+        for x2 in input.filters:
+            e2.append(search_devices_filter_to_json(x2))
+        parts.append("\"filters\":" + braket_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # SearchJobs  POST /jobs
+    # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
+    def search_jobs(self, SearchJobsRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + braket_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        list[str] e2 = []
+        for x2 in input.filters:
+            e2.append(search_jobs_filter_to_json(x2))
+        parts.append("\"filters\":" + braket_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # SearchQuantumTasks  POST /quantum-tasks
+    # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
+    def search_quantum_tasks(self, SearchQuantumTasksRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/quantum-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + braket_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        list[str] e2 = []
+        for x2 in input.filters:
+            e2.append(search_quantum_tasks_filter_to_json(x2))
+        parts.append("\"filters\":" + braket_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # SearchSpendingLimits  POST /spending-limits
+    # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
+    def search_spending_limits(self, SearchSpendingLimitsRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/spending-limits", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + braket_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(search_spending_limits_filter_to_json(x3))
+            parts.append("\"filters\":" + braket_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServiceException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(braket_json_str(k0) + ":" + braket_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + braket_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
     # UpdateSpendingLimit  PATCH /spending-limit/{spendingLimitArn}/update
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_spending_limit(self, UpdateSpendingLimitRequest input) -> str:
@@ -830,6 +1101,58 @@ struct BraketClient:
         auto doc = UpdateSpendingLimitDocument(clientToken=input.clientToken, spendingLimit=input.spendingLimit, timePeriod=input.timePeriod)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
+
+    # Paginator for SearchDevices — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: devices).
+    def paginate_search_devices(self, SearchDevicesRequest input):
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        while True:
+            auto raw = self.search_devices(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobs).
+    def paginate_search_jobs(self, SearchJobsRequest input):
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        while True:
+            auto raw = self.search_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchQuantumTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: quantumTasks).
+    def paginate_search_quantum_tasks(self, SearchQuantumTasksRequest input):
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        while True:
+            auto raw = self.search_quantum_tasks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchSpendingLimits — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: spendingLimits).
+    def paginate_search_spending_limits(self, SearchSpendingLimitsRequest input):
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        while True:
+            auto raw = self.search_spending_limits(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a BraketClient bound to credentials + region.
 def braket_client(core.Credentials creds, str region) -> BraketClient:

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 20 operations — 16 with a generated method,
-#   4 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 20 operations — 20 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   44 structs (33 @derive(Json)), 3 enums, 3 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -64,8 +64,9 @@ enum HsmStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToResourceRequest:
     str ResourceArn
     list[Tag] TagList
@@ -144,8 +145,9 @@ struct DeleteLunaClientResponse:
 struct DescribeHapgRequest:
     str HapgArn
 
-# no @derive(Json): member(s) HsmsLastActionFailed: list[str], HsmsPendingDeletion: list[str], HsmsPendingRegistration: list[str], PartitionSerialList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HsmsLastActionFailed: list[str], HsmsPendingDeletion: list[str], HsmsPendingRegistration: list[str], PartitionSerialList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHapgResponse:
     Optional[str] HapgArn
     Optional[str] HapgSerial
@@ -162,8 +164,9 @@ struct DescribeHsmRequest:
     Optional[str] HsmArn
     Optional[str] HsmSerialNumber
 
-# no @derive(Json): member(s) Partitions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partitions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHsmResponse:
     Optional[str] HsmArn
     Optional[HsmStatus] Status
@@ -200,8 +203,9 @@ struct DescribeLunaClientResponse:
     Optional[str] LastModifiedTimestamp
     Optional[str] Label
 
-# no @derive(Json): member(s) HapgList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HapgList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigRequest:
     str ClientArn
     ClientVersion ClientVersion
@@ -223,8 +227,9 @@ struct ListAvailableZonesRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AZList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AZList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailableZonesResponse:
     Optional[list[str]] AZList
 
@@ -232,8 +237,9 @@ struct ListAvailableZonesResponse:
 struct ListHapgsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) HapgList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HapgList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHapgsResponse:
     list[str] HapgList
     Optional[str] NextToken
@@ -242,8 +248,9 @@ struct ListHapgsResponse:
 struct ListHsmsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) HsmList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HsmList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHsmsResponse:
     Optional[list[str]] HsmList
     Optional[str] NextToken
@@ -252,8 +259,9 @@ struct ListHsmsResponse:
 struct ListLunaClientsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClientList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLunaClientsResponse:
     list[str] ClientList
     Optional[str] NextToken
@@ -262,13 +270,15 @@ struct ListLunaClientsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     list[Tag] TagList
 
-# no @derive(Json): member(s) PartitionSerialList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionSerialList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyHapgRequest:
     str HapgArn
     Optional[str] Label
@@ -300,8 +310,9 @@ struct ModifyLunaClientRequest:
 struct ModifyLunaClientResponse:
     Optional[str] ClientArn
 
-# no @derive(Json): member(s) TagKeyList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeyList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromResourceRequest:
     str ResourceArn
     list[str] TagKeyList
@@ -337,17 +348,92 @@ def cloudhsm_error_from_code(str code) -> CloudHSMError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTagsToResource (input AddTagsToResourceRequest)
-#   GetConfig (input GetConfigRequest)
-#   ModifyHapg (input ModifyHapgRequest)
-#   RemoveTagsFromResource (input RemoveTagsFromResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cloudhsm_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cloudhsm_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cloudhsm_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsToResourceRequest to a compact JSON object (declaration order).
+def add_tags_to_resource_request_to_json(AddTagsToResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + cloudhsm_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagList:
+        e0.append(x0.to_json())
+    parts.append("\"TagList\":" + cloudhsm_json_arr(e0))
+    return cloudhsm_json_obj(parts)
+
+# Serialize GetConfigRequest to a compact JSON object (declaration order).
+def get_config_request_to_json(GetConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientArn\":" + cloudhsm_json_str(v.ClientArn))
+    parts.append("\"ClientVersion\":" + v.ClientVersion.to_json())
+    list[str] e0 = []
+    for x0 in v.HapgList:
+        e0.append(cloudhsm_json_str(x0))
+    parts.append("\"HapgList\":" + cloudhsm_json_arr(e0))
+    return cloudhsm_json_obj(parts)
+
+# Serialize ModifyHapgRequest to a compact JSON object (declaration order).
+def modify_hapg_request_to_json(ModifyHapgRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HapgArn\":" + cloudhsm_json_str(v.HapgArn))
+    if v.Label.is_some():
+        auto u0 = v.Label.unwrap()
+        parts.append("\"Label\":" + cloudhsm_json_str(u0))
+    if v.PartitionSerialList.is_some():
+        auto u1 = v.PartitionSerialList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(cloudhsm_json_str(x2))
+        parts.append("\"PartitionSerialList\":" + cloudhsm_json_arr(e2))
+    return cloudhsm_json_obj(parts)
+
+# Serialize RemoveTagsFromResourceRequest to a compact JSON object (declaration order).
+def remove_tags_from_resource_request_to_json(RemoveTagsFromResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + cloudhsm_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeyList:
+        e0.append(cloudhsm_json_str(x0))
+    parts.append("\"TagKeyList\":" + cloudhsm_json_arr(e0))
+    return cloudhsm_json_obj(parts)
 
 # A bound CloudHSM client: credentials + region, threaded into every operation.
 struct CloudHSMClient:
     core.Credentials creds
     str region
+
+    # AddTagsToResource
+    # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
+    def add_tags_to_resource(self, AddTagsToResourceRequest input) -> str:
+        auto body = add_tags_to_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "AddTagsToResource", body)
 
     # CreateHapg
     # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
@@ -403,6 +489,12 @@ struct CloudHSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "DescribeLunaClient", body)
 
+    # GetConfig
+    # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
+    def get_config(self, GetConfigRequest input) -> str:
+        auto body = get_config_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "GetConfig", body)
+
     # ListAvailableZones
     # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
     def list_available_zones(self) -> str:
@@ -433,6 +525,12 @@ struct CloudHSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # ModifyHapg
+    # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
+    def modify_hapg(self, ModifyHapgRequest input) -> str:
+        auto body = modify_hapg_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "ModifyHapg", body)
+
     # ModifyHsm
     # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
     def modify_hsm(self, ModifyHsmRequest input) -> str:
@@ -444,6 +542,12 @@ struct CloudHSMClient:
     def modify_luna_client(self, ModifyLunaClientRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "ModifyLunaClient", body)
+
+    # RemoveTagsFromResource
+    # errors: CloudHsmInternalException, CloudHsmServiceException, InvalidRequestException
+    def remove_tags_from_resource(self, RemoveTagsFromResourceRequest input) -> str:
+        auto body = remove_tags_from_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsm_protocol(), self.creds, self.region, "RemoveTagsFromResource", body)
 
     # Paginator for ListHapgs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: HapgList).

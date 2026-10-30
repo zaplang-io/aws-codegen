@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 81 operations — 55 with a generated method,
-#   26 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 81 operations — 79 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   313 structs (206 @derive(Json)), 56 enums, 8 error variants.
-#   11 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   16 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -652,8 +652,9 @@ struct BatchGetCustomDataIdentifierSummary:
 struct BatchGetCustomDataIdentifiersRequest:
     Optional[list[str]] ids
 
-# no @derive(Json): member(s) customDataIdentifiers: list[BatchGetCustomDataIdentifierSummary], notFoundIdentifierIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customDataIdentifiers: list[BatchGetCustomDataIdentifierSummary], notFoundIdentifierIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCustomDataIdentifiersResponse:
     Optional[list[BatchGetCustomDataIdentifierSummary]] customDataIdentifiers
     Optional[list[str]] notFoundIdentifierIds
@@ -663,8 +664,9 @@ struct BatchGetCustomDataIdentifiersResponse:
 struct BatchUpdateAutomatedDiscoveryAccountsRequest:
     Optional[list[AutomatedDiscoveryAccountUpdate]] accounts
 
-# no @derive(Json): member(s) errors: list[AutomatedDiscoveryAccountUpdateError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[AutomatedDiscoveryAccountUpdateError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateAutomatedDiscoveryAccountsResponse:
     Optional[list[AutomatedDiscoveryAccountUpdateError]] errors
 
@@ -702,8 +704,9 @@ struct BucketCountPolicyAllowsUnencryptedObjectUploads:
     Optional[int64] deniesUnencryptedObjectUploads
     Optional[int64] unknown
 
-# no @derive(Json): member(s) eq: list[str], neq: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eq: list[str], neq: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BucketCriteriaAdditionalProperties:
     Optional[list[str]] eq
     Optional[int64] gt
@@ -719,8 +722,9 @@ struct BucketLevelPermissions:
     Optional[BlockPublicAccess] blockPublicAccess
     Optional[BucketPolicy] bucketPolicy
 
-# no @derive(Json): member(s) replicationDetails: ReplicationDetails, tags: list[KeyValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationDetails: ReplicationDetails, tags: list[KeyValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BucketMetadata:
     Optional[str] accountId
     Optional[AllowsUnencryptedObjectUploads] allowsUnencryptedObjectUploads
@@ -789,8 +793,9 @@ struct Cell:
     Optional[str] columnName
     Optional[int64] row
 
-# no @derive(Json): member(s) result: ClassificationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) result: ClassificationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClassificationDetails:
     Optional[str] detailedResultsLocation
     Optional[str] jobArn
@@ -802,8 +807,9 @@ struct ClassificationDetails:
 struct ClassificationExportConfiguration:
     Optional[S3Destination] s3Destination
 
-# no @derive(Json): member(s) customDataIdentifiers: CustomDataIdentifiers, sensitiveData: list[SensitiveDataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customDataIdentifiers: CustomDataIdentifiers, sensitiveData: list[SensitiveDataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClassificationResult:
     Optional[bool] additionalOccurrences
     Optional[CustomDataIdentifiers] customDataIdentifiers
@@ -902,8 +908,9 @@ struct CreateInvitationsRequest:
     Optional[bool] disableEmailNotification
     Optional[str] message
 
-# no @derive(Json): member(s) unprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInvitationsResponse:
     Optional[list[UnprocessedAccount]] unprocessedAccounts
 
@@ -927,20 +934,23 @@ struct CreateSampleFindingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) and: list[CriteriaForJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) and: list[CriteriaForJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CriteriaBlockForJob:
     # wire name "and" differs from field; derive rename is a #346 follow-up
     Optional[list[CriteriaForJob]] and_
 
-# no @derive(Json): member(s) simpleCriterion: SimpleCriterionForJob, tagCriterion: TagCriterionForJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) simpleCriterion: SimpleCriterionForJob, tagCriterion: TagCriterionForJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CriteriaForJob:
     Optional[SimpleCriterionForJob] simpleCriterion
     Optional[TagCriterionForJob] tagCriterion
 
-# no @derive(Json): member(s) eq: list[str], eqExactMatch: list[str], neq: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eq: list[str], eqExactMatch: list[str], neq: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CriterionAdditionalProperties:
     Optional[list[str]] eq
     Optional[list[str]] eqExactMatch
@@ -959,14 +969,16 @@ struct CustomDataIdentifierSummary:
     Optional[str] id
     Optional[str] name
 
-# no @derive(Json): member(s) detections: list[CustomDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detections: list[CustomDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDataIdentifiers:
     Optional[list[CustomDetection]] detections
     Optional[int64] totalCount
 
-# no @derive(Json): member(s) occurrences: Occurrences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) occurrences: Occurrences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDetection:
     Optional[str] arn
     Optional[int64] count
@@ -983,13 +995,15 @@ struct DailySchedule:
 struct DeclineInvitationsRequest:
     list[str] accountIds
 
-# no @derive(Json): member(s) unprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeclineInvitationsResponse:
     Optional[list[UnprocessedAccount]] unprocessedAccounts
 
-# no @derive(Json): member(s) occurrences: Occurrences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) occurrences: Occurrences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultDetection:
     Optional[int64] count
     Optional[Occurrences] occurrences
@@ -1031,8 +1045,9 @@ struct DeleteFindingsFilterResponse:
 struct DeleteInvitationsRequest:
     list[str] accountIds
 
-# no @derive(Json): member(s) unprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInvitationsResponse:
     Optional[list[UnprocessedAccount]] unprocessedAccounts
 
@@ -1054,8 +1069,9 @@ struct DescribeBucketsRequest:
     Optional[str] nextToken
     Optional[BucketSortCriteria] sortCriteria
 
-# no @derive(Json): member(s) buckets: list[BucketMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buckets: list[BucketMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBucketsResponse:
     Optional[list[BucketMetadata]] buckets
     Optional[str] nextToken
@@ -1065,8 +1081,9 @@ struct DescribeBucketsResponse:
 struct DescribeClassificationJobRequest:
     str jobId
 
-# no @derive(Json): member(s) allowListIds: list[str], customDataIdentifierIds: list[str], managedDataIdentifierIds: list[str], s3JobDefinition: S3JobDefinition, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowListIds: list[str], customDataIdentifierIds: list[str], managedDataIdentifierIds: list[str], s3JobDefinition: S3JobDefinition, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClassificationJobResponse:
     Optional[list[str]] allowListIds
     Optional[str] clientToken
@@ -1207,8 +1224,9 @@ struct FederatedUser:
     Optional[str] principalId
     Optional[SessionContext] sessionContext
 
-# no @derive(Json): member(s) classificationDetails: ClassificationDetails, resourcesAffected: ResourcesAffected not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) classificationDetails: ClassificationDetails, resourcesAffected: ResourcesAffected not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     Optional[str] accountId
     Optional[bool] archived
@@ -1240,8 +1258,9 @@ struct FindingActor:
     Optional[IpAddressDetails] ipAddressDetails
     Optional[UserIdentity] userIdentity
 
-# no @derive(Json): member(s) criterion: dict[str, CriterionAdditionalProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) criterion: dict[str, CriterionAdditionalProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingCriteria:
     Optional[dict[str, CriterionAdditionalProperties]] criterion
 
@@ -1250,8 +1269,9 @@ struct FindingStatisticsSortCriteria:
     Optional[FindingStatisticsSortAttributeName] attributeName
     Optional[OrderBy] orderBy
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingsFilterListItem:
     Optional[FindingsFilterAction] action
     Optional[str] arn
@@ -1274,8 +1294,9 @@ struct GetAdministratorAccountResponse:
 struct GetAllowListRequest:
     str id
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAllowListResponse:
     Optional[str] arn
     Optional[DateTime] createdAt
@@ -1344,8 +1365,9 @@ struct GetClassificationExportConfigurationResponse:
 struct GetClassificationScopeRequest:
     str id
 
-# no @derive(Json): member(s) s3: S3ClassificationScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3: S3ClassificationScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClassificationScopeResponse:
     Optional[str] id
     Optional[str] name
@@ -1356,8 +1378,9 @@ struct GetClassificationScopeResponse:
 struct GetCustomDataIdentifierRequest:
     str id
 
-# no @derive(Json): member(s) ignoreWords: list[str], keywords: list[str], severityLevels: list[SeverityLevel], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ignoreWords: list[str], keywords: list[str], severityLevels: list[SeverityLevel], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomDataIdentifierResponse:
     Optional[str] arn
     Optional[DateTime] createdAt
@@ -1380,8 +1403,9 @@ struct GetFindingStatisticsRequest:
     Optional[int64] size
     Optional[FindingStatisticsSortCriteria] sortCriteria
 
-# no @derive(Json): member(s) countsByGroup: list[GroupCount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) countsByGroup: list[GroupCount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingStatisticsResponse:
     Optional[list[GroupCount]] countsByGroup
 
@@ -1390,8 +1414,9 @@ struct GetFindingStatisticsResponse:
 struct GetFindingsFilterRequest:
     str id
 
-# no @derive(Json): member(s) findingCriteria: FindingCriteria, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingCriteria: FindingCriteria, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsFilterResponse:
     Optional[FindingsFilterAction] action
     Optional[str] arn
@@ -1418,8 +1443,9 @@ struct GetFindingsRequest:
     list[str] findingIds
     Optional[SortCriteria] sortCriteria
 
-# no @derive(Json): member(s) findings: list[Finding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsResponse:
     Optional[list[Finding]] findings
 
@@ -1464,8 +1490,9 @@ struct GetMasterAccountResponse:
 struct GetMemberRequest:
     str id
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMemberResponse:
     Optional[str] accountId
     Optional[str] administratorAccountId
@@ -1506,8 +1533,9 @@ struct GetRevealConfigurationResponse:
 struct GetSensitiveDataOccurrencesAvailabilityRequest:
     str findingId
 
-# no @derive(Json): member(s) reasons: list[UnavailabilityReasonCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[UnavailabilityReasonCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSensitiveDataOccurrencesAvailabilityResponse:
     Optional[AvailabilityCode] code
     Optional[list[UnavailabilityReasonCode]] reasons
@@ -1517,8 +1545,9 @@ struct GetSensitiveDataOccurrencesAvailabilityResponse:
 struct GetSensitiveDataOccurrencesRequest:
     str findingId
 
-# no @derive(Json): member(s) sensitiveDataOccurrences: dict[str, list[DetectedDataDetails]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensitiveDataOccurrences: dict[str, list[DetectedDataDetails]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSensitiveDataOccurrencesResponse:
     Optional[str] error
     Optional[dict[str, list[DetectedDataDetails]]] sensitiveDataOccurrences
@@ -1529,8 +1558,9 @@ struct GetSensitiveDataOccurrencesResponse:
 struct GetSensitivityInspectionTemplateRequest:
     str id
 
-# no @derive(Json): member(s) excludes: SensitivityInspectionTemplateExcludes, includes: SensitivityInspectionTemplateIncludes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: SensitivityInspectionTemplateExcludes, includes: SensitivityInspectionTemplateIncludes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSensitivityInspectionTemplateResponse:
     Optional[str] description
     Optional[SensitivityInspectionTemplateExcludes] excludes
@@ -1547,8 +1577,9 @@ struct GetUsageStatisticsRequest:
     Optional[UsageStatisticsSortBy] sortBy
     Optional[TimeRange] timeRange
 
-# no @derive(Json): member(s) records: list[UsageRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) records: list[UsageRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUsageStatisticsResponse:
     Optional[str] nextToken
     Optional[list[UsageRecord]] records
@@ -1559,8 +1590,9 @@ struct GetUsageStatisticsResponse:
 struct GetUsageTotalsRequest:
     Optional[str] timeRange
 
-# no @derive(Json): member(s) usageTotals: list[UsageTotal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageTotals: list[UsageTotal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUsageTotalsResponse:
     Optional[TimeRange] timeRange
     Optional[list[UsageTotal]] usageTotals
@@ -1632,20 +1664,23 @@ struct JobScheduleFrequency:
     Optional[MonthlySchedule] monthlySchedule
     Optional[WeeklySchedule] weeklySchedule
 
-# no @derive(Json): member(s) simpleScopeTerm: SimpleScopeTerm, tagScopeTerm: TagScopeTerm not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) simpleScopeTerm: SimpleScopeTerm, tagScopeTerm: TagScopeTerm not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobScopeTerm:
     Optional[SimpleScopeTerm] simpleScopeTerm
     Optional[TagScopeTerm] tagScopeTerm
 
-# no @derive(Json): member(s) and: list[JobScopeTerm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) and: list[JobScopeTerm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobScopingBlock:
     # wire name "and" differs from field; derive rename is a #346 follow-up
     Optional[list[JobScopeTerm]] and_
 
-# no @derive(Json): member(s) bucketCriteria: S3BucketCriteriaForJob, bucketDefinitions: list[S3BucketDefinitionForJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucketCriteria: S3BucketCriteriaForJob, bucketDefinitions: list[S3BucketDefinitionForJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobSummary:
     Optional[S3BucketCriteriaForJob] bucketCriteria
     Optional[list[S3BucketDefinitionForJob]] bucketDefinitions
@@ -1672,8 +1707,9 @@ struct ListAllowListsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) allowLists: list[AllowListSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowLists: list[AllowListSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAllowListsResponse:
     Optional[list[AllowListSummary]] allowLists
     Optional[str] nextToken
@@ -1685,8 +1721,9 @@ struct ListAutomatedDiscoveryAccountsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AutomatedDiscoveryAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AutomatedDiscoveryAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomatedDiscoveryAccountsResponse:
     Optional[list[AutomatedDiscoveryAccount]] items
     Optional[str] nextToken
@@ -1699,8 +1736,9 @@ struct ListClassificationJobsRequest:
     Optional[str] nextToken
     Optional[ListJobsSortCriteria] sortCriteria
 
-# no @derive(Json): member(s) items: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClassificationJobsResponse:
     Optional[list[JobSummary]] items
     Optional[str] nextToken
@@ -1711,8 +1749,9 @@ struct ListClassificationScopesRequest:
     Optional[str] name
     Optional[str] nextToken
 
-# no @derive(Json): member(s) classificationScopes: list[ClassificationScopeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) classificationScopes: list[ClassificationScopeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClassificationScopesResponse:
     Optional[list[ClassificationScopeSummary]] classificationScopes
     Optional[str] nextToken
@@ -1723,8 +1762,9 @@ struct ListCustomDataIdentifiersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[CustomDataIdentifierSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[CustomDataIdentifierSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomDataIdentifiersResponse:
     Optional[list[CustomDataIdentifierSummary]] items
     Optional[str] nextToken
@@ -1735,8 +1775,9 @@ struct ListFindingsFiltersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) findingsFilterListItems: list[FindingsFilterListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingsFilterListItems: list[FindingsFilterListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsFiltersResponse:
     Optional[list[FindingsFilterListItem]] findingsFilterListItems
     Optional[str] nextToken
@@ -1749,8 +1790,9 @@ struct ListFindingsRequest:
     Optional[str] nextToken
     Optional[SortCriteria] sortCriteria
 
-# no @derive(Json): member(s) findingIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsResponse:
     Optional[list[str]] findingIds
     Optional[str] nextToken
@@ -1761,20 +1803,23 @@ struct ListInvitationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) invitations: list[Invitation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invitations: list[Invitation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvitationsResponse:
     Optional[list[Invitation]] invitations
     Optional[str] nextToken
 
-# no @derive(Json): member(s) excludes: list[ListJobsFilterTerm], includes: list[ListJobsFilterTerm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: list[ListJobsFilterTerm], includes: list[ListJobsFilterTerm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsFilterCriteria:
     Optional[list[ListJobsFilterTerm]] excludes
     Optional[list[ListJobsFilterTerm]] includes
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsFilterTerm:
     Optional[JobComparator] comparator
     Optional[ListJobsFilterKey] key
@@ -1790,8 +1835,9 @@ struct ListJobsSortCriteria:
 struct ListManagedDataIdentifiersRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ManagedDataIdentifierSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ManagedDataIdentifierSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedDataIdentifiersResponse:
     Optional[list[ManagedDataIdentifierSummary]] items
     Optional[str] nextToken
@@ -1803,8 +1849,9 @@ struct ListMembersRequest:
     Optional[str] nextToken
     Optional[str] onlyAssociated
 
-# no @derive(Json): member(s) members: list[Member] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) members: list[Member] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersResponse:
     Optional[list[Member]] members
     Optional[str] nextToken
@@ -1815,8 +1862,9 @@ struct ListOrganizationAdminAccountsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) adminAccounts: list[AdminAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adminAccounts: list[AdminAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationAdminAccountsResponse:
     Optional[list[AdminAccount]] adminAccounts
     Optional[str] nextToken
@@ -1827,8 +1875,9 @@ struct ListResourceProfileArtifactsRequest:
     Optional[str] nextToken
     str resourceArn
 
-# no @derive(Json): member(s) artifacts: list[ResourceProfileArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: list[ResourceProfileArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceProfileArtifactsResponse:
     Optional[list[ResourceProfileArtifact]] artifacts
     Optional[str] nextToken
@@ -1840,8 +1889,9 @@ struct ListResourceProfileDetectionsRequest:
     Optional[str] nextToken
     str resourceArn
 
-# no @derive(Json): member(s) detections: list[Detection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detections: list[Detection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceProfileDetectionsResponse:
     Optional[list[Detection]] detections
     Optional[str] nextToken
@@ -1852,8 +1902,9 @@ struct ListSensitivityInspectionTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sensitivityInspectionTemplates: list[SensitivityInspectionTemplatesEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensitivityInspectionTemplates: list[SensitivityInspectionTemplatesEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSensitivityInspectionTemplatesResponse:
     Optional[str] nextToken
     Optional[list[SensitivityInspectionTemplatesEntry]] sensitivityInspectionTemplates
@@ -1863,8 +1914,9 @@ struct ListSensitivityInspectionTemplatesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1897,8 +1949,9 @@ struct MatchingBucket:
 struct MatchingResource:
     Optional[MatchingBucket] matchingBucket
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Member:
     Optional[str] accountId
     Optional[str] administratorAccountId
@@ -1928,8 +1981,9 @@ struct ObjectLevelStatistics:
     Optional[int64] storageClass
     Optional[int64] total
 
-# no @derive(Json): member(s) cells: list[Cell], lineRanges: list[Range], offsetRanges: list[Range], pages: list[Page], records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cells: list[Cell], lineRanges: list[Range], offsetRanges: list[Range], pages: list[Page], records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Occurrences:
     Optional[list[Cell]] cells
     Optional[list[Range]] lineRanges
@@ -1979,8 +2033,9 @@ struct Record:
     Optional[str] jsonPath
     Optional[int64] recordIndex
 
-# no @derive(Json): member(s) replicationAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationDetails:
     Optional[bool] replicated
     Optional[bool] replicatedExternally
@@ -2008,8 +2063,9 @@ struct ResourceStatistics:
     Optional[int64] totalItemsSkippedInvalidKms
     Optional[int64] totalItemsSkippedPermissionDenied
 
-# no @derive(Json): member(s) s3Bucket: S3Bucket, s3Object: S3Object not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3Bucket: S3Bucket, s3Object: S3Object not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcesAffected:
     Optional[S3Bucket] s3Bucket
     Optional[S3Object] s3Object
@@ -2025,8 +2081,9 @@ struct RevealConfiguration:
     Optional[str] kmsKeyId
     RevealStatus status
 
-# no @derive(Json): member(s) tags: list[KeyValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[KeyValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Bucket:
     Optional[AllowsUnencryptedObjectUploads] allowsUnencryptedObjectUploads
     Optional[str] arn
@@ -2037,14 +2094,16 @@ struct S3Bucket:
     Optional[BucketPublicAccess] publicAccess
     Optional[list[KeyValuePair]] tags
 
-# no @derive(Json): member(s) excludes: CriteriaBlockForJob, includes: CriteriaBlockForJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: CriteriaBlockForJob, includes: CriteriaBlockForJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3BucketCriteriaForJob:
     Optional[CriteriaBlockForJob] excludes
     Optional[CriteriaBlockForJob] includes
 
-# no @derive(Json): member(s) buckets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buckets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3BucketDefinitionForJob:
     str accountId
     list[str] buckets
@@ -2054,24 +2113,28 @@ struct S3BucketOwner:
     Optional[str] displayName
     Optional[str] id
 
-# no @derive(Json): member(s) excludes: S3ClassificationScopeExclusion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: S3ClassificationScopeExclusion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ClassificationScope:
     S3ClassificationScopeExclusion excludes
 
-# no @derive(Json): member(s) bucketNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucketNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ClassificationScopeExclusion:
     list[str] bucketNames
 
-# no @derive(Json): member(s) bucketNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucketNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ClassificationScopeExclusionUpdate:
     list[str] bucketNames
     ClassificationScopeUpdateOperation operation
 
-# no @derive(Json): member(s) excludes: S3ClassificationScopeExclusionUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: S3ClassificationScopeExclusionUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ClassificationScopeUpdate:
     S3ClassificationScopeExclusionUpdate excludes
 
@@ -2082,15 +2145,17 @@ struct S3Destination:
     Optional[str] keyPrefix
     str kmsKeyArn
 
-# no @derive(Json): member(s) bucketCriteria: S3BucketCriteriaForJob, bucketDefinitions: list[S3BucketDefinitionForJob], scoping: Scoping not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucketCriteria: S3BucketCriteriaForJob, bucketDefinitions: list[S3BucketDefinitionForJob], scoping: Scoping not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3JobDefinition:
     Optional[S3BucketCriteriaForJob] bucketCriteria
     Optional[list[S3BucketDefinitionForJob]] bucketDefinitions
     Optional[Scoping] scoping
 
-# no @derive(Json): member(s) tags: list[KeyValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[KeyValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Object:
     Optional[str] bucketArn
     Optional[str] eTag
@@ -2110,26 +2175,30 @@ struct S3WordsList:
     str bucketName
     str objectKey
 
-# no @derive(Json): member(s) excludes: JobScopingBlock, includes: JobScopingBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: JobScopingBlock, includes: JobScopingBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scoping:
     Optional[JobScopingBlock] excludes
     Optional[JobScopingBlock] includes
 
-# no @derive(Json): member(s) excludes: SearchResourcesCriteriaBlock, includes: SearchResourcesCriteriaBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludes: SearchResourcesCriteriaBlock, includes: SearchResourcesCriteriaBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesBucketCriteria:
     Optional[SearchResourcesCriteriaBlock] excludes
     Optional[SearchResourcesCriteriaBlock] includes
 
-# no @derive(Json): member(s) simpleCriterion: SearchResourcesSimpleCriterion, tagCriterion: SearchResourcesTagCriterion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) simpleCriterion: SearchResourcesSimpleCriterion, tagCriterion: SearchResourcesTagCriterion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesCriteria:
     Optional[SearchResourcesSimpleCriterion] simpleCriterion
     Optional[SearchResourcesTagCriterion] tagCriterion
 
-# no @derive(Json): member(s) and: list[SearchResourcesCriteria] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) and: list[SearchResourcesCriteria] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesCriteriaBlock:
     # wire name "and" differs from field; derive rename is a #346 follow-up
     Optional[list[SearchResourcesCriteria]] and_
@@ -2142,14 +2211,16 @@ struct SearchResourcesRequest:
     Optional[str] nextToken
     Optional[SearchResourcesSortCriteria] sortCriteria
 
-# no @derive(Json): member(s) matchingResources: list[MatchingResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchingResources: list[MatchingResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesResponse:
     Optional[list[MatchingResource]] matchingResources
     Optional[str] nextToken
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesSimpleCriterion:
     Optional[SearchResourcesComparator] comparator
     Optional[SearchResourcesSimpleCriterionKey] key
@@ -2160,8 +2231,9 @@ struct SearchResourcesSortCriteria:
     Optional[SearchResourcesSortAttributeName] attributeName
     Optional[OrderBy] orderBy
 
-# no @derive(Json): member(s) tagValues: list[SearchResourcesTagCriterionPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagValues: list[SearchResourcesTagCriterionPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResourcesTagCriterion:
     Optional[SearchResourcesComparator] comparator
     Optional[list[SearchResourcesTagCriterionPair]] tagValues
@@ -2176,8 +2248,9 @@ struct SecurityHubConfiguration:
     bool publishClassificationFindings
     bool publishPolicyFindings
 
-# no @derive(Json): member(s) detections: list[DefaultDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detections: list[DefaultDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SensitiveDataItem:
     Optional[SensitiveDataItemCategory] category
     Optional[list[DefaultDetection]] detections
@@ -2190,13 +2263,15 @@ struct SensitivityAggregations:
     Optional[int64] totalCount
     Optional[int64] totalSizeInBytes
 
-# no @derive(Json): member(s) managedDataIdentifierIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedDataIdentifierIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SensitivityInspectionTemplateExcludes:
     Optional[list[str]] managedDataIdentifierIds
 
-# no @derive(Json): member(s) allowListIds: list[str], customDataIdentifierIds: list[str], managedDataIdentifierIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowListIds: list[str], customDataIdentifierIds: list[str], managedDataIdentifierIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SensitivityInspectionTemplateIncludes:
     Optional[list[str]] allowListIds
     Optional[list[str]] customDataIdentifierIds
@@ -2251,15 +2326,17 @@ struct SeverityLevel:
     int64 occurrencesThreshold
     DataIdentifierSeverity severity
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SimpleCriterionForJob:
     Optional[JobComparator] comparator
     Optional[SimpleCriterionKeyForJob] key
     Optional[list[str]] values
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SimpleScopeTerm:
     Optional[JobComparator] comparator
     Optional[ScopeFilterKey] key
@@ -2280,8 +2357,9 @@ struct SuppressDataIdentifier:
     Optional[str] id
     Optional[DataIdentifierType] type
 
-# no @derive(Json): member(s) tagValues: list[TagCriterionPairForJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagValues: list[TagCriterionPairForJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagCriterionForJob:
     Optional[JobComparator] comparator
     Optional[list[TagCriterionPairForJob]] tagValues
@@ -2302,8 +2380,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tagValues: list[TagValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagValues: list[TagValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagScopeTerm:
     Optional[JobComparator] comparator
     Optional[str] key
@@ -2505,16 +2584,18 @@ struct UsageByAccount:
     Optional[ServiceLimit] serviceLimit
     Optional[UsageType] type
 
-# no @derive(Json): member(s) usage: list[UsageByAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usage: list[UsageByAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageRecord:
     Optional[str] accountId
     Optional[DateTime] automatedDiscoveryFreeTrialStartDate
     Optional[DateTime] freeTrialStartDate
     Optional[list[UsageByAccount]] usage
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageStatisticsFilter:
     Optional[UsageStatisticsFilterComparator] comparator
     Optional[UsageStatisticsFilterKey] key
@@ -2604,41 +2685,12 @@ def macie2_error_from_code(str code) -> Macie2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetCustomDataIdentifiers (document member `ids: list[str]` is not serializable by derive)
-#   BatchUpdateAutomatedDiscoveryAccounts (document member `accounts: list[AutomatedDiscoveryAccountUpdate]` is not serializable by derive)
-#   CreateAllowList (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateClassificationJob (document member `allowListIds: list[str]` is not serializable by derive)
-#   CreateCustomDataIdentifier (document member `ignoreWords: list[str]` is not serializable by derive)
-#   CreateFindingsFilter (document member `findingCriteria: FindingCriteria` is not serializable by derive)
-#   CreateInvitations (document member `accountIds: list[str]` is not serializable by derive)
-#   CreateMember (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateSampleFindings (document member `findingTypes: list[FindingType]` is not serializable by derive)
-#   DeclineInvitations (document member `accountIds: list[str]` is not serializable by derive)
-#   DeleteInvitations (document member `accountIds: list[str]` is not serializable by derive)
-#   DescribeBuckets (document member `criteria: dict[str, BucketCriteriaAdditionalProperties]` is not serializable by derive)
-#   GetFindingStatistics (document member `findingCriteria: FindingCriteria` is not serializable by derive)
-#   GetFindings (document member `findingIds: list[str]` is not serializable by derive)
-#   GetUsageStatistics (document member `filterBy: list[UsageStatisticsFilter]` is not serializable by derive)
 #   ListAutomatedDiscoveryAccounts (httpQuery `accountIds` has unsupported type list[str])
-#   ListClassificationJobs (document member `filterCriteria: ListJobsFilterCriteria` is not serializable by derive)
-#   ListFindings (document member `findingCriteria: FindingCriteria` is not serializable by derive)
-#   SearchResources (document member `bucketCriteria: SearchResourcesBucketCriteria` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   TestCustomDataIdentifier (document member `ignoreWords: list[str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateClassificationScope (document member `s3: S3ClassificationScopeUpdate` is not serializable by derive)
-#   UpdateFindingsFilter (document member `findingCriteria: FindingCriteria` is not serializable by derive)
-#   UpdateResourceProfileDetections (document member `suppressDataIdentifiers: list[SuppressDataIdentifier]` is not serializable by derive)
-#   UpdateSensitivityInspectionTemplate (document member `excludes: SensitivityInspectionTemplateExcludes` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   DescribeBuckets (operation not generated)
-#   GetUsageStatistics (operation not generated)
 #   ListAutomatedDiscoveryAccounts (operation not generated)
-#   ListClassificationJobs (operation not generated)
-#   ListFindings (operation not generated)
-#   SearchResources (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2735,6 +2787,440 @@ struct UpdateRevealConfigurationDocument:
     RevealConfiguration configuration
     Optional[UpdateRetrievalConfiguration] retrievalConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def macie2_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def macie2_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def macie2_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BucketCriteriaAdditionalProperties to a compact JSON object (declaration order).
+def bucket_criteria_additional_properties_to_json(BucketCriteriaAdditionalProperties v) -> str:
+    list[str] parts = []
+    if v.eq.is_some():
+        auto u0 = v.eq.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(macie2_json_str(x1))
+        parts.append("\"eq\":" + macie2_json_arr(e1))
+    if v.gt.is_some():
+        auto u2 = v.gt.unwrap()
+        parts.append("\"gt\":" + str(u2))
+    if v.gte.is_some():
+        auto u3 = v.gte.unwrap()
+        parts.append("\"gte\":" + str(u3))
+    if v.lt.is_some():
+        auto u4 = v.lt.unwrap()
+        parts.append("\"lt\":" + str(u4))
+    if v.lte.is_some():
+        auto u5 = v.lte.unwrap()
+        parts.append("\"lte\":" + str(u5))
+    if v.neq.is_some():
+        auto u6 = v.neq.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(macie2_json_str(x7))
+        parts.append("\"neq\":" + macie2_json_arr(e7))
+    if v.prefix.is_some():
+        auto u8 = v.prefix.unwrap()
+        parts.append("\"prefix\":" + macie2_json_str(u8))
+    return macie2_json_obj(parts)
+
+# Serialize CriteriaBlockForJob to a compact JSON object (declaration order).
+def criteria_block_for_job_to_json(CriteriaBlockForJob v) -> str:
+    list[str] parts = []
+    if v.and_.is_some():
+        auto u0 = v.and_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(criteria_for_job_to_json(x1))
+        parts.append("\"and\":" + macie2_json_arr(e1))
+    return macie2_json_obj(parts)
+
+# Serialize CriteriaForJob to a compact JSON object (declaration order).
+def criteria_for_job_to_json(CriteriaForJob v) -> str:
+    list[str] parts = []
+    if v.simpleCriterion.is_some():
+        auto u0 = v.simpleCriterion.unwrap()
+        parts.append("\"simpleCriterion\":" + simple_criterion_for_job_to_json(u0))
+    if v.tagCriterion.is_some():
+        auto u1 = v.tagCriterion.unwrap()
+        parts.append("\"tagCriterion\":" + tag_criterion_for_job_to_json(u1))
+    return macie2_json_obj(parts)
+
+# Serialize CriterionAdditionalProperties to a compact JSON object (declaration order).
+def criterion_additional_properties_to_json(CriterionAdditionalProperties v) -> str:
+    list[str] parts = []
+    if v.eq.is_some():
+        auto u0 = v.eq.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(macie2_json_str(x1))
+        parts.append("\"eq\":" + macie2_json_arr(e1))
+    if v.eqExactMatch.is_some():
+        auto u2 = v.eqExactMatch.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"eqExactMatch\":" + macie2_json_arr(e3))
+    if v.gt.is_some():
+        auto u4 = v.gt.unwrap()
+        parts.append("\"gt\":" + str(u4))
+    if v.gte.is_some():
+        auto u5 = v.gte.unwrap()
+        parts.append("\"gte\":" + str(u5))
+    if v.lt.is_some():
+        auto u6 = v.lt.unwrap()
+        parts.append("\"lt\":" + str(u6))
+    if v.lte.is_some():
+        auto u7 = v.lte.unwrap()
+        parts.append("\"lte\":" + str(u7))
+    if v.neq.is_some():
+        auto u8 = v.neq.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(macie2_json_str(x9))
+        parts.append("\"neq\":" + macie2_json_arr(e9))
+    return macie2_json_obj(parts)
+
+# Serialize FindingCriteria to a compact JSON object (declaration order).
+def finding_criteria_to_json(FindingCriteria v) -> str:
+    list[str] parts = []
+    if v.criterion.is_some():
+        auto u0 = v.criterion.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(macie2_json_str(k1) + ":" + criterion_additional_properties_to_json(u0[k1]))
+        parts.append("\"criterion\":" + macie2_json_obj(m1))
+    return macie2_json_obj(parts)
+
+# Serialize JobScopeTerm to a compact JSON object (declaration order).
+def job_scope_term_to_json(JobScopeTerm v) -> str:
+    list[str] parts = []
+    if v.simpleScopeTerm.is_some():
+        auto u0 = v.simpleScopeTerm.unwrap()
+        parts.append("\"simpleScopeTerm\":" + simple_scope_term_to_json(u0))
+    if v.tagScopeTerm.is_some():
+        auto u1 = v.tagScopeTerm.unwrap()
+        parts.append("\"tagScopeTerm\":" + tag_scope_term_to_json(u1))
+    return macie2_json_obj(parts)
+
+# Serialize JobScopingBlock to a compact JSON object (declaration order).
+def job_scoping_block_to_json(JobScopingBlock v) -> str:
+    list[str] parts = []
+    if v.and_.is_some():
+        auto u0 = v.and_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(job_scope_term_to_json(x1))
+        parts.append("\"and\":" + macie2_json_arr(e1))
+    return macie2_json_obj(parts)
+
+# Serialize ListJobsFilterCriteria to a compact JSON object (declaration order).
+def list_jobs_filter_criteria_to_json(ListJobsFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.excludes.is_some():
+        auto u0 = v.excludes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(list_jobs_filter_term_to_json(x1))
+        parts.append("\"excludes\":" + macie2_json_arr(e1))
+    if v.includes.is_some():
+        auto u2 = v.includes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(list_jobs_filter_term_to_json(x3))
+        parts.append("\"includes\":" + macie2_json_arr(e3))
+    return macie2_json_obj(parts)
+
+# Serialize ListJobsFilterTerm to a compact JSON object (declaration order).
+def list_jobs_filter_term_to_json(ListJobsFilterTerm v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        parts.append("\"key\":" + u1.to_json())
+    if v.values.is_some():
+        auto u2 = v.values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"values\":" + macie2_json_arr(e3))
+    return macie2_json_obj(parts)
+
+# Serialize S3BucketCriteriaForJob to a compact JSON object (declaration order).
+def s3_bucket_criteria_for_job_to_json(S3BucketCriteriaForJob v) -> str:
+    list[str] parts = []
+    if v.excludes.is_some():
+        auto u0 = v.excludes.unwrap()
+        parts.append("\"excludes\":" + criteria_block_for_job_to_json(u0))
+    if v.includes.is_some():
+        auto u1 = v.includes.unwrap()
+        parts.append("\"includes\":" + criteria_block_for_job_to_json(u1))
+    return macie2_json_obj(parts)
+
+# Serialize S3BucketDefinitionForJob to a compact JSON object (declaration order).
+def s3_bucket_definition_for_job_to_json(S3BucketDefinitionForJob v) -> str:
+    list[str] parts = []
+    parts.append("\"accountId\":" + macie2_json_str(v.accountId))
+    list[str] e0 = []
+    for x0 in v.buckets:
+        e0.append(macie2_json_str(x0))
+    parts.append("\"buckets\":" + macie2_json_arr(e0))
+    return macie2_json_obj(parts)
+
+# Serialize S3ClassificationScopeExclusionUpdate to a compact JSON object (declaration order).
+def s3_classification_scope_exclusion_update_to_json(S3ClassificationScopeExclusionUpdate v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.bucketNames:
+        e0.append(macie2_json_str(x0))
+    parts.append("\"bucketNames\":" + macie2_json_arr(e0))
+    parts.append("\"operation\":" + v.operation.to_json())
+    return macie2_json_obj(parts)
+
+# Serialize S3ClassificationScopeUpdate to a compact JSON object (declaration order).
+def s3_classification_scope_update_to_json(S3ClassificationScopeUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"excludes\":" + s3_classification_scope_exclusion_update_to_json(v.excludes))
+    return macie2_json_obj(parts)
+
+# Serialize S3JobDefinition to a compact JSON object (declaration order).
+def s3_job_definition_to_json(S3JobDefinition v) -> str:
+    list[str] parts = []
+    if v.bucketCriteria.is_some():
+        auto u0 = v.bucketCriteria.unwrap()
+        parts.append("\"bucketCriteria\":" + s3_bucket_criteria_for_job_to_json(u0))
+    if v.bucketDefinitions.is_some():
+        auto u1 = v.bucketDefinitions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(s3_bucket_definition_for_job_to_json(x2))
+        parts.append("\"bucketDefinitions\":" + macie2_json_arr(e2))
+    if v.scoping.is_some():
+        auto u3 = v.scoping.unwrap()
+        parts.append("\"scoping\":" + scoping_to_json(u3))
+    return macie2_json_obj(parts)
+
+# Serialize Scoping to a compact JSON object (declaration order).
+def scoping_to_json(Scoping v) -> str:
+    list[str] parts = []
+    if v.excludes.is_some():
+        auto u0 = v.excludes.unwrap()
+        parts.append("\"excludes\":" + job_scoping_block_to_json(u0))
+    if v.includes.is_some():
+        auto u1 = v.includes.unwrap()
+        parts.append("\"includes\":" + job_scoping_block_to_json(u1))
+    return macie2_json_obj(parts)
+
+# Serialize SearchResourcesBucketCriteria to a compact JSON object (declaration order).
+def search_resources_bucket_criteria_to_json(SearchResourcesBucketCriteria v) -> str:
+    list[str] parts = []
+    if v.excludes.is_some():
+        auto u0 = v.excludes.unwrap()
+        parts.append("\"excludes\":" + search_resources_criteria_block_to_json(u0))
+    if v.includes.is_some():
+        auto u1 = v.includes.unwrap()
+        parts.append("\"includes\":" + search_resources_criteria_block_to_json(u1))
+    return macie2_json_obj(parts)
+
+# Serialize SearchResourcesCriteria to a compact JSON object (declaration order).
+def search_resources_criteria_to_json(SearchResourcesCriteria v) -> str:
+    list[str] parts = []
+    if v.simpleCriterion.is_some():
+        auto u0 = v.simpleCriterion.unwrap()
+        parts.append("\"simpleCriterion\":" + search_resources_simple_criterion_to_json(u0))
+    if v.tagCriterion.is_some():
+        auto u1 = v.tagCriterion.unwrap()
+        parts.append("\"tagCriterion\":" + search_resources_tag_criterion_to_json(u1))
+    return macie2_json_obj(parts)
+
+# Serialize SearchResourcesCriteriaBlock to a compact JSON object (declaration order).
+def search_resources_criteria_block_to_json(SearchResourcesCriteriaBlock v) -> str:
+    list[str] parts = []
+    if v.and_.is_some():
+        auto u0 = v.and_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(search_resources_criteria_to_json(x1))
+        parts.append("\"and\":" + macie2_json_arr(e1))
+    return macie2_json_obj(parts)
+
+# Serialize SearchResourcesSimpleCriterion to a compact JSON object (declaration order).
+def search_resources_simple_criterion_to_json(SearchResourcesSimpleCriterion v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        parts.append("\"key\":" + u1.to_json())
+    if v.values.is_some():
+        auto u2 = v.values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"values\":" + macie2_json_arr(e3))
+    return macie2_json_obj(parts)
+
+# Serialize SearchResourcesTagCriterion to a compact JSON object (declaration order).
+def search_resources_tag_criterion_to_json(SearchResourcesTagCriterion v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.tagValues.is_some():
+        auto u1 = v.tagValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tagValues\":" + macie2_json_arr(e2))
+    return macie2_json_obj(parts)
+
+# Serialize SensitivityInspectionTemplateExcludes to a compact JSON object (declaration order).
+def sensitivity_inspection_template_excludes_to_json(SensitivityInspectionTemplateExcludes v) -> str:
+    list[str] parts = []
+    if v.managedDataIdentifierIds.is_some():
+        auto u0 = v.managedDataIdentifierIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(macie2_json_str(x1))
+        parts.append("\"managedDataIdentifierIds\":" + macie2_json_arr(e1))
+    return macie2_json_obj(parts)
+
+# Serialize SensitivityInspectionTemplateIncludes to a compact JSON object (declaration order).
+def sensitivity_inspection_template_includes_to_json(SensitivityInspectionTemplateIncludes v) -> str:
+    list[str] parts = []
+    if v.allowListIds.is_some():
+        auto u0 = v.allowListIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(macie2_json_str(x1))
+        parts.append("\"allowListIds\":" + macie2_json_arr(e1))
+    if v.customDataIdentifierIds.is_some():
+        auto u2 = v.customDataIdentifierIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"customDataIdentifierIds\":" + macie2_json_arr(e3))
+    if v.managedDataIdentifierIds.is_some():
+        auto u4 = v.managedDataIdentifierIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(macie2_json_str(x5))
+        parts.append("\"managedDataIdentifierIds\":" + macie2_json_arr(e5))
+    return macie2_json_obj(parts)
+
+# Serialize SimpleCriterionForJob to a compact JSON object (declaration order).
+def simple_criterion_for_job_to_json(SimpleCriterionForJob v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        parts.append("\"key\":" + u1.to_json())
+    if v.values.is_some():
+        auto u2 = v.values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"values\":" + macie2_json_arr(e3))
+    return macie2_json_obj(parts)
+
+# Serialize SimpleScopeTerm to a compact JSON object (declaration order).
+def simple_scope_term_to_json(SimpleScopeTerm v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        parts.append("\"key\":" + u1.to_json())
+    if v.values.is_some():
+        auto u2 = v.values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"values\":" + macie2_json_arr(e3))
+    return macie2_json_obj(parts)
+
+# Serialize TagCriterionForJob to a compact JSON object (declaration order).
+def tag_criterion_for_job_to_json(TagCriterionForJob v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.tagValues.is_some():
+        auto u1 = v.tagValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tagValues\":" + macie2_json_arr(e2))
+    return macie2_json_obj(parts)
+
+# Serialize TagScopeTerm to a compact JSON object (declaration order).
+def tag_scope_term_to_json(TagScopeTerm v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        parts.append("\"key\":" + macie2_json_str(u1))
+    if v.tagValues.is_some():
+        auto u2 = v.tagValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tagValues\":" + macie2_json_arr(e3))
+    if v.target.is_some():
+        auto u4 = v.target.unwrap()
+        parts.append("\"target\":" + macie2_json_str(u4))
+    return macie2_json_obj(parts)
+
+# Serialize UsageStatisticsFilter to a compact JSON object (declaration order).
+def usage_statistics_filter_to_json(UsageStatisticsFilter v) -> str:
+    list[str] parts = []
+    if v.comparator.is_some():
+        auto u0 = v.comparator.unwrap()
+        parts.append("\"comparator\":" + u0.to_json())
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        parts.append("\"key\":" + u1.to_json())
+    if v.values.is_some():
+        auto u2 = v.values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(macie2_json_str(x3))
+        parts.append("\"values\":" + macie2_json_arr(e3))
+    return macie2_json_obj(parts)
+
 # A bound Macie2 client: credentials + region, threaded into every operation.
 struct Macie2Client:
     core.Credentials creds
@@ -2747,6 +3233,243 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/invitations/accept", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptInvitationDocument(administratorAccountId=input.administratorAccountId, invitationId=input.invitationId, masterAccount=input.masterAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # BatchGetCustomDataIdentifiers  POST /custom-data-identifiers/get
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_get_custom_data_identifiers(self, BatchGetCustomDataIdentifiersRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ids.is_some():
+            auto u0 = input.ids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(macie2_json_str(x1))
+            parts.append("\"ids\":" + macie2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # BatchUpdateAutomatedDiscoveryAccounts  PATCH /automated-discovery/accounts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def batch_update_automated_discovery_accounts(self, BatchUpdateAutomatedDiscoveryAccountsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-discovery/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accounts.is_some():
+            auto u0 = input.accounts.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"accounts\":" + macie2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateAllowList  POST /allow-lists
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_allow_list(self, CreateAllowListRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/allow-lists", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + macie2_json_str(input.clientToken))
+        parts.append("\"criteria\":" + input.criteria.to_json())
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + macie2_json_str(u0))
+        parts.append("\"name\":" + macie2_json_str(input.name))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(macie2_json_str(k2) + ":" + macie2_json_str(u1[k2]))
+            parts.append("\"tags\":" + macie2_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateClassificationJob  POST /jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_classification_job(self, CreateClassificationJobRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.allowListIds.is_some():
+            auto u0 = input.allowListIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(macie2_json_str(x1))
+            parts.append("\"allowListIds\":" + macie2_json_arr(e1))
+        parts.append("\"clientToken\":" + macie2_json_str(input.clientToken))
+        if input.customDataIdentifierIds.is_some():
+            auto u2 = input.customDataIdentifierIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(macie2_json_str(x3))
+            parts.append("\"customDataIdentifierIds\":" + macie2_json_arr(e3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + macie2_json_str(u4))
+        if input.initialRun.is_some():
+            auto u5 = input.initialRun.unwrap()
+            parts.append("\"initialRun\":" + json.dumps(JsonValue.Bool(u5)))
+        parts.append("\"jobType\":" + input.jobType.to_json())
+        if input.managedDataIdentifierIds.is_some():
+            auto u6 = input.managedDataIdentifierIds.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(macie2_json_str(x7))
+            parts.append("\"managedDataIdentifierIds\":" + macie2_json_arr(e7))
+        if input.managedDataIdentifierSelector.is_some():
+            auto u8 = input.managedDataIdentifierSelector.unwrap()
+            parts.append("\"managedDataIdentifierSelector\":" + u8.to_json())
+        parts.append("\"name\":" + macie2_json_str(input.name))
+        parts.append("\"s3JobDefinition\":" + s3_job_definition_to_json(input.s3JobDefinition))
+        if input.samplingPercentage.is_some():
+            auto u9 = input.samplingPercentage.unwrap()
+            parts.append("\"samplingPercentage\":" + str(u9))
+        if input.scheduleFrequency.is_some():
+            auto u10 = input.scheduleFrequency.unwrap()
+            parts.append("\"scheduleFrequency\":" + u10.to_json())
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(macie2_json_str(k12) + ":" + macie2_json_str(u11[k12]))
+            parts.append("\"tags\":" + macie2_json_obj(m12))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateCustomDataIdentifier  POST /custom-data-identifiers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_custom_data_identifier(self, CreateCustomDataIdentifierRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + macie2_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + macie2_json_str(u1))
+        if input.ignoreWords.is_some():
+            auto u2 = input.ignoreWords.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(macie2_json_str(x3))
+            parts.append("\"ignoreWords\":" + macie2_json_arr(e3))
+        if input.keywords.is_some():
+            auto u4 = input.keywords.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(macie2_json_str(x5))
+            parts.append("\"keywords\":" + macie2_json_arr(e5))
+        if input.maximumMatchDistance.is_some():
+            auto u6 = input.maximumMatchDistance.unwrap()
+            parts.append("\"maximumMatchDistance\":" + str(u6))
+        parts.append("\"name\":" + macie2_json_str(input.name))
+        parts.append("\"regex\":" + macie2_json_str(input.regex))
+        if input.severityLevels.is_some():
+            auto u7 = input.severityLevels.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"severityLevels\":" + macie2_json_arr(e8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(macie2_json_str(k10) + ":" + macie2_json_str(u9[k10]))
+            parts.append("\"tags\":" + macie2_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateFindingsFilter  POST /findingsfilters
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_findings_filter(self, CreateFindingsFilterRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsfilters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"action\":" + input.action.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + macie2_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + macie2_json_str(u1))
+        parts.append("\"findingCriteria\":" + finding_criteria_to_json(input.findingCriteria))
+        parts.append("\"name\":" + macie2_json_str(input.name))
+        if input.position.is_some():
+            auto u2 = input.position.unwrap()
+            parts.append("\"position\":" + str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(macie2_json_str(k4) + ":" + macie2_json_str(u3[k4]))
+            parts.append("\"tags\":" + macie2_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateInvitations  POST /invitations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_invitations(self, CreateInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(macie2_json_str(x0))
+        parts.append("\"accountIds\":" + macie2_json_arr(e0))
+        if input.disableEmailNotification.is_some():
+            auto u1 = input.disableEmailNotification.unwrap()
+            parts.append("\"disableEmailNotification\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.message.is_some():
+            auto u2 = input.message.unwrap()
+            parts.append("\"message\":" + macie2_json_str(u2))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateMember  POST /members
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_member(self, CreateMemberRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/members", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"account\":" + input.account.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(macie2_json_str(k1) + ":" + macie2_json_str(u0[k1]))
+            parts.append("\"tags\":" + macie2_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # CreateSampleFindings  POST /findings/sample
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_sample_findings(self, CreateSampleFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/sample", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.findingTypes.is_some():
+            auto u0 = input.findingTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"findingTypes\":" + macie2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # DeclineInvitations  POST /invitations/decline
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def decline_invitations(self, DeclineInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/decline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(macie2_json_str(x0))
+        parts.append("\"accountIds\":" + macie2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
     # DeleteAllowList  DELETE /allow-lists/{id}
@@ -2779,6 +3502,19 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="DELETE", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
+    # DeleteInvitations  POST /invitations/delete
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def delete_invitations(self, DeleteInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(macie2_json_str(x0))
+        parts.append("\"accountIds\":" + macie2_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
     # DeleteMember  DELETE /members/{id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def delete_member(self, DeleteMemberRequest input) -> str:
@@ -2787,6 +3523,30 @@ struct Macie2Client:
         labels["id"] = input.id
         auto b = binding.HttpBinding(method="DELETE", path_template="/members/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
+
+    # DescribeBuckets  POST /datasources/s3
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def describe_buckets(self, DescribeBucketsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/datasources/s3", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.criteria.is_some():
+            auto u0 = input.criteria.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(macie2_json_str(k1) + ":" + bucket_criteria_additional_properties_to_json(u0[k1]))
+            parts.append("\"criteria\":" + macie2_json_obj(m1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + macie2_json_str(u3))
+        if input.sortCriteria.is_some():
+            auto u4 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
     # DescribeClassificationJob  GET /jobs/{jobId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -2918,6 +3678,41 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="GET", path_template="/custom-data-identifiers/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
+    # GetFindingStatistics  POST /findings/statistics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def get_finding_statistics(self, GetFindingStatisticsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.findingCriteria.is_some():
+            auto u0 = input.findingCriteria.unwrap()
+            parts.append("\"findingCriteria\":" + finding_criteria_to_json(u0))
+        parts.append("\"groupBy\":" + input.groupBy.to_json())
+        if input.size.is_some():
+            auto u1 = input.size.unwrap()
+            parts.append("\"size\":" + str(u1))
+        if input.sortCriteria.is_some():
+            auto u2 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # GetFindings  POST /findings/describe
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def get_findings(self, GetFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.findingIds:
+            e0.append(macie2_json_str(x0))
+        parts.append("\"findingIds\":" + macie2_json_arr(e0))
+        if input.sortCriteria.is_some():
+            auto u1 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
     # GetFindingsFilter  GET /findingsfilters/{id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_findings_filter(self, GetFindingsFilterRequest input) -> str:
@@ -3007,6 +3802,33 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="GET", path_template="/templates/sensitivity-inspections/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
+    # GetUsageStatistics  POST /usage/statistics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def get_usage_statistics(self, GetUsageStatisticsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/usage/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterBy.is_some():
+            auto u0 = input.filterBy.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(usage_statistics_filter_to_json(x1))
+            parts.append("\"filterBy\":" + macie2_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + macie2_json_str(u3))
+        if input.sortBy.is_some():
+            auto u4 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u4.to_json())
+        if input.timeRange.is_some():
+            auto u5 = input.timeRange.unwrap()
+            parts.append("\"timeRange\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
     # GetUsageTotals  GET /usage
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_usage_totals(self, GetUsageTotalsRequest input) -> str:
@@ -3029,6 +3851,27 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="GET", path_template="/allow-lists", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
+    # ListClassificationJobs  POST /jobs/list
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_classification_jobs(self, ListClassificationJobsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterCriteria.is_some():
+            auto u0 = input.filterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + list_jobs_filter_criteria_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + macie2_json_str(u2))
+        if input.sortCriteria.is_some():
+            auto u3 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
     # ListClassificationScopes  GET /classification-scopes
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_classification_scopes(self, ListClassificationScopesRequest input) -> str:
@@ -3048,6 +3891,27 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCustomDataIdentifiersDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # ListFindings  POST /findings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_findings(self, ListFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.findingCriteria.is_some():
+            auto u0 = input.findingCriteria.unwrap()
+            parts.append("\"findingCriteria\":" + finding_criteria_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + macie2_json_str(u2))
+        if input.sortCriteria.is_some():
+            auto u3 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
     # ListFindingsFilters  GET /findingsfilters
@@ -3170,6 +4034,67 @@ struct Macie2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
+    # SearchResources  POST /datasources/search-resources
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def search_resources(self, SearchResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/datasources/search-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.bucketCriteria.is_some():
+            auto u0 = input.bucketCriteria.unwrap()
+            parts.append("\"bucketCriteria\":" + search_resources_bucket_criteria_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + macie2_json_str(u2))
+        if input.sortCriteria.is_some():
+            auto u3 = input.sortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(macie2_json_str(k0) + ":" + macie2_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + macie2_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # TestCustomDataIdentifier  POST /custom-data-identifiers/test
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def test_custom_data_identifier(self, TestCustomDataIdentifierRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ignoreWords.is_some():
+            auto u0 = input.ignoreWords.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(macie2_json_str(x1))
+            parts.append("\"ignoreWords\":" + macie2_json_arr(e1))
+        if input.keywords.is_some():
+            auto u2 = input.keywords.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(macie2_json_str(x3))
+            parts.append("\"keywords\":" + macie2_json_arr(e3))
+        if input.maximumMatchDistance.is_some():
+            auto u4 = input.maximumMatchDistance.unwrap()
+            parts.append("\"maximumMatchDistance\":" + str(u4))
+        parts.append("\"regex\":" + macie2_json_str(input.regex))
+        parts.append("\"sampleText\":" + macie2_json_str(input.sampleText))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
     # UpdateAllowList  PUT /allow-lists/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_allow_list(self, UpdateAllowListRequest input) -> str:
@@ -3199,6 +4124,49 @@ struct Macie2Client:
         auto b = binding.HttpBinding(method="PATCH", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateClassificationJobDocument(jobStatus=input.jobStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # UpdateClassificationScope  PATCH /classification-scopes/{id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_classification_scope(self, UpdateClassificationScopeRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/classification-scopes/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.s3.is_some():
+            auto u0 = input.s3.unwrap()
+            parts.append("\"s3\":" + s3_classification_scope_update_to_json(u0))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # UpdateFindingsFilter  PATCH /findingsfilters/{id}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_findings_filter(self, UpdateFindingsFilterRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.action.is_some():
+            auto u0 = input.action.unwrap()
+            parts.append("\"action\":" + u0.to_json())
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + macie2_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + macie2_json_str(u2))
+        if input.findingCriteria.is_some():
+            auto u3 = input.findingCriteria.unwrap()
+            parts.append("\"findingCriteria\":" + finding_criteria_to_json(u3))
+        if input.name.is_some():
+            auto u4 = input.name.unwrap()
+            parts.append("\"name\":" + macie2_json_str(u4))
+        if input.position.is_some():
+            auto u5 = input.position.unwrap()
+            parts.append("\"position\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
     # UpdateMacieSession  PATCH /macie
@@ -3241,6 +4209,23 @@ struct Macie2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
+    # UpdateResourceProfileDetections  PATCH /resource-profiles/detections
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_resource_profile_detections(self, UpdateResourceProfileDetectionsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-profiles/detections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.suppressDataIdentifiers.is_some():
+            auto u0 = input.suppressDataIdentifiers.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"suppressDataIdentifiers\":" + macie2_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
     # UpdateRevealConfiguration  PUT /reveal-configuration
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_reveal_configuration(self, UpdateRevealConfigurationRequest input) -> str:
@@ -3250,12 +4235,71 @@ struct Macie2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
+    # UpdateSensitivityInspectionTemplate  PUT /templates/sensitivity-inspections/{id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_sensitivity_inspection_template(self, UpdateSensitivityInspectionTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/templates/sensitivity-inspections/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + macie2_json_str(u0))
+        if input.excludes.is_some():
+            auto u1 = input.excludes.unwrap()
+            parts.append("\"excludes\":" + sensitivity_inspection_template_excludes_to_json(u1))
+        if input.includes.is_some():
+            auto u2 = input.includes.unwrap()
+            parts.append("\"includes\":" + sensitivity_inspection_template_includes_to_json(u2))
+        auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
+
+    # Paginator for DescribeBuckets — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: buckets).
+    def paginate_describe_buckets(self, DescribeBucketsRequest input):
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        while True:
+            auto raw = self.describe_buckets(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for GetUsageStatistics — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: records).
+    def paginate_get_usage_statistics(self, GetUsageStatisticsRequest input):
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        while True:
+            auto raw = self.get_usage_statistics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListAllowLists — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: allowLists).
     def paginate_list_allow_lists(self, ListAllowListsRequest input):
         auto host = endpoints.regional_host(macie2_service(), self.region)
         while True:
             auto raw = self.list_allow_lists(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListClassificationJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_classification_jobs(self, ListClassificationJobsRequest input):
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        while True:
+            auto raw = self.list_classification_jobs(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3282,6 +4326,19 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         while True:
             auto raw = self.list_custom_data_identifiers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findingIds).
+    def paginate_list_findings(self, ListFindingsRequest input):
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        while True:
+            auto raw = self.list_findings(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3386,6 +4443,19 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         while True:
             auto raw = self.list_sensitivity_inspection_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchResources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: matchingResources).
+    def paginate_search_resources(self, SearchResourcesRequest input):
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        while True:
+            auto raw = self.search_resources(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

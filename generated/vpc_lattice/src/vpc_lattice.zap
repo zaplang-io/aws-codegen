@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 73 operations — 49 with a generated method,
-#   24 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 73 operations — 71 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   197 structs (123 @derive(Json)), 27 enums, 7 error variants.
-#   13 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   14 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -306,14 +306,16 @@ struct BatchUpdateRuleRequest:
     str listenerIdentifier
     list[RuleUpdate] rules
 
-# no @derive(Json): member(s) successful: list[RuleUpdateSuccess], unsuccessful: list[RuleUpdateFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[RuleUpdateSuccess], unsuccessful: list[RuleUpdateFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateRuleResponse:
     Optional[list[RuleUpdateSuccess]] successful
     Optional[list[RuleUpdateFailure]] unsuccessful
 
-# no @derive(Json): member(s) cidrRanges: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrRanges: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CidrResource:
     Optional[list[str]] cidrRanges
 
@@ -352,8 +354,9 @@ struct CreateListenerRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) defaultAction: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultAction: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateListenerResponse:
     Optional[str] arn
     Optional[str] id
@@ -381,8 +384,9 @@ struct CreateResourceConfigurationRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) portRanges: list[str], resourceConfigurationDefinition: ResourceConfigurationDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portRanges: list[str], resourceConfigurationDefinition: ResourceConfigurationDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceConfigurationResponse:
     Optional[str] id
     Optional[str] name
@@ -415,8 +419,9 @@ struct CreateResourceGatewayRequest:
     Optional[ResourceConfigDnsResolution] resourceConfigDnsResolution
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceGatewayResponse:
     Optional[str] name
     Optional[str] id
@@ -442,8 +447,9 @@ struct CreateRuleRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleResponse:
     Optional[str] arn
     Optional[str] id
@@ -515,8 +521,9 @@ struct CreateServiceNetworkVpcAssociationRequest:
     Optional[dict[str, str]] tags
     Optional[DnsOptions] dnsOptions
 
-# no @derive(Json): member(s) securityGroupIds: list[str], dnsOptions: DnsOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], dnsOptions: DnsOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceNetworkVpcAssociationResponse:
     Optional[str] id
     Optional[ServiceNetworkVpcAssociationStatus] status
@@ -737,8 +744,9 @@ struct DeregisterTargetsRequest:
     str targetGroupIdentifier
     list[Target] targets
 
-# no @derive(Json): member(s) successful: list[Target], unsuccessful: list[TargetFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[Target], unsuccessful: list[TargetFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeregisterTargetsResponse:
     Optional[list[Target]] successful
     Optional[list[TargetFailure]] unsuccessful
@@ -748,8 +756,9 @@ struct DnsEntry:
     Optional[str] domainName
     Optional[str] hostedZoneId
 
-# no @derive(Json): member(s) privateDnsSpecifiedDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateDnsSpecifiedDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DnsOptions:
     Optional[PrivateDnsPreference] privateDnsPreference
     Optional[list[str]] privateDnsSpecifiedDomains
@@ -759,8 +768,9 @@ struct DnsResource:
     Optional[str] domainName
     Optional[ResourceConfigurationIpAddressType] ipAddressType
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainVerificationSummary:
     str id
     str arn
@@ -775,8 +785,9 @@ struct DomainVerificationSummary:
 struct FixedResponseAction:
     int64 statusCode
 
-# no @derive(Json): member(s) targetGroups: list[WeightedTargetGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetGroups: list[WeightedTargetGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForwardAction:
     list[WeightedTargetGroup] targetGroups
 
@@ -817,8 +828,9 @@ struct GetAuthPolicyResponse:
 struct GetDomainVerificationRequest:
     str domainVerificationIdentifier
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainVerificationResponse:
     str id
     str arn
@@ -835,8 +847,9 @@ struct GetListenerRequest:
     str serviceIdentifier
     str listenerIdentifier
 
-# no @derive(Json): member(s) defaultAction: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultAction: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetListenerResponse:
     Optional[str] arn
     Optional[str] id
@@ -854,8 +867,9 @@ struct GetListenerResponse:
 struct GetResourceConfigurationRequest:
     str resourceConfigurationIdentifier
 
-# no @derive(Json): member(s) portRanges: list[str], resourceConfigurationDefinition: ResourceConfigurationDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portRanges: list[str], resourceConfigurationDefinition: ResourceConfigurationDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceConfigurationResponse:
     Optional[str] id
     Optional[str] name
@@ -883,8 +897,9 @@ struct GetResourceConfigurationResponse:
 struct GetResourceGatewayRequest:
     str resourceGatewayIdentifier
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceGatewayResponse:
     Optional[str] name
     Optional[str] id
@@ -917,8 +932,9 @@ struct GetRuleRequest:
     str listenerIdentifier
     str ruleIdentifier
 
-# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRuleResponse:
     Optional[str] arn
     Optional[str] id
@@ -1008,8 +1024,9 @@ struct GetServiceNetworkServiceAssociationResponse:
 struct GetServiceNetworkVpcAssociationRequest:
     str serviceNetworkVpcAssociationIdentifier
 
-# no @derive(Json): member(s) securityGroupIds: list[str], dnsOptions: DnsOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], dnsOptions: DnsOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceNetworkVpcAssociationResponse:
     Optional[str] id
     Optional[ServiceNetworkVpcAssociationStatus] status
@@ -1055,8 +1072,9 @@ struct GetServiceResponse:
 struct GetTargetGroupRequest:
     str targetGroupIdentifier
 
-# no @derive(Json): member(s) serviceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTargetGroupResponse:
     Optional[str] id
     Optional[str] arn
@@ -1096,8 +1114,9 @@ struct HealthCheckConfig:
     Optional[int64] unhealthyThresholdCount
     Optional[Matcher] matcher
 
-# no @derive(Json): member(s) headerMatches: list[HeaderMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headerMatches: list[HeaderMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpMatch:
     Optional[str] method
     Optional[PathMatch] pathMatch
@@ -1119,8 +1138,9 @@ struct ListAccessLogSubscriptionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AccessLogSubscriptionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AccessLogSubscriptionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessLogSubscriptionsResponse:
     list[AccessLogSubscriptionSummary] items
     Optional[str] nextToken
@@ -1131,8 +1151,9 @@ struct ListDomainVerificationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[DomainVerificationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DomainVerificationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainVerificationsResponse:
     list[DomainVerificationSummary] items
     Optional[str] nextToken
@@ -1144,8 +1165,9 @@ struct ListListenersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ListenerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ListenerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListListenersResponse:
     list[ListenerSummary] items
     Optional[str] nextToken
@@ -1159,8 +1181,9 @@ struct ListResourceConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResourceConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ResourceConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceConfigurationsResponse:
     Optional[list[ResourceConfigurationSummary]] items
     Optional[str] nextToken
@@ -1175,8 +1198,9 @@ struct ListResourceEndpointAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResourceEndpointAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ResourceEndpointAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceEndpointAssociationsResponse:
     list[ResourceEndpointAssociationSummary] items
     Optional[str] nextToken
@@ -1187,8 +1211,9 @@ struct ListResourceGatewaysRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResourceGatewaySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ResourceGatewaySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceGatewaysResponse:
     Optional[list[ResourceGatewaySummary]] items
     Optional[str] nextToken
@@ -1201,8 +1226,9 @@ struct ListRulesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesResponse:
     list[RuleSummary] items
     Optional[str] nextToken
@@ -1216,8 +1242,9 @@ struct ListServiceNetworkResourceAssociationsRequest:
     Optional[str] nextToken
     Optional[bool] includeChildren
 
-# no @derive(Json): member(s) items: list[ServiceNetworkResourceAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ServiceNetworkResourceAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceNetworkResourceAssociationsResponse:
     list[ServiceNetworkResourceAssociationSummary] items
     Optional[str] nextToken
@@ -1230,8 +1257,9 @@ struct ListServiceNetworkServiceAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ServiceNetworkServiceAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ServiceNetworkServiceAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceNetworkServiceAssociationsResponse:
     list[ServiceNetworkServiceAssociationSummary] items
     Optional[str] nextToken
@@ -1244,8 +1272,9 @@ struct ListServiceNetworkVpcAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ServiceNetworkVpcAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ServiceNetworkVpcAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceNetworkVpcAssociationsResponse:
     list[ServiceNetworkVpcAssociationSummary] items
     Optional[str] nextToken
@@ -1257,8 +1286,9 @@ struct ListServiceNetworkVpcEndpointAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ServiceNetworkEndpointAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ServiceNetworkEndpointAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceNetworkVpcEndpointAssociationsResponse:
     list[ServiceNetworkEndpointAssociation] items
     Optional[str] nextToken
@@ -1269,8 +1299,9 @@ struct ListServiceNetworksRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ServiceNetworkSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ServiceNetworkSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceNetworksResponse:
     list[ServiceNetworkSummary] items
     Optional[str] nextToken
@@ -1281,8 +1312,9 @@ struct ListServicesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesResponse:
     Optional[list[ServiceSummary]] items
     Optional[str] nextToken
@@ -1292,8 +1324,9 @@ struct ListServicesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1306,8 +1339,9 @@ struct ListTargetGroupsRequest:
     # wire string of the TargetGroupType enum (querystring binding)
     Optional[str] targetGroupType
 
-# no @derive(Json): member(s) items: list[TargetGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[TargetGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetGroupsResponse:
     Optional[list[TargetGroupSummary]] items
     Optional[str] nextToken
@@ -1320,8 +1354,9 @@ struct ListTargetsRequest:
     Optional[str] nextToken
     Optional[list[Target]] targets
 
-# no @derive(Json): member(s) items: list[TargetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[TargetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetsResponse:
     list[TargetSummary] items
     Optional[str] nextToken
@@ -1387,14 +1422,16 @@ struct RegisterTargetsRequest:
     str targetGroupIdentifier
     list[Target] targets
 
-# no @derive(Json): member(s) successful: list[Target], unsuccessful: list[TargetFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[Target], unsuccessful: list[TargetFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterTargetsResponse:
     Optional[list[Target]] successful
     Optional[list[TargetFailure]] unsuccessful
 
-# no @derive(Json): member(s) cidrResource: CidrResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrResource: CidrResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceConfigurationDefinition:
     Optional[DnsResource] dnsResource
     Optional[IpResource] ipResource
@@ -1419,8 +1456,9 @@ struct ResourceConfigurationSummary:
     Optional[str] domainVerificationId
     Optional[str] groupDomain
 
-# no @derive(Json): member(s) payerResponsibility: list[PayerResponsibilityEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payerResponsibility: list[PayerResponsibilityEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceEndpointAssociationSummary:
     Optional[str] id
     Optional[str] arn
@@ -1433,8 +1471,9 @@ struct ResourceEndpointAssociationSummary:
     Optional[DateTime] createdAt
     Optional[list[PayerResponsibilityEntry]] payerResponsibility
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceGatewaySummary:
     Optional[str] name
     Optional[str] id
@@ -1455,14 +1494,16 @@ struct ResourceNotFoundException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) forward: ForwardAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forward: ForwardAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleAction:
     Optional[ForwardAction] forward
     Optional[FixedResponseAction] fixedResponse
 
-# no @derive(Json): member(s) httpMatch: HttpMatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) httpMatch: HttpMatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleMatch:
     Optional[HttpMatch] httpMatch
 
@@ -1478,8 +1519,9 @@ struct RuleSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] lastUpdatedAt
 
-# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleUpdate:
     str ruleIdentifier
     # wire name "match" differs from field; derive rename is a #346 follow-up
@@ -1493,8 +1535,9 @@ struct RuleUpdateFailure:
     Optional[str] failureCode
     Optional[str] failureMessage
 
-# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleUpdateSuccess:
     Optional[str] arn
     Optional[str] id
@@ -1566,8 +1609,9 @@ struct ServiceNetworkSummary:
     Optional[int64] numberOfAssociatedServices
     Optional[int64] numberOfAssociatedResourceConfigurations
 
-# no @derive(Json): member(s) dnsOptions: DnsOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dnsOptions: DnsOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNetworkVpcAssociationSummary:
     Optional[str] id
     Optional[str] arn
@@ -1655,8 +1699,9 @@ struct TargetGroupConfig:
     Optional[HealthCheckConfig] healthCheck
     Optional[LambdaEventStructureVersion] lambdaEventStructureVersion
 
-# no @derive(Json): member(s) serviceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetGroupSummary:
     Optional[str] id
     Optional[str] arn
@@ -1723,8 +1768,9 @@ struct UpdateListenerRequest:
     str listenerIdentifier
     RuleAction defaultAction
 
-# no @derive(Json): member(s) defaultAction: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultAction: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateListenerResponse:
     Optional[str] arn
     Optional[str] id
@@ -1743,8 +1789,9 @@ struct UpdateResourceConfigurationRequest:
     Optional[bool] allowAssociationToShareableServiceNetwork
     Optional[list[str]] portRanges
 
-# no @derive(Json): member(s) portRanges: list[str], resourceConfigurationDefinition: ResourceConfigurationDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portRanges: list[str], resourceConfigurationDefinition: ResourceConfigurationDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceConfigurationResponse:
     Optional[str] id
     Optional[str] name
@@ -1764,8 +1811,9 @@ struct UpdateResourceGatewayRequest:
     str resourceGatewayIdentifier
     Optional[list[str]] securityGroupIds
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceGatewayResponse:
     Optional[str] name
     Optional[str] id
@@ -1787,8 +1835,9 @@ struct UpdateRuleRequest:
     Optional[int64] priority
     Optional[RuleAction] action
 
-# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) match: RuleMatch, action: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleResponse:
     Optional[str] arn
     Optional[str] id
@@ -1820,8 +1869,9 @@ struct UpdateServiceNetworkVpcAssociationRequest:
     Optional[bool] privateDnsEnabled
     Optional[DnsOptions] dnsOptions
 
-# no @derive(Json): member(s) securityGroupIds: list[str], dnsOptions: DnsOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], dnsOptions: DnsOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceNetworkVpcAssociationResponse:
     Optional[str] id
     Optional[str] arn
@@ -1864,8 +1914,9 @@ struct UpdateTargetGroupResponse:
     Optional[TargetGroupConfig] config
     Optional[TargetGroupStatus] status
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -1919,35 +1970,12 @@ def vpc_lattice_error_from_code(str code) -> VPC_LatticeError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchUpdateRule (document member `rules: list[RuleUpdate]` is not serializable by derive)
-#   CreateAccessLogSubscription (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateListener (document member `defaultAction: RuleAction` is not serializable by derive)
-#   CreateResourceConfiguration (document member `portRanges: list[str]` is not serializable by derive)
-#   CreateResourceGateway (document member `subnetIds: list[str]` is not serializable by derive)
-#   CreateRule (document member `match: RuleMatch` is not serializable by derive)
-#   CreateService (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateServiceNetwork (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateServiceNetworkResourceAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateServiceNetworkServiceAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateServiceNetworkVpcAssociation (document member `securityGroupIds: list[str]` is not serializable by derive)
-#   CreateTargetGroup (document member `tags: dict[str, str]` is not serializable by derive)
-#   DeregisterTargets (document member `targets: list[Target]` is not serializable by derive)
 #   ListServiceNetworkResourceAssociations (httpQuery `includeChildren` has unsupported type bool)
-#   ListTargets (document member `targets: list[Target]` is not serializable by derive)
-#   RegisterTargets (document member `targets: list[Target]` is not serializable by derive)
-#   StartDomainVerification (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateListener (document member `defaultAction: RuleAction` is not serializable by derive)
-#   UpdateResourceConfiguration (document member `resourceConfigurationDefinition: ResourceConfigurationDefinition` is not serializable by derive)
-#   UpdateResourceGateway (document member `securityGroupIds: list[str]` is not serializable by derive)
-#   UpdateRule (document member `match: RuleMatch` is not serializable by derive)
-#   UpdateServiceNetworkVpcAssociation (document member `securityGroupIds: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListServiceNetworkResourceAssociations (operation not generated)
-#   ListTargets (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1984,10 +2012,479 @@ struct UpdateTargetGroupDocument:
     # document members of UpdateTargetGroup
     HealthCheckConfig healthCheck
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def vpc_lattice_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def vpc_lattice_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def vpc_lattice_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CidrResource to a compact JSON object (declaration order).
+def cidr_resource_to_json(CidrResource v) -> str:
+    list[str] parts = []
+    if v.cidrRanges.is_some():
+        auto u0 = v.cidrRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(vpc_lattice_json_str(x1))
+        parts.append("\"cidrRanges\":" + vpc_lattice_json_arr(e1))
+    return vpc_lattice_json_obj(parts)
+
+# Serialize DnsOptions to a compact JSON object (declaration order).
+def dns_options_to_json(DnsOptions v) -> str:
+    list[str] parts = []
+    if v.privateDnsPreference.is_some():
+        auto u0 = v.privateDnsPreference.unwrap()
+        parts.append("\"privateDnsPreference\":" + u0.to_json())
+    if v.privateDnsSpecifiedDomains.is_some():
+        auto u1 = v.privateDnsSpecifiedDomains.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(vpc_lattice_json_str(x2))
+        parts.append("\"privateDnsSpecifiedDomains\":" + vpc_lattice_json_arr(e2))
+    return vpc_lattice_json_obj(parts)
+
+# Serialize ForwardAction to a compact JSON object (declaration order).
+def forward_action_to_json(ForwardAction v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.targetGroups:
+        e0.append(x0.to_json())
+    parts.append("\"targetGroups\":" + vpc_lattice_json_arr(e0))
+    return vpc_lattice_json_obj(parts)
+
+# Serialize HttpMatch to a compact JSON object (declaration order).
+def http_match_to_json(HttpMatch v) -> str:
+    list[str] parts = []
+    if v.method.is_some():
+        auto u0 = v.method.unwrap()
+        parts.append("\"method\":" + vpc_lattice_json_str(u0))
+    if v.pathMatch.is_some():
+        auto u1 = v.pathMatch.unwrap()
+        parts.append("\"pathMatch\":" + u1.to_json())
+    if v.headerMatches.is_some():
+        auto u2 = v.headerMatches.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"headerMatches\":" + vpc_lattice_json_arr(e3))
+    return vpc_lattice_json_obj(parts)
+
+# Serialize ResourceConfigurationDefinition to a compact JSON object (declaration order).
+def resource_configuration_definition_to_json(ResourceConfigurationDefinition v) -> str:
+    list[str] parts = []
+    if v.dnsResource.is_some():
+        auto u0 = v.dnsResource.unwrap()
+        parts.append("\"dnsResource\":" + u0.to_json())
+    if v.ipResource.is_some():
+        auto u1 = v.ipResource.unwrap()
+        parts.append("\"ipResource\":" + u1.to_json())
+    if v.arnResource.is_some():
+        auto u2 = v.arnResource.unwrap()
+        parts.append("\"arnResource\":" + u2.to_json())
+    if v.cidrResource.is_some():
+        auto u3 = v.cidrResource.unwrap()
+        parts.append("\"cidrResource\":" + cidr_resource_to_json(u3))
+    return vpc_lattice_json_obj(parts)
+
+# Serialize RuleAction to a compact JSON object (declaration order).
+def rule_action_to_json(RuleAction v) -> str:
+    list[str] parts = []
+    if v.forward.is_some():
+        auto u0 = v.forward.unwrap()
+        parts.append("\"forward\":" + forward_action_to_json(u0))
+    if v.fixedResponse.is_some():
+        auto u1 = v.fixedResponse.unwrap()
+        parts.append("\"fixedResponse\":" + u1.to_json())
+    return vpc_lattice_json_obj(parts)
+
+# Serialize RuleMatch to a compact JSON object (declaration order).
+def rule_match_to_json(RuleMatch v) -> str:
+    list[str] parts = []
+    if v.httpMatch.is_some():
+        auto u0 = v.httpMatch.unwrap()
+        parts.append("\"httpMatch\":" + http_match_to_json(u0))
+    return vpc_lattice_json_obj(parts)
+
+# Serialize RuleUpdate to a compact JSON object (declaration order).
+def rule_update_to_json(RuleUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"ruleIdentifier\":" + vpc_lattice_json_str(v.ruleIdentifier))
+    if v.match_.is_some():
+        auto u0 = v.match_.unwrap()
+        parts.append("\"match\":" + rule_match_to_json(u0))
+    if v.priority.is_some():
+        auto u1 = v.priority.unwrap()
+        parts.append("\"priority\":" + str(u1))
+    if v.action.is_some():
+        auto u2 = v.action.unwrap()
+        parts.append("\"action\":" + rule_action_to_json(u2))
+    return vpc_lattice_json_obj(parts)
+
 # A bound VPC_Lattice client: credentials + region, threaded into every operation.
 struct VPC_LatticeClient:
     core.Credentials creds
     str region
+
+    # BatchUpdateRule  PATCH /services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_rule(self, BatchUpdateRuleRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["serviceIdentifier"] = input.serviceIdentifier
+        labels["listenerIdentifier"] = input.listenerIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.rules:
+            e0.append(rule_update_to_json(x0))
+        parts.append("\"rules\":" + vpc_lattice_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateAccessLogSubscription  POST /accesslogsubscriptions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_access_log_subscription(self, CreateAccessLogSubscriptionRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/accesslogsubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"resourceIdentifier\":" + vpc_lattice_json_str(input.resourceIdentifier))
+        parts.append("\"destinationArn\":" + vpc_lattice_json_str(input.destinationArn))
+        if input.serviceNetworkLogType.is_some():
+            auto u1 = input.serviceNetworkLogType.unwrap()
+            parts.append("\"serviceNetworkLogType\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(vpc_lattice_json_str(k3) + ":" + vpc_lattice_json_str(u2[k3]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateListener  POST /services/{serviceIdentifier}/listeners
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_listener(self, CreateListenerRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["serviceIdentifier"] = input.serviceIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/services/{serviceIdentifier}/listeners", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        parts.append("\"protocol\":" + input.protocol.to_json())
+        if input.port.is_some():
+            auto u0 = input.port.unwrap()
+            parts.append("\"port\":" + str(u0))
+        parts.append("\"defaultAction\":" + rule_action_to_json(input.defaultAction))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(vpc_lattice_json_str(k3) + ":" + vpc_lattice_json_str(u2[k3]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateResourceConfiguration  POST /resourceconfigurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_resource_configuration(self, CreateResourceConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/resourceconfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.portRanges.is_some():
+            auto u0 = input.portRanges.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(vpc_lattice_json_str(x1))
+            parts.append("\"portRanges\":" + vpc_lattice_json_arr(e1))
+        if input.protocol.is_some():
+            auto u2 = input.protocol.unwrap()
+            parts.append("\"protocol\":" + u2.to_json())
+        if input.resourceGatewayIdentifier.is_some():
+            auto u3 = input.resourceGatewayIdentifier.unwrap()
+            parts.append("\"resourceGatewayIdentifier\":" + vpc_lattice_json_str(u3))
+        if input.resourceConfigurationGroupIdentifier.is_some():
+            auto u4 = input.resourceConfigurationGroupIdentifier.unwrap()
+            parts.append("\"resourceConfigurationGroupIdentifier\":" + vpc_lattice_json_str(u4))
+        if input.resourceConfigurationDefinition.is_some():
+            auto u5 = input.resourceConfigurationDefinition.unwrap()
+            parts.append("\"resourceConfigurationDefinition\":" + resource_configuration_definition_to_json(u5))
+        if input.allowAssociationToShareableServiceNetwork.is_some():
+            auto u6 = input.allowAssociationToShareableServiceNetwork.unwrap()
+            parts.append("\"allowAssociationToShareableServiceNetwork\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.customDomainName.is_some():
+            auto u7 = input.customDomainName.unwrap()
+            parts.append("\"customDomainName\":" + vpc_lattice_json_str(u7))
+        if input.groupDomain.is_some():
+            auto u8 = input.groupDomain.unwrap()
+            parts.append("\"groupDomain\":" + vpc_lattice_json_str(u8))
+        if input.domainVerificationIdentifier.is_some():
+            auto u9 = input.domainVerificationIdentifier.unwrap()
+            parts.append("\"domainVerificationIdentifier\":" + vpc_lattice_json_str(u9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u10))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(vpc_lattice_json_str(k12) + ":" + vpc_lattice_json_str(u11[k12]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m12))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateResourceGateway  POST /resourcegateways
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_resource_gateway(self, CreateResourceGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcegateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        if input.vpcIdentifier.is_some():
+            auto u1 = input.vpcIdentifier.unwrap()
+            parts.append("\"vpcIdentifier\":" + vpc_lattice_json_str(u1))
+        if input.subnetIds.is_some():
+            auto u2 = input.subnetIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(vpc_lattice_json_str(x3))
+            parts.append("\"subnetIds\":" + vpc_lattice_json_arr(e3))
+        if input.securityGroupIds.is_some():
+            auto u4 = input.securityGroupIds.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(vpc_lattice_json_str(x5))
+            parts.append("\"securityGroupIds\":" + vpc_lattice_json_arr(e5))
+        if input.ipAddressType.is_some():
+            auto u6 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u6.to_json())
+        if input.ipv4AddressesPerEni.is_some():
+            auto u7 = input.ipv4AddressesPerEni.unwrap()
+            parts.append("\"ipv4AddressesPerEni\":" + str(u7))
+        if input.resourceConfigDnsResolution.is_some():
+            auto u8 = input.resourceConfigDnsResolution.unwrap()
+            parts.append("\"resourceConfigDnsResolution\":" + u8.to_json())
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(vpc_lattice_json_str(k10) + ":" + vpc_lattice_json_str(u9[k10]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateRule  POST /services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_rule(self, CreateRuleRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["serviceIdentifier"] = input.serviceIdentifier
+        labels["listenerIdentifier"] = input.listenerIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        parts.append("\"match\":" + rule_match_to_json(input.match_))
+        parts.append("\"priority\":" + str(input.priority))
+        parts.append("\"action\":" + rule_action_to_json(input.action))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(vpc_lattice_json_str(k2) + ":" + vpc_lattice_json_str(u1[k2]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateService  POST /services
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service(self, CreateServiceRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/services", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(vpc_lattice_json_str(k2) + ":" + vpc_lattice_json_str(u1[k2]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m2))
+        if input.customDomainName.is_some():
+            auto u3 = input.customDomainName.unwrap()
+            parts.append("\"customDomainName\":" + vpc_lattice_json_str(u3))
+        if input.certificateArn.is_some():
+            auto u4 = input.certificateArn.unwrap()
+            parts.append("\"certificateArn\":" + vpc_lattice_json_str(u4))
+        if input.authType.is_some():
+            auto u5 = input.authType.unwrap()
+            parts.append("\"authType\":" + u5.to_json())
+        if input.idleTimeoutSeconds.is_some():
+            auto u6 = input.idleTimeoutSeconds.unwrap()
+            parts.append("\"idleTimeoutSeconds\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateServiceNetwork  POST /servicenetworks
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_network(self, CreateServiceNetworkRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        if input.authType.is_some():
+            auto u1 = input.authType.unwrap()
+            parts.append("\"authType\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(vpc_lattice_json_str(k3) + ":" + vpc_lattice_json_str(u2[k3]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m3))
+        if input.sharingConfig.is_some():
+            auto u4 = input.sharingConfig.unwrap()
+            parts.append("\"sharingConfig\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateServiceNetworkResourceAssociation  POST /servicenetworkresourceassociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_network_resource_association(self, CreateServiceNetworkResourceAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkresourceassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"resourceConfigurationIdentifier\":" + vpc_lattice_json_str(input.resourceConfigurationIdentifier))
+        parts.append("\"serviceNetworkIdentifier\":" + vpc_lattice_json_str(input.serviceNetworkIdentifier))
+        if input.privateDnsEnabled.is_some():
+            auto u1 = input.privateDnsEnabled.unwrap()
+            parts.append("\"privateDnsEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(vpc_lattice_json_str(k3) + ":" + vpc_lattice_json_str(u2[k3]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateServiceNetworkServiceAssociation  POST /servicenetworkserviceassociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_network_service_association(self, CreateServiceNetworkServiceAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkserviceassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"serviceIdentifier\":" + vpc_lattice_json_str(input.serviceIdentifier))
+        parts.append("\"serviceNetworkIdentifier\":" + vpc_lattice_json_str(input.serviceNetworkIdentifier))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(vpc_lattice_json_str(k2) + ":" + vpc_lattice_json_str(u1[k2]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateServiceNetworkVpcAssociation  POST /servicenetworkvpcassociations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_network_vpc_association(self, CreateServiceNetworkVpcAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkvpcassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"serviceNetworkIdentifier\":" + vpc_lattice_json_str(input.serviceNetworkIdentifier))
+        parts.append("\"vpcIdentifier\":" + vpc_lattice_json_str(input.vpcIdentifier))
+        if input.privateDnsEnabled.is_some():
+            auto u1 = input.privateDnsEnabled.unwrap()
+            parts.append("\"privateDnsEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.securityGroupIds.is_some():
+            auto u2 = input.securityGroupIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(vpc_lattice_json_str(x3))
+            parts.append("\"securityGroupIds\":" + vpc_lattice_json_arr(e3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(vpc_lattice_json_str(k5) + ":" + vpc_lattice_json_str(u4[k5]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m5))
+        if input.dnsOptions.is_some():
+            auto u6 = input.dnsOptions.unwrap()
+            parts.append("\"dnsOptions\":" + dns_options_to_json(u6))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # CreateTargetGroup  POST /targetgroups
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_target_group(self, CreateTargetGroupRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + vpc_lattice_json_str(input.name))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.config.is_some():
+            auto u0 = input.config.unwrap()
+            parts.append("\"config\":" + u0.to_json())
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(vpc_lattice_json_str(k3) + ":" + vpc_lattice_json_str(u2[k3]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 
     # DeleteAccessLogSubscription  DELETE /accesslogsubscriptions/{accessLogSubscriptionIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2126,6 +2623,21 @@ struct VPC_LatticeClient:
         labels["targetGroupIdentifier"] = input.targetGroupIdentifier
         auto b = binding.HttpBinding(method="DELETE", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
+
+    # DeregisterTargets  POST /targetgroups/{targetGroupIdentifier}/deregistertargets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def deregister_targets(self, DeregisterTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["targetGroupIdentifier"] = input.targetGroupIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/deregistertargets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targets:
+            e0.append(x0.to_json())
+        parts.append("\"targets\":" + vpc_lattice_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 
     # GetAccessLogSubscription  GET /accesslogsubscriptions/{accessLogSubscriptionIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2453,6 +2965,28 @@ struct VPC_LatticeClient:
         auto b = binding.HttpBinding(method="GET", path_template="/targetgroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
+    # ListTargets  POST /targetgroups/{targetGroupIdentifier}/listtargets
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_targets(self, ListTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["targetGroupIdentifier"] = input.targetGroupIdentifier
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/listtargets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.targets.is_some():
+            auto u0 = input.targets.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"targets\":" + vpc_lattice_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
     # PutAuthPolicy  PUT /authpolicy/{resourceIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_auth_policy(self, PutAuthPolicyRequest input) -> str:
@@ -2475,6 +3009,55 @@ struct VPC_LatticeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 
+    # RegisterTargets  POST /targetgroups/{targetGroupIdentifier}/registertargets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def register_targets(self, RegisterTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["targetGroupIdentifier"] = input.targetGroupIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/registertargets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targets:
+            e0.append(x0.to_json())
+        parts.append("\"targets\":" + vpc_lattice_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # StartDomainVerification  POST /domainverifications
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_domain_verification(self, StartDomainVerificationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/domainverifications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + vpc_lattice_json_str(u0))
+        parts.append("\"domainName\":" + vpc_lattice_json_str(input.domainName))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(vpc_lattice_json_str(k2) + ":" + vpc_lattice_json_str(u1[k2]))
+            parts.append("\"tags\":" + vpc_lattice_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(vpc_lattice_json_str(k0) + ":" + vpc_lattice_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + vpc_lattice_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
     # UpdateAccessLogSubscription  PATCH /accesslogsubscriptions/{accessLogSubscriptionIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_access_log_subscription(self, UpdateAccessLogSubscriptionRequest input) -> str:
@@ -2484,6 +3067,81 @@ struct VPC_LatticeClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccessLogSubscriptionDocument(destinationArn=input.destinationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # UpdateListener  PATCH /services/{serviceIdentifier}/listeners/{listenerIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_listener(self, UpdateListenerRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["serviceIdentifier"] = input.serviceIdentifier
+        labels["listenerIdentifier"] = input.listenerIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"defaultAction\":" + rule_action_to_json(input.defaultAction))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # UpdateResourceConfiguration  PATCH /resourceconfigurations/{resourceConfigurationIdentifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_resource_configuration(self, UpdateResourceConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceConfigurationIdentifier"] = input.resourceConfigurationIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceConfigurationDefinition.is_some():
+            auto u0 = input.resourceConfigurationDefinition.unwrap()
+            parts.append("\"resourceConfigurationDefinition\":" + resource_configuration_definition_to_json(u0))
+        if input.allowAssociationToShareableServiceNetwork.is_some():
+            auto u1 = input.allowAssociationToShareableServiceNetwork.unwrap()
+            parts.append("\"allowAssociationToShareableServiceNetwork\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.portRanges.is_some():
+            auto u2 = input.portRanges.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(vpc_lattice_json_str(x3))
+            parts.append("\"portRanges\":" + vpc_lattice_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # UpdateResourceGateway  PATCH /resourcegateways/{resourceGatewayIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_resource_gateway(self, UpdateResourceGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceGatewayIdentifier"] = input.resourceGatewayIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.securityGroupIds.is_some():
+            auto u0 = input.securityGroupIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(vpc_lattice_json_str(x1))
+            parts.append("\"securityGroupIds\":" + vpc_lattice_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # UpdateRule  PATCH /services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_rule(self, UpdateRuleRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["serviceIdentifier"] = input.serviceIdentifier
+        labels["listenerIdentifier"] = input.listenerIdentifier
+        labels["ruleIdentifier"] = input.ruleIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.match_.is_some():
+            auto u0 = input.match_.unwrap()
+            parts.append("\"match\":" + rule_match_to_json(u0))
+        if input.priority.is_some():
+            auto u1 = input.priority.unwrap()
+            parts.append("\"priority\":" + str(u1))
+        if input.action.is_some():
+            auto u2 = input.action.unwrap()
+            parts.append("\"action\":" + rule_action_to_json(u2))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 
     # UpdateService  PATCH /services/{serviceIdentifier}
@@ -2506,6 +3164,29 @@ struct VPC_LatticeClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceNetworkDocument(authType=input.authType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
+
+    # UpdateServiceNetworkVpcAssociation  PATCH /servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_service_network_vpc_association(self, UpdateServiceNetworkVpcAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["serviceNetworkVpcAssociationIdentifier"] = input.serviceNetworkVpcAssociationIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.securityGroupIds.is_some():
+            auto u0 = input.securityGroupIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(vpc_lattice_json_str(x1))
+            parts.append("\"securityGroupIds\":" + vpc_lattice_json_arr(e1))
+        if input.privateDnsEnabled.is_some():
+            auto u2 = input.privateDnsEnabled.unwrap()
+            parts.append("\"privateDnsEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.dnsOptions.is_some():
+            auto u3 = input.dnsOptions.unwrap()
+            parts.append("\"dnsOptions\":" + dns_options_to_json(u3))
+        auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 
     # UpdateTargetGroup  PATCH /targetgroups/{targetGroupIdentifier}
@@ -2681,6 +3362,19 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         while True:
             auto raw = self.list_target_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListTargets — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_targets(self, ListTargetsRequest input):
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        while True:
+            auto raw = self.list_targets(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

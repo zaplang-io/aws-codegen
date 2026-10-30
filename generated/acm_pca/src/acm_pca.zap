@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 18 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 23 operations — 23 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   79 structs (60 @derive(Json)), 17 enums, 19 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The ACM_PCA awsJson protocol: version 1.1, API id "ACMPrivateCA".
 def acm_pca_protocol() -> awsjson.AwsJson:
@@ -201,8 +202,9 @@ enum ValidityPeriodType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) CustomAttributes: list[CustomAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomAttributes: list[CustomAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ASN1Subject:
     Optional[str] Country
     Optional[str] Organization
@@ -220,8 +222,9 @@ struct ASN1Subject:
     Optional[str] GenerationQualifier
     Optional[list[CustomAttribute]] CustomAttributes
 
-# no @derive(Json): member(s) AccessLocation: GeneralName not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessLocation: GeneralName not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessDescription:
     AccessMethod AccessMethod
     GeneralName AccessLocation
@@ -231,14 +234,16 @@ struct AccessMethod:
     Optional[str] CustomObjectIdentifier
     Optional[AccessMethodType] AccessMethodType
 
-# no @derive(Json): member(s) Extensions: Extensions, Subject: ASN1Subject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Extensions: Extensions, Subject: ASN1Subject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiPassthrough:
     Optional[Extensions] Extensions
     Optional[ASN1Subject] Subject
 
-# no @derive(Json): member(s) CertificateAuthorityConfiguration: CertificateAuthorityConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthorityConfiguration: CertificateAuthorityConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateAuthority:
     Optional[str] Arn
     Optional[str] OwnerAccount
@@ -256,8 +261,9 @@ struct CertificateAuthority:
     Optional[KeyStorageSecurityStandard] KeyStorageSecurityStandard
     Optional[CertificateAuthorityUsageMode] UsageMode
 
-# no @derive(Json): member(s) Subject: ASN1Subject, CsrExtensions: CsrExtensions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subject: ASN1Subject, CsrExtensions: CsrExtensions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateAuthorityConfiguration:
     KeyAlgorithm KeyAlgorithm
     SigningAlgorithm SigningAlgorithm
@@ -283,8 +289,9 @@ struct CreateCertificateAuthorityAuditReportResponse:
     Optional[str] AuditReportId
     Optional[str] S3Key
 
-# no @derive(Json): member(s) CertificateAuthorityConfiguration: CertificateAuthorityConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthorityConfiguration: CertificateAuthorityConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCertificateAuthorityRequest:
     CertificateAuthorityConfiguration CertificateAuthorityConfiguration
     Optional[RevocationConfiguration] RevocationConfiguration
@@ -298,8 +305,9 @@ struct CreateCertificateAuthorityRequest:
 struct CreateCertificateAuthorityResponse:
     Optional[str] CertificateAuthorityArn
 
-# no @derive(Json): member(s) Actions: list[ActionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[ActionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePermissionRequest:
     str CertificateAuthorityArn
     str Principal
@@ -321,8 +329,9 @@ struct CrlConfiguration:
 struct CrlDistributionPointExtensionConfiguration:
     bool OmitExtension
 
-# no @derive(Json): member(s) SubjectInformationAccess: list[AccessDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubjectInformationAccess: list[AccessDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CsrExtensions:
     Optional[KeyUsage] KeyUsage
     Optional[list[AccessDescription]] SubjectInformationAccess
@@ -369,8 +378,9 @@ struct DescribeCertificateAuthorityAuditReportResponse:
 struct DescribeCertificateAuthorityRequest:
     str CertificateAuthorityArn
 
-# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCertificateAuthorityResponse:
     Optional[CertificateAuthority] CertificateAuthority
 
@@ -384,8 +394,9 @@ struct ExtendedKeyUsage:
     Optional[ExtendedKeyUsageType] ExtendedKeyUsageType
     Optional[str] ExtendedKeyUsageObjectIdentifier
 
-# no @derive(Json): member(s) CertificatePolicies: list[PolicyInformation], ExtendedKeyUsage: list[ExtendedKeyUsage], SubjectAlternativeNames: list[GeneralName], CustomExtensions: list[CustomExtension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificatePolicies: list[PolicyInformation], ExtendedKeyUsage: list[ExtendedKeyUsage], SubjectAlternativeNames: list[GeneralName], CustomExtensions: list[CustomExtension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Extensions:
     Optional[list[PolicyInformation]] CertificatePolicies
     Optional[list[ExtendedKeyUsage]] ExtendedKeyUsage
@@ -393,8 +404,9 @@ struct Extensions:
     Optional[list[GeneralName]] SubjectAlternativeNames
     Optional[list[CustomExtension]] CustomExtensions
 
-# no @derive(Json): member(s) DirectoryName: ASN1Subject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectoryName: ASN1Subject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneralName:
     Optional[OtherName] OtherName
     Optional[str] Rfc822Name
@@ -474,8 +486,9 @@ struct InvalidStateException:
 struct InvalidTagException:
     Optional[str] message
 
-# no @derive(Json): member(s) ApiPassthrough: ApiPassthrough not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApiPassthrough: ApiPassthrough not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IssueCertificateRequest:
     Optional[ApiPassthrough] ApiPassthrough
     str CertificateAuthorityArn
@@ -512,8 +525,9 @@ struct ListCertificateAuthoritiesRequest:
     Optional[str] NextToken
     Optional[ResourceOwner] ResourceOwner
 
-# no @derive(Json): member(s) CertificateAuthorities: list[CertificateAuthority] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthorities: list[CertificateAuthority] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificateAuthoritiesResponse:
     Optional[str] NextToken
     Optional[list[CertificateAuthority]] CertificateAuthorities
@@ -524,8 +538,9 @@ struct ListPermissionsRequest:
     Optional[str] NextToken
     str CertificateAuthorityArn
 
-# no @derive(Json): member(s) Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionsResponse:
     Optional[str] NextToken
     Optional[list[Permission]] Permissions
@@ -536,8 +551,9 @@ struct ListTagsRequest:
     Optional[str] NextToken
     str CertificateAuthorityArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[str] NextToken
     Optional[list[Tag]] Tags
@@ -564,8 +580,9 @@ struct OtherName:
     str TypeId
     str Value
 
-# no @derive(Json): member(s) Actions: list[ActionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[ActionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Permission:
     Optional[str] CertificateAuthorityArn
     Optional[DateTime] CreatedAt
@@ -578,8 +595,9 @@ struct Permission:
 struct PermissionAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) PolicyQualifiers: list[PolicyQualifierInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyQualifiers: list[PolicyQualifierInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyInformation:
     str CertPolicyId
     Optional[list[PolicyQualifierInfo]] PolicyQualifiers
@@ -634,8 +652,9 @@ struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagCertificateAuthorityRequest:
     str CertificateAuthorityArn
     list[Tag] Tags
@@ -644,8 +663,9 @@ struct TagCertificateAuthorityRequest:
 struct TooManyTagsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagCertificateAuthorityRequest:
     str CertificateAuthorityArn
     list[Tag] Tags
@@ -731,24 +751,307 @@ def acm_pca_error_from_code(str code) -> ACM_PCAError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCertificateAuthority (input CreateCertificateAuthorityRequest)
-#   CreatePermission (input CreatePermissionRequest)
-#   IssueCertificate (input IssueCertificateRequest)
-#   TagCertificateAuthority (input TagCertificateAuthorityRequest)
-#   UntagCertificateAuthority (input UntagCertificateAuthorityRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def acm_pca_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def acm_pca_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def acm_pca_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ASN1Subject to a compact JSON object (declaration order).
+def asn1_subject_to_json(ASN1Subject v) -> str:
+    list[str] parts = []
+    if v.Country.is_some():
+        auto u0 = v.Country.unwrap()
+        parts.append("\"Country\":" + acm_pca_json_str(u0))
+    if v.Organization.is_some():
+        auto u1 = v.Organization.unwrap()
+        parts.append("\"Organization\":" + acm_pca_json_str(u1))
+    if v.OrganizationalUnit.is_some():
+        auto u2 = v.OrganizationalUnit.unwrap()
+        parts.append("\"OrganizationalUnit\":" + acm_pca_json_str(u2))
+    if v.DistinguishedNameQualifier.is_some():
+        auto u3 = v.DistinguishedNameQualifier.unwrap()
+        parts.append("\"DistinguishedNameQualifier\":" + acm_pca_json_str(u3))
+    if v.State.is_some():
+        auto u4 = v.State.unwrap()
+        parts.append("\"State\":" + acm_pca_json_str(u4))
+    if v.CommonName.is_some():
+        auto u5 = v.CommonName.unwrap()
+        parts.append("\"CommonName\":" + acm_pca_json_str(u5))
+    if v.SerialNumber.is_some():
+        auto u6 = v.SerialNumber.unwrap()
+        parts.append("\"SerialNumber\":" + acm_pca_json_str(u6))
+    if v.Locality.is_some():
+        auto u7 = v.Locality.unwrap()
+        parts.append("\"Locality\":" + acm_pca_json_str(u7))
+    if v.Title.is_some():
+        auto u8 = v.Title.unwrap()
+        parts.append("\"Title\":" + acm_pca_json_str(u8))
+    if v.Surname.is_some():
+        auto u9 = v.Surname.unwrap()
+        parts.append("\"Surname\":" + acm_pca_json_str(u9))
+    if v.GivenName.is_some():
+        auto u10 = v.GivenName.unwrap()
+        parts.append("\"GivenName\":" + acm_pca_json_str(u10))
+    if v.Initials.is_some():
+        auto u11 = v.Initials.unwrap()
+        parts.append("\"Initials\":" + acm_pca_json_str(u11))
+    if v.Pseudonym.is_some():
+        auto u12 = v.Pseudonym.unwrap()
+        parts.append("\"Pseudonym\":" + acm_pca_json_str(u12))
+    if v.GenerationQualifier.is_some():
+        auto u13 = v.GenerationQualifier.unwrap()
+        parts.append("\"GenerationQualifier\":" + acm_pca_json_str(u13))
+    if v.CustomAttributes.is_some():
+        auto u14 = v.CustomAttributes.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"CustomAttributes\":" + acm_pca_json_arr(e15))
+    return acm_pca_json_obj(parts)
+
+# Serialize AccessDescription to a compact JSON object (declaration order).
+def access_description_to_json(AccessDescription v) -> str:
+    list[str] parts = []
+    parts.append("\"AccessMethod\":" + v.AccessMethod.to_json())
+    parts.append("\"AccessLocation\":" + general_name_to_json(v.AccessLocation))
+    return acm_pca_json_obj(parts)
+
+# Serialize ApiPassthrough to a compact JSON object (declaration order).
+def api_passthrough_to_json(ApiPassthrough v) -> str:
+    list[str] parts = []
+    if v.Extensions.is_some():
+        auto u0 = v.Extensions.unwrap()
+        parts.append("\"Extensions\":" + extensions_to_json(u0))
+    if v.Subject.is_some():
+        auto u1 = v.Subject.unwrap()
+        parts.append("\"Subject\":" + asn1_subject_to_json(u1))
+    return acm_pca_json_obj(parts)
+
+# Serialize CertificateAuthorityConfiguration to a compact JSON object (declaration order).
+def certificate_authority_configuration_to_json(CertificateAuthorityConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyAlgorithm\":" + v.KeyAlgorithm.to_json())
+    parts.append("\"SigningAlgorithm\":" + v.SigningAlgorithm.to_json())
+    parts.append("\"Subject\":" + asn1_subject_to_json(v.Subject))
+    if v.CsrExtensions.is_some():
+        auto u0 = v.CsrExtensions.unwrap()
+        parts.append("\"CsrExtensions\":" + csr_extensions_to_json(u0))
+    return acm_pca_json_obj(parts)
+
+# Serialize CreateCertificateAuthorityRequest to a compact JSON object (declaration order).
+def create_certificate_authority_request_to_json(CreateCertificateAuthorityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateAuthorityConfiguration\":" + certificate_authority_configuration_to_json(v.CertificateAuthorityConfiguration))
+    if v.RevocationConfiguration.is_some():
+        auto u0 = v.RevocationConfiguration.unwrap()
+        parts.append("\"RevocationConfiguration\":" + u0.to_json())
+    parts.append("\"CertificateAuthorityType\":" + v.CertificateAuthorityType.to_json())
+    if v.IdempotencyToken.is_some():
+        auto u1 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + acm_pca_json_str(u1))
+    if v.KeyStorageSecurityStandard.is_some():
+        auto u2 = v.KeyStorageSecurityStandard.unwrap()
+        parts.append("\"KeyStorageSecurityStandard\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + acm_pca_json_arr(e4))
+    if v.UsageMode.is_some():
+        auto u5 = v.UsageMode.unwrap()
+        parts.append("\"UsageMode\":" + u5.to_json())
+    return acm_pca_json_obj(parts)
+
+# Serialize CreatePermissionRequest to a compact JSON object (declaration order).
+def create_permission_request_to_json(CreatePermissionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
+    parts.append("\"Principal\":" + acm_pca_json_str(v.Principal))
+    if v.SourceAccount.is_some():
+        auto u0 = v.SourceAccount.unwrap()
+        parts.append("\"SourceAccount\":" + acm_pca_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Actions:
+        e1.append(x1.to_json())
+    parts.append("\"Actions\":" + acm_pca_json_arr(e1))
+    return acm_pca_json_obj(parts)
+
+# Serialize CsrExtensions to a compact JSON object (declaration order).
+def csr_extensions_to_json(CsrExtensions v) -> str:
+    list[str] parts = []
+    if v.KeyUsage.is_some():
+        auto u0 = v.KeyUsage.unwrap()
+        parts.append("\"KeyUsage\":" + u0.to_json())
+    if v.SubjectInformationAccess.is_some():
+        auto u1 = v.SubjectInformationAccess.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(access_description_to_json(x2))
+        parts.append("\"SubjectInformationAccess\":" + acm_pca_json_arr(e2))
+    return acm_pca_json_obj(parts)
+
+# Serialize Extensions to a compact JSON object (declaration order).
+def extensions_to_json(Extensions v) -> str:
+    list[str] parts = []
+    if v.CertificatePolicies.is_some():
+        auto u0 = v.CertificatePolicies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(policy_information_to_json(x1))
+        parts.append("\"CertificatePolicies\":" + acm_pca_json_arr(e1))
+    if v.ExtendedKeyUsage.is_some():
+        auto u2 = v.ExtendedKeyUsage.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ExtendedKeyUsage\":" + acm_pca_json_arr(e3))
+    if v.KeyUsage.is_some():
+        auto u4 = v.KeyUsage.unwrap()
+        parts.append("\"KeyUsage\":" + u4.to_json())
+    if v.SubjectAlternativeNames.is_some():
+        auto u5 = v.SubjectAlternativeNames.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(general_name_to_json(x6))
+        parts.append("\"SubjectAlternativeNames\":" + acm_pca_json_arr(e6))
+    if v.CustomExtensions.is_some():
+        auto u7 = v.CustomExtensions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CustomExtensions\":" + acm_pca_json_arr(e8))
+    return acm_pca_json_obj(parts)
+
+# Serialize GeneralName to a compact JSON object (declaration order).
+def general_name_to_json(GeneralName v) -> str:
+    list[str] parts = []
+    if v.OtherName.is_some():
+        auto u0 = v.OtherName.unwrap()
+        parts.append("\"OtherName\":" + u0.to_json())
+    if v.Rfc822Name.is_some():
+        auto u1 = v.Rfc822Name.unwrap()
+        parts.append("\"Rfc822Name\":" + acm_pca_json_str(u1))
+    if v.DnsName.is_some():
+        auto u2 = v.DnsName.unwrap()
+        parts.append("\"DnsName\":" + acm_pca_json_str(u2))
+    if v.DirectoryName.is_some():
+        auto u3 = v.DirectoryName.unwrap()
+        parts.append("\"DirectoryName\":" + asn1_subject_to_json(u3))
+    if v.EdiPartyName.is_some():
+        auto u4 = v.EdiPartyName.unwrap()
+        parts.append("\"EdiPartyName\":" + u4.to_json())
+    if v.UniformResourceIdentifier.is_some():
+        auto u5 = v.UniformResourceIdentifier.unwrap()
+        parts.append("\"UniformResourceIdentifier\":" + acm_pca_json_str(u5))
+    if v.IpAddress.is_some():
+        auto u6 = v.IpAddress.unwrap()
+        parts.append("\"IpAddress\":" + acm_pca_json_str(u6))
+    if v.RegisteredId.is_some():
+        auto u7 = v.RegisteredId.unwrap()
+        parts.append("\"RegisteredId\":" + acm_pca_json_str(u7))
+    return acm_pca_json_obj(parts)
+
+# Serialize IssueCertificateRequest to a compact JSON object (declaration order).
+def issue_certificate_request_to_json(IssueCertificateRequest v) -> str:
+    list[str] parts = []
+    if v.ApiPassthrough.is_some():
+        auto u0 = v.ApiPassthrough.unwrap()
+        parts.append("\"ApiPassthrough\":" + api_passthrough_to_json(u0))
+    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
+    parts.append("\"Csr\":" + acm_pca_json_str(base64.encode(v.Csr)))
+    parts.append("\"SigningAlgorithm\":" + v.SigningAlgorithm.to_json())
+    if v.TemplateArn.is_some():
+        auto u1 = v.TemplateArn.unwrap()
+        parts.append("\"TemplateArn\":" + acm_pca_json_str(u1))
+    parts.append("\"Validity\":" + v.Validity.to_json())
+    if v.ValidityNotBefore.is_some():
+        auto u2 = v.ValidityNotBefore.unwrap()
+        parts.append("\"ValidityNotBefore\":" + u2.to_json())
+    if v.IdempotencyToken.is_some():
+        auto u3 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + acm_pca_json_str(u3))
+    return acm_pca_json_obj(parts)
+
+# Serialize PolicyInformation to a compact JSON object (declaration order).
+def policy_information_to_json(PolicyInformation v) -> str:
+    list[str] parts = []
+    parts.append("\"CertPolicyId\":" + acm_pca_json_str(v.CertPolicyId))
+    if v.PolicyQualifiers.is_some():
+        auto u0 = v.PolicyQualifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PolicyQualifiers\":" + acm_pca_json_arr(e1))
+    return acm_pca_json_obj(parts)
+
+# Serialize TagCertificateAuthorityRequest to a compact JSON object (declaration order).
+def tag_certificate_authority_request_to_json(TagCertificateAuthorityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + acm_pca_json_arr(e0))
+    return acm_pca_json_obj(parts)
+
+# Serialize UntagCertificateAuthorityRequest to a compact JSON object (declaration order).
+def untag_certificate_authority_request_to_json(UntagCertificateAuthorityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + acm_pca_json_arr(e0))
+    return acm_pca_json_obj(parts)
 
 # A bound ACM_PCA client: credentials + region, threaded into every operation.
 struct ACM_PCAClient:
     core.Credentials creds
     str region
 
+    # CreateCertificateAuthority
+    # errors: InvalidArgsException, InvalidPolicyException, InvalidTagException, LimitExceededException
+    def create_certificate_authority(self, CreateCertificateAuthorityRequest input) -> str:
+        auto body = create_certificate_authority_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "CreateCertificateAuthority", body)
+
     # CreateCertificateAuthorityAuditReport
     # errors: InvalidArgsException, InvalidArnException, InvalidStateException, RequestFailedException, RequestInProgressException, ResourceNotFoundException
     def create_certificate_authority_audit_report(self, CreateCertificateAuthorityAuditReportRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "CreateCertificateAuthorityAuditReport", body)
+
+    # CreatePermission
+    # errors: InvalidArnException, InvalidStateException, LimitExceededException, PermissionAlreadyExistsException, RequestFailedException, ResourceNotFoundException
+    def create_permission(self, CreatePermissionRequest input) -> str:
+        auto body = create_permission_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "CreatePermission", body)
 
     # DeleteCertificateAuthority
     # errors: ConcurrentModificationException, InvalidArnException, InvalidStateException, ResourceNotFoundException
@@ -810,6 +1113,12 @@ struct ACM_PCAClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ImportCertificateAuthorityCertificate", body)
 
+    # IssueCertificate
+    # errors: InvalidArgsException, InvalidArnException, InvalidStateException, LimitExceededException, MalformedCSRException, ResourceNotFoundException
+    def issue_certificate(self, IssueCertificateRequest input) -> str:
+        auto body = issue_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "IssueCertificate", body)
+
     # ListCertificateAuthorities
     # errors: InvalidNextTokenException
     def list_certificate_authorities(self, ListCertificateAuthoritiesRequest input) -> str:
@@ -845,6 +1154,18 @@ struct ACM_PCAClient:
     def revoke_certificate(self, RevokeCertificateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "RevokeCertificate", body)
+
+    # TagCertificateAuthority
+    # errors: InvalidArnException, InvalidStateException, InvalidTagException, ResourceNotFoundException, TooManyTagsException
+    def tag_certificate_authority(self, TagCertificateAuthorityRequest input) -> str:
+        auto body = tag_certificate_authority_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "TagCertificateAuthority", body)
+
+    # UntagCertificateAuthority
+    # errors: InvalidArnException, InvalidStateException, InvalidTagException, ResourceNotFoundException
+    def untag_certificate_authority(self, UntagCertificateAuthorityRequest input) -> str:
+        auto body = untag_certificate_authority_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "UntagCertificateAuthority", body)
 
     # UpdateCertificateAuthority
     # errors: ConcurrentModificationException, InvalidArgsException, InvalidArnException, InvalidPolicyException, InvalidStateException, ResourceNotFoundException

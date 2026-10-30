@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 123 operations — 67 with a generated method,
-#   56 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 123 operations — 119 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   1059 structs (646 @derive(Json)), 93 enums, 15 error variants.
-#   15 paginators generated (13 paginated ops skipped) from paginators-1.json.
+#   25 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The SecurityHub rest-json protocol: SigV4 service "securityhub" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1174,15 +1175,17 @@ struct AccountDetails:
     str AccountId
     Optional[str] Email
 
-# no @derive(Json): member(s) FreeTrialStatuses: list[FreeTrialStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FreeTrialStatuses: list[FreeTrialStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountFreeTrialStatus:
     str AccountId
     DateTime EvaluatedAt
     list[FreeTrialStatus] FreeTrialStatuses
 
-# no @derive(Json): member(s) AwsApiCallAction: AwsApiCallAction, PortProbeAction: PortProbeAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsApiCallAction: AwsApiCallAction, PortProbeAction: PortProbeAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[str] ActionType
     Optional[NetworkConnectionAction] NetworkConnectionAction
@@ -1277,8 +1280,9 @@ struct AssociationStateDetails:
     Optional[str] State
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) FindingFieldsUpdate: AutomationRulesFindingFieldsUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindingFieldsUpdate: AutomationRulesFindingFieldsUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationRulesAction:
     Optional[str] Type
     Optional[AutomationRulesFindingFieldsUpdate] FindingFieldsUpdate
@@ -1294,8 +1298,9 @@ struct AutomationRulesActionV2:
     Optional[ExternalIntegrationConfiguration] ExternalIntegrationConfiguration
     Optional[AutomationRulesResourceFieldsUpdateV2] ResourceFieldsUpdate
 
-# no @derive(Json): member(s) Criteria: AutomationRulesFindingFilters, Actions: list[AutomationRulesAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: AutomationRulesFindingFilters, Actions: list[AutomationRulesAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationRulesConfig:
     Optional[str] RuleArn
     Optional[RuleStatus] RuleStatus
@@ -1309,8 +1314,9 @@ struct AutomationRulesConfig:
     Optional[DateTime] UpdatedAt
     Optional[str] CreatedBy
 
-# no @derive(Json): member(s) Types: list[str], UserDefinedFields: dict[str, str], RelatedFindings: list[RelatedFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str], UserDefinedFields: dict[str, str], RelatedFindings: list[RelatedFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationRulesFindingFieldsUpdate:
     Optional[NoteUpdate] Note
     Optional[SeverityUpdate] Severity
@@ -1328,8 +1334,9 @@ struct AutomationRulesFindingFieldsUpdateV2:
     Optional[str] Comment
     Optional[int64] StatusId
 
-# no @derive(Json): member(s) ProductArn: list[StringFilter], AwsAccountId: list[StringFilter], Id: list[StringFilter], GeneratorId: list[StringFilter], Type: list[StringFilter], FirstObservedAt: list[DateFilter], LastObservedAt: list[DateFilter], CreatedAt: list[DateFilter], UpdatedAt: list[DateFilter], Confidence: list[NumberFilter], Criticality: list[NumberFilter], Title: list[StringFilter], Description: list[StringFilter], SourceUrl: list[StringFilter], ProductName: list[StringFilter], CompanyName: list[StringFilter], SeverityLabel: list[StringFilter], ResourceType: list[StringFilter], ResourceId: list[StringFilter], ResourcePartition: list[StringFilter], ResourceRegion: list[StringFilter], ResourceTags: list[MapFilter], ResourceDetailsOther: list[MapFilter], ComplianceStatus: list[StringFilter], ComplianceSecurityControlId: list[StringFilter], ComplianceAssociatedStandardsId: list[StringFilter], VerificationState: list[StringFilter], WorkflowStatus: list[StringFilter], RecordState: list[StringFilter], RelatedFindingsProductArn: list[StringFilter], RelatedFindingsId: list[StringFilter], NoteText: list[StringFilter], NoteUpdatedAt: list[DateFilter], NoteUpdatedBy: list[StringFilter], UserDefinedFields: list[MapFilter], ResourceApplicationArn: list[StringFilter], ResourceApplicationName: list[StringFilter], AwsAccountName: list[StringFilter], ResourceProvider: list[StringFilter], ResourceOwnerAccountId: list[StringFilter], ResourceOwnerOrgId: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductArn: list[StringFilter], AwsAccountId: list[StringFilter], Id: list[StringFilter], GeneratorId: list[StringFilter], Type: list[StringFilter], FirstObservedAt: list[DateFilter], LastObservedAt: list[DateFilter], CreatedAt: list[DateFilter], UpdatedAt: list[DateFilter], Confidence: list[NumberFilter], Criticality: list[NumberFilter], Title: list[StringFilter], Description: list[StringFilter], SourceUrl: list[StringFilter], ProductName: list[StringFilter], CompanyName: list[StringFilter], SeverityLabel: list[StringFilter], ResourceType: list[StringFilter], ResourceId: list[StringFilter], ResourcePartition: list[StringFilter], ResourceRegion: list[StringFilter], ResourceTags: list[MapFilter], ResourceDetailsOther: list[MapFilter], ComplianceStatus: list[StringFilter], ComplianceSecurityControlId: list[StringFilter], ComplianceAssociatedStandardsId: list[StringFilter], VerificationState: list[StringFilter], WorkflowStatus: list[StringFilter], RecordState: list[StringFilter], RelatedFindingsProductArn: list[StringFilter], RelatedFindingsId: list[StringFilter], NoteText: list[StringFilter], NoteUpdatedAt: list[DateFilter], NoteUpdatedBy: list[StringFilter], UserDefinedFields: list[MapFilter], ResourceApplicationArn: list[StringFilter], ResourceApplicationName: list[StringFilter], AwsAccountName: list[StringFilter], ResourceProvider: list[StringFilter], ResourceOwnerAccountId: list[StringFilter], ResourceOwnerOrgId: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationRulesFindingFilters:
     Optional[list[StringFilter]] ProductArn
     Optional[list[StringFilter]] AwsAccountId
@@ -1387,8 +1394,9 @@ struct AutomationRulesMetadata:
     Optional[DateTime] UpdatedAt
     Optional[str] CreatedBy
 
-# no @derive(Json): member(s) Actions: list[AutomationRulesActionTypeObjectV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[AutomationRulesActionTypeObjectV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationRulesMetadataV2:
     Optional[str] RuleArn
     Optional[str] RuleId
@@ -1409,8 +1417,9 @@ struct AvailabilityZone:
     Optional[str] ZoneName
     Optional[str] SubnetId
 
-# no @derive(Json): member(s) LdapServerMetadata: AwsAmazonMqBrokerLdapServerMetadataDetails, SecurityGroups: list[str], SubnetIds: list[str], Users: list[AwsAmazonMqBrokerUsersDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LdapServerMetadata: AwsAmazonMqBrokerLdapServerMetadataDetails, SecurityGroups: list[str], SubnetIds: list[str], Users: list[AwsAmazonMqBrokerUsersDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAmazonMqBrokerDetails:
     Optional[str] AuthenticationStrategy
     Optional[bool] AutoMinorVersionUpgrade
@@ -1436,8 +1445,9 @@ struct AwsAmazonMqBrokerEncryptionOptionsDetails:
     Optional[str] KmsKeyId
     Optional[bool] UseAwsOwnedKey
 
-# no @derive(Json): member(s) Hosts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Hosts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAmazonMqBrokerLdapServerMetadataDetails:
     Optional[list[str]] Hosts
     Optional[str] RoleBase
@@ -1474,8 +1484,9 @@ struct AwsAmazonMqBrokerUsersDetails:
     Optional[str] PendingChange
     Optional[str] Username
 
-# no @derive(Json): member(s) AffectedResources: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AffectedResources: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiCallAction:
     Optional[str] Api
     Optional[str] ServiceName
@@ -1495,16 +1506,18 @@ struct AwsApiGatewayAccessLogSettings:
     Optional[str] Format
     Optional[str] DestinationArn
 
-# no @derive(Json): member(s) StageVariableOverrides: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StageVariableOverrides: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiGatewayCanarySettings:
     Optional[float64] PercentTraffic
     Optional[str] DeploymentId
     Optional[dict[str, str]] StageVariableOverrides
     Optional[bool] UseStageCache
 
-# no @derive(Json): member(s) Types: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiGatewayEndpointConfiguration:
     Optional[list[str]] Types
 
@@ -1523,8 +1536,9 @@ struct AwsApiGatewayMethodSettings:
     Optional[str] HttpMethod
     Optional[str] ResourcePath
 
-# no @derive(Json): member(s) BinaryMediaTypes: list[str], EndpointConfiguration: AwsApiGatewayEndpointConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BinaryMediaTypes: list[str], EndpointConfiguration: AwsApiGatewayEndpointConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiGatewayRestApiDetails:
     Optional[str] Id
     Optional[str] Name
@@ -1536,8 +1550,9 @@ struct AwsApiGatewayRestApiDetails:
     Optional[str] ApiKeySource
     Optional[AwsApiGatewayEndpointConfiguration] EndpointConfiguration
 
-# no @derive(Json): member(s) MethodSettings: list[AwsApiGatewayMethodSettings], Variables: dict[str, str], CanarySettings: AwsApiGatewayCanarySettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MethodSettings: list[AwsApiGatewayMethodSettings], Variables: dict[str, str], CanarySettings: AwsApiGatewayCanarySettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiGatewayStageDetails:
     Optional[str] DeploymentId
     Optional[str] ClientCertificateId
@@ -1556,8 +1571,9 @@ struct AwsApiGatewayStageDetails:
     Optional[str] LastUpdatedDate
     Optional[str] WebAclArn
 
-# no @derive(Json): member(s) CorsConfiguration: AwsCorsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsConfiguration: AwsCorsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiGatewayV2ApiDetails:
     Optional[str] ApiEndpoint
     Optional[str] ApiId
@@ -1578,8 +1594,9 @@ struct AwsApiGatewayV2RouteSettings:
     Optional[int64] ThrottlingBurstLimit
     Optional[float64] ThrottlingRateLimit
 
-# no @derive(Json): member(s) StageVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StageVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiGatewayV2StageDetails:
     Optional[str] ClientCertificateId
     Optional[str] CreatedDate
@@ -1602,8 +1619,9 @@ struct AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersDetails:
     Optional[AwsAppSyncGraphQlApiOpenIdConnectConfigDetails] OpenIdConnectConfig
     Optional[AwsAppSyncGraphQlApiUserPoolConfigDetails] UserPoolConfig
 
-# no @derive(Json): member(s) AdditionalAuthenticationProviders: list[AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAuthenticationProviders: list[AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAppSyncGraphQlApiDetails:
     Optional[str] ApiId
     Optional[str] Id
@@ -1668,8 +1686,9 @@ struct AwsAthenaWorkGroupDetails:
 struct AwsAutoScalingAutoScalingGroupAvailabilityZonesListDetails:
     Optional[str] Value
 
-# no @derive(Json): member(s) LoadBalancerNames: list[str], MixedInstancesPolicy: AwsAutoScalingAutoScalingGroupMixedInstancesPolicyDetails, AvailabilityZones: list[AwsAutoScalingAutoScalingGroupAvailabilityZonesListDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoadBalancerNames: list[str], MixedInstancesPolicy: AwsAutoScalingAutoScalingGroupMixedInstancesPolicyDetails, AvailabilityZones: list[AwsAutoScalingAutoScalingGroupAvailabilityZonesListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAutoScalingAutoScalingGroupDetails:
     Optional[str] LaunchConfigurationName
     Optional[list[str]] LoadBalancerNames
@@ -1687,8 +1706,9 @@ struct AwsAutoScalingAutoScalingGroupLaunchTemplateLaunchTemplateSpecification:
     Optional[str] LaunchTemplateName
     Optional[str] Version
 
-# no @derive(Json): member(s) LaunchTemplate: AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LaunchTemplate: AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAutoScalingAutoScalingGroupMixedInstancesPolicyDetails:
     Optional[AwsAutoScalingAutoScalingGroupMixedInstancesPolicyInstancesDistributionDetails] InstancesDistribution
     Optional[AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateDetails] LaunchTemplate
@@ -1702,8 +1722,9 @@ struct AwsAutoScalingAutoScalingGroupMixedInstancesPolicyInstancesDistributionDe
     Optional[int64] SpotInstancePools
     Optional[str] SpotMaxPrice
 
-# no @derive(Json): member(s) Overrides: list[AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateOverridesListDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Overrides: list[AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateOverridesListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateDetails:
     Optional[AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateLaunchTemplateSpecification] LaunchTemplateSpecification
     Optional[list[AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateOverridesListDetails]] Overrides
@@ -1735,8 +1756,9 @@ struct AwsAutoScalingLaunchConfigurationBlockDeviceMappingsEbsDetails:
     Optional[int64] VolumeSize
     Optional[str] VolumeType
 
-# no @derive(Json): member(s) BlockDeviceMappings: list[AwsAutoScalingLaunchConfigurationBlockDeviceMappingsDetails], ClassicLinkVpcSecurityGroups: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockDeviceMappings: list[AwsAutoScalingLaunchConfigurationBlockDeviceMappingsDetails], ClassicLinkVpcSecurityGroups: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsAutoScalingLaunchConfigurationDetails:
     Optional[bool] AssociatePublicIpAddress
     Optional[list[AwsAutoScalingLaunchConfigurationBlockDeviceMappingsDetails]] BlockDeviceMappings
@@ -1768,21 +1790,24 @@ struct AwsAutoScalingLaunchConfigurationMetadataOptions:
     Optional[int64] HttpPutResponseHopLimit
     Optional[str] HttpTokens
 
-# no @derive(Json): member(s) BackupOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsBackupBackupPlanAdvancedBackupSettingsDetails:
     Optional[dict[str, str]] BackupOptions
     Optional[str] ResourceType
 
-# no @derive(Json): member(s) AdvancedBackupSettings: list[AwsBackupBackupPlanAdvancedBackupSettingsDetails], BackupPlanRule: list[AwsBackupBackupPlanRuleDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedBackupSettings: list[AwsBackupBackupPlanAdvancedBackupSettingsDetails], BackupPlanRule: list[AwsBackupBackupPlanRuleDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsBackupBackupPlanBackupPlanDetails:
     Optional[str] BackupPlanName
     Optional[list[AwsBackupBackupPlanAdvancedBackupSettingsDetails]] AdvancedBackupSettings
     Optional[list[AwsBackupBackupPlanRuleDetails]] BackupPlanRule
 
-# no @derive(Json): member(s) BackupPlan: AwsBackupBackupPlanBackupPlanDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupPlan: AwsBackupBackupPlanBackupPlanDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsBackupBackupPlanDetails:
     Optional[AwsBackupBackupPlanBackupPlanDetails] BackupPlan
     Optional[str] BackupPlanArn
@@ -1799,8 +1824,9 @@ struct AwsBackupBackupPlanRuleCopyActionsDetails:
     Optional[str] DestinationBackupVaultArn
     Optional[AwsBackupBackupPlanLifecycleDetails] Lifecycle
 
-# no @derive(Json): member(s) CopyActions: list[AwsBackupBackupPlanRuleCopyActionsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CopyActions: list[AwsBackupBackupPlanRuleCopyActionsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsBackupBackupPlanRuleDetails:
     Optional[str] TargetBackupVault
     Optional[int64] StartWindowMinutes
@@ -1812,8 +1838,9 @@ struct AwsBackupBackupPlanRuleDetails:
     Optional[list[AwsBackupBackupPlanRuleCopyActionsDetails]] CopyActions
     Optional[AwsBackupBackupPlanLifecycleDetails] Lifecycle
 
-# no @derive(Json): member(s) Notifications: AwsBackupBackupVaultNotificationsDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notifications: AwsBackupBackupVaultNotificationsDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsBackupBackupVaultDetails:
     Optional[str] BackupVaultArn
     Optional[str] BackupVaultName
@@ -1821,8 +1848,9 @@ struct AwsBackupBackupVaultDetails:
     Optional[AwsBackupBackupVaultNotificationsDetails] Notifications
     Optional[str] AccessPolicy
 
-# no @derive(Json): member(s) BackupVaultEvents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupVaultEvents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsBackupBackupVaultNotificationsDetails:
     Optional[list[str]] BackupVaultEvents
     Optional[str] SnsTopicArn
@@ -1866,8 +1894,9 @@ struct AwsBackupRecoveryPointLifecycleDetails:
     Optional[int64] DeleteAfterDays
     Optional[int64] MoveToColdStorageAfterDays
 
-# no @derive(Json): member(s) DomainValidationOptions: list[AwsCertificateManagerCertificateDomainValidationOption], ExtendedKeyUsages: list[AwsCertificateManagerCertificateExtendedKeyUsage], InUseBy: list[str], KeyUsages: list[AwsCertificateManagerCertificateKeyUsage], RenewalSummary: AwsCertificateManagerCertificateRenewalSummary, SubjectAlternativeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainValidationOptions: list[AwsCertificateManagerCertificateDomainValidationOption], ExtendedKeyUsages: list[AwsCertificateManagerCertificateExtendedKeyUsage], InUseBy: list[str], KeyUsages: list[AwsCertificateManagerCertificateKeyUsage], RenewalSummary: AwsCertificateManagerCertificateRenewalSummary, SubjectAlternativeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCertificateManagerCertificateDetails:
     Optional[str] CertificateAuthorityArn
     Optional[str] CreatedAt
@@ -1893,8 +1922,9 @@ struct AwsCertificateManagerCertificateDetails:
     Optional[list[str]] SubjectAlternativeNames
     Optional[str] Type
 
-# no @derive(Json): member(s) ValidationEmails: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationEmails: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCertificateManagerCertificateDomainValidationOption:
     Optional[str] DomainName
     Optional[AwsCertificateManagerCertificateResourceRecord] ResourceRecord
@@ -1916,8 +1946,9 @@ struct AwsCertificateManagerCertificateKeyUsage:
 struct AwsCertificateManagerCertificateOptions:
     Optional[str] CertificateTransparencyLoggingPreference
 
-# no @derive(Json): member(s) DomainValidationOptions: list[AwsCertificateManagerCertificateDomainValidationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainValidationOptions: list[AwsCertificateManagerCertificateDomainValidationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCertificateManagerCertificateRenewalSummary:
     Optional[list[AwsCertificateManagerCertificateDomainValidationOption]] DomainValidationOptions
     Optional[str] RenewalStatus
@@ -1930,8 +1961,9 @@ struct AwsCertificateManagerCertificateResourceRecord:
     Optional[str] Type
     Optional[str] Value
 
-# no @derive(Json): member(s) Capabilities: list[str], NotificationArns: list[str], Outputs: list[AwsCloudFormationStackOutputsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Capabilities: list[str], NotificationArns: list[str], Outputs: list[AwsCloudFormationStackOutputsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFormationStackDetails:
     Optional[list[str]] Capabilities
     Optional[str] CreationTime
@@ -1963,8 +1995,9 @@ struct AwsCloudFormationStackOutputsDetails:
 struct AwsCloudFrontDistributionCacheBehavior:
     Optional[str] ViewerProtocolPolicy
 
-# no @derive(Json): member(s) Items: list[AwsCloudFrontDistributionCacheBehavior] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[AwsCloudFrontDistributionCacheBehavior] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionCacheBehaviors:
     Optional[list[AwsCloudFrontDistributionCacheBehavior]] Items
 
@@ -1972,8 +2005,9 @@ struct AwsCloudFrontDistributionCacheBehaviors:
 struct AwsCloudFrontDistributionDefaultCacheBehavior:
     Optional[str] ViewerProtocolPolicy
 
-# no @derive(Json): member(s) CacheBehaviors: AwsCloudFrontDistributionCacheBehaviors, Origins: AwsCloudFrontDistributionOrigins, OriginGroups: AwsCloudFrontDistributionOriginGroups not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CacheBehaviors: AwsCloudFrontDistributionCacheBehaviors, Origins: AwsCloudFrontDistributionOrigins, OriginGroups: AwsCloudFrontDistributionOriginGroups not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionDetails:
     Optional[AwsCloudFrontDistributionCacheBehaviors] CacheBehaviors
     Optional[AwsCloudFrontDistributionDefaultCacheBehavior] DefaultCacheBehavior
@@ -1995,8 +2029,9 @@ struct AwsCloudFrontDistributionLogging:
     Optional[bool] IncludeCookies
     Optional[str] Prefix
 
-# no @derive(Json): member(s) OriginSslProtocols: AwsCloudFrontDistributionOriginSslProtocols not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginSslProtocols: AwsCloudFrontDistributionOriginSslProtocols not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginCustomOriginConfig:
     Optional[int64] HttpPort
     Optional[int64] HttpsPort
@@ -2005,29 +2040,34 @@ struct AwsCloudFrontDistributionOriginCustomOriginConfig:
     Optional[int64] OriginReadTimeout
     Optional[AwsCloudFrontDistributionOriginSslProtocols] OriginSslProtocols
 
-# no @derive(Json): member(s) FailoverCriteria: AwsCloudFrontDistributionOriginGroupFailover not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailoverCriteria: AwsCloudFrontDistributionOriginGroupFailover not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginGroup:
     Optional[AwsCloudFrontDistributionOriginGroupFailover] FailoverCriteria
 
-# no @derive(Json): member(s) StatusCodes: AwsCloudFrontDistributionOriginGroupFailoverStatusCodes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatusCodes: AwsCloudFrontDistributionOriginGroupFailoverStatusCodes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginGroupFailover:
     Optional[AwsCloudFrontDistributionOriginGroupFailoverStatusCodes] StatusCodes
 
-# no @derive(Json): member(s) Items: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginGroupFailoverStatusCodes:
     Optional[list[int64]] Items
     Optional[int64] Quantity
 
-# no @derive(Json): member(s) Items: list[AwsCloudFrontDistributionOriginGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[AwsCloudFrontDistributionOriginGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginGroups:
     Optional[list[AwsCloudFrontDistributionOriginGroup]] Items
 
-# no @derive(Json): member(s) CustomOriginConfig: AwsCloudFrontDistributionOriginCustomOriginConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomOriginConfig: AwsCloudFrontDistributionOriginCustomOriginConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginItem:
     Optional[str] DomainName
     Optional[str] Id
@@ -2039,14 +2079,16 @@ struct AwsCloudFrontDistributionOriginItem:
 struct AwsCloudFrontDistributionOriginS3OriginConfig:
     Optional[str] OriginAccessIdentity
 
-# no @derive(Json): member(s) Items: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOriginSslProtocols:
     Optional[list[str]] Items
     Optional[int64] Quantity
 
-# no @derive(Json): member(s) Items: list[AwsCloudFrontDistributionOriginItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[AwsCloudFrontDistributionOriginItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudFrontDistributionOrigins:
     Optional[list[AwsCloudFrontDistributionOriginItem]] Items
 
@@ -2078,8 +2120,9 @@ struct AwsCloudTrailTrailDetails:
     Optional[str] SnsTopicName
     Optional[str] TrailArn
 
-# no @derive(Json): member(s) AlarmActions: list[str], Dimensions: list[AwsCloudWatchAlarmDimensionsDetails], InsufficientDataActions: list[str], OkActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlarmActions: list[str], Dimensions: list[AwsCloudWatchAlarmDimensionsDetails], InsufficientDataActions: list[str], OkActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCloudWatchAlarmDetails:
     Optional[bool] ActionsEnabled
     Optional[list[str]] AlarmActions
@@ -2121,8 +2164,9 @@ struct AwsCodeBuildProjectArtifactsDetails:
     Optional[str] Path
     Optional[str] Type
 
-# no @derive(Json): member(s) Artifacts: list[AwsCodeBuildProjectArtifactsDetails], Environment: AwsCodeBuildProjectEnvironment, VpcConfig: AwsCodeBuildProjectVpcConfig, SecondaryArtifacts: list[AwsCodeBuildProjectArtifactsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Artifacts: list[AwsCodeBuildProjectArtifactsDetails], Environment: AwsCodeBuildProjectEnvironment, VpcConfig: AwsCodeBuildProjectVpcConfig, SecondaryArtifacts: list[AwsCodeBuildProjectArtifactsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCodeBuildProjectDetails:
     Optional[str] EncryptionKey
     Optional[list[AwsCodeBuildProjectArtifactsDetails]] Artifacts
@@ -2134,8 +2178,9 @@ struct AwsCodeBuildProjectDetails:
     Optional[AwsCodeBuildProjectVpcConfig] VpcConfig
     Optional[list[AwsCodeBuildProjectArtifactsDetails]] SecondaryArtifacts
 
-# no @derive(Json): member(s) EnvironmentVariables: list[AwsCodeBuildProjectEnvironmentEnvironmentVariablesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentVariables: list[AwsCodeBuildProjectEnvironmentEnvironmentVariablesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCodeBuildProjectEnvironment:
     Optional[str] Certificate
     Optional[list[AwsCodeBuildProjectEnvironmentEnvironmentVariablesDetails]] EnvironmentVariables
@@ -2179,15 +2224,17 @@ struct AwsCodeBuildProjectSource:
     Optional[int64] GitCloneDepth
     Optional[bool] InsecureSsl
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCodeBuildProjectVpcConfig:
     Optional[str] VpcId
     Optional[list[str]] Subnets
     Optional[list[str]] SecurityGroupIds
 
-# no @derive(Json): member(s) AllowOrigins: list[str], ExposeHeaders: list[str], AllowMethods: list[str], AllowHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowOrigins: list[str], ExposeHeaders: list[str], AllowMethods: list[str], AllowHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsCorsConfiguration:
     Optional[list[str]] AllowOrigins
     Optional[bool] AllowCredentials
@@ -2212,8 +2259,9 @@ struct AwsDmsEndpointDetails:
     Optional[str] SslMode
     Optional[str] Username
 
-# no @derive(Json): member(s) VpcSecurityGroups: list[AwsDmsReplicationInstanceVpcSecurityGroupsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcSecurityGroups: list[AwsDmsReplicationInstanceVpcSecurityGroupsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsDmsReplicationInstanceDetails:
     Optional[int64] AllocatedStorage
     Optional[bool] AutoMinorVersionUpgrade
@@ -2262,8 +2310,9 @@ struct AwsDynamoDbTableBillingModeSummary:
     Optional[str] BillingMode
     Optional[str] LastUpdateToPayPerRequestDateTime
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AwsDynamoDbTableAttributeDefinition], GlobalSecondaryIndexes: list[AwsDynamoDbTableGlobalSecondaryIndex], KeySchema: list[AwsDynamoDbTableKeySchema], LocalSecondaryIndexes: list[AwsDynamoDbTableLocalSecondaryIndex], Replicas: list[AwsDynamoDbTableReplica] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDefinitions: list[AwsDynamoDbTableAttributeDefinition], GlobalSecondaryIndexes: list[AwsDynamoDbTableGlobalSecondaryIndex], KeySchema: list[AwsDynamoDbTableKeySchema], LocalSecondaryIndexes: list[AwsDynamoDbTableLocalSecondaryIndex], Replicas: list[AwsDynamoDbTableReplica] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsDynamoDbTableDetails:
     Optional[list[AwsDynamoDbTableAttributeDefinition]] AttributeDefinitions
     Optional[AwsDynamoDbTableBillingModeSummary] BillingModeSummary
@@ -2286,8 +2335,9 @@ struct AwsDynamoDbTableDetails:
     Optional[str] TableStatus
     Optional[bool] DeletionProtectionEnabled
 
-# no @derive(Json): member(s) KeySchema: list[AwsDynamoDbTableKeySchema], Projection: AwsDynamoDbTableProjection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[AwsDynamoDbTableKeySchema], Projection: AwsDynamoDbTableProjection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsDynamoDbTableGlobalSecondaryIndex:
     Optional[bool] Backfilling
     Optional[str] IndexArn
@@ -2304,16 +2354,18 @@ struct AwsDynamoDbTableKeySchema:
     Optional[str] AttributeName
     Optional[str] KeyType
 
-# no @derive(Json): member(s) KeySchema: list[AwsDynamoDbTableKeySchema], Projection: AwsDynamoDbTableProjection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeySchema: list[AwsDynamoDbTableKeySchema], Projection: AwsDynamoDbTableProjection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsDynamoDbTableLocalSecondaryIndex:
     Optional[str] IndexArn
     Optional[str] IndexName
     Optional[list[AwsDynamoDbTableKeySchema]] KeySchema
     Optional[AwsDynamoDbTableProjection] Projection
 
-# no @derive(Json): member(s) NonKeyAttributes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NonKeyAttributes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsDynamoDbTableProjection:
     Optional[list[str]] NonKeyAttributes
     Optional[str] ProjectionType
@@ -2330,8 +2382,9 @@ struct AwsDynamoDbTableProvisionedThroughput:
 struct AwsDynamoDbTableProvisionedThroughputOverride:
     Optional[int64] ReadCapacityUnits
 
-# no @derive(Json): member(s) GlobalSecondaryIndexes: list[AwsDynamoDbTableReplicaGlobalSecondaryIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSecondaryIndexes: list[AwsDynamoDbTableReplicaGlobalSecondaryIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsDynamoDbTableReplica:
     Optional[list[AwsDynamoDbTableReplicaGlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[str] KmsMasterKeyId
@@ -2406,8 +2459,9 @@ struct AwsEc2ClientVpnEndpointConnectionLogOptionsDetails:
     Optional[str] CloudwatchLogGroup
     Optional[str] CloudwatchLogStream
 
-# no @derive(Json): member(s) DnsServer: list[str], AuthenticationOptions: list[AwsEc2ClientVpnEndpointAuthenticationOptionsDetails], SecurityGroupIdSet: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsServer: list[str], AuthenticationOptions: list[AwsEc2ClientVpnEndpointAuthenticationOptionsDetails], SecurityGroupIdSet: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2ClientVpnEndpointDetails:
     Optional[str] ClientVpnEndpointId
     Optional[str] Description
@@ -2439,8 +2493,9 @@ struct AwsEc2EipDetails:
     Optional[str] NetworkInterfaceOwnerId
     Optional[str] PrivateIpAddress
 
-# no @derive(Json): member(s) IpV4Addresses: list[str], IpV6Addresses: list[str], NetworkInterfaces: list[AwsEc2InstanceNetworkInterfacesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpV4Addresses: list[str], IpV6Addresses: list[str], NetworkInterfaces: list[AwsEc2InstanceNetworkInterfacesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2InstanceDetails:
     Optional[str] Type
     Optional[str] ImageId
@@ -2509,8 +2564,9 @@ struct AwsEc2LaunchTemplateDataCpuOptionsDetails:
 struct AwsEc2LaunchTemplateDataCreditSpecificationDetails:
     Optional[str] CpuCredits
 
-# no @derive(Json): member(s) BlockDeviceMappingSet: list[AwsEc2LaunchTemplateDataBlockDeviceMappingSetDetails], ElasticGpuSpecificationSet: list[AwsEc2LaunchTemplateDataElasticGpuSpecificationSetDetails], ElasticInferenceAcceleratorSet: list[AwsEc2LaunchTemplateDataElasticInferenceAcceleratorSetDetails], InstanceRequirements: AwsEc2LaunchTemplateDataInstanceRequirementsDetails, LicenseSet: list[AwsEc2LaunchTemplateDataLicenseSetDetails], NetworkInterfaceSet: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetDetails], SecurityGroupIdSet: list[str], SecurityGroupSet: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockDeviceMappingSet: list[AwsEc2LaunchTemplateDataBlockDeviceMappingSetDetails], ElasticGpuSpecificationSet: list[AwsEc2LaunchTemplateDataElasticGpuSpecificationSetDetails], ElasticInferenceAcceleratorSet: list[AwsEc2LaunchTemplateDataElasticInferenceAcceleratorSetDetails], InstanceRequirements: AwsEc2LaunchTemplateDataInstanceRequirementsDetails, LicenseSet: list[AwsEc2LaunchTemplateDataLicenseSetDetails], NetworkInterfaceSet: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetDetails], SecurityGroupIdSet: list[str], SecurityGroupSet: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2LaunchTemplateDataDetails:
     Optional[list[AwsEc2LaunchTemplateDataBlockDeviceMappingSetDetails]] BlockDeviceMappingSet
     Optional[AwsEc2LaunchTemplateDataCapacityReservationSpecificationDetails] CapacityReservationSpecification
@@ -2593,8 +2649,9 @@ struct AwsEc2LaunchTemplateDataInstanceRequirementsBaselineEbsBandwidthMbpsDetai
     Optional[int64] Max
     Optional[int64] Min
 
-# no @derive(Json): member(s) AcceleratorManufacturers: list[str], AcceleratorNames: list[str], AcceleratorTypes: list[str], CpuManufacturers: list[str], ExcludedInstanceTypes: list[str], InstanceGenerations: list[str], LocalStorageTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcceleratorManufacturers: list[str], AcceleratorNames: list[str], AcceleratorTypes: list[str], CpuManufacturers: list[str], ExcludedInstanceTypes: list[str], InstanceGenerations: list[str], LocalStorageTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2LaunchTemplateDataInstanceRequirementsDetails:
     Optional[AwsEc2LaunchTemplateDataInstanceRequirementsAcceleratorCountDetails] AcceleratorCount
     Optional[list[str]] AcceleratorManufacturers
@@ -2663,8 +2720,9 @@ struct AwsEc2LaunchTemplateDataMetadataOptionsDetails:
 struct AwsEc2LaunchTemplateDataMonitoringDetails:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Groups: list[str], Ipv4Prefixes: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetIpv4PrefixesDetails], Ipv6Addresses: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetIpv6AddressesDetails], Ipv6Prefixes: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetIpv6PrefixesDetails], PrivateIpAddresses: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetPrivateIpAddressesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str], Ipv4Prefixes: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetIpv4PrefixesDetails], Ipv6Addresses: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetIpv6AddressesDetails], Ipv6Prefixes: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetIpv6PrefixesDetails], PrivateIpAddresses: list[AwsEc2LaunchTemplateDataNetworkInterfaceSetPrivateIpAddressesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2LaunchTemplateDataNetworkInterfaceSetDetails:
     Optional[bool] AssociateCarrierIpAddress
     Optional[bool] AssociatePublicIpAddress
@@ -2720,8 +2778,9 @@ struct AwsEc2LaunchTemplateDataPrivateDnsNameOptionsDetails:
     Optional[bool] EnableResourceNameDnsARecord
     Optional[str] HostnameType
 
-# no @derive(Json): member(s) LaunchTemplateData: AwsEc2LaunchTemplateDataDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LaunchTemplateData: AwsEc2LaunchTemplateDataDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2LaunchTemplateDetails:
     Optional[str] LaunchTemplateName
     Optional[str] Id
@@ -2735,8 +2794,9 @@ struct AwsEc2NetworkAclAssociation:
     Optional[str] NetworkAclId
     Optional[str] SubnetId
 
-# no @derive(Json): member(s) Associations: list[AwsEc2NetworkAclAssociation], Entries: list[AwsEc2NetworkAclEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[AwsEc2NetworkAclAssociation], Entries: list[AwsEc2NetworkAclEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2NetworkAclDetails:
     Optional[bool] IsDefault
     Optional[str] NetworkAclId
@@ -2766,8 +2826,9 @@ struct AwsEc2NetworkInterfaceAttachment:
     Optional[str] InstanceOwnerId
     Optional[str] Status
 
-# no @derive(Json): member(s) SecurityGroups: list[AwsEc2NetworkInterfaceSecurityGroup], IpV6Addresses: list[AwsEc2NetworkInterfaceIpV6AddressDetail], PrivateIpAddresses: list[AwsEc2NetworkInterfacePrivateIpAddressDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[AwsEc2NetworkInterfaceSecurityGroup], IpV6Addresses: list[AwsEc2NetworkInterfaceIpV6AddressDetail], PrivateIpAddresses: list[AwsEc2NetworkInterfacePrivateIpAddressDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2NetworkInterfaceDetails:
     Optional[AwsEc2NetworkInterfaceAttachment] Attachment
     Optional[str] NetworkInterfaceId
@@ -2792,8 +2853,9 @@ struct AwsEc2NetworkInterfaceSecurityGroup:
     Optional[str] GroupName
     Optional[str] GroupId
 
-# no @derive(Json): member(s) AssociationSet: list[AssociationSetDetails], PropagatingVgwSet: list[PropagatingVgwSetDetails], RouteSet: list[RouteSetDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationSet: list[AssociationSetDetails], PropagatingVgwSet: list[PropagatingVgwSetDetails], RouteSet: list[RouteSetDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2RouteTableDetails:
     Optional[list[AssociationSetDetails]] AssociationSet
     Optional[str] OwnerId
@@ -2802,8 +2864,9 @@ struct AwsEc2RouteTableDetails:
     Optional[list[RouteSetDetails]] RouteSet
     Optional[str] VpcId
 
-# no @derive(Json): member(s) IpPermissions: list[AwsEc2SecurityGroupIpPermission], IpPermissionsEgress: list[AwsEc2SecurityGroupIpPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpPermissions: list[AwsEc2SecurityGroupIpPermission], IpPermissionsEgress: list[AwsEc2SecurityGroupIpPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2SecurityGroupDetails:
     Optional[str] GroupName
     Optional[str] GroupId
@@ -2812,8 +2875,9 @@ struct AwsEc2SecurityGroupDetails:
     Optional[list[AwsEc2SecurityGroupIpPermission]] IpPermissions
     Optional[list[AwsEc2SecurityGroupIpPermission]] IpPermissionsEgress
 
-# no @derive(Json): member(s) UserIdGroupPairs: list[AwsEc2SecurityGroupUserIdGroupPair], IpRanges: list[AwsEc2SecurityGroupIpRange], Ipv6Ranges: list[AwsEc2SecurityGroupIpv6Range], PrefixListIds: list[AwsEc2SecurityGroupPrefixListId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserIdGroupPairs: list[AwsEc2SecurityGroupUserIdGroupPair], IpRanges: list[AwsEc2SecurityGroupIpRange], Ipv6Ranges: list[AwsEc2SecurityGroupIpv6Range], PrefixListIds: list[AwsEc2SecurityGroupPrefixListId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2SecurityGroupIpPermission:
     Optional[str] IpProtocol
     Optional[int64] FromPort
@@ -2844,8 +2908,9 @@ struct AwsEc2SecurityGroupUserIdGroupPair:
     Optional[str] VpcId
     Optional[str] VpcPeeringConnectionId
 
-# no @derive(Json): member(s) Ipv6CidrBlockAssociationSet: list[Ipv6CidrBlockAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ipv6CidrBlockAssociationSet: list[Ipv6CidrBlockAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2SubnetDetails:
     Optional[bool] AssignIpv6AddressOnCreation
     Optional[str] AvailabilityZone
@@ -2861,8 +2926,9 @@ struct AwsEc2SubnetDetails:
     Optional[str] VpcId
     Optional[list[Ipv6CidrBlockAssociation]] Ipv6CidrBlockAssociationSet
 
-# no @derive(Json): member(s) TransitGatewayCidrBlocks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransitGatewayCidrBlocks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2TransitGatewayDetails:
     Optional[str] Id
     Optional[str] Description
@@ -2884,8 +2950,9 @@ struct AwsEc2VolumeAttachment:
     Optional[str] InstanceId
     Optional[str] Status
 
-# no @derive(Json): member(s) Attachments: list[AwsEc2VolumeAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachments: list[AwsEc2VolumeAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VolumeDetails:
     Optional[str] CreateTime
     Optional[str] DeviceName
@@ -2899,16 +2966,18 @@ struct AwsEc2VolumeDetails:
     Optional[str] VolumeType
     Optional[str] VolumeScanStatus
 
-# no @derive(Json): member(s) CidrBlockAssociationSet: list[CidrBlockAssociation], Ipv6CidrBlockAssociationSet: list[Ipv6CidrBlockAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CidrBlockAssociationSet: list[CidrBlockAssociation], Ipv6CidrBlockAssociationSet: list[Ipv6CidrBlockAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpcDetails:
     Optional[list[CidrBlockAssociation]] CidrBlockAssociationSet
     Optional[list[Ipv6CidrBlockAssociation]] Ipv6CidrBlockAssociationSet
     Optional[str] DhcpOptionsId
     Optional[str] State
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], BaseEndpointDnsNames: list[str], GatewayLoadBalancerArns: list[str], NetworkLoadBalancerArns: list[str], ServiceType: list[AwsEc2VpcEndpointServiceServiceTypeDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], BaseEndpointDnsNames: list[str], GatewayLoadBalancerArns: list[str], NetworkLoadBalancerArns: list[str], ServiceType: list[AwsEc2VpcEndpointServiceServiceTypeDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpcEndpointServiceDetails:
     Optional[bool] AcceptanceRequired
     Optional[list[str]] AvailabilityZones
@@ -2926,8 +2995,9 @@ struct AwsEc2VpcEndpointServiceDetails:
 struct AwsEc2VpcEndpointServiceServiceTypeDetails:
     Optional[str] ServiceType
 
-# no @derive(Json): member(s) AccepterVpcInfo: AwsEc2VpcPeeringConnectionVpcInfoDetails, RequesterVpcInfo: AwsEc2VpcPeeringConnectionVpcInfoDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccepterVpcInfo: AwsEc2VpcPeeringConnectionVpcInfoDetails, RequesterVpcInfo: AwsEc2VpcPeeringConnectionVpcInfoDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpcPeeringConnectionDetails:
     Optional[AwsEc2VpcPeeringConnectionVpcInfoDetails] AccepterVpcInfo
     Optional[str] ExpirationTime
@@ -2940,8 +3010,9 @@ struct AwsEc2VpcPeeringConnectionStatusDetails:
     Optional[str] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) CidrBlockSet: list[VpcInfoCidrBlockSetDetails], Ipv6CidrBlockSet: list[VpcInfoIpv6CidrBlockSetDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CidrBlockSet: list[VpcInfoCidrBlockSetDetails], Ipv6CidrBlockSet: list[VpcInfoIpv6CidrBlockSetDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpcPeeringConnectionVpcInfoDetails:
     Optional[str] CidrBlock
     Optional[list[VpcInfoCidrBlockSetDetails]] CidrBlockSet
@@ -2951,8 +3022,9 @@ struct AwsEc2VpcPeeringConnectionVpcInfoDetails:
     Optional[str] Region
     Optional[str] VpcId
 
-# no @derive(Json): member(s) VgwTelemetry: list[AwsEc2VpnConnectionVgwTelemetryDetails], Options: AwsEc2VpnConnectionOptionsDetails, Routes: list[AwsEc2VpnConnectionRoutesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VgwTelemetry: list[AwsEc2VpnConnectionVgwTelemetryDetails], Options: AwsEc2VpnConnectionOptionsDetails, Routes: list[AwsEc2VpnConnectionRoutesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpnConnectionDetails:
     Optional[str] VpnConnectionId
     Optional[str] State
@@ -2966,14 +3038,16 @@ struct AwsEc2VpnConnectionDetails:
     Optional[list[AwsEc2VpnConnectionRoutesDetails]] Routes
     Optional[str] TransitGatewayId
 
-# no @derive(Json): member(s) TunnelOptions: list[AwsEc2VpnConnectionOptionsTunnelOptionsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TunnelOptions: list[AwsEc2VpnConnectionOptionsTunnelOptionsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpnConnectionOptionsDetails:
     Optional[bool] StaticRoutesOnly
     Optional[list[AwsEc2VpnConnectionOptionsTunnelOptionsDetails]] TunnelOptions
 
-# no @derive(Json): member(s) IkeVersions: list[str], Phase1DhGroupNumbers: list[int64], Phase1EncryptionAlgorithms: list[str], Phase1IntegrityAlgorithms: list[str], Phase2DhGroupNumbers: list[int64], Phase2EncryptionAlgorithms: list[str], Phase2IntegrityAlgorithms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IkeVersions: list[str], Phase1DhGroupNumbers: list[int64], Phase1EncryptionAlgorithms: list[str], Phase1IntegrityAlgorithms: list[str], Phase2DhGroupNumbers: list[int64], Phase2EncryptionAlgorithms: list[str], Phase2IntegrityAlgorithms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEc2VpnConnectionOptionsTunnelOptionsDetails:
     Optional[int64] DpdTimeoutSeconds
     Optional[list[str]] IkeVersions
@@ -3006,8 +3080,9 @@ struct AwsEc2VpnConnectionVgwTelemetryDetails:
     Optional[str] Status
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) ImageTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcrContainerImageDetails:
     Optional[str] RegistryId
     Optional[str] RepositoryName
@@ -3063,8 +3138,9 @@ struct AwsEcsClusterDefaultCapacityProviderStrategyDetails:
     Optional[str] CapacityProvider
     Optional[int64] Weight
 
-# no @derive(Json): member(s) CapacityProviders: list[str], ClusterSettings: list[AwsEcsClusterClusterSettingsDetails], DefaultCapacityProviderStrategy: list[AwsEcsClusterDefaultCapacityProviderStrategyDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProviders: list[str], ClusterSettings: list[AwsEcsClusterClusterSettingsDetails], DefaultCapacityProviderStrategy: list[AwsEcsClusterDefaultCapacityProviderStrategyDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsClusterDetails:
     Optional[str] ClusterArn
     Optional[int64] ActiveServicesCount
@@ -3077,8 +3153,9 @@ struct AwsEcsClusterDetails:
     Optional[int64] RunningTasksCount
     Optional[str] Status
 
-# no @derive(Json): member(s) MountPoints: list[AwsMountPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MountPoints: list[AwsMountPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsContainerDetails:
     Optional[str] Name
     Optional[str] Image
@@ -3106,8 +3183,9 @@ struct AwsEcsServiceDeploymentConfigurationDetails:
 struct AwsEcsServiceDeploymentControllerDetails:
     Optional[str] Type
 
-# no @derive(Json): member(s) CapacityProviderStrategy: list[AwsEcsServiceCapacityProviderStrategyDetails], LoadBalancers: list[AwsEcsServiceLoadBalancersDetails], NetworkConfiguration: AwsEcsServiceNetworkConfigurationDetails, PlacementConstraints: list[AwsEcsServicePlacementConstraintsDetails], PlacementStrategies: list[AwsEcsServicePlacementStrategiesDetails], ServiceRegistries: list[AwsEcsServiceServiceRegistriesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityProviderStrategy: list[AwsEcsServiceCapacityProviderStrategyDetails], LoadBalancers: list[AwsEcsServiceLoadBalancersDetails], NetworkConfiguration: AwsEcsServiceNetworkConfigurationDetails, PlacementConstraints: list[AwsEcsServicePlacementConstraintsDetails], PlacementStrategies: list[AwsEcsServicePlacementStrategiesDetails], ServiceRegistries: list[AwsEcsServiceServiceRegistriesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsServiceDetails:
     Optional[list[AwsEcsServiceCapacityProviderStrategyDetails]] CapacityProviderStrategy
     Optional[str] Cluster
@@ -3139,15 +3217,17 @@ struct AwsEcsServiceLoadBalancersDetails:
     Optional[str] LoadBalancerName
     Optional[str] TargetGroupArn
 
-# no @derive(Json): member(s) SecurityGroups: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroups: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsServiceNetworkConfigurationAwsVpcConfigurationDetails:
     Optional[str] AssignPublicIp
     Optional[list[str]] SecurityGroups
     Optional[list[str]] Subnets
 
-# no @derive(Json): member(s) AwsVpcConfiguration: AwsEcsServiceNetworkConfigurationAwsVpcConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsVpcConfiguration: AwsEcsServiceNetworkConfigurationAwsVpcConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsServiceNetworkConfigurationDetails:
     Optional[AwsEcsServiceNetworkConfigurationAwsVpcConfigurationDetails] AwsVpcConfiguration
 
@@ -3173,8 +3253,9 @@ struct AwsEcsTaskDefinitionContainerDefinitionsDependsOnDetails:
     Optional[str] Condition
     Optional[str] ContainerName
 
-# no @derive(Json): member(s) Command: list[str], DependsOn: list[AwsEcsTaskDefinitionContainerDefinitionsDependsOnDetails], DnsSearchDomains: list[str], DnsServers: list[str], DockerLabels: dict[str, str], DockerSecurityOptions: list[str], EntryPoint: list[str], Environment: list[AwsEcsTaskDefinitionContainerDefinitionsEnvironmentDetails], EnvironmentFiles: list[AwsEcsTaskDefinitionContainerDefinitionsEnvironmentFilesDetails], ExtraHosts: list[AwsEcsTaskDefinitionContainerDefinitionsExtraHostsDetails], FirelensConfiguration: AwsEcsTaskDefinitionContainerDefinitionsFirelensConfigurationDetails, HealthCheck: AwsEcsTaskDefinitionContainerDefinitionsHealthCheckDetails, Links: list[str], LinuxParameters: AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDetails, LogConfiguration: AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationDetails, MountPoints: list[AwsEcsTaskDefinitionContainerDefinitionsMountPointsDetails], PortMappings: list[AwsEcsTaskDefinitionContainerDefinitionsPortMappingsDetails], ResourceRequirements: list[AwsEcsTaskDefinitionContainerDefinitionsResourceRequirementsDetails], Secrets: list[AwsEcsTaskDefinitionContainerDefinitionsSecretsDetails], SystemControls: list[AwsEcsTaskDefinitionContainerDefinitionsSystemControlsDetails], Ulimits: list[AwsEcsTaskDefinitionContainerDefinitionsUlimitsDetails], VolumesFrom: list[AwsEcsTaskDefinitionContainerDefinitionsVolumesFromDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Command: list[str], DependsOn: list[AwsEcsTaskDefinitionContainerDefinitionsDependsOnDetails], DnsSearchDomains: list[str], DnsServers: list[str], DockerLabels: dict[str, str], DockerSecurityOptions: list[str], EntryPoint: list[str], Environment: list[AwsEcsTaskDefinitionContainerDefinitionsEnvironmentDetails], EnvironmentFiles: list[AwsEcsTaskDefinitionContainerDefinitionsEnvironmentFilesDetails], ExtraHosts: list[AwsEcsTaskDefinitionContainerDefinitionsExtraHostsDetails], FirelensConfiguration: AwsEcsTaskDefinitionContainerDefinitionsFirelensConfigurationDetails, HealthCheck: AwsEcsTaskDefinitionContainerDefinitionsHealthCheckDetails, Links: list[str], LinuxParameters: AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDetails, LogConfiguration: AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationDetails, MountPoints: list[AwsEcsTaskDefinitionContainerDefinitionsMountPointsDetails], PortMappings: list[AwsEcsTaskDefinitionContainerDefinitionsPortMappingsDetails], ResourceRequirements: list[AwsEcsTaskDefinitionContainerDefinitionsResourceRequirementsDetails], Secrets: list[AwsEcsTaskDefinitionContainerDefinitionsSecretsDetails], SystemControls: list[AwsEcsTaskDefinitionContainerDefinitionsSystemControlsDetails], Ulimits: list[AwsEcsTaskDefinitionContainerDefinitionsUlimitsDetails], VolumesFrom: list[AwsEcsTaskDefinitionContainerDefinitionsVolumesFromDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsDetails:
     Optional[list[str]] Command
     Optional[int64] Cpu
@@ -3231,14 +3312,16 @@ struct AwsEcsTaskDefinitionContainerDefinitionsExtraHostsDetails:
     Optional[str] Hostname
     Optional[str] IpAddress
 
-# no @derive(Json): member(s) Options: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsFirelensConfigurationDetails:
     Optional[dict[str, str]] Options
     Optional[str] Type
 
-# no @derive(Json): member(s) Command: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Command: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsHealthCheckDetails:
     Optional[list[str]] Command
     Optional[int64] Interval
@@ -3246,14 +3329,16 @@ struct AwsEcsTaskDefinitionContainerDefinitionsHealthCheckDetails:
     Optional[int64] StartPeriod
     Optional[int64] Timeout
 
-# no @derive(Json): member(s) Add: list[str], Drop: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Add: list[str], Drop: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersCapabilitiesDetails:
     Optional[list[str]] Add
     Optional[list[str]] Drop
 
-# no @derive(Json): member(s) Capabilities: AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersCapabilitiesDetails, Devices: list[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDevicesDetails], Tmpfs: list[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersTmpfsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Capabilities: AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersCapabilitiesDetails, Devices: list[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDevicesDetails], Tmpfs: list[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersTmpfsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDetails:
     Optional[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersCapabilitiesDetails] Capabilities
     Optional[list[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDevicesDetails]] Devices
@@ -3263,22 +3348,25 @@ struct AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDetails:
     Optional[int64] Swappiness
     Optional[list[AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersTmpfsDetails]] Tmpfs
 
-# no @derive(Json): member(s) Permissions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDevicesDetails:
     Optional[str] ContainerPath
     Optional[str] HostPath
     Optional[list[str]] Permissions
 
-# no @derive(Json): member(s) MountOptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MountOptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersTmpfsDetails:
     Optional[str] ContainerPath
     Optional[list[str]] MountOptions
     Optional[int64] Size
 
-# no @derive(Json): member(s) Options: dict[str, str], SecretOptions: list[AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationSecretOptionsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: dict[str, str], SecretOptions: list[AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationSecretOptionsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationDetails:
     Optional[str] LogDriver
     Optional[dict[str, str]] Options
@@ -3331,8 +3419,9 @@ struct AwsEcsTaskDefinitionContainerDefinitionsVolumesFromDetails:
     Optional[bool] ReadOnly
     Optional[str] SourceContainer
 
-# no @derive(Json): member(s) ContainerDefinitions: list[AwsEcsTaskDefinitionContainerDefinitionsDetails], InferenceAccelerators: list[AwsEcsTaskDefinitionInferenceAcceleratorsDetails], PlacementConstraints: list[AwsEcsTaskDefinitionPlacementConstraintsDetails], ProxyConfiguration: AwsEcsTaskDefinitionProxyConfigurationDetails, RequiresCompatibilities: list[str], Volumes: list[AwsEcsTaskDefinitionVolumesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerDefinitions: list[AwsEcsTaskDefinitionContainerDefinitionsDetails], InferenceAccelerators: list[AwsEcsTaskDefinitionInferenceAcceleratorsDetails], PlacementConstraints: list[AwsEcsTaskDefinitionPlacementConstraintsDetails], ProxyConfiguration: AwsEcsTaskDefinitionProxyConfigurationDetails, RequiresCompatibilities: list[str], Volumes: list[AwsEcsTaskDefinitionVolumesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionDetails:
     Optional[list[AwsEcsTaskDefinitionContainerDefinitionsDetails]] ContainerDefinitions
     Optional[str] Cpu
@@ -3360,8 +3449,9 @@ struct AwsEcsTaskDefinitionPlacementConstraintsDetails:
     Optional[str] Expression
     Optional[str] Type
 
-# no @derive(Json): member(s) ProxyConfigurationProperties: list[AwsEcsTaskDefinitionProxyConfigurationProxyConfigurationPropertiesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfigurationProperties: list[AwsEcsTaskDefinitionProxyConfigurationProxyConfigurationPropertiesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionProxyConfigurationDetails:
     Optional[str] ContainerName
     Optional[list[AwsEcsTaskDefinitionProxyConfigurationProxyConfigurationPropertiesDetails]] ProxyConfigurationProperties
@@ -3372,16 +3462,18 @@ struct AwsEcsTaskDefinitionProxyConfigurationProxyConfigurationPropertiesDetails
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) DockerVolumeConfiguration: AwsEcsTaskDefinitionVolumesDockerVolumeConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DockerVolumeConfiguration: AwsEcsTaskDefinitionVolumesDockerVolumeConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionVolumesDetails:
     Optional[AwsEcsTaskDefinitionVolumesDockerVolumeConfigurationDetails] DockerVolumeConfiguration
     Optional[AwsEcsTaskDefinitionVolumesEfsVolumeConfigurationDetails] EfsVolumeConfiguration
     Optional[AwsEcsTaskDefinitionVolumesHostDetails] Host
     Optional[str] Name
 
-# no @derive(Json): member(s) DriverOpts: dict[str, str], Labels: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DriverOpts: dict[str, str], Labels: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDefinitionVolumesDockerVolumeConfigurationDetails:
     Optional[bool] Autoprovision
     Optional[str] Driver
@@ -3406,8 +3498,9 @@ struct AwsEcsTaskDefinitionVolumesEfsVolumeConfigurationDetails:
 struct AwsEcsTaskDefinitionVolumesHostDetails:
     Optional[str] SourcePath
 
-# no @derive(Json): member(s) Volumes: list[AwsEcsTaskVolumeDetails], Containers: list[AwsEcsContainerDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Volumes: list[AwsEcsTaskVolumeDetails], Containers: list[AwsEcsContainerDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEcsTaskDetails:
     Optional[str] ClusterArn
     Optional[str] TaskDefinitionArn
@@ -3428,8 +3521,9 @@ struct AwsEcsTaskVolumeDetails:
 struct AwsEcsTaskVolumeHostDetails:
     Optional[str] SourcePath
 
-# no @derive(Json): member(s) PosixUser: AwsEfsAccessPointPosixUserDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PosixUser: AwsEfsAccessPointPosixUserDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEfsAccessPointDetails:
     Optional[str] AccessPointId
     Optional[str] Arn
@@ -3438,8 +3532,9 @@ struct AwsEfsAccessPointDetails:
     Optional[AwsEfsAccessPointPosixUserDetails] PosixUser
     Optional[AwsEfsAccessPointRootDirectoryDetails] RootDirectory
 
-# no @derive(Json): member(s) SecondaryGids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecondaryGids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEfsAccessPointPosixUserDetails:
     Optional[str] Gid
     Optional[list[str]] SecondaryGids
@@ -3456,8 +3551,9 @@ struct AwsEfsAccessPointRootDirectoryDetails:
     Optional[AwsEfsAccessPointRootDirectoryCreationInfoDetails] CreationInfo
     Optional[str] Path
 
-# no @derive(Json): member(s) ResourcesVpcConfig: AwsEksClusterResourcesVpcConfigDetails, Logging: AwsEksClusterLoggingDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourcesVpcConfig: AwsEksClusterResourcesVpcConfigDetails, Logging: AwsEksClusterLoggingDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEksClusterDetails:
     Optional[str] Arn
     Optional[str] CertificateAuthorityData
@@ -3469,26 +3565,30 @@ struct AwsEksClusterDetails:
     Optional[str] Version
     Optional[AwsEksClusterLoggingDetails] Logging
 
-# no @derive(Json): member(s) Types: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEksClusterLoggingClusterLoggingDetails:
     Optional[bool] Enabled
     Optional[list[str]] Types
 
-# no @derive(Json): member(s) ClusterLogging: list[AwsEksClusterLoggingClusterLoggingDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterLogging: list[AwsEksClusterLoggingClusterLoggingDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEksClusterLoggingDetails:
     Optional[list[AwsEksClusterLoggingClusterLoggingDetails]] ClusterLogging
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEksClusterResourcesVpcConfigDetails:
     Optional[list[str]] SecurityGroupIds
     Optional[list[str]] SubnetIds
     Optional[bool] EndpointPublicAccess
 
-# no @derive(Json): member(s) EnvironmentLinks: list[AwsElasticBeanstalkEnvironmentEnvironmentLink], OptionSettings: list[AwsElasticBeanstalkEnvironmentOptionSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentLinks: list[AwsElasticBeanstalkEnvironmentEnvironmentLink], OptionSettings: list[AwsElasticBeanstalkEnvironmentOptionSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElasticBeanstalkEnvironmentDetails:
     Optional[str] ApplicationName
     Optional[str] Cname
@@ -3525,8 +3625,9 @@ struct AwsElasticBeanstalkEnvironmentTier:
     Optional[str] Type
     Optional[str] Version
 
-# no @derive(Json): member(s) Endpoints: dict[str, str], VPCOptions: AwsElasticsearchDomainVPCOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: dict[str, str], VPCOptions: AwsElasticsearchDomainVPCOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElasticsearchDomainDetails:
     Optional[str] AccessPolicies
     Optional[AwsElasticsearchDomainDomainEndpointOptions] DomainEndpointOptions
@@ -3591,8 +3692,9 @@ struct AwsElasticsearchDomainServiceSoftwareOptions:
     Optional[bool] UpdateAvailable
     Optional[str] UpdateStatus
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElasticsearchDomainVPCOptions:
     Optional[list[str]] AvailabilityZones
     Optional[list[str]] SecurityGroupIds
@@ -3621,8 +3723,9 @@ struct AwsElbLoadBalancerAdditionalAttribute:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) AdditionalAttributes: list[AwsElbLoadBalancerAdditionalAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAttributes: list[AwsElbLoadBalancerAdditionalAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElbLoadBalancerAttributes:
     Optional[AwsElbLoadBalancerAccessLog] AccessLog
     Optional[AwsElbLoadBalancerConnectionDraining] ConnectionDraining
@@ -3630,8 +3733,9 @@ struct AwsElbLoadBalancerAttributes:
     Optional[AwsElbLoadBalancerCrossZoneLoadBalancing] CrossZoneLoadBalancing
     Optional[list[AwsElbLoadBalancerAdditionalAttribute]] AdditionalAttributes
 
-# no @derive(Json): member(s) PolicyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElbLoadBalancerBackendServerDescription:
     Optional[int64] InstancePort
     Optional[list[str]] PolicyNames
@@ -3649,8 +3753,9 @@ struct AwsElbLoadBalancerConnectionSettings:
 struct AwsElbLoadBalancerCrossZoneLoadBalancing:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], BackendServerDescriptions: list[AwsElbLoadBalancerBackendServerDescription], Instances: list[AwsElbLoadBalancerInstance], ListenerDescriptions: list[AwsElbLoadBalancerListenerDescription], LoadBalancerAttributes: AwsElbLoadBalancerAttributes, Policies: AwsElbLoadBalancerPolicies, SecurityGroups: list[str], Subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], BackendServerDescriptions: list[AwsElbLoadBalancerBackendServerDescription], Instances: list[AwsElbLoadBalancerInstance], ListenerDescriptions: list[AwsElbLoadBalancerListenerDescription], LoadBalancerAttributes: AwsElbLoadBalancerAttributes, Policies: AwsElbLoadBalancerPolicies, SecurityGroups: list[str], Subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElbLoadBalancerDetails:
     Optional[list[str]] AvailabilityZones
     Optional[list[AwsElbLoadBalancerBackendServerDescription]] BackendServerDescriptions
@@ -3690,14 +3795,16 @@ struct AwsElbLoadBalancerListener:
     Optional[str] Protocol
     Optional[str] SslCertificateId
 
-# no @derive(Json): member(s) PolicyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElbLoadBalancerListenerDescription:
     Optional[AwsElbLoadBalancerListener] Listener
     Optional[list[str]] PolicyNames
 
-# no @derive(Json): member(s) AppCookieStickinessPolicies: list[AwsElbAppCookieStickinessPolicy], LbCookieStickinessPolicies: list[AwsElbLbCookieStickinessPolicy], OtherPolicies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppCookieStickinessPolicies: list[AwsElbAppCookieStickinessPolicy], LbCookieStickinessPolicies: list[AwsElbLbCookieStickinessPolicy], OtherPolicies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElbLoadBalancerPolicies:
     Optional[list[AwsElbAppCookieStickinessPolicy]] AppCookieStickinessPolicies
     Optional[list[AwsElbLbCookieStickinessPolicy]] LbCookieStickinessPolicies
@@ -3713,8 +3820,9 @@ struct AwsElbv2LoadBalancerAttribute:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) AvailabilityZones: list[AvailabilityZone], SecurityGroups: list[str], LoadBalancerAttributes: list[AwsElbv2LoadBalancerAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[AvailabilityZone], SecurityGroups: list[str], LoadBalancerAttributes: list[AwsElbv2LoadBalancerAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsElbv2LoadBalancerDetails:
     Optional[list[AvailabilityZone]] AvailabilityZones
     Optional[str] CanonicalHostedZoneId
@@ -3734,8 +3842,9 @@ struct AwsEventSchemasRegistryDetails:
     Optional[str] RegistryArn
     Optional[str] RegistryName
 
-# no @derive(Json): member(s) EventBuses: list[AwsEventsEndpointEventBusesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[AwsEventsEndpointEventBusesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsEventsEndpointDetails:
     Optional[str] Arn
     Optional[str] Description
@@ -3827,8 +3936,9 @@ struct AwsGuardDutyDetectorDataSourcesMalwareProtectionScanEc2InstanceWithFindin
 struct AwsGuardDutyDetectorDataSourcesS3LogsDetails:
     Optional[str] Status
 
-# no @derive(Json): member(s) Features: list[AwsGuardDutyDetectorFeaturesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[AwsGuardDutyDetectorFeaturesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsGuardDutyDetectorDetails:
     Optional[AwsGuardDutyDetectorDataSourcesDetails] DataSources
     Optional[list[AwsGuardDutyDetectorFeaturesDetails]] Features
@@ -3876,8 +3986,9 @@ struct AwsIamAttachedManagedPolicy:
     Optional[str] PolicyName
     Optional[str] PolicyArn
 
-# no @derive(Json): member(s) AttachedManagedPolicies: list[AwsIamAttachedManagedPolicy], GroupPolicyList: list[AwsIamGroupPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedManagedPolicies: list[AwsIamAttachedManagedPolicy], GroupPolicyList: list[AwsIamGroupPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsIamGroupDetails:
     Optional[list[AwsIamAttachedManagedPolicy]] AttachedManagedPolicies
     Optional[str] CreateDate
@@ -3890,8 +4001,9 @@ struct AwsIamGroupDetails:
 struct AwsIamGroupPolicy:
     Optional[str] PolicyName
 
-# no @derive(Json): member(s) Roles: list[AwsIamInstanceProfileRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: list[AwsIamInstanceProfileRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsIamInstanceProfile:
     Optional[str] Arn
     Optional[str] CreateDate
@@ -3914,8 +4026,9 @@ struct AwsIamPermissionsBoundary:
     Optional[str] PermissionsBoundaryArn
     Optional[str] PermissionsBoundaryType
 
-# no @derive(Json): member(s) PolicyVersionList: list[AwsIamPolicyVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyVersionList: list[AwsIamPolicyVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsIamPolicyDetails:
     Optional[int64] AttachmentCount
     Optional[str] CreateDate
@@ -3935,8 +4048,9 @@ struct AwsIamPolicyVersion:
     Optional[bool] IsDefaultVersion
     Optional[str] CreateDate
 
-# no @derive(Json): member(s) AttachedManagedPolicies: list[AwsIamAttachedManagedPolicy], InstanceProfileList: list[AwsIamInstanceProfile], RolePolicyList: list[AwsIamRolePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedManagedPolicies: list[AwsIamAttachedManagedPolicy], InstanceProfileList: list[AwsIamInstanceProfile], RolePolicyList: list[AwsIamRolePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsIamRoleDetails:
     Optional[str] AssumeRolePolicyDocument
     Optional[list[AwsIamAttachedManagedPolicy]] AttachedManagedPolicies
@@ -3953,8 +4067,9 @@ struct AwsIamRoleDetails:
 struct AwsIamRolePolicy:
     Optional[str] PolicyName
 
-# no @derive(Json): member(s) AttachedManagedPolicies: list[AwsIamAttachedManagedPolicy], GroupList: list[str], UserPolicyList: list[AwsIamUserPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedManagedPolicies: list[AwsIamAttachedManagedPolicy], GroupList: list[str], UserPolicyList: list[AwsIamUserPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsIamUserDetails:
     Optional[list[AwsIamAttachedManagedPolicy]] AttachedManagedPolicies
     Optional[str] CreateDate
@@ -4004,8 +4119,9 @@ struct AwsLambdaFunctionCode:
 struct AwsLambdaFunctionDeadLetterConfig:
     Optional[str] TargetArn
 
-# no @derive(Json): member(s) Environment: AwsLambdaFunctionEnvironment, Layers: list[AwsLambdaFunctionLayer], VpcConfig: AwsLambdaFunctionVpcConfig, Architectures: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: AwsLambdaFunctionEnvironment, Layers: list[AwsLambdaFunctionLayer], VpcConfig: AwsLambdaFunctionVpcConfig, Architectures: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsLambdaFunctionDetails:
     Optional[AwsLambdaFunctionCode] Code
     Optional[str] CodeSha256
@@ -4028,8 +4144,9 @@ struct AwsLambdaFunctionDetails:
     Optional[list[str]] Architectures
     Optional[str] PackageType
 
-# no @derive(Json): member(s) Variables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Variables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsLambdaFunctionEnvironment:
     Optional[dict[str, str]] Variables
     Optional[AwsLambdaFunctionEnvironmentError] Error
@@ -4048,15 +4165,17 @@ struct AwsLambdaFunctionLayer:
 struct AwsLambdaFunctionTracingConfig:
     Optional[str] Mode
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsLambdaFunctionVpcConfig:
     Optional[list[str]] SecurityGroupIds
     Optional[list[str]] SubnetIds
     Optional[str] VpcId
 
-# no @derive(Json): member(s) CompatibleRuntimes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompatibleRuntimes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsLambdaLayerVersionDetails:
     Optional[int64] Version
     Optional[list[str]] CompatibleRuntimes
@@ -4067,8 +4186,9 @@ struct AwsMountPoint:
     Optional[str] SourceVolume
     Optional[str] ContainerPath
 
-# no @derive(Json): member(s) Tls: AwsMskClusterClusterInfoClientAuthenticationTlsDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tls: AwsMskClusterClusterInfoClientAuthenticationTlsDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsMskClusterClusterInfoClientAuthenticationDetails:
     Optional[AwsMskClusterClusterInfoClientAuthenticationSaslDetails] Sasl
     Optional[AwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails] Unauthenticated
@@ -4087,8 +4207,9 @@ struct AwsMskClusterClusterInfoClientAuthenticationSaslIamDetails:
 struct AwsMskClusterClusterInfoClientAuthenticationSaslScramDetails:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) CertificateAuthorityArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthorityArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsMskClusterClusterInfoClientAuthenticationTlsDetails:
     Optional[list[str]] CertificateAuthorityArnList
     Optional[bool] Enabled
@@ -4097,8 +4218,9 @@ struct AwsMskClusterClusterInfoClientAuthenticationTlsDetails:
 struct AwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) ClientAuthentication: AwsMskClusterClusterInfoClientAuthenticationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientAuthentication: AwsMskClusterClusterInfoClientAuthenticationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsMskClusterClusterInfoDetails:
     Optional[AwsMskClusterClusterInfoEncryptionInfoDetails] EncryptionInfo
     Optional[str] CurrentVersion
@@ -4121,13 +4243,15 @@ struct AwsMskClusterClusterInfoEncryptionInfoEncryptionInTransitDetails:
     Optional[bool] InCluster
     Optional[str] ClientBroker
 
-# no @derive(Json): member(s) ClusterInfo: AwsMskClusterClusterInfoDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterInfo: AwsMskClusterClusterInfoDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsMskClusterDetails:
     Optional[AwsMskClusterClusterInfoDetails] ClusterInfo
 
-# no @derive(Json): member(s) SubnetMappings: list[AwsNetworkFirewallFirewallSubnetMappingsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[AwsNetworkFirewallFirewallSubnetMappingsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsNetworkFirewallFirewallDetails:
     Optional[bool] DeleteProtection
     Optional[str] Description
@@ -4140,8 +4264,9 @@ struct AwsNetworkFirewallFirewallDetails:
     Optional[list[AwsNetworkFirewallFirewallSubnetMappingsDetails]] SubnetMappings
     Optional[str] VpcId
 
-# no @derive(Json): member(s) FirewallPolicy: FirewallPolicyDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicy: FirewallPolicyDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsNetworkFirewallFirewallPolicyDetails:
     Optional[FirewallPolicyDetails] FirewallPolicy
     Optional[str] FirewallPolicyArn
@@ -4153,8 +4278,9 @@ struct AwsNetworkFirewallFirewallPolicyDetails:
 struct AwsNetworkFirewallFirewallSubnetMappingsDetails:
     Optional[str] SubnetId
 
-# no @derive(Json): member(s) RuleGroup: RuleGroupDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroup: RuleGroupDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsNetworkFirewallRuleGroupDetails:
     Optional[int64] Capacity
     Optional[str] Description
@@ -4187,8 +4313,9 @@ struct AwsOpenSearchServiceDomainClusterConfigDetails:
 struct AwsOpenSearchServiceDomainClusterConfigZoneAwarenessConfigDetails:
     Optional[int64] AvailabilityZoneCount
 
-# no @derive(Json): member(s) VpcOptions: AwsOpenSearchServiceDomainVpcOptionsDetails, DomainEndpoints: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcOptions: AwsOpenSearchServiceDomainVpcOptionsDetails, DomainEndpoints: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpenSearchServiceDomainDetails:
     Optional[str] Arn
     Optional[str] AccessPolicies
@@ -4251,8 +4378,9 @@ struct AwsOpenSearchServiceDomainServiceSoftwareOptionsDetails:
     Optional[str] UpdateStatus
     Optional[bool] OptionalDeployment
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpenSearchServiceDomainVpcOptionsDetails:
     Optional[list[str]] SecurityGroupIds
     Optional[list[str]] SubnetIds
@@ -4267,8 +4395,9 @@ struct AwsRdsDbClusterAssociatedRole:
     Optional[str] RoleArn
     Optional[str] Status
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], CustomEndpoints: list[str], ReadReplicaIdentifiers: list[str], VpcSecurityGroups: list[AwsRdsDbInstanceVpcSecurityGroup], AssociatedRoles: list[AwsRdsDbClusterAssociatedRole], EnabledCloudWatchLogsExports: list[str], DomainMemberships: list[AwsRdsDbDomainMembership], DbClusterOptionGroupMemberships: list[AwsRdsDbClusterOptionGroupMembership], DbClusterMembers: list[AwsRdsDbClusterMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], CustomEndpoints: list[str], ReadReplicaIdentifiers: list[str], VpcSecurityGroups: list[AwsRdsDbInstanceVpcSecurityGroup], AssociatedRoles: list[AwsRdsDbClusterAssociatedRole], EnabledCloudWatchLogsExports: list[str], DomainMemberships: list[AwsRdsDbDomainMembership], DbClusterOptionGroupMemberships: list[AwsRdsDbClusterOptionGroupMembership], DbClusterMembers: list[AwsRdsDbClusterMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbClusterDetails:
     Optional[int64] AllocatedStorage
     Optional[list[str]] AvailabilityZones
@@ -4321,14 +4450,16 @@ struct AwsRdsDbClusterOptionGroupMembership:
     Optional[str] DbClusterOptionGroupName
     Optional[str] Status
 
-# no @derive(Json): member(s) AttributeValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbClusterSnapshotDbClusterSnapshotAttribute:
     Optional[str] AttributeName
     Optional[list[str]] AttributeValues
 
-# no @derive(Json): member(s) AvailabilityZones: list[str], DbClusterSnapshotAttributes: list[AwsRdsDbClusterSnapshotDbClusterSnapshotAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str], DbClusterSnapshotAttributes: list[AwsRdsDbClusterSnapshotDbClusterSnapshotAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbClusterSnapshotDetails:
     Optional[list[str]] AvailabilityZones
     Optional[str] SnapshotCreateTime
@@ -4363,8 +4494,9 @@ struct AwsRdsDbInstanceAssociatedRole:
     Optional[str] FeatureName
     Optional[str] Status
 
-# no @derive(Json): member(s) AssociatedRoles: list[AwsRdsDbInstanceAssociatedRole], VpcSecurityGroups: list[AwsRdsDbInstanceVpcSecurityGroup], DbSecurityGroups: list[str], DbParameterGroups: list[AwsRdsDbParameterGroup], DbSubnetGroup: AwsRdsDbSubnetGroup, PendingModifiedValues: AwsRdsDbPendingModifiedValues, ReadReplicaDBInstanceIdentifiers: list[str], ReadReplicaDBClusterIdentifiers: list[str], OptionGroupMemberships: list[AwsRdsDbOptionGroupMembership], StatusInfos: list[AwsRdsDbStatusInfo], DomainMemberships: list[AwsRdsDbDomainMembership], EnabledCloudWatchLogsExports: list[str], ProcessorFeatures: list[AwsRdsDbProcessorFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedRoles: list[AwsRdsDbInstanceAssociatedRole], VpcSecurityGroups: list[AwsRdsDbInstanceVpcSecurityGroup], DbSecurityGroups: list[str], DbParameterGroups: list[AwsRdsDbParameterGroup], DbSubnetGroup: AwsRdsDbSubnetGroup, PendingModifiedValues: AwsRdsDbPendingModifiedValues, ReadReplicaDBInstanceIdentifiers: list[str], ReadReplicaDBClusterIdentifiers: list[str], OptionGroupMemberships: list[AwsRdsDbOptionGroupMembership], StatusInfos: list[AwsRdsDbStatusInfo], DomainMemberships: list[AwsRdsDbDomainMembership], EnabledCloudWatchLogsExports: list[str], ProcessorFeatures: list[AwsRdsDbProcessorFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbInstanceDetails:
     Optional[list[AwsRdsDbInstanceAssociatedRole]] AssociatedRoles
     Optional[str] CACertificateIdentifier
@@ -4445,8 +4577,9 @@ struct AwsRdsDbParameterGroup:
     Optional[str] DbParameterGroupName
     Optional[str] ParameterApplyStatus
 
-# no @derive(Json): member(s) PendingCloudWatchLogsExports: AwsRdsPendingCloudWatchLogsExports, ProcessorFeatures: list[AwsRdsDbProcessorFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingCloudWatchLogsExports: AwsRdsPendingCloudWatchLogsExports, ProcessorFeatures: list[AwsRdsDbProcessorFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbPendingModifiedValues:
     Optional[str] DbInstanceClass
     Optional[int64] AllocatedStorage
@@ -4469,8 +4602,9 @@ struct AwsRdsDbProcessorFeature:
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) Ec2SecurityGroups: list[AwsRdsDbSecurityGroupEc2SecurityGroup], IpRanges: list[AwsRdsDbSecurityGroupIpRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2SecurityGroups: list[AwsRdsDbSecurityGroupEc2SecurityGroup], IpRanges: list[AwsRdsDbSecurityGroupIpRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbSecurityGroupDetails:
     Optional[str] DbSecurityGroupArn
     Optional[str] DbSecurityGroupDescription
@@ -4492,8 +4626,9 @@ struct AwsRdsDbSecurityGroupIpRange:
     Optional[str] CidrIp
     Optional[str] Status
 
-# no @derive(Json): member(s) ProcessorFeatures: list[AwsRdsDbProcessorFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessorFeatures: list[AwsRdsDbProcessorFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbSnapshotDetails:
     Optional[str] DbSnapshotIdentifier
     Optional[str] DbInstanceIdentifier
@@ -4530,8 +4665,9 @@ struct AwsRdsDbStatusInfo:
     Optional[str] Status
     Optional[str] Message
 
-# no @derive(Json): member(s) Subnets: list[AwsRdsDbSubnetGroupSubnet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[AwsRdsDbSubnetGroupSubnet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsDbSubnetGroup:
     Optional[str] DbSubnetGroupName
     Optional[str] DbSubnetGroupDescription
@@ -4550,8 +4686,9 @@ struct AwsRdsDbSubnetGroupSubnet:
 struct AwsRdsDbSubnetGroupSubnetAvailabilityZone:
     Optional[str] Name
 
-# no @derive(Json): member(s) EventCategoriesList: list[str], SourceIdsList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategoriesList: list[str], SourceIdsList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsEventSubscriptionDetails:
     Optional[str] CustSubscriptionId
     Optional[str] CustomerAwsId
@@ -4564,8 +4701,9 @@ struct AwsRdsEventSubscriptionDetails:
     Optional[str] Status
     Optional[str] SubscriptionCreationTime
 
-# no @derive(Json): member(s) LogTypesToEnable: list[str], LogTypesToDisable: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypesToEnable: list[str], LogTypesToDisable: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRdsPendingCloudWatchLogsExports:
     Optional[list[str]] LogTypesToEnable
     Optional[list[str]] LogTypesToDisable
@@ -4576,8 +4714,9 @@ struct AwsRedshiftClusterClusterNode:
     Optional[str] PrivateIpAddress
     Optional[str] PublicIpAddress
 
-# no @derive(Json): member(s) ClusterParameterStatusList: list[AwsRedshiftClusterClusterParameterStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterParameterStatusList: list[AwsRedshiftClusterClusterParameterStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRedshiftClusterClusterParameterGroup:
     Optional[list[AwsRedshiftClusterClusterParameterStatus]] ClusterParameterStatusList
     Optional[str] ParameterApplyStatus
@@ -4607,8 +4746,9 @@ struct AwsRedshiftClusterDeferredMaintenanceWindow:
     Optional[str] DeferMaintenanceIdentifier
     Optional[str] DeferMaintenanceStartTime
 
-# no @derive(Json): member(s) ClusterNodes: list[AwsRedshiftClusterClusterNode], ClusterParameterGroups: list[AwsRedshiftClusterClusterParameterGroup], ClusterSecurityGroups: list[AwsRedshiftClusterClusterSecurityGroup], DeferredMaintenanceWindows: list[AwsRedshiftClusterDeferredMaintenanceWindow], IamRoles: list[AwsRedshiftClusterIamRole], PendingActions: list[str], VpcSecurityGroups: list[AwsRedshiftClusterVpcSecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterNodes: list[AwsRedshiftClusterClusterNode], ClusterParameterGroups: list[AwsRedshiftClusterClusterParameterGroup], ClusterSecurityGroups: list[AwsRedshiftClusterClusterSecurityGroup], DeferredMaintenanceWindows: list[AwsRedshiftClusterDeferredMaintenanceWindow], IamRoles: list[AwsRedshiftClusterIamRole], PendingActions: list[str], VpcSecurityGroups: list[AwsRedshiftClusterVpcSecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRedshiftClusterDetails:
     Optional[bool] AllowVersionUpgrade
     Optional[int64] AutomatedSnapshotRetentionPeriod
@@ -4722,8 +4862,9 @@ struct AwsRedshiftClusterVpcSecurityGroup:
 struct AwsRoute53HostedZoneConfigDetails:
     Optional[str] Comment
 
-# no @derive(Json): member(s) Vpcs: list[AwsRoute53HostedZoneVpcDetails], NameServers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vpcs: list[AwsRoute53HostedZoneVpcDetails], NameServers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsRoute53HostedZoneDetails:
     Optional[AwsRoute53HostedZoneObjectDetails] HostedZone
     Optional[list[AwsRoute53HostedZoneVpcDetails]] Vpcs
@@ -4767,8 +4908,9 @@ struct AwsS3AccountPublicAccessBlockDetails:
     Optional[bool] IgnorePublicAcls
     Optional[bool] RestrictPublicBuckets
 
-# no @derive(Json): member(s) Rules: list[AwsS3BucketBucketLifecycleConfigurationRulesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AwsS3BucketBucketLifecycleConfigurationRulesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketBucketLifecycleConfigurationDetails:
     Optional[list[AwsS3BucketBucketLifecycleConfigurationRulesDetails]] Rules
 
@@ -4776,8 +4918,9 @@ struct AwsS3BucketBucketLifecycleConfigurationDetails:
 struct AwsS3BucketBucketLifecycleConfigurationRulesAbortIncompleteMultipartUploadDetails:
     Optional[int64] DaysAfterInitiation
 
-# no @derive(Json): member(s) Filter: AwsS3BucketBucketLifecycleConfigurationRulesFilterDetails, NoncurrentVersionTransitions: list[AwsS3BucketBucketLifecycleConfigurationRulesNoncurrentVersionTransitionsDetails], Transitions: list[AwsS3BucketBucketLifecycleConfigurationRulesTransitionsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: AwsS3BucketBucketLifecycleConfigurationRulesFilterDetails, NoncurrentVersionTransitions: list[AwsS3BucketBucketLifecycleConfigurationRulesNoncurrentVersionTransitionsDetails], Transitions: list[AwsS3BucketBucketLifecycleConfigurationRulesTransitionsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketBucketLifecycleConfigurationRulesDetails:
     Optional[AwsS3BucketBucketLifecycleConfigurationRulesAbortIncompleteMultipartUploadDetails] AbortIncompleteMultipartUpload
     Optional[str] ExpirationDate
@@ -4791,13 +4934,15 @@ struct AwsS3BucketBucketLifecycleConfigurationRulesDetails:
     Optional[str] Status
     Optional[list[AwsS3BucketBucketLifecycleConfigurationRulesTransitionsDetails]] Transitions
 
-# no @derive(Json): member(s) Predicate: AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Predicate: AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketBucketLifecycleConfigurationRulesFilterDetails:
     Optional[AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateDetails] Predicate
 
-# no @derive(Json): member(s) Operands: list[AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateOperandsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operands: list[AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateOperandsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateDetails:
     Optional[list[AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateOperandsDetails]] Operands
     Optional[str] Prefix
@@ -4836,8 +4981,9 @@ struct AwsS3BucketBucketVersioningConfiguration:
     Optional[bool] IsMfaDeleteEnabled
     Optional[str] Status
 
-# no @derive(Json): member(s) ServerSideEncryptionConfiguration: AwsS3BucketServerSideEncryptionConfiguration, BucketLifecycleConfiguration: AwsS3BucketBucketLifecycleConfigurationDetails, BucketWebsiteConfiguration: AwsS3BucketWebsiteConfiguration, BucketNotificationConfiguration: AwsS3BucketNotificationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServerSideEncryptionConfiguration: AwsS3BucketServerSideEncryptionConfiguration, BucketLifecycleConfiguration: AwsS3BucketBucketLifecycleConfigurationDetails, BucketWebsiteConfiguration: AwsS3BucketWebsiteConfiguration, BucketNotificationConfiguration: AwsS3BucketNotificationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketDetails:
     Optional[str] OwnerId
     Optional[str] OwnerName
@@ -4859,26 +5005,30 @@ struct AwsS3BucketLoggingConfiguration:
     Optional[str] DestinationBucketName
     Optional[str] LogFilePrefix
 
-# no @derive(Json): member(s) Configurations: list[AwsS3BucketNotificationConfigurationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[AwsS3BucketNotificationConfigurationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketNotificationConfiguration:
     Optional[list[AwsS3BucketNotificationConfigurationDetail]] Configurations
 
-# no @derive(Json): member(s) Events: list[str], Filter: AwsS3BucketNotificationConfigurationFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[str], Filter: AwsS3BucketNotificationConfigurationFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketNotificationConfigurationDetail:
     Optional[list[str]] Events
     Optional[AwsS3BucketNotificationConfigurationFilter] Filter
     Optional[str] Destination
     Optional[str] Type
 
-# no @derive(Json): member(s) S3KeyFilter: AwsS3BucketNotificationConfigurationS3KeyFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3KeyFilter: AwsS3BucketNotificationConfigurationS3KeyFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketNotificationConfigurationFilter:
     Optional[AwsS3BucketNotificationConfigurationS3KeyFilter] S3KeyFilter
 
-# no @derive(Json): member(s) FilterRules: list[AwsS3BucketNotificationConfigurationS3KeyFilterRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterRules: list[AwsS3BucketNotificationConfigurationS3KeyFilterRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketNotificationConfigurationS3KeyFilter:
     Optional[list[AwsS3BucketNotificationConfigurationS3KeyFilterRule]] FilterRules
 
@@ -4907,8 +5057,9 @@ struct AwsS3BucketServerSideEncryptionByDefault:
     Optional[str] SSEAlgorithm
     Optional[str] KMSMasterKeyID
 
-# no @derive(Json): member(s) Rules: list[AwsS3BucketServerSideEncryptionRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AwsS3BucketServerSideEncryptionRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketServerSideEncryptionConfiguration:
     Optional[list[AwsS3BucketServerSideEncryptionRule]] Rules
 
@@ -4916,8 +5067,9 @@ struct AwsS3BucketServerSideEncryptionConfiguration:
 struct AwsS3BucketServerSideEncryptionRule:
     Optional[AwsS3BucketServerSideEncryptionByDefault] ApplyServerSideEncryptionByDefault
 
-# no @derive(Json): member(s) RoutingRules: list[AwsS3BucketWebsiteConfigurationRoutingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoutingRules: list[AwsS3BucketWebsiteConfigurationRoutingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsS3BucketWebsiteConfiguration:
     Optional[str] ErrorDocument
     Optional[str] IndexDocumentSuffix
@@ -4956,8 +5108,9 @@ struct AwsS3ObjectDetails:
     Optional[str] ServerSideEncryption
     Optional[str] SSEKMSKeyId
 
-# no @derive(Json): member(s) AcceleratorTypes: list[str], AdditionalCodeRepositories: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcceleratorTypes: list[str], AdditionalCodeRepositories: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsSageMakerNotebookInstanceDetails:
     Optional[list[str]] AcceleratorTypes
     Optional[list[str]] AdditionalCodeRepositories
@@ -4999,8 +5152,9 @@ struct AwsSecretsManagerSecretDetails:
 struct AwsSecretsManagerSecretRotationRules:
     Optional[int64] AutomaticallyAfterDays
 
-# no @derive(Json): member(s) Types: list[str], ProductFields: dict[str, str], UserDefinedFields: dict[str, str], Malware: list[Malware], NetworkPath: list[NetworkPathComponent], Threats: list[Threat], ThreatIntelIndicators: list[ThreatIntelIndicator], Resources: list[Resource], Compliance: Compliance, RelatedFindings: list[RelatedFinding], Vulnerabilities: list[Vulnerability], Action: Action, FindingProviderFields: FindingProviderFields, GeneratorDetails: GeneratorDetails, Detection: Detection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str], ProductFields: dict[str, str], UserDefinedFields: dict[str, str], Malware: list[Malware], NetworkPath: list[NetworkPathComponent], Threats: list[Threat], ThreatIntelIndicators: list[ThreatIntelIndicator], Resources: list[Resource], Compliance: Compliance, RelatedFindings: list[RelatedFinding], Vulnerabilities: list[Vulnerability], Action: Action, FindingProviderFields: FindingProviderFields, GeneratorDetails: GeneratorDetails, Detection: Detection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsSecurityFinding:
     str SchemaVersion
     str Id
@@ -5048,8 +5202,9 @@ struct AwsSecurityFinding:
     Optional[str] AwsAccountName
     Optional[Detection] Detection
 
-# no @derive(Json): member(s) ProductArn: list[StringFilter], AwsAccountId: list[StringFilter], Id: list[StringFilter], GeneratorId: list[StringFilter], Region: list[StringFilter], Type: list[StringFilter], FirstObservedAt: list[DateFilter], LastObservedAt: list[DateFilter], CreatedAt: list[DateFilter], UpdatedAt: list[DateFilter], SeverityProduct: list[NumberFilter], SeverityNormalized: list[NumberFilter], SeverityLabel: list[StringFilter], Confidence: list[NumberFilter], Criticality: list[NumberFilter], Title: list[StringFilter], Description: list[StringFilter], RecommendationText: list[StringFilter], SourceUrl: list[StringFilter], ProductFields: list[MapFilter], ProductName: list[StringFilter], CompanyName: list[StringFilter], UserDefinedFields: list[MapFilter], MalwareName: list[StringFilter], MalwareType: list[StringFilter], MalwarePath: list[StringFilter], MalwareState: list[StringFilter], NetworkDirection: list[StringFilter], NetworkProtocol: list[StringFilter], NetworkSourceIpV4: list[IpFilter], NetworkSourceIpV6: list[IpFilter], NetworkSourcePort: list[NumberFilter], NetworkSourceDomain: list[StringFilter], NetworkSourceMac: list[StringFilter], NetworkDestinationIpV4: list[IpFilter], NetworkDestinationIpV6: list[IpFilter], NetworkDestinationPort: list[NumberFilter], NetworkDestinationDomain: list[StringFilter], ProcessName: list[StringFilter], ProcessPath: list[StringFilter], ProcessPid: list[NumberFilter], ProcessParentPid: list[NumberFilter], ProcessLaunchedAt: list[DateFilter], ProcessTerminatedAt: list[DateFilter], ThreatIntelIndicatorType: list[StringFilter], ThreatIntelIndicatorValue: list[StringFilter], ThreatIntelIndicatorCategory: list[StringFilter], ThreatIntelIndicatorLastObservedAt: list[DateFilter], ThreatIntelIndicatorSource: list[StringFilter], ThreatIntelIndicatorSourceUrl: list[StringFilter], ResourceType: list[StringFilter], ResourceId: list[StringFilter], ResourcePartition: list[StringFilter], ResourceRegion: list[StringFilter], ResourceTags: list[MapFilter], ResourceAwsEc2InstanceType: list[StringFilter], ResourceAwsEc2InstanceImageId: list[StringFilter], ResourceAwsEc2InstanceIpV4Addresses: list[IpFilter], ResourceAwsEc2InstanceIpV6Addresses: list[IpFilter], ResourceAwsEc2InstanceKeyName: list[StringFilter], ResourceAwsEc2InstanceIamInstanceProfileArn: list[StringFilter], ResourceAwsEc2InstanceVpcId: list[StringFilter], ResourceAwsEc2InstanceSubnetId: list[StringFilter], ResourceAwsEc2InstanceLaunchedAt: list[DateFilter], ResourceAwsS3BucketOwnerId: list[StringFilter], ResourceAwsS3BucketOwnerName: list[StringFilter], ResourceAwsIamAccessKeyUserName: list[StringFilter], ResourceAwsIamAccessKeyPrincipalName: list[StringFilter], ResourceAwsIamAccessKeyStatus: list[StringFilter], ResourceAwsIamAccessKeyCreatedAt: list[DateFilter], ResourceAwsIamUserUserName: list[StringFilter], ResourceContainerName: list[StringFilter], ResourceContainerImageId: list[StringFilter], ResourceContainerImageName: list[StringFilter], ResourceContainerLaunchedAt: list[DateFilter], ResourceDetailsOther: list[MapFilter], ComplianceStatus: list[StringFilter], VerificationState: list[StringFilter], WorkflowState: list[StringFilter], WorkflowStatus: list[StringFilter], RecordState: list[StringFilter], RelatedFindingsProductArn: list[StringFilter], RelatedFindingsId: list[StringFilter], NoteText: list[StringFilter], NoteUpdatedAt: list[DateFilter], NoteUpdatedBy: list[StringFilter], Keyword: list[KeywordFilter], FindingProviderFieldsConfidence: list[NumberFilter], FindingProviderFieldsCriticality: list[NumberFilter], FindingProviderFieldsRelatedFindingsId: list[StringFilter], FindingProviderFieldsRelatedFindingsProductArn: list[StringFilter], FindingProviderFieldsSeverityLabel: list[StringFilter], FindingProviderFieldsSeverityOriginal: list[StringFilter], FindingProviderFieldsTypes: list[StringFilter], Sample: list[BooleanFilter], ComplianceSecurityControlId: list[StringFilter], ComplianceAssociatedStandardsId: list[StringFilter], VulnerabilitiesExploitAvailable: list[StringFilter], VulnerabilitiesFixAvailable: list[StringFilter], ComplianceSecurityControlParametersName: list[StringFilter], ComplianceSecurityControlParametersValue: list[StringFilter], AwsAccountName: list[StringFilter], ResourceApplicationName: list[StringFilter], ResourceApplicationArn: list[StringFilter], ResourceOwnerAccountId: list[StringFilter], ResourceOwnerOrgId: list[StringFilter], ResourceProvider: list[StringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductArn: list[StringFilter], AwsAccountId: list[StringFilter], Id: list[StringFilter], GeneratorId: list[StringFilter], Region: list[StringFilter], Type: list[StringFilter], FirstObservedAt: list[DateFilter], LastObservedAt: list[DateFilter], CreatedAt: list[DateFilter], UpdatedAt: list[DateFilter], SeverityProduct: list[NumberFilter], SeverityNormalized: list[NumberFilter], SeverityLabel: list[StringFilter], Confidence: list[NumberFilter], Criticality: list[NumberFilter], Title: list[StringFilter], Description: list[StringFilter], RecommendationText: list[StringFilter], SourceUrl: list[StringFilter], ProductFields: list[MapFilter], ProductName: list[StringFilter], CompanyName: list[StringFilter], UserDefinedFields: list[MapFilter], MalwareName: list[StringFilter], MalwareType: list[StringFilter], MalwarePath: list[StringFilter], MalwareState: list[StringFilter], NetworkDirection: list[StringFilter], NetworkProtocol: list[StringFilter], NetworkSourceIpV4: list[IpFilter], NetworkSourceIpV6: list[IpFilter], NetworkSourcePort: list[NumberFilter], NetworkSourceDomain: list[StringFilter], NetworkSourceMac: list[StringFilter], NetworkDestinationIpV4: list[IpFilter], NetworkDestinationIpV6: list[IpFilter], NetworkDestinationPort: list[NumberFilter], NetworkDestinationDomain: list[StringFilter], ProcessName: list[StringFilter], ProcessPath: list[StringFilter], ProcessPid: list[NumberFilter], ProcessParentPid: list[NumberFilter], ProcessLaunchedAt: list[DateFilter], ProcessTerminatedAt: list[DateFilter], ThreatIntelIndicatorType: list[StringFilter], ThreatIntelIndicatorValue: list[StringFilter], ThreatIntelIndicatorCategory: list[StringFilter], ThreatIntelIndicatorLastObservedAt: list[DateFilter], ThreatIntelIndicatorSource: list[StringFilter], ThreatIntelIndicatorSourceUrl: list[StringFilter], ResourceType: list[StringFilter], ResourceId: list[StringFilter], ResourcePartition: list[StringFilter], ResourceRegion: list[StringFilter], ResourceTags: list[MapFilter], ResourceAwsEc2InstanceType: list[StringFilter], ResourceAwsEc2InstanceImageId: list[StringFilter], ResourceAwsEc2InstanceIpV4Addresses: list[IpFilter], ResourceAwsEc2InstanceIpV6Addresses: list[IpFilter], ResourceAwsEc2InstanceKeyName: list[StringFilter], ResourceAwsEc2InstanceIamInstanceProfileArn: list[StringFilter], ResourceAwsEc2InstanceVpcId: list[StringFilter], ResourceAwsEc2InstanceSubnetId: list[StringFilter], ResourceAwsEc2InstanceLaunchedAt: list[DateFilter], ResourceAwsS3BucketOwnerId: list[StringFilter], ResourceAwsS3BucketOwnerName: list[StringFilter], ResourceAwsIamAccessKeyUserName: list[StringFilter], ResourceAwsIamAccessKeyPrincipalName: list[StringFilter], ResourceAwsIamAccessKeyStatus: list[StringFilter], ResourceAwsIamAccessKeyCreatedAt: list[DateFilter], ResourceAwsIamUserUserName: list[StringFilter], ResourceContainerName: list[StringFilter], ResourceContainerImageId: list[StringFilter], ResourceContainerImageName: list[StringFilter], ResourceContainerLaunchedAt: list[DateFilter], ResourceDetailsOther: list[MapFilter], ComplianceStatus: list[StringFilter], VerificationState: list[StringFilter], WorkflowState: list[StringFilter], WorkflowStatus: list[StringFilter], RecordState: list[StringFilter], RelatedFindingsProductArn: list[StringFilter], RelatedFindingsId: list[StringFilter], NoteText: list[StringFilter], NoteUpdatedAt: list[DateFilter], NoteUpdatedBy: list[StringFilter], Keyword: list[KeywordFilter], FindingProviderFieldsConfidence: list[NumberFilter], FindingProviderFieldsCriticality: list[NumberFilter], FindingProviderFieldsRelatedFindingsId: list[StringFilter], FindingProviderFieldsRelatedFindingsProductArn: list[StringFilter], FindingProviderFieldsSeverityLabel: list[StringFilter], FindingProviderFieldsSeverityOriginal: list[StringFilter], FindingProviderFieldsTypes: list[StringFilter], Sample: list[BooleanFilter], ComplianceSecurityControlId: list[StringFilter], ComplianceAssociatedStandardsId: list[StringFilter], VulnerabilitiesExploitAvailable: list[StringFilter], VulnerabilitiesFixAvailable: list[StringFilter], ComplianceSecurityControlParametersName: list[StringFilter], ComplianceSecurityControlParametersValue: list[StringFilter], AwsAccountName: list[StringFilter], ResourceApplicationName: list[StringFilter], ResourceApplicationArn: list[StringFilter], ResourceOwnerAccountId: list[StringFilter], ResourceOwnerOrgId: list[StringFilter], ResourceProvider: list[StringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsSecurityFindingFilters:
     Optional[list[StringFilter]] ProductArn
     Optional[list[StringFilter]] AwsAccountId
@@ -5164,8 +5319,9 @@ struct AwsSecurityFindingIdentifier:
     str Id
     str ProductArn
 
-# no @derive(Json): member(s) Subscription: list[AwsSnsTopicSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscription: list[AwsSnsTopicSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsSnsTopicDetails:
     Optional[str] KmsMasterKeyId
     Optional[list[AwsSnsTopicSubscription]] Subscription
@@ -5220,8 +5376,9 @@ struct AwsSsmPatch:
 struct AwsSsmPatchComplianceDetails:
     Optional[AwsSsmPatch] Patch
 
-# no @derive(Json): member(s) LoggingConfiguration: AwsStepFunctionStateMachineLoggingConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: AwsStepFunctionStateMachineLoggingConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsStepFunctionStateMachineDetails:
     Optional[str] Label
     Optional[AwsStepFunctionStateMachineLoggingConfigurationDetails] LoggingConfiguration
@@ -5240,8 +5397,9 @@ struct AwsStepFunctionStateMachineLoggingConfigurationDestinationsCloudWatchLogs
 struct AwsStepFunctionStateMachineLoggingConfigurationDestinationsDetails:
     Optional[AwsStepFunctionStateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroupDetails] CloudWatchLogsLogGroup
 
-# no @derive(Json): member(s) Destinations: list[AwsStepFunctionStateMachineLoggingConfigurationDestinationsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[AwsStepFunctionStateMachineLoggingConfigurationDestinationsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsStepFunctionStateMachineLoggingConfigurationDetails:
     Optional[list[AwsStepFunctionStateMachineLoggingConfigurationDestinationsDetails]] Destinations
     Optional[bool] IncludeExecutionData
@@ -5251,8 +5409,9 @@ struct AwsStepFunctionStateMachineLoggingConfigurationDetails:
 struct AwsStepFunctionStateMachineTracingConfigurationDetails:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) MatchPredicates: list[AwsWafRateBasedRuleMatchPredicate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchPredicates: list[AwsWafRateBasedRuleMatchPredicate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRateBasedRuleDetails:
     Optional[str] MetricName
     Optional[str] Name
@@ -5267,8 +5426,9 @@ struct AwsWafRateBasedRuleMatchPredicate:
     Optional[bool] Negated
     Optional[str] Type
 
-# no @derive(Json): member(s) MatchPredicates: list[AwsWafRegionalRateBasedRuleMatchPredicate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchPredicates: list[AwsWafRegionalRateBasedRuleMatchPredicate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRegionalRateBasedRuleDetails:
     Optional[str] MetricName
     Optional[str] Name
@@ -5283,16 +5443,18 @@ struct AwsWafRegionalRateBasedRuleMatchPredicate:
     Optional[bool] Negated
     Optional[str] Type
 
-# no @derive(Json): member(s) PredicateList: list[AwsWafRegionalRulePredicateListDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredicateList: list[AwsWafRegionalRulePredicateListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRegionalRuleDetails:
     Optional[str] MetricName
     Optional[str] Name
     Optional[list[AwsWafRegionalRulePredicateListDetails]] PredicateList
     Optional[str] RuleId
 
-# no @derive(Json): member(s) Rules: list[AwsWafRegionalRuleGroupRulesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AwsWafRegionalRuleGroupRulesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRegionalRuleGroupDetails:
     Optional[str] MetricName
     Optional[str] Name
@@ -5316,8 +5478,9 @@ struct AwsWafRegionalRulePredicateListDetails:
     Optional[bool] Negated
     Optional[str] Type
 
-# no @derive(Json): member(s) RulesList: list[AwsWafRegionalWebAclRulesListDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RulesList: list[AwsWafRegionalWebAclRulesListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRegionalWebAclDetails:
     Optional[str] DefaultAction
     Optional[str] MetricName
@@ -5341,16 +5504,18 @@ struct AwsWafRegionalWebAclRulesListDetails:
 struct AwsWafRegionalWebAclRulesListOverrideActionDetails:
     Optional[str] Type
 
-# no @derive(Json): member(s) PredicateList: list[AwsWafRulePredicateListDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredicateList: list[AwsWafRulePredicateListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRuleDetails:
     Optional[str] MetricName
     Optional[str] Name
     Optional[list[AwsWafRulePredicateListDetails]] PredicateList
     Optional[str] RuleId
 
-# no @derive(Json): member(s) Rules: list[AwsWafRuleGroupRulesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AwsWafRuleGroupRulesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafRuleGroupDetails:
     Optional[str] MetricName
     Optional[str] Name
@@ -5374,16 +5539,18 @@ struct AwsWafRulePredicateListDetails:
     Optional[bool] Negated
     Optional[str] Type
 
-# no @derive(Json): member(s) Rules: list[AwsWafWebAclRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AwsWafWebAclRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafWebAclDetails:
     Optional[str] Name
     Optional[str] DefaultAction
     Optional[list[AwsWafWebAclRule]] Rules
     Optional[str] WebAclId
 
-# no @derive(Json): member(s) ExcludedRules: list[WafExcludedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedRules: list[WafExcludedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafWebAclRule:
     Optional[WafAction] Action
     Optional[list[WafExcludedRule]] ExcludedRules
@@ -5392,13 +5559,15 @@ struct AwsWafWebAclRule:
     Optional[str] RuleId
     Optional[str] Type
 
-# no @derive(Json): member(s) CustomRequestHandling: AwsWafv2CustomRequestHandlingDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: AwsWafv2CustomRequestHandlingDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2ActionAllowDetails:
     Optional[AwsWafv2CustomRequestHandlingDetails] CustomRequestHandling
 
-# no @derive(Json): member(s) CustomResponse: AwsWafv2CustomResponseDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomResponse: AwsWafv2CustomResponseDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2ActionBlockDetails:
     Optional[AwsWafv2CustomResponseDetails] CustomResponse
 
@@ -5407,20 +5576,23 @@ struct AwsWafv2CustomHttpHeader:
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) InsertHeaders: list[AwsWafv2CustomHttpHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsertHeaders: list[AwsWafv2CustomHttpHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2CustomRequestHandlingDetails:
     Optional[list[AwsWafv2CustomHttpHeader]] InsertHeaders
 
-# no @derive(Json): member(s) ResponseHeaders: list[AwsWafv2CustomHttpHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseHeaders: list[AwsWafv2CustomHttpHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2CustomResponseDetails:
     Optional[str] CustomResponseBodyKey
     Optional[int64] ResponseCode
     Optional[list[AwsWafv2CustomHttpHeader]] ResponseHeaders
 
-# no @derive(Json): member(s) Rules: list[AwsWafv2RulesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AwsWafv2RulesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2RuleGroupDetails:
     Optional[int64] Capacity
     Optional[str] Description
@@ -5431,26 +5603,30 @@ struct AwsWafv2RuleGroupDetails:
     Optional[str] Scope
     Optional[AwsWafv2VisibilityConfigDetails] VisibilityConfig
 
-# no @derive(Json): member(s) CustomRequestHandling: AwsWafv2CustomRequestHandlingDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: AwsWafv2CustomRequestHandlingDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2RulesActionCaptchaDetails:
     Optional[AwsWafv2CustomRequestHandlingDetails] CustomRequestHandling
 
-# no @derive(Json): member(s) CustomRequestHandling: AwsWafv2CustomRequestHandlingDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: AwsWafv2CustomRequestHandlingDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2RulesActionCountDetails:
     Optional[AwsWafv2CustomRequestHandlingDetails] CustomRequestHandling
 
-# no @derive(Json): member(s) Allow: AwsWafv2ActionAllowDetails, Block: AwsWafv2ActionBlockDetails, Captcha: AwsWafv2RulesActionCaptchaDetails, Count: AwsWafv2RulesActionCountDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Allow: AwsWafv2ActionAllowDetails, Block: AwsWafv2ActionBlockDetails, Captcha: AwsWafv2RulesActionCaptchaDetails, Count: AwsWafv2RulesActionCountDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2RulesActionDetails:
     Optional[AwsWafv2ActionAllowDetails] Allow
     Optional[AwsWafv2ActionBlockDetails] Block
     Optional[AwsWafv2RulesActionCaptchaDetails] Captcha
     Optional[AwsWafv2RulesActionCountDetails] Count
 
-# no @derive(Json): member(s) Action: AwsWafv2RulesActionDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: AwsWafv2RulesActionDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2RulesDetails:
     Optional[AwsWafv2RulesActionDetails] Action
     Optional[str] Name
@@ -5464,8 +5640,9 @@ struct AwsWafv2VisibilityConfigDetails:
     Optional[str] MetricName
     Optional[bool] SampledRequestsEnabled
 
-# no @derive(Json): member(s) Allow: AwsWafv2ActionAllowDetails, Block: AwsWafv2ActionBlockDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Allow: AwsWafv2ActionAllowDetails, Block: AwsWafv2ActionBlockDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2WebAclActionDetails:
     Optional[AwsWafv2ActionAllowDetails] Allow
     Optional[AwsWafv2ActionBlockDetails] Block
@@ -5478,8 +5655,9 @@ struct AwsWafv2WebAclCaptchaConfigDetails:
 struct AwsWafv2WebAclCaptchaConfigImmunityTimePropertyDetails:
     Optional[int64] ImmunityTime
 
-# no @derive(Json): member(s) DefaultAction: AwsWafv2WebAclActionDetails, Rules: list[AwsWafv2RulesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultAction: AwsWafv2WebAclActionDetails, Rules: list[AwsWafv2RulesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsWafv2WebAclDetails:
     Optional[str] Name
     Optional[str] Arn
@@ -5498,15 +5676,17 @@ struct AwsXrayEncryptionConfigDetails:
     Optional[str] Status
     Optional[str] Type
 
-# no @derive(Json): member(s) ScopeConfiguration: AzureScopeConfiguration, AzureRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScopeConfiguration: AzureScopeConfiguration, AzureRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureDetail:
     str AWSConfigConnectorArn
     AzureScopeConfiguration ScopeConfiguration
     list[str] AzureRegions
 
-# no @derive(Json): member(s) ScopeConfiguration: AzureScopeConfiguration, AzureRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScopeConfiguration: AzureScopeConfiguration, AzureRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureProviderConfiguration:
     str AWSConfigConnectorArn
     AzureScopeConfiguration ScopeConfiguration
@@ -5517,14 +5697,16 @@ struct AzureResourceDetails:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ScopeValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScopeValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureScopeConfiguration:
     ScopeType ScopeType
     Optional[list[str]] ScopeValues
 
-# no @derive(Json): member(s) ScopeConfiguration: AzureScopeConfiguration, AzureRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScopeConfiguration: AzureScopeConfiguration, AzureRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureUpdateConfiguration:
     AzureScopeConfiguration ScopeConfiguration
     list[str] AzureRegions
@@ -5534,8 +5716,9 @@ struct AzureUpdateConfiguration:
 struct BatchDeleteAutomationRulesRequest:
     list[str] AutomationRulesArns
 
-# no @derive(Json): member(s) ProcessedAutomationRules: list[str], UnprocessedAutomationRules: list[UnprocessedAutomationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessedAutomationRules: list[str], UnprocessedAutomationRules: list[UnprocessedAutomationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteAutomationRulesResponse:
     Optional[list[str]] ProcessedAutomationRules
     Optional[list[UnprocessedAutomationRule]] UnprocessedAutomationRules
@@ -5545,8 +5728,9 @@ struct BatchDeleteAutomationRulesResponse:
 struct BatchDisableStandardsRequest:
     list[str] StandardsSubscriptionArns
 
-# no @derive(Json): member(s) StandardsSubscriptions: list[StandardsSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsSubscriptions: list[StandardsSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisableStandardsResponse:
     Optional[list[StandardsSubscription]] StandardsSubscriptions
 
@@ -5555,8 +5739,9 @@ struct BatchDisableStandardsResponse:
 struct BatchEnableStandardsRequest:
     list[StandardsSubscriptionRequest] StandardsSubscriptionRequests
 
-# no @derive(Json): member(s) StandardsSubscriptions: list[StandardsSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsSubscriptions: list[StandardsSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchEnableStandardsResponse:
     Optional[list[StandardsSubscription]] StandardsSubscriptions
 
@@ -5565,8 +5750,9 @@ struct BatchEnableStandardsResponse:
 struct BatchGetAutomationRulesRequest:
     list[str] AutomationRulesArns
 
-# no @derive(Json): member(s) Rules: list[AutomationRulesConfig], UnprocessedAutomationRules: list[UnprocessedAutomationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AutomationRulesConfig], UnprocessedAutomationRules: list[UnprocessedAutomationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAutomationRulesResponse:
     Optional[list[AutomationRulesConfig]] Rules
     Optional[list[UnprocessedAutomationRule]] UnprocessedAutomationRules
@@ -5576,8 +5762,9 @@ struct BatchGetAutomationRulesResponse:
 struct BatchGetConfigurationPolicyAssociationsRequest:
     list[ConfigurationPolicyAssociation] ConfigurationPolicyAssociationIdentifiers
 
-# no @derive(Json): member(s) ConfigurationPolicyAssociations: list[ConfigurationPolicyAssociationSummary], UnprocessedConfigurationPolicyAssociations: list[UnprocessedConfigurationPolicyAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationPolicyAssociations: list[ConfigurationPolicyAssociationSummary], UnprocessedConfigurationPolicyAssociations: list[UnprocessedConfigurationPolicyAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetConfigurationPolicyAssociationsResponse:
     Optional[list[ConfigurationPolicyAssociationSummary]] ConfigurationPolicyAssociations
     Optional[list[UnprocessedConfigurationPolicyAssociation]] UnprocessedConfigurationPolicyAssociations
@@ -5587,8 +5774,9 @@ struct BatchGetConfigurationPolicyAssociationsResponse:
 struct BatchGetSecurityControlsRequest:
     list[str] SecurityControlIds
 
-# no @derive(Json): member(s) SecurityControls: list[SecurityControl], UnprocessedIds: list[UnprocessedSecurityControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityControls: list[SecurityControl], UnprocessedIds: list[UnprocessedSecurityControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSecurityControlsResponse:
     list[SecurityControl] SecurityControls
     Optional[list[UnprocessedSecurityControl]] UnprocessedIds
@@ -5598,8 +5786,9 @@ struct BatchGetSecurityControlsResponse:
 struct BatchGetStandardsControlAssociationsRequest:
     list[StandardsControlAssociationId] StandardsControlAssociationIds
 
-# no @derive(Json): member(s) StandardsControlAssociationDetails: list[StandardsControlAssociationDetail], UnprocessedAssociations: list[UnprocessedStandardsControlAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsControlAssociationDetails: list[StandardsControlAssociationDetail], UnprocessedAssociations: list[UnprocessedStandardsControlAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetStandardsControlAssociationsResponse:
     list[StandardsControlAssociationDetail] StandardsControlAssociationDetails
     Optional[list[UnprocessedStandardsControlAssociation]] UnprocessedAssociations
@@ -5609,8 +5798,9 @@ struct BatchGetStandardsControlAssociationsResponse:
 struct BatchImportFindingsRequest:
     list[AwsSecurityFinding] Findings
 
-# no @derive(Json): member(s) FailedFindings: list[ImportFindingsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedFindings: list[ImportFindingsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchImportFindingsResponse:
     int64 FailedCount
     int64 SuccessCount
@@ -5621,8 +5811,9 @@ struct BatchImportFindingsResponse:
 struct BatchUpdateAutomationRulesRequest:
     list[UpdateAutomationRulesRequestItem] UpdateAutomationRulesRequestItems
 
-# no @derive(Json): member(s) ProcessedAutomationRules: list[str], UnprocessedAutomationRules: list[UnprocessedAutomationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessedAutomationRules: list[str], UnprocessedAutomationRules: list[UnprocessedAutomationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateAutomationRulesResponse:
     Optional[list[str]] ProcessedAutomationRules
     Optional[list[UnprocessedAutomationRule]] UnprocessedAutomationRules
@@ -5641,8 +5832,9 @@ struct BatchUpdateFindingsRequest:
     Optional[WorkflowUpdate] Workflow
     Optional[list[RelatedFinding]] RelatedFindings
 
-# no @derive(Json): member(s) ProcessedFindings: list[AwsSecurityFindingIdentifier], UnprocessedFindings: list[BatchUpdateFindingsUnprocessedFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessedFindings: list[AwsSecurityFindingIdentifier], UnprocessedFindings: list[BatchUpdateFindingsUnprocessedFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateFindingsResponse:
     list[AwsSecurityFindingIdentifier] ProcessedFindings
     list[BatchUpdateFindingsUnprocessedFinding] UnprocessedFindings
@@ -5667,8 +5859,9 @@ struct BatchUpdateFindingsV2Request:
     Optional[int64] SeverityId
     Optional[int64] StatusId
 
-# no @derive(Json): member(s) ProcessedFindings: list[BatchUpdateFindingsV2ProcessedFinding], UnprocessedFindings: list[BatchUpdateFindingsV2UnprocessedFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessedFindings: list[BatchUpdateFindingsV2ProcessedFinding], UnprocessedFindings: list[BatchUpdateFindingsV2UnprocessedFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateFindingsV2Response:
     list[BatchUpdateFindingsV2ProcessedFinding] ProcessedFindings
     list[BatchUpdateFindingsV2UnprocessedFinding] UnprocessedFindings
@@ -5685,8 +5878,9 @@ struct BatchUpdateFindingsV2UnprocessedFinding:
 struct BatchUpdateStandardsControlAssociationsRequest:
     list[StandardsControlAssociationUpdate] StandardsControlAssociationUpdates
 
-# no @derive(Json): member(s) UnprocessedAssociationUpdates: list[UnprocessedStandardsControlAssociationUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAssociationUpdates: list[UnprocessedStandardsControlAssociationUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateStandardsControlAssociationsResponse:
     Optional[list[UnprocessedStandardsControlAssociationUpdate]] UnprocessedAssociationUpdates
 
@@ -5725,8 +5919,9 @@ struct CidrBlockAssociation:
 struct City:
     Optional[str] CityName
 
-# no @derive(Json): member(s) SensitiveData: list[SensitiveDataResult], CustomDataIdentifiers: CustomDataIdentifiersResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SensitiveData: list[SensitiveDataResult], CustomDataIdentifiers: CustomDataIdentifiersResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClassificationResult:
     Optional[str] MimeType
     Optional[int64] SizeClassified
@@ -5759,8 +5954,9 @@ struct CodeVulnerabilitiesFilePath:
     Optional[str] FilePath
     Optional[int64] StartLine
 
-# no @derive(Json): member(s) RelatedRequirements: list[str], StatusReasons: list[StatusReason], AssociatedStandards: list[AssociatedStandard], SecurityControlParameters: list[SecurityControlParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelatedRequirements: list[str], StatusReasons: list[StatusReason], AssociatedStandards: list[AssociatedStandard], SecurityControlParameters: list[SecurityControlParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Compliance:
     Optional[ComplianceStatus] Status
     Optional[list[str]] RelatedRequirements
@@ -5769,8 +5965,9 @@ struct Compliance:
     Optional[list[AssociatedStandard]] AssociatedStandards
     Optional[list[SecurityControlParameter]] SecurityControlParameters
 
-# no @derive(Json): member(s) StringFilters: list[OcsfStringFilter], DateFilters: list[OcsfDateFilter], BooleanFilters: list[OcsfBooleanFilter], NumberFilters: list[OcsfNumberFilter], MapFilters: list[OcsfMapFilter], IpFilters: list[OcsfIpFilter], NestedCompositeFilters: list[CompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringFilters: list[OcsfStringFilter], DateFilters: list[OcsfDateFilter], BooleanFilters: list[OcsfBooleanFilter], NumberFilters: list[OcsfNumberFilter], MapFilters: list[OcsfMapFilter], IpFilters: list[OcsfIpFilter], NestedCompositeFilters: list[CompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositeFilter:
     Optional[list[OcsfStringFilter]] StringFilters
     Optional[list[OcsfDateFilter]] DateFilters
@@ -5781,8 +5978,9 @@ struct CompositeFilter:
     Optional[list[CompositeFilter]] NestedCompositeFilters
     Optional[AllowedOperators] Operator
 
-# no @derive(Json): member(s) IntegerList: IntegerListConfigurationOptions, StringList: StringListConfigurationOptions, Enum: EnumConfigurationOptions, EnumList: EnumListConfigurationOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegerList: IntegerListConfigurationOptions, StringList: StringListConfigurationOptions, Enum: EnumConfigurationOptions, EnumList: EnumListConfigurationOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationOptions:
     Optional[IntegerConfigurationOptions] Integer
     Optional[IntegerListConfigurationOptions] IntegerList
@@ -5823,8 +6021,9 @@ struct ConflictException:
     Optional[str] Message
     Optional[str] Code
 
-# no @derive(Json): member(s) ProviderSummary: ProviderSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderSummary: ProviderSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorSummary:
     Optional[str] ConnectorArn
     str ConnectorId
@@ -5835,8 +6034,9 @@ struct ConnectorSummary:
     Optional[EnablementStatus] EnablementStatus
     Optional[str] EnablementStatusReason
 
-# no @derive(Json): member(s) VolumeMounts: list[VolumeMount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeMounts: list[VolumeMount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerDetails:
     Optional[str] ContainerRuntime
     Optional[str] Name
@@ -5870,8 +6070,9 @@ struct CreateAggregatorV2Request:
     Optional[dict[str, str]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) LinkedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAggregatorV2Response:
     Optional[str] AggregatorV2Arn
     Optional[str] AggregationRegion
@@ -5919,8 +6120,9 @@ struct CreateConfigurationPolicyRequest:
     Policy ConfigurationPolicy
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ConfigurationPolicy: Policy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationPolicy: Policy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfigurationPolicyResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -5970,8 +6172,9 @@ struct CreateFindingAggregatorRequest:
     str RegionLinkingMode
     Optional[list[str]] Regions
 
-# no @derive(Json): member(s) Regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFindingAggregatorResponse:
     Optional[str] FindingAggregatorArn
     Optional[str] FindingAggregationRegion
@@ -5994,8 +6197,9 @@ struct CreateInsightResponse:
 struct CreateMembersRequest:
     list[AccountDetails] AccountDetails
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMembersResponse:
     Optional[list[Result]] UnprocessedAccounts
 
@@ -6012,8 +6216,9 @@ struct CreateTicketV2Response:
     str TicketId
     Optional[str] TicketSrcUrl
 
-# no @derive(Json): member(s) OcsfFindingCriteria: OcsfFindingFilters, ResourceCriteria: ResourcesFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OcsfFindingCriteria: OcsfFindingFilters, ResourceCriteria: ResourcesFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Criteria:
     Optional[OcsfFindingFilters] OcsfFindingCriteria
     Optional[ResourcesFilters] ResourceCriteria
@@ -6023,8 +6228,9 @@ struct CriticalitySource:
     CriticalitySourceType Source
     str Reason
 
-# no @derive(Json): member(s) ProviderSummary: CspmProviderSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderSummary: CspmProviderSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CspmConnectorSummary:
     Optional[str] ConnectorArn
     Optional[str] ConnectorId
@@ -6035,52 +6241,60 @@ struct CspmConnectorSummary:
     Optional[str] CreatedBy
     Optional[CspmEnablementStatus] EnablementStatus
 
-# no @derive(Json): member(s) Issues: list[HealthIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Issues: list[HealthIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CspmHealthCheck:
     CspmConnectorStatus ConnectorStatus
     Optional[str] Message
     DateTime LastCheckedAt
     Optional[list[HealthIssue]] Issues
 
-# no @derive(Json): member(s) Azure: AzureProviderConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Azure: AzureProviderConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CspmProviderConfiguration:
     Optional[AzureProviderConfiguration] Azure
 
-# no @derive(Json): member(s) Azure: AzureDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Azure: AzureDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CspmProviderDetail:
     Optional[AzureDetail] Azure
 
-# no @derive(Json): member(s) ProviderConfiguration: CspmProviderDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderConfiguration: CspmProviderDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CspmProviderSummary:
     Optional[str] ProviderName
     Optional[CspmConnectorStatus] ConnectorStatus
     Optional[CspmProviderDetail] ProviderConfiguration
 
-# no @derive(Json): member(s) Azure: AzureUpdateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Azure: AzureUpdateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CspmProviderUpdateConfiguration:
     Optional[AzureUpdateConfiguration] Azure
 
-# no @derive(Json): member(s) Occurrences: Occurrences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Occurrences: Occurrences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDataIdentifiersDetections:
     Optional[int64] Count
     Optional[str] Arn
     Optional[str] Name
     Optional[Occurrences] Occurrences
 
-# no @derive(Json): member(s) Detections: list[CustomDataIdentifiersDetections] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Detections: list[CustomDataIdentifiersDetections] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDataIdentifiersResult:
     Optional[list[CustomDataIdentifiersDetections]] Detections
     Optional[int64] TotalCount
 
-# no @derive(Json): member(s) Adjustments: list[Adjustment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Adjustments: list[Adjustment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cvss:
     Optional[str] Version
     Optional[float64] BaseScore
@@ -6088,8 +6302,9 @@ struct Cvss:
     Optional[str] Source
     Optional[list[Adjustment]] Adjustments
 
-# no @derive(Json): member(s) Result: ClassificationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Result: ClassificationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataClassificationDetails:
     Optional[str] DetailedResultsLocation
     Optional[ClassificationResult] Result
@@ -6111,8 +6326,9 @@ struct DateRange:
 struct DeclineInvitationsRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeclineInvitationsResponse:
     Optional[list[Result]] UnprocessedAccounts
 
@@ -6197,8 +6413,9 @@ struct DeleteInsightResponse:
 struct DeleteInvitationsRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInvitationsResponse:
     Optional[list[Result]] UnprocessedAccounts
 
@@ -6207,8 +6424,9 @@ struct DeleteInvitationsResponse:
 struct DeleteMembersRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMembersResponse:
     Optional[list[Result]] UnprocessedAccounts
 
@@ -6219,8 +6437,9 @@ struct DescribeActionTargetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ActionTargets: list[ActionTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionTargets: list[ActionTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActionTargetsResponse:
     list[ActionTarget] ActionTargets
     Optional[str] NextToken
@@ -6257,8 +6476,9 @@ struct DescribeProductsRequest:
     Optional[int64] MaxResults
     Optional[str] ProductArn
 
-# no @derive(Json): member(s) Products: list[Product] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Products: list[Product] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProductsResponse:
     list[Product] Products
     Optional[str] NextToken
@@ -6269,8 +6489,9 @@ struct DescribeProductsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProductsV2: list[ProductV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductsV2: list[ProductV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProductsV2Response:
     list[ProductV2] ProductsV2
     Optional[str] NextToken
@@ -6281,8 +6502,9 @@ struct DescribeSecurityHubV2Request:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Features: dict[str, FeatureDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: dict[str, FeatureDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSecurityHubV2Response:
     Optional[str] HubV2Arn
     Optional[str] SubscribedAt
@@ -6295,8 +6517,9 @@ struct DescribeStandardsControlsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Controls: list[StandardsControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Controls: list[StandardsControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStandardsControlsResponse:
     Optional[list[StandardsControl]] Controls
     Optional[str] NextToken
@@ -6308,14 +6531,16 @@ struct DescribeStandardsRequest:
     Optional[int64] MaxResults
     Optional[list[StandardsProvider]] Providers
 
-# no @derive(Json): member(s) Standards: list[Standard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Standards: list[Standard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStandardsResponse:
     Optional[list[Standard]] Standards
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Sequence: Sequence not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sequence: Sequence not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Detection:
     Optional[Sequence] Sequence
 
@@ -6467,14 +6692,16 @@ struct EnableSecurityHubV2Request:
 struct EnableSecurityHubV2Response:
     Optional[str] HubV2Arn
 
-# no @derive(Json): member(s) AllowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnumConfigurationOptions:
     Optional[str] DefaultValue
     Optional[list[str]] AllowedValues
 
-# no @derive(Json): member(s) DefaultValue: list[str], AllowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValue: list[str], AllowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnumListConfigurationOptions:
     Optional[list[str]] DefaultValue
     Optional[int64] MaxItems
@@ -6484,8 +6711,9 @@ struct EnumListConfigurationOptions:
 struct ExportDestination:
     Optional[S3ExportDestination] S3
 
-# no @derive(Json): member(s) Findings: FindingsOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: FindingsOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportOutput:
     Optional[FindingsOutput] Findings
 
@@ -6493,13 +6721,15 @@ struct ExportOutput:
 struct ExportOutputSummary:
     Optional[FindingsOutputSummary] Findings
 
-# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportScopes:
     Optional[list[AwsOrganizationScope]] AwsOrganizations
 
-# no @derive(Json): member(s) Scopes: ExportScopes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: ExportScopes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportSummary:
     str ExportJobId
     Optional[str] Name
@@ -6542,8 +6772,9 @@ struct FilePaths:
 struct FindingAggregator:
     Optional[str] FindingAggregatorArn
 
-# no @derive(Json): member(s) Updates: list[FindingHistoryUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Updates: list[FindingHistoryUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingHistoryRecord:
     Optional[AwsSecurityFindingIdentifier] FindingIdentifier
     Optional[DateTime] UpdateTime
@@ -6563,8 +6794,9 @@ struct FindingHistoryUpdateSource:
     Optional[FindingHistoryUpdateSourceType] Type
     Optional[str] Identity
 
-# no @derive(Json): member(s) RelatedFindings: list[RelatedFinding], Types: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelatedFindings: list[RelatedFinding], Types: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingProviderFields:
     Optional[int64] Confidence
     Optional[int64] Criticality
@@ -6577,13 +6809,15 @@ struct FindingProviderSeverity:
     Optional[SeverityLabel] Label
     Optional[str] Original
 
-# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingScopes:
     Optional[list[AwsOrganizationScope]] AwsOrganizations
 
-# no @derive(Json): member(s) Filters: OcsfFindingFilters, SelectedFields: list[FindingsSelectableField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: OcsfFindingFilters, SelectedFields: list[FindingsSelectableField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingsOutput:
     FindingsExportFormat Format
     Optional[OcsfFindingFilters] Filters
@@ -6593,15 +6827,17 @@ struct FindingsOutput:
 struct FindingsOutputSummary:
     FindingsExportFormat Format
 
-# no @derive(Json): member(s) StringFilters: list[FindingsTrendsStringFilter], NestedCompositeFilters: list[FindingsTrendsCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringFilters: list[FindingsTrendsStringFilter], NestedCompositeFilters: list[FindingsTrendsCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingsTrendsCompositeFilter:
     Optional[list[FindingsTrendsStringFilter]] StringFilters
     Optional[list[FindingsTrendsCompositeFilter]] NestedCompositeFilters
     Optional[AllowedOperators] Operator
 
-# no @derive(Json): member(s) CompositeFilters: list[FindingsTrendsCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompositeFilters: list[FindingsTrendsCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingsTrendsFilters:
     Optional[list[FindingsTrendsCompositeFilter]] CompositeFilters
     Optional[AllowedOperators] CompositeOperator
@@ -6611,8 +6847,9 @@ struct FindingsTrendsStringFilter:
     Optional[FindingsTrendsStringField] FieldName
     Optional[StringFilter] Filter
 
-# no @derive(Json): member(s) StatefulRuleGroupReferences: list[FirewallPolicyStatefulRuleGroupReferencesDetails], StatelessCustomActions: list[FirewallPolicyStatelessCustomActionsDetails], StatelessDefaultActions: list[str], StatelessFragmentDefaultActions: list[str], StatelessRuleGroupReferences: list[FirewallPolicyStatelessRuleGroupReferencesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatefulRuleGroupReferences: list[FirewallPolicyStatefulRuleGroupReferencesDetails], StatelessCustomActions: list[FirewallPolicyStatelessCustomActionsDetails], StatelessDefaultActions: list[str], StatelessFragmentDefaultActions: list[str], StatelessRuleGroupReferences: list[FirewallPolicyStatelessRuleGroupReferencesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallPolicyDetails:
     Optional[list[FirewallPolicyStatefulRuleGroupReferencesDetails]] StatefulRuleGroupReferences
     Optional[list[FirewallPolicyStatelessCustomActionsDetails]] StatelessCustomActions
@@ -6624,8 +6861,9 @@ struct FirewallPolicyDetails:
 struct FirewallPolicyStatefulRuleGroupReferencesDetails:
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) ActionDefinition: StatelessCustomActionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionDefinition: StatelessCustomActionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallPolicyStatelessCustomActionsDetails:
     Optional[StatelessCustomActionDefinition] ActionDefinition
     Optional[str] ActionName
@@ -6654,8 +6892,9 @@ struct GenerateRecommendedPolicyV2Response:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneratorDetails:
     Optional[str] Name
     Optional[str] Description
@@ -6681,8 +6920,9 @@ struct GetAdministratorAccountResponse:
 struct GetAggregatorV2Request:
     str AggregatorV2Arn
 
-# no @derive(Json): member(s) LinkedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAggregatorV2Response:
     Optional[str] AggregatorV2Arn
     Optional[str] AggregationRegion
@@ -6694,8 +6934,9 @@ struct GetAggregatorV2Response:
 struct GetAutomationRuleV2Request:
     str Identifier
 
-# no @derive(Json): member(s) Criteria: Criteria, Actions: list[AutomationRulesActionV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: Criteria, Actions: list[AutomationRulesActionV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutomationRuleV2Response:
     Optional[str] RuleArn
     Optional[str] RuleId
@@ -6729,8 +6970,9 @@ struct GetConfigurationPolicyAssociationResponse:
 struct GetConfigurationPolicyRequest:
     str Identifier
 
-# no @derive(Json): member(s) ConfigurationPolicy: Policy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationPolicy: Policy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationPolicyResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -6745,8 +6987,9 @@ struct GetConfigurationPolicyResponse:
 struct GetConnectorRequest:
     str ConnectorId
 
-# no @derive(Json): member(s) Health: CspmHealthCheck, ProviderDetail: CspmProviderDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Health: CspmHealthCheck, ProviderDetail: CspmProviderDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectorResponse:
     Optional[str] ConnectorArn
     str ConnectorId
@@ -6764,8 +7007,9 @@ struct GetConnectorResponse:
 struct GetConnectorV2Request:
     str ConnectorId
 
-# no @derive(Json): member(s) Health: HealthCheck, ProviderDetail: ProviderDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Health: HealthCheck, ProviderDetail: ProviderDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectorV2Response:
     Optional[str] ConnectorArn
     str ConnectorId
@@ -6787,8 +7031,9 @@ struct GetEnabledStandardsRequest:
     Optional[int64] MaxResults
     Optional[list[StandardsProvider]] Providers
 
-# no @derive(Json): member(s) StandardsSubscriptions: list[StandardsSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsSubscriptions: list[StandardsSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnabledStandardsResponse:
     Optional[list[StandardsSubscription]] StandardsSubscriptions
     Optional[str] NextToken
@@ -6798,8 +7043,9 @@ struct GetEnabledStandardsResponse:
 struct GetExportJobV2Request:
     str ExportJobId
 
-# no @derive(Json): member(s) OutputConfiguration: ExportOutput, Scopes: ExportScopes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputConfiguration: ExportOutput, Scopes: ExportScopes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExportJobV2Response:
     str ExportJobId
     Optional[str] Name
@@ -6818,8 +7064,9 @@ struct GetExportJobV2Response:
 struct GetFindingAggregatorRequest:
     str FindingAggregatorArn
 
-# no @derive(Json): member(s) Regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingAggregatorResponse:
     Optional[str] FindingAggregatorArn
     Optional[str] FindingAggregationRegion
@@ -6835,8 +7082,9 @@ struct GetFindingHistoryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Records: list[FindingHistoryRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[FindingHistoryRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingHistoryResponse:
     Optional[list[FindingHistoryRecord]] Records
     Optional[str] NextToken
@@ -6849,8 +7097,9 @@ struct GetFindingStatisticsV2Request:
     Optional[SortOrder] SortOrder
     Optional[int64] MaxStatisticResults
 
-# no @derive(Json): member(s) GroupByResults: list[GroupByResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupByResults: list[GroupByResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingStatisticsV2Response:
     Optional[list[GroupByResult]] GroupByResults
 
@@ -6862,8 +7111,9 @@ struct GetFindingsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Findings: list[AwsSecurityFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: list[AwsSecurityFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsResponse:
     list[AwsSecurityFinding] Findings
     Optional[str] NextToken
@@ -6877,8 +7127,9 @@ struct GetFindingsTrendsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TrendsMetrics: list[TrendsMetricsResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrendsMetrics: list[TrendsMetricsResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsTrendsV2Response:
     GranularityField Granularity
     list[TrendsMetricsResult] TrendsMetrics
@@ -6893,8 +7144,9 @@ struct GetFindingsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Findings: list[OcsfFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: list[OcsfFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsV2Response:
     Optional[list[OcsfFinding]] Findings
     Optional[str] NextToken
@@ -6904,8 +7156,9 @@ struct GetFindingsV2Response:
 struct GetInsightResultsRequest:
     str InsightArn
 
-# no @derive(Json): member(s) InsightResults: InsightResults not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightResults: InsightResults not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightResultsResponse:
     InsightResults InsightResults
 
@@ -6916,8 +7169,9 @@ struct GetInsightsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Insights: list[Insight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Insights: list[Insight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightsResponse:
     list[Insight] Insights
     Optional[str] NextToken
@@ -6947,8 +7201,9 @@ struct GetMasterAccountResponse:
 struct GetMembersRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) Members: list[Member], UnprocessedAccounts: list[Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Member], UnprocessedAccounts: list[Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMembersResponse:
     Optional[list[Member]] Members
     Optional[list[Result]] UnprocessedAccounts
@@ -6960,8 +7215,9 @@ struct GetRecommendedPolicyV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RecommendationSteps: list[RecommendationStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationSteps: list[RecommendationStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendedPolicyV2Response:
     Optional[str] NextToken
     Optional[str] RecommendationType
@@ -6981,8 +7237,9 @@ struct GetRemediationsV2Request:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[RemediationV2Item] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[RemediationV2Item] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRemediationsV2Response:
     list[RemediationV2Item] Items
     Optional[str] NextToken
@@ -6995,8 +7252,9 @@ struct GetResourcesStatisticsV2Request:
     Optional[SortOrder] SortOrder
     Optional[int64] MaxStatisticResults
 
-# no @derive(Json): member(s) GroupByResults: list[GroupByResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupByResults: list[GroupByResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcesStatisticsV2Response:
     list[GroupByResult] GroupByResults
 
@@ -7009,8 +7267,9 @@ struct GetResourcesTrendsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TrendsMetrics: list[ResourcesTrendsMetricsResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrendsMetrics: list[ResourcesTrendsMetricsResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcesTrendsV2Response:
     GranularityField Granularity
     list[ResourcesTrendsMetricsResult] TrendsMetrics
@@ -7025,8 +7284,9 @@ struct GetResourcesV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Resources: list[ResourceResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[ResourceResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcesV2Response:
     list[ResourceResult] Resources
     Optional[str] NextToken
@@ -7036,19 +7296,22 @@ struct GetResourcesV2Response:
 struct GetSecurityControlDefinitionRequest:
     str SecurityControlId
 
-# no @derive(Json): member(s) SecurityControlDefinition: SecurityControlDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityControlDefinition: SecurityControlDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSecurityControlDefinitionResponse:
     SecurityControlDefinition SecurityControlDefinition
 
-# no @derive(Json): member(s) GroupByValues: list[GroupByValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupByValues: list[GroupByValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupByResult:
     Optional[str] GroupByField
     Optional[list[GroupByValue]] GroupByValues
 
-# no @derive(Json): member(s) Filters: OcsfFindingFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: OcsfFindingFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupByRule:
     Optional[OcsfFindingFilters] Filters
     GroupByField GroupByField
@@ -7058,8 +7321,9 @@ struct GroupByValue:
     Optional[str] FieldValue
     Optional[int64] Count
 
-# no @derive(Json): member(s) Issues: list[HealthIssue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Issues: list[HealthIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HealthCheck:
     ConnectorStatus ConnectorStatus
     Optional[str] Message
@@ -7082,16 +7346,18 @@ struct ImportFindingsError:
     str ErrorCode
     str ErrorMessage
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Indicator:
     Optional[str] Key
     Optional[list[str]] Values
     Optional[str] Title
     Optional[str] Type
 
-# no @derive(Json): member(s) Filters: AwsSecurityFindingFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: AwsSecurityFindingFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Insight:
     str InsightArn
     str Name
@@ -7103,8 +7369,9 @@ struct InsightResultValue:
     str GroupByAttributeValue
     int64 Count
 
-# no @derive(Json): member(s) ResultValues: list[InsightResultValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultValues: list[InsightResultValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightResults:
     str InsightArn
     str GroupByAttribute
@@ -7116,8 +7383,9 @@ struct IntegerConfigurationOptions:
     Optional[int64] Min
     Optional[int64] Max
 
-# no @derive(Json): member(s) DefaultValue: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValue: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegerListConfigurationOptions:
     Optional[list[int64]] DefaultValue
     Optional[int64] Min
@@ -7157,8 +7425,9 @@ struct Invitation:
 struct InviteMembersRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteMembersResponse:
     Optional[list[Result]] UnprocessedAccounts
 
@@ -7215,8 +7484,9 @@ struct ListAggregatorsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AggregatorsV2: list[AggregatorV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregatorsV2: list[AggregatorV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAggregatorsV2Response:
     Optional[list[AggregatorV2]] AggregatorsV2
     Optional[str] NextToken
@@ -7227,8 +7497,9 @@ struct ListAutomationRulesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AutomationRulesMetadata: list[AutomationRulesMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomationRulesMetadata: list[AutomationRulesMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomationRulesResponse:
     Optional[list[AutomationRulesMetadata]] AutomationRulesMetadata
     Optional[str] NextToken
@@ -7239,8 +7510,9 @@ struct ListAutomationRulesV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Rules: list[AutomationRulesMetadataV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AutomationRulesMetadataV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomationRulesV2Response:
     Optional[list[AutomationRulesMetadataV2]] Rules
     Optional[str] NextToken
@@ -7251,8 +7523,9 @@ struct ListConfigurationPoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ConfigurationPolicySummaries: list[ConfigurationPolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationPolicySummaries: list[ConfigurationPolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationPoliciesResponse:
     Optional[list[ConfigurationPolicySummary]] ConfigurationPolicySummaries
     Optional[str] NextToken
@@ -7264,8 +7537,9 @@ struct ListConfigurationPolicyAssociationsRequest:
     Optional[int64] MaxResults
     Optional[AssociationFilters] Filters
 
-# no @derive(Json): member(s) ConfigurationPolicyAssociationSummaries: list[ConfigurationPolicyAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationPolicyAssociationSummaries: list[ConfigurationPolicyAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationPolicyAssociationsResponse:
     Optional[list[ConfigurationPolicyAssociationSummary]] ConfigurationPolicyAssociationSummaries
     Optional[str] NextToken
@@ -7281,8 +7555,9 @@ struct ListConnectorsRequest:
     # wire string of the CspmEnablementStatus enum (querystring binding)
     Optional[str] EnablementStatus
 
-# no @derive(Json): member(s) Connectors: list[CspmConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connectors: list[CspmConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[str] NextToken
     list[CspmConnectorSummary] Connectors
@@ -7299,8 +7574,9 @@ struct ListConnectorsV2Request:
     # wire string of the EnablementStatus enum (querystring binding)
     Optional[str] EnablementStatus
 
-# no @derive(Json): member(s) Connectors: list[ConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connectors: list[ConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsV2Response:
     Optional[str] NextToken
     list[ConnectorSummary] Connectors
@@ -7311,8 +7587,9 @@ struct ListEnabledProductsForImportRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProductSubscriptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductSubscriptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnabledProductsForImportResponse:
     Optional[list[str]] ProductSubscriptions
     Optional[str] NextToken
@@ -7326,8 +7603,9 @@ struct ListExportJobsV2Request:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ExportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportJobsV2Response:
     list[ExportSummary] Items
     Optional[str] NextToken
@@ -7339,8 +7617,9 @@ struct ListExposuresByRemediationV2Request:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[ExposureFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExposureFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExposuresByRemediationV2Response:
     list[ExposureFinding] Items
     str TargetUid
@@ -7355,8 +7634,9 @@ struct ListFindingAggregatorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FindingAggregators: list[FindingAggregator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindingAggregators: list[FindingAggregator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingAggregatorsResponse:
     Optional[list[FindingAggregator]] FindingAggregators
     Optional[str] NextToken
@@ -7369,8 +7649,9 @@ struct ListFreeTrialStatusesV2Request:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AccountFreeTrialStatuses: list[AccountFreeTrialStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountFreeTrialStatuses: list[AccountFreeTrialStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFreeTrialStatusesV2Response:
     list[AccountFreeTrialStatus] AccountFreeTrialStatuses
     Optional[str] NextToken
@@ -7381,8 +7662,9 @@ struct ListInvitationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Invitations: list[Invitation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invitations: list[Invitation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvitationsResponse:
     Optional[list[Invitation]] Invitations
     Optional[str] NextToken
@@ -7394,8 +7676,9 @@ struct ListMembersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Members: list[Member] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Member] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersResponse:
     Optional[list[Member]] Members
     Optional[str] NextToken
@@ -7408,8 +7691,9 @@ struct ListOrganizationAdminAccountsRequest:
     # wire string of the SecurityHubFeature enum (querystring binding)
     Optional[str] Feature
 
-# no @derive(Json): member(s) AdminAccounts: list[AdminAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminAccounts: list[AdminAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationAdminAccountsResponse:
     Optional[list[AdminAccount]] AdminAccounts
     Optional[str] NextToken
@@ -7423,8 +7707,9 @@ struct ListSecurityControlDefinitionsRequest:
     Optional[int64] MaxResults
     Optional[list[SecurityControlsProvider]] Providers
 
-# no @derive(Json): member(s) SecurityControlDefinitions: list[SecurityControlDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityControlDefinitions: list[SecurityControlDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityControlDefinitionsResponse:
     list[SecurityControlDefinition] SecurityControlDefinitions
     Optional[str] NextToken
@@ -7436,8 +7721,9 @@ struct ListStandardsControlAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) StandardsControlAssociationSummaries: list[StandardsControlAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsControlAssociationSummaries: list[StandardsControlAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStandardsControlAssociationsResponse:
     list[StandardsControlAssociationSummary] StandardsControlAssociationSummaries
     Optional[str] NextToken
@@ -7447,8 +7733,9 @@ struct ListStandardsControlAssociationsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -7532,23 +7819,26 @@ struct NetworkGeoLocation:
     Optional[float64] Lat
     Optional[float64] Lon
 
-# no @derive(Json): member(s) Destination: NetworkPathComponentDetails, Source: NetworkPathComponentDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destination: NetworkPathComponentDetails, Source: NetworkPathComponentDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkHeader:
     Optional[str] Protocol
     Optional[NetworkPathComponentDetails] Destination
     Optional[NetworkPathComponentDetails] Source
 
-# no @derive(Json): member(s) Egress: NetworkHeader, Ingress: NetworkHeader not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Egress: NetworkHeader, Ingress: NetworkHeader not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkPathComponent:
     Optional[str] ComponentId
     Optional[str] ComponentType
     Optional[NetworkHeader] Egress
     Optional[NetworkHeader] Ingress
 
-# no @derive(Json): member(s) Address: list[str], PortRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: list[str], PortRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkPathComponentDetails:
     Optional[list[str]] Address
     Optional[list[PortRange]] PortRanges
@@ -7572,8 +7862,9 @@ struct NumberFilter:
     Optional[float64] Gt
     Optional[float64] Lt
 
-# no @derive(Json): member(s) LineRanges: list[Range], OffsetRanges: list[Range], Pages: list[Page], Records: list[Record], Cells: list[Cell] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineRanges: list[Range], OffsetRanges: list[Range], Pages: list[Page], Records: list[Record], Cells: list[Cell] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Occurrences:
     Optional[list[Range]] LineRanges
     Optional[list[Range]] OffsetRanges
@@ -7596,8 +7887,9 @@ struct OcsfFinding:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CompositeFilters: list[CompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompositeFilters: list[CompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OcsfFindingFilters:
     Optional[list[CompositeFilter]] CompositeFilters
     Optional[AllowedOperators] CompositeOperator
@@ -7650,20 +7942,23 @@ struct Page:
     Optional[Range] LineRange
     Optional[Range] OffsetRange
 
-# no @derive(Json): member(s) Value: ParameterValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: ParameterValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterConfiguration:
     ParameterValueType ValueType
     Optional[ParameterValue] Value
 
-# no @derive(Json): member(s) ConfigurationOptions: ConfigurationOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationOptions: ConfigurationOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterDefinition:
     str Description
     ConfigurationOptions ConfigurationOptions
 
-# no @derive(Json): member(s) IntegerList: list[int64], StringList: list[str], EnumList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegerList: list[int64], StringList: list[str], EnumList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterValue:
     Optional[int64] Integer
     Optional[list[int64]] IntegerList
@@ -7688,13 +7983,15 @@ struct PatchSummary:
     Optional[str] RebootOption
     Optional[str] Operation
 
-# no @derive(Json): member(s) SecurityHub: SecurityHubPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityHub: SecurityHubPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Policy:
     Optional[SecurityHubPolicy] SecurityHub
 
-# no @derive(Json): member(s) PortProbeDetails: list[PortProbeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortProbeDetails: list[PortProbeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortProbeAction:
     Optional[list[PortProbeDetail]] PortProbeDetails
     Optional[bool] Blocked
@@ -7724,8 +8021,9 @@ struct ProcessDetails:
     Optional[str] LaunchedAt
     Optional[str] TerminatedAt
 
-# no @derive(Json): member(s) Categories: list[str], IntegrationTypes: list[IntegrationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[str], IntegrationTypes: list[IntegrationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Product:
     str ProductArn
     Optional[str] ProductName
@@ -7737,8 +8035,9 @@ struct Product:
     Optional[str] ActivationUrl
     Optional[str] ProductSubscriptionResourcePolicy
 
-# no @derive(Json): member(s) Categories: list[str], IntegrationV2Types: list[IntegrationV2Type] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[str], IntegrationV2Types: list[IntegrationV2Type] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductV2:
     Optional[str] ProductV2Name
     Optional[str] CompanyName
@@ -7753,29 +8052,33 @@ struct ProductV2:
 struct PropagatingVgwSetDetails:
     Optional[str] GatewayId
 
-# no @derive(Json): member(s) Azure: AzureProviderConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Azure: AzureProviderConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderConfiguration:
     Optional[JiraCloudProviderConfiguration] JiraCloud
     Optional[ServiceNowProviderConfiguration] ServiceNow
     Optional[AzureProviderConfiguration] Azure
 
-# no @derive(Json): member(s) Azure: AzureDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Azure: AzureDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderDetail:
     Optional[JiraCloudDetail] JiraCloud
     Optional[ServiceNowDetail] ServiceNow
     Optional[AzureDetail] Azure
 
-# no @derive(Json): member(s) ProviderConfiguration: ProviderDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderConfiguration: ProviderDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderSummary:
     Optional[ConnectorProviderName] ProviderName
     Optional[ConnectorStatus] ConnectorStatus
     Optional[ProviderDetail] ProviderConfiguration
 
-# no @derive(Json): member(s) Azure: AzureUpdateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Azure: AzureUpdateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderUpdateConfiguration:
     Optional[JiraCloudUpdateConfiguration] JiraCloud
     Optional[ServiceNowUpdateConfiguration] ServiceNow
@@ -7826,18 +8129,21 @@ struct RelatedFinding:
 struct Remediation:
     Optional[Recommendation] Recommendation
 
-# no @derive(Json): member(s) StringFilters: list[RemediationStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringFilters: list[RemediationStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationCompositeFilter:
     Optional[list[RemediationStringFilter]] StringFilters
 
-# no @derive(Json): member(s) CompositeFilters: list[RemediationCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompositeFilters: list[RemediationCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationFilters:
     Optional[list[RemediationCompositeFilter]] CompositeFilters
 
-# no @derive(Json): member(s) Context: RemediationGuidanceContext, Specification: RemediationGuidanceSpecification, Metadata: RemediationGuidanceMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: RemediationGuidanceContext, Specification: RemediationGuidanceSpecification, Metadata: RemediationGuidanceMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationGuidance:
     str TargetTypeName
     str Pattern
@@ -7847,8 +8153,9 @@ struct RemediationGuidance:
     RemediationGuidanceExamples Examples
     RemediationGuidanceMetadata Metadata
 
-# no @derive(Json): member(s) Prerequisites: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Prerequisites: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationGuidanceContext:
     Optional[str] ProblemStatement
     Optional[str] RiskAssessment
@@ -7866,8 +8173,9 @@ struct RemediationGuidanceExamples:
     Optional[str] IaC
     Optional[str] Template
 
-# no @derive(Json): member(s) TraitTitles: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TraitTitles: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationGuidanceMetadata:
     str ResourceType
     str ExposureType
@@ -7880,8 +8188,9 @@ struct RemediationGuidanceMetadata:
     Optional[DateTime] GeneratedAt
     Optional[str] VerificationStatus
 
-# no @derive(Json): member(s) Parameters: list[RemediationParameter], Steps: list[RemediationStep], RequiredPermissions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[RemediationParameter], Steps: list[RemediationStep], RequiredPermissions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationGuidanceSpecification:
     Optional[list[RemediationParameter]] Parameters
     Optional[list[RemediationStep]] Steps
@@ -7933,8 +8242,9 @@ struct RemediationStringFilter:
 struct RemediationStringFilterCondition:
     str Value
 
-# no @derive(Json): member(s) PostRemediationSteps: list[str], KbArticles: list[KbArticle] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PostRemediationSteps: list[str], KbArticles: list[KbArticle] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationSummaryDetail:
     str Action
     Optional[str] Description
@@ -7947,8 +8257,9 @@ struct RemediationTrait:
     str Type
     str Title
 
-# no @derive(Json): member(s) RemediationSummary: RemediationSummaryDetail, Guidance: RemediationGuidance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemediationSummary: RemediationSummaryDetail, Guidance: RemediationGuidance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationV2Item:
     str TargetUid
     RemediationOutcome Outcome
@@ -7960,8 +8271,9 @@ struct RemediationV2Item:
     Optional[RemediationGuidance] Guidance
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) Tags: dict[str, str], DataClassification: DataClassificationDetails, Details: ResourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], DataClassification: DataClassificationDetails, Details: ResourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     str Type
     str Id
@@ -7986,8 +8298,9 @@ struct ResourceConflictException:
     Optional[str] Message
     Optional[str] Code
 
-# no @derive(Json): member(s) AwsAutoScalingAutoScalingGroup: AwsAutoScalingAutoScalingGroupDetails, AwsCodeBuildProject: AwsCodeBuildProjectDetails, AwsCloudFrontDistribution: AwsCloudFrontDistributionDetails, AwsEc2Instance: AwsEc2InstanceDetails, AwsEc2NetworkInterface: AwsEc2NetworkInterfaceDetails, AwsEc2SecurityGroup: AwsEc2SecurityGroupDetails, AwsEc2Volume: AwsEc2VolumeDetails, AwsEc2Vpc: AwsEc2VpcDetails, AwsEc2Subnet: AwsEc2SubnetDetails, AwsEc2NetworkAcl: AwsEc2NetworkAclDetails, AwsElbv2LoadBalancer: AwsElbv2LoadBalancerDetails, AwsElasticBeanstalkEnvironment: AwsElasticBeanstalkEnvironmentDetails, AwsElasticsearchDomain: AwsElasticsearchDomainDetails, AwsS3Bucket: AwsS3BucketDetails, AwsIamUser: AwsIamUserDetails, AwsIamPolicy: AwsIamPolicyDetails, AwsApiGatewayV2Stage: AwsApiGatewayV2StageDetails, AwsApiGatewayV2Api: AwsApiGatewayV2ApiDetails, AwsDynamoDbTable: AwsDynamoDbTableDetails, AwsApiGatewayStage: AwsApiGatewayStageDetails, AwsApiGatewayRestApi: AwsApiGatewayRestApiDetails, AwsCertificateManagerCertificate: AwsCertificateManagerCertificateDetails, AwsRedshiftCluster: AwsRedshiftClusterDetails, AwsElbLoadBalancer: AwsElbLoadBalancerDetails, AwsIamGroup: AwsIamGroupDetails, AwsIamRole: AwsIamRoleDetails, AwsLambdaFunction: AwsLambdaFunctionDetails, AwsLambdaLayerVersion: AwsLambdaLayerVersionDetails, AwsRdsDbInstance: AwsRdsDbInstanceDetails, AwsSnsTopic: AwsSnsTopicDetails, AwsWafWebAcl: AwsWafWebAclDetails, AwsRdsDbSnapshot: AwsRdsDbSnapshotDetails, AwsRdsDbClusterSnapshot: AwsRdsDbClusterSnapshotDetails, AwsRdsDbCluster: AwsRdsDbClusterDetails, AwsEcsCluster: AwsEcsClusterDetails, AwsEcsContainer: AwsEcsContainerDetails, AwsEcsTaskDefinition: AwsEcsTaskDefinitionDetails, Container: ContainerDetails, Other: dict[str, str], AwsRdsEventSubscription: AwsRdsEventSubscriptionDetails, AwsEcsService: AwsEcsServiceDetails, AwsAutoScalingLaunchConfiguration: AwsAutoScalingLaunchConfigurationDetails, AwsEc2VpnConnection: AwsEc2VpnConnectionDetails, AwsEcrContainerImage: AwsEcrContainerImageDetails, AwsOpenSearchServiceDomain: AwsOpenSearchServiceDomainDetails, AwsEc2VpcEndpointService: AwsEc2VpcEndpointServiceDetails, AwsWafRateBasedRule: AwsWafRateBasedRuleDetails, AwsWafRegionalRateBasedRule: AwsWafRegionalRateBasedRuleDetails, AwsEksCluster: AwsEksClusterDetails, AwsNetworkFirewallFirewallPolicy: AwsNetworkFirewallFirewallPolicyDetails, AwsNetworkFirewallFirewall: AwsNetworkFirewallFirewallDetails, AwsNetworkFirewallRuleGroup: AwsNetworkFirewallRuleGroupDetails, AwsRdsDbSecurityGroup: AwsRdsDbSecurityGroupDetails, AwsEc2TransitGateway: AwsEc2TransitGatewayDetails, AwsEfsAccessPoint: AwsEfsAccessPointDetails, AwsCloudFormationStack: AwsCloudFormationStackDetails, AwsCloudWatchAlarm: AwsCloudWatchAlarmDetails, AwsEc2VpcPeeringConnection: AwsEc2VpcPeeringConnectionDetails, AwsWafRegionalRuleGroup: AwsWafRegionalRuleGroupDetails, AwsWafRegionalRule: AwsWafRegionalRuleDetails, AwsWafRegionalWebAcl: AwsWafRegionalWebAclDetails, AwsWafRule: AwsWafRuleDetails, AwsWafRuleGroup: AwsWafRuleGroupDetails, AwsEcsTask: AwsEcsTaskDetails, AwsBackupBackupVault: AwsBackupBackupVaultDetails, AwsBackupBackupPlan: AwsBackupBackupPlanDetails, AwsEc2LaunchTemplate: AwsEc2LaunchTemplateDetails, AwsSageMakerNotebookInstance: AwsSageMakerNotebookInstanceDetails, AwsWafv2WebAcl: AwsWafv2WebAclDetails, AwsWafv2RuleGroup: AwsWafv2RuleGroupDetails, AwsEc2RouteTable: AwsEc2RouteTableDetails, AwsAmazonMqBroker: AwsAmazonMqBrokerDetails, AwsAppSyncGraphQlApi: AwsAppSyncGraphQlApiDetails, AwsGuardDutyDetector: AwsGuardDutyDetectorDetails, AwsStepFunctionStateMachine: AwsStepFunctionStateMachineDetails, AwsEventsEndpoint: AwsEventsEndpointDetails, AwsDmsReplicationInstance: AwsDmsReplicationInstanceDetails, AwsRoute53HostedZone: AwsRoute53HostedZoneDetails, AwsMskCluster: AwsMskClusterDetails, AwsEc2ClientVpnEndpoint: AwsEc2ClientVpnEndpointDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsAutoScalingAutoScalingGroup: AwsAutoScalingAutoScalingGroupDetails, AwsCodeBuildProject: AwsCodeBuildProjectDetails, AwsCloudFrontDistribution: AwsCloudFrontDistributionDetails, AwsEc2Instance: AwsEc2InstanceDetails, AwsEc2NetworkInterface: AwsEc2NetworkInterfaceDetails, AwsEc2SecurityGroup: AwsEc2SecurityGroupDetails, AwsEc2Volume: AwsEc2VolumeDetails, AwsEc2Vpc: AwsEc2VpcDetails, AwsEc2Subnet: AwsEc2SubnetDetails, AwsEc2NetworkAcl: AwsEc2NetworkAclDetails, AwsElbv2LoadBalancer: AwsElbv2LoadBalancerDetails, AwsElasticBeanstalkEnvironment: AwsElasticBeanstalkEnvironmentDetails, AwsElasticsearchDomain: AwsElasticsearchDomainDetails, AwsS3Bucket: AwsS3BucketDetails, AwsIamUser: AwsIamUserDetails, AwsIamPolicy: AwsIamPolicyDetails, AwsApiGatewayV2Stage: AwsApiGatewayV2StageDetails, AwsApiGatewayV2Api: AwsApiGatewayV2ApiDetails, AwsDynamoDbTable: AwsDynamoDbTableDetails, AwsApiGatewayStage: AwsApiGatewayStageDetails, AwsApiGatewayRestApi: AwsApiGatewayRestApiDetails, AwsCertificateManagerCertificate: AwsCertificateManagerCertificateDetails, AwsRedshiftCluster: AwsRedshiftClusterDetails, AwsElbLoadBalancer: AwsElbLoadBalancerDetails, AwsIamGroup: AwsIamGroupDetails, AwsIamRole: AwsIamRoleDetails, AwsLambdaFunction: AwsLambdaFunctionDetails, AwsLambdaLayerVersion: AwsLambdaLayerVersionDetails, AwsRdsDbInstance: AwsRdsDbInstanceDetails, AwsSnsTopic: AwsSnsTopicDetails, AwsWafWebAcl: AwsWafWebAclDetails, AwsRdsDbSnapshot: AwsRdsDbSnapshotDetails, AwsRdsDbClusterSnapshot: AwsRdsDbClusterSnapshotDetails, AwsRdsDbCluster: AwsRdsDbClusterDetails, AwsEcsCluster: AwsEcsClusterDetails, AwsEcsContainer: AwsEcsContainerDetails, AwsEcsTaskDefinition: AwsEcsTaskDefinitionDetails, Container: ContainerDetails, Other: dict[str, str], AwsRdsEventSubscription: AwsRdsEventSubscriptionDetails, AwsEcsService: AwsEcsServiceDetails, AwsAutoScalingLaunchConfiguration: AwsAutoScalingLaunchConfigurationDetails, AwsEc2VpnConnection: AwsEc2VpnConnectionDetails, AwsEcrContainerImage: AwsEcrContainerImageDetails, AwsOpenSearchServiceDomain: AwsOpenSearchServiceDomainDetails, AwsEc2VpcEndpointService: AwsEc2VpcEndpointServiceDetails, AwsWafRateBasedRule: AwsWafRateBasedRuleDetails, AwsWafRegionalRateBasedRule: AwsWafRegionalRateBasedRuleDetails, AwsEksCluster: AwsEksClusterDetails, AwsNetworkFirewallFirewallPolicy: AwsNetworkFirewallFirewallPolicyDetails, AwsNetworkFirewallFirewall: AwsNetworkFirewallFirewallDetails, AwsNetworkFirewallRuleGroup: AwsNetworkFirewallRuleGroupDetails, AwsRdsDbSecurityGroup: AwsRdsDbSecurityGroupDetails, AwsEc2TransitGateway: AwsEc2TransitGatewayDetails, AwsEfsAccessPoint: AwsEfsAccessPointDetails, AwsCloudFormationStack: AwsCloudFormationStackDetails, AwsCloudWatchAlarm: AwsCloudWatchAlarmDetails, AwsEc2VpcPeeringConnection: AwsEc2VpcPeeringConnectionDetails, AwsWafRegionalRuleGroup: AwsWafRegionalRuleGroupDetails, AwsWafRegionalRule: AwsWafRegionalRuleDetails, AwsWafRegionalWebAcl: AwsWafRegionalWebAclDetails, AwsWafRule: AwsWafRuleDetails, AwsWafRuleGroup: AwsWafRuleGroupDetails, AwsEcsTask: AwsEcsTaskDetails, AwsBackupBackupVault: AwsBackupBackupVaultDetails, AwsBackupBackupPlan: AwsBackupBackupPlanDetails, AwsEc2LaunchTemplate: AwsEc2LaunchTemplateDetails, AwsSageMakerNotebookInstance: AwsSageMakerNotebookInstanceDetails, AwsWafv2WebAcl: AwsWafv2WebAclDetails, AwsWafv2RuleGroup: AwsWafv2RuleGroupDetails, AwsEc2RouteTable: AwsEc2RouteTableDetails, AwsAmazonMqBroker: AwsAmazonMqBrokerDetails, AwsAppSyncGraphQlApi: AwsAppSyncGraphQlApiDetails, AwsGuardDutyDetector: AwsGuardDutyDetectorDetails, AwsStepFunctionStateMachine: AwsStepFunctionStateMachineDetails, AwsEventsEndpoint: AwsEventsEndpointDetails, AwsDmsReplicationInstance: AwsDmsReplicationInstanceDetails, AwsRoute53HostedZone: AwsRoute53HostedZoneDetails, AwsMskCluster: AwsMskClusterDetails, AwsEc2ClientVpnEndpoint: AwsEc2ClientVpnEndpointDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDetails:
     Optional[AwsAutoScalingAutoScalingGroupDetails] AwsAutoScalingAutoScalingGroup
     Optional[AwsCodeBuildProjectDetails] AwsCodeBuildProject
@@ -8098,8 +8411,9 @@ struct ResourceFindingsSummary:
     int64 TotalFindings
     Optional[ResourceSeverityBreakdown] Severities
 
-# no @derive(Json): member(s) Filters: ResourcesFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: ResourcesFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceGroupByRule:
     ResourceGroupByField GroupByField
     Optional[ResourcesFilters] Filters
@@ -8131,8 +8445,9 @@ struct ResourceOwnerAccount:
 struct ResourceOwnerOrg:
     Optional[str] Id
 
-# no @derive(Json): member(s) FindingsSummary: list[ResourceFindingsSummary], ResourceTags: list[ResourceTag], CriticalitySources: list[CriticalitySource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindingsSummary: list[ResourceFindingsSummary], ResourceTags: list[ResourceTag], CriticalitySources: list[CriticalitySource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceResult:
     Optional[str] ResourceGuid
     str ResourceId
@@ -8158,8 +8473,9 @@ struct ResourceResult:
     Optional[ResourceCriticality] ResourceCriticality
     Optional[list[CriticalitySource]] CriticalitySources
 
-# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceScopes:
     Optional[list[AwsOrganizationScope]] AwsOrganizations
 
@@ -8179,8 +8495,9 @@ struct ResourceTag:
     str Key
     str Value
 
-# no @derive(Json): member(s) StringFilters: list[ResourcesStringFilter], DateFilters: list[ResourcesDateFilter], NumberFilters: list[ResourcesNumberFilter], MapFilters: list[ResourcesMapFilter], NestedCompositeFilters: list[ResourcesCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringFilters: list[ResourcesStringFilter], DateFilters: list[ResourcesDateFilter], NumberFilters: list[ResourcesNumberFilter], MapFilters: list[ResourcesMapFilter], NestedCompositeFilters: list[ResourcesCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcesCompositeFilter:
     Optional[list[ResourcesStringFilter]] StringFilters
     Optional[list[ResourcesDateFilter]] DateFilters
@@ -8198,8 +8515,9 @@ struct ResourcesDateFilter:
     Optional[ResourcesDateField] FieldName
     Optional[DateFilter] Filter
 
-# no @derive(Json): member(s) CompositeFilters: list[ResourcesCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompositeFilters: list[ResourcesCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcesFilters:
     Optional[list[ResourcesCompositeFilter]] CompositeFilters
     Optional[AllowedOperators] CompositeOperator
@@ -8219,15 +8537,17 @@ struct ResourcesStringFilter:
     Optional[ResourcesStringField] FieldName
     Optional[StringFilter] Filter
 
-# no @derive(Json): member(s) StringFilters: list[ResourcesTrendsStringFilter], NestedCompositeFilters: list[ResourcesTrendsCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringFilters: list[ResourcesTrendsStringFilter], NestedCompositeFilters: list[ResourcesTrendsCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcesTrendsCompositeFilter:
     Optional[list[ResourcesTrendsStringFilter]] StringFilters
     Optional[list[ResourcesTrendsCompositeFilter]] NestedCompositeFilters
     Optional[AllowedOperators] Operator
 
-# no @derive(Json): member(s) CompositeFilters: list[ResourcesTrendsCompositeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompositeFilters: list[ResourcesTrendsCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcesTrendsFilters:
     Optional[list[ResourcesTrendsCompositeFilter]] CompositeFilters
     Optional[AllowedOperators] CompositeOperator
@@ -8271,35 +8591,40 @@ struct RouteSetDetails:
     Optional[str] TransitGatewayId
     Optional[str] VpcPeeringConnectionId
 
-# no @derive(Json): member(s) RuleVariables: RuleGroupVariables, RulesSource: RuleGroupSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleVariables: RuleGroupVariables, RulesSource: RuleGroupSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupDetails:
     Optional[RuleGroupVariables] RuleVariables
     Optional[RuleGroupSource] RulesSource
 
-# no @derive(Json): member(s) RulesSourceList: RuleGroupSourceListDetails, StatefulRules: list[RuleGroupSourceStatefulRulesDetails], StatelessRulesAndCustomActions: RuleGroupSourceStatelessRulesAndCustomActionsDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RulesSourceList: RuleGroupSourceListDetails, StatefulRules: list[RuleGroupSourceStatefulRulesDetails], StatelessRulesAndCustomActions: RuleGroupSourceStatelessRulesAndCustomActionsDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSource:
     Optional[RuleGroupSourceListDetails] RulesSourceList
     Optional[str] RulesString
     Optional[list[RuleGroupSourceStatefulRulesDetails]] StatefulRules
     Optional[RuleGroupSourceStatelessRulesAndCustomActionsDetails] StatelessRulesAndCustomActions
 
-# no @derive(Json): member(s) ActionDefinition: StatelessCustomActionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionDefinition: StatelessCustomActionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceCustomActionsDetails:
     Optional[StatelessCustomActionDefinition] ActionDefinition
     Optional[str] ActionName
 
-# no @derive(Json): member(s) TargetTypes: list[str], Targets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetTypes: list[str], Targets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceListDetails:
     Optional[str] GeneratedRulesType
     Optional[list[str]] TargetTypes
     Optional[list[str]] Targets
 
-# no @derive(Json): member(s) RuleOptions: list[RuleGroupSourceStatefulRulesOptionsDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleOptions: list[RuleGroupSourceStatefulRulesOptionsDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatefulRulesDetails:
     Optional[str] Action
     Optional[RuleGroupSourceStatefulRulesHeaderDetails] Header
@@ -8314,20 +8639,23 @@ struct RuleGroupSourceStatefulRulesHeaderDetails:
     Optional[str] Source
     Optional[str] SourcePort
 
-# no @derive(Json): member(s) Settings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatefulRulesOptionsDetails:
     Optional[str] Keyword
     Optional[list[str]] Settings
 
-# no @derive(Json): member(s) Actions: list[str], MatchAttributes: RuleGroupSourceStatelessRuleMatchAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str], MatchAttributes: RuleGroupSourceStatelessRuleMatchAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatelessRuleDefinition:
     Optional[list[str]] Actions
     Optional[RuleGroupSourceStatelessRuleMatchAttributes] MatchAttributes
 
-# no @derive(Json): member(s) DestinationPorts: list[RuleGroupSourceStatelessRuleMatchAttributesDestinationPorts], Destinations: list[RuleGroupSourceStatelessRuleMatchAttributesDestinations], Protocols: list[int64], SourcePorts: list[RuleGroupSourceStatelessRuleMatchAttributesSourcePorts], Sources: list[RuleGroupSourceStatelessRuleMatchAttributesSources], TcpFlags: list[RuleGroupSourceStatelessRuleMatchAttributesTcpFlags] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationPorts: list[RuleGroupSourceStatelessRuleMatchAttributesDestinationPorts], Destinations: list[RuleGroupSourceStatelessRuleMatchAttributesDestinations], Protocols: list[int64], SourcePorts: list[RuleGroupSourceStatelessRuleMatchAttributesSourcePorts], Sources: list[RuleGroupSourceStatelessRuleMatchAttributesSources], TcpFlags: list[RuleGroupSourceStatelessRuleMatchAttributesTcpFlags] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatelessRuleMatchAttributes:
     Optional[list[RuleGroupSourceStatelessRuleMatchAttributesDestinationPorts]] DestinationPorts
     Optional[list[RuleGroupSourceStatelessRuleMatchAttributesDestinations]] Destinations
@@ -8354,37 +8682,43 @@ struct RuleGroupSourceStatelessRuleMatchAttributesSourcePorts:
 struct RuleGroupSourceStatelessRuleMatchAttributesSources:
     Optional[str] AddressDefinition
 
-# no @derive(Json): member(s) Flags: list[str], Masks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flags: list[str], Masks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatelessRuleMatchAttributesTcpFlags:
     Optional[list[str]] Flags
     Optional[list[str]] Masks
 
-# no @derive(Json): member(s) CustomActions: list[RuleGroupSourceCustomActionsDetails], StatelessRules: list[RuleGroupSourceStatelessRulesDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomActions: list[RuleGroupSourceCustomActionsDetails], StatelessRules: list[RuleGroupSourceStatelessRulesDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatelessRulesAndCustomActionsDetails:
     Optional[list[RuleGroupSourceCustomActionsDetails]] CustomActions
     Optional[list[RuleGroupSourceStatelessRulesDetails]] StatelessRules
 
-# no @derive(Json): member(s) RuleDefinition: RuleGroupSourceStatelessRuleDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleDefinition: RuleGroupSourceStatelessRuleDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupSourceStatelessRulesDetails:
     Optional[int64] Priority
     Optional[RuleGroupSourceStatelessRuleDefinition] RuleDefinition
 
-# no @derive(Json): member(s) IpSets: RuleGroupVariablesIpSetsDetails, PortSets: RuleGroupVariablesPortSetsDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpSets: RuleGroupVariablesIpSetsDetails, PortSets: RuleGroupVariablesPortSetsDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupVariables:
     Optional[RuleGroupVariablesIpSetsDetails] IpSets
     Optional[RuleGroupVariablesPortSetsDetails] PortSets
 
-# no @derive(Json): member(s) Definition: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupVariablesIpSetsDetails:
     Optional[list[str]] Definition
 
-# no @derive(Json): member(s) Definition: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupVariablesPortSetsDetails:
     Optional[list[str]] Definition
 
@@ -8394,8 +8728,9 @@ struct S3ExportDestination:
     str KmsKeyArn
     Optional[str] ObjectPrefix
 
-# no @derive(Json): member(s) Parameters: dict[str, ParameterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, ParameterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityControl:
     str SecurityControlId
     str SecurityControlArn
@@ -8409,14 +8744,16 @@ struct SecurityControl:
     Optional[str] LastUpdateReason
     Optional[SecurityControlsProvider] Provider
 
-# no @derive(Json): member(s) Parameters: dict[str, ParameterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, ParameterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityControlCustomParameter:
     Optional[str] SecurityControlId
     Optional[dict[str, ParameterConfiguration]] Parameters
 
-# no @derive(Json): member(s) CustomizableProperties: list[str], ParameterDefinitions: dict[str, ParameterDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomizableProperties: list[str], ParameterDefinitions: dict[str, ParameterDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityControlDefinition:
     str SecurityControlId
     str Title
@@ -8428,42 +8765,48 @@ struct SecurityControlDefinition:
     Optional[dict[str, ParameterDefinition]] ParameterDefinitions
     Optional[SecurityControlsProvider] Provider
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityControlParameter:
     Optional[str] Name
     Optional[list[str]] Value
 
-# no @derive(Json): member(s) EnabledSecurityControlIdentifiers: list[str], DisabledSecurityControlIdentifiers: list[str], SecurityControlCustomParameters: list[SecurityControlCustomParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledSecurityControlIdentifiers: list[str], DisabledSecurityControlIdentifiers: list[str], SecurityControlCustomParameters: list[SecurityControlCustomParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityControlsConfiguration:
     Optional[list[str]] EnabledSecurityControlIdentifiers
     Optional[list[str]] DisabledSecurityControlIdentifiers
     Optional[list[SecurityControlCustomParameter]] SecurityControlCustomParameters
 
-# no @derive(Json): member(s) EnabledStandardIdentifiers: list[str], SecurityControlsConfiguration: SecurityControlsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledStandardIdentifiers: list[str], SecurityControlsConfiguration: SecurityControlsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityHubPolicy:
     Optional[bool] ServiceEnabled
     Optional[list[str]] EnabledStandardIdentifiers
     Optional[SecurityControlsConfiguration] SecurityControlsConfiguration
 
-# no @derive(Json): member(s) Occurrences: Occurrences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Occurrences: Occurrences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SensitiveDataDetections:
     Optional[int64] Count
     Optional[str] Type
     Optional[Occurrences] Occurrences
 
-# no @derive(Json): member(s) Detections: list[SensitiveDataDetections] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Detections: list[SensitiveDataDetections] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SensitiveDataResult:
     Optional[str] Category
     Optional[list[SensitiveDataDetections]] Detections
     Optional[int64] TotalCount
 
-# no @derive(Json): member(s) Actors: list[Actor], Endpoints: list[NetworkEndpoint], Signals: list[Signal], SequenceIndicators: list[Indicator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actors: list[Actor], Endpoints: list[NetworkEndpoint], Signals: list[Signal], SequenceIndicators: list[Indicator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Sequence:
     Optional[str] Uid
     Optional[list[Actor]] Actors
@@ -8515,8 +8858,9 @@ struct SeverityUpdate:
     Optional[float64] Product
     Optional[SeverityLabel] Label
 
-# no @derive(Json): member(s) ResourceIds: list[str], SignalIndicators: list[Indicator], ActorIds: list[str], EndpointIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIds: list[str], SignalIndicators: list[Indicator], ActorIds: list[str], EndpointIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Signal:
     Optional[str] Type
     Optional[str] Id
@@ -8562,8 +8906,9 @@ struct Standard:
     Optional[StandardsProvider] Provider
     Optional[StandardsManagedBy] StandardsManagedBy
 
-# no @derive(Json): member(s) RelatedRequirements: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelatedRequirements: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardsControl:
     Optional[str] StandardsControlArn
     Optional[ControlStatus] ControlStatus
@@ -8576,8 +8921,9 @@ struct StandardsControl:
     Optional[SeverityRating] SeverityRating
     Optional[list[str]] RelatedRequirements
 
-# no @derive(Json): member(s) RelatedRequirements: list[str], StandardsControlArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelatedRequirements: list[str], StandardsControlArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardsControlAssociationDetail:
     str StandardsArn
     str SecurityControlId
@@ -8595,8 +8941,9 @@ struct StandardsControlAssociationId:
     str SecurityControlId
     str StandardsArn
 
-# no @derive(Json): member(s) RelatedRequirements: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelatedRequirements: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardsControlAssociationSummary:
     str StandardsArn
     str SecurityControlId
@@ -8624,8 +8971,9 @@ struct StandardsManagedBy:
 struct StandardsStatusReason:
     StatusReasonCode StatusReasonCode
 
-# no @derive(Json): member(s) StandardsInput: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsInput: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardsSubscription:
     str StandardsSubscriptionArn
     str StandardsArn
@@ -8635,8 +8983,9 @@ struct StandardsSubscription:
     Optional[StandardsStatusReason] StandardsStatusReason
     Optional[StandardsProvider] Provider
 
-# no @derive(Json): member(s) StandardsInput: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardsInput: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardsSubscriptionRequest:
     str StandardsArn
     Optional[dict[str, str]] StandardsInput
@@ -8682,13 +9031,15 @@ struct StartExportJobV2Request:
 struct StartExportJobV2Response:
     str ExportJobId
 
-# no @derive(Json): member(s) PublishMetricAction: StatelessCustomPublishMetricAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PublishMetricAction: StatelessCustomPublishMetricAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatelessCustomActionDefinition:
     Optional[StatelessCustomPublishMetricAction] PublishMetricAction
 
-# no @derive(Json): member(s) Dimensions: list[StatelessCustomPublishMetricActionDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[StatelessCustomPublishMetricActionDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatelessCustomPublishMetricAction:
     Optional[list[StatelessCustomPublishMetricActionDimension]] Dimensions
 
@@ -8712,8 +9063,9 @@ struct StringFilter:
     Optional[str] Value
     Optional[StringFilterComparison] Comparison
 
-# no @derive(Json): member(s) DefaultValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringListConfigurationOptions:
     Optional[list[str]] DefaultValue
     Optional[str] Re2Expression
@@ -8737,8 +9089,9 @@ struct Target:
     Optional[str] OrganizationalUnitId
     Optional[str] RootId
 
-# no @derive(Json): member(s) FilePaths: list[FilePaths] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilePaths: list[FilePaths] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Threat:
     Optional[str] Name
     Optional[str] Severity
@@ -8838,8 +9191,9 @@ struct UpdateAggregatorV2Request:
     str RegionLinkingMode
     Optional[list[str]] LinkedRegions
 
-# no @derive(Json): member(s) LinkedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAggregatorV2Response:
     Optional[str] AggregatorV2Arn
     Optional[str] AggregationRegion
@@ -8862,8 +9216,9 @@ struct UpdateAutomationRuleV2Response:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Criteria: AutomationRulesFindingFilters, Actions: list[AutomationRulesAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criteria: AutomationRulesFindingFilters, Actions: list[AutomationRulesAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAutomationRulesRequestItem:
     str RuleArn
     Optional[RuleStatus] RuleStatus
@@ -8883,8 +9238,9 @@ struct UpdateConfigurationPolicyRequest:
     Optional[str] UpdatedReason
     Optional[Policy] ConfigurationPolicy
 
-# no @derive(Json): member(s) ConfigurationPolicy: Policy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationPolicy: Policy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfigurationPolicyResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -8925,8 +9281,9 @@ struct UpdateFindingAggregatorRequest:
     str RegionLinkingMode
     Optional[list[str]] Regions
 
-# no @derive(Json): member(s) Regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFindingAggregatorResponse:
     Optional[str] FindingAggregatorArn
     Optional[str] FindingAggregationRegion
@@ -9034,8 +9391,9 @@ struct VpcInfoPeeringOptionsDetails:
     Optional[bool] AllowEgressFromLocalClassicLinkToRemoteVpc
     Optional[bool] AllowEgressFromLocalVpcToRemoteClassicLink
 
-# no @derive(Json): member(s) VulnerablePackages: list[SoftwarePackage], Cvss: list[Cvss], RelatedVulnerabilities: list[str], ReferenceUrls: list[str], CodeVulnerabilities: list[VulnerabilityCodeVulnerabilities] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VulnerablePackages: list[SoftwarePackage], Cvss: list[Cvss], RelatedVulnerabilities: list[str], ReferenceUrls: list[str], CodeVulnerabilities: list[VulnerabilityCodeVulnerabilities] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vulnerability:
     str Id
     Optional[list[SoftwarePackage]] VulnerablePackages
@@ -9049,8 +9407,9 @@ struct Vulnerability:
     Optional[str] LastKnownExploitAt
     Optional[list[VulnerabilityCodeVulnerabilities]] CodeVulnerabilities
 
-# no @derive(Json): member(s) Cwes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cwes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VulnerabilityCodeVulnerabilities:
     Optional[list[str]] Cwes
     Optional[CodeVulnerabilitiesFilePath] FilePath
@@ -9146,76 +9505,14 @@ def securityhub_error_from_code(str code) -> SecurityHubError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDeleteAutomationRules (document member `AutomationRulesArns: list[str]` is not serializable by derive)
-#   BatchDisableStandards (document member `StandardsSubscriptionArns: list[str]` is not serializable by derive)
-#   BatchEnableStandards (document member `StandardsSubscriptionRequests: list[StandardsSubscriptionRequest]` is not serializable by derive)
-#   BatchGetAutomationRules (document member `AutomationRulesArns: list[str]` is not serializable by derive)
-#   BatchGetConfigurationPolicyAssociations (document member `ConfigurationPolicyAssociationIdentifiers: list[ConfigurationPolicyAssociation]` is not serializable by derive)
-#   BatchGetSecurityControls (document member `SecurityControlIds: list[str]` is not serializable by derive)
-#   BatchGetStandardsControlAssociations (document member `StandardsControlAssociationIds: list[StandardsControlAssociationId]` is not serializable by derive)
-#   BatchImportFindings (document member `Findings: list[AwsSecurityFinding]` is not serializable by derive)
-#   BatchUpdateAutomationRules (document member `UpdateAutomationRulesRequestItems: list[UpdateAutomationRulesRequestItem]` is not serializable by derive)
-#   BatchUpdateFindings (document member `FindingIdentifiers: list[AwsSecurityFindingIdentifier]` is not serializable by derive)
-#   BatchUpdateFindingsV2 (document member `MetadataUids: list[str]` is not serializable by derive)
-#   BatchUpdateStandardsControlAssociations (document member `StandardsControlAssociationUpdates: list[StandardsControlAssociationUpdate]` is not serializable by derive)
-#   CreateAggregatorV2 (document member `LinkedRegions: list[str]` is not serializable by derive)
-#   CreateAutomationRule (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateAutomationRuleV2 (document member `Criteria: Criteria` is not serializable by derive)
-#   CreateConfigurationPolicy (document member `ConfigurationPolicy: Policy` is not serializable by derive)
-#   CreateConnector (document member `Provider: CspmProviderConfiguration` is not serializable by derive)
-#   CreateConnectorV2 (document member `Provider: ProviderConfiguration` is not serializable by derive)
-#   CreateFindingAggregator (document member `Regions: list[str]` is not serializable by derive)
-#   CreateInsight (document member `Filters: AwsSecurityFindingFilters` is not serializable by derive)
-#   CreateMembers (document member `AccountDetails: list[AccountDetails]` is not serializable by derive)
-#   DeclineInvitations (document member `AccountIds: list[str]` is not serializable by derive)
-#   DeleteInvitations (document member `AccountIds: list[str]` is not serializable by derive)
-#   DeleteMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   DescribeActionTargets (document member `ActionTargetArns: list[str]` is not serializable by derive)
 #   DescribeStandards (httpQuery `Providers` has unsupported type list[StandardsProvider])
-#   DisassociateMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   EnableSecurityHub (document member `Tags: dict[str, str]` is not serializable by derive)
-#   EnableSecurityHubV2 (document member `Tags: dict[str, str]` is not serializable by derive)
-#   GetEnabledStandards (document member `StandardsSubscriptionArns: list[str]` is not serializable by derive)
-#   GetFindingStatisticsV2 (document member `GroupByRules: list[GroupByRule]` is not serializable by derive)
-#   GetFindings (document member `Filters: AwsSecurityFindingFilters` is not serializable by derive)
-#   GetFindingsTrendsV2 (document member `Filters: FindingsTrendsFilters` is not serializable by derive)
-#   GetFindingsV2 (document member `Filters: OcsfFindingFilters` is not serializable by derive)
-#   GetInsights (document member `InsightArns: list[str]` is not serializable by derive)
-#   GetMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   GetRemediationsV2 (document member `Filters: RemediationFilters` is not serializable by derive)
-#   GetResourcesStatisticsV2 (document member `GroupByRules: list[ResourceGroupByRule]` is not serializable by derive)
-#   GetResourcesTrendsV2 (document member `Filters: ResourcesTrendsFilters` is not serializable by derive)
-#   GetResourcesV2 (document member `Filters: ResourcesFilters` is not serializable by derive)
-#   InviteMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   ListFreeTrialStatusesV2 (document member `AccountIds: list[str]` is not serializable by derive)
 #   ListMembers (httpQuery `OnlyAssociated` has unsupported type bool)
 #   ListSecurityControlDefinitions (httpQuery `Providers` has unsupported type list[SecurityControlsProvider])
-#   StartExportJobV2 (document member `OutputConfiguration: ExportOutput` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateAggregatorV2 (document member `LinkedRegions: list[str]` is not serializable by derive)
-#   UpdateAutomationRuleV2 (document member `Criteria: Criteria` is not serializable by derive)
-#   UpdateConfigurationPolicy (document member `ConfigurationPolicy: Policy` is not serializable by derive)
-#   UpdateConnector (document member `Provider: CspmProviderUpdateConfiguration` is not serializable by derive)
-#   UpdateConnectorV2 (document member `Provider: ProviderUpdateConfiguration` is not serializable by derive)
-#   UpdateFindingAggregator (document member `Regions: list[str]` is not serializable by derive)
-#   UpdateFindings (document member `Filters: AwsSecurityFindingFilters` is not serializable by derive)
-#   UpdateInsight (document member `Filters: AwsSecurityFindingFilters` is not serializable by derive)
-#   UpdateSecurityControl (document member `Parameters: dict[str, ParameterConfiguration]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   DescribeActionTargets (operation not generated)
 #   DescribeStandards (operation not generated)
-#   GetEnabledStandards (operation not generated)
-#   GetFindings (operation not generated)
-#   GetFindingsTrendsV2 (operation not generated)
-#   GetFindingsV2 (operation not generated)
-#   GetInsights (operation not generated)
-#   GetRemediationsV2 (operation not generated)
-#   GetResourcesTrendsV2 (operation not generated)
-#   GetResourcesV2 (operation not generated)
-#   ListFreeTrialStatusesV2 (operation not generated)
 #   ListMembers (operation not generated)
 #   ListSecurityControlDefinitions (operation not generated)
 
@@ -9337,6 +9634,8613 @@ struct UpdateStandardsControlDocument:
     Optional[ControlStatus] ControlStatus
     Optional[str] DisabledReason
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def securityhub_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def securityhub_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def securityhub_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def securityhub_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Action to a compact JSON object (declaration order).
+def action_to_json(Action v) -> str:
+    list[str] parts = []
+    if v.ActionType.is_some():
+        auto u0 = v.ActionType.unwrap()
+        parts.append("\"ActionType\":" + securityhub_json_str(u0))
+    if v.NetworkConnectionAction.is_some():
+        auto u1 = v.NetworkConnectionAction.unwrap()
+        parts.append("\"NetworkConnectionAction\":" + u1.to_json())
+    if v.AwsApiCallAction.is_some():
+        auto u2 = v.AwsApiCallAction.unwrap()
+        parts.append("\"AwsApiCallAction\":" + aws_api_call_action_to_json(u2))
+    if v.DnsRequestAction.is_some():
+        auto u3 = v.DnsRequestAction.unwrap()
+        parts.append("\"DnsRequestAction\":" + u3.to_json())
+    if v.PortProbeAction.is_some():
+        auto u4 = v.PortProbeAction.unwrap()
+        parts.append("\"PortProbeAction\":" + port_probe_action_to_json(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AutomationRulesAction to a compact JSON object (declaration order).
+def automation_rules_action_to_json(AutomationRulesAction v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u0))
+    if v.FindingFieldsUpdate.is_some():
+        auto u1 = v.FindingFieldsUpdate.unwrap()
+        parts.append("\"FindingFieldsUpdate\":" + automation_rules_finding_fields_update_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize AutomationRulesFindingFieldsUpdate to a compact JSON object (declaration order).
+def automation_rules_finding_fields_update_to_json(AutomationRulesFindingFieldsUpdate v) -> str:
+    list[str] parts = []
+    if v.Note.is_some():
+        auto u0 = v.Note.unwrap()
+        parts.append("\"Note\":" + u0.to_json())
+    if v.Severity.is_some():
+        auto u1 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + u1.to_json())
+    if v.VerificationState.is_some():
+        auto u2 = v.VerificationState.unwrap()
+        parts.append("\"VerificationState\":" + u2.to_json())
+    if v.Confidence.is_some():
+        auto u3 = v.Confidence.unwrap()
+        parts.append("\"Confidence\":" + str(u3))
+    if v.Criticality.is_some():
+        auto u4 = v.Criticality.unwrap()
+        parts.append("\"Criticality\":" + str(u4))
+    if v.Types.is_some():
+        auto u5 = v.Types.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityhub_json_str(x6))
+        parts.append("\"Types\":" + securityhub_json_arr(e6))
+    if v.UserDefinedFields.is_some():
+        auto u7 = v.UserDefinedFields.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(securityhub_json_str(k8) + ":" + securityhub_json_str(u7[k8]))
+        parts.append("\"UserDefinedFields\":" + securityhub_json_obj(m8))
+    if v.Workflow.is_some():
+        auto u9 = v.Workflow.unwrap()
+        parts.append("\"Workflow\":" + u9.to_json())
+    if v.RelatedFindings.is_some():
+        auto u10 = v.RelatedFindings.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"RelatedFindings\":" + securityhub_json_arr(e11))
+    return securityhub_json_obj(parts)
+
+# Serialize AutomationRulesFindingFilters to a compact JSON object (declaration order).
+def automation_rules_finding_filters_to_json(AutomationRulesFindingFilters v) -> str:
+    list[str] parts = []
+    if v.ProductArn.is_some():
+        auto u0 = v.ProductArn.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ProductArn\":" + securityhub_json_arr(e1))
+    if v.AwsAccountId.is_some():
+        auto u2 = v.AwsAccountId.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AwsAccountId\":" + securityhub_json_arr(e3))
+    if v.Id.is_some():
+        auto u4 = v.Id.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Id\":" + securityhub_json_arr(e5))
+    if v.GeneratorId.is_some():
+        auto u6 = v.GeneratorId.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"GeneratorId\":" + securityhub_json_arr(e7))
+    if v.Type.is_some():
+        auto u8 = v.Type.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Type\":" + securityhub_json_arr(e9))
+    if v.FirstObservedAt.is_some():
+        auto u10 = v.FirstObservedAt.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"FirstObservedAt\":" + securityhub_json_arr(e11))
+    if v.LastObservedAt.is_some():
+        auto u12 = v.LastObservedAt.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"LastObservedAt\":" + securityhub_json_arr(e13))
+    if v.CreatedAt.is_some():
+        auto u14 = v.CreatedAt.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"CreatedAt\":" + securityhub_json_arr(e15))
+    if v.UpdatedAt.is_some():
+        auto u16 = v.UpdatedAt.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"UpdatedAt\":" + securityhub_json_arr(e17))
+    if v.Confidence.is_some():
+        auto u18 = v.Confidence.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"Confidence\":" + securityhub_json_arr(e19))
+    if v.Criticality.is_some():
+        auto u20 = v.Criticality.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"Criticality\":" + securityhub_json_arr(e21))
+    if v.Title.is_some():
+        auto u22 = v.Title.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"Title\":" + securityhub_json_arr(e23))
+    if v.Description.is_some():
+        auto u24 = v.Description.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"Description\":" + securityhub_json_arr(e25))
+    if v.SourceUrl.is_some():
+        auto u26 = v.SourceUrl.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"SourceUrl\":" + securityhub_json_arr(e27))
+    if v.ProductName.is_some():
+        auto u28 = v.ProductName.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"ProductName\":" + securityhub_json_arr(e29))
+    if v.CompanyName.is_some():
+        auto u30 = v.CompanyName.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"CompanyName\":" + securityhub_json_arr(e31))
+    if v.SeverityLabel.is_some():
+        auto u32 = v.SeverityLabel.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"SeverityLabel\":" + securityhub_json_arr(e33))
+    if v.ResourceType.is_some():
+        auto u34 = v.ResourceType.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"ResourceType\":" + securityhub_json_arr(e35))
+    if v.ResourceId.is_some():
+        auto u36 = v.ResourceId.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"ResourceId\":" + securityhub_json_arr(e37))
+    if v.ResourcePartition.is_some():
+        auto u38 = v.ResourcePartition.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(x39.to_json())
+        parts.append("\"ResourcePartition\":" + securityhub_json_arr(e39))
+    if v.ResourceRegion.is_some():
+        auto u40 = v.ResourceRegion.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(x41.to_json())
+        parts.append("\"ResourceRegion\":" + securityhub_json_arr(e41))
+    if v.ResourceTags.is_some():
+        auto u42 = v.ResourceTags.unwrap()
+        list[str] e43 = []
+        for x43 in u42:
+            e43.append(x43.to_json())
+        parts.append("\"ResourceTags\":" + securityhub_json_arr(e43))
+    if v.ResourceDetailsOther.is_some():
+        auto u44 = v.ResourceDetailsOther.unwrap()
+        list[str] e45 = []
+        for x45 in u44:
+            e45.append(x45.to_json())
+        parts.append("\"ResourceDetailsOther\":" + securityhub_json_arr(e45))
+    if v.ComplianceStatus.is_some():
+        auto u46 = v.ComplianceStatus.unwrap()
+        list[str] e47 = []
+        for x47 in u46:
+            e47.append(x47.to_json())
+        parts.append("\"ComplianceStatus\":" + securityhub_json_arr(e47))
+    if v.ComplianceSecurityControlId.is_some():
+        auto u48 = v.ComplianceSecurityControlId.unwrap()
+        list[str] e49 = []
+        for x49 in u48:
+            e49.append(x49.to_json())
+        parts.append("\"ComplianceSecurityControlId\":" + securityhub_json_arr(e49))
+    if v.ComplianceAssociatedStandardsId.is_some():
+        auto u50 = v.ComplianceAssociatedStandardsId.unwrap()
+        list[str] e51 = []
+        for x51 in u50:
+            e51.append(x51.to_json())
+        parts.append("\"ComplianceAssociatedStandardsId\":" + securityhub_json_arr(e51))
+    if v.VerificationState.is_some():
+        auto u52 = v.VerificationState.unwrap()
+        list[str] e53 = []
+        for x53 in u52:
+            e53.append(x53.to_json())
+        parts.append("\"VerificationState\":" + securityhub_json_arr(e53))
+    if v.WorkflowStatus.is_some():
+        auto u54 = v.WorkflowStatus.unwrap()
+        list[str] e55 = []
+        for x55 in u54:
+            e55.append(x55.to_json())
+        parts.append("\"WorkflowStatus\":" + securityhub_json_arr(e55))
+    if v.RecordState.is_some():
+        auto u56 = v.RecordState.unwrap()
+        list[str] e57 = []
+        for x57 in u56:
+            e57.append(x57.to_json())
+        parts.append("\"RecordState\":" + securityhub_json_arr(e57))
+    if v.RelatedFindingsProductArn.is_some():
+        auto u58 = v.RelatedFindingsProductArn.unwrap()
+        list[str] e59 = []
+        for x59 in u58:
+            e59.append(x59.to_json())
+        parts.append("\"RelatedFindingsProductArn\":" + securityhub_json_arr(e59))
+    if v.RelatedFindingsId.is_some():
+        auto u60 = v.RelatedFindingsId.unwrap()
+        list[str] e61 = []
+        for x61 in u60:
+            e61.append(x61.to_json())
+        parts.append("\"RelatedFindingsId\":" + securityhub_json_arr(e61))
+    if v.NoteText.is_some():
+        auto u62 = v.NoteText.unwrap()
+        list[str] e63 = []
+        for x63 in u62:
+            e63.append(x63.to_json())
+        parts.append("\"NoteText\":" + securityhub_json_arr(e63))
+    if v.NoteUpdatedAt.is_some():
+        auto u64 = v.NoteUpdatedAt.unwrap()
+        list[str] e65 = []
+        for x65 in u64:
+            e65.append(x65.to_json())
+        parts.append("\"NoteUpdatedAt\":" + securityhub_json_arr(e65))
+    if v.NoteUpdatedBy.is_some():
+        auto u66 = v.NoteUpdatedBy.unwrap()
+        list[str] e67 = []
+        for x67 in u66:
+            e67.append(x67.to_json())
+        parts.append("\"NoteUpdatedBy\":" + securityhub_json_arr(e67))
+    if v.UserDefinedFields.is_some():
+        auto u68 = v.UserDefinedFields.unwrap()
+        list[str] e69 = []
+        for x69 in u68:
+            e69.append(x69.to_json())
+        parts.append("\"UserDefinedFields\":" + securityhub_json_arr(e69))
+    if v.ResourceApplicationArn.is_some():
+        auto u70 = v.ResourceApplicationArn.unwrap()
+        list[str] e71 = []
+        for x71 in u70:
+            e71.append(x71.to_json())
+        parts.append("\"ResourceApplicationArn\":" + securityhub_json_arr(e71))
+    if v.ResourceApplicationName.is_some():
+        auto u72 = v.ResourceApplicationName.unwrap()
+        list[str] e73 = []
+        for x73 in u72:
+            e73.append(x73.to_json())
+        parts.append("\"ResourceApplicationName\":" + securityhub_json_arr(e73))
+    if v.AwsAccountName.is_some():
+        auto u74 = v.AwsAccountName.unwrap()
+        list[str] e75 = []
+        for x75 in u74:
+            e75.append(x75.to_json())
+        parts.append("\"AwsAccountName\":" + securityhub_json_arr(e75))
+    if v.ResourceProvider.is_some():
+        auto u76 = v.ResourceProvider.unwrap()
+        list[str] e77 = []
+        for x77 in u76:
+            e77.append(x77.to_json())
+        parts.append("\"ResourceProvider\":" + securityhub_json_arr(e77))
+    if v.ResourceOwnerAccountId.is_some():
+        auto u78 = v.ResourceOwnerAccountId.unwrap()
+        list[str] e79 = []
+        for x79 in u78:
+            e79.append(x79.to_json())
+        parts.append("\"ResourceOwnerAccountId\":" + securityhub_json_arr(e79))
+    if v.ResourceOwnerOrgId.is_some():
+        auto u80 = v.ResourceOwnerOrgId.unwrap()
+        list[str] e81 = []
+        for x81 in u80:
+            e81.append(x81.to_json())
+        parts.append("\"ResourceOwnerOrgId\":" + securityhub_json_arr(e81))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAmazonMqBrokerDetails to a compact JSON object (declaration order).
+def aws_amazon_mq_broker_details_to_json(AwsAmazonMqBrokerDetails v) -> str:
+    list[str] parts = []
+    if v.AuthenticationStrategy.is_some():
+        auto u0 = v.AuthenticationStrategy.unwrap()
+        parts.append("\"AuthenticationStrategy\":" + securityhub_json_str(u0))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u1 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.BrokerArn.is_some():
+        auto u2 = v.BrokerArn.unwrap()
+        parts.append("\"BrokerArn\":" + securityhub_json_str(u2))
+    if v.BrokerName.is_some():
+        auto u3 = v.BrokerName.unwrap()
+        parts.append("\"BrokerName\":" + securityhub_json_str(u3))
+    if v.DeploymentMode.is_some():
+        auto u4 = v.DeploymentMode.unwrap()
+        parts.append("\"DeploymentMode\":" + securityhub_json_str(u4))
+    if v.EncryptionOptions.is_some():
+        auto u5 = v.EncryptionOptions.unwrap()
+        parts.append("\"EncryptionOptions\":" + u5.to_json())
+    if v.EngineType.is_some():
+        auto u6 = v.EngineType.unwrap()
+        parts.append("\"EngineType\":" + securityhub_json_str(u6))
+    if v.EngineVersion.is_some():
+        auto u7 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u7))
+    if v.HostInstanceType.is_some():
+        auto u8 = v.HostInstanceType.unwrap()
+        parts.append("\"HostInstanceType\":" + securityhub_json_str(u8))
+    if v.BrokerId.is_some():
+        auto u9 = v.BrokerId.unwrap()
+        parts.append("\"BrokerId\":" + securityhub_json_str(u9))
+    if v.LdapServerMetadata.is_some():
+        auto u10 = v.LdapServerMetadata.unwrap()
+        parts.append("\"LdapServerMetadata\":" + aws_amazon_mq_broker_ldap_server_metadata_details_to_json(u10))
+    if v.Logs.is_some():
+        auto u11 = v.Logs.unwrap()
+        parts.append("\"Logs\":" + u11.to_json())
+    if v.MaintenanceWindowStartTime.is_some():
+        auto u12 = v.MaintenanceWindowStartTime.unwrap()
+        parts.append("\"MaintenanceWindowStartTime\":" + u12.to_json())
+    if v.PubliclyAccessible.is_some():
+        auto u13 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.SecurityGroups.is_some():
+        auto u14 = v.SecurityGroups.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(securityhub_json_str(x15))
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e15))
+    if v.StorageType.is_some():
+        auto u16 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + securityhub_json_str(u16))
+    if v.SubnetIds.is_some():
+        auto u17 = v.SubnetIds.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(securityhub_json_str(x18))
+        parts.append("\"SubnetIds\":" + securityhub_json_arr(e18))
+    if v.Users.is_some():
+        auto u19 = v.Users.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"Users\":" + securityhub_json_arr(e20))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAmazonMqBrokerLdapServerMetadataDetails to a compact JSON object (declaration order).
+def aws_amazon_mq_broker_ldap_server_metadata_details_to_json(AwsAmazonMqBrokerLdapServerMetadataDetails v) -> str:
+    list[str] parts = []
+    if v.Hosts.is_some():
+        auto u0 = v.Hosts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Hosts\":" + securityhub_json_arr(e1))
+    if v.RoleBase.is_some():
+        auto u2 = v.RoleBase.unwrap()
+        parts.append("\"RoleBase\":" + securityhub_json_str(u2))
+    if v.RoleName.is_some():
+        auto u3 = v.RoleName.unwrap()
+        parts.append("\"RoleName\":" + securityhub_json_str(u3))
+    if v.RoleSearchMatching.is_some():
+        auto u4 = v.RoleSearchMatching.unwrap()
+        parts.append("\"RoleSearchMatching\":" + securityhub_json_str(u4))
+    if v.RoleSearchSubtree.is_some():
+        auto u5 = v.RoleSearchSubtree.unwrap()
+        parts.append("\"RoleSearchSubtree\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.ServiceAccountUsername.is_some():
+        auto u6 = v.ServiceAccountUsername.unwrap()
+        parts.append("\"ServiceAccountUsername\":" + securityhub_json_str(u6))
+    if v.UserBase.is_some():
+        auto u7 = v.UserBase.unwrap()
+        parts.append("\"UserBase\":" + securityhub_json_str(u7))
+    if v.UserRoleName.is_some():
+        auto u8 = v.UserRoleName.unwrap()
+        parts.append("\"UserRoleName\":" + securityhub_json_str(u8))
+    if v.UserSearchMatching.is_some():
+        auto u9 = v.UserSearchMatching.unwrap()
+        parts.append("\"UserSearchMatching\":" + securityhub_json_str(u9))
+    if v.UserSearchSubtree.is_some():
+        auto u10 = v.UserSearchSubtree.unwrap()
+        parts.append("\"UserSearchSubtree\":" + json.dumps(JsonValue.Bool(u10)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiCallAction to a compact JSON object (declaration order).
+def aws_api_call_action_to_json(AwsApiCallAction v) -> str:
+    list[str] parts = []
+    if v.Api.is_some():
+        auto u0 = v.Api.unwrap()
+        parts.append("\"Api\":" + securityhub_json_str(u0))
+    if v.ServiceName.is_some():
+        auto u1 = v.ServiceName.unwrap()
+        parts.append("\"ServiceName\":" + securityhub_json_str(u1))
+    if v.CallerType.is_some():
+        auto u2 = v.CallerType.unwrap()
+        parts.append("\"CallerType\":" + securityhub_json_str(u2))
+    if v.RemoteIpDetails.is_some():
+        auto u3 = v.RemoteIpDetails.unwrap()
+        parts.append("\"RemoteIpDetails\":" + u3.to_json())
+    if v.DomainDetails.is_some():
+        auto u4 = v.DomainDetails.unwrap()
+        parts.append("\"DomainDetails\":" + u4.to_json())
+    if v.AffectedResources.is_some():
+        auto u5 = v.AffectedResources.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(securityhub_json_str(k6) + ":" + securityhub_json_str(u5[k6]))
+        parts.append("\"AffectedResources\":" + securityhub_json_obj(m6))
+    if v.FirstSeen.is_some():
+        auto u7 = v.FirstSeen.unwrap()
+        parts.append("\"FirstSeen\":" + securityhub_json_str(u7))
+    if v.LastSeen.is_some():
+        auto u8 = v.LastSeen.unwrap()
+        parts.append("\"LastSeen\":" + securityhub_json_str(u8))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiGatewayCanarySettings to a compact JSON object (declaration order).
+def aws_api_gateway_canary_settings_to_json(AwsApiGatewayCanarySettings v) -> str:
+    list[str] parts = []
+    if v.PercentTraffic.is_some():
+        auto u0 = v.PercentTraffic.unwrap()
+        parts.append("\"PercentTraffic\":" + str(u0))
+    if v.DeploymentId.is_some():
+        auto u1 = v.DeploymentId.unwrap()
+        parts.append("\"DeploymentId\":" + securityhub_json_str(u1))
+    if v.StageVariableOverrides.is_some():
+        auto u2 = v.StageVariableOverrides.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(securityhub_json_str(k3) + ":" + securityhub_json_str(u2[k3]))
+        parts.append("\"StageVariableOverrides\":" + securityhub_json_obj(m3))
+    if v.UseStageCache.is_some():
+        auto u4 = v.UseStageCache.unwrap()
+        parts.append("\"UseStageCache\":" + json.dumps(JsonValue.Bool(u4)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiGatewayEndpointConfiguration to a compact JSON object (declaration order).
+def aws_api_gateway_endpoint_configuration_to_json(AwsApiGatewayEndpointConfiguration v) -> str:
+    list[str] parts = []
+    if v.Types.is_some():
+        auto u0 = v.Types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Types\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiGatewayRestApiDetails to a compact JSON object (declaration order).
+def aws_api_gateway_rest_api_details_to_json(AwsApiGatewayRestApiDetails v) -> str:
+    list[str] parts = []
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u2))
+    if v.CreatedDate.is_some():
+        auto u3 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + securityhub_json_str(u3))
+    if v.Version.is_some():
+        auto u4 = v.Version.unwrap()
+        parts.append("\"Version\":" + securityhub_json_str(u4))
+    if v.BinaryMediaTypes.is_some():
+        auto u5 = v.BinaryMediaTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityhub_json_str(x6))
+        parts.append("\"BinaryMediaTypes\":" + securityhub_json_arr(e6))
+    if v.MinimumCompressionSize.is_some():
+        auto u7 = v.MinimumCompressionSize.unwrap()
+        parts.append("\"MinimumCompressionSize\":" + str(u7))
+    if v.ApiKeySource.is_some():
+        auto u8 = v.ApiKeySource.unwrap()
+        parts.append("\"ApiKeySource\":" + securityhub_json_str(u8))
+    if v.EndpointConfiguration.is_some():
+        auto u9 = v.EndpointConfiguration.unwrap()
+        parts.append("\"EndpointConfiguration\":" + aws_api_gateway_endpoint_configuration_to_json(u9))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiGatewayStageDetails to a compact JSON object (declaration order).
+def aws_api_gateway_stage_details_to_json(AwsApiGatewayStageDetails v) -> str:
+    list[str] parts = []
+    if v.DeploymentId.is_some():
+        auto u0 = v.DeploymentId.unwrap()
+        parts.append("\"DeploymentId\":" + securityhub_json_str(u0))
+    if v.ClientCertificateId.is_some():
+        auto u1 = v.ClientCertificateId.unwrap()
+        parts.append("\"ClientCertificateId\":" + securityhub_json_str(u1))
+    if v.StageName.is_some():
+        auto u2 = v.StageName.unwrap()
+        parts.append("\"StageName\":" + securityhub_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u3))
+    if v.CacheClusterEnabled.is_some():
+        auto u4 = v.CacheClusterEnabled.unwrap()
+        parts.append("\"CacheClusterEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.CacheClusterSize.is_some():
+        auto u5 = v.CacheClusterSize.unwrap()
+        parts.append("\"CacheClusterSize\":" + securityhub_json_str(u5))
+    if v.CacheClusterStatus.is_some():
+        auto u6 = v.CacheClusterStatus.unwrap()
+        parts.append("\"CacheClusterStatus\":" + securityhub_json_str(u6))
+    if v.MethodSettings.is_some():
+        auto u7 = v.MethodSettings.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"MethodSettings\":" + securityhub_json_arr(e8))
+    if v.Variables.is_some():
+        auto u9 = v.Variables.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(securityhub_json_str(k10) + ":" + securityhub_json_str(u9[k10]))
+        parts.append("\"Variables\":" + securityhub_json_obj(m10))
+    if v.DocumentationVersion.is_some():
+        auto u11 = v.DocumentationVersion.unwrap()
+        parts.append("\"DocumentationVersion\":" + securityhub_json_str(u11))
+    if v.AccessLogSettings.is_some():
+        auto u12 = v.AccessLogSettings.unwrap()
+        parts.append("\"AccessLogSettings\":" + u12.to_json())
+    if v.CanarySettings.is_some():
+        auto u13 = v.CanarySettings.unwrap()
+        parts.append("\"CanarySettings\":" + aws_api_gateway_canary_settings_to_json(u13))
+    if v.TracingEnabled.is_some():
+        auto u14 = v.TracingEnabled.unwrap()
+        parts.append("\"TracingEnabled\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.CreatedDate.is_some():
+        auto u15 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + securityhub_json_str(u15))
+    if v.LastUpdatedDate.is_some():
+        auto u16 = v.LastUpdatedDate.unwrap()
+        parts.append("\"LastUpdatedDate\":" + securityhub_json_str(u16))
+    if v.WebAclArn.is_some():
+        auto u17 = v.WebAclArn.unwrap()
+        parts.append("\"WebAclArn\":" + securityhub_json_str(u17))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiGatewayV2ApiDetails to a compact JSON object (declaration order).
+def aws_api_gateway_v2_api_details_to_json(AwsApiGatewayV2ApiDetails v) -> str:
+    list[str] parts = []
+    if v.ApiEndpoint.is_some():
+        auto u0 = v.ApiEndpoint.unwrap()
+        parts.append("\"ApiEndpoint\":" + securityhub_json_str(u0))
+    if v.ApiId.is_some():
+        auto u1 = v.ApiId.unwrap()
+        parts.append("\"ApiId\":" + securityhub_json_str(u1))
+    if v.ApiKeySelectionExpression.is_some():
+        auto u2 = v.ApiKeySelectionExpression.unwrap()
+        parts.append("\"ApiKeySelectionExpression\":" + securityhub_json_str(u2))
+    if v.CreatedDate.is_some():
+        auto u3 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + securityhub_json_str(u3))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u4))
+    if v.Version.is_some():
+        auto u5 = v.Version.unwrap()
+        parts.append("\"Version\":" + securityhub_json_str(u5))
+    if v.Name.is_some():
+        auto u6 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u6))
+    if v.ProtocolType.is_some():
+        auto u7 = v.ProtocolType.unwrap()
+        parts.append("\"ProtocolType\":" + securityhub_json_str(u7))
+    if v.RouteSelectionExpression.is_some():
+        auto u8 = v.RouteSelectionExpression.unwrap()
+        parts.append("\"RouteSelectionExpression\":" + securityhub_json_str(u8))
+    if v.CorsConfiguration.is_some():
+        auto u9 = v.CorsConfiguration.unwrap()
+        parts.append("\"CorsConfiguration\":" + aws_cors_configuration_to_json(u9))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsApiGatewayV2StageDetails to a compact JSON object (declaration order).
+def aws_api_gateway_v2_stage_details_to_json(AwsApiGatewayV2StageDetails v) -> str:
+    list[str] parts = []
+    if v.ClientCertificateId.is_some():
+        auto u0 = v.ClientCertificateId.unwrap()
+        parts.append("\"ClientCertificateId\":" + securityhub_json_str(u0))
+    if v.CreatedDate.is_some():
+        auto u1 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + securityhub_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u2))
+    if v.DefaultRouteSettings.is_some():
+        auto u3 = v.DefaultRouteSettings.unwrap()
+        parts.append("\"DefaultRouteSettings\":" + u3.to_json())
+    if v.DeploymentId.is_some():
+        auto u4 = v.DeploymentId.unwrap()
+        parts.append("\"DeploymentId\":" + securityhub_json_str(u4))
+    if v.LastUpdatedDate.is_some():
+        auto u5 = v.LastUpdatedDate.unwrap()
+        parts.append("\"LastUpdatedDate\":" + securityhub_json_str(u5))
+    if v.RouteSettings.is_some():
+        auto u6 = v.RouteSettings.unwrap()
+        parts.append("\"RouteSettings\":" + u6.to_json())
+    if v.StageName.is_some():
+        auto u7 = v.StageName.unwrap()
+        parts.append("\"StageName\":" + securityhub_json_str(u7))
+    if v.StageVariables.is_some():
+        auto u8 = v.StageVariables.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(securityhub_json_str(k9) + ":" + securityhub_json_str(u8[k9]))
+        parts.append("\"StageVariables\":" + securityhub_json_obj(m9))
+    if v.AccessLogSettings.is_some():
+        auto u10 = v.AccessLogSettings.unwrap()
+        parts.append("\"AccessLogSettings\":" + u10.to_json())
+    if v.AutoDeploy.is_some():
+        auto u11 = v.AutoDeploy.unwrap()
+        parts.append("\"AutoDeploy\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.LastDeploymentStatusMessage.is_some():
+        auto u12 = v.LastDeploymentStatusMessage.unwrap()
+        parts.append("\"LastDeploymentStatusMessage\":" + securityhub_json_str(u12))
+    if v.ApiGatewayManaged.is_some():
+        auto u13 = v.ApiGatewayManaged.unwrap()
+        parts.append("\"ApiGatewayManaged\":" + json.dumps(JsonValue.Bool(u13)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAppSyncGraphQlApiDetails to a compact JSON object (declaration order).
+def aws_app_sync_graph_ql_api_details_to_json(AwsAppSyncGraphQlApiDetails v) -> str:
+    list[str] parts = []
+    if v.ApiId.is_some():
+        auto u0 = v.ApiId.unwrap()
+        parts.append("\"ApiId\":" + securityhub_json_str(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u1))
+    if v.OpenIdConnectConfig.is_some():
+        auto u2 = v.OpenIdConnectConfig.unwrap()
+        parts.append("\"OpenIdConnectConfig\":" + u2.to_json())
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u3))
+    if v.LambdaAuthorizerConfig.is_some():
+        auto u4 = v.LambdaAuthorizerConfig.unwrap()
+        parts.append("\"LambdaAuthorizerConfig\":" + u4.to_json())
+    if v.XrayEnabled.is_some():
+        auto u5 = v.XrayEnabled.unwrap()
+        parts.append("\"XrayEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.Arn.is_some():
+        auto u6 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u6))
+    if v.UserPoolConfig.is_some():
+        auto u7 = v.UserPoolConfig.unwrap()
+        parts.append("\"UserPoolConfig\":" + u7.to_json())
+    if v.AuthenticationType.is_some():
+        auto u8 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + securityhub_json_str(u8))
+    if v.LogConfig.is_some():
+        auto u9 = v.LogConfig.unwrap()
+        parts.append("\"LogConfig\":" + u9.to_json())
+    if v.AdditionalAuthenticationProviders.is_some():
+        auto u10 = v.AdditionalAuthenticationProviders.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"AdditionalAuthenticationProviders\":" + securityhub_json_arr(e11))
+    if v.WafWebAclArn.is_some():
+        auto u12 = v.WafWebAclArn.unwrap()
+        parts.append("\"WafWebAclArn\":" + securityhub_json_str(u12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAutoScalingAutoScalingGroupDetails to a compact JSON object (declaration order).
+def aws_auto_scaling_auto_scaling_group_details_to_json(AwsAutoScalingAutoScalingGroupDetails v) -> str:
+    list[str] parts = []
+    if v.LaunchConfigurationName.is_some():
+        auto u0 = v.LaunchConfigurationName.unwrap()
+        parts.append("\"LaunchConfigurationName\":" + securityhub_json_str(u0))
+    if v.LoadBalancerNames.is_some():
+        auto u1 = v.LoadBalancerNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"LoadBalancerNames\":" + securityhub_json_arr(e2))
+    if v.HealthCheckType.is_some():
+        auto u3 = v.HealthCheckType.unwrap()
+        parts.append("\"HealthCheckType\":" + securityhub_json_str(u3))
+    if v.HealthCheckGracePeriod.is_some():
+        auto u4 = v.HealthCheckGracePeriod.unwrap()
+        parts.append("\"HealthCheckGracePeriod\":" + str(u4))
+    if v.CreatedTime.is_some():
+        auto u5 = v.CreatedTime.unwrap()
+        parts.append("\"CreatedTime\":" + securityhub_json_str(u5))
+    if v.MixedInstancesPolicy.is_some():
+        auto u6 = v.MixedInstancesPolicy.unwrap()
+        parts.append("\"MixedInstancesPolicy\":" + aws_auto_scaling_auto_scaling_group_mixed_instances_policy_details_to_json(u6))
+    if v.AvailabilityZones.is_some():
+        auto u7 = v.AvailabilityZones.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e8))
+    if v.LaunchTemplate.is_some():
+        auto u9 = v.LaunchTemplate.unwrap()
+        parts.append("\"LaunchTemplate\":" + u9.to_json())
+    if v.CapacityRebalance.is_some():
+        auto u10 = v.CapacityRebalance.unwrap()
+        parts.append("\"CapacityRebalance\":" + json.dumps(JsonValue.Bool(u10)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAutoScalingAutoScalingGroupMixedInstancesPolicyDetails to a compact JSON object (declaration order).
+def aws_auto_scaling_auto_scaling_group_mixed_instances_policy_details_to_json(AwsAutoScalingAutoScalingGroupMixedInstancesPolicyDetails v) -> str:
+    list[str] parts = []
+    if v.InstancesDistribution.is_some():
+        auto u0 = v.InstancesDistribution.unwrap()
+        parts.append("\"InstancesDistribution\":" + u0.to_json())
+    if v.LaunchTemplate.is_some():
+        auto u1 = v.LaunchTemplate.unwrap()
+        parts.append("\"LaunchTemplate\":" + aws_auto_scaling_auto_scaling_group_mixed_instances_policy_launch_template_details_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateDetails to a compact JSON object (declaration order).
+def aws_auto_scaling_auto_scaling_group_mixed_instances_policy_launch_template_details_to_json(AwsAutoScalingAutoScalingGroupMixedInstancesPolicyLaunchTemplateDetails v) -> str:
+    list[str] parts = []
+    if v.LaunchTemplateSpecification.is_some():
+        auto u0 = v.LaunchTemplateSpecification.unwrap()
+        parts.append("\"LaunchTemplateSpecification\":" + u0.to_json())
+    if v.Overrides.is_some():
+        auto u1 = v.Overrides.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Overrides\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsAutoScalingLaunchConfigurationDetails to a compact JSON object (declaration order).
+def aws_auto_scaling_launch_configuration_details_to_json(AwsAutoScalingLaunchConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.AssociatePublicIpAddress.is_some():
+        auto u0 = v.AssociatePublicIpAddress.unwrap()
+        parts.append("\"AssociatePublicIpAddress\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.BlockDeviceMappings.is_some():
+        auto u1 = v.BlockDeviceMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"BlockDeviceMappings\":" + securityhub_json_arr(e2))
+    if v.ClassicLinkVpcId.is_some():
+        auto u3 = v.ClassicLinkVpcId.unwrap()
+        parts.append("\"ClassicLinkVpcId\":" + securityhub_json_str(u3))
+    if v.ClassicLinkVpcSecurityGroups.is_some():
+        auto u4 = v.ClassicLinkVpcSecurityGroups.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"ClassicLinkVpcSecurityGroups\":" + securityhub_json_arr(e5))
+    if v.CreatedTime.is_some():
+        auto u6 = v.CreatedTime.unwrap()
+        parts.append("\"CreatedTime\":" + securityhub_json_str(u6))
+    if v.EbsOptimized.is_some():
+        auto u7 = v.EbsOptimized.unwrap()
+        parts.append("\"EbsOptimized\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.IamInstanceProfile.is_some():
+        auto u8 = v.IamInstanceProfile.unwrap()
+        parts.append("\"IamInstanceProfile\":" + securityhub_json_str(u8))
+    if v.ImageId.is_some():
+        auto u9 = v.ImageId.unwrap()
+        parts.append("\"ImageId\":" + securityhub_json_str(u9))
+    if v.InstanceMonitoring.is_some():
+        auto u10 = v.InstanceMonitoring.unwrap()
+        parts.append("\"InstanceMonitoring\":" + u10.to_json())
+    if v.InstanceType.is_some():
+        auto u11 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + securityhub_json_str(u11))
+    if v.KernelId.is_some():
+        auto u12 = v.KernelId.unwrap()
+        parts.append("\"KernelId\":" + securityhub_json_str(u12))
+    if v.KeyName.is_some():
+        auto u13 = v.KeyName.unwrap()
+        parts.append("\"KeyName\":" + securityhub_json_str(u13))
+    if v.LaunchConfigurationName.is_some():
+        auto u14 = v.LaunchConfigurationName.unwrap()
+        parts.append("\"LaunchConfigurationName\":" + securityhub_json_str(u14))
+    if v.PlacementTenancy.is_some():
+        auto u15 = v.PlacementTenancy.unwrap()
+        parts.append("\"PlacementTenancy\":" + securityhub_json_str(u15))
+    if v.RamdiskId.is_some():
+        auto u16 = v.RamdiskId.unwrap()
+        parts.append("\"RamdiskId\":" + securityhub_json_str(u16))
+    if v.SecurityGroups.is_some():
+        auto u17 = v.SecurityGroups.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(securityhub_json_str(x18))
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e18))
+    if v.SpotPrice.is_some():
+        auto u19 = v.SpotPrice.unwrap()
+        parts.append("\"SpotPrice\":" + securityhub_json_str(u19))
+    if v.UserData.is_some():
+        auto u20 = v.UserData.unwrap()
+        parts.append("\"UserData\":" + securityhub_json_str(u20))
+    if v.MetadataOptions.is_some():
+        auto u21 = v.MetadataOptions.unwrap()
+        parts.append("\"MetadataOptions\":" + u21.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsBackupBackupPlanAdvancedBackupSettingsDetails to a compact JSON object (declaration order).
+def aws_backup_backup_plan_advanced_backup_settings_details_to_json(AwsBackupBackupPlanAdvancedBackupSettingsDetails v) -> str:
+    list[str] parts = []
+    if v.BackupOptions.is_some():
+        auto u0 = v.BackupOptions.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+        parts.append("\"BackupOptions\":" + securityhub_json_obj(m1))
+    if v.ResourceType.is_some():
+        auto u2 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + securityhub_json_str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsBackupBackupPlanBackupPlanDetails to a compact JSON object (declaration order).
+def aws_backup_backup_plan_backup_plan_details_to_json(AwsBackupBackupPlanBackupPlanDetails v) -> str:
+    list[str] parts = []
+    if v.BackupPlanName.is_some():
+        auto u0 = v.BackupPlanName.unwrap()
+        parts.append("\"BackupPlanName\":" + securityhub_json_str(u0))
+    if v.AdvancedBackupSettings.is_some():
+        auto u1 = v.AdvancedBackupSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(aws_backup_backup_plan_advanced_backup_settings_details_to_json(x2))
+        parts.append("\"AdvancedBackupSettings\":" + securityhub_json_arr(e2))
+    if v.BackupPlanRule.is_some():
+        auto u3 = v.BackupPlanRule.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(aws_backup_backup_plan_rule_details_to_json(x4))
+        parts.append("\"BackupPlanRule\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsBackupBackupPlanDetails to a compact JSON object (declaration order).
+def aws_backup_backup_plan_details_to_json(AwsBackupBackupPlanDetails v) -> str:
+    list[str] parts = []
+    if v.BackupPlan.is_some():
+        auto u0 = v.BackupPlan.unwrap()
+        parts.append("\"BackupPlan\":" + aws_backup_backup_plan_backup_plan_details_to_json(u0))
+    if v.BackupPlanArn.is_some():
+        auto u1 = v.BackupPlanArn.unwrap()
+        parts.append("\"BackupPlanArn\":" + securityhub_json_str(u1))
+    if v.BackupPlanId.is_some():
+        auto u2 = v.BackupPlanId.unwrap()
+        parts.append("\"BackupPlanId\":" + securityhub_json_str(u2))
+    if v.VersionId.is_some():
+        auto u3 = v.VersionId.unwrap()
+        parts.append("\"VersionId\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsBackupBackupPlanRuleDetails to a compact JSON object (declaration order).
+def aws_backup_backup_plan_rule_details_to_json(AwsBackupBackupPlanRuleDetails v) -> str:
+    list[str] parts = []
+    if v.TargetBackupVault.is_some():
+        auto u0 = v.TargetBackupVault.unwrap()
+        parts.append("\"TargetBackupVault\":" + securityhub_json_str(u0))
+    if v.StartWindowMinutes.is_some():
+        auto u1 = v.StartWindowMinutes.unwrap()
+        parts.append("\"StartWindowMinutes\":" + str(u1))
+    if v.ScheduleExpression.is_some():
+        auto u2 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + securityhub_json_str(u2))
+    if v.RuleName.is_some():
+        auto u3 = v.RuleName.unwrap()
+        parts.append("\"RuleName\":" + securityhub_json_str(u3))
+    if v.RuleId.is_some():
+        auto u4 = v.RuleId.unwrap()
+        parts.append("\"RuleId\":" + securityhub_json_str(u4))
+    if v.EnableContinuousBackup.is_some():
+        auto u5 = v.EnableContinuousBackup.unwrap()
+        parts.append("\"EnableContinuousBackup\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.CompletionWindowMinutes.is_some():
+        auto u6 = v.CompletionWindowMinutes.unwrap()
+        parts.append("\"CompletionWindowMinutes\":" + str(u6))
+    if v.CopyActions.is_some():
+        auto u7 = v.CopyActions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CopyActions\":" + securityhub_json_arr(e8))
+    if v.Lifecycle.is_some():
+        auto u9 = v.Lifecycle.unwrap()
+        parts.append("\"Lifecycle\":" + u9.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsBackupBackupVaultDetails to a compact JSON object (declaration order).
+def aws_backup_backup_vault_details_to_json(AwsBackupBackupVaultDetails v) -> str:
+    list[str] parts = []
+    if v.BackupVaultArn.is_some():
+        auto u0 = v.BackupVaultArn.unwrap()
+        parts.append("\"BackupVaultArn\":" + securityhub_json_str(u0))
+    if v.BackupVaultName.is_some():
+        auto u1 = v.BackupVaultName.unwrap()
+        parts.append("\"BackupVaultName\":" + securityhub_json_str(u1))
+    if v.EncryptionKeyArn.is_some():
+        auto u2 = v.EncryptionKeyArn.unwrap()
+        parts.append("\"EncryptionKeyArn\":" + securityhub_json_str(u2))
+    if v.Notifications.is_some():
+        auto u3 = v.Notifications.unwrap()
+        parts.append("\"Notifications\":" + aws_backup_backup_vault_notifications_details_to_json(u3))
+    if v.AccessPolicy.is_some():
+        auto u4 = v.AccessPolicy.unwrap()
+        parts.append("\"AccessPolicy\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsBackupBackupVaultNotificationsDetails to a compact JSON object (declaration order).
+def aws_backup_backup_vault_notifications_details_to_json(AwsBackupBackupVaultNotificationsDetails v) -> str:
+    list[str] parts = []
+    if v.BackupVaultEvents.is_some():
+        auto u0 = v.BackupVaultEvents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"BackupVaultEvents\":" + securityhub_json_arr(e1))
+    if v.SnsTopicArn.is_some():
+        auto u2 = v.SnsTopicArn.unwrap()
+        parts.append("\"SnsTopicArn\":" + securityhub_json_str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCertificateManagerCertificateDetails to a compact JSON object (declaration order).
+def aws_certificate_manager_certificate_details_to_json(AwsCertificateManagerCertificateDetails v) -> str:
+    list[str] parts = []
+    if v.CertificateAuthorityArn.is_some():
+        auto u0 = v.CertificateAuthorityArn.unwrap()
+        parts.append("\"CertificateAuthorityArn\":" + securityhub_json_str(u0))
+    if v.CreatedAt.is_some():
+        auto u1 = v.CreatedAt.unwrap()
+        parts.append("\"CreatedAt\":" + securityhub_json_str(u1))
+    if v.DomainName.is_some():
+        auto u2 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + securityhub_json_str(u2))
+    if v.DomainValidationOptions.is_some():
+        auto u3 = v.DomainValidationOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(aws_certificate_manager_certificate_domain_validation_option_to_json(x4))
+        parts.append("\"DomainValidationOptions\":" + securityhub_json_arr(e4))
+    if v.ExtendedKeyUsages.is_some():
+        auto u5 = v.ExtendedKeyUsages.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ExtendedKeyUsages\":" + securityhub_json_arr(e6))
+    if v.FailureReason.is_some():
+        auto u7 = v.FailureReason.unwrap()
+        parts.append("\"FailureReason\":" + securityhub_json_str(u7))
+    if v.ImportedAt.is_some():
+        auto u8 = v.ImportedAt.unwrap()
+        parts.append("\"ImportedAt\":" + securityhub_json_str(u8))
+    if v.InUseBy.is_some():
+        auto u9 = v.InUseBy.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(securityhub_json_str(x10))
+        parts.append("\"InUseBy\":" + securityhub_json_arr(e10))
+    if v.IssuedAt.is_some():
+        auto u11 = v.IssuedAt.unwrap()
+        parts.append("\"IssuedAt\":" + securityhub_json_str(u11))
+    if v.Issuer.is_some():
+        auto u12 = v.Issuer.unwrap()
+        parts.append("\"Issuer\":" + securityhub_json_str(u12))
+    if v.KeyAlgorithm.is_some():
+        auto u13 = v.KeyAlgorithm.unwrap()
+        parts.append("\"KeyAlgorithm\":" + securityhub_json_str(u13))
+    if v.KeyUsages.is_some():
+        auto u14 = v.KeyUsages.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"KeyUsages\":" + securityhub_json_arr(e15))
+    if v.NotAfter.is_some():
+        auto u16 = v.NotAfter.unwrap()
+        parts.append("\"NotAfter\":" + securityhub_json_str(u16))
+    if v.NotBefore.is_some():
+        auto u17 = v.NotBefore.unwrap()
+        parts.append("\"NotBefore\":" + securityhub_json_str(u17))
+    if v.Options.is_some():
+        auto u18 = v.Options.unwrap()
+        parts.append("\"Options\":" + u18.to_json())
+    if v.RenewalEligibility.is_some():
+        auto u19 = v.RenewalEligibility.unwrap()
+        parts.append("\"RenewalEligibility\":" + securityhub_json_str(u19))
+    if v.RenewalSummary.is_some():
+        auto u20 = v.RenewalSummary.unwrap()
+        parts.append("\"RenewalSummary\":" + aws_certificate_manager_certificate_renewal_summary_to_json(u20))
+    if v.Serial.is_some():
+        auto u21 = v.Serial.unwrap()
+        parts.append("\"Serial\":" + securityhub_json_str(u21))
+    if v.SignatureAlgorithm.is_some():
+        auto u22 = v.SignatureAlgorithm.unwrap()
+        parts.append("\"SignatureAlgorithm\":" + securityhub_json_str(u22))
+    if v.Status.is_some():
+        auto u23 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u23))
+    if v.Subject.is_some():
+        auto u24 = v.Subject.unwrap()
+        parts.append("\"Subject\":" + securityhub_json_str(u24))
+    if v.SubjectAlternativeNames.is_some():
+        auto u25 = v.SubjectAlternativeNames.unwrap()
+        list[str] e26 = []
+        for x26 in u25:
+            e26.append(securityhub_json_str(x26))
+        parts.append("\"SubjectAlternativeNames\":" + securityhub_json_arr(e26))
+    if v.Type.is_some():
+        auto u27 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u27))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCertificateManagerCertificateDomainValidationOption to a compact JSON object (declaration order).
+def aws_certificate_manager_certificate_domain_validation_option_to_json(AwsCertificateManagerCertificateDomainValidationOption v) -> str:
+    list[str] parts = []
+    if v.DomainName.is_some():
+        auto u0 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + securityhub_json_str(u0))
+    if v.ResourceRecord.is_some():
+        auto u1 = v.ResourceRecord.unwrap()
+        parts.append("\"ResourceRecord\":" + u1.to_json())
+    if v.ValidationDomain.is_some():
+        auto u2 = v.ValidationDomain.unwrap()
+        parts.append("\"ValidationDomain\":" + securityhub_json_str(u2))
+    if v.ValidationEmails.is_some():
+        auto u3 = v.ValidationEmails.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"ValidationEmails\":" + securityhub_json_arr(e4))
+    if v.ValidationMethod.is_some():
+        auto u5 = v.ValidationMethod.unwrap()
+        parts.append("\"ValidationMethod\":" + securityhub_json_str(u5))
+    if v.ValidationStatus.is_some():
+        auto u6 = v.ValidationStatus.unwrap()
+        parts.append("\"ValidationStatus\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCertificateManagerCertificateRenewalSummary to a compact JSON object (declaration order).
+def aws_certificate_manager_certificate_renewal_summary_to_json(AwsCertificateManagerCertificateRenewalSummary v) -> str:
+    list[str] parts = []
+    if v.DomainValidationOptions.is_some():
+        auto u0 = v.DomainValidationOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_certificate_manager_certificate_domain_validation_option_to_json(x1))
+        parts.append("\"DomainValidationOptions\":" + securityhub_json_arr(e1))
+    if v.RenewalStatus.is_some():
+        auto u2 = v.RenewalStatus.unwrap()
+        parts.append("\"RenewalStatus\":" + securityhub_json_str(u2))
+    if v.RenewalStatusReason.is_some():
+        auto u3 = v.RenewalStatusReason.unwrap()
+        parts.append("\"RenewalStatusReason\":" + securityhub_json_str(u3))
+    if v.UpdatedAt.is_some():
+        auto u4 = v.UpdatedAt.unwrap()
+        parts.append("\"UpdatedAt\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFormationStackDetails to a compact JSON object (declaration order).
+def aws_cloud_formation_stack_details_to_json(AwsCloudFormationStackDetails v) -> str:
+    list[str] parts = []
+    if v.Capabilities.is_some():
+        auto u0 = v.Capabilities.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Capabilities\":" + securityhub_json_arr(e1))
+    if v.CreationTime.is_some():
+        auto u2 = v.CreationTime.unwrap()
+        parts.append("\"CreationTime\":" + securityhub_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u3))
+    if v.DisableRollback.is_some():
+        auto u4 = v.DisableRollback.unwrap()
+        parts.append("\"DisableRollback\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.DriftInformation.is_some():
+        auto u5 = v.DriftInformation.unwrap()
+        parts.append("\"DriftInformation\":" + u5.to_json())
+    if v.EnableTerminationProtection.is_some():
+        auto u6 = v.EnableTerminationProtection.unwrap()
+        parts.append("\"EnableTerminationProtection\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.LastUpdatedTime.is_some():
+        auto u7 = v.LastUpdatedTime.unwrap()
+        parts.append("\"LastUpdatedTime\":" + securityhub_json_str(u7))
+    if v.NotificationArns.is_some():
+        auto u8 = v.NotificationArns.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityhub_json_str(x9))
+        parts.append("\"NotificationArns\":" + securityhub_json_arr(e9))
+    if v.Outputs.is_some():
+        auto u10 = v.Outputs.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Outputs\":" + securityhub_json_arr(e11))
+    if v.RoleArn.is_some():
+        auto u12 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + securityhub_json_str(u12))
+    if v.StackId.is_some():
+        auto u13 = v.StackId.unwrap()
+        parts.append("\"StackId\":" + securityhub_json_str(u13))
+    if v.StackName.is_some():
+        auto u14 = v.StackName.unwrap()
+        parts.append("\"StackName\":" + securityhub_json_str(u14))
+    if v.StackStatus.is_some():
+        auto u15 = v.StackStatus.unwrap()
+        parts.append("\"StackStatus\":" + securityhub_json_str(u15))
+    if v.StackStatusReason.is_some():
+        auto u16 = v.StackStatusReason.unwrap()
+        parts.append("\"StackStatusReason\":" + securityhub_json_str(u16))
+    if v.TimeoutInMinutes.is_some():
+        auto u17 = v.TimeoutInMinutes.unwrap()
+        parts.append("\"TimeoutInMinutes\":" + str(u17))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionCacheBehaviors to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_cache_behaviors_to_json(AwsCloudFrontDistributionCacheBehaviors v) -> str:
+    list[str] parts = []
+    if v.Items.is_some():
+        auto u0 = v.Items.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Items\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionDetails to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_details_to_json(AwsCloudFrontDistributionDetails v) -> str:
+    list[str] parts = []
+    if v.CacheBehaviors.is_some():
+        auto u0 = v.CacheBehaviors.unwrap()
+        parts.append("\"CacheBehaviors\":" + aws_cloud_front_distribution_cache_behaviors_to_json(u0))
+    if v.DefaultCacheBehavior.is_some():
+        auto u1 = v.DefaultCacheBehavior.unwrap()
+        parts.append("\"DefaultCacheBehavior\":" + u1.to_json())
+    if v.DefaultRootObject.is_some():
+        auto u2 = v.DefaultRootObject.unwrap()
+        parts.append("\"DefaultRootObject\":" + securityhub_json_str(u2))
+    if v.DomainName.is_some():
+        auto u3 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + securityhub_json_str(u3))
+    if v.ETag.is_some():
+        auto u4 = v.ETag.unwrap()
+        parts.append("\"ETag\":" + securityhub_json_str(u4))
+    if v.LastModifiedTime.is_some():
+        auto u5 = v.LastModifiedTime.unwrap()
+        parts.append("\"LastModifiedTime\":" + securityhub_json_str(u5))
+    if v.Logging.is_some():
+        auto u6 = v.Logging.unwrap()
+        parts.append("\"Logging\":" + u6.to_json())
+    if v.Origins.is_some():
+        auto u7 = v.Origins.unwrap()
+        parts.append("\"Origins\":" + aws_cloud_front_distribution_origins_to_json(u7))
+    if v.OriginGroups.is_some():
+        auto u8 = v.OriginGroups.unwrap()
+        parts.append("\"OriginGroups\":" + aws_cloud_front_distribution_origin_groups_to_json(u8))
+    if v.ViewerCertificate.is_some():
+        auto u9 = v.ViewerCertificate.unwrap()
+        parts.append("\"ViewerCertificate\":" + u9.to_json())
+    if v.Status.is_some():
+        auto u10 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u10))
+    if v.WebAclId.is_some():
+        auto u11 = v.WebAclId.unwrap()
+        parts.append("\"WebAclId\":" + securityhub_json_str(u11))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginCustomOriginConfig to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_custom_origin_config_to_json(AwsCloudFrontDistributionOriginCustomOriginConfig v) -> str:
+    list[str] parts = []
+    if v.HttpPort.is_some():
+        auto u0 = v.HttpPort.unwrap()
+        parts.append("\"HttpPort\":" + str(u0))
+    if v.HttpsPort.is_some():
+        auto u1 = v.HttpsPort.unwrap()
+        parts.append("\"HttpsPort\":" + str(u1))
+    if v.OriginKeepaliveTimeout.is_some():
+        auto u2 = v.OriginKeepaliveTimeout.unwrap()
+        parts.append("\"OriginKeepaliveTimeout\":" + str(u2))
+    if v.OriginProtocolPolicy.is_some():
+        auto u3 = v.OriginProtocolPolicy.unwrap()
+        parts.append("\"OriginProtocolPolicy\":" + securityhub_json_str(u3))
+    if v.OriginReadTimeout.is_some():
+        auto u4 = v.OriginReadTimeout.unwrap()
+        parts.append("\"OriginReadTimeout\":" + str(u4))
+    if v.OriginSslProtocols.is_some():
+        auto u5 = v.OriginSslProtocols.unwrap()
+        parts.append("\"OriginSslProtocols\":" + aws_cloud_front_distribution_origin_ssl_protocols_to_json(u5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginGroup to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_group_to_json(AwsCloudFrontDistributionOriginGroup v) -> str:
+    list[str] parts = []
+    if v.FailoverCriteria.is_some():
+        auto u0 = v.FailoverCriteria.unwrap()
+        parts.append("\"FailoverCriteria\":" + aws_cloud_front_distribution_origin_group_failover_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginGroupFailover to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_group_failover_to_json(AwsCloudFrontDistributionOriginGroupFailover v) -> str:
+    list[str] parts = []
+    if v.StatusCodes.is_some():
+        auto u0 = v.StatusCodes.unwrap()
+        parts.append("\"StatusCodes\":" + aws_cloud_front_distribution_origin_group_failover_status_codes_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginGroupFailoverStatusCodes to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_group_failover_status_codes_to_json(AwsCloudFrontDistributionOriginGroupFailoverStatusCodes v) -> str:
+    list[str] parts = []
+    if v.Items.is_some():
+        auto u0 = v.Items.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"Items\":" + securityhub_json_arr(e1))
+    if v.Quantity.is_some():
+        auto u2 = v.Quantity.unwrap()
+        parts.append("\"Quantity\":" + str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginGroups to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_groups_to_json(AwsCloudFrontDistributionOriginGroups v) -> str:
+    list[str] parts = []
+    if v.Items.is_some():
+        auto u0 = v.Items.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_cloud_front_distribution_origin_group_to_json(x1))
+        parts.append("\"Items\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginItem to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_item_to_json(AwsCloudFrontDistributionOriginItem v) -> str:
+    list[str] parts = []
+    if v.DomainName.is_some():
+        auto u0 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + securityhub_json_str(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u1))
+    if v.OriginPath.is_some():
+        auto u2 = v.OriginPath.unwrap()
+        parts.append("\"OriginPath\":" + securityhub_json_str(u2))
+    if v.S3OriginConfig.is_some():
+        auto u3 = v.S3OriginConfig.unwrap()
+        parts.append("\"S3OriginConfig\":" + u3.to_json())
+    if v.CustomOriginConfig.is_some():
+        auto u4 = v.CustomOriginConfig.unwrap()
+        parts.append("\"CustomOriginConfig\":" + aws_cloud_front_distribution_origin_custom_origin_config_to_json(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOriginSslProtocols to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origin_ssl_protocols_to_json(AwsCloudFrontDistributionOriginSslProtocols v) -> str:
+    list[str] parts = []
+    if v.Items.is_some():
+        auto u0 = v.Items.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Items\":" + securityhub_json_arr(e1))
+    if v.Quantity.is_some():
+        auto u2 = v.Quantity.unwrap()
+        parts.append("\"Quantity\":" + str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudFrontDistributionOrigins to a compact JSON object (declaration order).
+def aws_cloud_front_distribution_origins_to_json(AwsCloudFrontDistributionOrigins v) -> str:
+    list[str] parts = []
+    if v.Items.is_some():
+        auto u0 = v.Items.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_cloud_front_distribution_origin_item_to_json(x1))
+        parts.append("\"Items\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCloudWatchAlarmDetails to a compact JSON object (declaration order).
+def aws_cloud_watch_alarm_details_to_json(AwsCloudWatchAlarmDetails v) -> str:
+    list[str] parts = []
+    if v.ActionsEnabled.is_some():
+        auto u0 = v.ActionsEnabled.unwrap()
+        parts.append("\"ActionsEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AlarmActions.is_some():
+        auto u1 = v.AlarmActions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"AlarmActions\":" + securityhub_json_arr(e2))
+    if v.AlarmArn.is_some():
+        auto u3 = v.AlarmArn.unwrap()
+        parts.append("\"AlarmArn\":" + securityhub_json_str(u3))
+    if v.AlarmConfigurationUpdatedTimestamp.is_some():
+        auto u4 = v.AlarmConfigurationUpdatedTimestamp.unwrap()
+        parts.append("\"AlarmConfigurationUpdatedTimestamp\":" + securityhub_json_str(u4))
+    if v.AlarmDescription.is_some():
+        auto u5 = v.AlarmDescription.unwrap()
+        parts.append("\"AlarmDescription\":" + securityhub_json_str(u5))
+    if v.AlarmName.is_some():
+        auto u6 = v.AlarmName.unwrap()
+        parts.append("\"AlarmName\":" + securityhub_json_str(u6))
+    if v.ComparisonOperator.is_some():
+        auto u7 = v.ComparisonOperator.unwrap()
+        parts.append("\"ComparisonOperator\":" + securityhub_json_str(u7))
+    if v.DatapointsToAlarm.is_some():
+        auto u8 = v.DatapointsToAlarm.unwrap()
+        parts.append("\"DatapointsToAlarm\":" + str(u8))
+    if v.Dimensions.is_some():
+        auto u9 = v.Dimensions.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Dimensions\":" + securityhub_json_arr(e10))
+    if v.EvaluateLowSampleCountPercentile.is_some():
+        auto u11 = v.EvaluateLowSampleCountPercentile.unwrap()
+        parts.append("\"EvaluateLowSampleCountPercentile\":" + securityhub_json_str(u11))
+    if v.EvaluationPeriods.is_some():
+        auto u12 = v.EvaluationPeriods.unwrap()
+        parts.append("\"EvaluationPeriods\":" + str(u12))
+    if v.ExtendedStatistic.is_some():
+        auto u13 = v.ExtendedStatistic.unwrap()
+        parts.append("\"ExtendedStatistic\":" + securityhub_json_str(u13))
+    if v.InsufficientDataActions.is_some():
+        auto u14 = v.InsufficientDataActions.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(securityhub_json_str(x15))
+        parts.append("\"InsufficientDataActions\":" + securityhub_json_arr(e15))
+    if v.MetricName.is_some():
+        auto u16 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u16))
+    if v.Namespace.is_some():
+        auto u17 = v.Namespace.unwrap()
+        parts.append("\"Namespace\":" + securityhub_json_str(u17))
+    if v.OkActions.is_some():
+        auto u18 = v.OkActions.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(securityhub_json_str(x19))
+        parts.append("\"OkActions\":" + securityhub_json_arr(e19))
+    if v.Period.is_some():
+        auto u20 = v.Period.unwrap()
+        parts.append("\"Period\":" + str(u20))
+    if v.Statistic.is_some():
+        auto u21 = v.Statistic.unwrap()
+        parts.append("\"Statistic\":" + securityhub_json_str(u21))
+    if v.Threshold.is_some():
+        auto u22 = v.Threshold.unwrap()
+        parts.append("\"Threshold\":" + str(u22))
+    if v.ThresholdMetricId.is_some():
+        auto u23 = v.ThresholdMetricId.unwrap()
+        parts.append("\"ThresholdMetricId\":" + securityhub_json_str(u23))
+    if v.TreatMissingData.is_some():
+        auto u24 = v.TreatMissingData.unwrap()
+        parts.append("\"TreatMissingData\":" + securityhub_json_str(u24))
+    if v.Unit.is_some():
+        auto u25 = v.Unit.unwrap()
+        parts.append("\"Unit\":" + securityhub_json_str(u25))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCodeBuildProjectDetails to a compact JSON object (declaration order).
+def aws_code_build_project_details_to_json(AwsCodeBuildProjectDetails v) -> str:
+    list[str] parts = []
+    if v.EncryptionKey.is_some():
+        auto u0 = v.EncryptionKey.unwrap()
+        parts.append("\"EncryptionKey\":" + securityhub_json_str(u0))
+    if v.Artifacts.is_some():
+        auto u1 = v.Artifacts.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Artifacts\":" + securityhub_json_arr(e2))
+    if v.Environment.is_some():
+        auto u3 = v.Environment.unwrap()
+        parts.append("\"Environment\":" + aws_code_build_project_environment_to_json(u3))
+    if v.Name.is_some():
+        auto u4 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u4))
+    if v.Source.is_some():
+        auto u5 = v.Source.unwrap()
+        parts.append("\"Source\":" + u5.to_json())
+    if v.ServiceRole.is_some():
+        auto u6 = v.ServiceRole.unwrap()
+        parts.append("\"ServiceRole\":" + securityhub_json_str(u6))
+    if v.LogsConfig.is_some():
+        auto u7 = v.LogsConfig.unwrap()
+        parts.append("\"LogsConfig\":" + u7.to_json())
+    if v.VpcConfig.is_some():
+        auto u8 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + aws_code_build_project_vpc_config_to_json(u8))
+    if v.SecondaryArtifacts.is_some():
+        auto u9 = v.SecondaryArtifacts.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"SecondaryArtifacts\":" + securityhub_json_arr(e10))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCodeBuildProjectEnvironment to a compact JSON object (declaration order).
+def aws_code_build_project_environment_to_json(AwsCodeBuildProjectEnvironment v) -> str:
+    list[str] parts = []
+    if v.Certificate.is_some():
+        auto u0 = v.Certificate.unwrap()
+        parts.append("\"Certificate\":" + securityhub_json_str(u0))
+    if v.EnvironmentVariables.is_some():
+        auto u1 = v.EnvironmentVariables.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"EnvironmentVariables\":" + securityhub_json_arr(e2))
+    if v.PrivilegedMode.is_some():
+        auto u3 = v.PrivilegedMode.unwrap()
+        parts.append("\"PrivilegedMode\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ImagePullCredentialsType.is_some():
+        auto u4 = v.ImagePullCredentialsType.unwrap()
+        parts.append("\"ImagePullCredentialsType\":" + securityhub_json_str(u4))
+    if v.RegistryCredential.is_some():
+        auto u5 = v.RegistryCredential.unwrap()
+        parts.append("\"RegistryCredential\":" + u5.to_json())
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCodeBuildProjectVpcConfig to a compact JSON object (declaration order).
+def aws_code_build_project_vpc_config_to_json(AwsCodeBuildProjectVpcConfig v) -> str:
+    list[str] parts = []
+    if v.VpcId.is_some():
+        auto u0 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u0))
+    if v.Subnets.is_some():
+        auto u1 = v.Subnets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"Subnets\":" + securityhub_json_arr(e2))
+    if v.SecurityGroupIds.is_some():
+        auto u3 = v.SecurityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"SecurityGroupIds\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsCorsConfiguration to a compact JSON object (declaration order).
+def aws_cors_configuration_to_json(AwsCorsConfiguration v) -> str:
+    list[str] parts = []
+    if v.AllowOrigins.is_some():
+        auto u0 = v.AllowOrigins.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"AllowOrigins\":" + securityhub_json_arr(e1))
+    if v.AllowCredentials.is_some():
+        auto u2 = v.AllowCredentials.unwrap()
+        parts.append("\"AllowCredentials\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ExposeHeaders.is_some():
+        auto u3 = v.ExposeHeaders.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"ExposeHeaders\":" + securityhub_json_arr(e4))
+    if v.MaxAge.is_some():
+        auto u5 = v.MaxAge.unwrap()
+        parts.append("\"MaxAge\":" + str(u5))
+    if v.AllowMethods.is_some():
+        auto u6 = v.AllowMethods.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityhub_json_str(x7))
+        parts.append("\"AllowMethods\":" + securityhub_json_arr(e7))
+    if v.AllowHeaders.is_some():
+        auto u8 = v.AllowHeaders.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityhub_json_str(x9))
+        parts.append("\"AllowHeaders\":" + securityhub_json_arr(e9))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsDmsReplicationInstanceDetails to a compact JSON object (declaration order).
+def aws_dms_replication_instance_details_to_json(AwsDmsReplicationInstanceDetails v) -> str:
+    list[str] parts = []
+    if v.AllocatedStorage.is_some():
+        auto u0 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u0))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u1 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.AvailabilityZone.is_some():
+        auto u2 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + securityhub_json_str(u2))
+    if v.EngineVersion.is_some():
+        auto u3 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u3))
+    if v.KmsKeyId.is_some():
+        auto u4 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u4))
+    if v.MultiAZ.is_some():
+        auto u5 = v.MultiAZ.unwrap()
+        parts.append("\"MultiAZ\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u6 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + securityhub_json_str(u6))
+    if v.PubliclyAccessible.is_some():
+        auto u7 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.ReplicationInstanceClass.is_some():
+        auto u8 = v.ReplicationInstanceClass.unwrap()
+        parts.append("\"ReplicationInstanceClass\":" + securityhub_json_str(u8))
+    if v.ReplicationInstanceIdentifier.is_some():
+        auto u9 = v.ReplicationInstanceIdentifier.unwrap()
+        parts.append("\"ReplicationInstanceIdentifier\":" + securityhub_json_str(u9))
+    if v.ReplicationSubnetGroup.is_some():
+        auto u10 = v.ReplicationSubnetGroup.unwrap()
+        parts.append("\"ReplicationSubnetGroup\":" + u10.to_json())
+    if v.VpcSecurityGroups.is_some():
+        auto u11 = v.VpcSecurityGroups.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"VpcSecurityGroups\":" + securityhub_json_arr(e12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsDynamoDbTableDetails to a compact JSON object (declaration order).
+def aws_dynamo_db_table_details_to_json(AwsDynamoDbTableDetails v) -> str:
+    list[str] parts = []
+    if v.AttributeDefinitions.is_some():
+        auto u0 = v.AttributeDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributeDefinitions\":" + securityhub_json_arr(e1))
+    if v.BillingModeSummary.is_some():
+        auto u2 = v.BillingModeSummary.unwrap()
+        parts.append("\"BillingModeSummary\":" + u2.to_json())
+    if v.CreationDateTime.is_some():
+        auto u3 = v.CreationDateTime.unwrap()
+        parts.append("\"CreationDateTime\":" + securityhub_json_str(u3))
+    if v.GlobalSecondaryIndexes.is_some():
+        auto u4 = v.GlobalSecondaryIndexes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(aws_dynamo_db_table_global_secondary_index_to_json(x5))
+        parts.append("\"GlobalSecondaryIndexes\":" + securityhub_json_arr(e5))
+    if v.GlobalTableVersion.is_some():
+        auto u6 = v.GlobalTableVersion.unwrap()
+        parts.append("\"GlobalTableVersion\":" + securityhub_json_str(u6))
+    if v.ItemCount.is_some():
+        auto u7 = v.ItemCount.unwrap()
+        parts.append("\"ItemCount\":" + str(u7))
+    if v.KeySchema.is_some():
+        auto u8 = v.KeySchema.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"KeySchema\":" + securityhub_json_arr(e9))
+    if v.LatestStreamArn.is_some():
+        auto u10 = v.LatestStreamArn.unwrap()
+        parts.append("\"LatestStreamArn\":" + securityhub_json_str(u10))
+    if v.LatestStreamLabel.is_some():
+        auto u11 = v.LatestStreamLabel.unwrap()
+        parts.append("\"LatestStreamLabel\":" + securityhub_json_str(u11))
+    if v.LocalSecondaryIndexes.is_some():
+        auto u12 = v.LocalSecondaryIndexes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(aws_dynamo_db_table_local_secondary_index_to_json(x13))
+        parts.append("\"LocalSecondaryIndexes\":" + securityhub_json_arr(e13))
+    if v.ProvisionedThroughput.is_some():
+        auto u14 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u14.to_json())
+    if v.Replicas.is_some():
+        auto u15 = v.Replicas.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(aws_dynamo_db_table_replica_to_json(x16))
+        parts.append("\"Replicas\":" + securityhub_json_arr(e16))
+    if v.RestoreSummary.is_some():
+        auto u17 = v.RestoreSummary.unwrap()
+        parts.append("\"RestoreSummary\":" + u17.to_json())
+    if v.SseDescription.is_some():
+        auto u18 = v.SseDescription.unwrap()
+        parts.append("\"SseDescription\":" + u18.to_json())
+    if v.StreamSpecification.is_some():
+        auto u19 = v.StreamSpecification.unwrap()
+        parts.append("\"StreamSpecification\":" + u19.to_json())
+    if v.TableId.is_some():
+        auto u20 = v.TableId.unwrap()
+        parts.append("\"TableId\":" + securityhub_json_str(u20))
+    if v.TableName.is_some():
+        auto u21 = v.TableName.unwrap()
+        parts.append("\"TableName\":" + securityhub_json_str(u21))
+    if v.TableSizeBytes.is_some():
+        auto u22 = v.TableSizeBytes.unwrap()
+        parts.append("\"TableSizeBytes\":" + str(u22))
+    if v.TableStatus.is_some():
+        auto u23 = v.TableStatus.unwrap()
+        parts.append("\"TableStatus\":" + securityhub_json_str(u23))
+    if v.DeletionProtectionEnabled.is_some():
+        auto u24 = v.DeletionProtectionEnabled.unwrap()
+        parts.append("\"DeletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u24)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsDynamoDbTableGlobalSecondaryIndex to a compact JSON object (declaration order).
+def aws_dynamo_db_table_global_secondary_index_to_json(AwsDynamoDbTableGlobalSecondaryIndex v) -> str:
+    list[str] parts = []
+    if v.Backfilling.is_some():
+        auto u0 = v.Backfilling.unwrap()
+        parts.append("\"Backfilling\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IndexArn.is_some():
+        auto u1 = v.IndexArn.unwrap()
+        parts.append("\"IndexArn\":" + securityhub_json_str(u1))
+    if v.IndexName.is_some():
+        auto u2 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + securityhub_json_str(u2))
+    if v.IndexSizeBytes.is_some():
+        auto u3 = v.IndexSizeBytes.unwrap()
+        parts.append("\"IndexSizeBytes\":" + str(u3))
+    if v.IndexStatus.is_some():
+        auto u4 = v.IndexStatus.unwrap()
+        parts.append("\"IndexStatus\":" + securityhub_json_str(u4))
+    if v.ItemCount.is_some():
+        auto u5 = v.ItemCount.unwrap()
+        parts.append("\"ItemCount\":" + str(u5))
+    if v.KeySchema.is_some():
+        auto u6 = v.KeySchema.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"KeySchema\":" + securityhub_json_arr(e7))
+    if v.Projection.is_some():
+        auto u8 = v.Projection.unwrap()
+        parts.append("\"Projection\":" + aws_dynamo_db_table_projection_to_json(u8))
+    if v.ProvisionedThroughput.is_some():
+        auto u9 = v.ProvisionedThroughput.unwrap()
+        parts.append("\"ProvisionedThroughput\":" + u9.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsDynamoDbTableLocalSecondaryIndex to a compact JSON object (declaration order).
+def aws_dynamo_db_table_local_secondary_index_to_json(AwsDynamoDbTableLocalSecondaryIndex v) -> str:
+    list[str] parts = []
+    if v.IndexArn.is_some():
+        auto u0 = v.IndexArn.unwrap()
+        parts.append("\"IndexArn\":" + securityhub_json_str(u0))
+    if v.IndexName.is_some():
+        auto u1 = v.IndexName.unwrap()
+        parts.append("\"IndexName\":" + securityhub_json_str(u1))
+    if v.KeySchema.is_some():
+        auto u2 = v.KeySchema.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"KeySchema\":" + securityhub_json_arr(e3))
+    if v.Projection.is_some():
+        auto u4 = v.Projection.unwrap()
+        parts.append("\"Projection\":" + aws_dynamo_db_table_projection_to_json(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsDynamoDbTableProjection to a compact JSON object (declaration order).
+def aws_dynamo_db_table_projection_to_json(AwsDynamoDbTableProjection v) -> str:
+    list[str] parts = []
+    if v.NonKeyAttributes.is_some():
+        auto u0 = v.NonKeyAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"NonKeyAttributes\":" + securityhub_json_arr(e1))
+    if v.ProjectionType.is_some():
+        auto u2 = v.ProjectionType.unwrap()
+        parts.append("\"ProjectionType\":" + securityhub_json_str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsDynamoDbTableReplica to a compact JSON object (declaration order).
+def aws_dynamo_db_table_replica_to_json(AwsDynamoDbTableReplica v) -> str:
+    list[str] parts = []
+    if v.GlobalSecondaryIndexes.is_some():
+        auto u0 = v.GlobalSecondaryIndexes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GlobalSecondaryIndexes\":" + securityhub_json_arr(e1))
+    if v.KmsMasterKeyId.is_some():
+        auto u2 = v.KmsMasterKeyId.unwrap()
+        parts.append("\"KmsMasterKeyId\":" + securityhub_json_str(u2))
+    if v.ProvisionedThroughputOverride.is_some():
+        auto u3 = v.ProvisionedThroughputOverride.unwrap()
+        parts.append("\"ProvisionedThroughputOverride\":" + u3.to_json())
+    if v.RegionName.is_some():
+        auto u4 = v.RegionName.unwrap()
+        parts.append("\"RegionName\":" + securityhub_json_str(u4))
+    if v.ReplicaStatus.is_some():
+        auto u5 = v.ReplicaStatus.unwrap()
+        parts.append("\"ReplicaStatus\":" + securityhub_json_str(u5))
+    if v.ReplicaStatusDescription.is_some():
+        auto u6 = v.ReplicaStatusDescription.unwrap()
+        parts.append("\"ReplicaStatusDescription\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2ClientVpnEndpointDetails to a compact JSON object (declaration order).
+def aws_ec2_client_vpn_endpoint_details_to_json(AwsEc2ClientVpnEndpointDetails v) -> str:
+    list[str] parts = []
+    if v.ClientVpnEndpointId.is_some():
+        auto u0 = v.ClientVpnEndpointId.unwrap()
+        parts.append("\"ClientVpnEndpointId\":" + securityhub_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.ClientCidrBlock.is_some():
+        auto u2 = v.ClientCidrBlock.unwrap()
+        parts.append("\"ClientCidrBlock\":" + securityhub_json_str(u2))
+    if v.DnsServer.is_some():
+        auto u3 = v.DnsServer.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"DnsServer\":" + securityhub_json_arr(e4))
+    if v.SplitTunnel.is_some():
+        auto u5 = v.SplitTunnel.unwrap()
+        parts.append("\"SplitTunnel\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TransportProtocol.is_some():
+        auto u6 = v.TransportProtocol.unwrap()
+        parts.append("\"TransportProtocol\":" + securityhub_json_str(u6))
+    if v.VpnPort.is_some():
+        auto u7 = v.VpnPort.unwrap()
+        parts.append("\"VpnPort\":" + str(u7))
+    if v.ServerCertificateArn.is_some():
+        auto u8 = v.ServerCertificateArn.unwrap()
+        parts.append("\"ServerCertificateArn\":" + securityhub_json_str(u8))
+    if v.AuthenticationOptions.is_some():
+        auto u9 = v.AuthenticationOptions.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"AuthenticationOptions\":" + securityhub_json_arr(e10))
+    if v.ConnectionLogOptions.is_some():
+        auto u11 = v.ConnectionLogOptions.unwrap()
+        parts.append("\"ConnectionLogOptions\":" + u11.to_json())
+    if v.SecurityGroupIdSet.is_some():
+        auto u12 = v.SecurityGroupIdSet.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(securityhub_json_str(x13))
+        parts.append("\"SecurityGroupIdSet\":" + securityhub_json_arr(e13))
+    if v.VpcId.is_some():
+        auto u14 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u14))
+    if v.SelfServicePortalUrl.is_some():
+        auto u15 = v.SelfServicePortalUrl.unwrap()
+        parts.append("\"SelfServicePortalUrl\":" + securityhub_json_str(u15))
+    if v.ClientConnectOptions.is_some():
+        auto u16 = v.ClientConnectOptions.unwrap()
+        parts.append("\"ClientConnectOptions\":" + u16.to_json())
+    if v.SessionTimeoutHours.is_some():
+        auto u17 = v.SessionTimeoutHours.unwrap()
+        parts.append("\"SessionTimeoutHours\":" + str(u17))
+    if v.ClientLoginBannerOptions.is_some():
+        auto u18 = v.ClientLoginBannerOptions.unwrap()
+        parts.append("\"ClientLoginBannerOptions\":" + u18.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2InstanceDetails to a compact JSON object (declaration order).
+def aws_ec2_instance_details_to_json(AwsEc2InstanceDetails v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u0))
+    if v.ImageId.is_some():
+        auto u1 = v.ImageId.unwrap()
+        parts.append("\"ImageId\":" + securityhub_json_str(u1))
+    if v.IpV4Addresses.is_some():
+        auto u2 = v.IpV4Addresses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"IpV4Addresses\":" + securityhub_json_arr(e3))
+    if v.IpV6Addresses.is_some():
+        auto u4 = v.IpV6Addresses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"IpV6Addresses\":" + securityhub_json_arr(e5))
+    if v.KeyName.is_some():
+        auto u6 = v.KeyName.unwrap()
+        parts.append("\"KeyName\":" + securityhub_json_str(u6))
+    if v.IamInstanceProfileArn.is_some():
+        auto u7 = v.IamInstanceProfileArn.unwrap()
+        parts.append("\"IamInstanceProfileArn\":" + securityhub_json_str(u7))
+    if v.VpcId.is_some():
+        auto u8 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u8))
+    if v.SubnetId.is_some():
+        auto u9 = v.SubnetId.unwrap()
+        parts.append("\"SubnetId\":" + securityhub_json_str(u9))
+    if v.LaunchedAt.is_some():
+        auto u10 = v.LaunchedAt.unwrap()
+        parts.append("\"LaunchedAt\":" + securityhub_json_str(u10))
+    if v.NetworkInterfaces.is_some():
+        auto u11 = v.NetworkInterfaces.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"NetworkInterfaces\":" + securityhub_json_arr(e12))
+    if v.VirtualizationType.is_some():
+        auto u13 = v.VirtualizationType.unwrap()
+        parts.append("\"VirtualizationType\":" + securityhub_json_str(u13))
+    if v.MetadataOptions.is_some():
+        auto u14 = v.MetadataOptions.unwrap()
+        parts.append("\"MetadataOptions\":" + u14.to_json())
+    if v.Monitoring.is_some():
+        auto u15 = v.Monitoring.unwrap()
+        parts.append("\"Monitoring\":" + u15.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2LaunchTemplateDataDetails to a compact JSON object (declaration order).
+def aws_ec2_launch_template_data_details_to_json(AwsEc2LaunchTemplateDataDetails v) -> str:
+    list[str] parts = []
+    if v.BlockDeviceMappingSet.is_some():
+        auto u0 = v.BlockDeviceMappingSet.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"BlockDeviceMappingSet\":" + securityhub_json_arr(e1))
+    if v.CapacityReservationSpecification.is_some():
+        auto u2 = v.CapacityReservationSpecification.unwrap()
+        parts.append("\"CapacityReservationSpecification\":" + u2.to_json())
+    if v.CpuOptions.is_some():
+        auto u3 = v.CpuOptions.unwrap()
+        parts.append("\"CpuOptions\":" + u3.to_json())
+    if v.CreditSpecification.is_some():
+        auto u4 = v.CreditSpecification.unwrap()
+        parts.append("\"CreditSpecification\":" + u4.to_json())
+    if v.DisableApiStop.is_some():
+        auto u5 = v.DisableApiStop.unwrap()
+        parts.append("\"DisableApiStop\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.DisableApiTermination.is_some():
+        auto u6 = v.DisableApiTermination.unwrap()
+        parts.append("\"DisableApiTermination\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.EbsOptimized.is_some():
+        auto u7 = v.EbsOptimized.unwrap()
+        parts.append("\"EbsOptimized\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.ElasticGpuSpecificationSet.is_some():
+        auto u8 = v.ElasticGpuSpecificationSet.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"ElasticGpuSpecificationSet\":" + securityhub_json_arr(e9))
+    if v.ElasticInferenceAcceleratorSet.is_some():
+        auto u10 = v.ElasticInferenceAcceleratorSet.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"ElasticInferenceAcceleratorSet\":" + securityhub_json_arr(e11))
+    if v.EnclaveOptions.is_some():
+        auto u12 = v.EnclaveOptions.unwrap()
+        parts.append("\"EnclaveOptions\":" + u12.to_json())
+    if v.HibernationOptions.is_some():
+        auto u13 = v.HibernationOptions.unwrap()
+        parts.append("\"HibernationOptions\":" + u13.to_json())
+    if v.IamInstanceProfile.is_some():
+        auto u14 = v.IamInstanceProfile.unwrap()
+        parts.append("\"IamInstanceProfile\":" + u14.to_json())
+    if v.ImageId.is_some():
+        auto u15 = v.ImageId.unwrap()
+        parts.append("\"ImageId\":" + securityhub_json_str(u15))
+    if v.InstanceInitiatedShutdownBehavior.is_some():
+        auto u16 = v.InstanceInitiatedShutdownBehavior.unwrap()
+        parts.append("\"InstanceInitiatedShutdownBehavior\":" + securityhub_json_str(u16))
+    if v.InstanceMarketOptions.is_some():
+        auto u17 = v.InstanceMarketOptions.unwrap()
+        parts.append("\"InstanceMarketOptions\":" + u17.to_json())
+    if v.InstanceRequirements.is_some():
+        auto u18 = v.InstanceRequirements.unwrap()
+        parts.append("\"InstanceRequirements\":" + aws_ec2_launch_template_data_instance_requirements_details_to_json(u18))
+    if v.InstanceType.is_some():
+        auto u19 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + securityhub_json_str(u19))
+    if v.KernelId.is_some():
+        auto u20 = v.KernelId.unwrap()
+        parts.append("\"KernelId\":" + securityhub_json_str(u20))
+    if v.KeyName.is_some():
+        auto u21 = v.KeyName.unwrap()
+        parts.append("\"KeyName\":" + securityhub_json_str(u21))
+    if v.LicenseSet.is_some():
+        auto u22 = v.LicenseSet.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"LicenseSet\":" + securityhub_json_arr(e23))
+    if v.MaintenanceOptions.is_some():
+        auto u24 = v.MaintenanceOptions.unwrap()
+        parts.append("\"MaintenanceOptions\":" + u24.to_json())
+    if v.MetadataOptions.is_some():
+        auto u25 = v.MetadataOptions.unwrap()
+        parts.append("\"MetadataOptions\":" + u25.to_json())
+    if v.Monitoring.is_some():
+        auto u26 = v.Monitoring.unwrap()
+        parts.append("\"Monitoring\":" + u26.to_json())
+    if v.NetworkInterfaceSet.is_some():
+        auto u27 = v.NetworkInterfaceSet.unwrap()
+        list[str] e28 = []
+        for x28 in u27:
+            e28.append(aws_ec2_launch_template_data_network_interface_set_details_to_json(x28))
+        parts.append("\"NetworkInterfaceSet\":" + securityhub_json_arr(e28))
+    if v.Placement.is_some():
+        auto u29 = v.Placement.unwrap()
+        parts.append("\"Placement\":" + u29.to_json())
+    if v.PrivateDnsNameOptions.is_some():
+        auto u30 = v.PrivateDnsNameOptions.unwrap()
+        parts.append("\"PrivateDnsNameOptions\":" + u30.to_json())
+    if v.RamDiskId.is_some():
+        auto u31 = v.RamDiskId.unwrap()
+        parts.append("\"RamDiskId\":" + securityhub_json_str(u31))
+    if v.SecurityGroupIdSet.is_some():
+        auto u32 = v.SecurityGroupIdSet.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(securityhub_json_str(x33))
+        parts.append("\"SecurityGroupIdSet\":" + securityhub_json_arr(e33))
+    if v.SecurityGroupSet.is_some():
+        auto u34 = v.SecurityGroupSet.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(securityhub_json_str(x35))
+        parts.append("\"SecurityGroupSet\":" + securityhub_json_arr(e35))
+    if v.UserData.is_some():
+        auto u36 = v.UserData.unwrap()
+        parts.append("\"UserData\":" + securityhub_json_str(u36))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2LaunchTemplateDataInstanceRequirementsDetails to a compact JSON object (declaration order).
+def aws_ec2_launch_template_data_instance_requirements_details_to_json(AwsEc2LaunchTemplateDataInstanceRequirementsDetails v) -> str:
+    list[str] parts = []
+    if v.AcceleratorCount.is_some():
+        auto u0 = v.AcceleratorCount.unwrap()
+        parts.append("\"AcceleratorCount\":" + u0.to_json())
+    if v.AcceleratorManufacturers.is_some():
+        auto u1 = v.AcceleratorManufacturers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"AcceleratorManufacturers\":" + securityhub_json_arr(e2))
+    if v.AcceleratorNames.is_some():
+        auto u3 = v.AcceleratorNames.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"AcceleratorNames\":" + securityhub_json_arr(e4))
+    if v.AcceleratorTotalMemoryMiB.is_some():
+        auto u5 = v.AcceleratorTotalMemoryMiB.unwrap()
+        parts.append("\"AcceleratorTotalMemoryMiB\":" + u5.to_json())
+    if v.AcceleratorTypes.is_some():
+        auto u6 = v.AcceleratorTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityhub_json_str(x7))
+        parts.append("\"AcceleratorTypes\":" + securityhub_json_arr(e7))
+    if v.BareMetal.is_some():
+        auto u8 = v.BareMetal.unwrap()
+        parts.append("\"BareMetal\":" + securityhub_json_str(u8))
+    if v.BaselineEbsBandwidthMbps.is_some():
+        auto u9 = v.BaselineEbsBandwidthMbps.unwrap()
+        parts.append("\"BaselineEbsBandwidthMbps\":" + u9.to_json())
+    if v.BurstablePerformance.is_some():
+        auto u10 = v.BurstablePerformance.unwrap()
+        parts.append("\"BurstablePerformance\":" + securityhub_json_str(u10))
+    if v.CpuManufacturers.is_some():
+        auto u11 = v.CpuManufacturers.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(securityhub_json_str(x12))
+        parts.append("\"CpuManufacturers\":" + securityhub_json_arr(e12))
+    if v.ExcludedInstanceTypes.is_some():
+        auto u13 = v.ExcludedInstanceTypes.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(securityhub_json_str(x14))
+        parts.append("\"ExcludedInstanceTypes\":" + securityhub_json_arr(e14))
+    if v.InstanceGenerations.is_some():
+        auto u15 = v.InstanceGenerations.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(securityhub_json_str(x16))
+        parts.append("\"InstanceGenerations\":" + securityhub_json_arr(e16))
+    if v.LocalStorage.is_some():
+        auto u17 = v.LocalStorage.unwrap()
+        parts.append("\"LocalStorage\":" + securityhub_json_str(u17))
+    if v.LocalStorageTypes.is_some():
+        auto u18 = v.LocalStorageTypes.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(securityhub_json_str(x19))
+        parts.append("\"LocalStorageTypes\":" + securityhub_json_arr(e19))
+    if v.MemoryGiBPerVCpu.is_some():
+        auto u20 = v.MemoryGiBPerVCpu.unwrap()
+        parts.append("\"MemoryGiBPerVCpu\":" + u20.to_json())
+    if v.MemoryMiB.is_some():
+        auto u21 = v.MemoryMiB.unwrap()
+        parts.append("\"MemoryMiB\":" + u21.to_json())
+    if v.NetworkInterfaceCount.is_some():
+        auto u22 = v.NetworkInterfaceCount.unwrap()
+        parts.append("\"NetworkInterfaceCount\":" + u22.to_json())
+    if v.OnDemandMaxPricePercentageOverLowestPrice.is_some():
+        auto u23 = v.OnDemandMaxPricePercentageOverLowestPrice.unwrap()
+        parts.append("\"OnDemandMaxPricePercentageOverLowestPrice\":" + str(u23))
+    if v.RequireHibernateSupport.is_some():
+        auto u24 = v.RequireHibernateSupport.unwrap()
+        parts.append("\"RequireHibernateSupport\":" + json.dumps(JsonValue.Bool(u24)))
+    if v.SpotMaxPricePercentageOverLowestPrice.is_some():
+        auto u25 = v.SpotMaxPricePercentageOverLowestPrice.unwrap()
+        parts.append("\"SpotMaxPricePercentageOverLowestPrice\":" + str(u25))
+    if v.TotalLocalStorageGB.is_some():
+        auto u26 = v.TotalLocalStorageGB.unwrap()
+        parts.append("\"TotalLocalStorageGB\":" + u26.to_json())
+    if v.VCpuCount.is_some():
+        auto u27 = v.VCpuCount.unwrap()
+        parts.append("\"VCpuCount\":" + u27.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2LaunchTemplateDataNetworkInterfaceSetDetails to a compact JSON object (declaration order).
+def aws_ec2_launch_template_data_network_interface_set_details_to_json(AwsEc2LaunchTemplateDataNetworkInterfaceSetDetails v) -> str:
+    list[str] parts = []
+    if v.AssociateCarrierIpAddress.is_some():
+        auto u0 = v.AssociateCarrierIpAddress.unwrap()
+        parts.append("\"AssociateCarrierIpAddress\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AssociatePublicIpAddress.is_some():
+        auto u1 = v.AssociatePublicIpAddress.unwrap()
+        parts.append("\"AssociatePublicIpAddress\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.DeleteOnTermination.is_some():
+        auto u2 = v.DeleteOnTermination.unwrap()
+        parts.append("\"DeleteOnTermination\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u3))
+    if v.DeviceIndex.is_some():
+        auto u4 = v.DeviceIndex.unwrap()
+        parts.append("\"DeviceIndex\":" + str(u4))
+    if v.Groups.is_some():
+        auto u5 = v.Groups.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityhub_json_str(x6))
+        parts.append("\"Groups\":" + securityhub_json_arr(e6))
+    if v.InterfaceType.is_some():
+        auto u7 = v.InterfaceType.unwrap()
+        parts.append("\"InterfaceType\":" + securityhub_json_str(u7))
+    if v.Ipv4PrefixCount.is_some():
+        auto u8 = v.Ipv4PrefixCount.unwrap()
+        parts.append("\"Ipv4PrefixCount\":" + str(u8))
+    if v.Ipv4Prefixes.is_some():
+        auto u9 = v.Ipv4Prefixes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Ipv4Prefixes\":" + securityhub_json_arr(e10))
+    if v.Ipv6AddressCount.is_some():
+        auto u11 = v.Ipv6AddressCount.unwrap()
+        parts.append("\"Ipv6AddressCount\":" + str(u11))
+    if v.Ipv6Addresses.is_some():
+        auto u12 = v.Ipv6Addresses.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Ipv6Addresses\":" + securityhub_json_arr(e13))
+    if v.Ipv6PrefixCount.is_some():
+        auto u14 = v.Ipv6PrefixCount.unwrap()
+        parts.append("\"Ipv6PrefixCount\":" + str(u14))
+    if v.Ipv6Prefixes.is_some():
+        auto u15 = v.Ipv6Prefixes.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"Ipv6Prefixes\":" + securityhub_json_arr(e16))
+    if v.NetworkCardIndex.is_some():
+        auto u17 = v.NetworkCardIndex.unwrap()
+        parts.append("\"NetworkCardIndex\":" + str(u17))
+    if v.NetworkInterfaceId.is_some():
+        auto u18 = v.NetworkInterfaceId.unwrap()
+        parts.append("\"NetworkInterfaceId\":" + securityhub_json_str(u18))
+    if v.PrivateIpAddress.is_some():
+        auto u19 = v.PrivateIpAddress.unwrap()
+        parts.append("\"PrivateIpAddress\":" + securityhub_json_str(u19))
+    if v.PrivateIpAddresses.is_some():
+        auto u20 = v.PrivateIpAddresses.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"PrivateIpAddresses\":" + securityhub_json_arr(e21))
+    if v.SecondaryPrivateIpAddressCount.is_some():
+        auto u22 = v.SecondaryPrivateIpAddressCount.unwrap()
+        parts.append("\"SecondaryPrivateIpAddressCount\":" + str(u22))
+    if v.SubnetId.is_some():
+        auto u23 = v.SubnetId.unwrap()
+        parts.append("\"SubnetId\":" + securityhub_json_str(u23))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2LaunchTemplateDetails to a compact JSON object (declaration order).
+def aws_ec2_launch_template_details_to_json(AwsEc2LaunchTemplateDetails v) -> str:
+    list[str] parts = []
+    if v.LaunchTemplateName.is_some():
+        auto u0 = v.LaunchTemplateName.unwrap()
+        parts.append("\"LaunchTemplateName\":" + securityhub_json_str(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u1))
+    if v.LaunchTemplateData.is_some():
+        auto u2 = v.LaunchTemplateData.unwrap()
+        parts.append("\"LaunchTemplateData\":" + aws_ec2_launch_template_data_details_to_json(u2))
+    if v.DefaultVersionNumber.is_some():
+        auto u3 = v.DefaultVersionNumber.unwrap()
+        parts.append("\"DefaultVersionNumber\":" + str(u3))
+    if v.LatestVersionNumber.is_some():
+        auto u4 = v.LatestVersionNumber.unwrap()
+        parts.append("\"LatestVersionNumber\":" + str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2NetworkAclDetails to a compact JSON object (declaration order).
+def aws_ec2_network_acl_details_to_json(AwsEc2NetworkAclDetails v) -> str:
+    list[str] parts = []
+    if v.IsDefault.is_some():
+        auto u0 = v.IsDefault.unwrap()
+        parts.append("\"IsDefault\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.NetworkAclId.is_some():
+        auto u1 = v.NetworkAclId.unwrap()
+        parts.append("\"NetworkAclId\":" + securityhub_json_str(u1))
+    if v.OwnerId.is_some():
+        auto u2 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u2))
+    if v.VpcId.is_some():
+        auto u3 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u3))
+    if v.Associations.is_some():
+        auto u4 = v.Associations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Associations\":" + securityhub_json_arr(e5))
+    if v.Entries.is_some():
+        auto u6 = v.Entries.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Entries\":" + securityhub_json_arr(e7))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2NetworkInterfaceDetails to a compact JSON object (declaration order).
+def aws_ec2_network_interface_details_to_json(AwsEc2NetworkInterfaceDetails v) -> str:
+    list[str] parts = []
+    if v.Attachment.is_some():
+        auto u0 = v.Attachment.unwrap()
+        parts.append("\"Attachment\":" + u0.to_json())
+    if v.NetworkInterfaceId.is_some():
+        auto u1 = v.NetworkInterfaceId.unwrap()
+        parts.append("\"NetworkInterfaceId\":" + securityhub_json_str(u1))
+    if v.SecurityGroups.is_some():
+        auto u2 = v.SecurityGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e3))
+    if v.SourceDestCheck.is_some():
+        auto u4 = v.SourceDestCheck.unwrap()
+        parts.append("\"SourceDestCheck\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.IpV6Addresses.is_some():
+        auto u5 = v.IpV6Addresses.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"IpV6Addresses\":" + securityhub_json_arr(e6))
+    if v.PrivateIpAddresses.is_some():
+        auto u7 = v.PrivateIpAddresses.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"PrivateIpAddresses\":" + securityhub_json_arr(e8))
+    if v.PublicDnsName.is_some():
+        auto u9 = v.PublicDnsName.unwrap()
+        parts.append("\"PublicDnsName\":" + securityhub_json_str(u9))
+    if v.PublicIp.is_some():
+        auto u10 = v.PublicIp.unwrap()
+        parts.append("\"PublicIp\":" + securityhub_json_str(u10))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2RouteTableDetails to a compact JSON object (declaration order).
+def aws_ec2_route_table_details_to_json(AwsEc2RouteTableDetails v) -> str:
+    list[str] parts = []
+    if v.AssociationSet.is_some():
+        auto u0 = v.AssociationSet.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AssociationSet\":" + securityhub_json_arr(e1))
+    if v.OwnerId.is_some():
+        auto u2 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u2))
+    if v.PropagatingVgwSet.is_some():
+        auto u3 = v.PropagatingVgwSet.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"PropagatingVgwSet\":" + securityhub_json_arr(e4))
+    if v.RouteTableId.is_some():
+        auto u5 = v.RouteTableId.unwrap()
+        parts.append("\"RouteTableId\":" + securityhub_json_str(u5))
+    if v.RouteSet.is_some():
+        auto u6 = v.RouteSet.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"RouteSet\":" + securityhub_json_arr(e7))
+    if v.VpcId.is_some():
+        auto u8 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u8))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2SecurityGroupDetails to a compact JSON object (declaration order).
+def aws_ec2_security_group_details_to_json(AwsEc2SecurityGroupDetails v) -> str:
+    list[str] parts = []
+    if v.GroupName.is_some():
+        auto u0 = v.GroupName.unwrap()
+        parts.append("\"GroupName\":" + securityhub_json_str(u0))
+    if v.GroupId.is_some():
+        auto u1 = v.GroupId.unwrap()
+        parts.append("\"GroupId\":" + securityhub_json_str(u1))
+    if v.OwnerId.is_some():
+        auto u2 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u2))
+    if v.VpcId.is_some():
+        auto u3 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u3))
+    if v.IpPermissions.is_some():
+        auto u4 = v.IpPermissions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(aws_ec2_security_group_ip_permission_to_json(x5))
+        parts.append("\"IpPermissions\":" + securityhub_json_arr(e5))
+    if v.IpPermissionsEgress.is_some():
+        auto u6 = v.IpPermissionsEgress.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(aws_ec2_security_group_ip_permission_to_json(x7))
+        parts.append("\"IpPermissionsEgress\":" + securityhub_json_arr(e7))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2SecurityGroupIpPermission to a compact JSON object (declaration order).
+def aws_ec2_security_group_ip_permission_to_json(AwsEc2SecurityGroupIpPermission v) -> str:
+    list[str] parts = []
+    if v.IpProtocol.is_some():
+        auto u0 = v.IpProtocol.unwrap()
+        parts.append("\"IpProtocol\":" + securityhub_json_str(u0))
+    if v.FromPort.is_some():
+        auto u1 = v.FromPort.unwrap()
+        parts.append("\"FromPort\":" + str(u1))
+    if v.ToPort.is_some():
+        auto u2 = v.ToPort.unwrap()
+        parts.append("\"ToPort\":" + str(u2))
+    if v.UserIdGroupPairs.is_some():
+        auto u3 = v.UserIdGroupPairs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"UserIdGroupPairs\":" + securityhub_json_arr(e4))
+    if v.IpRanges.is_some():
+        auto u5 = v.IpRanges.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"IpRanges\":" + securityhub_json_arr(e6))
+    if v.Ipv6Ranges.is_some():
+        auto u7 = v.Ipv6Ranges.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Ipv6Ranges\":" + securityhub_json_arr(e8))
+    if v.PrefixListIds.is_some():
+        auto u9 = v.PrefixListIds.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PrefixListIds\":" + securityhub_json_arr(e10))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2SubnetDetails to a compact JSON object (declaration order).
+def aws_ec2_subnet_details_to_json(AwsEc2SubnetDetails v) -> str:
+    list[str] parts = []
+    if v.AssignIpv6AddressOnCreation.is_some():
+        auto u0 = v.AssignIpv6AddressOnCreation.unwrap()
+        parts.append("\"AssignIpv6AddressOnCreation\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AvailabilityZone.is_some():
+        auto u1 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + securityhub_json_str(u1))
+    if v.AvailabilityZoneId.is_some():
+        auto u2 = v.AvailabilityZoneId.unwrap()
+        parts.append("\"AvailabilityZoneId\":" + securityhub_json_str(u2))
+    if v.AvailableIpAddressCount.is_some():
+        auto u3 = v.AvailableIpAddressCount.unwrap()
+        parts.append("\"AvailableIpAddressCount\":" + str(u3))
+    if v.CidrBlock.is_some():
+        auto u4 = v.CidrBlock.unwrap()
+        parts.append("\"CidrBlock\":" + securityhub_json_str(u4))
+    if v.DefaultForAz.is_some():
+        auto u5 = v.DefaultForAz.unwrap()
+        parts.append("\"DefaultForAz\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.MapPublicIpOnLaunch.is_some():
+        auto u6 = v.MapPublicIpOnLaunch.unwrap()
+        parts.append("\"MapPublicIpOnLaunch\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.OwnerId.is_some():
+        auto u7 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u7))
+    if v.State.is_some():
+        auto u8 = v.State.unwrap()
+        parts.append("\"State\":" + securityhub_json_str(u8))
+    if v.SubnetArn.is_some():
+        auto u9 = v.SubnetArn.unwrap()
+        parts.append("\"SubnetArn\":" + securityhub_json_str(u9))
+    if v.SubnetId.is_some():
+        auto u10 = v.SubnetId.unwrap()
+        parts.append("\"SubnetId\":" + securityhub_json_str(u10))
+    if v.VpcId.is_some():
+        auto u11 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u11))
+    if v.Ipv6CidrBlockAssociationSet.is_some():
+        auto u12 = v.Ipv6CidrBlockAssociationSet.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Ipv6CidrBlockAssociationSet\":" + securityhub_json_arr(e13))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2TransitGatewayDetails to a compact JSON object (declaration order).
+def aws_ec2_transit_gateway_details_to_json(AwsEc2TransitGatewayDetails v) -> str:
+    list[str] parts = []
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.DefaultRouteTablePropagation.is_some():
+        auto u2 = v.DefaultRouteTablePropagation.unwrap()
+        parts.append("\"DefaultRouteTablePropagation\":" + securityhub_json_str(u2))
+    if v.AutoAcceptSharedAttachments.is_some():
+        auto u3 = v.AutoAcceptSharedAttachments.unwrap()
+        parts.append("\"AutoAcceptSharedAttachments\":" + securityhub_json_str(u3))
+    if v.DefaultRouteTableAssociation.is_some():
+        auto u4 = v.DefaultRouteTableAssociation.unwrap()
+        parts.append("\"DefaultRouteTableAssociation\":" + securityhub_json_str(u4))
+    if v.TransitGatewayCidrBlocks.is_some():
+        auto u5 = v.TransitGatewayCidrBlocks.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityhub_json_str(x6))
+        parts.append("\"TransitGatewayCidrBlocks\":" + securityhub_json_arr(e6))
+    if v.AssociationDefaultRouteTableId.is_some():
+        auto u7 = v.AssociationDefaultRouteTableId.unwrap()
+        parts.append("\"AssociationDefaultRouteTableId\":" + securityhub_json_str(u7))
+    if v.PropagationDefaultRouteTableId.is_some():
+        auto u8 = v.PropagationDefaultRouteTableId.unwrap()
+        parts.append("\"PropagationDefaultRouteTableId\":" + securityhub_json_str(u8))
+    if v.VpnEcmpSupport.is_some():
+        auto u9 = v.VpnEcmpSupport.unwrap()
+        parts.append("\"VpnEcmpSupport\":" + securityhub_json_str(u9))
+    if v.DnsSupport.is_some():
+        auto u10 = v.DnsSupport.unwrap()
+        parts.append("\"DnsSupport\":" + securityhub_json_str(u10))
+    if v.MulticastSupport.is_some():
+        auto u11 = v.MulticastSupport.unwrap()
+        parts.append("\"MulticastSupport\":" + securityhub_json_str(u11))
+    if v.AmazonSideAsn.is_some():
+        auto u12 = v.AmazonSideAsn.unwrap()
+        parts.append("\"AmazonSideAsn\":" + str(u12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VolumeDetails to a compact JSON object (declaration order).
+def aws_ec2_volume_details_to_json(AwsEc2VolumeDetails v) -> str:
+    list[str] parts = []
+    if v.CreateTime.is_some():
+        auto u0 = v.CreateTime.unwrap()
+        parts.append("\"CreateTime\":" + securityhub_json_str(u0))
+    if v.DeviceName.is_some():
+        auto u1 = v.DeviceName.unwrap()
+        parts.append("\"DeviceName\":" + securityhub_json_str(u1))
+    if v.Encrypted.is_some():
+        auto u2 = v.Encrypted.unwrap()
+        parts.append("\"Encrypted\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Size.is_some():
+        auto u3 = v.Size.unwrap()
+        parts.append("\"Size\":" + str(u3))
+    if v.SnapshotId.is_some():
+        auto u4 = v.SnapshotId.unwrap()
+        parts.append("\"SnapshotId\":" + securityhub_json_str(u4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u5))
+    if v.KmsKeyId.is_some():
+        auto u6 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u6))
+    if v.Attachments.is_some():
+        auto u7 = v.Attachments.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Attachments\":" + securityhub_json_arr(e8))
+    if v.VolumeId.is_some():
+        auto u9 = v.VolumeId.unwrap()
+        parts.append("\"VolumeId\":" + securityhub_json_str(u9))
+    if v.VolumeType.is_some():
+        auto u10 = v.VolumeType.unwrap()
+        parts.append("\"VolumeType\":" + securityhub_json_str(u10))
+    if v.VolumeScanStatus.is_some():
+        auto u11 = v.VolumeScanStatus.unwrap()
+        parts.append("\"VolumeScanStatus\":" + securityhub_json_str(u11))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpcDetails to a compact JSON object (declaration order).
+def aws_ec2_vpc_details_to_json(AwsEc2VpcDetails v) -> str:
+    list[str] parts = []
+    if v.CidrBlockAssociationSet.is_some():
+        auto u0 = v.CidrBlockAssociationSet.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CidrBlockAssociationSet\":" + securityhub_json_arr(e1))
+    if v.Ipv6CidrBlockAssociationSet.is_some():
+        auto u2 = v.Ipv6CidrBlockAssociationSet.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Ipv6CidrBlockAssociationSet\":" + securityhub_json_arr(e3))
+    if v.DhcpOptionsId.is_some():
+        auto u4 = v.DhcpOptionsId.unwrap()
+        parts.append("\"DhcpOptionsId\":" + securityhub_json_str(u4))
+    if v.State.is_some():
+        auto u5 = v.State.unwrap()
+        parts.append("\"State\":" + securityhub_json_str(u5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpcEndpointServiceDetails to a compact JSON object (declaration order).
+def aws_ec2_vpc_endpoint_service_details_to_json(AwsEc2VpcEndpointServiceDetails v) -> str:
+    list[str] parts = []
+    if v.AcceptanceRequired.is_some():
+        auto u0 = v.AcceptanceRequired.unwrap()
+        parts.append("\"AcceptanceRequired\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AvailabilityZones.is_some():
+        auto u1 = v.AvailabilityZones.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e2))
+    if v.BaseEndpointDnsNames.is_some():
+        auto u3 = v.BaseEndpointDnsNames.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"BaseEndpointDnsNames\":" + securityhub_json_arr(e4))
+    if v.ManagesVpcEndpoints.is_some():
+        auto u5 = v.ManagesVpcEndpoints.unwrap()
+        parts.append("\"ManagesVpcEndpoints\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.GatewayLoadBalancerArns.is_some():
+        auto u6 = v.GatewayLoadBalancerArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityhub_json_str(x7))
+        parts.append("\"GatewayLoadBalancerArns\":" + securityhub_json_arr(e7))
+    if v.NetworkLoadBalancerArns.is_some():
+        auto u8 = v.NetworkLoadBalancerArns.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityhub_json_str(x9))
+        parts.append("\"NetworkLoadBalancerArns\":" + securityhub_json_arr(e9))
+    if v.PrivateDnsName.is_some():
+        auto u10 = v.PrivateDnsName.unwrap()
+        parts.append("\"PrivateDnsName\":" + securityhub_json_str(u10))
+    if v.ServiceId.is_some():
+        auto u11 = v.ServiceId.unwrap()
+        parts.append("\"ServiceId\":" + securityhub_json_str(u11))
+    if v.ServiceName.is_some():
+        auto u12 = v.ServiceName.unwrap()
+        parts.append("\"ServiceName\":" + securityhub_json_str(u12))
+    if v.ServiceState.is_some():
+        auto u13 = v.ServiceState.unwrap()
+        parts.append("\"ServiceState\":" + securityhub_json_str(u13))
+    if v.ServiceType.is_some():
+        auto u14 = v.ServiceType.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"ServiceType\":" + securityhub_json_arr(e15))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpcPeeringConnectionDetails to a compact JSON object (declaration order).
+def aws_ec2_vpc_peering_connection_details_to_json(AwsEc2VpcPeeringConnectionDetails v) -> str:
+    list[str] parts = []
+    if v.AccepterVpcInfo.is_some():
+        auto u0 = v.AccepterVpcInfo.unwrap()
+        parts.append("\"AccepterVpcInfo\":" + aws_ec2_vpc_peering_connection_vpc_info_details_to_json(u0))
+    if v.ExpirationTime.is_some():
+        auto u1 = v.ExpirationTime.unwrap()
+        parts.append("\"ExpirationTime\":" + securityhub_json_str(u1))
+    if v.RequesterVpcInfo.is_some():
+        auto u2 = v.RequesterVpcInfo.unwrap()
+        parts.append("\"RequesterVpcInfo\":" + aws_ec2_vpc_peering_connection_vpc_info_details_to_json(u2))
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        parts.append("\"Status\":" + u3.to_json())
+    if v.VpcPeeringConnectionId.is_some():
+        auto u4 = v.VpcPeeringConnectionId.unwrap()
+        parts.append("\"VpcPeeringConnectionId\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpcPeeringConnectionVpcInfoDetails to a compact JSON object (declaration order).
+def aws_ec2_vpc_peering_connection_vpc_info_details_to_json(AwsEc2VpcPeeringConnectionVpcInfoDetails v) -> str:
+    list[str] parts = []
+    if v.CidrBlock.is_some():
+        auto u0 = v.CidrBlock.unwrap()
+        parts.append("\"CidrBlock\":" + securityhub_json_str(u0))
+    if v.CidrBlockSet.is_some():
+        auto u1 = v.CidrBlockSet.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CidrBlockSet\":" + securityhub_json_arr(e2))
+    if v.Ipv6CidrBlockSet.is_some():
+        auto u3 = v.Ipv6CidrBlockSet.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Ipv6CidrBlockSet\":" + securityhub_json_arr(e4))
+    if v.OwnerId.is_some():
+        auto u5 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u5))
+    if v.PeeringOptions.is_some():
+        auto u6 = v.PeeringOptions.unwrap()
+        parts.append("\"PeeringOptions\":" + u6.to_json())
+    if v.Region.is_some():
+        auto u7 = v.Region.unwrap()
+        parts.append("\"Region\":" + securityhub_json_str(u7))
+    if v.VpcId.is_some():
+        auto u8 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u8))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpnConnectionDetails to a compact JSON object (declaration order).
+def aws_ec2_vpn_connection_details_to_json(AwsEc2VpnConnectionDetails v) -> str:
+    list[str] parts = []
+    if v.VpnConnectionId.is_some():
+        auto u0 = v.VpnConnectionId.unwrap()
+        parts.append("\"VpnConnectionId\":" + securityhub_json_str(u0))
+    if v.State.is_some():
+        auto u1 = v.State.unwrap()
+        parts.append("\"State\":" + securityhub_json_str(u1))
+    if v.CustomerGatewayId.is_some():
+        auto u2 = v.CustomerGatewayId.unwrap()
+        parts.append("\"CustomerGatewayId\":" + securityhub_json_str(u2))
+    if v.CustomerGatewayConfiguration.is_some():
+        auto u3 = v.CustomerGatewayConfiguration.unwrap()
+        parts.append("\"CustomerGatewayConfiguration\":" + securityhub_json_str(u3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u4))
+    if v.VpnGatewayId.is_some():
+        auto u5 = v.VpnGatewayId.unwrap()
+        parts.append("\"VpnGatewayId\":" + securityhub_json_str(u5))
+    if v.Category.is_some():
+        auto u6 = v.Category.unwrap()
+        parts.append("\"Category\":" + securityhub_json_str(u6))
+    if v.VgwTelemetry.is_some():
+        auto u7 = v.VgwTelemetry.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"VgwTelemetry\":" + securityhub_json_arr(e8))
+    if v.Options.is_some():
+        auto u9 = v.Options.unwrap()
+        parts.append("\"Options\":" + aws_ec2_vpn_connection_options_details_to_json(u9))
+    if v.Routes.is_some():
+        auto u10 = v.Routes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Routes\":" + securityhub_json_arr(e11))
+    if v.TransitGatewayId.is_some():
+        auto u12 = v.TransitGatewayId.unwrap()
+        parts.append("\"TransitGatewayId\":" + securityhub_json_str(u12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpnConnectionOptionsDetails to a compact JSON object (declaration order).
+def aws_ec2_vpn_connection_options_details_to_json(AwsEc2VpnConnectionOptionsDetails v) -> str:
+    list[str] parts = []
+    if v.StaticRoutesOnly.is_some():
+        auto u0 = v.StaticRoutesOnly.unwrap()
+        parts.append("\"StaticRoutesOnly\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.TunnelOptions.is_some():
+        auto u1 = v.TunnelOptions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(aws_ec2_vpn_connection_options_tunnel_options_details_to_json(x2))
+        parts.append("\"TunnelOptions\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEc2VpnConnectionOptionsTunnelOptionsDetails to a compact JSON object (declaration order).
+def aws_ec2_vpn_connection_options_tunnel_options_details_to_json(AwsEc2VpnConnectionOptionsTunnelOptionsDetails v) -> str:
+    list[str] parts = []
+    if v.DpdTimeoutSeconds.is_some():
+        auto u0 = v.DpdTimeoutSeconds.unwrap()
+        parts.append("\"DpdTimeoutSeconds\":" + str(u0))
+    if v.IkeVersions.is_some():
+        auto u1 = v.IkeVersions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"IkeVersions\":" + securityhub_json_arr(e2))
+    if v.OutsideIpAddress.is_some():
+        auto u3 = v.OutsideIpAddress.unwrap()
+        parts.append("\"OutsideIpAddress\":" + securityhub_json_str(u3))
+    if v.Phase1DhGroupNumbers.is_some():
+        auto u4 = v.Phase1DhGroupNumbers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(x5))
+        parts.append("\"Phase1DhGroupNumbers\":" + securityhub_json_arr(e5))
+    if v.Phase1EncryptionAlgorithms.is_some():
+        auto u6 = v.Phase1EncryptionAlgorithms.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityhub_json_str(x7))
+        parts.append("\"Phase1EncryptionAlgorithms\":" + securityhub_json_arr(e7))
+    if v.Phase1IntegrityAlgorithms.is_some():
+        auto u8 = v.Phase1IntegrityAlgorithms.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityhub_json_str(x9))
+        parts.append("\"Phase1IntegrityAlgorithms\":" + securityhub_json_arr(e9))
+    if v.Phase1LifetimeSeconds.is_some():
+        auto u10 = v.Phase1LifetimeSeconds.unwrap()
+        parts.append("\"Phase1LifetimeSeconds\":" + str(u10))
+    if v.Phase2DhGroupNumbers.is_some():
+        auto u11 = v.Phase2DhGroupNumbers.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(str(x12))
+        parts.append("\"Phase2DhGroupNumbers\":" + securityhub_json_arr(e12))
+    if v.Phase2EncryptionAlgorithms.is_some():
+        auto u13 = v.Phase2EncryptionAlgorithms.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(securityhub_json_str(x14))
+        parts.append("\"Phase2EncryptionAlgorithms\":" + securityhub_json_arr(e14))
+    if v.Phase2IntegrityAlgorithms.is_some():
+        auto u15 = v.Phase2IntegrityAlgorithms.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(securityhub_json_str(x16))
+        parts.append("\"Phase2IntegrityAlgorithms\":" + securityhub_json_arr(e16))
+    if v.Phase2LifetimeSeconds.is_some():
+        auto u17 = v.Phase2LifetimeSeconds.unwrap()
+        parts.append("\"Phase2LifetimeSeconds\":" + str(u17))
+    if v.PreSharedKey.is_some():
+        auto u18 = v.PreSharedKey.unwrap()
+        parts.append("\"PreSharedKey\":" + securityhub_json_str(u18))
+    if v.RekeyFuzzPercentage.is_some():
+        auto u19 = v.RekeyFuzzPercentage.unwrap()
+        parts.append("\"RekeyFuzzPercentage\":" + str(u19))
+    if v.RekeyMarginTimeSeconds.is_some():
+        auto u20 = v.RekeyMarginTimeSeconds.unwrap()
+        parts.append("\"RekeyMarginTimeSeconds\":" + str(u20))
+    if v.ReplayWindowSize.is_some():
+        auto u21 = v.ReplayWindowSize.unwrap()
+        parts.append("\"ReplayWindowSize\":" + str(u21))
+    if v.TunnelInsideCidr.is_some():
+        auto u22 = v.TunnelInsideCidr.unwrap()
+        parts.append("\"TunnelInsideCidr\":" + securityhub_json_str(u22))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcrContainerImageDetails to a compact JSON object (declaration order).
+def aws_ecr_container_image_details_to_json(AwsEcrContainerImageDetails v) -> str:
+    list[str] parts = []
+    if v.RegistryId.is_some():
+        auto u0 = v.RegistryId.unwrap()
+        parts.append("\"RegistryId\":" + securityhub_json_str(u0))
+    if v.RepositoryName.is_some():
+        auto u1 = v.RepositoryName.unwrap()
+        parts.append("\"RepositoryName\":" + securityhub_json_str(u1))
+    if v.Architecture.is_some():
+        auto u2 = v.Architecture.unwrap()
+        parts.append("\"Architecture\":" + securityhub_json_str(u2))
+    if v.ImageDigest.is_some():
+        auto u3 = v.ImageDigest.unwrap()
+        parts.append("\"ImageDigest\":" + securityhub_json_str(u3))
+    if v.ImageTags.is_some():
+        auto u4 = v.ImageTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"ImageTags\":" + securityhub_json_arr(e5))
+    if v.ImagePublishedAt.is_some():
+        auto u6 = v.ImagePublishedAt.unwrap()
+        parts.append("\"ImagePublishedAt\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsClusterDetails to a compact JSON object (declaration order).
+def aws_ecs_cluster_details_to_json(AwsEcsClusterDetails v) -> str:
+    list[str] parts = []
+    if v.ClusterArn.is_some():
+        auto u0 = v.ClusterArn.unwrap()
+        parts.append("\"ClusterArn\":" + securityhub_json_str(u0))
+    if v.ActiveServicesCount.is_some():
+        auto u1 = v.ActiveServicesCount.unwrap()
+        parts.append("\"ActiveServicesCount\":" + str(u1))
+    if v.CapacityProviders.is_some():
+        auto u2 = v.CapacityProviders.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"CapacityProviders\":" + securityhub_json_arr(e3))
+    if v.ClusterSettings.is_some():
+        auto u4 = v.ClusterSettings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ClusterSettings\":" + securityhub_json_arr(e5))
+    if v.Configuration.is_some():
+        auto u6 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + u6.to_json())
+    if v.DefaultCapacityProviderStrategy.is_some():
+        auto u7 = v.DefaultCapacityProviderStrategy.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"DefaultCapacityProviderStrategy\":" + securityhub_json_arr(e8))
+    if v.ClusterName.is_some():
+        auto u9 = v.ClusterName.unwrap()
+        parts.append("\"ClusterName\":" + securityhub_json_str(u9))
+    if v.RegisteredContainerInstancesCount.is_some():
+        auto u10 = v.RegisteredContainerInstancesCount.unwrap()
+        parts.append("\"RegisteredContainerInstancesCount\":" + str(u10))
+    if v.RunningTasksCount.is_some():
+        auto u11 = v.RunningTasksCount.unwrap()
+        parts.append("\"RunningTasksCount\":" + str(u11))
+    if v.Status.is_some():
+        auto u12 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsContainerDetails to a compact JSON object (declaration order).
+def aws_ecs_container_details_to_json(AwsEcsContainerDetails v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u0))
+    if v.Image.is_some():
+        auto u1 = v.Image.unwrap()
+        parts.append("\"Image\":" + securityhub_json_str(u1))
+    if v.MountPoints.is_some():
+        auto u2 = v.MountPoints.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MountPoints\":" + securityhub_json_arr(e3))
+    if v.Privileged.is_some():
+        auto u4 = v.Privileged.unwrap()
+        parts.append("\"Privileged\":" + json.dumps(JsonValue.Bool(u4)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsServiceDetails to a compact JSON object (declaration order).
+def aws_ecs_service_details_to_json(AwsEcsServiceDetails v) -> str:
+    list[str] parts = []
+    if v.CapacityProviderStrategy.is_some():
+        auto u0 = v.CapacityProviderStrategy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CapacityProviderStrategy\":" + securityhub_json_arr(e1))
+    if v.Cluster.is_some():
+        auto u2 = v.Cluster.unwrap()
+        parts.append("\"Cluster\":" + securityhub_json_str(u2))
+    if v.DeploymentConfiguration.is_some():
+        auto u3 = v.DeploymentConfiguration.unwrap()
+        parts.append("\"DeploymentConfiguration\":" + u3.to_json())
+    if v.DeploymentController.is_some():
+        auto u4 = v.DeploymentController.unwrap()
+        parts.append("\"DeploymentController\":" + u4.to_json())
+    if v.DesiredCount.is_some():
+        auto u5 = v.DesiredCount.unwrap()
+        parts.append("\"DesiredCount\":" + str(u5))
+    if v.EnableEcsManagedTags.is_some():
+        auto u6 = v.EnableEcsManagedTags.unwrap()
+        parts.append("\"EnableEcsManagedTags\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.EnableExecuteCommand.is_some():
+        auto u7 = v.EnableExecuteCommand.unwrap()
+        parts.append("\"EnableExecuteCommand\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.HealthCheckGracePeriodSeconds.is_some():
+        auto u8 = v.HealthCheckGracePeriodSeconds.unwrap()
+        parts.append("\"HealthCheckGracePeriodSeconds\":" + str(u8))
+    if v.LaunchType.is_some():
+        auto u9 = v.LaunchType.unwrap()
+        parts.append("\"LaunchType\":" + securityhub_json_str(u9))
+    if v.LoadBalancers.is_some():
+        auto u10 = v.LoadBalancers.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"LoadBalancers\":" + securityhub_json_arr(e11))
+    if v.Name.is_some():
+        auto u12 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u12))
+    if v.NetworkConfiguration.is_some():
+        auto u13 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + aws_ecs_service_network_configuration_details_to_json(u13))
+    if v.PlacementConstraints.is_some():
+        auto u14 = v.PlacementConstraints.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"PlacementConstraints\":" + securityhub_json_arr(e15))
+    if v.PlacementStrategies.is_some():
+        auto u16 = v.PlacementStrategies.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"PlacementStrategies\":" + securityhub_json_arr(e17))
+    if v.PlatformVersion.is_some():
+        auto u18 = v.PlatformVersion.unwrap()
+        parts.append("\"PlatformVersion\":" + securityhub_json_str(u18))
+    if v.PropagateTags.is_some():
+        auto u19 = v.PropagateTags.unwrap()
+        parts.append("\"PropagateTags\":" + securityhub_json_str(u19))
+    if v.Role.is_some():
+        auto u20 = v.Role.unwrap()
+        parts.append("\"Role\":" + securityhub_json_str(u20))
+    if v.SchedulingStrategy.is_some():
+        auto u21 = v.SchedulingStrategy.unwrap()
+        parts.append("\"SchedulingStrategy\":" + securityhub_json_str(u21))
+    if v.ServiceArn.is_some():
+        auto u22 = v.ServiceArn.unwrap()
+        parts.append("\"ServiceArn\":" + securityhub_json_str(u22))
+    if v.ServiceName.is_some():
+        auto u23 = v.ServiceName.unwrap()
+        parts.append("\"ServiceName\":" + securityhub_json_str(u23))
+    if v.ServiceRegistries.is_some():
+        auto u24 = v.ServiceRegistries.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"ServiceRegistries\":" + securityhub_json_arr(e25))
+    if v.TaskDefinition.is_some():
+        auto u26 = v.TaskDefinition.unwrap()
+        parts.append("\"TaskDefinition\":" + securityhub_json_str(u26))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsServiceNetworkConfigurationAwsVpcConfigurationDetails to a compact JSON object (declaration order).
+def aws_ecs_service_network_configuration_aws_vpc_configuration_details_to_json(AwsEcsServiceNetworkConfigurationAwsVpcConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.AssignPublicIp.is_some():
+        auto u0 = v.AssignPublicIp.unwrap()
+        parts.append("\"AssignPublicIp\":" + securityhub_json_str(u0))
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e2))
+    if v.Subnets.is_some():
+        auto u3 = v.Subnets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"Subnets\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsServiceNetworkConfigurationDetails to a compact JSON object (declaration order).
+def aws_ecs_service_network_configuration_details_to_json(AwsEcsServiceNetworkConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.AwsVpcConfiguration.is_some():
+        auto u0 = v.AwsVpcConfiguration.unwrap()
+        parts.append("\"AwsVpcConfiguration\":" + aws_ecs_service_network_configuration_aws_vpc_configuration_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsDetails v) -> str:
+    list[str] parts = []
+    if v.Command.is_some():
+        auto u0 = v.Command.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Command\":" + securityhub_json_arr(e1))
+    if v.Cpu.is_some():
+        auto u2 = v.Cpu.unwrap()
+        parts.append("\"Cpu\":" + str(u2))
+    if v.DependsOn.is_some():
+        auto u3 = v.DependsOn.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"DependsOn\":" + securityhub_json_arr(e4))
+    if v.DisableNetworking.is_some():
+        auto u5 = v.DisableNetworking.unwrap()
+        parts.append("\"DisableNetworking\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.DnsSearchDomains.is_some():
+        auto u6 = v.DnsSearchDomains.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityhub_json_str(x7))
+        parts.append("\"DnsSearchDomains\":" + securityhub_json_arr(e7))
+    if v.DnsServers.is_some():
+        auto u8 = v.DnsServers.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityhub_json_str(x9))
+        parts.append("\"DnsServers\":" + securityhub_json_arr(e9))
+    if v.DockerLabels.is_some():
+        auto u10 = v.DockerLabels.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(securityhub_json_str(k11) + ":" + securityhub_json_str(u10[k11]))
+        parts.append("\"DockerLabels\":" + securityhub_json_obj(m11))
+    if v.DockerSecurityOptions.is_some():
+        auto u12 = v.DockerSecurityOptions.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(securityhub_json_str(x13))
+        parts.append("\"DockerSecurityOptions\":" + securityhub_json_arr(e13))
+    if v.EntryPoint.is_some():
+        auto u14 = v.EntryPoint.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(securityhub_json_str(x15))
+        parts.append("\"EntryPoint\":" + securityhub_json_arr(e15))
+    if v.Environment.is_some():
+        auto u16 = v.Environment.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"Environment\":" + securityhub_json_arr(e17))
+    if v.EnvironmentFiles.is_some():
+        auto u18 = v.EnvironmentFiles.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"EnvironmentFiles\":" + securityhub_json_arr(e19))
+    if v.Essential.is_some():
+        auto u20 = v.Essential.unwrap()
+        parts.append("\"Essential\":" + json.dumps(JsonValue.Bool(u20)))
+    if v.ExtraHosts.is_some():
+        auto u21 = v.ExtraHosts.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(x22.to_json())
+        parts.append("\"ExtraHosts\":" + securityhub_json_arr(e22))
+    if v.FirelensConfiguration.is_some():
+        auto u23 = v.FirelensConfiguration.unwrap()
+        parts.append("\"FirelensConfiguration\":" + aws_ecs_task_definition_container_definitions_firelens_configuration_details_to_json(u23))
+    if v.HealthCheck.is_some():
+        auto u24 = v.HealthCheck.unwrap()
+        parts.append("\"HealthCheck\":" + aws_ecs_task_definition_container_definitions_health_check_details_to_json(u24))
+    if v.Hostname.is_some():
+        auto u25 = v.Hostname.unwrap()
+        parts.append("\"Hostname\":" + securityhub_json_str(u25))
+    if v.Image.is_some():
+        auto u26 = v.Image.unwrap()
+        parts.append("\"Image\":" + securityhub_json_str(u26))
+    if v.Interactive.is_some():
+        auto u27 = v.Interactive.unwrap()
+        parts.append("\"Interactive\":" + json.dumps(JsonValue.Bool(u27)))
+    if v.Links.is_some():
+        auto u28 = v.Links.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(securityhub_json_str(x29))
+        parts.append("\"Links\":" + securityhub_json_arr(e29))
+    if v.LinuxParameters.is_some():
+        auto u30 = v.LinuxParameters.unwrap()
+        parts.append("\"LinuxParameters\":" + aws_ecs_task_definition_container_definitions_linux_parameters_details_to_json(u30))
+    if v.LogConfiguration.is_some():
+        auto u31 = v.LogConfiguration.unwrap()
+        parts.append("\"LogConfiguration\":" + aws_ecs_task_definition_container_definitions_log_configuration_details_to_json(u31))
+    if v.Memory.is_some():
+        auto u32 = v.Memory.unwrap()
+        parts.append("\"Memory\":" + str(u32))
+    if v.MemoryReservation.is_some():
+        auto u33 = v.MemoryReservation.unwrap()
+        parts.append("\"MemoryReservation\":" + str(u33))
+    if v.MountPoints.is_some():
+        auto u34 = v.MountPoints.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"MountPoints\":" + securityhub_json_arr(e35))
+    if v.Name.is_some():
+        auto u36 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u36))
+    if v.PortMappings.is_some():
+        auto u37 = v.PortMappings.unwrap()
+        list[str] e38 = []
+        for x38 in u37:
+            e38.append(x38.to_json())
+        parts.append("\"PortMappings\":" + securityhub_json_arr(e38))
+    if v.Privileged.is_some():
+        auto u39 = v.Privileged.unwrap()
+        parts.append("\"Privileged\":" + json.dumps(JsonValue.Bool(u39)))
+    if v.PseudoTerminal.is_some():
+        auto u40 = v.PseudoTerminal.unwrap()
+        parts.append("\"PseudoTerminal\":" + json.dumps(JsonValue.Bool(u40)))
+    if v.ReadonlyRootFilesystem.is_some():
+        auto u41 = v.ReadonlyRootFilesystem.unwrap()
+        parts.append("\"ReadonlyRootFilesystem\":" + json.dumps(JsonValue.Bool(u41)))
+    if v.RepositoryCredentials.is_some():
+        auto u42 = v.RepositoryCredentials.unwrap()
+        parts.append("\"RepositoryCredentials\":" + u42.to_json())
+    if v.ResourceRequirements.is_some():
+        auto u43 = v.ResourceRequirements.unwrap()
+        list[str] e44 = []
+        for x44 in u43:
+            e44.append(x44.to_json())
+        parts.append("\"ResourceRequirements\":" + securityhub_json_arr(e44))
+    if v.Secrets.is_some():
+        auto u45 = v.Secrets.unwrap()
+        list[str] e46 = []
+        for x46 in u45:
+            e46.append(x46.to_json())
+        parts.append("\"Secrets\":" + securityhub_json_arr(e46))
+    if v.StartTimeout.is_some():
+        auto u47 = v.StartTimeout.unwrap()
+        parts.append("\"StartTimeout\":" + str(u47))
+    if v.StopTimeout.is_some():
+        auto u48 = v.StopTimeout.unwrap()
+        parts.append("\"StopTimeout\":" + str(u48))
+    if v.SystemControls.is_some():
+        auto u49 = v.SystemControls.unwrap()
+        list[str] e50 = []
+        for x50 in u49:
+            e50.append(x50.to_json())
+        parts.append("\"SystemControls\":" + securityhub_json_arr(e50))
+    if v.Ulimits.is_some():
+        auto u51 = v.Ulimits.unwrap()
+        list[str] e52 = []
+        for x52 in u51:
+            e52.append(x52.to_json())
+        parts.append("\"Ulimits\":" + securityhub_json_arr(e52))
+    if v.User.is_some():
+        auto u53 = v.User.unwrap()
+        parts.append("\"User\":" + securityhub_json_str(u53))
+    if v.VolumesFrom.is_some():
+        auto u54 = v.VolumesFrom.unwrap()
+        list[str] e55 = []
+        for x55 in u54:
+            e55.append(x55.to_json())
+        parts.append("\"VolumesFrom\":" + securityhub_json_arr(e55))
+    if v.WorkingDirectory.is_some():
+        auto u56 = v.WorkingDirectory.unwrap()
+        parts.append("\"WorkingDirectory\":" + securityhub_json_str(u56))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsFirelensConfigurationDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_firelens_configuration_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsFirelensConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+        parts.append("\"Options\":" + securityhub_json_obj(m1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsHealthCheckDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_health_check_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsHealthCheckDetails v) -> str:
+    list[str] parts = []
+    if v.Command.is_some():
+        auto u0 = v.Command.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Command\":" + securityhub_json_arr(e1))
+    if v.Interval.is_some():
+        auto u2 = v.Interval.unwrap()
+        parts.append("\"Interval\":" + str(u2))
+    if v.Retries.is_some():
+        auto u3 = v.Retries.unwrap()
+        parts.append("\"Retries\":" + str(u3))
+    if v.StartPeriod.is_some():
+        auto u4 = v.StartPeriod.unwrap()
+        parts.append("\"StartPeriod\":" + str(u4))
+    if v.Timeout.is_some():
+        auto u5 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersCapabilitiesDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_linux_parameters_capabilities_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersCapabilitiesDetails v) -> str:
+    list[str] parts = []
+    if v.Add.is_some():
+        auto u0 = v.Add.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Add\":" + securityhub_json_arr(e1))
+    if v.Drop.is_some():
+        auto u2 = v.Drop.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"Drop\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_linux_parameters_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDetails v) -> str:
+    list[str] parts = []
+    if v.Capabilities.is_some():
+        auto u0 = v.Capabilities.unwrap()
+        parts.append("\"Capabilities\":" + aws_ecs_task_definition_container_definitions_linux_parameters_capabilities_details_to_json(u0))
+    if v.Devices.is_some():
+        auto u1 = v.Devices.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(aws_ecs_task_definition_container_definitions_linux_parameters_devices_details_to_json(x2))
+        parts.append("\"Devices\":" + securityhub_json_arr(e2))
+    if v.InitProcessEnabled.is_some():
+        auto u3 = v.InitProcessEnabled.unwrap()
+        parts.append("\"InitProcessEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.MaxSwap.is_some():
+        auto u4 = v.MaxSwap.unwrap()
+        parts.append("\"MaxSwap\":" + str(u4))
+    if v.SharedMemorySize.is_some():
+        auto u5 = v.SharedMemorySize.unwrap()
+        parts.append("\"SharedMemorySize\":" + str(u5))
+    if v.Swappiness.is_some():
+        auto u6 = v.Swappiness.unwrap()
+        parts.append("\"Swappiness\":" + str(u6))
+    if v.Tmpfs.is_some():
+        auto u7 = v.Tmpfs.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(aws_ecs_task_definition_container_definitions_linux_parameters_tmpfs_details_to_json(x8))
+        parts.append("\"Tmpfs\":" + securityhub_json_arr(e8))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDevicesDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_linux_parameters_devices_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersDevicesDetails v) -> str:
+    list[str] parts = []
+    if v.ContainerPath.is_some():
+        auto u0 = v.ContainerPath.unwrap()
+        parts.append("\"ContainerPath\":" + securityhub_json_str(u0))
+    if v.HostPath.is_some():
+        auto u1 = v.HostPath.unwrap()
+        parts.append("\"HostPath\":" + securityhub_json_str(u1))
+    if v.Permissions.is_some():
+        auto u2 = v.Permissions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"Permissions\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersTmpfsDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_linux_parameters_tmpfs_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsLinuxParametersTmpfsDetails v) -> str:
+    list[str] parts = []
+    if v.ContainerPath.is_some():
+        auto u0 = v.ContainerPath.unwrap()
+        parts.append("\"ContainerPath\":" + securityhub_json_str(u0))
+    if v.MountOptions.is_some():
+        auto u1 = v.MountOptions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"MountOptions\":" + securityhub_json_arr(e2))
+    if v.Size.is_some():
+        auto u3 = v.Size.unwrap()
+        parts.append("\"Size\":" + str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_container_definitions_log_configuration_details_to_json(AwsEcsTaskDefinitionContainerDefinitionsLogConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.LogDriver.is_some():
+        auto u0 = v.LogDriver.unwrap()
+        parts.append("\"LogDriver\":" + securityhub_json_str(u0))
+    if v.Options.is_some():
+        auto u1 = v.Options.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(securityhub_json_str(k2) + ":" + securityhub_json_str(u1[k2]))
+        parts.append("\"Options\":" + securityhub_json_obj(m2))
+    if v.SecretOptions.is_some():
+        auto u3 = v.SecretOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SecretOptions\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_details_to_json(AwsEcsTaskDefinitionDetails v) -> str:
+    list[str] parts = []
+    if v.ContainerDefinitions.is_some():
+        auto u0 = v.ContainerDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_ecs_task_definition_container_definitions_details_to_json(x1))
+        parts.append("\"ContainerDefinitions\":" + securityhub_json_arr(e1))
+    if v.Cpu.is_some():
+        auto u2 = v.Cpu.unwrap()
+        parts.append("\"Cpu\":" + securityhub_json_str(u2))
+    if v.ExecutionRoleArn.is_some():
+        auto u3 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + securityhub_json_str(u3))
+    if v.Family.is_some():
+        auto u4 = v.Family.unwrap()
+        parts.append("\"Family\":" + securityhub_json_str(u4))
+    if v.InferenceAccelerators.is_some():
+        auto u5 = v.InferenceAccelerators.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"InferenceAccelerators\":" + securityhub_json_arr(e6))
+    if v.IpcMode.is_some():
+        auto u7 = v.IpcMode.unwrap()
+        parts.append("\"IpcMode\":" + securityhub_json_str(u7))
+    if v.Memory.is_some():
+        auto u8 = v.Memory.unwrap()
+        parts.append("\"Memory\":" + securityhub_json_str(u8))
+    if v.NetworkMode.is_some():
+        auto u9 = v.NetworkMode.unwrap()
+        parts.append("\"NetworkMode\":" + securityhub_json_str(u9))
+    if v.PidMode.is_some():
+        auto u10 = v.PidMode.unwrap()
+        parts.append("\"PidMode\":" + securityhub_json_str(u10))
+    if v.PlacementConstraints.is_some():
+        auto u11 = v.PlacementConstraints.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"PlacementConstraints\":" + securityhub_json_arr(e12))
+    if v.ProxyConfiguration.is_some():
+        auto u13 = v.ProxyConfiguration.unwrap()
+        parts.append("\"ProxyConfiguration\":" + aws_ecs_task_definition_proxy_configuration_details_to_json(u13))
+    if v.RequiresCompatibilities.is_some():
+        auto u14 = v.RequiresCompatibilities.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(securityhub_json_str(x15))
+        parts.append("\"RequiresCompatibilities\":" + securityhub_json_arr(e15))
+    if v.TaskRoleArn.is_some():
+        auto u16 = v.TaskRoleArn.unwrap()
+        parts.append("\"TaskRoleArn\":" + securityhub_json_str(u16))
+    if v.Volumes.is_some():
+        auto u17 = v.Volumes.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(aws_ecs_task_definition_volumes_details_to_json(x18))
+        parts.append("\"Volumes\":" + securityhub_json_arr(e18))
+    if v.Status.is_some():
+        auto u19 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u19))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionProxyConfigurationDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_proxy_configuration_details_to_json(AwsEcsTaskDefinitionProxyConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.ContainerName.is_some():
+        auto u0 = v.ContainerName.unwrap()
+        parts.append("\"ContainerName\":" + securityhub_json_str(u0))
+    if v.ProxyConfigurationProperties.is_some():
+        auto u1 = v.ProxyConfigurationProperties.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ProxyConfigurationProperties\":" + securityhub_json_arr(e2))
+    if v.Type.is_some():
+        auto u3 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionVolumesDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_volumes_details_to_json(AwsEcsTaskDefinitionVolumesDetails v) -> str:
+    list[str] parts = []
+    if v.DockerVolumeConfiguration.is_some():
+        auto u0 = v.DockerVolumeConfiguration.unwrap()
+        parts.append("\"DockerVolumeConfiguration\":" + aws_ecs_task_definition_volumes_docker_volume_configuration_details_to_json(u0))
+    if v.EfsVolumeConfiguration.is_some():
+        auto u1 = v.EfsVolumeConfiguration.unwrap()
+        parts.append("\"EfsVolumeConfiguration\":" + u1.to_json())
+    if v.Host.is_some():
+        auto u2 = v.Host.unwrap()
+        parts.append("\"Host\":" + u2.to_json())
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDefinitionVolumesDockerVolumeConfigurationDetails to a compact JSON object (declaration order).
+def aws_ecs_task_definition_volumes_docker_volume_configuration_details_to_json(AwsEcsTaskDefinitionVolumesDockerVolumeConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.Autoprovision.is_some():
+        auto u0 = v.Autoprovision.unwrap()
+        parts.append("\"Autoprovision\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Driver.is_some():
+        auto u1 = v.Driver.unwrap()
+        parts.append("\"Driver\":" + securityhub_json_str(u1))
+    if v.DriverOpts.is_some():
+        auto u2 = v.DriverOpts.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(securityhub_json_str(k3) + ":" + securityhub_json_str(u2[k3]))
+        parts.append("\"DriverOpts\":" + securityhub_json_obj(m3))
+    if v.Labels.is_some():
+        auto u4 = v.Labels.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(securityhub_json_str(k5) + ":" + securityhub_json_str(u4[k5]))
+        parts.append("\"Labels\":" + securityhub_json_obj(m5))
+    if v.Scope.is_some():
+        auto u6 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEcsTaskDetails to a compact JSON object (declaration order).
+def aws_ecs_task_details_to_json(AwsEcsTaskDetails v) -> str:
+    list[str] parts = []
+    if v.ClusterArn.is_some():
+        auto u0 = v.ClusterArn.unwrap()
+        parts.append("\"ClusterArn\":" + securityhub_json_str(u0))
+    if v.TaskDefinitionArn.is_some():
+        auto u1 = v.TaskDefinitionArn.unwrap()
+        parts.append("\"TaskDefinitionArn\":" + securityhub_json_str(u1))
+    if v.Version.is_some():
+        auto u2 = v.Version.unwrap()
+        parts.append("\"Version\":" + securityhub_json_str(u2))
+    if v.CreatedAt.is_some():
+        auto u3 = v.CreatedAt.unwrap()
+        parts.append("\"CreatedAt\":" + securityhub_json_str(u3))
+    if v.StartedAt.is_some():
+        auto u4 = v.StartedAt.unwrap()
+        parts.append("\"StartedAt\":" + securityhub_json_str(u4))
+    if v.StartedBy.is_some():
+        auto u5 = v.StartedBy.unwrap()
+        parts.append("\"StartedBy\":" + securityhub_json_str(u5))
+    if v.Group.is_some():
+        auto u6 = v.Group.unwrap()
+        parts.append("\"Group\":" + securityhub_json_str(u6))
+    if v.Volumes.is_some():
+        auto u7 = v.Volumes.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Volumes\":" + securityhub_json_arr(e8))
+    if v.Containers.is_some():
+        auto u9 = v.Containers.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(aws_ecs_container_details_to_json(x10))
+        parts.append("\"Containers\":" + securityhub_json_arr(e10))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEfsAccessPointDetails to a compact JSON object (declaration order).
+def aws_efs_access_point_details_to_json(AwsEfsAccessPointDetails v) -> str:
+    list[str] parts = []
+    if v.AccessPointId.is_some():
+        auto u0 = v.AccessPointId.unwrap()
+        parts.append("\"AccessPointId\":" + securityhub_json_str(u0))
+    if v.Arn.is_some():
+        auto u1 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u1))
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + securityhub_json_str(u2))
+    if v.FileSystemId.is_some():
+        auto u3 = v.FileSystemId.unwrap()
+        parts.append("\"FileSystemId\":" + securityhub_json_str(u3))
+    if v.PosixUser.is_some():
+        auto u4 = v.PosixUser.unwrap()
+        parts.append("\"PosixUser\":" + aws_efs_access_point_posix_user_details_to_json(u4))
+    if v.RootDirectory.is_some():
+        auto u5 = v.RootDirectory.unwrap()
+        parts.append("\"RootDirectory\":" + u5.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEfsAccessPointPosixUserDetails to a compact JSON object (declaration order).
+def aws_efs_access_point_posix_user_details_to_json(AwsEfsAccessPointPosixUserDetails v) -> str:
+    list[str] parts = []
+    if v.Gid.is_some():
+        auto u0 = v.Gid.unwrap()
+        parts.append("\"Gid\":" + securityhub_json_str(u0))
+    if v.SecondaryGids.is_some():
+        auto u1 = v.SecondaryGids.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"SecondaryGids\":" + securityhub_json_arr(e2))
+    if v.Uid.is_some():
+        auto u3 = v.Uid.unwrap()
+        parts.append("\"Uid\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEksClusterDetails to a compact JSON object (declaration order).
+def aws_eks_cluster_details_to_json(AwsEksClusterDetails v) -> str:
+    list[str] parts = []
+    if v.Arn.is_some():
+        auto u0 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u0))
+    if v.CertificateAuthorityData.is_some():
+        auto u1 = v.CertificateAuthorityData.unwrap()
+        parts.append("\"CertificateAuthorityData\":" + securityhub_json_str(u1))
+    if v.ClusterStatus.is_some():
+        auto u2 = v.ClusterStatus.unwrap()
+        parts.append("\"ClusterStatus\":" + securityhub_json_str(u2))
+    if v.Endpoint.is_some():
+        auto u3 = v.Endpoint.unwrap()
+        parts.append("\"Endpoint\":" + securityhub_json_str(u3))
+    if v.Name.is_some():
+        auto u4 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u4))
+    if v.ResourcesVpcConfig.is_some():
+        auto u5 = v.ResourcesVpcConfig.unwrap()
+        parts.append("\"ResourcesVpcConfig\":" + aws_eks_cluster_resources_vpc_config_details_to_json(u5))
+    if v.RoleArn.is_some():
+        auto u6 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + securityhub_json_str(u6))
+    if v.Version.is_some():
+        auto u7 = v.Version.unwrap()
+        parts.append("\"Version\":" + securityhub_json_str(u7))
+    if v.Logging.is_some():
+        auto u8 = v.Logging.unwrap()
+        parts.append("\"Logging\":" + aws_eks_cluster_logging_details_to_json(u8))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEksClusterLoggingClusterLoggingDetails to a compact JSON object (declaration order).
+def aws_eks_cluster_logging_cluster_logging_details_to_json(AwsEksClusterLoggingClusterLoggingDetails v) -> str:
+    list[str] parts = []
+    if v.Enabled.is_some():
+        auto u0 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Types.is_some():
+        auto u1 = v.Types.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"Types\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEksClusterLoggingDetails to a compact JSON object (declaration order).
+def aws_eks_cluster_logging_details_to_json(AwsEksClusterLoggingDetails v) -> str:
+    list[str] parts = []
+    if v.ClusterLogging.is_some():
+        auto u0 = v.ClusterLogging.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_eks_cluster_logging_cluster_logging_details_to_json(x1))
+        parts.append("\"ClusterLogging\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEksClusterResourcesVpcConfigDetails to a compact JSON object (declaration order).
+def aws_eks_cluster_resources_vpc_config_details_to_json(AwsEksClusterResourcesVpcConfigDetails v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + securityhub_json_arr(e1))
+    if v.SubnetIds.is_some():
+        auto u2 = v.SubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"SubnetIds\":" + securityhub_json_arr(e3))
+    if v.EndpointPublicAccess.is_some():
+        auto u4 = v.EndpointPublicAccess.unwrap()
+        parts.append("\"EndpointPublicAccess\":" + json.dumps(JsonValue.Bool(u4)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElasticBeanstalkEnvironmentDetails to a compact JSON object (declaration order).
+def aws_elastic_beanstalk_environment_details_to_json(AwsElasticBeanstalkEnvironmentDetails v) -> str:
+    list[str] parts = []
+    if v.ApplicationName.is_some():
+        auto u0 = v.ApplicationName.unwrap()
+        parts.append("\"ApplicationName\":" + securityhub_json_str(u0))
+    if v.Cname.is_some():
+        auto u1 = v.Cname.unwrap()
+        parts.append("\"Cname\":" + securityhub_json_str(u1))
+    if v.DateCreated.is_some():
+        auto u2 = v.DateCreated.unwrap()
+        parts.append("\"DateCreated\":" + securityhub_json_str(u2))
+    if v.DateUpdated.is_some():
+        auto u3 = v.DateUpdated.unwrap()
+        parts.append("\"DateUpdated\":" + securityhub_json_str(u3))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u4))
+    if v.EndpointUrl.is_some():
+        auto u5 = v.EndpointUrl.unwrap()
+        parts.append("\"EndpointUrl\":" + securityhub_json_str(u5))
+    if v.EnvironmentArn.is_some():
+        auto u6 = v.EnvironmentArn.unwrap()
+        parts.append("\"EnvironmentArn\":" + securityhub_json_str(u6))
+    if v.EnvironmentId.is_some():
+        auto u7 = v.EnvironmentId.unwrap()
+        parts.append("\"EnvironmentId\":" + securityhub_json_str(u7))
+    if v.EnvironmentLinks.is_some():
+        auto u8 = v.EnvironmentLinks.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"EnvironmentLinks\":" + securityhub_json_arr(e9))
+    if v.EnvironmentName.is_some():
+        auto u10 = v.EnvironmentName.unwrap()
+        parts.append("\"EnvironmentName\":" + securityhub_json_str(u10))
+    if v.OptionSettings.is_some():
+        auto u11 = v.OptionSettings.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"OptionSettings\":" + securityhub_json_arr(e12))
+    if v.PlatformArn.is_some():
+        auto u13 = v.PlatformArn.unwrap()
+        parts.append("\"PlatformArn\":" + securityhub_json_str(u13))
+    if v.SolutionStackName.is_some():
+        auto u14 = v.SolutionStackName.unwrap()
+        parts.append("\"SolutionStackName\":" + securityhub_json_str(u14))
+    if v.Status.is_some():
+        auto u15 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u15))
+    if v.Tier.is_some():
+        auto u16 = v.Tier.unwrap()
+        parts.append("\"Tier\":" + u16.to_json())
+    if v.VersionLabel.is_some():
+        auto u17 = v.VersionLabel.unwrap()
+        parts.append("\"VersionLabel\":" + securityhub_json_str(u17))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElasticsearchDomainDetails to a compact JSON object (declaration order).
+def aws_elasticsearch_domain_details_to_json(AwsElasticsearchDomainDetails v) -> str:
+    list[str] parts = []
+    if v.AccessPolicies.is_some():
+        auto u0 = v.AccessPolicies.unwrap()
+        parts.append("\"AccessPolicies\":" + securityhub_json_str(u0))
+    if v.DomainEndpointOptions.is_some():
+        auto u1 = v.DomainEndpointOptions.unwrap()
+        parts.append("\"DomainEndpointOptions\":" + u1.to_json())
+    if v.DomainId.is_some():
+        auto u2 = v.DomainId.unwrap()
+        parts.append("\"DomainId\":" + securityhub_json_str(u2))
+    if v.DomainName.is_some():
+        auto u3 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + securityhub_json_str(u3))
+    if v.Endpoint.is_some():
+        auto u4 = v.Endpoint.unwrap()
+        parts.append("\"Endpoint\":" + securityhub_json_str(u4))
+    if v.Endpoints.is_some():
+        auto u5 = v.Endpoints.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(securityhub_json_str(k6) + ":" + securityhub_json_str(u5[k6]))
+        parts.append("\"Endpoints\":" + securityhub_json_obj(m6))
+    if v.ElasticsearchVersion.is_some():
+        auto u7 = v.ElasticsearchVersion.unwrap()
+        parts.append("\"ElasticsearchVersion\":" + securityhub_json_str(u7))
+    if v.ElasticsearchClusterConfig.is_some():
+        auto u8 = v.ElasticsearchClusterConfig.unwrap()
+        parts.append("\"ElasticsearchClusterConfig\":" + u8.to_json())
+    if v.EncryptionAtRestOptions.is_some():
+        auto u9 = v.EncryptionAtRestOptions.unwrap()
+        parts.append("\"EncryptionAtRestOptions\":" + u9.to_json())
+    if v.LogPublishingOptions.is_some():
+        auto u10 = v.LogPublishingOptions.unwrap()
+        parts.append("\"LogPublishingOptions\":" + u10.to_json())
+    if v.NodeToNodeEncryptionOptions.is_some():
+        auto u11 = v.NodeToNodeEncryptionOptions.unwrap()
+        parts.append("\"NodeToNodeEncryptionOptions\":" + u11.to_json())
+    if v.ServiceSoftwareOptions.is_some():
+        auto u12 = v.ServiceSoftwareOptions.unwrap()
+        parts.append("\"ServiceSoftwareOptions\":" + u12.to_json())
+    if v.VPCOptions.is_some():
+        auto u13 = v.VPCOptions.unwrap()
+        parts.append("\"VPCOptions\":" + aws_elasticsearch_domain_vpc_options_to_json(u13))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElasticsearchDomainVPCOptions to a compact JSON object (declaration order).
+def aws_elasticsearch_domain_vpc_options_to_json(AwsElasticsearchDomainVPCOptions v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + securityhub_json_arr(e3))
+    if v.SubnetIds.is_some():
+        auto u4 = v.SubnetIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"SubnetIds\":" + securityhub_json_arr(e5))
+    if v.VPCId.is_some():
+        auto u6 = v.VPCId.unwrap()
+        parts.append("\"VPCId\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElbLoadBalancerAttributes to a compact JSON object (declaration order).
+def aws_elb_load_balancer_attributes_to_json(AwsElbLoadBalancerAttributes v) -> str:
+    list[str] parts = []
+    if v.AccessLog.is_some():
+        auto u0 = v.AccessLog.unwrap()
+        parts.append("\"AccessLog\":" + u0.to_json())
+    if v.ConnectionDraining.is_some():
+        auto u1 = v.ConnectionDraining.unwrap()
+        parts.append("\"ConnectionDraining\":" + u1.to_json())
+    if v.ConnectionSettings.is_some():
+        auto u2 = v.ConnectionSettings.unwrap()
+        parts.append("\"ConnectionSettings\":" + u2.to_json())
+    if v.CrossZoneLoadBalancing.is_some():
+        auto u3 = v.CrossZoneLoadBalancing.unwrap()
+        parts.append("\"CrossZoneLoadBalancing\":" + u3.to_json())
+    if v.AdditionalAttributes.is_some():
+        auto u4 = v.AdditionalAttributes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"AdditionalAttributes\":" + securityhub_json_arr(e5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElbLoadBalancerBackendServerDescription to a compact JSON object (declaration order).
+def aws_elb_load_balancer_backend_server_description_to_json(AwsElbLoadBalancerBackendServerDescription v) -> str:
+    list[str] parts = []
+    if v.InstancePort.is_some():
+        auto u0 = v.InstancePort.unwrap()
+        parts.append("\"InstancePort\":" + str(u0))
+    if v.PolicyNames.is_some():
+        auto u1 = v.PolicyNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"PolicyNames\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElbLoadBalancerDetails to a compact JSON object (declaration order).
+def aws_elb_load_balancer_details_to_json(AwsElbLoadBalancerDetails v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e1))
+    if v.BackendServerDescriptions.is_some():
+        auto u2 = v.BackendServerDescriptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(aws_elb_load_balancer_backend_server_description_to_json(x3))
+        parts.append("\"BackendServerDescriptions\":" + securityhub_json_arr(e3))
+    if v.CanonicalHostedZoneName.is_some():
+        auto u4 = v.CanonicalHostedZoneName.unwrap()
+        parts.append("\"CanonicalHostedZoneName\":" + securityhub_json_str(u4))
+    if v.CanonicalHostedZoneNameID.is_some():
+        auto u5 = v.CanonicalHostedZoneNameID.unwrap()
+        parts.append("\"CanonicalHostedZoneNameID\":" + securityhub_json_str(u5))
+    if v.CreatedTime.is_some():
+        auto u6 = v.CreatedTime.unwrap()
+        parts.append("\"CreatedTime\":" + securityhub_json_str(u6))
+    if v.DnsName.is_some():
+        auto u7 = v.DnsName.unwrap()
+        parts.append("\"DnsName\":" + securityhub_json_str(u7))
+    if v.HealthCheck.is_some():
+        auto u8 = v.HealthCheck.unwrap()
+        parts.append("\"HealthCheck\":" + u8.to_json())
+    if v.Instances.is_some():
+        auto u9 = v.Instances.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Instances\":" + securityhub_json_arr(e10))
+    if v.ListenerDescriptions.is_some():
+        auto u11 = v.ListenerDescriptions.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(aws_elb_load_balancer_listener_description_to_json(x12))
+        parts.append("\"ListenerDescriptions\":" + securityhub_json_arr(e12))
+    if v.LoadBalancerAttributes.is_some():
+        auto u13 = v.LoadBalancerAttributes.unwrap()
+        parts.append("\"LoadBalancerAttributes\":" + aws_elb_load_balancer_attributes_to_json(u13))
+    if v.LoadBalancerName.is_some():
+        auto u14 = v.LoadBalancerName.unwrap()
+        parts.append("\"LoadBalancerName\":" + securityhub_json_str(u14))
+    if v.Policies.is_some():
+        auto u15 = v.Policies.unwrap()
+        parts.append("\"Policies\":" + aws_elb_load_balancer_policies_to_json(u15))
+    if v.Scheme.is_some():
+        auto u16 = v.Scheme.unwrap()
+        parts.append("\"Scheme\":" + securityhub_json_str(u16))
+    if v.SecurityGroups.is_some():
+        auto u17 = v.SecurityGroups.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(securityhub_json_str(x18))
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e18))
+    if v.SourceSecurityGroup.is_some():
+        auto u19 = v.SourceSecurityGroup.unwrap()
+        parts.append("\"SourceSecurityGroup\":" + u19.to_json())
+    if v.Subnets.is_some():
+        auto u20 = v.Subnets.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(securityhub_json_str(x21))
+        parts.append("\"Subnets\":" + securityhub_json_arr(e21))
+    if v.VpcId.is_some():
+        auto u22 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u22))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElbLoadBalancerListenerDescription to a compact JSON object (declaration order).
+def aws_elb_load_balancer_listener_description_to_json(AwsElbLoadBalancerListenerDescription v) -> str:
+    list[str] parts = []
+    if v.Listener.is_some():
+        auto u0 = v.Listener.unwrap()
+        parts.append("\"Listener\":" + u0.to_json())
+    if v.PolicyNames.is_some():
+        auto u1 = v.PolicyNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"PolicyNames\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElbLoadBalancerPolicies to a compact JSON object (declaration order).
+def aws_elb_load_balancer_policies_to_json(AwsElbLoadBalancerPolicies v) -> str:
+    list[str] parts = []
+    if v.AppCookieStickinessPolicies.is_some():
+        auto u0 = v.AppCookieStickinessPolicies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AppCookieStickinessPolicies\":" + securityhub_json_arr(e1))
+    if v.LbCookieStickinessPolicies.is_some():
+        auto u2 = v.LbCookieStickinessPolicies.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"LbCookieStickinessPolicies\":" + securityhub_json_arr(e3))
+    if v.OtherPolicies.is_some():
+        auto u4 = v.OtherPolicies.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"OtherPolicies\":" + securityhub_json_arr(e5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsElbv2LoadBalancerDetails to a compact JSON object (declaration order).
+def aws_elbv2_load_balancer_details_to_json(AwsElbv2LoadBalancerDetails v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e1))
+    if v.CanonicalHostedZoneId.is_some():
+        auto u2 = v.CanonicalHostedZoneId.unwrap()
+        parts.append("\"CanonicalHostedZoneId\":" + securityhub_json_str(u2))
+    if v.CreatedTime.is_some():
+        auto u3 = v.CreatedTime.unwrap()
+        parts.append("\"CreatedTime\":" + securityhub_json_str(u3))
+    if v.DNSName.is_some():
+        auto u4 = v.DNSName.unwrap()
+        parts.append("\"DNSName\":" + securityhub_json_str(u4))
+    if v.IpAddressType.is_some():
+        auto u5 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + securityhub_json_str(u5))
+    if v.Scheme.is_some():
+        auto u6 = v.Scheme.unwrap()
+        parts.append("\"Scheme\":" + securityhub_json_str(u6))
+    if v.SecurityGroups.is_some():
+        auto u7 = v.SecurityGroups.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(securityhub_json_str(x8))
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e8))
+    if v.State.is_some():
+        auto u9 = v.State.unwrap()
+        parts.append("\"State\":" + u9.to_json())
+    if v.Type.is_some():
+        auto u10 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u10))
+    if v.VpcId.is_some():
+        auto u11 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u11))
+    if v.LoadBalancerAttributes.is_some():
+        auto u12 = v.LoadBalancerAttributes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"LoadBalancerAttributes\":" + securityhub_json_arr(e13))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsEventsEndpointDetails to a compact JSON object (declaration order).
+def aws_events_endpoint_details_to_json(AwsEventsEndpointDetails v) -> str:
+    list[str] parts = []
+    if v.Arn.is_some():
+        auto u0 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.EndpointId.is_some():
+        auto u2 = v.EndpointId.unwrap()
+        parts.append("\"EndpointId\":" + securityhub_json_str(u2))
+    if v.EndpointUrl.is_some():
+        auto u3 = v.EndpointUrl.unwrap()
+        parts.append("\"EndpointUrl\":" + securityhub_json_str(u3))
+    if v.EventBuses.is_some():
+        auto u4 = v.EventBuses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"EventBuses\":" + securityhub_json_arr(e5))
+    if v.Name.is_some():
+        auto u6 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u6))
+    if v.ReplicationConfig.is_some():
+        auto u7 = v.ReplicationConfig.unwrap()
+        parts.append("\"ReplicationConfig\":" + u7.to_json())
+    if v.RoleArn.is_some():
+        auto u8 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + securityhub_json_str(u8))
+    if v.RoutingConfig.is_some():
+        auto u9 = v.RoutingConfig.unwrap()
+        parts.append("\"RoutingConfig\":" + u9.to_json())
+    if v.State.is_some():
+        auto u10 = v.State.unwrap()
+        parts.append("\"State\":" + securityhub_json_str(u10))
+    if v.StateReason.is_some():
+        auto u11 = v.StateReason.unwrap()
+        parts.append("\"StateReason\":" + securityhub_json_str(u11))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsGuardDutyDetectorDetails to a compact JSON object (declaration order).
+def aws_guard_duty_detector_details_to_json(AwsGuardDutyDetectorDetails v) -> str:
+    list[str] parts = []
+    if v.DataSources.is_some():
+        auto u0 = v.DataSources.unwrap()
+        parts.append("\"DataSources\":" + u0.to_json())
+    if v.Features.is_some():
+        auto u1 = v.Features.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Features\":" + securityhub_json_arr(e2))
+    if v.FindingPublishingFrequency.is_some():
+        auto u3 = v.FindingPublishingFrequency.unwrap()
+        parts.append("\"FindingPublishingFrequency\":" + securityhub_json_str(u3))
+    if v.ServiceRole.is_some():
+        auto u4 = v.ServiceRole.unwrap()
+        parts.append("\"ServiceRole\":" + securityhub_json_str(u4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsIamGroupDetails to a compact JSON object (declaration order).
+def aws_iam_group_details_to_json(AwsIamGroupDetails v) -> str:
+    list[str] parts = []
+    if v.AttachedManagedPolicies.is_some():
+        auto u0 = v.AttachedManagedPolicies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttachedManagedPolicies\":" + securityhub_json_arr(e1))
+    if v.CreateDate.is_some():
+        auto u2 = v.CreateDate.unwrap()
+        parts.append("\"CreateDate\":" + securityhub_json_str(u2))
+    if v.GroupId.is_some():
+        auto u3 = v.GroupId.unwrap()
+        parts.append("\"GroupId\":" + securityhub_json_str(u3))
+    if v.GroupName.is_some():
+        auto u4 = v.GroupName.unwrap()
+        parts.append("\"GroupName\":" + securityhub_json_str(u4))
+    if v.GroupPolicyList.is_some():
+        auto u5 = v.GroupPolicyList.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"GroupPolicyList\":" + securityhub_json_arr(e6))
+    if v.Path.is_some():
+        auto u7 = v.Path.unwrap()
+        parts.append("\"Path\":" + securityhub_json_str(u7))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsIamInstanceProfile to a compact JSON object (declaration order).
+def aws_iam_instance_profile_to_json(AwsIamInstanceProfile v) -> str:
+    list[str] parts = []
+    if v.Arn.is_some():
+        auto u0 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u0))
+    if v.CreateDate.is_some():
+        auto u1 = v.CreateDate.unwrap()
+        parts.append("\"CreateDate\":" + securityhub_json_str(u1))
+    if v.InstanceProfileId.is_some():
+        auto u2 = v.InstanceProfileId.unwrap()
+        parts.append("\"InstanceProfileId\":" + securityhub_json_str(u2))
+    if v.InstanceProfileName.is_some():
+        auto u3 = v.InstanceProfileName.unwrap()
+        parts.append("\"InstanceProfileName\":" + securityhub_json_str(u3))
+    if v.Path.is_some():
+        auto u4 = v.Path.unwrap()
+        parts.append("\"Path\":" + securityhub_json_str(u4))
+    if v.Roles.is_some():
+        auto u5 = v.Roles.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Roles\":" + securityhub_json_arr(e6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsIamPolicyDetails to a compact JSON object (declaration order).
+def aws_iam_policy_details_to_json(AwsIamPolicyDetails v) -> str:
+    list[str] parts = []
+    if v.AttachmentCount.is_some():
+        auto u0 = v.AttachmentCount.unwrap()
+        parts.append("\"AttachmentCount\":" + str(u0))
+    if v.CreateDate.is_some():
+        auto u1 = v.CreateDate.unwrap()
+        parts.append("\"CreateDate\":" + securityhub_json_str(u1))
+    if v.DefaultVersionId.is_some():
+        auto u2 = v.DefaultVersionId.unwrap()
+        parts.append("\"DefaultVersionId\":" + securityhub_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u3))
+    if v.IsAttachable.is_some():
+        auto u4 = v.IsAttachable.unwrap()
+        parts.append("\"IsAttachable\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Path.is_some():
+        auto u5 = v.Path.unwrap()
+        parts.append("\"Path\":" + securityhub_json_str(u5))
+    if v.PermissionsBoundaryUsageCount.is_some():
+        auto u6 = v.PermissionsBoundaryUsageCount.unwrap()
+        parts.append("\"PermissionsBoundaryUsageCount\":" + str(u6))
+    if v.PolicyId.is_some():
+        auto u7 = v.PolicyId.unwrap()
+        parts.append("\"PolicyId\":" + securityhub_json_str(u7))
+    if v.PolicyName.is_some():
+        auto u8 = v.PolicyName.unwrap()
+        parts.append("\"PolicyName\":" + securityhub_json_str(u8))
+    if v.PolicyVersionList.is_some():
+        auto u9 = v.PolicyVersionList.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PolicyVersionList\":" + securityhub_json_arr(e10))
+    if v.UpdateDate.is_some():
+        auto u11 = v.UpdateDate.unwrap()
+        parts.append("\"UpdateDate\":" + securityhub_json_str(u11))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsIamRoleDetails to a compact JSON object (declaration order).
+def aws_iam_role_details_to_json(AwsIamRoleDetails v) -> str:
+    list[str] parts = []
+    if v.AssumeRolePolicyDocument.is_some():
+        auto u0 = v.AssumeRolePolicyDocument.unwrap()
+        parts.append("\"AssumeRolePolicyDocument\":" + securityhub_json_str(u0))
+    if v.AttachedManagedPolicies.is_some():
+        auto u1 = v.AttachedManagedPolicies.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AttachedManagedPolicies\":" + securityhub_json_arr(e2))
+    if v.CreateDate.is_some():
+        auto u3 = v.CreateDate.unwrap()
+        parts.append("\"CreateDate\":" + securityhub_json_str(u3))
+    if v.InstanceProfileList.is_some():
+        auto u4 = v.InstanceProfileList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(aws_iam_instance_profile_to_json(x5))
+        parts.append("\"InstanceProfileList\":" + securityhub_json_arr(e5))
+    if v.PermissionsBoundary.is_some():
+        auto u6 = v.PermissionsBoundary.unwrap()
+        parts.append("\"PermissionsBoundary\":" + u6.to_json())
+    if v.RoleId.is_some():
+        auto u7 = v.RoleId.unwrap()
+        parts.append("\"RoleId\":" + securityhub_json_str(u7))
+    if v.RoleName.is_some():
+        auto u8 = v.RoleName.unwrap()
+        parts.append("\"RoleName\":" + securityhub_json_str(u8))
+    if v.RolePolicyList.is_some():
+        auto u9 = v.RolePolicyList.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"RolePolicyList\":" + securityhub_json_arr(e10))
+    if v.MaxSessionDuration.is_some():
+        auto u11 = v.MaxSessionDuration.unwrap()
+        parts.append("\"MaxSessionDuration\":" + str(u11))
+    if v.Path.is_some():
+        auto u12 = v.Path.unwrap()
+        parts.append("\"Path\":" + securityhub_json_str(u12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsIamUserDetails to a compact JSON object (declaration order).
+def aws_iam_user_details_to_json(AwsIamUserDetails v) -> str:
+    list[str] parts = []
+    if v.AttachedManagedPolicies.is_some():
+        auto u0 = v.AttachedManagedPolicies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttachedManagedPolicies\":" + securityhub_json_arr(e1))
+    if v.CreateDate.is_some():
+        auto u2 = v.CreateDate.unwrap()
+        parts.append("\"CreateDate\":" + securityhub_json_str(u2))
+    if v.GroupList.is_some():
+        auto u3 = v.GroupList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"GroupList\":" + securityhub_json_arr(e4))
+    if v.Path.is_some():
+        auto u5 = v.Path.unwrap()
+        parts.append("\"Path\":" + securityhub_json_str(u5))
+    if v.PermissionsBoundary.is_some():
+        auto u6 = v.PermissionsBoundary.unwrap()
+        parts.append("\"PermissionsBoundary\":" + u6.to_json())
+    if v.UserId.is_some():
+        auto u7 = v.UserId.unwrap()
+        parts.append("\"UserId\":" + securityhub_json_str(u7))
+    if v.UserName.is_some():
+        auto u8 = v.UserName.unwrap()
+        parts.append("\"UserName\":" + securityhub_json_str(u8))
+    if v.UserPolicyList.is_some():
+        auto u9 = v.UserPolicyList.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"UserPolicyList\":" + securityhub_json_arr(e10))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsLambdaFunctionDetails to a compact JSON object (declaration order).
+def aws_lambda_function_details_to_json(AwsLambdaFunctionDetails v) -> str:
+    list[str] parts = []
+    if v.Code.is_some():
+        auto u0 = v.Code.unwrap()
+        parts.append("\"Code\":" + u0.to_json())
+    if v.CodeSha256.is_some():
+        auto u1 = v.CodeSha256.unwrap()
+        parts.append("\"CodeSha256\":" + securityhub_json_str(u1))
+    if v.DeadLetterConfig.is_some():
+        auto u2 = v.DeadLetterConfig.unwrap()
+        parts.append("\"DeadLetterConfig\":" + u2.to_json())
+    if v.Environment.is_some():
+        auto u3 = v.Environment.unwrap()
+        parts.append("\"Environment\":" + aws_lambda_function_environment_to_json(u3))
+    if v.FunctionName.is_some():
+        auto u4 = v.FunctionName.unwrap()
+        parts.append("\"FunctionName\":" + securityhub_json_str(u4))
+    if v.Handler.is_some():
+        auto u5 = v.Handler.unwrap()
+        parts.append("\"Handler\":" + securityhub_json_str(u5))
+    if v.KmsKeyArn.is_some():
+        auto u6 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + securityhub_json_str(u6))
+    if v.LastModified.is_some():
+        auto u7 = v.LastModified.unwrap()
+        parts.append("\"LastModified\":" + securityhub_json_str(u7))
+    if v.Layers.is_some():
+        auto u8 = v.Layers.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Layers\":" + securityhub_json_arr(e9))
+    if v.MasterArn.is_some():
+        auto u10 = v.MasterArn.unwrap()
+        parts.append("\"MasterArn\":" + securityhub_json_str(u10))
+    if v.MemorySize.is_some():
+        auto u11 = v.MemorySize.unwrap()
+        parts.append("\"MemorySize\":" + str(u11))
+    if v.RevisionId.is_some():
+        auto u12 = v.RevisionId.unwrap()
+        parts.append("\"RevisionId\":" + securityhub_json_str(u12))
+    if v.Role.is_some():
+        auto u13 = v.Role.unwrap()
+        parts.append("\"Role\":" + securityhub_json_str(u13))
+    if v.Runtime.is_some():
+        auto u14 = v.Runtime.unwrap()
+        parts.append("\"Runtime\":" + securityhub_json_str(u14))
+    if v.Timeout.is_some():
+        auto u15 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u15))
+    if v.TracingConfig.is_some():
+        auto u16 = v.TracingConfig.unwrap()
+        parts.append("\"TracingConfig\":" + u16.to_json())
+    if v.VpcConfig.is_some():
+        auto u17 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + aws_lambda_function_vpc_config_to_json(u17))
+    if v.Version.is_some():
+        auto u18 = v.Version.unwrap()
+        parts.append("\"Version\":" + securityhub_json_str(u18))
+    if v.Architectures.is_some():
+        auto u19 = v.Architectures.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(securityhub_json_str(x20))
+        parts.append("\"Architectures\":" + securityhub_json_arr(e20))
+    if v.PackageType.is_some():
+        auto u21 = v.PackageType.unwrap()
+        parts.append("\"PackageType\":" + securityhub_json_str(u21))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsLambdaFunctionEnvironment to a compact JSON object (declaration order).
+def aws_lambda_function_environment_to_json(AwsLambdaFunctionEnvironment v) -> str:
+    list[str] parts = []
+    if v.Variables.is_some():
+        auto u0 = v.Variables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+        parts.append("\"Variables\":" + securityhub_json_obj(m1))
+    if v.Error.is_some():
+        auto u2 = v.Error.unwrap()
+        parts.append("\"Error\":" + u2.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsLambdaFunctionVpcConfig to a compact JSON object (declaration order).
+def aws_lambda_function_vpc_config_to_json(AwsLambdaFunctionVpcConfig v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + securityhub_json_arr(e1))
+    if v.SubnetIds.is_some():
+        auto u2 = v.SubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"SubnetIds\":" + securityhub_json_arr(e3))
+    if v.VpcId.is_some():
+        auto u4 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsLambdaLayerVersionDetails to a compact JSON object (declaration order).
+def aws_lambda_layer_version_details_to_json(AwsLambdaLayerVersionDetails v) -> str:
+    list[str] parts = []
+    if v.Version.is_some():
+        auto u0 = v.Version.unwrap()
+        parts.append("\"Version\":" + str(u0))
+    if v.CompatibleRuntimes.is_some():
+        auto u1 = v.CompatibleRuntimes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"CompatibleRuntimes\":" + securityhub_json_arr(e2))
+    if v.CreatedDate.is_some():
+        auto u3 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsMskClusterClusterInfoClientAuthenticationDetails to a compact JSON object (declaration order).
+def aws_msk_cluster_cluster_info_client_authentication_details_to_json(AwsMskClusterClusterInfoClientAuthenticationDetails v) -> str:
+    list[str] parts = []
+    if v.Sasl.is_some():
+        auto u0 = v.Sasl.unwrap()
+        parts.append("\"Sasl\":" + u0.to_json())
+    if v.Unauthenticated.is_some():
+        auto u1 = v.Unauthenticated.unwrap()
+        parts.append("\"Unauthenticated\":" + u1.to_json())
+    if v.Tls.is_some():
+        auto u2 = v.Tls.unwrap()
+        parts.append("\"Tls\":" + aws_msk_cluster_cluster_info_client_authentication_tls_details_to_json(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsMskClusterClusterInfoClientAuthenticationTlsDetails to a compact JSON object (declaration order).
+def aws_msk_cluster_cluster_info_client_authentication_tls_details_to_json(AwsMskClusterClusterInfoClientAuthenticationTlsDetails v) -> str:
+    list[str] parts = []
+    if v.CertificateAuthorityArnList.is_some():
+        auto u0 = v.CertificateAuthorityArnList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"CertificateAuthorityArnList\":" + securityhub_json_arr(e1))
+    if v.Enabled.is_some():
+        auto u2 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u2)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsMskClusterClusterInfoDetails to a compact JSON object (declaration order).
+def aws_msk_cluster_cluster_info_details_to_json(AwsMskClusterClusterInfoDetails v) -> str:
+    list[str] parts = []
+    if v.EncryptionInfo.is_some():
+        auto u0 = v.EncryptionInfo.unwrap()
+        parts.append("\"EncryptionInfo\":" + u0.to_json())
+    if v.CurrentVersion.is_some():
+        auto u1 = v.CurrentVersion.unwrap()
+        parts.append("\"CurrentVersion\":" + securityhub_json_str(u1))
+    if v.NumberOfBrokerNodes.is_some():
+        auto u2 = v.NumberOfBrokerNodes.unwrap()
+        parts.append("\"NumberOfBrokerNodes\":" + str(u2))
+    if v.ClusterName.is_some():
+        auto u3 = v.ClusterName.unwrap()
+        parts.append("\"ClusterName\":" + securityhub_json_str(u3))
+    if v.ClientAuthentication.is_some():
+        auto u4 = v.ClientAuthentication.unwrap()
+        parts.append("\"ClientAuthentication\":" + aws_msk_cluster_cluster_info_client_authentication_details_to_json(u4))
+    if v.EnhancedMonitoring.is_some():
+        auto u5 = v.EnhancedMonitoring.unwrap()
+        parts.append("\"EnhancedMonitoring\":" + securityhub_json_str(u5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsMskClusterDetails to a compact JSON object (declaration order).
+def aws_msk_cluster_details_to_json(AwsMskClusterDetails v) -> str:
+    list[str] parts = []
+    if v.ClusterInfo.is_some():
+        auto u0 = v.ClusterInfo.unwrap()
+        parts.append("\"ClusterInfo\":" + aws_msk_cluster_cluster_info_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsNetworkFirewallFirewallDetails to a compact JSON object (declaration order).
+def aws_network_firewall_firewall_details_to_json(AwsNetworkFirewallFirewallDetails v) -> str:
+    list[str] parts = []
+    if v.DeleteProtection.is_some():
+        auto u0 = v.DeleteProtection.unwrap()
+        parts.append("\"DeleteProtection\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.FirewallArn.is_some():
+        auto u2 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + securityhub_json_str(u2))
+    if v.FirewallId.is_some():
+        auto u3 = v.FirewallId.unwrap()
+        parts.append("\"FirewallId\":" + securityhub_json_str(u3))
+    if v.FirewallName.is_some():
+        auto u4 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + securityhub_json_str(u4))
+    if v.FirewallPolicyArn.is_some():
+        auto u5 = v.FirewallPolicyArn.unwrap()
+        parts.append("\"FirewallPolicyArn\":" + securityhub_json_str(u5))
+    if v.FirewallPolicyChangeProtection.is_some():
+        auto u6 = v.FirewallPolicyChangeProtection.unwrap()
+        parts.append("\"FirewallPolicyChangeProtection\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.SubnetChangeProtection.is_some():
+        auto u7 = v.SubnetChangeProtection.unwrap()
+        parts.append("\"SubnetChangeProtection\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.SubnetMappings.is_some():
+        auto u8 = v.SubnetMappings.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"SubnetMappings\":" + securityhub_json_arr(e9))
+    if v.VpcId.is_some():
+        auto u10 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u10))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsNetworkFirewallFirewallPolicyDetails to a compact JSON object (declaration order).
+def aws_network_firewall_firewall_policy_details_to_json(AwsNetworkFirewallFirewallPolicyDetails v) -> str:
+    list[str] parts = []
+    if v.FirewallPolicy.is_some():
+        auto u0 = v.FirewallPolicy.unwrap()
+        parts.append("\"FirewallPolicy\":" + firewall_policy_details_to_json(u0))
+    if v.FirewallPolicyArn.is_some():
+        auto u1 = v.FirewallPolicyArn.unwrap()
+        parts.append("\"FirewallPolicyArn\":" + securityhub_json_str(u1))
+    if v.FirewallPolicyId.is_some():
+        auto u2 = v.FirewallPolicyId.unwrap()
+        parts.append("\"FirewallPolicyId\":" + securityhub_json_str(u2))
+    if v.FirewallPolicyName.is_some():
+        auto u3 = v.FirewallPolicyName.unwrap()
+        parts.append("\"FirewallPolicyName\":" + securityhub_json_str(u3))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsNetworkFirewallRuleGroupDetails to a compact JSON object (declaration order).
+def aws_network_firewall_rule_group_details_to_json(AwsNetworkFirewallRuleGroupDetails v) -> str:
+    list[str] parts = []
+    if v.Capacity.is_some():
+        auto u0 = v.Capacity.unwrap()
+        parts.append("\"Capacity\":" + str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.RuleGroup.is_some():
+        auto u2 = v.RuleGroup.unwrap()
+        parts.append("\"RuleGroup\":" + rule_group_details_to_json(u2))
+    if v.RuleGroupArn.is_some():
+        auto u3 = v.RuleGroupArn.unwrap()
+        parts.append("\"RuleGroupArn\":" + securityhub_json_str(u3))
+    if v.RuleGroupId.is_some():
+        auto u4 = v.RuleGroupId.unwrap()
+        parts.append("\"RuleGroupId\":" + securityhub_json_str(u4))
+    if v.RuleGroupName.is_some():
+        auto u5 = v.RuleGroupName.unwrap()
+        parts.append("\"RuleGroupName\":" + securityhub_json_str(u5))
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsOpenSearchServiceDomainDetails to a compact JSON object (declaration order).
+def aws_open_search_service_domain_details_to_json(AwsOpenSearchServiceDomainDetails v) -> str:
+    list[str] parts = []
+    if v.Arn.is_some():
+        auto u0 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u0))
+    if v.AccessPolicies.is_some():
+        auto u1 = v.AccessPolicies.unwrap()
+        parts.append("\"AccessPolicies\":" + securityhub_json_str(u1))
+    if v.DomainName.is_some():
+        auto u2 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + securityhub_json_str(u2))
+    if v.Id.is_some():
+        auto u3 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u3))
+    if v.DomainEndpoint.is_some():
+        auto u4 = v.DomainEndpoint.unwrap()
+        parts.append("\"DomainEndpoint\":" + securityhub_json_str(u4))
+    if v.EngineVersion.is_some():
+        auto u5 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u5))
+    if v.EncryptionAtRestOptions.is_some():
+        auto u6 = v.EncryptionAtRestOptions.unwrap()
+        parts.append("\"EncryptionAtRestOptions\":" + u6.to_json())
+    if v.NodeToNodeEncryptionOptions.is_some():
+        auto u7 = v.NodeToNodeEncryptionOptions.unwrap()
+        parts.append("\"NodeToNodeEncryptionOptions\":" + u7.to_json())
+    if v.ServiceSoftwareOptions.is_some():
+        auto u8 = v.ServiceSoftwareOptions.unwrap()
+        parts.append("\"ServiceSoftwareOptions\":" + u8.to_json())
+    if v.ClusterConfig.is_some():
+        auto u9 = v.ClusterConfig.unwrap()
+        parts.append("\"ClusterConfig\":" + u9.to_json())
+    if v.DomainEndpointOptions.is_some():
+        auto u10 = v.DomainEndpointOptions.unwrap()
+        parts.append("\"DomainEndpointOptions\":" + u10.to_json())
+    if v.VpcOptions.is_some():
+        auto u11 = v.VpcOptions.unwrap()
+        parts.append("\"VpcOptions\":" + aws_open_search_service_domain_vpc_options_details_to_json(u11))
+    if v.LogPublishingOptions.is_some():
+        auto u12 = v.LogPublishingOptions.unwrap()
+        parts.append("\"LogPublishingOptions\":" + u12.to_json())
+    if v.DomainEndpoints.is_some():
+        auto u13 = v.DomainEndpoints.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(securityhub_json_str(k14) + ":" + securityhub_json_str(u13[k14]))
+        parts.append("\"DomainEndpoints\":" + securityhub_json_obj(m14))
+    if v.AdvancedSecurityOptions.is_some():
+        auto u15 = v.AdvancedSecurityOptions.unwrap()
+        parts.append("\"AdvancedSecurityOptions\":" + u15.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsOpenSearchServiceDomainVpcOptionsDetails to a compact JSON object (declaration order).
+def aws_open_search_service_domain_vpc_options_details_to_json(AwsOpenSearchServiceDomainVpcOptionsDetails v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + securityhub_json_arr(e1))
+    if v.SubnetIds.is_some():
+        auto u2 = v.SubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"SubnetIds\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbClusterDetails to a compact JSON object (declaration order).
+def aws_rds_db_cluster_details_to_json(AwsRdsDbClusterDetails v) -> str:
+    list[str] parts = []
+    if v.AllocatedStorage.is_some():
+        auto u0 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u0))
+    if v.AvailabilityZones.is_some():
+        auto u1 = v.AvailabilityZones.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e2))
+    if v.BackupRetentionPeriod.is_some():
+        auto u3 = v.BackupRetentionPeriod.unwrap()
+        parts.append("\"BackupRetentionPeriod\":" + str(u3))
+    if v.DatabaseName.is_some():
+        auto u4 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + securityhub_json_str(u4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u5))
+    if v.Endpoint.is_some():
+        auto u6 = v.Endpoint.unwrap()
+        parts.append("\"Endpoint\":" + securityhub_json_str(u6))
+    if v.ReaderEndpoint.is_some():
+        auto u7 = v.ReaderEndpoint.unwrap()
+        parts.append("\"ReaderEndpoint\":" + securityhub_json_str(u7))
+    if v.CustomEndpoints.is_some():
+        auto u8 = v.CustomEndpoints.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(securityhub_json_str(x9))
+        parts.append("\"CustomEndpoints\":" + securityhub_json_arr(e9))
+    if v.MultiAz.is_some():
+        auto u10 = v.MultiAz.unwrap()
+        parts.append("\"MultiAz\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.Engine.is_some():
+        auto u11 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + securityhub_json_str(u11))
+    if v.EngineVersion.is_some():
+        auto u12 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u12))
+    if v.Port.is_some():
+        auto u13 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u13))
+    if v.MasterUsername.is_some():
+        auto u14 = v.MasterUsername.unwrap()
+        parts.append("\"MasterUsername\":" + securityhub_json_str(u14))
+    if v.PreferredBackupWindow.is_some():
+        auto u15 = v.PreferredBackupWindow.unwrap()
+        parts.append("\"PreferredBackupWindow\":" + securityhub_json_str(u15))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u16 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + securityhub_json_str(u16))
+    if v.ReadReplicaIdentifiers.is_some():
+        auto u17 = v.ReadReplicaIdentifiers.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(securityhub_json_str(x18))
+        parts.append("\"ReadReplicaIdentifiers\":" + securityhub_json_arr(e18))
+    if v.VpcSecurityGroups.is_some():
+        auto u19 = v.VpcSecurityGroups.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"VpcSecurityGroups\":" + securityhub_json_arr(e20))
+    if v.HostedZoneId.is_some():
+        auto u21 = v.HostedZoneId.unwrap()
+        parts.append("\"HostedZoneId\":" + securityhub_json_str(u21))
+    if v.StorageEncrypted.is_some():
+        auto u22 = v.StorageEncrypted.unwrap()
+        parts.append("\"StorageEncrypted\":" + json.dumps(JsonValue.Bool(u22)))
+    if v.KmsKeyId.is_some():
+        auto u23 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u23))
+    if v.DbClusterResourceId.is_some():
+        auto u24 = v.DbClusterResourceId.unwrap()
+        parts.append("\"DbClusterResourceId\":" + securityhub_json_str(u24))
+    if v.AssociatedRoles.is_some():
+        auto u25 = v.AssociatedRoles.unwrap()
+        list[str] e26 = []
+        for x26 in u25:
+            e26.append(x26.to_json())
+        parts.append("\"AssociatedRoles\":" + securityhub_json_arr(e26))
+    if v.ClusterCreateTime.is_some():
+        auto u27 = v.ClusterCreateTime.unwrap()
+        parts.append("\"ClusterCreateTime\":" + securityhub_json_str(u27))
+    if v.EnabledCloudWatchLogsExports.is_some():
+        auto u28 = v.EnabledCloudWatchLogsExports.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(securityhub_json_str(x29))
+        parts.append("\"EnabledCloudWatchLogsExports\":" + securityhub_json_arr(e29))
+    if v.EngineMode.is_some():
+        auto u30 = v.EngineMode.unwrap()
+        parts.append("\"EngineMode\":" + securityhub_json_str(u30))
+    if v.DeletionProtection.is_some():
+        auto u31 = v.DeletionProtection.unwrap()
+        parts.append("\"DeletionProtection\":" + json.dumps(JsonValue.Bool(u31)))
+    if v.HttpEndpointEnabled.is_some():
+        auto u32 = v.HttpEndpointEnabled.unwrap()
+        parts.append("\"HttpEndpointEnabled\":" + json.dumps(JsonValue.Bool(u32)))
+    if v.ActivityStreamStatus.is_some():
+        auto u33 = v.ActivityStreamStatus.unwrap()
+        parts.append("\"ActivityStreamStatus\":" + securityhub_json_str(u33))
+    if v.CopyTagsToSnapshot.is_some():
+        auto u34 = v.CopyTagsToSnapshot.unwrap()
+        parts.append("\"CopyTagsToSnapshot\":" + json.dumps(JsonValue.Bool(u34)))
+    if v.CrossAccountClone.is_some():
+        auto u35 = v.CrossAccountClone.unwrap()
+        parts.append("\"CrossAccountClone\":" + json.dumps(JsonValue.Bool(u35)))
+    if v.DomainMemberships.is_some():
+        auto u36 = v.DomainMemberships.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"DomainMemberships\":" + securityhub_json_arr(e37))
+    if v.DbClusterParameterGroup.is_some():
+        auto u38 = v.DbClusterParameterGroup.unwrap()
+        parts.append("\"DbClusterParameterGroup\":" + securityhub_json_str(u38))
+    if v.DbSubnetGroup.is_some():
+        auto u39 = v.DbSubnetGroup.unwrap()
+        parts.append("\"DbSubnetGroup\":" + securityhub_json_str(u39))
+    if v.DbClusterOptionGroupMemberships.is_some():
+        auto u40 = v.DbClusterOptionGroupMemberships.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(x41.to_json())
+        parts.append("\"DbClusterOptionGroupMemberships\":" + securityhub_json_arr(e41))
+    if v.DbClusterIdentifier.is_some():
+        auto u42 = v.DbClusterIdentifier.unwrap()
+        parts.append("\"DbClusterIdentifier\":" + securityhub_json_str(u42))
+    if v.DbClusterMembers.is_some():
+        auto u43 = v.DbClusterMembers.unwrap()
+        list[str] e44 = []
+        for x44 in u43:
+            e44.append(x44.to_json())
+        parts.append("\"DbClusterMembers\":" + securityhub_json_arr(e44))
+    if v.IamDatabaseAuthenticationEnabled.is_some():
+        auto u45 = v.IamDatabaseAuthenticationEnabled.unwrap()
+        parts.append("\"IamDatabaseAuthenticationEnabled\":" + json.dumps(JsonValue.Bool(u45)))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u46 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u46)))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbClusterSnapshotDbClusterSnapshotAttribute to a compact JSON object (declaration order).
+def aws_rds_db_cluster_snapshot_db_cluster_snapshot_attribute_to_json(AwsRdsDbClusterSnapshotDbClusterSnapshotAttribute v) -> str:
+    list[str] parts = []
+    if v.AttributeName.is_some():
+        auto u0 = v.AttributeName.unwrap()
+        parts.append("\"AttributeName\":" + securityhub_json_str(u0))
+    if v.AttributeValues.is_some():
+        auto u1 = v.AttributeValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"AttributeValues\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbClusterSnapshotDetails to a compact JSON object (declaration order).
+def aws_rds_db_cluster_snapshot_details_to_json(AwsRdsDbClusterSnapshotDetails v) -> str:
+    list[str] parts = []
+    if v.AvailabilityZones.is_some():
+        auto u0 = v.AvailabilityZones.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"AvailabilityZones\":" + securityhub_json_arr(e1))
+    if v.SnapshotCreateTime.is_some():
+        auto u2 = v.SnapshotCreateTime.unwrap()
+        parts.append("\"SnapshotCreateTime\":" + securityhub_json_str(u2))
+    if v.Engine.is_some():
+        auto u3 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + securityhub_json_str(u3))
+    if v.AllocatedStorage.is_some():
+        auto u4 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u5))
+    if v.Port.is_some():
+        auto u6 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u6))
+    if v.VpcId.is_some():
+        auto u7 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u7))
+    if v.ClusterCreateTime.is_some():
+        auto u8 = v.ClusterCreateTime.unwrap()
+        parts.append("\"ClusterCreateTime\":" + securityhub_json_str(u8))
+    if v.MasterUsername.is_some():
+        auto u9 = v.MasterUsername.unwrap()
+        parts.append("\"MasterUsername\":" + securityhub_json_str(u9))
+    if v.EngineVersion.is_some():
+        auto u10 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u10))
+    if v.LicenseModel.is_some():
+        auto u11 = v.LicenseModel.unwrap()
+        parts.append("\"LicenseModel\":" + securityhub_json_str(u11))
+    if v.SnapshotType.is_some():
+        auto u12 = v.SnapshotType.unwrap()
+        parts.append("\"SnapshotType\":" + securityhub_json_str(u12))
+    if v.PercentProgress.is_some():
+        auto u13 = v.PercentProgress.unwrap()
+        parts.append("\"PercentProgress\":" + str(u13))
+    if v.StorageEncrypted.is_some():
+        auto u14 = v.StorageEncrypted.unwrap()
+        parts.append("\"StorageEncrypted\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.KmsKeyId.is_some():
+        auto u15 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u15))
+    if v.DbClusterIdentifier.is_some():
+        auto u16 = v.DbClusterIdentifier.unwrap()
+        parts.append("\"DbClusterIdentifier\":" + securityhub_json_str(u16))
+    if v.DbClusterSnapshotIdentifier.is_some():
+        auto u17 = v.DbClusterSnapshotIdentifier.unwrap()
+        parts.append("\"DbClusterSnapshotIdentifier\":" + securityhub_json_str(u17))
+    if v.IamDatabaseAuthenticationEnabled.is_some():
+        auto u18 = v.IamDatabaseAuthenticationEnabled.unwrap()
+        parts.append("\"IamDatabaseAuthenticationEnabled\":" + json.dumps(JsonValue.Bool(u18)))
+    if v.DbClusterSnapshotAttributes.is_some():
+        auto u19 = v.DbClusterSnapshotAttributes.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(aws_rds_db_cluster_snapshot_db_cluster_snapshot_attribute_to_json(x20))
+        parts.append("\"DbClusterSnapshotAttributes\":" + securityhub_json_arr(e20))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbInstanceDetails to a compact JSON object (declaration order).
+def aws_rds_db_instance_details_to_json(AwsRdsDbInstanceDetails v) -> str:
+    list[str] parts = []
+    if v.AssociatedRoles.is_some():
+        auto u0 = v.AssociatedRoles.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AssociatedRoles\":" + securityhub_json_arr(e1))
+    if v.CACertificateIdentifier.is_some():
+        auto u2 = v.CACertificateIdentifier.unwrap()
+        parts.append("\"CACertificateIdentifier\":" + securityhub_json_str(u2))
+    if v.DBClusterIdentifier.is_some():
+        auto u3 = v.DBClusterIdentifier.unwrap()
+        parts.append("\"DBClusterIdentifier\":" + securityhub_json_str(u3))
+    if v.DBInstanceIdentifier.is_some():
+        auto u4 = v.DBInstanceIdentifier.unwrap()
+        parts.append("\"DBInstanceIdentifier\":" + securityhub_json_str(u4))
+    if v.DBInstanceClass.is_some():
+        auto u5 = v.DBInstanceClass.unwrap()
+        parts.append("\"DBInstanceClass\":" + securityhub_json_str(u5))
+    if v.DbInstancePort.is_some():
+        auto u6 = v.DbInstancePort.unwrap()
+        parts.append("\"DbInstancePort\":" + str(u6))
+    if v.DbiResourceId.is_some():
+        auto u7 = v.DbiResourceId.unwrap()
+        parts.append("\"DbiResourceId\":" + securityhub_json_str(u7))
+    if v.DBName.is_some():
+        auto u8 = v.DBName.unwrap()
+        parts.append("\"DBName\":" + securityhub_json_str(u8))
+    if v.DeletionProtection.is_some():
+        auto u9 = v.DeletionProtection.unwrap()
+        parts.append("\"DeletionProtection\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.Endpoint.is_some():
+        auto u10 = v.Endpoint.unwrap()
+        parts.append("\"Endpoint\":" + u10.to_json())
+    if v.Engine.is_some():
+        auto u11 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + securityhub_json_str(u11))
+    if v.EngineVersion.is_some():
+        auto u12 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u12))
+    if v.IAMDatabaseAuthenticationEnabled.is_some():
+        auto u13 = v.IAMDatabaseAuthenticationEnabled.unwrap()
+        parts.append("\"IAMDatabaseAuthenticationEnabled\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.InstanceCreateTime.is_some():
+        auto u14 = v.InstanceCreateTime.unwrap()
+        parts.append("\"InstanceCreateTime\":" + securityhub_json_str(u14))
+    if v.KmsKeyId.is_some():
+        auto u15 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u15))
+    if v.PubliclyAccessible.is_some():
+        auto u16 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.StorageEncrypted.is_some():
+        auto u17 = v.StorageEncrypted.unwrap()
+        parts.append("\"StorageEncrypted\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.TdeCredentialArn.is_some():
+        auto u18 = v.TdeCredentialArn.unwrap()
+        parts.append("\"TdeCredentialArn\":" + securityhub_json_str(u18))
+    if v.VpcSecurityGroups.is_some():
+        auto u19 = v.VpcSecurityGroups.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"VpcSecurityGroups\":" + securityhub_json_arr(e20))
+    if v.MultiAz.is_some():
+        auto u21 = v.MultiAz.unwrap()
+        parts.append("\"MultiAz\":" + json.dumps(JsonValue.Bool(u21)))
+    if v.EnhancedMonitoringResourceArn.is_some():
+        auto u22 = v.EnhancedMonitoringResourceArn.unwrap()
+        parts.append("\"EnhancedMonitoringResourceArn\":" + securityhub_json_str(u22))
+    if v.DbInstanceStatus.is_some():
+        auto u23 = v.DbInstanceStatus.unwrap()
+        parts.append("\"DbInstanceStatus\":" + securityhub_json_str(u23))
+    if v.MasterUsername.is_some():
+        auto u24 = v.MasterUsername.unwrap()
+        parts.append("\"MasterUsername\":" + securityhub_json_str(u24))
+    if v.AllocatedStorage.is_some():
+        auto u25 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u25))
+    if v.PreferredBackupWindow.is_some():
+        auto u26 = v.PreferredBackupWindow.unwrap()
+        parts.append("\"PreferredBackupWindow\":" + securityhub_json_str(u26))
+    if v.BackupRetentionPeriod.is_some():
+        auto u27 = v.BackupRetentionPeriod.unwrap()
+        parts.append("\"BackupRetentionPeriod\":" + str(u27))
+    if v.DbSecurityGroups.is_some():
+        auto u28 = v.DbSecurityGroups.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(securityhub_json_str(x29))
+        parts.append("\"DbSecurityGroups\":" + securityhub_json_arr(e29))
+    if v.DbParameterGroups.is_some():
+        auto u30 = v.DbParameterGroups.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"DbParameterGroups\":" + securityhub_json_arr(e31))
+    if v.AvailabilityZone.is_some():
+        auto u32 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + securityhub_json_str(u32))
+    if v.DbSubnetGroup.is_some():
+        auto u33 = v.DbSubnetGroup.unwrap()
+        parts.append("\"DbSubnetGroup\":" + aws_rds_db_subnet_group_to_json(u33))
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u34 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + securityhub_json_str(u34))
+    if v.PendingModifiedValues.is_some():
+        auto u35 = v.PendingModifiedValues.unwrap()
+        parts.append("\"PendingModifiedValues\":" + aws_rds_db_pending_modified_values_to_json(u35))
+    if v.LatestRestorableTime.is_some():
+        auto u36 = v.LatestRestorableTime.unwrap()
+        parts.append("\"LatestRestorableTime\":" + securityhub_json_str(u36))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u37 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u37)))
+    if v.ReadReplicaSourceDBInstanceIdentifier.is_some():
+        auto u38 = v.ReadReplicaSourceDBInstanceIdentifier.unwrap()
+        parts.append("\"ReadReplicaSourceDBInstanceIdentifier\":" + securityhub_json_str(u38))
+    if v.ReadReplicaDBInstanceIdentifiers.is_some():
+        auto u39 = v.ReadReplicaDBInstanceIdentifiers.unwrap()
+        list[str] e40 = []
+        for x40 in u39:
+            e40.append(securityhub_json_str(x40))
+        parts.append("\"ReadReplicaDBInstanceIdentifiers\":" + securityhub_json_arr(e40))
+    if v.ReadReplicaDBClusterIdentifiers.is_some():
+        auto u41 = v.ReadReplicaDBClusterIdentifiers.unwrap()
+        list[str] e42 = []
+        for x42 in u41:
+            e42.append(securityhub_json_str(x42))
+        parts.append("\"ReadReplicaDBClusterIdentifiers\":" + securityhub_json_arr(e42))
+    if v.LicenseModel.is_some():
+        auto u43 = v.LicenseModel.unwrap()
+        parts.append("\"LicenseModel\":" + securityhub_json_str(u43))
+    if v.Iops.is_some():
+        auto u44 = v.Iops.unwrap()
+        parts.append("\"Iops\":" + str(u44))
+    if v.OptionGroupMemberships.is_some():
+        auto u45 = v.OptionGroupMemberships.unwrap()
+        list[str] e46 = []
+        for x46 in u45:
+            e46.append(x46.to_json())
+        parts.append("\"OptionGroupMemberships\":" + securityhub_json_arr(e46))
+    if v.CharacterSetName.is_some():
+        auto u47 = v.CharacterSetName.unwrap()
+        parts.append("\"CharacterSetName\":" + securityhub_json_str(u47))
+    if v.SecondaryAvailabilityZone.is_some():
+        auto u48 = v.SecondaryAvailabilityZone.unwrap()
+        parts.append("\"SecondaryAvailabilityZone\":" + securityhub_json_str(u48))
+    if v.StatusInfos.is_some():
+        auto u49 = v.StatusInfos.unwrap()
+        list[str] e50 = []
+        for x50 in u49:
+            e50.append(x50.to_json())
+        parts.append("\"StatusInfos\":" + securityhub_json_arr(e50))
+    if v.StorageType.is_some():
+        auto u51 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + securityhub_json_str(u51))
+    if v.DomainMemberships.is_some():
+        auto u52 = v.DomainMemberships.unwrap()
+        list[str] e53 = []
+        for x53 in u52:
+            e53.append(x53.to_json())
+        parts.append("\"DomainMemberships\":" + securityhub_json_arr(e53))
+    if v.CopyTagsToSnapshot.is_some():
+        auto u54 = v.CopyTagsToSnapshot.unwrap()
+        parts.append("\"CopyTagsToSnapshot\":" + json.dumps(JsonValue.Bool(u54)))
+    if v.MonitoringInterval.is_some():
+        auto u55 = v.MonitoringInterval.unwrap()
+        parts.append("\"MonitoringInterval\":" + str(u55))
+    if v.MonitoringRoleArn.is_some():
+        auto u56 = v.MonitoringRoleArn.unwrap()
+        parts.append("\"MonitoringRoleArn\":" + securityhub_json_str(u56))
+    if v.PromotionTier.is_some():
+        auto u57 = v.PromotionTier.unwrap()
+        parts.append("\"PromotionTier\":" + str(u57))
+    if v.Timezone.is_some():
+        auto u58 = v.Timezone.unwrap()
+        parts.append("\"Timezone\":" + securityhub_json_str(u58))
+    if v.PerformanceInsightsEnabled.is_some():
+        auto u59 = v.PerformanceInsightsEnabled.unwrap()
+        parts.append("\"PerformanceInsightsEnabled\":" + json.dumps(JsonValue.Bool(u59)))
+    if v.PerformanceInsightsKmsKeyId.is_some():
+        auto u60 = v.PerformanceInsightsKmsKeyId.unwrap()
+        parts.append("\"PerformanceInsightsKmsKeyId\":" + securityhub_json_str(u60))
+    if v.PerformanceInsightsRetentionPeriod.is_some():
+        auto u61 = v.PerformanceInsightsRetentionPeriod.unwrap()
+        parts.append("\"PerformanceInsightsRetentionPeriod\":" + str(u61))
+    if v.EnabledCloudWatchLogsExports.is_some():
+        auto u62 = v.EnabledCloudWatchLogsExports.unwrap()
+        list[str] e63 = []
+        for x63 in u62:
+            e63.append(securityhub_json_str(x63))
+        parts.append("\"EnabledCloudWatchLogsExports\":" + securityhub_json_arr(e63))
+    if v.ProcessorFeatures.is_some():
+        auto u64 = v.ProcessorFeatures.unwrap()
+        list[str] e65 = []
+        for x65 in u64:
+            e65.append(x65.to_json())
+        parts.append("\"ProcessorFeatures\":" + securityhub_json_arr(e65))
+    if v.ListenerEndpoint.is_some():
+        auto u66 = v.ListenerEndpoint.unwrap()
+        parts.append("\"ListenerEndpoint\":" + u66.to_json())
+    if v.MaxAllocatedStorage.is_some():
+        auto u67 = v.MaxAllocatedStorage.unwrap()
+        parts.append("\"MaxAllocatedStorage\":" + str(u67))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbPendingModifiedValues to a compact JSON object (declaration order).
+def aws_rds_db_pending_modified_values_to_json(AwsRdsDbPendingModifiedValues v) -> str:
+    list[str] parts = []
+    if v.DbInstanceClass.is_some():
+        auto u0 = v.DbInstanceClass.unwrap()
+        parts.append("\"DbInstanceClass\":" + securityhub_json_str(u0))
+    if v.AllocatedStorage.is_some():
+        auto u1 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u1))
+    if v.MasterUserPassword.is_some():
+        auto u2 = v.MasterUserPassword.unwrap()
+        parts.append("\"MasterUserPassword\":" + securityhub_json_str(u2))
+    if v.Port.is_some():
+        auto u3 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u3))
+    if v.BackupRetentionPeriod.is_some():
+        auto u4 = v.BackupRetentionPeriod.unwrap()
+        parts.append("\"BackupRetentionPeriod\":" + str(u4))
+    if v.MultiAZ.is_some():
+        auto u5 = v.MultiAZ.unwrap()
+        parts.append("\"MultiAZ\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.EngineVersion.is_some():
+        auto u6 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u6))
+    if v.LicenseModel.is_some():
+        auto u7 = v.LicenseModel.unwrap()
+        parts.append("\"LicenseModel\":" + securityhub_json_str(u7))
+    if v.Iops.is_some():
+        auto u8 = v.Iops.unwrap()
+        parts.append("\"Iops\":" + str(u8))
+    if v.DbInstanceIdentifier.is_some():
+        auto u9 = v.DbInstanceIdentifier.unwrap()
+        parts.append("\"DbInstanceIdentifier\":" + securityhub_json_str(u9))
+    if v.StorageType.is_some():
+        auto u10 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + securityhub_json_str(u10))
+    if v.CaCertificateIdentifier.is_some():
+        auto u11 = v.CaCertificateIdentifier.unwrap()
+        parts.append("\"CaCertificateIdentifier\":" + securityhub_json_str(u11))
+    if v.DbSubnetGroupName.is_some():
+        auto u12 = v.DbSubnetGroupName.unwrap()
+        parts.append("\"DbSubnetGroupName\":" + securityhub_json_str(u12))
+    if v.PendingCloudWatchLogsExports.is_some():
+        auto u13 = v.PendingCloudWatchLogsExports.unwrap()
+        parts.append("\"PendingCloudWatchLogsExports\":" + aws_rds_pending_cloud_watch_logs_exports_to_json(u13))
+    if v.ProcessorFeatures.is_some():
+        auto u14 = v.ProcessorFeatures.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"ProcessorFeatures\":" + securityhub_json_arr(e15))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbSecurityGroupDetails to a compact JSON object (declaration order).
+def aws_rds_db_security_group_details_to_json(AwsRdsDbSecurityGroupDetails v) -> str:
+    list[str] parts = []
+    if v.DbSecurityGroupArn.is_some():
+        auto u0 = v.DbSecurityGroupArn.unwrap()
+        parts.append("\"DbSecurityGroupArn\":" + securityhub_json_str(u0))
+    if v.DbSecurityGroupDescription.is_some():
+        auto u1 = v.DbSecurityGroupDescription.unwrap()
+        parts.append("\"DbSecurityGroupDescription\":" + securityhub_json_str(u1))
+    if v.DbSecurityGroupName.is_some():
+        auto u2 = v.DbSecurityGroupName.unwrap()
+        parts.append("\"DbSecurityGroupName\":" + securityhub_json_str(u2))
+    if v.Ec2SecurityGroups.is_some():
+        auto u3 = v.Ec2SecurityGroups.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Ec2SecurityGroups\":" + securityhub_json_arr(e4))
+    if v.IpRanges.is_some():
+        auto u5 = v.IpRanges.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"IpRanges\":" + securityhub_json_arr(e6))
+    if v.OwnerId.is_some():
+        auto u7 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u7))
+    if v.VpcId.is_some():
+        auto u8 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u8))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbSnapshotDetails to a compact JSON object (declaration order).
+def aws_rds_db_snapshot_details_to_json(AwsRdsDbSnapshotDetails v) -> str:
+    list[str] parts = []
+    if v.DbSnapshotIdentifier.is_some():
+        auto u0 = v.DbSnapshotIdentifier.unwrap()
+        parts.append("\"DbSnapshotIdentifier\":" + securityhub_json_str(u0))
+    if v.DbInstanceIdentifier.is_some():
+        auto u1 = v.DbInstanceIdentifier.unwrap()
+        parts.append("\"DbInstanceIdentifier\":" + securityhub_json_str(u1))
+    if v.SnapshotCreateTime.is_some():
+        auto u2 = v.SnapshotCreateTime.unwrap()
+        parts.append("\"SnapshotCreateTime\":" + securityhub_json_str(u2))
+    if v.Engine.is_some():
+        auto u3 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + securityhub_json_str(u3))
+    if v.AllocatedStorage.is_some():
+        auto u4 = v.AllocatedStorage.unwrap()
+        parts.append("\"AllocatedStorage\":" + str(u4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u5))
+    if v.Port.is_some():
+        auto u6 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u6))
+    if v.AvailabilityZone.is_some():
+        auto u7 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + securityhub_json_str(u7))
+    if v.VpcId.is_some():
+        auto u8 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u8))
+    if v.InstanceCreateTime.is_some():
+        auto u9 = v.InstanceCreateTime.unwrap()
+        parts.append("\"InstanceCreateTime\":" + securityhub_json_str(u9))
+    if v.MasterUsername.is_some():
+        auto u10 = v.MasterUsername.unwrap()
+        parts.append("\"MasterUsername\":" + securityhub_json_str(u10))
+    if v.EngineVersion.is_some():
+        auto u11 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + securityhub_json_str(u11))
+    if v.LicenseModel.is_some():
+        auto u12 = v.LicenseModel.unwrap()
+        parts.append("\"LicenseModel\":" + securityhub_json_str(u12))
+    if v.SnapshotType.is_some():
+        auto u13 = v.SnapshotType.unwrap()
+        parts.append("\"SnapshotType\":" + securityhub_json_str(u13))
+    if v.Iops.is_some():
+        auto u14 = v.Iops.unwrap()
+        parts.append("\"Iops\":" + str(u14))
+    if v.OptionGroupName.is_some():
+        auto u15 = v.OptionGroupName.unwrap()
+        parts.append("\"OptionGroupName\":" + securityhub_json_str(u15))
+    if v.PercentProgress.is_some():
+        auto u16 = v.PercentProgress.unwrap()
+        parts.append("\"PercentProgress\":" + str(u16))
+    if v.SourceRegion.is_some():
+        auto u17 = v.SourceRegion.unwrap()
+        parts.append("\"SourceRegion\":" + securityhub_json_str(u17))
+    if v.SourceDbSnapshotIdentifier.is_some():
+        auto u18 = v.SourceDbSnapshotIdentifier.unwrap()
+        parts.append("\"SourceDbSnapshotIdentifier\":" + securityhub_json_str(u18))
+    if v.StorageType.is_some():
+        auto u19 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + securityhub_json_str(u19))
+    if v.TdeCredentialArn.is_some():
+        auto u20 = v.TdeCredentialArn.unwrap()
+        parts.append("\"TdeCredentialArn\":" + securityhub_json_str(u20))
+    if v.Encrypted.is_some():
+        auto u21 = v.Encrypted.unwrap()
+        parts.append("\"Encrypted\":" + json.dumps(JsonValue.Bool(u21)))
+    if v.KmsKeyId.is_some():
+        auto u22 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u22))
+    if v.Timezone.is_some():
+        auto u23 = v.Timezone.unwrap()
+        parts.append("\"Timezone\":" + securityhub_json_str(u23))
+    if v.IamDatabaseAuthenticationEnabled.is_some():
+        auto u24 = v.IamDatabaseAuthenticationEnabled.unwrap()
+        parts.append("\"IamDatabaseAuthenticationEnabled\":" + json.dumps(JsonValue.Bool(u24)))
+    if v.ProcessorFeatures.is_some():
+        auto u25 = v.ProcessorFeatures.unwrap()
+        list[str] e26 = []
+        for x26 in u25:
+            e26.append(x26.to_json())
+        parts.append("\"ProcessorFeatures\":" + securityhub_json_arr(e26))
+    if v.DbiResourceId.is_some():
+        auto u27 = v.DbiResourceId.unwrap()
+        parts.append("\"DbiResourceId\":" + securityhub_json_str(u27))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsDbSubnetGroup to a compact JSON object (declaration order).
+def aws_rds_db_subnet_group_to_json(AwsRdsDbSubnetGroup v) -> str:
+    list[str] parts = []
+    if v.DbSubnetGroupName.is_some():
+        auto u0 = v.DbSubnetGroupName.unwrap()
+        parts.append("\"DbSubnetGroupName\":" + securityhub_json_str(u0))
+    if v.DbSubnetGroupDescription.is_some():
+        auto u1 = v.DbSubnetGroupDescription.unwrap()
+        parts.append("\"DbSubnetGroupDescription\":" + securityhub_json_str(u1))
+    if v.VpcId.is_some():
+        auto u2 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u2))
+    if v.SubnetGroupStatus.is_some():
+        auto u3 = v.SubnetGroupStatus.unwrap()
+        parts.append("\"SubnetGroupStatus\":" + securityhub_json_str(u3))
+    if v.Subnets.is_some():
+        auto u4 = v.Subnets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Subnets\":" + securityhub_json_arr(e5))
+    if v.DbSubnetGroupArn.is_some():
+        auto u6 = v.DbSubnetGroupArn.unwrap()
+        parts.append("\"DbSubnetGroupArn\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsEventSubscriptionDetails to a compact JSON object (declaration order).
+def aws_rds_event_subscription_details_to_json(AwsRdsEventSubscriptionDetails v) -> str:
+    list[str] parts = []
+    if v.CustSubscriptionId.is_some():
+        auto u0 = v.CustSubscriptionId.unwrap()
+        parts.append("\"CustSubscriptionId\":" + securityhub_json_str(u0))
+    if v.CustomerAwsId.is_some():
+        auto u1 = v.CustomerAwsId.unwrap()
+        parts.append("\"CustomerAwsId\":" + securityhub_json_str(u1))
+    if v.Enabled.is_some():
+        auto u2 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.EventCategoriesList.is_some():
+        auto u3 = v.EventCategoriesList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"EventCategoriesList\":" + securityhub_json_arr(e4))
+    if v.EventSubscriptionArn.is_some():
+        auto u5 = v.EventSubscriptionArn.unwrap()
+        parts.append("\"EventSubscriptionArn\":" + securityhub_json_str(u5))
+    if v.SnsTopicArn.is_some():
+        auto u6 = v.SnsTopicArn.unwrap()
+        parts.append("\"SnsTopicArn\":" + securityhub_json_str(u6))
+    if v.SourceIdsList.is_some():
+        auto u7 = v.SourceIdsList.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(securityhub_json_str(x8))
+        parts.append("\"SourceIdsList\":" + securityhub_json_arr(e8))
+    if v.SourceType.is_some():
+        auto u9 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + securityhub_json_str(u9))
+    if v.Status.is_some():
+        auto u10 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u10))
+    if v.SubscriptionCreationTime.is_some():
+        auto u11 = v.SubscriptionCreationTime.unwrap()
+        parts.append("\"SubscriptionCreationTime\":" + securityhub_json_str(u11))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRdsPendingCloudWatchLogsExports to a compact JSON object (declaration order).
+def aws_rds_pending_cloud_watch_logs_exports_to_json(AwsRdsPendingCloudWatchLogsExports v) -> str:
+    list[str] parts = []
+    if v.LogTypesToEnable.is_some():
+        auto u0 = v.LogTypesToEnable.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"LogTypesToEnable\":" + securityhub_json_arr(e1))
+    if v.LogTypesToDisable.is_some():
+        auto u2 = v.LogTypesToDisable.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"LogTypesToDisable\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRedshiftClusterClusterParameterGroup to a compact JSON object (declaration order).
+def aws_redshift_cluster_cluster_parameter_group_to_json(AwsRedshiftClusterClusterParameterGroup v) -> str:
+    list[str] parts = []
+    if v.ClusterParameterStatusList.is_some():
+        auto u0 = v.ClusterParameterStatusList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ClusterParameterStatusList\":" + securityhub_json_arr(e1))
+    if v.ParameterApplyStatus.is_some():
+        auto u2 = v.ParameterApplyStatus.unwrap()
+        parts.append("\"ParameterApplyStatus\":" + securityhub_json_str(u2))
+    if v.ParameterGroupName.is_some():
+        auto u3 = v.ParameterGroupName.unwrap()
+        parts.append("\"ParameterGroupName\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRedshiftClusterDetails to a compact JSON object (declaration order).
+def aws_redshift_cluster_details_to_json(AwsRedshiftClusterDetails v) -> str:
+    list[str] parts = []
+    if v.AllowVersionUpgrade.is_some():
+        auto u0 = v.AllowVersionUpgrade.unwrap()
+        parts.append("\"AllowVersionUpgrade\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.AutomatedSnapshotRetentionPeriod.is_some():
+        auto u1 = v.AutomatedSnapshotRetentionPeriod.unwrap()
+        parts.append("\"AutomatedSnapshotRetentionPeriod\":" + str(u1))
+    if v.AvailabilityZone.is_some():
+        auto u2 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + securityhub_json_str(u2))
+    if v.ClusterAvailabilityStatus.is_some():
+        auto u3 = v.ClusterAvailabilityStatus.unwrap()
+        parts.append("\"ClusterAvailabilityStatus\":" + securityhub_json_str(u3))
+    if v.ClusterCreateTime.is_some():
+        auto u4 = v.ClusterCreateTime.unwrap()
+        parts.append("\"ClusterCreateTime\":" + securityhub_json_str(u4))
+    if v.ClusterIdentifier.is_some():
+        auto u5 = v.ClusterIdentifier.unwrap()
+        parts.append("\"ClusterIdentifier\":" + securityhub_json_str(u5))
+    if v.ClusterNodes.is_some():
+        auto u6 = v.ClusterNodes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"ClusterNodes\":" + securityhub_json_arr(e7))
+    if v.ClusterParameterGroups.is_some():
+        auto u8 = v.ClusterParameterGroups.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(aws_redshift_cluster_cluster_parameter_group_to_json(x9))
+        parts.append("\"ClusterParameterGroups\":" + securityhub_json_arr(e9))
+    if v.ClusterPublicKey.is_some():
+        auto u10 = v.ClusterPublicKey.unwrap()
+        parts.append("\"ClusterPublicKey\":" + securityhub_json_str(u10))
+    if v.ClusterRevisionNumber.is_some():
+        auto u11 = v.ClusterRevisionNumber.unwrap()
+        parts.append("\"ClusterRevisionNumber\":" + securityhub_json_str(u11))
+    if v.ClusterSecurityGroups.is_some():
+        auto u12 = v.ClusterSecurityGroups.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"ClusterSecurityGroups\":" + securityhub_json_arr(e13))
+    if v.ClusterSnapshotCopyStatus.is_some():
+        auto u14 = v.ClusterSnapshotCopyStatus.unwrap()
+        parts.append("\"ClusterSnapshotCopyStatus\":" + u14.to_json())
+    if v.ClusterStatus.is_some():
+        auto u15 = v.ClusterStatus.unwrap()
+        parts.append("\"ClusterStatus\":" + securityhub_json_str(u15))
+    if v.ClusterSubnetGroupName.is_some():
+        auto u16 = v.ClusterSubnetGroupName.unwrap()
+        parts.append("\"ClusterSubnetGroupName\":" + securityhub_json_str(u16))
+    if v.ClusterVersion.is_some():
+        auto u17 = v.ClusterVersion.unwrap()
+        parts.append("\"ClusterVersion\":" + securityhub_json_str(u17))
+    if v.DBName.is_some():
+        auto u18 = v.DBName.unwrap()
+        parts.append("\"DBName\":" + securityhub_json_str(u18))
+    if v.DeferredMaintenanceWindows.is_some():
+        auto u19 = v.DeferredMaintenanceWindows.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"DeferredMaintenanceWindows\":" + securityhub_json_arr(e20))
+    if v.ElasticIpStatus.is_some():
+        auto u21 = v.ElasticIpStatus.unwrap()
+        parts.append("\"ElasticIpStatus\":" + u21.to_json())
+    if v.ElasticResizeNumberOfNodeOptions.is_some():
+        auto u22 = v.ElasticResizeNumberOfNodeOptions.unwrap()
+        parts.append("\"ElasticResizeNumberOfNodeOptions\":" + securityhub_json_str(u22))
+    if v.Encrypted.is_some():
+        auto u23 = v.Encrypted.unwrap()
+        parts.append("\"Encrypted\":" + json.dumps(JsonValue.Bool(u23)))
+    if v.Endpoint.is_some():
+        auto u24 = v.Endpoint.unwrap()
+        parts.append("\"Endpoint\":" + u24.to_json())
+    if v.EnhancedVpcRouting.is_some():
+        auto u25 = v.EnhancedVpcRouting.unwrap()
+        parts.append("\"EnhancedVpcRouting\":" + json.dumps(JsonValue.Bool(u25)))
+    if v.ExpectedNextSnapshotScheduleTime.is_some():
+        auto u26 = v.ExpectedNextSnapshotScheduleTime.unwrap()
+        parts.append("\"ExpectedNextSnapshotScheduleTime\":" + securityhub_json_str(u26))
+    if v.ExpectedNextSnapshotScheduleTimeStatus.is_some():
+        auto u27 = v.ExpectedNextSnapshotScheduleTimeStatus.unwrap()
+        parts.append("\"ExpectedNextSnapshotScheduleTimeStatus\":" + securityhub_json_str(u27))
+    if v.HsmStatus.is_some():
+        auto u28 = v.HsmStatus.unwrap()
+        parts.append("\"HsmStatus\":" + u28.to_json())
+    if v.IamRoles.is_some():
+        auto u29 = v.IamRoles.unwrap()
+        list[str] e30 = []
+        for x30 in u29:
+            e30.append(x30.to_json())
+        parts.append("\"IamRoles\":" + securityhub_json_arr(e30))
+    if v.KmsKeyId.is_some():
+        auto u31 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u31))
+    if v.MaintenanceTrackName.is_some():
+        auto u32 = v.MaintenanceTrackName.unwrap()
+        parts.append("\"MaintenanceTrackName\":" + securityhub_json_str(u32))
+    if v.ManualSnapshotRetentionPeriod.is_some():
+        auto u33 = v.ManualSnapshotRetentionPeriod.unwrap()
+        parts.append("\"ManualSnapshotRetentionPeriod\":" + str(u33))
+    if v.MasterUsername.is_some():
+        auto u34 = v.MasterUsername.unwrap()
+        parts.append("\"MasterUsername\":" + securityhub_json_str(u34))
+    if v.NextMaintenanceWindowStartTime.is_some():
+        auto u35 = v.NextMaintenanceWindowStartTime.unwrap()
+        parts.append("\"NextMaintenanceWindowStartTime\":" + securityhub_json_str(u35))
+    if v.NodeType.is_some():
+        auto u36 = v.NodeType.unwrap()
+        parts.append("\"NodeType\":" + securityhub_json_str(u36))
+    if v.NumberOfNodes.is_some():
+        auto u37 = v.NumberOfNodes.unwrap()
+        parts.append("\"NumberOfNodes\":" + str(u37))
+    if v.PendingActions.is_some():
+        auto u38 = v.PendingActions.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(securityhub_json_str(x39))
+        parts.append("\"PendingActions\":" + securityhub_json_arr(e39))
+    if v.PendingModifiedValues.is_some():
+        auto u40 = v.PendingModifiedValues.unwrap()
+        parts.append("\"PendingModifiedValues\":" + u40.to_json())
+    if v.PreferredMaintenanceWindow.is_some():
+        auto u41 = v.PreferredMaintenanceWindow.unwrap()
+        parts.append("\"PreferredMaintenanceWindow\":" + securityhub_json_str(u41))
+    if v.PubliclyAccessible.is_some():
+        auto u42 = v.PubliclyAccessible.unwrap()
+        parts.append("\"PubliclyAccessible\":" + json.dumps(JsonValue.Bool(u42)))
+    if v.ResizeInfo.is_some():
+        auto u43 = v.ResizeInfo.unwrap()
+        parts.append("\"ResizeInfo\":" + u43.to_json())
+    if v.RestoreStatus.is_some():
+        auto u44 = v.RestoreStatus.unwrap()
+        parts.append("\"RestoreStatus\":" + u44.to_json())
+    if v.SnapshotScheduleIdentifier.is_some():
+        auto u45 = v.SnapshotScheduleIdentifier.unwrap()
+        parts.append("\"SnapshotScheduleIdentifier\":" + securityhub_json_str(u45))
+    if v.SnapshotScheduleState.is_some():
+        auto u46 = v.SnapshotScheduleState.unwrap()
+        parts.append("\"SnapshotScheduleState\":" + securityhub_json_str(u46))
+    if v.VpcId.is_some():
+        auto u47 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + securityhub_json_str(u47))
+    if v.VpcSecurityGroups.is_some():
+        auto u48 = v.VpcSecurityGroups.unwrap()
+        list[str] e49 = []
+        for x49 in u48:
+            e49.append(x49.to_json())
+        parts.append("\"VpcSecurityGroups\":" + securityhub_json_arr(e49))
+    if v.LoggingStatus.is_some():
+        auto u50 = v.LoggingStatus.unwrap()
+        parts.append("\"LoggingStatus\":" + u50.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsRoute53HostedZoneDetails to a compact JSON object (declaration order).
+def aws_route53_hosted_zone_details_to_json(AwsRoute53HostedZoneDetails v) -> str:
+    list[str] parts = []
+    if v.HostedZone.is_some():
+        auto u0 = v.HostedZone.unwrap()
+        parts.append("\"HostedZone\":" + u0.to_json())
+    if v.Vpcs.is_some():
+        auto u1 = v.Vpcs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Vpcs\":" + securityhub_json_arr(e2))
+    if v.NameServers.is_some():
+        auto u3 = v.NameServers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"NameServers\":" + securityhub_json_arr(e4))
+    if v.QueryLoggingConfig.is_some():
+        auto u5 = v.QueryLoggingConfig.unwrap()
+        parts.append("\"QueryLoggingConfig\":" + u5.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketBucketLifecycleConfigurationDetails to a compact JSON object (declaration order).
+def aws_s3_bucket_bucket_lifecycle_configuration_details_to_json(AwsS3BucketBucketLifecycleConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.Rules.is_some():
+        auto u0 = v.Rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_s3_bucket_bucket_lifecycle_configuration_rules_details_to_json(x1))
+        parts.append("\"Rules\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketBucketLifecycleConfigurationRulesDetails to a compact JSON object (declaration order).
+def aws_s3_bucket_bucket_lifecycle_configuration_rules_details_to_json(AwsS3BucketBucketLifecycleConfigurationRulesDetails v) -> str:
+    list[str] parts = []
+    if v.AbortIncompleteMultipartUpload.is_some():
+        auto u0 = v.AbortIncompleteMultipartUpload.unwrap()
+        parts.append("\"AbortIncompleteMultipartUpload\":" + u0.to_json())
+    if v.ExpirationDate.is_some():
+        auto u1 = v.ExpirationDate.unwrap()
+        parts.append("\"ExpirationDate\":" + securityhub_json_str(u1))
+    if v.ExpirationInDays.is_some():
+        auto u2 = v.ExpirationInDays.unwrap()
+        parts.append("\"ExpirationInDays\":" + str(u2))
+    if v.ExpiredObjectDeleteMarker.is_some():
+        auto u3 = v.ExpiredObjectDeleteMarker.unwrap()
+        parts.append("\"ExpiredObjectDeleteMarker\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Filter.is_some():
+        auto u4 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + aws_s3_bucket_bucket_lifecycle_configuration_rules_filter_details_to_json(u4))
+    if v.ID.is_some():
+        auto u5 = v.ID.unwrap()
+        parts.append("\"ID\":" + securityhub_json_str(u5))
+    if v.NoncurrentVersionExpirationInDays.is_some():
+        auto u6 = v.NoncurrentVersionExpirationInDays.unwrap()
+        parts.append("\"NoncurrentVersionExpirationInDays\":" + str(u6))
+    if v.NoncurrentVersionTransitions.is_some():
+        auto u7 = v.NoncurrentVersionTransitions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"NoncurrentVersionTransitions\":" + securityhub_json_arr(e8))
+    if v.Prefix.is_some():
+        auto u9 = v.Prefix.unwrap()
+        parts.append("\"Prefix\":" + securityhub_json_str(u9))
+    if v.Status.is_some():
+        auto u10 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u10))
+    if v.Transitions.is_some():
+        auto u11 = v.Transitions.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Transitions\":" + securityhub_json_arr(e12))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketBucketLifecycleConfigurationRulesFilterDetails to a compact JSON object (declaration order).
+def aws_s3_bucket_bucket_lifecycle_configuration_rules_filter_details_to_json(AwsS3BucketBucketLifecycleConfigurationRulesFilterDetails v) -> str:
+    list[str] parts = []
+    if v.Predicate.is_some():
+        auto u0 = v.Predicate.unwrap()
+        parts.append("\"Predicate\":" + aws_s3_bucket_bucket_lifecycle_configuration_rules_filter_predicate_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateDetails to a compact JSON object (declaration order).
+def aws_s3_bucket_bucket_lifecycle_configuration_rules_filter_predicate_details_to_json(AwsS3BucketBucketLifecycleConfigurationRulesFilterPredicateDetails v) -> str:
+    list[str] parts = []
+    if v.Operands.is_some():
+        auto u0 = v.Operands.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Operands\":" + securityhub_json_arr(e1))
+    if v.Prefix.is_some():
+        auto u2 = v.Prefix.unwrap()
+        parts.append("\"Prefix\":" + securityhub_json_str(u2))
+    if v.Tag.is_some():
+        auto u3 = v.Tag.unwrap()
+        parts.append("\"Tag\":" + u3.to_json())
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketDetails to a compact JSON object (declaration order).
+def aws_s3_bucket_details_to_json(AwsS3BucketDetails v) -> str:
+    list[str] parts = []
+    if v.OwnerId.is_some():
+        auto u0 = v.OwnerId.unwrap()
+        parts.append("\"OwnerId\":" + securityhub_json_str(u0))
+    if v.OwnerName.is_some():
+        auto u1 = v.OwnerName.unwrap()
+        parts.append("\"OwnerName\":" + securityhub_json_str(u1))
+    if v.OwnerAccountId.is_some():
+        auto u2 = v.OwnerAccountId.unwrap()
+        parts.append("\"OwnerAccountId\":" + securityhub_json_str(u2))
+    if v.CreatedAt.is_some():
+        auto u3 = v.CreatedAt.unwrap()
+        parts.append("\"CreatedAt\":" + securityhub_json_str(u3))
+    if v.ServerSideEncryptionConfiguration.is_some():
+        auto u4 = v.ServerSideEncryptionConfiguration.unwrap()
+        parts.append("\"ServerSideEncryptionConfiguration\":" + aws_s3_bucket_server_side_encryption_configuration_to_json(u4))
+    if v.BucketLifecycleConfiguration.is_some():
+        auto u5 = v.BucketLifecycleConfiguration.unwrap()
+        parts.append("\"BucketLifecycleConfiguration\":" + aws_s3_bucket_bucket_lifecycle_configuration_details_to_json(u5))
+    if v.PublicAccessBlockConfiguration.is_some():
+        auto u6 = v.PublicAccessBlockConfiguration.unwrap()
+        parts.append("\"PublicAccessBlockConfiguration\":" + u6.to_json())
+    if v.AccessControlList.is_some():
+        auto u7 = v.AccessControlList.unwrap()
+        parts.append("\"AccessControlList\":" + securityhub_json_str(u7))
+    if v.BucketLoggingConfiguration.is_some():
+        auto u8 = v.BucketLoggingConfiguration.unwrap()
+        parts.append("\"BucketLoggingConfiguration\":" + u8.to_json())
+    if v.BucketWebsiteConfiguration.is_some():
+        auto u9 = v.BucketWebsiteConfiguration.unwrap()
+        parts.append("\"BucketWebsiteConfiguration\":" + aws_s3_bucket_website_configuration_to_json(u9))
+    if v.BucketNotificationConfiguration.is_some():
+        auto u10 = v.BucketNotificationConfiguration.unwrap()
+        parts.append("\"BucketNotificationConfiguration\":" + aws_s3_bucket_notification_configuration_to_json(u10))
+    if v.BucketVersioningConfiguration.is_some():
+        auto u11 = v.BucketVersioningConfiguration.unwrap()
+        parts.append("\"BucketVersioningConfiguration\":" + u11.to_json())
+    if v.ObjectLockConfiguration.is_some():
+        auto u12 = v.ObjectLockConfiguration.unwrap()
+        parts.append("\"ObjectLockConfiguration\":" + u12.to_json())
+    if v.Name.is_some():
+        auto u13 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u13))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketNotificationConfiguration to a compact JSON object (declaration order).
+def aws_s3_bucket_notification_configuration_to_json(AwsS3BucketNotificationConfiguration v) -> str:
+    list[str] parts = []
+    if v.Configurations.is_some():
+        auto u0 = v.Configurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aws_s3_bucket_notification_configuration_detail_to_json(x1))
+        parts.append("\"Configurations\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketNotificationConfigurationDetail to a compact JSON object (declaration order).
+def aws_s3_bucket_notification_configuration_detail_to_json(AwsS3BucketNotificationConfigurationDetail v) -> str:
+    list[str] parts = []
+    if v.Events.is_some():
+        auto u0 = v.Events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Events\":" + securityhub_json_arr(e1))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + aws_s3_bucket_notification_configuration_filter_to_json(u2))
+    if v.Destination.is_some():
+        auto u3 = v.Destination.unwrap()
+        parts.append("\"Destination\":" + securityhub_json_str(u3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketNotificationConfigurationFilter to a compact JSON object (declaration order).
+def aws_s3_bucket_notification_configuration_filter_to_json(AwsS3BucketNotificationConfigurationFilter v) -> str:
+    list[str] parts = []
+    if v.S3KeyFilter.is_some():
+        auto u0 = v.S3KeyFilter.unwrap()
+        parts.append("\"S3KeyFilter\":" + aws_s3_bucket_notification_configuration_s3_key_filter_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketNotificationConfigurationS3KeyFilter to a compact JSON object (declaration order).
+def aws_s3_bucket_notification_configuration_s3_key_filter_to_json(AwsS3BucketNotificationConfigurationS3KeyFilter v) -> str:
+    list[str] parts = []
+    if v.FilterRules.is_some():
+        auto u0 = v.FilterRules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FilterRules\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketServerSideEncryptionConfiguration to a compact JSON object (declaration order).
+def aws_s3_bucket_server_side_encryption_configuration_to_json(AwsS3BucketServerSideEncryptionConfiguration v) -> str:
+    list[str] parts = []
+    if v.Rules.is_some():
+        auto u0 = v.Rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Rules\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsS3BucketWebsiteConfiguration to a compact JSON object (declaration order).
+def aws_s3_bucket_website_configuration_to_json(AwsS3BucketWebsiteConfiguration v) -> str:
+    list[str] parts = []
+    if v.ErrorDocument.is_some():
+        auto u0 = v.ErrorDocument.unwrap()
+        parts.append("\"ErrorDocument\":" + securityhub_json_str(u0))
+    if v.IndexDocumentSuffix.is_some():
+        auto u1 = v.IndexDocumentSuffix.unwrap()
+        parts.append("\"IndexDocumentSuffix\":" + securityhub_json_str(u1))
+    if v.RedirectAllRequestsTo.is_some():
+        auto u2 = v.RedirectAllRequestsTo.unwrap()
+        parts.append("\"RedirectAllRequestsTo\":" + u2.to_json())
+    if v.RoutingRules.is_some():
+        auto u3 = v.RoutingRules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"RoutingRules\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsSageMakerNotebookInstanceDetails to a compact JSON object (declaration order).
+def aws_sage_maker_notebook_instance_details_to_json(AwsSageMakerNotebookInstanceDetails v) -> str:
+    list[str] parts = []
+    if v.AcceleratorTypes.is_some():
+        auto u0 = v.AcceleratorTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"AcceleratorTypes\":" + securityhub_json_arr(e1))
+    if v.AdditionalCodeRepositories.is_some():
+        auto u2 = v.AdditionalCodeRepositories.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"AdditionalCodeRepositories\":" + securityhub_json_arr(e3))
+    if v.DefaultCodeRepository.is_some():
+        auto u4 = v.DefaultCodeRepository.unwrap()
+        parts.append("\"DefaultCodeRepository\":" + securityhub_json_str(u4))
+    if v.DirectInternetAccess.is_some():
+        auto u5 = v.DirectInternetAccess.unwrap()
+        parts.append("\"DirectInternetAccess\":" + securityhub_json_str(u5))
+    if v.FailureReason.is_some():
+        auto u6 = v.FailureReason.unwrap()
+        parts.append("\"FailureReason\":" + securityhub_json_str(u6))
+    if v.InstanceMetadataServiceConfiguration.is_some():
+        auto u7 = v.InstanceMetadataServiceConfiguration.unwrap()
+        parts.append("\"InstanceMetadataServiceConfiguration\":" + u7.to_json())
+    if v.InstanceType.is_some():
+        auto u8 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + securityhub_json_str(u8))
+    if v.KmsKeyId.is_some():
+        auto u9 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + securityhub_json_str(u9))
+    if v.NetworkInterfaceId.is_some():
+        auto u10 = v.NetworkInterfaceId.unwrap()
+        parts.append("\"NetworkInterfaceId\":" + securityhub_json_str(u10))
+    if v.NotebookInstanceArn.is_some():
+        auto u11 = v.NotebookInstanceArn.unwrap()
+        parts.append("\"NotebookInstanceArn\":" + securityhub_json_str(u11))
+    if v.NotebookInstanceLifecycleConfigName.is_some():
+        auto u12 = v.NotebookInstanceLifecycleConfigName.unwrap()
+        parts.append("\"NotebookInstanceLifecycleConfigName\":" + securityhub_json_str(u12))
+    if v.NotebookInstanceName.is_some():
+        auto u13 = v.NotebookInstanceName.unwrap()
+        parts.append("\"NotebookInstanceName\":" + securityhub_json_str(u13))
+    if v.NotebookInstanceStatus.is_some():
+        auto u14 = v.NotebookInstanceStatus.unwrap()
+        parts.append("\"NotebookInstanceStatus\":" + securityhub_json_str(u14))
+    if v.PlatformIdentifier.is_some():
+        auto u15 = v.PlatformIdentifier.unwrap()
+        parts.append("\"PlatformIdentifier\":" + securityhub_json_str(u15))
+    if v.RoleArn.is_some():
+        auto u16 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + securityhub_json_str(u16))
+    if v.RootAccess.is_some():
+        auto u17 = v.RootAccess.unwrap()
+        parts.append("\"RootAccess\":" + securityhub_json_str(u17))
+    if v.SecurityGroups.is_some():
+        auto u18 = v.SecurityGroups.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(securityhub_json_str(x19))
+        parts.append("\"SecurityGroups\":" + securityhub_json_arr(e19))
+    if v.SubnetId.is_some():
+        auto u20 = v.SubnetId.unwrap()
+        parts.append("\"SubnetId\":" + securityhub_json_str(u20))
+    if v.Url.is_some():
+        auto u21 = v.Url.unwrap()
+        parts.append("\"Url\":" + securityhub_json_str(u21))
+    if v.VolumeSizeInGB.is_some():
+        auto u22 = v.VolumeSizeInGB.unwrap()
+        parts.append("\"VolumeSizeInGB\":" + str(u22))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsSecurityFinding to a compact JSON object (declaration order).
+def aws_security_finding_to_json(AwsSecurityFinding v) -> str:
+    list[str] parts = []
+    parts.append("\"SchemaVersion\":" + securityhub_json_str(v.SchemaVersion))
+    parts.append("\"Id\":" + securityhub_json_str(v.Id))
+    parts.append("\"ProductArn\":" + securityhub_json_str(v.ProductArn))
+    if v.ProductName.is_some():
+        auto u0 = v.ProductName.unwrap()
+        parts.append("\"ProductName\":" + securityhub_json_str(u0))
+    if v.CompanyName.is_some():
+        auto u1 = v.CompanyName.unwrap()
+        parts.append("\"CompanyName\":" + securityhub_json_str(u1))
+    if v.Region.is_some():
+        auto u2 = v.Region.unwrap()
+        parts.append("\"Region\":" + securityhub_json_str(u2))
+    parts.append("\"GeneratorId\":" + securityhub_json_str(v.GeneratorId))
+    parts.append("\"AwsAccountId\":" + securityhub_json_str(v.AwsAccountId))
+    if v.Types.is_some():
+        auto u3 = v.Types.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"Types\":" + securityhub_json_arr(e4))
+    if v.FirstObservedAt.is_some():
+        auto u5 = v.FirstObservedAt.unwrap()
+        parts.append("\"FirstObservedAt\":" + securityhub_json_str(u5))
+    if v.LastObservedAt.is_some():
+        auto u6 = v.LastObservedAt.unwrap()
+        parts.append("\"LastObservedAt\":" + securityhub_json_str(u6))
+    parts.append("\"CreatedAt\":" + securityhub_json_str(v.CreatedAt))
+    parts.append("\"UpdatedAt\":" + securityhub_json_str(v.UpdatedAt))
+    if v.Severity.is_some():
+        auto u7 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + u7.to_json())
+    if v.Confidence.is_some():
+        auto u8 = v.Confidence.unwrap()
+        parts.append("\"Confidence\":" + str(u8))
+    if v.Criticality.is_some():
+        auto u9 = v.Criticality.unwrap()
+        parts.append("\"Criticality\":" + str(u9))
+    parts.append("\"Title\":" + securityhub_json_str(v.Title))
+    parts.append("\"Description\":" + securityhub_json_str(v.Description))
+    if v.Remediation.is_some():
+        auto u10 = v.Remediation.unwrap()
+        parts.append("\"Remediation\":" + u10.to_json())
+    if v.SourceUrl.is_some():
+        auto u11 = v.SourceUrl.unwrap()
+        parts.append("\"SourceUrl\":" + securityhub_json_str(u11))
+    if v.ProductFields.is_some():
+        auto u12 = v.ProductFields.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(securityhub_json_str(k13) + ":" + securityhub_json_str(u12[k13]))
+        parts.append("\"ProductFields\":" + securityhub_json_obj(m13))
+    if v.UserDefinedFields.is_some():
+        auto u14 = v.UserDefinedFields.unwrap()
+        list[str] m15 = []
+        for k15 in sorted(u14.keys()):
+            m15.append(securityhub_json_str(k15) + ":" + securityhub_json_str(u14[k15]))
+        parts.append("\"UserDefinedFields\":" + securityhub_json_obj(m15))
+    if v.Malware.is_some():
+        auto u16 = v.Malware.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"Malware\":" + securityhub_json_arr(e17))
+    if v.Network.is_some():
+        auto u18 = v.Network.unwrap()
+        parts.append("\"Network\":" + u18.to_json())
+    if v.NetworkPath.is_some():
+        auto u19 = v.NetworkPath.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(network_path_component_to_json(x20))
+        parts.append("\"NetworkPath\":" + securityhub_json_arr(e20))
+    if v.Process.is_some():
+        auto u21 = v.Process.unwrap()
+        parts.append("\"Process\":" + u21.to_json())
+    if v.Threats.is_some():
+        auto u22 = v.Threats.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(threat_to_json(x23))
+        parts.append("\"Threats\":" + securityhub_json_arr(e23))
+    if v.ThreatIntelIndicators.is_some():
+        auto u24 = v.ThreatIntelIndicators.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"ThreatIntelIndicators\":" + securityhub_json_arr(e25))
+    list[str] e26 = []
+    for x26 in v.Resources:
+        e26.append(resource_to_json(x26))
+    parts.append("\"Resources\":" + securityhub_json_arr(e26))
+    if v.Compliance.is_some():
+        auto u27 = v.Compliance.unwrap()
+        parts.append("\"Compliance\":" + compliance_to_json(u27))
+    if v.VerificationState.is_some():
+        auto u28 = v.VerificationState.unwrap()
+        parts.append("\"VerificationState\":" + u28.to_json())
+    if v.WorkflowState.is_some():
+        auto u29 = v.WorkflowState.unwrap()
+        parts.append("\"WorkflowState\":" + u29.to_json())
+    if v.Workflow.is_some():
+        auto u30 = v.Workflow.unwrap()
+        parts.append("\"Workflow\":" + u30.to_json())
+    if v.RecordState.is_some():
+        auto u31 = v.RecordState.unwrap()
+        parts.append("\"RecordState\":" + u31.to_json())
+    if v.RelatedFindings.is_some():
+        auto u32 = v.RelatedFindings.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"RelatedFindings\":" + securityhub_json_arr(e33))
+    if v.Note.is_some():
+        auto u34 = v.Note.unwrap()
+        parts.append("\"Note\":" + u34.to_json())
+    if v.Vulnerabilities.is_some():
+        auto u35 = v.Vulnerabilities.unwrap()
+        list[str] e36 = []
+        for x36 in u35:
+            e36.append(vulnerability_to_json(x36))
+        parts.append("\"Vulnerabilities\":" + securityhub_json_arr(e36))
+    if v.PatchSummary.is_some():
+        auto u37 = v.PatchSummary.unwrap()
+        parts.append("\"PatchSummary\":" + u37.to_json())
+    if v.Action.is_some():
+        auto u38 = v.Action.unwrap()
+        parts.append("\"Action\":" + action_to_json(u38))
+    if v.FindingProviderFields.is_some():
+        auto u39 = v.FindingProviderFields.unwrap()
+        parts.append("\"FindingProviderFields\":" + finding_provider_fields_to_json(u39))
+    if v.Sample.is_some():
+        auto u40 = v.Sample.unwrap()
+        parts.append("\"Sample\":" + json.dumps(JsonValue.Bool(u40)))
+    if v.GeneratorDetails.is_some():
+        auto u41 = v.GeneratorDetails.unwrap()
+        parts.append("\"GeneratorDetails\":" + generator_details_to_json(u41))
+    if v.ProcessedAt.is_some():
+        auto u42 = v.ProcessedAt.unwrap()
+        parts.append("\"ProcessedAt\":" + securityhub_json_str(u42))
+    if v.AwsAccountName.is_some():
+        auto u43 = v.AwsAccountName.unwrap()
+        parts.append("\"AwsAccountName\":" + securityhub_json_str(u43))
+    if v.Detection.is_some():
+        auto u44 = v.Detection.unwrap()
+        parts.append("\"Detection\":" + detection_to_json(u44))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsSecurityFindingFilters to a compact JSON object (declaration order).
+def aws_security_finding_filters_to_json(AwsSecurityFindingFilters v) -> str:
+    list[str] parts = []
+    if v.ProductArn.is_some():
+        auto u0 = v.ProductArn.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ProductArn\":" + securityhub_json_arr(e1))
+    if v.AwsAccountId.is_some():
+        auto u2 = v.AwsAccountId.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AwsAccountId\":" + securityhub_json_arr(e3))
+    if v.Id.is_some():
+        auto u4 = v.Id.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Id\":" + securityhub_json_arr(e5))
+    if v.GeneratorId.is_some():
+        auto u6 = v.GeneratorId.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"GeneratorId\":" + securityhub_json_arr(e7))
+    if v.Region.is_some():
+        auto u8 = v.Region.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Region\":" + securityhub_json_arr(e9))
+    if v.Type.is_some():
+        auto u10 = v.Type.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Type\":" + securityhub_json_arr(e11))
+    if v.FirstObservedAt.is_some():
+        auto u12 = v.FirstObservedAt.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"FirstObservedAt\":" + securityhub_json_arr(e13))
+    if v.LastObservedAt.is_some():
+        auto u14 = v.LastObservedAt.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"LastObservedAt\":" + securityhub_json_arr(e15))
+    if v.CreatedAt.is_some():
+        auto u16 = v.CreatedAt.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"CreatedAt\":" + securityhub_json_arr(e17))
+    if v.UpdatedAt.is_some():
+        auto u18 = v.UpdatedAt.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"UpdatedAt\":" + securityhub_json_arr(e19))
+    if v.SeverityProduct.is_some():
+        auto u20 = v.SeverityProduct.unwrap()
+        list[str] e21 = []
+        for x21 in u20:
+            e21.append(x21.to_json())
+        parts.append("\"SeverityProduct\":" + securityhub_json_arr(e21))
+    if v.SeverityNormalized.is_some():
+        auto u22 = v.SeverityNormalized.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            e23.append(x23.to_json())
+        parts.append("\"SeverityNormalized\":" + securityhub_json_arr(e23))
+    if v.SeverityLabel.is_some():
+        auto u24 = v.SeverityLabel.unwrap()
+        list[str] e25 = []
+        for x25 in u24:
+            e25.append(x25.to_json())
+        parts.append("\"SeverityLabel\":" + securityhub_json_arr(e25))
+    if v.Confidence.is_some():
+        auto u26 = v.Confidence.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"Confidence\":" + securityhub_json_arr(e27))
+    if v.Criticality.is_some():
+        auto u28 = v.Criticality.unwrap()
+        list[str] e29 = []
+        for x29 in u28:
+            e29.append(x29.to_json())
+        parts.append("\"Criticality\":" + securityhub_json_arr(e29))
+    if v.Title.is_some():
+        auto u30 = v.Title.unwrap()
+        list[str] e31 = []
+        for x31 in u30:
+            e31.append(x31.to_json())
+        parts.append("\"Title\":" + securityhub_json_arr(e31))
+    if v.Description.is_some():
+        auto u32 = v.Description.unwrap()
+        list[str] e33 = []
+        for x33 in u32:
+            e33.append(x33.to_json())
+        parts.append("\"Description\":" + securityhub_json_arr(e33))
+    if v.RecommendationText.is_some():
+        auto u34 = v.RecommendationText.unwrap()
+        list[str] e35 = []
+        for x35 in u34:
+            e35.append(x35.to_json())
+        parts.append("\"RecommendationText\":" + securityhub_json_arr(e35))
+    if v.SourceUrl.is_some():
+        auto u36 = v.SourceUrl.unwrap()
+        list[str] e37 = []
+        for x37 in u36:
+            e37.append(x37.to_json())
+        parts.append("\"SourceUrl\":" + securityhub_json_arr(e37))
+    if v.ProductFields.is_some():
+        auto u38 = v.ProductFields.unwrap()
+        list[str] e39 = []
+        for x39 in u38:
+            e39.append(x39.to_json())
+        parts.append("\"ProductFields\":" + securityhub_json_arr(e39))
+    if v.ProductName.is_some():
+        auto u40 = v.ProductName.unwrap()
+        list[str] e41 = []
+        for x41 in u40:
+            e41.append(x41.to_json())
+        parts.append("\"ProductName\":" + securityhub_json_arr(e41))
+    if v.CompanyName.is_some():
+        auto u42 = v.CompanyName.unwrap()
+        list[str] e43 = []
+        for x43 in u42:
+            e43.append(x43.to_json())
+        parts.append("\"CompanyName\":" + securityhub_json_arr(e43))
+    if v.UserDefinedFields.is_some():
+        auto u44 = v.UserDefinedFields.unwrap()
+        list[str] e45 = []
+        for x45 in u44:
+            e45.append(x45.to_json())
+        parts.append("\"UserDefinedFields\":" + securityhub_json_arr(e45))
+    if v.MalwareName.is_some():
+        auto u46 = v.MalwareName.unwrap()
+        list[str] e47 = []
+        for x47 in u46:
+            e47.append(x47.to_json())
+        parts.append("\"MalwareName\":" + securityhub_json_arr(e47))
+    if v.MalwareType.is_some():
+        auto u48 = v.MalwareType.unwrap()
+        list[str] e49 = []
+        for x49 in u48:
+            e49.append(x49.to_json())
+        parts.append("\"MalwareType\":" + securityhub_json_arr(e49))
+    if v.MalwarePath.is_some():
+        auto u50 = v.MalwarePath.unwrap()
+        list[str] e51 = []
+        for x51 in u50:
+            e51.append(x51.to_json())
+        parts.append("\"MalwarePath\":" + securityhub_json_arr(e51))
+    if v.MalwareState.is_some():
+        auto u52 = v.MalwareState.unwrap()
+        list[str] e53 = []
+        for x53 in u52:
+            e53.append(x53.to_json())
+        parts.append("\"MalwareState\":" + securityhub_json_arr(e53))
+    if v.NetworkDirection.is_some():
+        auto u54 = v.NetworkDirection.unwrap()
+        list[str] e55 = []
+        for x55 in u54:
+            e55.append(x55.to_json())
+        parts.append("\"NetworkDirection\":" + securityhub_json_arr(e55))
+    if v.NetworkProtocol.is_some():
+        auto u56 = v.NetworkProtocol.unwrap()
+        list[str] e57 = []
+        for x57 in u56:
+            e57.append(x57.to_json())
+        parts.append("\"NetworkProtocol\":" + securityhub_json_arr(e57))
+    if v.NetworkSourceIpV4.is_some():
+        auto u58 = v.NetworkSourceIpV4.unwrap()
+        list[str] e59 = []
+        for x59 in u58:
+            e59.append(x59.to_json())
+        parts.append("\"NetworkSourceIpV4\":" + securityhub_json_arr(e59))
+    if v.NetworkSourceIpV6.is_some():
+        auto u60 = v.NetworkSourceIpV6.unwrap()
+        list[str] e61 = []
+        for x61 in u60:
+            e61.append(x61.to_json())
+        parts.append("\"NetworkSourceIpV6\":" + securityhub_json_arr(e61))
+    if v.NetworkSourcePort.is_some():
+        auto u62 = v.NetworkSourcePort.unwrap()
+        list[str] e63 = []
+        for x63 in u62:
+            e63.append(x63.to_json())
+        parts.append("\"NetworkSourcePort\":" + securityhub_json_arr(e63))
+    if v.NetworkSourceDomain.is_some():
+        auto u64 = v.NetworkSourceDomain.unwrap()
+        list[str] e65 = []
+        for x65 in u64:
+            e65.append(x65.to_json())
+        parts.append("\"NetworkSourceDomain\":" + securityhub_json_arr(e65))
+    if v.NetworkSourceMac.is_some():
+        auto u66 = v.NetworkSourceMac.unwrap()
+        list[str] e67 = []
+        for x67 in u66:
+            e67.append(x67.to_json())
+        parts.append("\"NetworkSourceMac\":" + securityhub_json_arr(e67))
+    if v.NetworkDestinationIpV4.is_some():
+        auto u68 = v.NetworkDestinationIpV4.unwrap()
+        list[str] e69 = []
+        for x69 in u68:
+            e69.append(x69.to_json())
+        parts.append("\"NetworkDestinationIpV4\":" + securityhub_json_arr(e69))
+    if v.NetworkDestinationIpV6.is_some():
+        auto u70 = v.NetworkDestinationIpV6.unwrap()
+        list[str] e71 = []
+        for x71 in u70:
+            e71.append(x71.to_json())
+        parts.append("\"NetworkDestinationIpV6\":" + securityhub_json_arr(e71))
+    if v.NetworkDestinationPort.is_some():
+        auto u72 = v.NetworkDestinationPort.unwrap()
+        list[str] e73 = []
+        for x73 in u72:
+            e73.append(x73.to_json())
+        parts.append("\"NetworkDestinationPort\":" + securityhub_json_arr(e73))
+    if v.NetworkDestinationDomain.is_some():
+        auto u74 = v.NetworkDestinationDomain.unwrap()
+        list[str] e75 = []
+        for x75 in u74:
+            e75.append(x75.to_json())
+        parts.append("\"NetworkDestinationDomain\":" + securityhub_json_arr(e75))
+    if v.ProcessName.is_some():
+        auto u76 = v.ProcessName.unwrap()
+        list[str] e77 = []
+        for x77 in u76:
+            e77.append(x77.to_json())
+        parts.append("\"ProcessName\":" + securityhub_json_arr(e77))
+    if v.ProcessPath.is_some():
+        auto u78 = v.ProcessPath.unwrap()
+        list[str] e79 = []
+        for x79 in u78:
+            e79.append(x79.to_json())
+        parts.append("\"ProcessPath\":" + securityhub_json_arr(e79))
+    if v.ProcessPid.is_some():
+        auto u80 = v.ProcessPid.unwrap()
+        list[str] e81 = []
+        for x81 in u80:
+            e81.append(x81.to_json())
+        parts.append("\"ProcessPid\":" + securityhub_json_arr(e81))
+    if v.ProcessParentPid.is_some():
+        auto u82 = v.ProcessParentPid.unwrap()
+        list[str] e83 = []
+        for x83 in u82:
+            e83.append(x83.to_json())
+        parts.append("\"ProcessParentPid\":" + securityhub_json_arr(e83))
+    if v.ProcessLaunchedAt.is_some():
+        auto u84 = v.ProcessLaunchedAt.unwrap()
+        list[str] e85 = []
+        for x85 in u84:
+            e85.append(x85.to_json())
+        parts.append("\"ProcessLaunchedAt\":" + securityhub_json_arr(e85))
+    if v.ProcessTerminatedAt.is_some():
+        auto u86 = v.ProcessTerminatedAt.unwrap()
+        list[str] e87 = []
+        for x87 in u86:
+            e87.append(x87.to_json())
+        parts.append("\"ProcessTerminatedAt\":" + securityhub_json_arr(e87))
+    if v.ThreatIntelIndicatorType.is_some():
+        auto u88 = v.ThreatIntelIndicatorType.unwrap()
+        list[str] e89 = []
+        for x89 in u88:
+            e89.append(x89.to_json())
+        parts.append("\"ThreatIntelIndicatorType\":" + securityhub_json_arr(e89))
+    if v.ThreatIntelIndicatorValue.is_some():
+        auto u90 = v.ThreatIntelIndicatorValue.unwrap()
+        list[str] e91 = []
+        for x91 in u90:
+            e91.append(x91.to_json())
+        parts.append("\"ThreatIntelIndicatorValue\":" + securityhub_json_arr(e91))
+    if v.ThreatIntelIndicatorCategory.is_some():
+        auto u92 = v.ThreatIntelIndicatorCategory.unwrap()
+        list[str] e93 = []
+        for x93 in u92:
+            e93.append(x93.to_json())
+        parts.append("\"ThreatIntelIndicatorCategory\":" + securityhub_json_arr(e93))
+    if v.ThreatIntelIndicatorLastObservedAt.is_some():
+        auto u94 = v.ThreatIntelIndicatorLastObservedAt.unwrap()
+        list[str] e95 = []
+        for x95 in u94:
+            e95.append(x95.to_json())
+        parts.append("\"ThreatIntelIndicatorLastObservedAt\":" + securityhub_json_arr(e95))
+    if v.ThreatIntelIndicatorSource.is_some():
+        auto u96 = v.ThreatIntelIndicatorSource.unwrap()
+        list[str] e97 = []
+        for x97 in u96:
+            e97.append(x97.to_json())
+        parts.append("\"ThreatIntelIndicatorSource\":" + securityhub_json_arr(e97))
+    if v.ThreatIntelIndicatorSourceUrl.is_some():
+        auto u98 = v.ThreatIntelIndicatorSourceUrl.unwrap()
+        list[str] e99 = []
+        for x99 in u98:
+            e99.append(x99.to_json())
+        parts.append("\"ThreatIntelIndicatorSourceUrl\":" + securityhub_json_arr(e99))
+    if v.ResourceType.is_some():
+        auto u100 = v.ResourceType.unwrap()
+        list[str] e101 = []
+        for x101 in u100:
+            e101.append(x101.to_json())
+        parts.append("\"ResourceType\":" + securityhub_json_arr(e101))
+    if v.ResourceId.is_some():
+        auto u102 = v.ResourceId.unwrap()
+        list[str] e103 = []
+        for x103 in u102:
+            e103.append(x103.to_json())
+        parts.append("\"ResourceId\":" + securityhub_json_arr(e103))
+    if v.ResourcePartition.is_some():
+        auto u104 = v.ResourcePartition.unwrap()
+        list[str] e105 = []
+        for x105 in u104:
+            e105.append(x105.to_json())
+        parts.append("\"ResourcePartition\":" + securityhub_json_arr(e105))
+    if v.ResourceRegion.is_some():
+        auto u106 = v.ResourceRegion.unwrap()
+        list[str] e107 = []
+        for x107 in u106:
+            e107.append(x107.to_json())
+        parts.append("\"ResourceRegion\":" + securityhub_json_arr(e107))
+    if v.ResourceTags.is_some():
+        auto u108 = v.ResourceTags.unwrap()
+        list[str] e109 = []
+        for x109 in u108:
+            e109.append(x109.to_json())
+        parts.append("\"ResourceTags\":" + securityhub_json_arr(e109))
+    if v.ResourceAwsEc2InstanceType.is_some():
+        auto u110 = v.ResourceAwsEc2InstanceType.unwrap()
+        list[str] e111 = []
+        for x111 in u110:
+            e111.append(x111.to_json())
+        parts.append("\"ResourceAwsEc2InstanceType\":" + securityhub_json_arr(e111))
+    if v.ResourceAwsEc2InstanceImageId.is_some():
+        auto u112 = v.ResourceAwsEc2InstanceImageId.unwrap()
+        list[str] e113 = []
+        for x113 in u112:
+            e113.append(x113.to_json())
+        parts.append("\"ResourceAwsEc2InstanceImageId\":" + securityhub_json_arr(e113))
+    if v.ResourceAwsEc2InstanceIpV4Addresses.is_some():
+        auto u114 = v.ResourceAwsEc2InstanceIpV4Addresses.unwrap()
+        list[str] e115 = []
+        for x115 in u114:
+            e115.append(x115.to_json())
+        parts.append("\"ResourceAwsEc2InstanceIpV4Addresses\":" + securityhub_json_arr(e115))
+    if v.ResourceAwsEc2InstanceIpV6Addresses.is_some():
+        auto u116 = v.ResourceAwsEc2InstanceIpV6Addresses.unwrap()
+        list[str] e117 = []
+        for x117 in u116:
+            e117.append(x117.to_json())
+        parts.append("\"ResourceAwsEc2InstanceIpV6Addresses\":" + securityhub_json_arr(e117))
+    if v.ResourceAwsEc2InstanceKeyName.is_some():
+        auto u118 = v.ResourceAwsEc2InstanceKeyName.unwrap()
+        list[str] e119 = []
+        for x119 in u118:
+            e119.append(x119.to_json())
+        parts.append("\"ResourceAwsEc2InstanceKeyName\":" + securityhub_json_arr(e119))
+    if v.ResourceAwsEc2InstanceIamInstanceProfileArn.is_some():
+        auto u120 = v.ResourceAwsEc2InstanceIamInstanceProfileArn.unwrap()
+        list[str] e121 = []
+        for x121 in u120:
+            e121.append(x121.to_json())
+        parts.append("\"ResourceAwsEc2InstanceIamInstanceProfileArn\":" + securityhub_json_arr(e121))
+    if v.ResourceAwsEc2InstanceVpcId.is_some():
+        auto u122 = v.ResourceAwsEc2InstanceVpcId.unwrap()
+        list[str] e123 = []
+        for x123 in u122:
+            e123.append(x123.to_json())
+        parts.append("\"ResourceAwsEc2InstanceVpcId\":" + securityhub_json_arr(e123))
+    if v.ResourceAwsEc2InstanceSubnetId.is_some():
+        auto u124 = v.ResourceAwsEc2InstanceSubnetId.unwrap()
+        list[str] e125 = []
+        for x125 in u124:
+            e125.append(x125.to_json())
+        parts.append("\"ResourceAwsEc2InstanceSubnetId\":" + securityhub_json_arr(e125))
+    if v.ResourceAwsEc2InstanceLaunchedAt.is_some():
+        auto u126 = v.ResourceAwsEc2InstanceLaunchedAt.unwrap()
+        list[str] e127 = []
+        for x127 in u126:
+            e127.append(x127.to_json())
+        parts.append("\"ResourceAwsEc2InstanceLaunchedAt\":" + securityhub_json_arr(e127))
+    if v.ResourceAwsS3BucketOwnerId.is_some():
+        auto u128 = v.ResourceAwsS3BucketOwnerId.unwrap()
+        list[str] e129 = []
+        for x129 in u128:
+            e129.append(x129.to_json())
+        parts.append("\"ResourceAwsS3BucketOwnerId\":" + securityhub_json_arr(e129))
+    if v.ResourceAwsS3BucketOwnerName.is_some():
+        auto u130 = v.ResourceAwsS3BucketOwnerName.unwrap()
+        list[str] e131 = []
+        for x131 in u130:
+            e131.append(x131.to_json())
+        parts.append("\"ResourceAwsS3BucketOwnerName\":" + securityhub_json_arr(e131))
+    if v.ResourceAwsIamAccessKeyUserName.is_some():
+        auto u132 = v.ResourceAwsIamAccessKeyUserName.unwrap()
+        list[str] e133 = []
+        for x133 in u132:
+            e133.append(x133.to_json())
+        parts.append("\"ResourceAwsIamAccessKeyUserName\":" + securityhub_json_arr(e133))
+    if v.ResourceAwsIamAccessKeyPrincipalName.is_some():
+        auto u134 = v.ResourceAwsIamAccessKeyPrincipalName.unwrap()
+        list[str] e135 = []
+        for x135 in u134:
+            e135.append(x135.to_json())
+        parts.append("\"ResourceAwsIamAccessKeyPrincipalName\":" + securityhub_json_arr(e135))
+    if v.ResourceAwsIamAccessKeyStatus.is_some():
+        auto u136 = v.ResourceAwsIamAccessKeyStatus.unwrap()
+        list[str] e137 = []
+        for x137 in u136:
+            e137.append(x137.to_json())
+        parts.append("\"ResourceAwsIamAccessKeyStatus\":" + securityhub_json_arr(e137))
+    if v.ResourceAwsIamAccessKeyCreatedAt.is_some():
+        auto u138 = v.ResourceAwsIamAccessKeyCreatedAt.unwrap()
+        list[str] e139 = []
+        for x139 in u138:
+            e139.append(x139.to_json())
+        parts.append("\"ResourceAwsIamAccessKeyCreatedAt\":" + securityhub_json_arr(e139))
+    if v.ResourceAwsIamUserUserName.is_some():
+        auto u140 = v.ResourceAwsIamUserUserName.unwrap()
+        list[str] e141 = []
+        for x141 in u140:
+            e141.append(x141.to_json())
+        parts.append("\"ResourceAwsIamUserUserName\":" + securityhub_json_arr(e141))
+    if v.ResourceContainerName.is_some():
+        auto u142 = v.ResourceContainerName.unwrap()
+        list[str] e143 = []
+        for x143 in u142:
+            e143.append(x143.to_json())
+        parts.append("\"ResourceContainerName\":" + securityhub_json_arr(e143))
+    if v.ResourceContainerImageId.is_some():
+        auto u144 = v.ResourceContainerImageId.unwrap()
+        list[str] e145 = []
+        for x145 in u144:
+            e145.append(x145.to_json())
+        parts.append("\"ResourceContainerImageId\":" + securityhub_json_arr(e145))
+    if v.ResourceContainerImageName.is_some():
+        auto u146 = v.ResourceContainerImageName.unwrap()
+        list[str] e147 = []
+        for x147 in u146:
+            e147.append(x147.to_json())
+        parts.append("\"ResourceContainerImageName\":" + securityhub_json_arr(e147))
+    if v.ResourceContainerLaunchedAt.is_some():
+        auto u148 = v.ResourceContainerLaunchedAt.unwrap()
+        list[str] e149 = []
+        for x149 in u148:
+            e149.append(x149.to_json())
+        parts.append("\"ResourceContainerLaunchedAt\":" + securityhub_json_arr(e149))
+    if v.ResourceDetailsOther.is_some():
+        auto u150 = v.ResourceDetailsOther.unwrap()
+        list[str] e151 = []
+        for x151 in u150:
+            e151.append(x151.to_json())
+        parts.append("\"ResourceDetailsOther\":" + securityhub_json_arr(e151))
+    if v.ComplianceStatus.is_some():
+        auto u152 = v.ComplianceStatus.unwrap()
+        list[str] e153 = []
+        for x153 in u152:
+            e153.append(x153.to_json())
+        parts.append("\"ComplianceStatus\":" + securityhub_json_arr(e153))
+    if v.VerificationState.is_some():
+        auto u154 = v.VerificationState.unwrap()
+        list[str] e155 = []
+        for x155 in u154:
+            e155.append(x155.to_json())
+        parts.append("\"VerificationState\":" + securityhub_json_arr(e155))
+    if v.WorkflowState.is_some():
+        auto u156 = v.WorkflowState.unwrap()
+        list[str] e157 = []
+        for x157 in u156:
+            e157.append(x157.to_json())
+        parts.append("\"WorkflowState\":" + securityhub_json_arr(e157))
+    if v.WorkflowStatus.is_some():
+        auto u158 = v.WorkflowStatus.unwrap()
+        list[str] e159 = []
+        for x159 in u158:
+            e159.append(x159.to_json())
+        parts.append("\"WorkflowStatus\":" + securityhub_json_arr(e159))
+    if v.RecordState.is_some():
+        auto u160 = v.RecordState.unwrap()
+        list[str] e161 = []
+        for x161 in u160:
+            e161.append(x161.to_json())
+        parts.append("\"RecordState\":" + securityhub_json_arr(e161))
+    if v.RelatedFindingsProductArn.is_some():
+        auto u162 = v.RelatedFindingsProductArn.unwrap()
+        list[str] e163 = []
+        for x163 in u162:
+            e163.append(x163.to_json())
+        parts.append("\"RelatedFindingsProductArn\":" + securityhub_json_arr(e163))
+    if v.RelatedFindingsId.is_some():
+        auto u164 = v.RelatedFindingsId.unwrap()
+        list[str] e165 = []
+        for x165 in u164:
+            e165.append(x165.to_json())
+        parts.append("\"RelatedFindingsId\":" + securityhub_json_arr(e165))
+    if v.NoteText.is_some():
+        auto u166 = v.NoteText.unwrap()
+        list[str] e167 = []
+        for x167 in u166:
+            e167.append(x167.to_json())
+        parts.append("\"NoteText\":" + securityhub_json_arr(e167))
+    if v.NoteUpdatedAt.is_some():
+        auto u168 = v.NoteUpdatedAt.unwrap()
+        list[str] e169 = []
+        for x169 in u168:
+            e169.append(x169.to_json())
+        parts.append("\"NoteUpdatedAt\":" + securityhub_json_arr(e169))
+    if v.NoteUpdatedBy.is_some():
+        auto u170 = v.NoteUpdatedBy.unwrap()
+        list[str] e171 = []
+        for x171 in u170:
+            e171.append(x171.to_json())
+        parts.append("\"NoteUpdatedBy\":" + securityhub_json_arr(e171))
+    if v.Keyword.is_some():
+        auto u172 = v.Keyword.unwrap()
+        list[str] e173 = []
+        for x173 in u172:
+            e173.append(x173.to_json())
+        parts.append("\"Keyword\":" + securityhub_json_arr(e173))
+    if v.FindingProviderFieldsConfidence.is_some():
+        auto u174 = v.FindingProviderFieldsConfidence.unwrap()
+        list[str] e175 = []
+        for x175 in u174:
+            e175.append(x175.to_json())
+        parts.append("\"FindingProviderFieldsConfidence\":" + securityhub_json_arr(e175))
+    if v.FindingProviderFieldsCriticality.is_some():
+        auto u176 = v.FindingProviderFieldsCriticality.unwrap()
+        list[str] e177 = []
+        for x177 in u176:
+            e177.append(x177.to_json())
+        parts.append("\"FindingProviderFieldsCriticality\":" + securityhub_json_arr(e177))
+    if v.FindingProviderFieldsRelatedFindingsId.is_some():
+        auto u178 = v.FindingProviderFieldsRelatedFindingsId.unwrap()
+        list[str] e179 = []
+        for x179 in u178:
+            e179.append(x179.to_json())
+        parts.append("\"FindingProviderFieldsRelatedFindingsId\":" + securityhub_json_arr(e179))
+    if v.FindingProviderFieldsRelatedFindingsProductArn.is_some():
+        auto u180 = v.FindingProviderFieldsRelatedFindingsProductArn.unwrap()
+        list[str] e181 = []
+        for x181 in u180:
+            e181.append(x181.to_json())
+        parts.append("\"FindingProviderFieldsRelatedFindingsProductArn\":" + securityhub_json_arr(e181))
+    if v.FindingProviderFieldsSeverityLabel.is_some():
+        auto u182 = v.FindingProviderFieldsSeverityLabel.unwrap()
+        list[str] e183 = []
+        for x183 in u182:
+            e183.append(x183.to_json())
+        parts.append("\"FindingProviderFieldsSeverityLabel\":" + securityhub_json_arr(e183))
+    if v.FindingProviderFieldsSeverityOriginal.is_some():
+        auto u184 = v.FindingProviderFieldsSeverityOriginal.unwrap()
+        list[str] e185 = []
+        for x185 in u184:
+            e185.append(x185.to_json())
+        parts.append("\"FindingProviderFieldsSeverityOriginal\":" + securityhub_json_arr(e185))
+    if v.FindingProviderFieldsTypes.is_some():
+        auto u186 = v.FindingProviderFieldsTypes.unwrap()
+        list[str] e187 = []
+        for x187 in u186:
+            e187.append(x187.to_json())
+        parts.append("\"FindingProviderFieldsTypes\":" + securityhub_json_arr(e187))
+    if v.Sample.is_some():
+        auto u188 = v.Sample.unwrap()
+        list[str] e189 = []
+        for x189 in u188:
+            e189.append(x189.to_json())
+        parts.append("\"Sample\":" + securityhub_json_arr(e189))
+    if v.ComplianceSecurityControlId.is_some():
+        auto u190 = v.ComplianceSecurityControlId.unwrap()
+        list[str] e191 = []
+        for x191 in u190:
+            e191.append(x191.to_json())
+        parts.append("\"ComplianceSecurityControlId\":" + securityhub_json_arr(e191))
+    if v.ComplianceAssociatedStandardsId.is_some():
+        auto u192 = v.ComplianceAssociatedStandardsId.unwrap()
+        list[str] e193 = []
+        for x193 in u192:
+            e193.append(x193.to_json())
+        parts.append("\"ComplianceAssociatedStandardsId\":" + securityhub_json_arr(e193))
+    if v.VulnerabilitiesExploitAvailable.is_some():
+        auto u194 = v.VulnerabilitiesExploitAvailable.unwrap()
+        list[str] e195 = []
+        for x195 in u194:
+            e195.append(x195.to_json())
+        parts.append("\"VulnerabilitiesExploitAvailable\":" + securityhub_json_arr(e195))
+    if v.VulnerabilitiesFixAvailable.is_some():
+        auto u196 = v.VulnerabilitiesFixAvailable.unwrap()
+        list[str] e197 = []
+        for x197 in u196:
+            e197.append(x197.to_json())
+        parts.append("\"VulnerabilitiesFixAvailable\":" + securityhub_json_arr(e197))
+    if v.ComplianceSecurityControlParametersName.is_some():
+        auto u198 = v.ComplianceSecurityControlParametersName.unwrap()
+        list[str] e199 = []
+        for x199 in u198:
+            e199.append(x199.to_json())
+        parts.append("\"ComplianceSecurityControlParametersName\":" + securityhub_json_arr(e199))
+    if v.ComplianceSecurityControlParametersValue.is_some():
+        auto u200 = v.ComplianceSecurityControlParametersValue.unwrap()
+        list[str] e201 = []
+        for x201 in u200:
+            e201.append(x201.to_json())
+        parts.append("\"ComplianceSecurityControlParametersValue\":" + securityhub_json_arr(e201))
+    if v.AwsAccountName.is_some():
+        auto u202 = v.AwsAccountName.unwrap()
+        list[str] e203 = []
+        for x203 in u202:
+            e203.append(x203.to_json())
+        parts.append("\"AwsAccountName\":" + securityhub_json_arr(e203))
+    if v.ResourceApplicationName.is_some():
+        auto u204 = v.ResourceApplicationName.unwrap()
+        list[str] e205 = []
+        for x205 in u204:
+            e205.append(x205.to_json())
+        parts.append("\"ResourceApplicationName\":" + securityhub_json_arr(e205))
+    if v.ResourceApplicationArn.is_some():
+        auto u206 = v.ResourceApplicationArn.unwrap()
+        list[str] e207 = []
+        for x207 in u206:
+            e207.append(x207.to_json())
+        parts.append("\"ResourceApplicationArn\":" + securityhub_json_arr(e207))
+    if v.ResourceOwnerAccountId.is_some():
+        auto u208 = v.ResourceOwnerAccountId.unwrap()
+        list[str] e209 = []
+        for x209 in u208:
+            e209.append(x209.to_json())
+        parts.append("\"ResourceOwnerAccountId\":" + securityhub_json_arr(e209))
+    if v.ResourceOwnerOrgId.is_some():
+        auto u210 = v.ResourceOwnerOrgId.unwrap()
+        list[str] e211 = []
+        for x211 in u210:
+            e211.append(x211.to_json())
+        parts.append("\"ResourceOwnerOrgId\":" + securityhub_json_arr(e211))
+    if v.ResourceProvider.is_some():
+        auto u212 = v.ResourceProvider.unwrap()
+        list[str] e213 = []
+        for x213 in u212:
+            e213.append(x213.to_json())
+        parts.append("\"ResourceProvider\":" + securityhub_json_arr(e213))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsSnsTopicDetails to a compact JSON object (declaration order).
+def aws_sns_topic_details_to_json(AwsSnsTopicDetails v) -> str:
+    list[str] parts = []
+    if v.KmsMasterKeyId.is_some():
+        auto u0 = v.KmsMasterKeyId.unwrap()
+        parts.append("\"KmsMasterKeyId\":" + securityhub_json_str(u0))
+    if v.Subscription.is_some():
+        auto u1 = v.Subscription.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Subscription\":" + securityhub_json_arr(e2))
+    if v.TopicName.is_some():
+        auto u3 = v.TopicName.unwrap()
+        parts.append("\"TopicName\":" + securityhub_json_str(u3))
+    if v.Owner.is_some():
+        auto u4 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + securityhub_json_str(u4))
+    if v.SqsSuccessFeedbackRoleArn.is_some():
+        auto u5 = v.SqsSuccessFeedbackRoleArn.unwrap()
+        parts.append("\"SqsSuccessFeedbackRoleArn\":" + securityhub_json_str(u5))
+    if v.SqsFailureFeedbackRoleArn.is_some():
+        auto u6 = v.SqsFailureFeedbackRoleArn.unwrap()
+        parts.append("\"SqsFailureFeedbackRoleArn\":" + securityhub_json_str(u6))
+    if v.ApplicationSuccessFeedbackRoleArn.is_some():
+        auto u7 = v.ApplicationSuccessFeedbackRoleArn.unwrap()
+        parts.append("\"ApplicationSuccessFeedbackRoleArn\":" + securityhub_json_str(u7))
+    if v.FirehoseSuccessFeedbackRoleArn.is_some():
+        auto u8 = v.FirehoseSuccessFeedbackRoleArn.unwrap()
+        parts.append("\"FirehoseSuccessFeedbackRoleArn\":" + securityhub_json_str(u8))
+    if v.FirehoseFailureFeedbackRoleArn.is_some():
+        auto u9 = v.FirehoseFailureFeedbackRoleArn.unwrap()
+        parts.append("\"FirehoseFailureFeedbackRoleArn\":" + securityhub_json_str(u9))
+    if v.HttpSuccessFeedbackRoleArn.is_some():
+        auto u10 = v.HttpSuccessFeedbackRoleArn.unwrap()
+        parts.append("\"HttpSuccessFeedbackRoleArn\":" + securityhub_json_str(u10))
+    if v.HttpFailureFeedbackRoleArn.is_some():
+        auto u11 = v.HttpFailureFeedbackRoleArn.unwrap()
+        parts.append("\"HttpFailureFeedbackRoleArn\":" + securityhub_json_str(u11))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsStepFunctionStateMachineDetails to a compact JSON object (declaration order).
+def aws_step_function_state_machine_details_to_json(AwsStepFunctionStateMachineDetails v) -> str:
+    list[str] parts = []
+    if v.Label.is_some():
+        auto u0 = v.Label.unwrap()
+        parts.append("\"Label\":" + securityhub_json_str(u0))
+    if v.LoggingConfiguration.is_some():
+        auto u1 = v.LoggingConfiguration.unwrap()
+        parts.append("\"LoggingConfiguration\":" + aws_step_function_state_machine_logging_configuration_details_to_json(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u2))
+    if v.RoleArn.is_some():
+        auto u3 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + securityhub_json_str(u3))
+    if v.StateMachineArn.is_some():
+        auto u4 = v.StateMachineArn.unwrap()
+        parts.append("\"StateMachineArn\":" + securityhub_json_str(u4))
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        parts.append("\"Status\":" + securityhub_json_str(u5))
+    if v.TracingConfiguration.is_some():
+        auto u6 = v.TracingConfiguration.unwrap()
+        parts.append("\"TracingConfiguration\":" + u6.to_json())
+    if v.Type.is_some():
+        auto u7 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u7))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsStepFunctionStateMachineLoggingConfigurationDetails to a compact JSON object (declaration order).
+def aws_step_function_state_machine_logging_configuration_details_to_json(AwsStepFunctionStateMachineLoggingConfigurationDetails v) -> str:
+    list[str] parts = []
+    if v.Destinations.is_some():
+        auto u0 = v.Destinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Destinations\":" + securityhub_json_arr(e1))
+    if v.IncludeExecutionData.is_some():
+        auto u2 = v.IncludeExecutionData.unwrap()
+        parts.append("\"IncludeExecutionData\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Level.is_some():
+        auto u3 = v.Level.unwrap()
+        parts.append("\"Level\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRateBasedRuleDetails to a compact JSON object (declaration order).
+def aws_waf_rate_based_rule_details_to_json(AwsWafRateBasedRuleDetails v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.RateKey.is_some():
+        auto u2 = v.RateKey.unwrap()
+        parts.append("\"RateKey\":" + securityhub_json_str(u2))
+    if v.RateLimit.is_some():
+        auto u3 = v.RateLimit.unwrap()
+        parts.append("\"RateLimit\":" + str(u3))
+    if v.RuleId.is_some():
+        auto u4 = v.RuleId.unwrap()
+        parts.append("\"RuleId\":" + securityhub_json_str(u4))
+    if v.MatchPredicates.is_some():
+        auto u5 = v.MatchPredicates.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"MatchPredicates\":" + securityhub_json_arr(e6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRegionalRateBasedRuleDetails to a compact JSON object (declaration order).
+def aws_waf_regional_rate_based_rule_details_to_json(AwsWafRegionalRateBasedRuleDetails v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.RateKey.is_some():
+        auto u2 = v.RateKey.unwrap()
+        parts.append("\"RateKey\":" + securityhub_json_str(u2))
+    if v.RateLimit.is_some():
+        auto u3 = v.RateLimit.unwrap()
+        parts.append("\"RateLimit\":" + str(u3))
+    if v.RuleId.is_some():
+        auto u4 = v.RuleId.unwrap()
+        parts.append("\"RuleId\":" + securityhub_json_str(u4))
+    if v.MatchPredicates.is_some():
+        auto u5 = v.MatchPredicates.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"MatchPredicates\":" + securityhub_json_arr(e6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRegionalRuleDetails to a compact JSON object (declaration order).
+def aws_waf_regional_rule_details_to_json(AwsWafRegionalRuleDetails v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.PredicateList.is_some():
+        auto u2 = v.PredicateList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"PredicateList\":" + securityhub_json_arr(e3))
+    if v.RuleId.is_some():
+        auto u4 = v.RuleId.unwrap()
+        parts.append("\"RuleId\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRegionalRuleGroupDetails to a compact JSON object (declaration order).
+def aws_waf_regional_rule_group_details_to_json(AwsWafRegionalRuleGroupDetails v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.RuleGroupId.is_some():
+        auto u2 = v.RuleGroupId.unwrap()
+        parts.append("\"RuleGroupId\":" + securityhub_json_str(u2))
+    if v.Rules.is_some():
+        auto u3 = v.Rules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Rules\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRegionalWebAclDetails to a compact JSON object (declaration order).
+def aws_waf_regional_web_acl_details_to_json(AwsWafRegionalWebAclDetails v) -> str:
+    list[str] parts = []
+    if v.DefaultAction.is_some():
+        auto u0 = v.DefaultAction.unwrap()
+        parts.append("\"DefaultAction\":" + securityhub_json_str(u0))
+    if v.MetricName.is_some():
+        auto u1 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u2))
+    if v.RulesList.is_some():
+        auto u3 = v.RulesList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"RulesList\":" + securityhub_json_arr(e4))
+    if v.WebAclId.is_some():
+        auto u5 = v.WebAclId.unwrap()
+        parts.append("\"WebAclId\":" + securityhub_json_str(u5))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRuleDetails to a compact JSON object (declaration order).
+def aws_waf_rule_details_to_json(AwsWafRuleDetails v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.PredicateList.is_some():
+        auto u2 = v.PredicateList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"PredicateList\":" + securityhub_json_arr(e3))
+    if v.RuleId.is_some():
+        auto u4 = v.RuleId.unwrap()
+        parts.append("\"RuleId\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafRuleGroupDetails to a compact JSON object (declaration order).
+def aws_waf_rule_group_details_to_json(AwsWafRuleGroupDetails v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.RuleGroupId.is_some():
+        auto u2 = v.RuleGroupId.unwrap()
+        parts.append("\"RuleGroupId\":" + securityhub_json_str(u2))
+    if v.Rules.is_some():
+        auto u3 = v.Rules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Rules\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafWebAclDetails to a compact JSON object (declaration order).
+def aws_waf_web_acl_details_to_json(AwsWafWebAclDetails v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u0))
+    if v.DefaultAction.is_some():
+        auto u1 = v.DefaultAction.unwrap()
+        parts.append("\"DefaultAction\":" + securityhub_json_str(u1))
+    if v.Rules.is_some():
+        auto u2 = v.Rules.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(aws_waf_web_acl_rule_to_json(x3))
+        parts.append("\"Rules\":" + securityhub_json_arr(e3))
+    if v.WebAclId.is_some():
+        auto u4 = v.WebAclId.unwrap()
+        parts.append("\"WebAclId\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafWebAclRule to a compact JSON object (declaration order).
+def aws_waf_web_acl_rule_to_json(AwsWafWebAclRule v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + u0.to_json())
+    if v.ExcludedRules.is_some():
+        auto u1 = v.ExcludedRules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ExcludedRules\":" + securityhub_json_arr(e2))
+    if v.OverrideAction.is_some():
+        auto u3 = v.OverrideAction.unwrap()
+        parts.append("\"OverrideAction\":" + u3.to_json())
+    if v.Priority.is_some():
+        auto u4 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u4))
+    if v.RuleId.is_some():
+        auto u5 = v.RuleId.unwrap()
+        parts.append("\"RuleId\":" + securityhub_json_str(u5))
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2ActionAllowDetails to a compact JSON object (declaration order).
+def aws_wafv2_action_allow_details_to_json(AwsWafv2ActionAllowDetails v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + aws_wafv2_custom_request_handling_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2ActionBlockDetails to a compact JSON object (declaration order).
+def aws_wafv2_action_block_details_to_json(AwsWafv2ActionBlockDetails v) -> str:
+    list[str] parts = []
+    if v.CustomResponse.is_some():
+        auto u0 = v.CustomResponse.unwrap()
+        parts.append("\"CustomResponse\":" + aws_wafv2_custom_response_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2CustomRequestHandlingDetails to a compact JSON object (declaration order).
+def aws_wafv2_custom_request_handling_details_to_json(AwsWafv2CustomRequestHandlingDetails v) -> str:
+    list[str] parts = []
+    if v.InsertHeaders.is_some():
+        auto u0 = v.InsertHeaders.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"InsertHeaders\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2CustomResponseDetails to a compact JSON object (declaration order).
+def aws_wafv2_custom_response_details_to_json(AwsWafv2CustomResponseDetails v) -> str:
+    list[str] parts = []
+    if v.CustomResponseBodyKey.is_some():
+        auto u0 = v.CustomResponseBodyKey.unwrap()
+        parts.append("\"CustomResponseBodyKey\":" + securityhub_json_str(u0))
+    if v.ResponseCode.is_some():
+        auto u1 = v.ResponseCode.unwrap()
+        parts.append("\"ResponseCode\":" + str(u1))
+    if v.ResponseHeaders.is_some():
+        auto u2 = v.ResponseHeaders.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ResponseHeaders\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2RuleGroupDetails to a compact JSON object (declaration order).
+def aws_wafv2_rule_group_details_to_json(AwsWafv2RuleGroupDetails v) -> str:
+    list[str] parts = []
+    if v.Capacity.is_some():
+        auto u0 = v.Capacity.unwrap()
+        parts.append("\"Capacity\":" + str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.Id.is_some():
+        auto u2 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u2))
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u3))
+    if v.Arn.is_some():
+        auto u4 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u4))
+    if v.Rules.is_some():
+        auto u5 = v.Rules.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(aws_wafv2_rules_details_to_json(x6))
+        parts.append("\"Rules\":" + securityhub_json_arr(e6))
+    if v.Scope.is_some():
+        auto u7 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + securityhub_json_str(u7))
+    if v.VisibilityConfig.is_some():
+        auto u8 = v.VisibilityConfig.unwrap()
+        parts.append("\"VisibilityConfig\":" + u8.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2RulesActionCaptchaDetails to a compact JSON object (declaration order).
+def aws_wafv2_rules_action_captcha_details_to_json(AwsWafv2RulesActionCaptchaDetails v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + aws_wafv2_custom_request_handling_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2RulesActionCountDetails to a compact JSON object (declaration order).
+def aws_wafv2_rules_action_count_details_to_json(AwsWafv2RulesActionCountDetails v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + aws_wafv2_custom_request_handling_details_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2RulesActionDetails to a compact JSON object (declaration order).
+def aws_wafv2_rules_action_details_to_json(AwsWafv2RulesActionDetails v) -> str:
+    list[str] parts = []
+    if v.Allow.is_some():
+        auto u0 = v.Allow.unwrap()
+        parts.append("\"Allow\":" + aws_wafv2_action_allow_details_to_json(u0))
+    if v.Block.is_some():
+        auto u1 = v.Block.unwrap()
+        parts.append("\"Block\":" + aws_wafv2_action_block_details_to_json(u1))
+    if v.Captcha.is_some():
+        auto u2 = v.Captcha.unwrap()
+        parts.append("\"Captcha\":" + aws_wafv2_rules_action_captcha_details_to_json(u2))
+    if v.Count.is_some():
+        auto u3 = v.Count.unwrap()
+        parts.append("\"Count\":" + aws_wafv2_rules_action_count_details_to_json(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2RulesDetails to a compact JSON object (declaration order).
+def aws_wafv2_rules_details_to_json(AwsWafv2RulesDetails v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + aws_wafv2_rules_action_details_to_json(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.OverrideAction.is_some():
+        auto u2 = v.OverrideAction.unwrap()
+        parts.append("\"OverrideAction\":" + securityhub_json_str(u2))
+    if v.Priority.is_some():
+        auto u3 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u3))
+    if v.VisibilityConfig.is_some():
+        auto u4 = v.VisibilityConfig.unwrap()
+        parts.append("\"VisibilityConfig\":" + u4.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2WebAclActionDetails to a compact JSON object (declaration order).
+def aws_wafv2_web_acl_action_details_to_json(AwsWafv2WebAclActionDetails v) -> str:
+    list[str] parts = []
+    if v.Allow.is_some():
+        auto u0 = v.Allow.unwrap()
+        parts.append("\"Allow\":" + aws_wafv2_action_allow_details_to_json(u0))
+    if v.Block.is_some():
+        auto u1 = v.Block.unwrap()
+        parts.append("\"Block\":" + aws_wafv2_action_block_details_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize AwsWafv2WebAclDetails to a compact JSON object (declaration order).
+def aws_wafv2_web_acl_details_to_json(AwsWafv2WebAclDetails v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u0))
+    if v.Arn.is_some():
+        auto u1 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u1))
+    if v.ManagedbyFirewallManager.is_some():
+        auto u2 = v.ManagedbyFirewallManager.unwrap()
+        parts.append("\"ManagedbyFirewallManager\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Id.is_some():
+        auto u3 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u3))
+    if v.Capacity.is_some():
+        auto u4 = v.Capacity.unwrap()
+        parts.append("\"Capacity\":" + str(u4))
+    if v.CaptchaConfig.is_some():
+        auto u5 = v.CaptchaConfig.unwrap()
+        parts.append("\"CaptchaConfig\":" + u5.to_json())
+    if v.DefaultAction.is_some():
+        auto u6 = v.DefaultAction.unwrap()
+        parts.append("\"DefaultAction\":" + aws_wafv2_web_acl_action_details_to_json(u6))
+    if v.Description.is_some():
+        auto u7 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u7))
+    if v.Rules.is_some():
+        auto u8 = v.Rules.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(aws_wafv2_rules_details_to_json(x9))
+        parts.append("\"Rules\":" + securityhub_json_arr(e9))
+    if v.VisibilityConfig.is_some():
+        auto u10 = v.VisibilityConfig.unwrap()
+        parts.append("\"VisibilityConfig\":" + u10.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize AzureProviderConfiguration to a compact JSON object (declaration order).
+def azure_provider_configuration_to_json(AzureProviderConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"AWSConfigConnectorArn\":" + securityhub_json_str(v.AWSConfigConnectorArn))
+    parts.append("\"ScopeConfiguration\":" + azure_scope_configuration_to_json(v.ScopeConfiguration))
+    list[str] e0 = []
+    for x0 in v.AzureRegions:
+        e0.append(securityhub_json_str(x0))
+    parts.append("\"AzureRegions\":" + securityhub_json_arr(e0))
+    return securityhub_json_obj(parts)
+
+# Serialize AzureScopeConfiguration to a compact JSON object (declaration order).
+def azure_scope_configuration_to_json(AzureScopeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ScopeType\":" + v.ScopeType.to_json())
+    if v.ScopeValues.is_some():
+        auto u0 = v.ScopeValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"ScopeValues\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize AzureUpdateConfiguration to a compact JSON object (declaration order).
+def azure_update_configuration_to_json(AzureUpdateConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ScopeConfiguration\":" + azure_scope_configuration_to_json(v.ScopeConfiguration))
+    list[str] e0 = []
+    for x0 in v.AzureRegions:
+        e0.append(securityhub_json_str(x0))
+    parts.append("\"AzureRegions\":" + securityhub_json_arr(e0))
+    return securityhub_json_obj(parts)
+
+# Serialize ClassificationResult to a compact JSON object (declaration order).
+def classification_result_to_json(ClassificationResult v) -> str:
+    list[str] parts = []
+    if v.MimeType.is_some():
+        auto u0 = v.MimeType.unwrap()
+        parts.append("\"MimeType\":" + securityhub_json_str(u0))
+    if v.SizeClassified.is_some():
+        auto u1 = v.SizeClassified.unwrap()
+        parts.append("\"SizeClassified\":" + str(u1))
+    if v.AdditionalOccurrences.is_some():
+        auto u2 = v.AdditionalOccurrences.unwrap()
+        parts.append("\"AdditionalOccurrences\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        parts.append("\"Status\":" + u3.to_json())
+    if v.SensitiveData.is_some():
+        auto u4 = v.SensitiveData.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(sensitive_data_result_to_json(x5))
+        parts.append("\"SensitiveData\":" + securityhub_json_arr(e5))
+    if v.CustomDataIdentifiers.is_some():
+        auto u6 = v.CustomDataIdentifiers.unwrap()
+        parts.append("\"CustomDataIdentifiers\":" + custom_data_identifiers_result_to_json(u6))
+    return securityhub_json_obj(parts)
+
+# Serialize Compliance to a compact JSON object (declaration order).
+def compliance_to_json(Compliance v) -> str:
+    list[str] parts = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    if v.RelatedRequirements.is_some():
+        auto u1 = v.RelatedRequirements.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"RelatedRequirements\":" + securityhub_json_arr(e2))
+    if v.StatusReasons.is_some():
+        auto u3 = v.StatusReasons.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"StatusReasons\":" + securityhub_json_arr(e4))
+    if v.SecurityControlId.is_some():
+        auto u5 = v.SecurityControlId.unwrap()
+        parts.append("\"SecurityControlId\":" + securityhub_json_str(u5))
+    if v.AssociatedStandards.is_some():
+        auto u6 = v.AssociatedStandards.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"AssociatedStandards\":" + securityhub_json_arr(e7))
+    if v.SecurityControlParameters.is_some():
+        auto u8 = v.SecurityControlParameters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(security_control_parameter_to_json(x9))
+        parts.append("\"SecurityControlParameters\":" + securityhub_json_arr(e9))
+    return securityhub_json_obj(parts)
+
+# Serialize CompositeFilter to a compact JSON object (declaration order).
+def composite_filter_to_json(CompositeFilter v) -> str:
+    list[str] parts = []
+    if v.StringFilters.is_some():
+        auto u0 = v.StringFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringFilters\":" + securityhub_json_arr(e1))
+    if v.DateFilters.is_some():
+        auto u2 = v.DateFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"DateFilters\":" + securityhub_json_arr(e3))
+    if v.BooleanFilters.is_some():
+        auto u4 = v.BooleanFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"BooleanFilters\":" + securityhub_json_arr(e5))
+    if v.NumberFilters.is_some():
+        auto u6 = v.NumberFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"NumberFilters\":" + securityhub_json_arr(e7))
+    if v.MapFilters.is_some():
+        auto u8 = v.MapFilters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"MapFilters\":" + securityhub_json_arr(e9))
+    if v.IpFilters.is_some():
+        auto u10 = v.IpFilters.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"IpFilters\":" + securityhub_json_arr(e11))
+    if v.NestedCompositeFilters.is_some():
+        auto u12 = v.NestedCompositeFilters.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(composite_filter_to_json(x13))
+        parts.append("\"NestedCompositeFilters\":" + securityhub_json_arr(e13))
+    if v.Operator.is_some():
+        auto u14 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u14.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize ContainerDetails to a compact JSON object (declaration order).
+def container_details_to_json(ContainerDetails v) -> str:
+    list[str] parts = []
+    if v.ContainerRuntime.is_some():
+        auto u0 = v.ContainerRuntime.unwrap()
+        parts.append("\"ContainerRuntime\":" + securityhub_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u1))
+    if v.ImageId.is_some():
+        auto u2 = v.ImageId.unwrap()
+        parts.append("\"ImageId\":" + securityhub_json_str(u2))
+    if v.ImageName.is_some():
+        auto u3 = v.ImageName.unwrap()
+        parts.append("\"ImageName\":" + securityhub_json_str(u3))
+    if v.LaunchedAt.is_some():
+        auto u4 = v.LaunchedAt.unwrap()
+        parts.append("\"LaunchedAt\":" + securityhub_json_str(u4))
+    if v.VolumeMounts.is_some():
+        auto u5 = v.VolumeMounts.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"VolumeMounts\":" + securityhub_json_arr(e6))
+    if v.Privileged.is_some():
+        auto u7 = v.Privileged.unwrap()
+        parts.append("\"Privileged\":" + json.dumps(JsonValue.Bool(u7)))
+    return securityhub_json_obj(parts)
+
+# Serialize Criteria to a compact JSON object (declaration order).
+def criteria_to_json(Criteria v) -> str:
+    list[str] parts = []
+    if v.OcsfFindingCriteria.is_some():
+        auto u0 = v.OcsfFindingCriteria.unwrap()
+        parts.append("\"OcsfFindingCriteria\":" + ocsf_finding_filters_to_json(u0))
+    if v.ResourceCriteria.is_some():
+        auto u1 = v.ResourceCriteria.unwrap()
+        parts.append("\"ResourceCriteria\":" + resources_filters_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize CspmProviderConfiguration to a compact JSON object (declaration order).
+def cspm_provider_configuration_to_json(CspmProviderConfiguration v) -> str:
+    list[str] parts = []
+    if v.Azure.is_some():
+        auto u0 = v.Azure.unwrap()
+        parts.append("\"Azure\":" + azure_provider_configuration_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize CspmProviderUpdateConfiguration to a compact JSON object (declaration order).
+def cspm_provider_update_configuration_to_json(CspmProviderUpdateConfiguration v) -> str:
+    list[str] parts = []
+    if v.Azure.is_some():
+        auto u0 = v.Azure.unwrap()
+        parts.append("\"Azure\":" + azure_update_configuration_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize CustomDataIdentifiersDetections to a compact JSON object (declaration order).
+def custom_data_identifiers_detections_to_json(CustomDataIdentifiersDetections v) -> str:
+    list[str] parts = []
+    if v.Count.is_some():
+        auto u0 = v.Count.unwrap()
+        parts.append("\"Count\":" + str(u0))
+    if v.Arn.is_some():
+        auto u1 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + securityhub_json_str(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u2))
+    if v.Occurrences.is_some():
+        auto u3 = v.Occurrences.unwrap()
+        parts.append("\"Occurrences\":" + occurrences_to_json(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize CustomDataIdentifiersResult to a compact JSON object (declaration order).
+def custom_data_identifiers_result_to_json(CustomDataIdentifiersResult v) -> str:
+    list[str] parts = []
+    if v.Detections.is_some():
+        auto u0 = v.Detections.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(custom_data_identifiers_detections_to_json(x1))
+        parts.append("\"Detections\":" + securityhub_json_arr(e1))
+    if v.TotalCount.is_some():
+        auto u2 = v.TotalCount.unwrap()
+        parts.append("\"TotalCount\":" + str(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize Cvss to a compact JSON object (declaration order).
+def cvss_to_json(Cvss v) -> str:
+    list[str] parts = []
+    if v.Version.is_some():
+        auto u0 = v.Version.unwrap()
+        parts.append("\"Version\":" + securityhub_json_str(u0))
+    if v.BaseScore.is_some():
+        auto u1 = v.BaseScore.unwrap()
+        parts.append("\"BaseScore\":" + str(u1))
+    if v.BaseVector.is_some():
+        auto u2 = v.BaseVector.unwrap()
+        parts.append("\"BaseVector\":" + securityhub_json_str(u2))
+    if v.Source.is_some():
+        auto u3 = v.Source.unwrap()
+        parts.append("\"Source\":" + securityhub_json_str(u3))
+    if v.Adjustments.is_some():
+        auto u4 = v.Adjustments.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Adjustments\":" + securityhub_json_arr(e5))
+    return securityhub_json_obj(parts)
+
+# Serialize DataClassificationDetails to a compact JSON object (declaration order).
+def data_classification_details_to_json(DataClassificationDetails v) -> str:
+    list[str] parts = []
+    if v.DetailedResultsLocation.is_some():
+        auto u0 = v.DetailedResultsLocation.unwrap()
+        parts.append("\"DetailedResultsLocation\":" + securityhub_json_str(u0))
+    if v.Result.is_some():
+        auto u1 = v.Result.unwrap()
+        parts.append("\"Result\":" + classification_result_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize Detection to a compact JSON object (declaration order).
+def detection_to_json(Detection v) -> str:
+    list[str] parts = []
+    if v.Sequence.is_some():
+        auto u0 = v.Sequence.unwrap()
+        parts.append("\"Sequence\":" + sequence_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize ExportOutput to a compact JSON object (declaration order).
+def export_output_to_json(ExportOutput v) -> str:
+    list[str] parts = []
+    if v.Findings.is_some():
+        auto u0 = v.Findings.unwrap()
+        parts.append("\"Findings\":" + findings_output_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize ExportScopes to a compact JSON object (declaration order).
+def export_scopes_to_json(ExportScopes v) -> str:
+    list[str] parts = []
+    if v.AwsOrganizations.is_some():
+        auto u0 = v.AwsOrganizations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AwsOrganizations\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize FindingProviderFields to a compact JSON object (declaration order).
+def finding_provider_fields_to_json(FindingProviderFields v) -> str:
+    list[str] parts = []
+    if v.Confidence.is_some():
+        auto u0 = v.Confidence.unwrap()
+        parts.append("\"Confidence\":" + str(u0))
+    if v.Criticality.is_some():
+        auto u1 = v.Criticality.unwrap()
+        parts.append("\"Criticality\":" + str(u1))
+    if v.RelatedFindings.is_some():
+        auto u2 = v.RelatedFindings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"RelatedFindings\":" + securityhub_json_arr(e3))
+    if v.Severity.is_some():
+        auto u4 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + u4.to_json())
+    if v.Types.is_some():
+        auto u5 = v.Types.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityhub_json_str(x6))
+        parts.append("\"Types\":" + securityhub_json_arr(e6))
+    return securityhub_json_obj(parts)
+
+# Serialize FindingScopes to a compact JSON object (declaration order).
+def finding_scopes_to_json(FindingScopes v) -> str:
+    list[str] parts = []
+    if v.AwsOrganizations.is_some():
+        auto u0 = v.AwsOrganizations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AwsOrganizations\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize FindingsOutput to a compact JSON object (declaration order).
+def findings_output_to_json(FindingsOutput v) -> str:
+    list[str] parts = []
+    parts.append("\"Format\":" + v.Format.to_json())
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + ocsf_finding_filters_to_json(u0))
+    if v.SelectedFields.is_some():
+        auto u1 = v.SelectedFields.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SelectedFields\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize FindingsTrendsCompositeFilter to a compact JSON object (declaration order).
+def findings_trends_composite_filter_to_json(FindingsTrendsCompositeFilter v) -> str:
+    list[str] parts = []
+    if v.StringFilters.is_some():
+        auto u0 = v.StringFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringFilters\":" + securityhub_json_arr(e1))
+    if v.NestedCompositeFilters.is_some():
+        auto u2 = v.NestedCompositeFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(findings_trends_composite_filter_to_json(x3))
+        parts.append("\"NestedCompositeFilters\":" + securityhub_json_arr(e3))
+    if v.Operator.is_some():
+        auto u4 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u4.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize FindingsTrendsFilters to a compact JSON object (declaration order).
+def findings_trends_filters_to_json(FindingsTrendsFilters v) -> str:
+    list[str] parts = []
+    if v.CompositeFilters.is_some():
+        auto u0 = v.CompositeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(findings_trends_composite_filter_to_json(x1))
+        parts.append("\"CompositeFilters\":" + securityhub_json_arr(e1))
+    if v.CompositeOperator.is_some():
+        auto u2 = v.CompositeOperator.unwrap()
+        parts.append("\"CompositeOperator\":" + u2.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize FirewallPolicyDetails to a compact JSON object (declaration order).
+def firewall_policy_details_to_json(FirewallPolicyDetails v) -> str:
+    list[str] parts = []
+    if v.StatefulRuleGroupReferences.is_some():
+        auto u0 = v.StatefulRuleGroupReferences.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StatefulRuleGroupReferences\":" + securityhub_json_arr(e1))
+    if v.StatelessCustomActions.is_some():
+        auto u2 = v.StatelessCustomActions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(firewall_policy_stateless_custom_actions_details_to_json(x3))
+        parts.append("\"StatelessCustomActions\":" + securityhub_json_arr(e3))
+    if v.StatelessDefaultActions.is_some():
+        auto u4 = v.StatelessDefaultActions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"StatelessDefaultActions\":" + securityhub_json_arr(e5))
+    if v.StatelessFragmentDefaultActions.is_some():
+        auto u6 = v.StatelessFragmentDefaultActions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(securityhub_json_str(x7))
+        parts.append("\"StatelessFragmentDefaultActions\":" + securityhub_json_arr(e7))
+    if v.StatelessRuleGroupReferences.is_some():
+        auto u8 = v.StatelessRuleGroupReferences.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"StatelessRuleGroupReferences\":" + securityhub_json_arr(e9))
+    return securityhub_json_obj(parts)
+
+# Serialize FirewallPolicyStatelessCustomActionsDetails to a compact JSON object (declaration order).
+def firewall_policy_stateless_custom_actions_details_to_json(FirewallPolicyStatelessCustomActionsDetails v) -> str:
+    list[str] parts = []
+    if v.ActionDefinition.is_some():
+        auto u0 = v.ActionDefinition.unwrap()
+        parts.append("\"ActionDefinition\":" + stateless_custom_action_definition_to_json(u0))
+    if v.ActionName.is_some():
+        auto u1 = v.ActionName.unwrap()
+        parts.append("\"ActionName\":" + securityhub_json_str(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize GeneratorDetails to a compact JSON object (declaration order).
+def generator_details_to_json(GeneratorDetails v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u1))
+    if v.Labels.is_some():
+        auto u2 = v.Labels.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"Labels\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize GroupByRule to a compact JSON object (declaration order).
+def group_by_rule_to_json(GroupByRule v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + ocsf_finding_filters_to_json(u0))
+    parts.append("\"GroupByField\":" + v.GroupByField.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize Indicator to a compact JSON object (declaration order).
+def indicator_to_json(Indicator v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + securityhub_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"Values\":" + securityhub_json_arr(e2))
+    if v.Title.is_some():
+        auto u3 = v.Title.unwrap()
+        parts.append("\"Title\":" + securityhub_json_str(u3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize NetworkHeader to a compact JSON object (declaration order).
+def network_header_to_json(NetworkHeader v) -> str:
+    list[str] parts = []
+    if v.Protocol.is_some():
+        auto u0 = v.Protocol.unwrap()
+        parts.append("\"Protocol\":" + securityhub_json_str(u0))
+    if v.Destination.is_some():
+        auto u1 = v.Destination.unwrap()
+        parts.append("\"Destination\":" + network_path_component_details_to_json(u1))
+    if v.Source.is_some():
+        auto u2 = v.Source.unwrap()
+        parts.append("\"Source\":" + network_path_component_details_to_json(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize NetworkPathComponent to a compact JSON object (declaration order).
+def network_path_component_to_json(NetworkPathComponent v) -> str:
+    list[str] parts = []
+    if v.ComponentId.is_some():
+        auto u0 = v.ComponentId.unwrap()
+        parts.append("\"ComponentId\":" + securityhub_json_str(u0))
+    if v.ComponentType.is_some():
+        auto u1 = v.ComponentType.unwrap()
+        parts.append("\"ComponentType\":" + securityhub_json_str(u1))
+    if v.Egress.is_some():
+        auto u2 = v.Egress.unwrap()
+        parts.append("\"Egress\":" + network_header_to_json(u2))
+    if v.Ingress.is_some():
+        auto u3 = v.Ingress.unwrap()
+        parts.append("\"Ingress\":" + network_header_to_json(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize NetworkPathComponentDetails to a compact JSON object (declaration order).
+def network_path_component_details_to_json(NetworkPathComponentDetails v) -> str:
+    list[str] parts = []
+    if v.Address.is_some():
+        auto u0 = v.Address.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Address\":" + securityhub_json_arr(e1))
+    if v.PortRanges.is_some():
+        auto u2 = v.PortRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"PortRanges\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize Occurrences to a compact JSON object (declaration order).
+def occurrences_to_json(Occurrences v) -> str:
+    list[str] parts = []
+    if v.LineRanges.is_some():
+        auto u0 = v.LineRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"LineRanges\":" + securityhub_json_arr(e1))
+    if v.OffsetRanges.is_some():
+        auto u2 = v.OffsetRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"OffsetRanges\":" + securityhub_json_arr(e3))
+    if v.Pages.is_some():
+        auto u4 = v.Pages.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Pages\":" + securityhub_json_arr(e5))
+    if v.Records.is_some():
+        auto u6 = v.Records.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Records\":" + securityhub_json_arr(e7))
+    if v.Cells.is_some():
+        auto u8 = v.Cells.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Cells\":" + securityhub_json_arr(e9))
+    return securityhub_json_obj(parts)
+
+# Serialize OcsfFindingFilters to a compact JSON object (declaration order).
+def ocsf_finding_filters_to_json(OcsfFindingFilters v) -> str:
+    list[str] parts = []
+    if v.CompositeFilters.is_some():
+        auto u0 = v.CompositeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(composite_filter_to_json(x1))
+        parts.append("\"CompositeFilters\":" + securityhub_json_arr(e1))
+    if v.CompositeOperator.is_some():
+        auto u2 = v.CompositeOperator.unwrap()
+        parts.append("\"CompositeOperator\":" + u2.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize ParameterConfiguration to a compact JSON object (declaration order).
+def parameter_configuration_to_json(ParameterConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ValueType\":" + v.ValueType.to_json())
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + parameter_value_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize ParameterValue to a compact JSON object (declaration order).
+def parameter_value_to_json(ParameterValue v) -> str:
+    list[str] parts = []
+    if v.Integer.is_some():
+        auto u0 = v.Integer.unwrap()
+        parts.append("\"Integer\":" + str(u0))
+    if v.IntegerList.is_some():
+        auto u1 = v.IntegerList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(x2))
+        parts.append("\"IntegerList\":" + securityhub_json_arr(e2))
+    if v.Double.is_some():
+        auto u3 = v.Double.unwrap()
+        parts.append("\"Double\":" + str(u3))
+    if v.String.is_some():
+        auto u4 = v.String.unwrap()
+        parts.append("\"String\":" + securityhub_json_str(u4))
+    if v.StringList.is_some():
+        auto u5 = v.StringList.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(securityhub_json_str(x6))
+        parts.append("\"StringList\":" + securityhub_json_arr(e6))
+    if v.Boolean.is_some():
+        auto u7 = v.Boolean.unwrap()
+        parts.append("\"Boolean\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Enum.is_some():
+        auto u8 = v.Enum.unwrap()
+        parts.append("\"Enum\":" + securityhub_json_str(u8))
+    if v.EnumList.is_some():
+        auto u9 = v.EnumList.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(securityhub_json_str(x10))
+        parts.append("\"EnumList\":" + securityhub_json_arr(e10))
+    return securityhub_json_obj(parts)
+
+# Serialize Policy to a compact JSON object (declaration order).
+def policy_to_json(Policy v) -> str:
+    list[str] parts = []
+    if v.SecurityHub.is_some():
+        auto u0 = v.SecurityHub.unwrap()
+        parts.append("\"SecurityHub\":" + security_hub_policy_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize PortProbeAction to a compact JSON object (declaration order).
+def port_probe_action_to_json(PortProbeAction v) -> str:
+    list[str] parts = []
+    if v.PortProbeDetails.is_some():
+        auto u0 = v.PortProbeDetails.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PortProbeDetails\":" + securityhub_json_arr(e1))
+    if v.Blocked.is_some():
+        auto u2 = v.Blocked.unwrap()
+        parts.append("\"Blocked\":" + json.dumps(JsonValue.Bool(u2)))
+    return securityhub_json_obj(parts)
+
+# Serialize ProviderConfiguration to a compact JSON object (declaration order).
+def provider_configuration_to_json(ProviderConfiguration v) -> str:
+    list[str] parts = []
+    if v.JiraCloud.is_some():
+        auto u0 = v.JiraCloud.unwrap()
+        parts.append("\"JiraCloud\":" + u0.to_json())
+    if v.ServiceNow.is_some():
+        auto u1 = v.ServiceNow.unwrap()
+        parts.append("\"ServiceNow\":" + u1.to_json())
+    if v.Azure.is_some():
+        auto u2 = v.Azure.unwrap()
+        parts.append("\"Azure\":" + azure_provider_configuration_to_json(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize ProviderUpdateConfiguration to a compact JSON object (declaration order).
+def provider_update_configuration_to_json(ProviderUpdateConfiguration v) -> str:
+    list[str] parts = []
+    if v.JiraCloud.is_some():
+        auto u0 = v.JiraCloud.unwrap()
+        parts.append("\"JiraCloud\":" + u0.to_json())
+    if v.ServiceNow.is_some():
+        auto u1 = v.ServiceNow.unwrap()
+        parts.append("\"ServiceNow\":" + u1.to_json())
+    if v.Azure.is_some():
+        auto u2 = v.Azure.unwrap()
+        parts.append("\"Azure\":" + azure_update_configuration_to_json(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize RemediationCompositeFilter to a compact JSON object (declaration order).
+def remediation_composite_filter_to_json(RemediationCompositeFilter v) -> str:
+    list[str] parts = []
+    if v.StringFilters.is_some():
+        auto u0 = v.StringFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringFilters\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize RemediationFilters to a compact JSON object (declaration order).
+def remediation_filters_to_json(RemediationFilters v) -> str:
+    list[str] parts = []
+    if v.CompositeFilters.is_some():
+        auto u0 = v.CompositeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(remediation_composite_filter_to_json(x1))
+        parts.append("\"CompositeFilters\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize Resource to a compact JSON object (declaration order).
+def resource_to_json(Resource v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + securityhub_json_str(v.Type))
+    parts.append("\"Id\":" + securityhub_json_str(v.Id))
+    if v.Partition.is_some():
+        auto u0 = v.Partition.unwrap()
+        parts.append("\"Partition\":" + u0.to_json())
+    if v.Region.is_some():
+        auto u1 = v.Region.unwrap()
+        parts.append("\"Region\":" + securityhub_json_str(u1))
+    if v.Provider.is_some():
+        auto u2 = v.Provider.unwrap()
+        parts.append("\"Provider\":" + u2.to_json())
+    if v.Owner.is_some():
+        auto u3 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + u3.to_json())
+    if v.ResourceRole.is_some():
+        auto u4 = v.ResourceRole.unwrap()
+        parts.append("\"ResourceRole\":" + securityhub_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(securityhub_json_str(k6) + ":" + securityhub_json_str(u5[k6]))
+        parts.append("\"Tags\":" + securityhub_json_obj(m6))
+    if v.DataClassification.is_some():
+        auto u7 = v.DataClassification.unwrap()
+        parts.append("\"DataClassification\":" + data_classification_details_to_json(u7))
+    if v.Details.is_some():
+        auto u8 = v.Details.unwrap()
+        parts.append("\"Details\":" + resource_details_to_json(u8))
+    if v.ApplicationName.is_some():
+        auto u9 = v.ApplicationName.unwrap()
+        parts.append("\"ApplicationName\":" + securityhub_json_str(u9))
+    if v.ApplicationArn.is_some():
+        auto u10 = v.ApplicationArn.unwrap()
+        parts.append("\"ApplicationArn\":" + securityhub_json_str(u10))
+    return securityhub_json_obj(parts)
+
+# Serialize ResourceDetails to a compact JSON object (declaration order).
+def resource_details_to_json(ResourceDetails v) -> str:
+    list[str] parts = []
+    if v.AwsAutoScalingAutoScalingGroup.is_some():
+        auto u0 = v.AwsAutoScalingAutoScalingGroup.unwrap()
+        parts.append("\"AwsAutoScalingAutoScalingGroup\":" + aws_auto_scaling_auto_scaling_group_details_to_json(u0))
+    if v.AwsCodeBuildProject.is_some():
+        auto u1 = v.AwsCodeBuildProject.unwrap()
+        parts.append("\"AwsCodeBuildProject\":" + aws_code_build_project_details_to_json(u1))
+    if v.AwsCloudFrontDistribution.is_some():
+        auto u2 = v.AwsCloudFrontDistribution.unwrap()
+        parts.append("\"AwsCloudFrontDistribution\":" + aws_cloud_front_distribution_details_to_json(u2))
+    if v.AwsEc2Instance.is_some():
+        auto u3 = v.AwsEc2Instance.unwrap()
+        parts.append("\"AwsEc2Instance\":" + aws_ec2_instance_details_to_json(u3))
+    if v.AwsEc2NetworkInterface.is_some():
+        auto u4 = v.AwsEc2NetworkInterface.unwrap()
+        parts.append("\"AwsEc2NetworkInterface\":" + aws_ec2_network_interface_details_to_json(u4))
+    if v.AwsEc2SecurityGroup.is_some():
+        auto u5 = v.AwsEc2SecurityGroup.unwrap()
+        parts.append("\"AwsEc2SecurityGroup\":" + aws_ec2_security_group_details_to_json(u5))
+    if v.AwsEc2Volume.is_some():
+        auto u6 = v.AwsEc2Volume.unwrap()
+        parts.append("\"AwsEc2Volume\":" + aws_ec2_volume_details_to_json(u6))
+    if v.AwsEc2Vpc.is_some():
+        auto u7 = v.AwsEc2Vpc.unwrap()
+        parts.append("\"AwsEc2Vpc\":" + aws_ec2_vpc_details_to_json(u7))
+    if v.AwsEc2Eip.is_some():
+        auto u8 = v.AwsEc2Eip.unwrap()
+        parts.append("\"AwsEc2Eip\":" + u8.to_json())
+    if v.AwsEc2Subnet.is_some():
+        auto u9 = v.AwsEc2Subnet.unwrap()
+        parts.append("\"AwsEc2Subnet\":" + aws_ec2_subnet_details_to_json(u9))
+    if v.AwsEc2NetworkAcl.is_some():
+        auto u10 = v.AwsEc2NetworkAcl.unwrap()
+        parts.append("\"AwsEc2NetworkAcl\":" + aws_ec2_network_acl_details_to_json(u10))
+    if v.AwsElbv2LoadBalancer.is_some():
+        auto u11 = v.AwsElbv2LoadBalancer.unwrap()
+        parts.append("\"AwsElbv2LoadBalancer\":" + aws_elbv2_load_balancer_details_to_json(u11))
+    if v.AwsElasticBeanstalkEnvironment.is_some():
+        auto u12 = v.AwsElasticBeanstalkEnvironment.unwrap()
+        parts.append("\"AwsElasticBeanstalkEnvironment\":" + aws_elastic_beanstalk_environment_details_to_json(u12))
+    if v.AwsElasticsearchDomain.is_some():
+        auto u13 = v.AwsElasticsearchDomain.unwrap()
+        parts.append("\"AwsElasticsearchDomain\":" + aws_elasticsearch_domain_details_to_json(u13))
+    if v.AwsS3Bucket.is_some():
+        auto u14 = v.AwsS3Bucket.unwrap()
+        parts.append("\"AwsS3Bucket\":" + aws_s3_bucket_details_to_json(u14))
+    if v.AwsS3AccountPublicAccessBlock.is_some():
+        auto u15 = v.AwsS3AccountPublicAccessBlock.unwrap()
+        parts.append("\"AwsS3AccountPublicAccessBlock\":" + u15.to_json())
+    if v.AwsS3Object.is_some():
+        auto u16 = v.AwsS3Object.unwrap()
+        parts.append("\"AwsS3Object\":" + u16.to_json())
+    if v.AwsSecretsManagerSecret.is_some():
+        auto u17 = v.AwsSecretsManagerSecret.unwrap()
+        parts.append("\"AwsSecretsManagerSecret\":" + u17.to_json())
+    if v.AwsIamAccessKey.is_some():
+        auto u18 = v.AwsIamAccessKey.unwrap()
+        parts.append("\"AwsIamAccessKey\":" + u18.to_json())
+    if v.AwsIamUser.is_some():
+        auto u19 = v.AwsIamUser.unwrap()
+        parts.append("\"AwsIamUser\":" + aws_iam_user_details_to_json(u19))
+    if v.AwsIamPolicy.is_some():
+        auto u20 = v.AwsIamPolicy.unwrap()
+        parts.append("\"AwsIamPolicy\":" + aws_iam_policy_details_to_json(u20))
+    if v.AwsApiGatewayV2Stage.is_some():
+        auto u21 = v.AwsApiGatewayV2Stage.unwrap()
+        parts.append("\"AwsApiGatewayV2Stage\":" + aws_api_gateway_v2_stage_details_to_json(u21))
+    if v.AwsApiGatewayV2Api.is_some():
+        auto u22 = v.AwsApiGatewayV2Api.unwrap()
+        parts.append("\"AwsApiGatewayV2Api\":" + aws_api_gateway_v2_api_details_to_json(u22))
+    if v.AwsDynamoDbTable.is_some():
+        auto u23 = v.AwsDynamoDbTable.unwrap()
+        parts.append("\"AwsDynamoDbTable\":" + aws_dynamo_db_table_details_to_json(u23))
+    if v.AwsApiGatewayStage.is_some():
+        auto u24 = v.AwsApiGatewayStage.unwrap()
+        parts.append("\"AwsApiGatewayStage\":" + aws_api_gateway_stage_details_to_json(u24))
+    if v.AwsApiGatewayRestApi.is_some():
+        auto u25 = v.AwsApiGatewayRestApi.unwrap()
+        parts.append("\"AwsApiGatewayRestApi\":" + aws_api_gateway_rest_api_details_to_json(u25))
+    if v.AwsCloudTrailTrail.is_some():
+        auto u26 = v.AwsCloudTrailTrail.unwrap()
+        parts.append("\"AwsCloudTrailTrail\":" + u26.to_json())
+    if v.AwsSsmPatchCompliance.is_some():
+        auto u27 = v.AwsSsmPatchCompliance.unwrap()
+        parts.append("\"AwsSsmPatchCompliance\":" + u27.to_json())
+    if v.AwsCertificateManagerCertificate.is_some():
+        auto u28 = v.AwsCertificateManagerCertificate.unwrap()
+        parts.append("\"AwsCertificateManagerCertificate\":" + aws_certificate_manager_certificate_details_to_json(u28))
+    if v.AwsRedshiftCluster.is_some():
+        auto u29 = v.AwsRedshiftCluster.unwrap()
+        parts.append("\"AwsRedshiftCluster\":" + aws_redshift_cluster_details_to_json(u29))
+    if v.AwsElbLoadBalancer.is_some():
+        auto u30 = v.AwsElbLoadBalancer.unwrap()
+        parts.append("\"AwsElbLoadBalancer\":" + aws_elb_load_balancer_details_to_json(u30))
+    if v.AwsIamGroup.is_some():
+        auto u31 = v.AwsIamGroup.unwrap()
+        parts.append("\"AwsIamGroup\":" + aws_iam_group_details_to_json(u31))
+    if v.AwsIamRole.is_some():
+        auto u32 = v.AwsIamRole.unwrap()
+        parts.append("\"AwsIamRole\":" + aws_iam_role_details_to_json(u32))
+    if v.AwsKmsKey.is_some():
+        auto u33 = v.AwsKmsKey.unwrap()
+        parts.append("\"AwsKmsKey\":" + u33.to_json())
+    if v.AwsLambdaFunction.is_some():
+        auto u34 = v.AwsLambdaFunction.unwrap()
+        parts.append("\"AwsLambdaFunction\":" + aws_lambda_function_details_to_json(u34))
+    if v.AwsLambdaLayerVersion.is_some():
+        auto u35 = v.AwsLambdaLayerVersion.unwrap()
+        parts.append("\"AwsLambdaLayerVersion\":" + aws_lambda_layer_version_details_to_json(u35))
+    if v.AwsRdsDbInstance.is_some():
+        auto u36 = v.AwsRdsDbInstance.unwrap()
+        parts.append("\"AwsRdsDbInstance\":" + aws_rds_db_instance_details_to_json(u36))
+    if v.AwsSnsTopic.is_some():
+        auto u37 = v.AwsSnsTopic.unwrap()
+        parts.append("\"AwsSnsTopic\":" + aws_sns_topic_details_to_json(u37))
+    if v.AwsSqsQueue.is_some():
+        auto u38 = v.AwsSqsQueue.unwrap()
+        parts.append("\"AwsSqsQueue\":" + u38.to_json())
+    if v.AwsWafWebAcl.is_some():
+        auto u39 = v.AwsWafWebAcl.unwrap()
+        parts.append("\"AwsWafWebAcl\":" + aws_waf_web_acl_details_to_json(u39))
+    if v.AwsRdsDbSnapshot.is_some():
+        auto u40 = v.AwsRdsDbSnapshot.unwrap()
+        parts.append("\"AwsRdsDbSnapshot\":" + aws_rds_db_snapshot_details_to_json(u40))
+    if v.AwsRdsDbClusterSnapshot.is_some():
+        auto u41 = v.AwsRdsDbClusterSnapshot.unwrap()
+        parts.append("\"AwsRdsDbClusterSnapshot\":" + aws_rds_db_cluster_snapshot_details_to_json(u41))
+    if v.AwsRdsDbCluster.is_some():
+        auto u42 = v.AwsRdsDbCluster.unwrap()
+        parts.append("\"AwsRdsDbCluster\":" + aws_rds_db_cluster_details_to_json(u42))
+    if v.AwsEcsCluster.is_some():
+        auto u43 = v.AwsEcsCluster.unwrap()
+        parts.append("\"AwsEcsCluster\":" + aws_ecs_cluster_details_to_json(u43))
+    if v.AwsEcsContainer.is_some():
+        auto u44 = v.AwsEcsContainer.unwrap()
+        parts.append("\"AwsEcsContainer\":" + aws_ecs_container_details_to_json(u44))
+    if v.AwsEcsTaskDefinition.is_some():
+        auto u45 = v.AwsEcsTaskDefinition.unwrap()
+        parts.append("\"AwsEcsTaskDefinition\":" + aws_ecs_task_definition_details_to_json(u45))
+    if v.Container.is_some():
+        auto u46 = v.Container.unwrap()
+        parts.append("\"Container\":" + container_details_to_json(u46))
+    if v.Other.is_some():
+        auto u47 = v.Other.unwrap()
+        list[str] m48 = []
+        for k48 in sorted(u47.keys()):
+            m48.append(securityhub_json_str(k48) + ":" + securityhub_json_str(u47[k48]))
+        parts.append("\"Other\":" + securityhub_json_obj(m48))
+    if v.AwsRdsEventSubscription.is_some():
+        auto u49 = v.AwsRdsEventSubscription.unwrap()
+        parts.append("\"AwsRdsEventSubscription\":" + aws_rds_event_subscription_details_to_json(u49))
+    if v.AwsEcsService.is_some():
+        auto u50 = v.AwsEcsService.unwrap()
+        parts.append("\"AwsEcsService\":" + aws_ecs_service_details_to_json(u50))
+    if v.AwsAutoScalingLaunchConfiguration.is_some():
+        auto u51 = v.AwsAutoScalingLaunchConfiguration.unwrap()
+        parts.append("\"AwsAutoScalingLaunchConfiguration\":" + aws_auto_scaling_launch_configuration_details_to_json(u51))
+    if v.AwsEc2VpnConnection.is_some():
+        auto u52 = v.AwsEc2VpnConnection.unwrap()
+        parts.append("\"AwsEc2VpnConnection\":" + aws_ec2_vpn_connection_details_to_json(u52))
+    if v.AwsEcrContainerImage.is_some():
+        auto u53 = v.AwsEcrContainerImage.unwrap()
+        parts.append("\"AwsEcrContainerImage\":" + aws_ecr_container_image_details_to_json(u53))
+    if v.AwsOpenSearchServiceDomain.is_some():
+        auto u54 = v.AwsOpenSearchServiceDomain.unwrap()
+        parts.append("\"AwsOpenSearchServiceDomain\":" + aws_open_search_service_domain_details_to_json(u54))
+    if v.AwsEc2VpcEndpointService.is_some():
+        auto u55 = v.AwsEc2VpcEndpointService.unwrap()
+        parts.append("\"AwsEc2VpcEndpointService\":" + aws_ec2_vpc_endpoint_service_details_to_json(u55))
+    if v.AwsXrayEncryptionConfig.is_some():
+        auto u56 = v.AwsXrayEncryptionConfig.unwrap()
+        parts.append("\"AwsXrayEncryptionConfig\":" + u56.to_json())
+    if v.AwsWafRateBasedRule.is_some():
+        auto u57 = v.AwsWafRateBasedRule.unwrap()
+        parts.append("\"AwsWafRateBasedRule\":" + aws_waf_rate_based_rule_details_to_json(u57))
+    if v.AwsWafRegionalRateBasedRule.is_some():
+        auto u58 = v.AwsWafRegionalRateBasedRule.unwrap()
+        parts.append("\"AwsWafRegionalRateBasedRule\":" + aws_waf_regional_rate_based_rule_details_to_json(u58))
+    if v.AwsEcrRepository.is_some():
+        auto u59 = v.AwsEcrRepository.unwrap()
+        parts.append("\"AwsEcrRepository\":" + u59.to_json())
+    if v.AwsEksCluster.is_some():
+        auto u60 = v.AwsEksCluster.unwrap()
+        parts.append("\"AwsEksCluster\":" + aws_eks_cluster_details_to_json(u60))
+    if v.AwsNetworkFirewallFirewallPolicy.is_some():
+        auto u61 = v.AwsNetworkFirewallFirewallPolicy.unwrap()
+        parts.append("\"AwsNetworkFirewallFirewallPolicy\":" + aws_network_firewall_firewall_policy_details_to_json(u61))
+    if v.AwsNetworkFirewallFirewall.is_some():
+        auto u62 = v.AwsNetworkFirewallFirewall.unwrap()
+        parts.append("\"AwsNetworkFirewallFirewall\":" + aws_network_firewall_firewall_details_to_json(u62))
+    if v.AwsNetworkFirewallRuleGroup.is_some():
+        auto u63 = v.AwsNetworkFirewallRuleGroup.unwrap()
+        parts.append("\"AwsNetworkFirewallRuleGroup\":" + aws_network_firewall_rule_group_details_to_json(u63))
+    if v.AwsRdsDbSecurityGroup.is_some():
+        auto u64 = v.AwsRdsDbSecurityGroup.unwrap()
+        parts.append("\"AwsRdsDbSecurityGroup\":" + aws_rds_db_security_group_details_to_json(u64))
+    if v.AwsKinesisStream.is_some():
+        auto u65 = v.AwsKinesisStream.unwrap()
+        parts.append("\"AwsKinesisStream\":" + u65.to_json())
+    if v.AwsEc2TransitGateway.is_some():
+        auto u66 = v.AwsEc2TransitGateway.unwrap()
+        parts.append("\"AwsEc2TransitGateway\":" + aws_ec2_transit_gateway_details_to_json(u66))
+    if v.AwsEfsAccessPoint.is_some():
+        auto u67 = v.AwsEfsAccessPoint.unwrap()
+        parts.append("\"AwsEfsAccessPoint\":" + aws_efs_access_point_details_to_json(u67))
+    if v.AwsCloudFormationStack.is_some():
+        auto u68 = v.AwsCloudFormationStack.unwrap()
+        parts.append("\"AwsCloudFormationStack\":" + aws_cloud_formation_stack_details_to_json(u68))
+    if v.AwsCloudWatchAlarm.is_some():
+        auto u69 = v.AwsCloudWatchAlarm.unwrap()
+        parts.append("\"AwsCloudWatchAlarm\":" + aws_cloud_watch_alarm_details_to_json(u69))
+    if v.AwsEc2VpcPeeringConnection.is_some():
+        auto u70 = v.AwsEc2VpcPeeringConnection.unwrap()
+        parts.append("\"AwsEc2VpcPeeringConnection\":" + aws_ec2_vpc_peering_connection_details_to_json(u70))
+    if v.AwsWafRegionalRuleGroup.is_some():
+        auto u71 = v.AwsWafRegionalRuleGroup.unwrap()
+        parts.append("\"AwsWafRegionalRuleGroup\":" + aws_waf_regional_rule_group_details_to_json(u71))
+    if v.AwsWafRegionalRule.is_some():
+        auto u72 = v.AwsWafRegionalRule.unwrap()
+        parts.append("\"AwsWafRegionalRule\":" + aws_waf_regional_rule_details_to_json(u72))
+    if v.AwsWafRegionalWebAcl.is_some():
+        auto u73 = v.AwsWafRegionalWebAcl.unwrap()
+        parts.append("\"AwsWafRegionalWebAcl\":" + aws_waf_regional_web_acl_details_to_json(u73))
+    if v.AwsWafRule.is_some():
+        auto u74 = v.AwsWafRule.unwrap()
+        parts.append("\"AwsWafRule\":" + aws_waf_rule_details_to_json(u74))
+    if v.AwsWafRuleGroup.is_some():
+        auto u75 = v.AwsWafRuleGroup.unwrap()
+        parts.append("\"AwsWafRuleGroup\":" + aws_waf_rule_group_details_to_json(u75))
+    if v.AwsEcsTask.is_some():
+        auto u76 = v.AwsEcsTask.unwrap()
+        parts.append("\"AwsEcsTask\":" + aws_ecs_task_details_to_json(u76))
+    if v.AwsBackupBackupVault.is_some():
+        auto u77 = v.AwsBackupBackupVault.unwrap()
+        parts.append("\"AwsBackupBackupVault\":" + aws_backup_backup_vault_details_to_json(u77))
+    if v.AwsBackupBackupPlan.is_some():
+        auto u78 = v.AwsBackupBackupPlan.unwrap()
+        parts.append("\"AwsBackupBackupPlan\":" + aws_backup_backup_plan_details_to_json(u78))
+    if v.AwsBackupRecoveryPoint.is_some():
+        auto u79 = v.AwsBackupRecoveryPoint.unwrap()
+        parts.append("\"AwsBackupRecoveryPoint\":" + u79.to_json())
+    if v.AwsEc2LaunchTemplate.is_some():
+        auto u80 = v.AwsEc2LaunchTemplate.unwrap()
+        parts.append("\"AwsEc2LaunchTemplate\":" + aws_ec2_launch_template_details_to_json(u80))
+    if v.AwsSageMakerNotebookInstance.is_some():
+        auto u81 = v.AwsSageMakerNotebookInstance.unwrap()
+        parts.append("\"AwsSageMakerNotebookInstance\":" + aws_sage_maker_notebook_instance_details_to_json(u81))
+    if v.AwsWafv2WebAcl.is_some():
+        auto u82 = v.AwsWafv2WebAcl.unwrap()
+        parts.append("\"AwsWafv2WebAcl\":" + aws_wafv2_web_acl_details_to_json(u82))
+    if v.AwsWafv2RuleGroup.is_some():
+        auto u83 = v.AwsWafv2RuleGroup.unwrap()
+        parts.append("\"AwsWafv2RuleGroup\":" + aws_wafv2_rule_group_details_to_json(u83))
+    if v.AwsEc2RouteTable.is_some():
+        auto u84 = v.AwsEc2RouteTable.unwrap()
+        parts.append("\"AwsEc2RouteTable\":" + aws_ec2_route_table_details_to_json(u84))
+    if v.AwsAmazonMqBroker.is_some():
+        auto u85 = v.AwsAmazonMqBroker.unwrap()
+        parts.append("\"AwsAmazonMqBroker\":" + aws_amazon_mq_broker_details_to_json(u85))
+    if v.AwsAppSyncGraphQlApi.is_some():
+        auto u86 = v.AwsAppSyncGraphQlApi.unwrap()
+        parts.append("\"AwsAppSyncGraphQlApi\":" + aws_app_sync_graph_ql_api_details_to_json(u86))
+    if v.AwsEventSchemasRegistry.is_some():
+        auto u87 = v.AwsEventSchemasRegistry.unwrap()
+        parts.append("\"AwsEventSchemasRegistry\":" + u87.to_json())
+    if v.AwsGuardDutyDetector.is_some():
+        auto u88 = v.AwsGuardDutyDetector.unwrap()
+        parts.append("\"AwsGuardDutyDetector\":" + aws_guard_duty_detector_details_to_json(u88))
+    if v.AwsStepFunctionStateMachine.is_some():
+        auto u89 = v.AwsStepFunctionStateMachine.unwrap()
+        parts.append("\"AwsStepFunctionStateMachine\":" + aws_step_function_state_machine_details_to_json(u89))
+    if v.AwsAthenaWorkGroup.is_some():
+        auto u90 = v.AwsAthenaWorkGroup.unwrap()
+        parts.append("\"AwsAthenaWorkGroup\":" + u90.to_json())
+    if v.AwsEventsEventbus.is_some():
+        auto u91 = v.AwsEventsEventbus.unwrap()
+        parts.append("\"AwsEventsEventbus\":" + u91.to_json())
+    if v.AwsDmsEndpoint.is_some():
+        auto u92 = v.AwsDmsEndpoint.unwrap()
+        parts.append("\"AwsDmsEndpoint\":" + u92.to_json())
+    if v.AwsEventsEndpoint.is_some():
+        auto u93 = v.AwsEventsEndpoint.unwrap()
+        parts.append("\"AwsEventsEndpoint\":" + aws_events_endpoint_details_to_json(u93))
+    if v.AwsDmsReplicationTask.is_some():
+        auto u94 = v.AwsDmsReplicationTask.unwrap()
+        parts.append("\"AwsDmsReplicationTask\":" + u94.to_json())
+    if v.AwsDmsReplicationInstance.is_some():
+        auto u95 = v.AwsDmsReplicationInstance.unwrap()
+        parts.append("\"AwsDmsReplicationInstance\":" + aws_dms_replication_instance_details_to_json(u95))
+    if v.AwsRoute53HostedZone.is_some():
+        auto u96 = v.AwsRoute53HostedZone.unwrap()
+        parts.append("\"AwsRoute53HostedZone\":" + aws_route53_hosted_zone_details_to_json(u96))
+    if v.AwsMskCluster.is_some():
+        auto u97 = v.AwsMskCluster.unwrap()
+        parts.append("\"AwsMskCluster\":" + aws_msk_cluster_details_to_json(u97))
+    if v.AwsS3AccessPoint.is_some():
+        auto u98 = v.AwsS3AccessPoint.unwrap()
+        parts.append("\"AwsS3AccessPoint\":" + u98.to_json())
+    if v.AwsEc2ClientVpnEndpoint.is_some():
+        auto u99 = v.AwsEc2ClientVpnEndpoint.unwrap()
+        parts.append("\"AwsEc2ClientVpnEndpoint\":" + aws_ec2_client_vpn_endpoint_details_to_json(u99))
+    if v.CodeRepository.is_some():
+        auto u100 = v.CodeRepository.unwrap()
+        parts.append("\"CodeRepository\":" + u100.to_json())
+    if v.AzureResource.is_some():
+        auto u101 = v.AzureResource.unwrap()
+        parts.append("\"AzureResource\":" + u101.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize ResourceGroupByRule to a compact JSON object (declaration order).
+def resource_group_by_rule_to_json(ResourceGroupByRule v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupByField\":" + v.GroupByField.to_json())
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + resources_filters_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize ResourceScopes to a compact JSON object (declaration order).
+def resource_scopes_to_json(ResourceScopes v) -> str:
+    list[str] parts = []
+    if v.AwsOrganizations.is_some():
+        auto u0 = v.AwsOrganizations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AwsOrganizations\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize ResourcesCompositeFilter to a compact JSON object (declaration order).
+def resources_composite_filter_to_json(ResourcesCompositeFilter v) -> str:
+    list[str] parts = []
+    if v.StringFilters.is_some():
+        auto u0 = v.StringFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringFilters\":" + securityhub_json_arr(e1))
+    if v.DateFilters.is_some():
+        auto u2 = v.DateFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"DateFilters\":" + securityhub_json_arr(e3))
+    if v.NumberFilters.is_some():
+        auto u4 = v.NumberFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"NumberFilters\":" + securityhub_json_arr(e5))
+    if v.MapFilters.is_some():
+        auto u6 = v.MapFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"MapFilters\":" + securityhub_json_arr(e7))
+    if v.NestedCompositeFilters.is_some():
+        auto u8 = v.NestedCompositeFilters.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(resources_composite_filter_to_json(x9))
+        parts.append("\"NestedCompositeFilters\":" + securityhub_json_arr(e9))
+    if v.Operator.is_some():
+        auto u10 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u10.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize ResourcesFilters to a compact JSON object (declaration order).
+def resources_filters_to_json(ResourcesFilters v) -> str:
+    list[str] parts = []
+    if v.CompositeFilters.is_some():
+        auto u0 = v.CompositeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(resources_composite_filter_to_json(x1))
+        parts.append("\"CompositeFilters\":" + securityhub_json_arr(e1))
+    if v.CompositeOperator.is_some():
+        auto u2 = v.CompositeOperator.unwrap()
+        parts.append("\"CompositeOperator\":" + u2.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize ResourcesTrendsCompositeFilter to a compact JSON object (declaration order).
+def resources_trends_composite_filter_to_json(ResourcesTrendsCompositeFilter v) -> str:
+    list[str] parts = []
+    if v.StringFilters.is_some():
+        auto u0 = v.StringFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringFilters\":" + securityhub_json_arr(e1))
+    if v.NestedCompositeFilters.is_some():
+        auto u2 = v.NestedCompositeFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(resources_trends_composite_filter_to_json(x3))
+        parts.append("\"NestedCompositeFilters\":" + securityhub_json_arr(e3))
+    if v.Operator.is_some():
+        auto u4 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u4.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize ResourcesTrendsFilters to a compact JSON object (declaration order).
+def resources_trends_filters_to_json(ResourcesTrendsFilters v) -> str:
+    list[str] parts = []
+    if v.CompositeFilters.is_some():
+        auto u0 = v.CompositeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(resources_trends_composite_filter_to_json(x1))
+        parts.append("\"CompositeFilters\":" + securityhub_json_arr(e1))
+    if v.CompositeOperator.is_some():
+        auto u2 = v.CompositeOperator.unwrap()
+        parts.append("\"CompositeOperator\":" + u2.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupDetails to a compact JSON object (declaration order).
+def rule_group_details_to_json(RuleGroupDetails v) -> str:
+    list[str] parts = []
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        parts.append("\"RuleVariables\":" + rule_group_variables_to_json(u0))
+    if v.RulesSource.is_some():
+        auto u1 = v.RulesSource.unwrap()
+        parts.append("\"RulesSource\":" + rule_group_source_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSource to a compact JSON object (declaration order).
+def rule_group_source_to_json(RuleGroupSource v) -> str:
+    list[str] parts = []
+    if v.RulesSourceList.is_some():
+        auto u0 = v.RulesSourceList.unwrap()
+        parts.append("\"RulesSourceList\":" + rule_group_source_list_details_to_json(u0))
+    if v.RulesString.is_some():
+        auto u1 = v.RulesString.unwrap()
+        parts.append("\"RulesString\":" + securityhub_json_str(u1))
+    if v.StatefulRules.is_some():
+        auto u2 = v.StatefulRules.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rule_group_source_stateful_rules_details_to_json(x3))
+        parts.append("\"StatefulRules\":" + securityhub_json_arr(e3))
+    if v.StatelessRulesAndCustomActions.is_some():
+        auto u4 = v.StatelessRulesAndCustomActions.unwrap()
+        parts.append("\"StatelessRulesAndCustomActions\":" + rule_group_source_stateless_rules_and_custom_actions_details_to_json(u4))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceCustomActionsDetails to a compact JSON object (declaration order).
+def rule_group_source_custom_actions_details_to_json(RuleGroupSourceCustomActionsDetails v) -> str:
+    list[str] parts = []
+    if v.ActionDefinition.is_some():
+        auto u0 = v.ActionDefinition.unwrap()
+        parts.append("\"ActionDefinition\":" + stateless_custom_action_definition_to_json(u0))
+    if v.ActionName.is_some():
+        auto u1 = v.ActionName.unwrap()
+        parts.append("\"ActionName\":" + securityhub_json_str(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceListDetails to a compact JSON object (declaration order).
+def rule_group_source_list_details_to_json(RuleGroupSourceListDetails v) -> str:
+    list[str] parts = []
+    if v.GeneratedRulesType.is_some():
+        auto u0 = v.GeneratedRulesType.unwrap()
+        parts.append("\"GeneratedRulesType\":" + securityhub_json_str(u0))
+    if v.TargetTypes.is_some():
+        auto u1 = v.TargetTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"TargetTypes\":" + securityhub_json_arr(e2))
+    if v.Targets.is_some():
+        auto u3 = v.Targets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(securityhub_json_str(x4))
+        parts.append("\"Targets\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatefulRulesDetails to a compact JSON object (declaration order).
+def rule_group_source_stateful_rules_details_to_json(RuleGroupSourceStatefulRulesDetails v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + securityhub_json_str(u0))
+    if v.Header.is_some():
+        auto u1 = v.Header.unwrap()
+        parts.append("\"Header\":" + u1.to_json())
+    if v.RuleOptions.is_some():
+        auto u2 = v.RuleOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rule_group_source_stateful_rules_options_details_to_json(x3))
+        parts.append("\"RuleOptions\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatefulRulesOptionsDetails to a compact JSON object (declaration order).
+def rule_group_source_stateful_rules_options_details_to_json(RuleGroupSourceStatefulRulesOptionsDetails v) -> str:
+    list[str] parts = []
+    if v.Keyword.is_some():
+        auto u0 = v.Keyword.unwrap()
+        parts.append("\"Keyword\":" + securityhub_json_str(u0))
+    if v.Settings.is_some():
+        auto u1 = v.Settings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"Settings\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatelessRuleDefinition to a compact JSON object (declaration order).
+def rule_group_source_stateless_rule_definition_to_json(RuleGroupSourceStatelessRuleDefinition v) -> str:
+    list[str] parts = []
+    if v.Actions.is_some():
+        auto u0 = v.Actions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Actions\":" + securityhub_json_arr(e1))
+    if v.MatchAttributes.is_some():
+        auto u2 = v.MatchAttributes.unwrap()
+        parts.append("\"MatchAttributes\":" + rule_group_source_stateless_rule_match_attributes_to_json(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatelessRuleMatchAttributes to a compact JSON object (declaration order).
+def rule_group_source_stateless_rule_match_attributes_to_json(RuleGroupSourceStatelessRuleMatchAttributes v) -> str:
+    list[str] parts = []
+    if v.DestinationPorts.is_some():
+        auto u0 = v.DestinationPorts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DestinationPorts\":" + securityhub_json_arr(e1))
+    if v.Destinations.is_some():
+        auto u2 = v.Destinations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Destinations\":" + securityhub_json_arr(e3))
+    if v.Protocols.is_some():
+        auto u4 = v.Protocols.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(x5))
+        parts.append("\"Protocols\":" + securityhub_json_arr(e5))
+    if v.SourcePorts.is_some():
+        auto u6 = v.SourcePorts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"SourcePorts\":" + securityhub_json_arr(e7))
+    if v.Sources.is_some():
+        auto u8 = v.Sources.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Sources\":" + securityhub_json_arr(e9))
+    if v.TcpFlags.is_some():
+        auto u10 = v.TcpFlags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(rule_group_source_stateless_rule_match_attributes_tcp_flags_to_json(x11))
+        parts.append("\"TcpFlags\":" + securityhub_json_arr(e11))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatelessRuleMatchAttributesTcpFlags to a compact JSON object (declaration order).
+def rule_group_source_stateless_rule_match_attributes_tcp_flags_to_json(RuleGroupSourceStatelessRuleMatchAttributesTcpFlags v) -> str:
+    list[str] parts = []
+    if v.Flags.is_some():
+        auto u0 = v.Flags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Flags\":" + securityhub_json_arr(e1))
+    if v.Masks.is_some():
+        auto u2 = v.Masks.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"Masks\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatelessRulesAndCustomActionsDetails to a compact JSON object (declaration order).
+def rule_group_source_stateless_rules_and_custom_actions_details_to_json(RuleGroupSourceStatelessRulesAndCustomActionsDetails v) -> str:
+    list[str] parts = []
+    if v.CustomActions.is_some():
+        auto u0 = v.CustomActions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rule_group_source_custom_actions_details_to_json(x1))
+        parts.append("\"CustomActions\":" + securityhub_json_arr(e1))
+    if v.StatelessRules.is_some():
+        auto u2 = v.StatelessRules.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rule_group_source_stateless_rules_details_to_json(x3))
+        parts.append("\"StatelessRules\":" + securityhub_json_arr(e3))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupSourceStatelessRulesDetails to a compact JSON object (declaration order).
+def rule_group_source_stateless_rules_details_to_json(RuleGroupSourceStatelessRulesDetails v) -> str:
+    list[str] parts = []
+    if v.Priority.is_some():
+        auto u0 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u0))
+    if v.RuleDefinition.is_some():
+        auto u1 = v.RuleDefinition.unwrap()
+        parts.append("\"RuleDefinition\":" + rule_group_source_stateless_rule_definition_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupVariables to a compact JSON object (declaration order).
+def rule_group_variables_to_json(RuleGroupVariables v) -> str:
+    list[str] parts = []
+    if v.IpSets.is_some():
+        auto u0 = v.IpSets.unwrap()
+        parts.append("\"IpSets\":" + rule_group_variables_ip_sets_details_to_json(u0))
+    if v.PortSets.is_some():
+        auto u1 = v.PortSets.unwrap()
+        parts.append("\"PortSets\":" + rule_group_variables_port_sets_details_to_json(u1))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupVariablesIpSetsDetails to a compact JSON object (declaration order).
+def rule_group_variables_ip_sets_details_to_json(RuleGroupVariablesIpSetsDetails v) -> str:
+    list[str] parts = []
+    if v.Definition.is_some():
+        auto u0 = v.Definition.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Definition\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize RuleGroupVariablesPortSetsDetails to a compact JSON object (declaration order).
+def rule_group_variables_port_sets_details_to_json(RuleGroupVariablesPortSetsDetails v) -> str:
+    list[str] parts = []
+    if v.Definition.is_some():
+        auto u0 = v.Definition.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Definition\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize SecurityControlCustomParameter to a compact JSON object (declaration order).
+def security_control_custom_parameter_to_json(SecurityControlCustomParameter v) -> str:
+    list[str] parts = []
+    if v.SecurityControlId.is_some():
+        auto u0 = v.SecurityControlId.unwrap()
+        parts.append("\"SecurityControlId\":" + securityhub_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(securityhub_json_str(k2) + ":" + parameter_configuration_to_json(u1[k2]))
+        parts.append("\"Parameters\":" + securityhub_json_obj(m2))
+    return securityhub_json_obj(parts)
+
+# Serialize SecurityControlParameter to a compact JSON object (declaration order).
+def security_control_parameter_to_json(SecurityControlParameter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"Value\":" + securityhub_json_arr(e2))
+    return securityhub_json_obj(parts)
+
+# Serialize SecurityControlsConfiguration to a compact JSON object (declaration order).
+def security_controls_configuration_to_json(SecurityControlsConfiguration v) -> str:
+    list[str] parts = []
+    if v.EnabledSecurityControlIdentifiers.is_some():
+        auto u0 = v.EnabledSecurityControlIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"EnabledSecurityControlIdentifiers\":" + securityhub_json_arr(e1))
+    if v.DisabledSecurityControlIdentifiers.is_some():
+        auto u2 = v.DisabledSecurityControlIdentifiers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(securityhub_json_str(x3))
+        parts.append("\"DisabledSecurityControlIdentifiers\":" + securityhub_json_arr(e3))
+    if v.SecurityControlCustomParameters.is_some():
+        auto u4 = v.SecurityControlCustomParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(security_control_custom_parameter_to_json(x5))
+        parts.append("\"SecurityControlCustomParameters\":" + securityhub_json_arr(e5))
+    return securityhub_json_obj(parts)
+
+# Serialize SecurityHubPolicy to a compact JSON object (declaration order).
+def security_hub_policy_to_json(SecurityHubPolicy v) -> str:
+    list[str] parts = []
+    if v.ServiceEnabled.is_some():
+        auto u0 = v.ServiceEnabled.unwrap()
+        parts.append("\"ServiceEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.EnabledStandardIdentifiers.is_some():
+        auto u1 = v.EnabledStandardIdentifiers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(securityhub_json_str(x2))
+        parts.append("\"EnabledStandardIdentifiers\":" + securityhub_json_arr(e2))
+    if v.SecurityControlsConfiguration.is_some():
+        auto u3 = v.SecurityControlsConfiguration.unwrap()
+        parts.append("\"SecurityControlsConfiguration\":" + security_controls_configuration_to_json(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize SensitiveDataDetections to a compact JSON object (declaration order).
+def sensitive_data_detections_to_json(SensitiveDataDetections v) -> str:
+    list[str] parts = []
+    if v.Count.is_some():
+        auto u0 = v.Count.unwrap()
+        parts.append("\"Count\":" + str(u0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u1))
+    if v.Occurrences.is_some():
+        auto u2 = v.Occurrences.unwrap()
+        parts.append("\"Occurrences\":" + occurrences_to_json(u2))
+    return securityhub_json_obj(parts)
+
+# Serialize SensitiveDataResult to a compact JSON object (declaration order).
+def sensitive_data_result_to_json(SensitiveDataResult v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        parts.append("\"Category\":" + securityhub_json_str(u0))
+    if v.Detections.is_some():
+        auto u1 = v.Detections.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sensitive_data_detections_to_json(x2))
+        parts.append("\"Detections\":" + securityhub_json_arr(e2))
+    if v.TotalCount.is_some():
+        auto u3 = v.TotalCount.unwrap()
+        parts.append("\"TotalCount\":" + str(u3))
+    return securityhub_json_obj(parts)
+
+# Serialize Sequence to a compact JSON object (declaration order).
+def sequence_to_json(Sequence v) -> str:
+    list[str] parts = []
+    if v.Uid.is_some():
+        auto u0 = v.Uid.unwrap()
+        parts.append("\"Uid\":" + securityhub_json_str(u0))
+    if v.Actors.is_some():
+        auto u1 = v.Actors.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Actors\":" + securityhub_json_arr(e2))
+    if v.Endpoints.is_some():
+        auto u3 = v.Endpoints.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Endpoints\":" + securityhub_json_arr(e4))
+    if v.Signals.is_some():
+        auto u5 = v.Signals.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(signal_to_json(x6))
+        parts.append("\"Signals\":" + securityhub_json_arr(e6))
+    if v.SequenceIndicators.is_some():
+        auto u7 = v.SequenceIndicators.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(indicator_to_json(x8))
+        parts.append("\"SequenceIndicators\":" + securityhub_json_arr(e8))
+    return securityhub_json_obj(parts)
+
+# Serialize Signal to a compact JSON object (declaration order).
+def signal_to_json(Signal v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + securityhub_json_str(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        parts.append("\"Id\":" + securityhub_json_str(u1))
+    if v.Title.is_some():
+        auto u2 = v.Title.unwrap()
+        parts.append("\"Title\":" + securityhub_json_str(u2))
+    if v.ProductArn.is_some():
+        auto u3 = v.ProductArn.unwrap()
+        parts.append("\"ProductArn\":" + securityhub_json_str(u3))
+    if v.ResourceIds.is_some():
+        auto u4 = v.ResourceIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"ResourceIds\":" + securityhub_json_arr(e5))
+    if v.SignalIndicators.is_some():
+        auto u6 = v.SignalIndicators.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(indicator_to_json(x7))
+        parts.append("\"SignalIndicators\":" + securityhub_json_arr(e7))
+    if v.Name.is_some():
+        auto u8 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u8))
+    if v.CreatedAt.is_some():
+        auto u9 = v.CreatedAt.unwrap()
+        parts.append("\"CreatedAt\":" + str(u9))
+    if v.UpdatedAt.is_some():
+        auto u10 = v.UpdatedAt.unwrap()
+        parts.append("\"UpdatedAt\":" + str(u10))
+    if v.FirstSeenAt.is_some():
+        auto u11 = v.FirstSeenAt.unwrap()
+        parts.append("\"FirstSeenAt\":" + str(u11))
+    if v.LastSeenAt.is_some():
+        auto u12 = v.LastSeenAt.unwrap()
+        parts.append("\"LastSeenAt\":" + str(u12))
+    if v.Severity.is_some():
+        auto u13 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + str(u13))
+    if v.Count.is_some():
+        auto u14 = v.Count.unwrap()
+        parts.append("\"Count\":" + str(u14))
+    if v.ActorIds.is_some():
+        auto u15 = v.ActorIds.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(securityhub_json_str(x16))
+        parts.append("\"ActorIds\":" + securityhub_json_arr(e16))
+    if v.EndpointIds.is_some():
+        auto u17 = v.EndpointIds.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(securityhub_json_str(x18))
+        parts.append("\"EndpointIds\":" + securityhub_json_arr(e18))
+    return securityhub_json_obj(parts)
+
+# Serialize StandardsSubscriptionRequest to a compact JSON object (declaration order).
+def standards_subscription_request_to_json(StandardsSubscriptionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"StandardsArn\":" + securityhub_json_str(v.StandardsArn))
+    if v.StandardsInput.is_some():
+        auto u0 = v.StandardsInput.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+        parts.append("\"StandardsInput\":" + securityhub_json_obj(m1))
+    return securityhub_json_obj(parts)
+
+# Serialize StatelessCustomActionDefinition to a compact JSON object (declaration order).
+def stateless_custom_action_definition_to_json(StatelessCustomActionDefinition v) -> str:
+    list[str] parts = []
+    if v.PublishMetricAction.is_some():
+        auto u0 = v.PublishMetricAction.unwrap()
+        parts.append("\"PublishMetricAction\":" + stateless_custom_publish_metric_action_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize StatelessCustomPublishMetricAction to a compact JSON object (declaration order).
+def stateless_custom_publish_metric_action_to_json(StatelessCustomPublishMetricAction v) -> str:
+    list[str] parts = []
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Dimensions\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
+# Serialize Threat to a compact JSON object (declaration order).
+def threat_to_json(Threat v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + securityhub_json_str(u0))
+    if v.Severity.is_some():
+        auto u1 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + securityhub_json_str(u1))
+    if v.ItemCount.is_some():
+        auto u2 = v.ItemCount.unwrap()
+        parts.append("\"ItemCount\":" + str(u2))
+    if v.FilePaths.is_some():
+        auto u3 = v.FilePaths.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"FilePaths\":" + securityhub_json_arr(e4))
+    return securityhub_json_obj(parts)
+
+# Serialize UpdateAutomationRulesRequestItem to a compact JSON object (declaration order).
+def update_automation_rules_request_item_to_json(UpdateAutomationRulesRequestItem v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleArn\":" + securityhub_json_str(v.RuleArn))
+    if v.RuleStatus.is_some():
+        auto u0 = v.RuleStatus.unwrap()
+        parts.append("\"RuleStatus\":" + u0.to_json())
+    if v.RuleOrder.is_some():
+        auto u1 = v.RuleOrder.unwrap()
+        parts.append("\"RuleOrder\":" + str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + securityhub_json_str(u2))
+    if v.RuleName.is_some():
+        auto u3 = v.RuleName.unwrap()
+        parts.append("\"RuleName\":" + securityhub_json_str(u3))
+    if v.IsTerminal.is_some():
+        auto u4 = v.IsTerminal.unwrap()
+        parts.append("\"IsTerminal\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Criteria.is_some():
+        auto u5 = v.Criteria.unwrap()
+        parts.append("\"Criteria\":" + automation_rules_finding_filters_to_json(u5))
+    if v.Actions.is_some():
+        auto u6 = v.Actions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(automation_rules_action_to_json(x7))
+        parts.append("\"Actions\":" + securityhub_json_arr(e7))
+    return securityhub_json_obj(parts)
+
+# Serialize Vulnerability to a compact JSON object (declaration order).
+def vulnerability_to_json(Vulnerability v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + securityhub_json_str(v.Id))
+    if v.VulnerablePackages.is_some():
+        auto u0 = v.VulnerablePackages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"VulnerablePackages\":" + securityhub_json_arr(e1))
+    if v.Cvss.is_some():
+        auto u2 = v.Cvss.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cvss_to_json(x3))
+        parts.append("\"Cvss\":" + securityhub_json_arr(e3))
+    if v.RelatedVulnerabilities.is_some():
+        auto u4 = v.RelatedVulnerabilities.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(securityhub_json_str(x5))
+        parts.append("\"RelatedVulnerabilities\":" + securityhub_json_arr(e5))
+    if v.Vendor.is_some():
+        auto u6 = v.Vendor.unwrap()
+        parts.append("\"Vendor\":" + u6.to_json())
+    if v.ReferenceUrls.is_some():
+        auto u7 = v.ReferenceUrls.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(securityhub_json_str(x8))
+        parts.append("\"ReferenceUrls\":" + securityhub_json_arr(e8))
+    if v.FixAvailable.is_some():
+        auto u9 = v.FixAvailable.unwrap()
+        parts.append("\"FixAvailable\":" + u9.to_json())
+    if v.EpssScore.is_some():
+        auto u10 = v.EpssScore.unwrap()
+        parts.append("\"EpssScore\":" + str(u10))
+    if v.ExploitAvailable.is_some():
+        auto u11 = v.ExploitAvailable.unwrap()
+        parts.append("\"ExploitAvailable\":" + u11.to_json())
+    if v.LastKnownExploitAt.is_some():
+        auto u12 = v.LastKnownExploitAt.unwrap()
+        parts.append("\"LastKnownExploitAt\":" + securityhub_json_str(u12))
+    if v.CodeVulnerabilities.is_some():
+        auto u13 = v.CodeVulnerabilities.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(vulnerability_code_vulnerabilities_to_json(x14))
+        parts.append("\"CodeVulnerabilities\":" + securityhub_json_arr(e14))
+    return securityhub_json_obj(parts)
+
+# Serialize VulnerabilityCodeVulnerabilities to a compact JSON object (declaration order).
+def vulnerability_code_vulnerabilities_to_json(VulnerabilityCodeVulnerabilities v) -> str:
+    list[str] parts = []
+    if v.Cwes.is_some():
+        auto u0 = v.Cwes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(securityhub_json_str(x1))
+        parts.append("\"Cwes\":" + securityhub_json_arr(e1))
+    if v.FilePath.is_some():
+        auto u2 = v.FilePath.unwrap()
+        parts.append("\"FilePath\":" + u2.to_json())
+    if v.SourceArn.is_some():
+        auto u3 = v.SourceArn.unwrap()
+        parts.append("\"SourceArn\":" + securityhub_json_str(u3))
+    return securityhub_json_obj(parts)
+
 # A bound SecurityHub client: credentials + region, threaded into every operation.
 struct SecurityHubClient:
     core.Credentials creds
@@ -9360,6 +18264,215 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # BatchDeleteAutomationRules  POST /automationrules/delete
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def batch_delete_automation_rules(self, BatchDeleteAutomationRulesRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AutomationRulesArns:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AutomationRulesArns\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchDisableStandards  POST /standards/deregister
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_disable_standards(self, BatchDisableStandardsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/standards/deregister", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.StandardsSubscriptionArns:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"StandardsSubscriptionArns\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchEnableStandards  POST /standards/register
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_enable_standards(self, BatchEnableStandardsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/standards/register", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.StandardsSubscriptionRequests:
+            e0.append(standards_subscription_request_to_json(x0))
+        parts.append("\"StandardsSubscriptionRequests\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchGetAutomationRules  POST /automationrules/get
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def batch_get_automation_rules(self, BatchGetAutomationRulesRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AutomationRulesArns:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AutomationRulesArns\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchGetConfigurationPolicyAssociations  POST /configurationPolicyAssociation/batchget
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def batch_get_configuration_policy_associations(self, BatchGetConfigurationPolicyAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ConfigurationPolicyAssociationIdentifiers:
+            e0.append(x0.to_json())
+        parts.append("\"ConfigurationPolicyAssociationIdentifiers\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchGetSecurityControls  POST /securityControls/batchGet
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_get_security_controls(self, BatchGetSecurityControlsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/securityControls/batchGet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SecurityControlIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"SecurityControlIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchGetStandardsControlAssociations  POST /associations/batchGet
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_get_standards_control_associations(self, BatchGetStandardsControlAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/associations/batchGet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.StandardsControlAssociationIds:
+            e0.append(x0.to_json())
+        parts.append("\"StandardsControlAssociationIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchImportFindings  POST /findings/import
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_import_findings(self, BatchImportFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/import", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Findings:
+            e0.append(aws_security_finding_to_json(x0))
+        parts.append("\"Findings\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchUpdateAutomationRules  PATCH /automationrules/update
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def batch_update_automation_rules(self, BatchUpdateAutomationRulesRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automationrules/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UpdateAutomationRulesRequestItems:
+            e0.append(update_automation_rules_request_item_to_json(x0))
+        parts.append("\"UpdateAutomationRulesRequestItems\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchUpdateFindings  PATCH /findings/batchupdate
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_update_findings(self, BatchUpdateFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findings/batchupdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.FindingIdentifiers:
+            e0.append(x0.to_json())
+        parts.append("\"FindingIdentifiers\":" + securityhub_json_arr(e0))
+        if input.Note.is_some():
+            auto u1 = input.Note.unwrap()
+            parts.append("\"Note\":" + u1.to_json())
+        if input.Severity.is_some():
+            auto u2 = input.Severity.unwrap()
+            parts.append("\"Severity\":" + u2.to_json())
+        if input.VerificationState.is_some():
+            auto u3 = input.VerificationState.unwrap()
+            parts.append("\"VerificationState\":" + u3.to_json())
+        if input.Confidence.is_some():
+            auto u4 = input.Confidence.unwrap()
+            parts.append("\"Confidence\":" + str(u4))
+        if input.Criticality.is_some():
+            auto u5 = input.Criticality.unwrap()
+            parts.append("\"Criticality\":" + str(u5))
+        if input.Types.is_some():
+            auto u6 = input.Types.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(securityhub_json_str(x7))
+            parts.append("\"Types\":" + securityhub_json_arr(e7))
+        if input.UserDefinedFields.is_some():
+            auto u8 = input.UserDefinedFields.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(securityhub_json_str(k9) + ":" + securityhub_json_str(u8[k9]))
+            parts.append("\"UserDefinedFields\":" + securityhub_json_obj(m9))
+        if input.Workflow.is_some():
+            auto u10 = input.Workflow.unwrap()
+            parts.append("\"Workflow\":" + u10.to_json())
+        if input.RelatedFindings.is_some():
+            auto u11 = input.RelatedFindings.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"RelatedFindings\":" + securityhub_json_arr(e12))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchUpdateFindingsV2  PATCH /findingsv2/batchupdatev2
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def batch_update_findings_v2(self, BatchUpdateFindingsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findingsv2/batchupdatev2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MetadataUids.is_some():
+            auto u0 = input.MetadataUids.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"MetadataUids\":" + securityhub_json_arr(e1))
+        if input.FindingIdentifiers.is_some():
+            auto u2 = input.FindingIdentifiers.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"FindingIdentifiers\":" + securityhub_json_arr(e3))
+        if input.Comment.is_some():
+            auto u4 = input.Comment.unwrap()
+            parts.append("\"Comment\":" + securityhub_json_str(u4))
+        if input.SeverityId.is_some():
+            auto u5 = input.SeverityId.unwrap()
+            parts.append("\"SeverityId\":" + str(u5))
+        if input.StatusId.is_some():
+            auto u6 = input.StatusId.unwrap()
+            parts.append("\"StatusId\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # BatchUpdateStandardsControlAssociations  PATCH /associations
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def batch_update_standards_control_associations(self, BatchUpdateStandardsControlAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.StandardsControlAssociationUpdates:
+            e0.append(x0.to_json())
+        parts.append("\"StandardsControlAssociationUpdates\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # CancelExportJobV2  POST /exportjobsv2/{ExportJobId}/cancel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def cancel_export_job_v2(self, CancelExportJobV2Request input) -> str:
@@ -9378,6 +18491,199 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # CreateAggregatorV2  POST /aggregatorv2/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_aggregator_v2(self, CreateAggregatorV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/aggregatorv2/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
+        if input.LinkedRegions.is_some():
+            auto u0 = input.LinkedRegions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"LinkedRegions\":" + securityhub_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(securityhub_json_str(k3) + ":" + securityhub_json_str(u2[k3]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + securityhub_json_str(u4))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateAutomationRule  POST /automationrules/create
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def create_automation_rule(self, CreateAutomationRuleRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m1))
+        if input.RuleStatus.is_some():
+            auto u2 = input.RuleStatus.unwrap()
+            parts.append("\"RuleStatus\":" + u2.to_json())
+        parts.append("\"RuleOrder\":" + str(input.RuleOrder))
+        parts.append("\"RuleName\":" + securityhub_json_str(input.RuleName))
+        parts.append("\"Description\":" + securityhub_json_str(input.Description))
+        if input.IsTerminal.is_some():
+            auto u3 = input.IsTerminal.unwrap()
+            parts.append("\"IsTerminal\":" + json.dumps(JsonValue.Bool(u3)))
+        parts.append("\"Criteria\":" + automation_rules_finding_filters_to_json(input.Criteria))
+        list[str] e4 = []
+        for x4 in input.Actions:
+            e4.append(automation_rules_action_to_json(x4))
+        parts.append("\"Actions\":" + securityhub_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateAutomationRuleV2  POST /automationrulesv2/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_automation_rule_v2(self, CreateAutomationRuleV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrulesv2/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleName\":" + securityhub_json_str(input.RuleName))
+        if input.RuleStatus.is_some():
+            auto u0 = input.RuleStatus.unwrap()
+            parts.append("\"RuleStatus\":" + u0.to_json())
+        parts.append("\"Description\":" + securityhub_json_str(input.Description))
+        parts.append("\"RuleOrder\":" + str(input.RuleOrder))
+        parts.append("\"Criteria\":" + criteria_to_json(input.Criteria))
+        list[str] e1 = []
+        for x1 in input.Actions:
+            e1.append(x1.to_json())
+        parts.append("\"Actions\":" + securityhub_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(securityhub_json_str(k3) + ":" + securityhub_json_str(u2[k3]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + securityhub_json_str(u4))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateConfigurationPolicy  POST /configurationPolicy/create
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
+    def create_configuration_policy(self, CreateConfigurationPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicy/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + securityhub_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u0))
+        parts.append("\"ConfigurationPolicy\":" + policy_to_json(input.ConfigurationPolicy))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(securityhub_json_str(k2) + ":" + securityhub_json_str(u1[k2]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateConnector  POST /connectors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidAccessException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + securityhub_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u0))
+        parts.append("\"Provider\":" + cspm_provider_configuration_to_json(input.Provider))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(securityhub_json_str(k2) + ":" + securityhub_json_str(u1[k2]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + securityhub_json_str(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateConnectorV2  POST /connectorsv2
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_connector_v2(self, CreateConnectorV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/connectorsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + securityhub_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u0))
+        parts.append("\"Provider\":" + provider_configuration_to_json(input.Provider))
+        if input.KmsKeyArn.is_some():
+            auto u1 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + securityhub_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(securityhub_json_str(k3) + ":" + securityhub_json_str(u2[k3]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + securityhub_json_str(u4))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateFindingAggregator  POST /findingAggregator/create
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def create_finding_aggregator(self, CreateFindingAggregatorRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findingAggregator/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
+        if input.Regions.is_some():
+            auto u0 = input.Regions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"Regions\":" + securityhub_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateInsight  POST /insights
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
+    def create_insight(self, CreateInsightRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + securityhub_json_str(input.Name))
+        parts.append("\"Filters\":" + aws_security_finding_filters_to_json(input.Filters))
+        parts.append("\"GroupByAttribute\":" + securityhub_json_str(input.GroupByAttribute))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # CreateMembers  POST /members
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
+    def create_members(self, CreateMembersRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/members", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountDetails:
+            e0.append(x0.to_json())
+        parts.append("\"AccountDetails\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # CreateTicketV2  POST /ticketsv2
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_ticket_v2(self, CreateTicketV2Request input) -> str:
@@ -9385,6 +18691,19 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ticketsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTicketV2Document(ConnectorId=input.ConnectorId, FindingMetadataUid=input.FindingMetadataUid, ClientToken=input.ClientToken, Mode=input.Mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # DeclineInvitations  POST /invitations/decline
+    # errors: InternalException, InvalidAccessException, InvalidInputException, ResourceNotFoundException
+    def decline_invitations(self, DeclineInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/decline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AccountIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
     # DeleteActionTarget  DELETE /actionTargets/{ActionTargetArn+}
@@ -9458,6 +18777,53 @@ struct SecurityHubClient:
         greedy_labels["InsightArn"] = input.InsightArn
         auto b = binding.HttpBinding(method="DELETE", path_template="/insights/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
+
+    # DeleteInvitations  POST /invitations/delete
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def delete_invitations(self, DeleteInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AccountIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # DeleteMembers  POST /members/delete
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def delete_members(self, DeleteMembersRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/members/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AccountIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # DescribeActionTargets  POST /actionTargets/get
+    # errors: InternalException, InvalidAccessException, InvalidInputException, ResourceNotFoundException
+    def describe_action_targets(self, DescribeActionTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/actionTargets/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ActionTargetArns.is_some():
+            auto u0 = input.ActionTargetArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"ActionTargetArns\":" + securityhub_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
     # DescribeHub  GET /accounts
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
@@ -9578,6 +18944,19 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="POST", path_template="/master/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
+    # DisassociateMembers  POST /members/disassociate
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def disassociate_members(self, DisassociateMembersRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AccountIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # EnableImportFindingsForProduct  POST /productSubscriptions
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
     def enable_import_findings_for_product(self, EnableImportFindingsForProductRequest input) -> str:
@@ -9596,6 +18975,27 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # EnableSecurityHub  POST /accounts
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, LimitExceededException, ResourceConflictException
+    def enable_security_hub(self, EnableSecurityHubRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m1))
+        if input.EnableDefaultStandards.is_some():
+            auto u2 = input.EnableDefaultStandards.unwrap()
+            parts.append("\"EnableDefaultStandards\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.ControlFindingGenerator.is_some():
+            auto u3 = input.ControlFindingGenerator.unwrap()
+            parts.append("\"ControlFindingGenerator\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # EnableSecurityHubFeatureV2  POST /hubv2/feature/{FeatureName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def enable_security_hub_feature_v2(self, EnableSecurityHubFeatureV2Request input) -> str:
@@ -9604,6 +19004,21 @@ struct SecurityHubClient:
         labels["FeatureName"] = input.FeatureName
         auto b = binding.HttpBinding(method="POST", path_template="/hubv2/feature/{FeatureName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
+
+    # EnableSecurityHubV2  POST /hubv2
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def enable_security_hub_v2(self, EnableSecurityHubV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/hubv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(securityhub_json_str(k1) + ":" + securityhub_json_str(u0[k1]))
+            parts.append("\"Tags\":" + securityhub_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
     # GenerateRecommendedPolicyV2  POST /recommendedPolicyV2/{MetadataUid}
     # errors: AccessDeniedException, InternalServerException, InvalidInputException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -9675,6 +19090,33 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="GET", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
+    # GetEnabledStandards  POST /standards/get
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def get_enabled_standards(self, GetEnabledStandardsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/standards/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StandardsSubscriptionArns.is_some():
+            auto u0 = input.StandardsSubscriptionArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"StandardsSubscriptionArns\":" + securityhub_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        if input.Providers.is_some():
+            auto u4 = input.Providers.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Providers\":" + securityhub_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # GetExportJobV2  GET /exportjobsv2/{ExportJobId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_export_job_v2(self, GetExportJobV2Request input) -> str:
@@ -9702,6 +19144,99 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # GetFindingStatisticsV2  POST /findingsv2/statistics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ThrottlingException, ValidationException
+    def get_finding_statistics_v2(self, GetFindingStatisticsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsv2/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GroupByRules:
+            e0.append(group_by_rule_to_json(x0))
+        parts.append("\"GroupByRules\":" + securityhub_json_arr(e0))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + finding_scopes_to_json(u1))
+        if input.SortOrder.is_some():
+            auto u2 = input.SortOrder.unwrap()
+            parts.append("\"SortOrder\":" + u2.to_json())
+        if input.MaxStatisticResults.is_some():
+            auto u3 = input.MaxStatisticResults.unwrap()
+            parts.append("\"MaxStatisticResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetFindings  POST /findings
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def get_findings(self, GetFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + aws_security_finding_filters_to_json(u0))
+        if input.SortCriteria.is_some():
+            auto u1 = input.SortCriteria.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"SortCriteria\":" + securityhub_json_arr(e2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetFindingsTrendsV2  POST /findingsTrendsv2
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_findings_trends_v2(self, GetFindingsTrendsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsTrendsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + findings_trends_filters_to_json(u0))
+        parts.append("\"StartTime\":" + securityhub_json_ts_iso(input.StartTime))
+        parts.append("\"EndTime\":" + securityhub_json_ts_iso(input.EndTime))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetFindingsV2  POST /findingsv2
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ThrottlingException, ValidationException
+    def get_findings_v2(self, GetFindingsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + ocsf_finding_filters_to_json(u0))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + finding_scopes_to_json(u1))
+        if input.SortCriteria.is_some():
+            auto u2 = input.SortCriteria.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"SortCriteria\":" + securityhub_json_arr(e3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # GetInsightResults  GET /insights/results/{InsightArn+}
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_insight_results(self, GetInsightResultsRequest input) -> str:
@@ -9710,6 +19245,27 @@ struct SecurityHubClient:
         greedy_labels["InsightArn"] = input.InsightArn
         auto b = binding.HttpBinding(method="GET", path_template="/insights/results/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
+
+    # GetInsights  POST /insights/get
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def get_insights(self, GetInsightsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/insights/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.InsightArns.is_some():
+            auto u0 = input.InsightArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"InsightArns\":" + securityhub_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
     # GetInvitationsCount  GET /invitations/count
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
@@ -9725,6 +19281,19 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="GET", path_template="/master", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
+    # GetMembers  POST /members/get
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def get_members(self, GetMembersRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/members/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AccountIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # GetRecommendedPolicyV2  GET /recommendedPolicyV2/{MetadataUid}
     # errors: AccessDeniedException, InternalServerException, InvalidInputException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_recommended_policy_v2(self, GetRecommendedPolicyV2Request input) -> str:
@@ -9739,6 +19308,105 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="GET", path_template="/recommendedPolicyV2/{MetadataUid}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
+    # GetRemediationsV2  POST /GetRemediationsV2
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_remediations_v2(self, GetRemediationsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRemediationsV2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TargetUid.is_some():
+            auto u0 = input.TargetUid.unwrap()
+            parts.append("\"TargetUid\":" + securityhub_json_str(u0))
+        if input.MetadataUid.is_some():
+            auto u1 = input.MetadataUid.unwrap()
+            parts.append("\"MetadataUid\":" + securityhub_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + remediation_filters_to_json(u2))
+        if input.ShowGuidance.is_some():
+            auto u3 = input.ShowGuidance.unwrap()
+            parts.append("\"ShowGuidance\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.GuidanceFormat.is_some():
+            auto u4 = input.GuidanceFormat.unwrap()
+            parts.append("\"GuidanceFormat\":" + u4.to_json())
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        if input.NextToken.is_some():
+            auto u6 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u6))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetResourcesStatisticsV2  POST /resourcesv2/statistics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_resources_statistics_v2(self, GetResourcesStatisticsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesv2/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GroupByRules:
+            e0.append(resource_group_by_rule_to_json(x0))
+        parts.append("\"GroupByRules\":" + securityhub_json_arr(e0))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + resource_scopes_to_json(u1))
+        if input.SortOrder.is_some():
+            auto u2 = input.SortOrder.unwrap()
+            parts.append("\"SortOrder\":" + u2.to_json())
+        if input.MaxStatisticResults.is_some():
+            auto u3 = input.MaxStatisticResults.unwrap()
+            parts.append("\"MaxStatisticResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetResourcesTrendsV2  POST /resourcesTrendsv2
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_resources_trends_v2(self, GetResourcesTrendsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesTrendsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + resources_trends_filters_to_json(u0))
+        parts.append("\"StartTime\":" + securityhub_json_ts_iso(input.StartTime))
+        parts.append("\"EndTime\":" + securityhub_json_ts_iso(input.EndTime))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetResourcesV2  POST /resourcesv2
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_resources_v2(self, GetResourcesV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + resources_filters_to_json(u0))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + resource_scopes_to_json(u1))
+        if input.SortCriteria.is_some():
+            auto u2 = input.SortCriteria.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"SortCriteria\":" + securityhub_json_arr(e3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # GetSecurityControlDefinition  GET /securityControl/definition
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_security_control_definition(self, GetSecurityControlDefinitionRequest input) -> str:
@@ -9747,6 +19415,19 @@ struct SecurityHubClient:
         query["SecurityControlId"] = input.SecurityControlId
         auto b = binding.HttpBinding(method="GET", path_template="/securityControl/definition", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
+
+    # InviteMembers  POST /members/invite
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def invite_members(self, InviteMembersRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/members/invite", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(securityhub_json_str(x0))
+        parts.append("\"AccountIds\":" + securityhub_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
     # ListAggregatorsV2  GET /aggregatorv2/list
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -9890,6 +19571,33 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="GET", path_template="/findingAggregator/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
+    # ListFreeTrialStatusesV2  POST /freetrial/statusv2/list
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_free_trial_statuses_v2(self, ListFreeTrialStatusesV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/freetrial/statusv2/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccountIds.is_some():
+            auto u0 = input.AccountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"AccountIds\":" + securityhub_json_arr(e1))
+        if input.Statuses.is_some():
+            auto u2 = input.Statuses.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Statuses\":" + securityhub_json_arr(e3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.NextToken.is_some():
+            auto u5 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u5))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # ListInvitations  GET /invitations
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def list_invitations(self, ListInvitationsRequest input) -> str:
@@ -9965,6 +19673,41 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # StartExportJobV2  POST /exportjobsv2
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_export_job_v2(self, StartExportJobV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/exportjobsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + securityhub_json_str(u0))
+        parts.append("\"Destination\":" + input.Destination.to_json())
+        parts.append("\"OutputConfiguration\":" + export_output_to_json(input.OutputConfiguration))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + export_scopes_to_json(u1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + securityhub_json_str(u2))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalException, InvalidInputException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(securityhub_json_str(k0) + ":" + securityhub_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + securityhub_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # UpdateActionTarget  PATCH /actionTargets/{ActionTargetArn+}
     # errors: InternalException, InvalidAccessException, InvalidInputException, ResourceNotFoundException, ResourceNotFoundException
     def update_action_target(self, UpdateActionTargetRequest input) -> str:
@@ -9976,6 +19719,166 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # UpdateAggregatorV2  PATCH /aggregatorv2/update/{AggregatorV2Arn+}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_aggregator_v2(self, UpdateAggregatorV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["AggregatorV2Arn"] = input.AggregatorV2Arn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/aggregatorv2/update/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
+        if input.LinkedRegions.is_some():
+            auto u0 = input.LinkedRegions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"LinkedRegions\":" + securityhub_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateAutomationRuleV2  PATCH /automationrulesv2/{Identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_automation_rule_v2(self, UpdateAutomationRuleV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RuleStatus.is_some():
+            auto u0 = input.RuleStatus.unwrap()
+            parts.append("\"RuleStatus\":" + u0.to_json())
+        if input.RuleOrder.is_some():
+            auto u1 = input.RuleOrder.unwrap()
+            parts.append("\"RuleOrder\":" + str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u2))
+        if input.RuleName.is_some():
+            auto u3 = input.RuleName.unwrap()
+            parts.append("\"RuleName\":" + securityhub_json_str(u3))
+        if input.Criteria.is_some():
+            auto u4 = input.Criteria.unwrap()
+            parts.append("\"Criteria\":" + criteria_to_json(u4))
+        if input.Actions.is_some():
+            auto u5 = input.Actions.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Actions\":" + securityhub_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateConfigurationPolicy  PATCH /configurationPolicy/{Identifier}
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException, ResourceNotFoundException
+    def update_configuration_policy(self, UpdateConfigurationPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configurationPolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + securityhub_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u1))
+        if input.UpdatedReason.is_some():
+            auto u2 = input.UpdatedReason.unwrap()
+            parts.append("\"UpdatedReason\":" + securityhub_json_str(u2))
+        if input.ConfigurationPolicy.is_some():
+            auto u3 = input.ConfigurationPolicy.unwrap()
+            parts.append("\"ConfigurationPolicy\":" + policy_to_json(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateConnector  PATCH /connectors/{ConnectorId+}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidAccessException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_connector(self, UpdateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["ConnectorId"] = input.ConnectorId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u0))
+        if input.Provider.is_some():
+            auto u1 = input.Provider.unwrap()
+            parts.append("\"Provider\":" + cspm_provider_update_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateConnectorV2  PATCH /connectorsv2/{ConnectorId+}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_connector_v2(self, UpdateConnectorV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["ConnectorId"] = input.ConnectorId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + securityhub_json_str(u0))
+        if input.Provider.is_some():
+            auto u1 = input.Provider.unwrap()
+            parts.append("\"Provider\":" + provider_update_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateFindingAggregator  PATCH /findingAggregator/update
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def update_finding_aggregator(self, UpdateFindingAggregatorRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findingAggregator/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"FindingAggregatorArn\":" + securityhub_json_str(input.FindingAggregatorArn))
+        parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
+        if input.Regions.is_some():
+            auto u0 = input.Regions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(securityhub_json_str(x1))
+            parts.append("\"Regions\":" + securityhub_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateFindings  PATCH /findings
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def update_findings(self, UpdateFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Filters\":" + aws_security_finding_filters_to_json(input.Filters))
+        if input.Note.is_some():
+            auto u0 = input.Note.unwrap()
+            parts.append("\"Note\":" + u0.to_json())
+        if input.RecordState.is_some():
+            auto u1 = input.RecordState.unwrap()
+            parts.append("\"RecordState\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateInsight  PATCH /insights/{InsightArn+}
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def update_insight(self, UpdateInsightRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["InsightArn"] = input.InsightArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/insights/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + securityhub_json_str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + aws_security_finding_filters_to_json(u1))
+        if input.GroupByAttribute.is_some():
+            auto u2 = input.GroupByAttribute.unwrap()
+            parts.append("\"GroupByAttribute\":" + securityhub_json_str(u2))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # UpdateOrganizationConfiguration  POST /organization/configuration
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException, ResourceNotFoundException
     def update_organization_configuration(self, UpdateOrganizationConfigurationRequest input) -> str:
@@ -9983,6 +19886,23 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="POST", path_template="/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOrganizationConfigurationDocument(AutoEnable=input.AutoEnable, AutoEnableStandards=input.AutoEnableStandards, OrganizationConfiguration=input.OrganizationConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # UpdateSecurityControl  PATCH /securityControl/update
+    # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceInUseException, ResourceInUseException, ResourceNotFoundException, ResourceNotFoundException
+    def update_security_control(self, UpdateSecurityControlRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/securityControl/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SecurityControlId\":" + securityhub_json_str(input.SecurityControlId))
+        list[str] m0 = []
+        for k0 in sorted(input.Parameters.keys()):
+            m0.append(securityhub_json_str(k0) + ":" + parameter_configuration_to_json(input.Parameters[k0]))
+        parts.append("\"Parameters\":" + securityhub_json_obj(m0))
+        if input.LastUpdateReason.is_some():
+            auto u1 = input.LastUpdateReason.unwrap()
+            parts.append("\"LastUpdateReason\":" + securityhub_json_str(u1))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
     # UpdateSecurityHubConfiguration  PATCH /accounts
@@ -10004,6 +19924,19 @@ struct SecurityHubClient:
         auto doc = UpdateStandardsControlDocument(ControlStatus=input.ControlStatus, DisabledReason=input.DisabledReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # Paginator for DescribeActionTargets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ActionTargets).
+    def paginate_describe_action_targets(self, DescribeActionTargetsRequest input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.describe_action_targets(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for DescribeProducts — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Products).
@@ -10044,6 +19977,19 @@ struct SecurityHubClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetEnabledStandards — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: StandardsSubscriptions).
+    def paginate_get_enabled_standards(self, GetEnabledStandardsRequest input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_enabled_standards(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetFindingHistory — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Records).
     def paginate_get_finding_history(self, GetFindingHistoryRequest input):
@@ -10057,12 +20003,103 @@ struct SecurityHubClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetFindings — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Findings).
+    def paginate_get_findings(self, GetFindingsRequest input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_findings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetFindingsTrendsV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TrendsMetrics).
+    def paginate_get_findings_trends_v2(self, GetFindingsTrendsV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_findings_trends_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetFindingsV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Findings).
+    def paginate_get_findings_v2(self, GetFindingsV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_findings_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetInsights — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Insights).
+    def paginate_get_insights(self, GetInsightsRequest input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_insights(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetRecommendedPolicyV2 — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: RecommendationSteps).
     def paginate_get_recommended_policy_v2(self, GetRecommendedPolicyV2Request input):
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         while True:
             auto raw = self.get_recommended_policy_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetRemediationsV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Items).
+    def paginate_get_remediations_v2(self, GetRemediationsV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_remediations_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetResourcesTrendsV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TrendsMetrics).
+    def paginate_get_resources_trends_v2(self, GetResourcesTrendsV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_resources_trends_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetResourcesV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Resources).
+    def paginate_get_resources_v2(self, GetResourcesV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_resources_v2(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -10154,6 +20191,19 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         while True:
             auto raw = self.list_finding_aggregators(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListFreeTrialStatusesV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: AccountFreeTrialStatuses).
+    def paginate_list_free_trial_statuses_v2(self, ListFreeTrialStatusesV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.list_free_trial_statuses_v2(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

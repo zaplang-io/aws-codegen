@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 15 operations — 10 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 15 operations — 15 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   53 structs (35 @derive(Json)), 6 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -113,8 +113,9 @@ struct ConflictException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowRequest:
     str Name
     Optional[str] ClientToken
@@ -129,8 +130,9 @@ struct CreateWorkflowRequest:
     Optional[dict[str, str]] Tags
     Optional[str] TriggerMode
 
-# no @derive(Json): member(s) Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowResponse:
     str WorkflowArn
     Optional[DateTime] CreatedAt
@@ -172,8 +174,9 @@ struct GetTaskInstanceRequest:
     str TaskInstanceId
     str RunId
 
-# no @derive(Json): member(s) Xcom: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Xcom: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTaskInstanceResponse:
     str WorkflowArn
     str RunId
@@ -196,8 +199,9 @@ struct GetWorkflowRequest:
     str WorkflowArn
     Optional[str] WorkflowVersion
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowResponse:
     str WorkflowArn
     Optional[str] WorkflowVersion
@@ -223,8 +227,9 @@ struct GetWorkflowRunRequest:
     str WorkflowArn
     str RunId
 
-# no @derive(Json): member(s) OverrideParameters: dict[str, Document], RunDetail: WorkflowRunDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideParameters: dict[str, Document], RunDetail: WorkflowRunDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowRunResponse:
     Optional[str] WorkflowArn
     Optional[str] WorkflowVersion
@@ -242,8 +247,9 @@ struct InternalServerException:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -254,8 +260,9 @@ struct ListTaskInstancesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TaskInstances: list[TaskInstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskInstances: list[TaskInstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaskInstancesResponse:
     Optional[list[TaskInstanceSummary]] TaskInstances
     Optional[str] NextToken
@@ -267,8 +274,9 @@ struct ListWorkflowRunsRequest:
     str WorkflowArn
     Optional[str] WorkflowVersion
 
-# no @derive(Json): member(s) WorkflowRuns: list[WorkflowRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkflowRuns: list[WorkflowRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowRunsResponse:
     Optional[list[WorkflowRunSummary]] WorkflowRuns
     Optional[str] NextToken
@@ -279,8 +287,9 @@ struct ListWorkflowVersionsRequest:
     Optional[str] NextToken
     str WorkflowArn
 
-# no @derive(Json): member(s) WorkflowVersions: list[WorkflowVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkflowVersions: list[WorkflowVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowVersionsResponse:
     Optional[list[WorkflowVersionSummary]] WorkflowVersions
     Optional[str] NextToken
@@ -290,8 +299,9 @@ struct ListWorkflowsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Workflows: list[WorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workflows: list[WorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     list[WorkflowSummary] Workflows
     Optional[str] NextToken
@@ -300,8 +310,9 @@ struct ListWorkflowsResponse:
 struct LoggingConfiguration:
     str LogGroupName
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[list[str]] SecurityGroupIds
     Optional[list[str]] SubnetIds
@@ -344,8 +355,9 @@ struct ServiceQuotaExceededException:
     str ServiceCode
     str QuotaCode
 
-# no @derive(Json): member(s) OverrideParameters: dict[str, Document] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverrideParameters: dict[str, Document] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartWorkflowRunRequest:
     str WorkflowArn
     Optional[str] ClientToken
@@ -371,8 +383,9 @@ struct StopWorkflowRunResponse:
     Optional[str] RunId
     Optional[WorkflowRunStatus] Status
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
@@ -399,8 +412,9 @@ struct ThrottlingException:
     str QuotaCode
     Optional[int64] RetryAfterSeconds
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -410,8 +424,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkflowRequest:
     str WorkflowArn
     DefinitionS3Location DefinitionS3Location
@@ -423,16 +438,18 @@ struct UpdateWorkflowRequest:
     Optional[NetworkConfiguration] NetworkConfiguration
     Optional[str] TriggerMode
 
-# no @derive(Json): member(s) Warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkflowResponse:
     str WorkflowArn
     Optional[DateTime] ModifiedAt
     Optional[str] WorkflowVersion
     Optional[list[str]] Warnings
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -443,8 +460,9 @@ struct ValidationExceptionField:
     str Name
     str Message
 
-# no @derive(Json): member(s) TaskInstances: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskInstances: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowRunDetail:
     Optional[str] WorkflowArn
     Optional[str] WorkflowVersion
@@ -530,18 +548,165 @@ def airflow_serverless_error_from_code(str code) -> MWAA_ServerlessError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateWorkflow (input CreateWorkflowRequest)
-#   StartWorkflowRun (input StartWorkflowRunRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateWorkflow (input UpdateWorkflowRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def airflow_serverless_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def airflow_serverless_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def airflow_serverless_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateWorkflowRequest to a compact JSON object (declaration order).
+def create_workflow_request_to_json(CreateWorkflowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + airflow_serverless_json_str(v.Name))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + airflow_serverless_json_str(u0))
+    parts.append("\"DefinitionS3Location\":" + v.DefinitionS3Location.to_json())
+    if v.Code.is_some():
+        auto u1 = v.Code.unwrap()
+        parts.append("\"Code\":" + u1.to_json())
+    parts.append("\"RoleArn\":" + airflow_serverless_json_str(v.RoleArn))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + airflow_serverless_json_str(u2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
+    if v.LoggingConfiguration.is_some():
+        auto u4 = v.LoggingConfiguration.unwrap()
+        parts.append("\"LoggingConfiguration\":" + u4.to_json())
+    if v.EngineVersion.is_some():
+        auto u5 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + str(u5))
+    if v.NetworkConfiguration.is_some():
+        auto u6 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(airflow_serverless_json_str(k8) + ":" + airflow_serverless_json_str(u7[k8]))
+        parts.append("\"Tags\":" + airflow_serverless_json_obj(m8))
+    if v.TriggerMode.is_some():
+        auto u9 = v.TriggerMode.unwrap()
+        parts.append("\"TriggerMode\":" + airflow_serverless_json_str(u9))
+    return airflow_serverless_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(airflow_serverless_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + airflow_serverless_json_arr(e1))
+    if v.SubnetIds.is_some():
+        auto u2 = v.SubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(airflow_serverless_json_str(x3))
+        parts.append("\"SubnetIds\":" + airflow_serverless_json_arr(e3))
+    return airflow_serverless_json_obj(parts)
+
+# Serialize StartWorkflowRunRequest to a compact JSON object (declaration order).
+def start_workflow_run_request_to_json(StartWorkflowRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkflowArn\":" + airflow_serverless_json_str(v.WorkflowArn))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + airflow_serverless_json_str(u0))
+    if v.OverrideParameters.is_some():
+        auto u1 = v.OverrideParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(airflow_serverless_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"OverrideParameters\":" + airflow_serverless_json_obj(m2))
+    if v.WorkflowVersion.is_some():
+        auto u3 = v.WorkflowVersion.unwrap()
+        parts.append("\"WorkflowVersion\":" + airflow_serverless_json_str(u3))
+    return airflow_serverless_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + airflow_serverless_json_str(v.ResourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(airflow_serverless_json_str(k0) + ":" + airflow_serverless_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + airflow_serverless_json_obj(m0))
+    return airflow_serverless_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + airflow_serverless_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(airflow_serverless_json_str(x0))
+    parts.append("\"TagKeys\":" + airflow_serverless_json_arr(e0))
+    return airflow_serverless_json_obj(parts)
+
+# Serialize UpdateWorkflowRequest to a compact JSON object (declaration order).
+def update_workflow_request_to_json(UpdateWorkflowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkflowArn\":" + airflow_serverless_json_str(v.WorkflowArn))
+    parts.append("\"DefinitionS3Location\":" + v.DefinitionS3Location.to_json())
+    if v.Code.is_some():
+        auto u0 = v.Code.unwrap()
+        parts.append("\"Code\":" + u0.to_json())
+    parts.append("\"RoleArn\":" + airflow_serverless_json_str(v.RoleArn))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + airflow_serverless_json_str(u1))
+    if v.LoggingConfiguration.is_some():
+        auto u2 = v.LoggingConfiguration.unwrap()
+        parts.append("\"LoggingConfiguration\":" + u2.to_json())
+    if v.EngineVersion.is_some():
+        auto u3 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + str(u3))
+    if v.NetworkConfiguration.is_some():
+        auto u4 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u4))
+    if v.TriggerMode.is_some():
+        auto u5 = v.TriggerMode.unwrap()
+        parts.append("\"TriggerMode\":" + airflow_serverless_json_str(u5))
+    return airflow_serverless_json_obj(parts)
 
 # A bound MWAA_Serverless client: credentials + region, threaded into every operation.
 struct MWAA_ServerlessClient:
     core.Credentials creds
     str region
+
+    # CreateWorkflow
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OperationTimeoutException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workflow(self, CreateWorkflowRequest input) -> str:
+        auto body = create_workflow_request_to_json(input)
+        return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "CreateWorkflow", body)
 
     # DeleteWorkflow
     # errors: AccessDeniedException, InternalServerException, OperationTimeoutException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -597,11 +762,35 @@ struct MWAA_ServerlessClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "ListWorkflows", body)
 
+    # StartWorkflowRun
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OperationTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_workflow_run(self, StartWorkflowRunRequest input) -> str:
+        auto body = start_workflow_run_request_to_json(input)
+        return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "StartWorkflowRun", body)
+
     # StopWorkflowRun
     # errors: AccessDeniedException, InternalServerException, OperationTimeoutException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_workflow_run(self, StopWorkflowRunRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "StopWorkflowRun", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, OperationTimeoutException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, OperationTimeoutException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateWorkflow
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OperationTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_workflow(self, UpdateWorkflowRequest input) -> str:
+        auto body = update_workflow_request_to_json(input)
+        return awsjson.awsjson_request_now(airflow_serverless_protocol(), self.creds, self.region, "UpdateWorkflow", body)
 
     # Paginator for ListTaskInstances — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: TaskInstances).

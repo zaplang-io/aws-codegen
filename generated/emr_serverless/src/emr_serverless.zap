@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 11 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 22 operations — 16 with a generated method,
+#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   87 structs (56 @derive(Json)), 5 enums, 5 error variants.
 #   1 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -95,8 +95,9 @@ enum SessionState:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) initialCapacity: dict[str, InitialCapacityConfig], tags: dict[str, str], networkConfiguration: NetworkConfiguration, workerTypeSpecifications: dict[str, WorkerTypeSpecification], runtimeConfiguration: list[Configuration], monitoringConfiguration: MonitoringConfiguration, diskEncryptionConfiguration: DiskEncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) initialCapacity: dict[str, InitialCapacityConfig], tags: dict[str, str], networkConfiguration: NetworkConfiguration, workerTypeSpecifications: dict[str, WorkerTypeSpecification], runtimeConfiguration: list[Configuration], monitoringConfiguration: MonitoringConfiguration, diskEncryptionConfiguration: DiskEncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     str applicationId
     Optional[str] name
@@ -158,8 +159,9 @@ struct CancelJobRunResponse:
     str applicationId
     str jobRunId
 
-# no @derive(Json): member(s) logTypes: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logTypes: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLoggingConfiguration:
     bool enabled
     Optional[str] logGroupName
@@ -167,15 +169,17 @@ struct CloudWatchLoggingConfiguration:
     Optional[str] encryptionKeyArn
     Optional[dict[str, list[str]]] logTypes
 
-# no @derive(Json): member(s) properties: dict[str, str], configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, str], configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     str classification
     Optional[dict[str, str]] properties
     Optional[list[Configuration]] configurations
 
-# no @derive(Json): member(s) applicationConfiguration: list[Configuration], monitoringConfiguration: MonitoringConfiguration, diskEncryptionConfiguration: DiskEncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationConfiguration: list[Configuration], monitoringConfiguration: MonitoringConfiguration, diskEncryptionConfiguration: DiskEncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationOverrides:
     Optional[list[Configuration]] applicationConfiguration
     Optional[MonitoringConfiguration] monitoringConfiguration
@@ -225,8 +229,9 @@ struct DeleteApplicationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) encryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) encryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiskEncryptionConfiguration:
     Optional[dict[str, str]] encryptionContext
     Optional[str] encryptionKeyArn
@@ -236,8 +241,9 @@ struct DiskEncryptionConfiguration:
 struct GetApplicationRequest:
     str applicationId
 
-# no @derive(Json): member(s) application: Application not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) application: Application not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     Application application
 
@@ -260,8 +266,9 @@ struct GetJobRunRequest:
     str jobRunId
     Optional[int64] attempt
 
-# no @derive(Json): member(s) jobRun: JobRun not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobRun: JobRun not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobRunResponse:
     JobRun jobRun
 
@@ -297,8 +304,9 @@ struct GetSessionRequest:
     str applicationId
     str sessionId
 
-# no @derive(Json): member(s) session: Session not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) session: Session not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Session session
 
@@ -345,8 +353,9 @@ struct InteractiveConfiguration:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) sparkSubmit: SparkSubmit not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sparkSubmit: SparkSubmit not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobDriver:
     Optional[SparkSubmit] sparkSubmit
     Optional[Hive] hive
@@ -355,8 +364,9 @@ struct JobDriver:
 struct JobLevelCostAllocationConfiguration:
     Optional[bool] enabled
 
-# no @derive(Json): member(s) executionIamPolicy: JobRunExecutionIamPolicy, configurationOverrides: ConfigurationOverrides, jobDriver: JobDriver, tags: dict[str, str], networkConfiguration: NetworkConfiguration, workerTypeSpecifications: dict[str, WorkerTypeSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionIamPolicy: JobRunExecutionIamPolicy, configurationOverrides: ConfigurationOverrides, jobDriver: JobDriver, tags: dict[str, str], networkConfiguration: NetworkConfiguration, workerTypeSpecifications: dict[str, WorkerTypeSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobRun:
     str applicationId
     str jobRunId
@@ -407,8 +417,9 @@ struct JobRunAttemptSummary:
     Optional[str] type
     Optional[int64] attempt
 
-# no @derive(Json): member(s) policyArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobRunExecutionIamPolicy:
     Optional[str] policy
     Optional[list[str]] policyArns
@@ -439,8 +450,9 @@ struct ListApplicationsRequest:
     Optional[int64] maxResults
     Optional[list[ApplicationState]] states
 
-# no @derive(Json): member(s) applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     list[ApplicationSummary] applications
     Optional[str] nextToken
@@ -453,8 +465,9 @@ struct ListJobRunAttemptsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) jobRunAttempts: list[JobRunAttemptSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobRunAttempts: list[JobRunAttemptSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobRunAttemptsResponse:
     list[JobRunAttemptSummary] jobRunAttempts
     Optional[str] nextToken
@@ -471,8 +484,9 @@ struct ListJobRunsRequest:
     # wire string of the JobRunMode enum (querystring binding)
     Optional[str] mode
 
-# no @derive(Json): member(s) jobRuns: list[JobRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobRuns: list[JobRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobRunsResponse:
     list[JobRunSummary] jobRuns
     Optional[str] nextToken
@@ -487,8 +501,9 @@ struct ListSessionsRequest:
     Optional[DateTime] createdAtAfter
     Optional[DateTime] createdAtBefore
 
-# no @derive(Json): member(s) sessions: list[SessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessions: list[SessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     list[SessionSummary] sessions
     Optional[str] nextToken
@@ -498,8 +513,9 @@ struct ListSessionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -514,16 +530,18 @@ struct MaximumAllowedResources:
     str memory
     Optional[str] disk
 
-# no @derive(Json): member(s) cloudWatchLoggingConfiguration: CloudWatchLoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudWatchLoggingConfiguration: CloudWatchLoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringConfiguration:
     Optional[S3MonitoringConfiguration] s3MonitoringConfiguration
     Optional[ManagedPersistenceMonitoringConfiguration] managedPersistenceMonitoringConfiguration
     Optional[CloudWatchLoggingConfiguration] cloudWatchLoggingConfiguration
     Optional[PrometheusMonitoringConfiguration] prometheusMonitoringConfiguration
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
@@ -561,8 +579,9 @@ struct SchedulerConfiguration:
 struct ServiceQuotaExceededException:
     str message
 
-# no @derive(Json): member(s) configurationOverrides: SessionConfigurationOverrides, networkConfiguration: NetworkConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationOverrides: SessionConfigurationOverrides, networkConfiguration: NetworkConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Session:
     str applicationId
     str sessionId
@@ -586,8 +605,9 @@ struct Session:
     Optional[ResourceUtilization] billedResourceUtilization
     Optional[int64] totalExecutionDurationSeconds
 
-# no @derive(Json): member(s) runtimeConfiguration: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runtimeConfiguration: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionConfigurationOverrides:
     Optional[list[Configuration]] runtimeConfiguration
 
@@ -605,8 +625,9 @@ struct SessionSummary:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) entryPointArguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entryPointArguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkSubmit:
     str entryPoint
     Optional[list[str]] entryPointArguments
@@ -731,8 +752,9 @@ struct UpdateApplicationRequest:
     Optional[IdentityCenterConfigurationInput] identityCenterConfiguration
     Optional[JobLevelCostAllocationConfiguration] jobLevelCostAllocationConfiguration
 
-# no @derive(Json): member(s) application: Application not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) application: Application not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationResponse:
     Application application
 
@@ -787,23 +809,206 @@ def emr_serverless_error_from_code(str code) -> EMR_ServerlessError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApplication (document member `initialCapacity: dict[str, InitialCapacityConfig]` is not serializable by derive)
 #   GetDashboardForJobRun (httpQuery `accessSystemProfileLogs` has unsupported type bool)
 #   GetResourceDashboard (httpQuery `accessSystemProfileLogs` has unsupported type bool)
 #   ListApplications (httpQuery `states` has unsupported type list[ApplicationState])
 #   ListJobRuns (httpQuery `createdAtAfter` has unsupported type DateTime)
 #   ListSessions (httpQuery `states` has unsupported type list[SessionState])
-#   StartJobRun (document member `executionIamPolicy: JobRunExecutionIamPolicy` is not serializable by derive)
-#   StartSession (document member `configurationOverrides: SessionConfigurationOverrides` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateApplication (document member `initialCapacity: dict[str, InitialCapacityConfig]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListApplications (operation not generated)
 #   ListJobRuns (operation not generated)
 #   ListSessions (operation not generated)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def emr_serverless_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def emr_serverless_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def emr_serverless_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CloudWatchLoggingConfiguration to a compact JSON object (declaration order).
+def cloud_watch_logging_configuration_to_json(CloudWatchLoggingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(v.enabled)))
+    if v.logGroupName.is_some():
+        auto u0 = v.logGroupName.unwrap()
+        parts.append("\"logGroupName\":" + emr_serverless_json_str(u0))
+    if v.logStreamNamePrefix.is_some():
+        auto u1 = v.logStreamNamePrefix.unwrap()
+        parts.append("\"logStreamNamePrefix\":" + emr_serverless_json_str(u1))
+    if v.encryptionKeyArn.is_some():
+        auto u2 = v.encryptionKeyArn.unwrap()
+        parts.append("\"encryptionKeyArn\":" + emr_serverless_json_str(u2))
+    if v.logTypes.is_some():
+        auto u3 = v.logTypes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(emr_serverless_json_str(x5))
+            m4.append(emr_serverless_json_str(k4) + ":" + emr_serverless_json_arr(e5))
+        parts.append("\"logTypes\":" + emr_serverless_json_obj(m4))
+    return emr_serverless_json_obj(parts)
+
+# Serialize Configuration to a compact JSON object (declaration order).
+def configuration_to_json(Configuration v) -> str:
+    list[str] parts = []
+    parts.append("\"classification\":" + emr_serverless_json_str(v.classification))
+    if v.properties.is_some():
+        auto u0 = v.properties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(emr_serverless_json_str(k1) + ":" + emr_serverless_json_str(u0[k1]))
+        parts.append("\"properties\":" + emr_serverless_json_obj(m1))
+    if v.configurations.is_some():
+        auto u2 = v.configurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(configuration_to_json(x3))
+        parts.append("\"configurations\":" + emr_serverless_json_arr(e3))
+    return emr_serverless_json_obj(parts)
+
+# Serialize ConfigurationOverrides to a compact JSON object (declaration order).
+def configuration_overrides_to_json(ConfigurationOverrides v) -> str:
+    list[str] parts = []
+    if v.applicationConfiguration.is_some():
+        auto u0 = v.applicationConfiguration.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(configuration_to_json(x1))
+        parts.append("\"applicationConfiguration\":" + emr_serverless_json_arr(e1))
+    if v.monitoringConfiguration.is_some():
+        auto u2 = v.monitoringConfiguration.unwrap()
+        parts.append("\"monitoringConfiguration\":" + monitoring_configuration_to_json(u2))
+    if v.diskEncryptionConfiguration.is_some():
+        auto u3 = v.diskEncryptionConfiguration.unwrap()
+        parts.append("\"diskEncryptionConfiguration\":" + disk_encryption_configuration_to_json(u3))
+    return emr_serverless_json_obj(parts)
+
+# Serialize DiskEncryptionConfiguration to a compact JSON object (declaration order).
+def disk_encryption_configuration_to_json(DiskEncryptionConfiguration v) -> str:
+    list[str] parts = []
+    if v.encryptionContext.is_some():
+        auto u0 = v.encryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(emr_serverless_json_str(k1) + ":" + emr_serverless_json_str(u0[k1]))
+        parts.append("\"encryptionContext\":" + emr_serverless_json_obj(m1))
+    if v.encryptionKeyArn.is_some():
+        auto u2 = v.encryptionKeyArn.unwrap()
+        parts.append("\"encryptionKeyArn\":" + emr_serverless_json_str(u2))
+    return emr_serverless_json_obj(parts)
+
+# Serialize JobDriver to a compact JSON object (declaration order).
+def job_driver_to_json(JobDriver v) -> str:
+    list[str] parts = []
+    if v.sparkSubmit.is_some():
+        auto u0 = v.sparkSubmit.unwrap()
+        parts.append("\"sparkSubmit\":" + spark_submit_to_json(u0))
+    if v.hive.is_some():
+        auto u1 = v.hive.unwrap()
+        parts.append("\"hive\":" + u1.to_json())
+    return emr_serverless_json_obj(parts)
+
+# Serialize JobRunExecutionIamPolicy to a compact JSON object (declaration order).
+def job_run_execution_iam_policy_to_json(JobRunExecutionIamPolicy v) -> str:
+    list[str] parts = []
+    if v.policy.is_some():
+        auto u0 = v.policy.unwrap()
+        parts.append("\"policy\":" + emr_serverless_json_str(u0))
+    if v.policyArns.is_some():
+        auto u1 = v.policyArns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(emr_serverless_json_str(x2))
+        parts.append("\"policyArns\":" + emr_serverless_json_arr(e2))
+    return emr_serverless_json_obj(parts)
+
+# Serialize MonitoringConfiguration to a compact JSON object (declaration order).
+def monitoring_configuration_to_json(MonitoringConfiguration v) -> str:
+    list[str] parts = []
+    if v.s3MonitoringConfiguration.is_some():
+        auto u0 = v.s3MonitoringConfiguration.unwrap()
+        parts.append("\"s3MonitoringConfiguration\":" + u0.to_json())
+    if v.managedPersistenceMonitoringConfiguration.is_some():
+        auto u1 = v.managedPersistenceMonitoringConfiguration.unwrap()
+        parts.append("\"managedPersistenceMonitoringConfiguration\":" + u1.to_json())
+    if v.cloudWatchLoggingConfiguration.is_some():
+        auto u2 = v.cloudWatchLoggingConfiguration.unwrap()
+        parts.append("\"cloudWatchLoggingConfiguration\":" + cloud_watch_logging_configuration_to_json(u2))
+    if v.prometheusMonitoringConfiguration.is_some():
+        auto u3 = v.prometheusMonitoringConfiguration.unwrap()
+        parts.append("\"prometheusMonitoringConfiguration\":" + u3.to_json())
+    return emr_serverless_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.subnetIds.is_some():
+        auto u0 = v.subnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(emr_serverless_json_str(x1))
+        parts.append("\"subnetIds\":" + emr_serverless_json_arr(e1))
+    if v.securityGroupIds.is_some():
+        auto u2 = v.securityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(emr_serverless_json_str(x3))
+        parts.append("\"securityGroupIds\":" + emr_serverless_json_arr(e3))
+    return emr_serverless_json_obj(parts)
+
+# Serialize SessionConfigurationOverrides to a compact JSON object (declaration order).
+def session_configuration_overrides_to_json(SessionConfigurationOverrides v) -> str:
+    list[str] parts = []
+    if v.runtimeConfiguration.is_some():
+        auto u0 = v.runtimeConfiguration.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(configuration_to_json(x1))
+        parts.append("\"runtimeConfiguration\":" + emr_serverless_json_arr(e1))
+    return emr_serverless_json_obj(parts)
+
+# Serialize SparkSubmit to a compact JSON object (declaration order).
+def spark_submit_to_json(SparkSubmit v) -> str:
+    list[str] parts = []
+    parts.append("\"entryPoint\":" + emr_serverless_json_str(v.entryPoint))
+    if v.entryPointArguments.is_some():
+        auto u0 = v.entryPointArguments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(emr_serverless_json_str(x1))
+        parts.append("\"entryPointArguments\":" + emr_serverless_json_arr(e1))
+    if v.sparkSubmitParameters.is_some():
+        auto u2 = v.sparkSubmitParameters.unwrap()
+        parts.append("\"sparkSubmitParameters\":" + emr_serverless_json_str(u2))
+    return emr_serverless_json_obj(parts)
 
 # A bound EMR_Serverless client: credentials + region, threaded into every operation.
 struct EMR_ServerlessClient:
@@ -822,6 +1027,81 @@ struct EMR_ServerlessClient:
             query["shutdownGracePeriodInSeconds"] = str(input.shutdownGracePeriodInSeconds.unwrap_or(0))
         auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
+
+    # CreateApplication  POST /applications
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + emr_serverless_json_str(u0))
+        parts.append("\"releaseLabel\":" + emr_serverless_json_str(input.releaseLabel))
+        parts.append("\"type\":" + emr_serverless_json_str(input.type))
+        parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
+        if input.initialCapacity.is_some():
+            auto u1 = input.initialCapacity.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(emr_serverless_json_str(k2) + ":" + u1[k2].to_json())
+            parts.append("\"initialCapacity\":" + emr_serverless_json_obj(m2))
+        if input.maximumCapacity.is_some():
+            auto u3 = input.maximumCapacity.unwrap()
+            parts.append("\"maximumCapacity\":" + u3.to_json())
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(emr_serverless_json_str(k5) + ":" + emr_serverless_json_str(u4[k5]))
+            parts.append("\"tags\":" + emr_serverless_json_obj(m5))
+        if input.autoStartConfiguration.is_some():
+            auto u6 = input.autoStartConfiguration.unwrap()
+            parts.append("\"autoStartConfiguration\":" + u6.to_json())
+        if input.autoStopConfiguration.is_some():
+            auto u7 = input.autoStopConfiguration.unwrap()
+            parts.append("\"autoStopConfiguration\":" + u7.to_json())
+        if input.networkConfiguration.is_some():
+            auto u8 = input.networkConfiguration.unwrap()
+            parts.append("\"networkConfiguration\":" + network_configuration_to_json(u8))
+        if input.architecture.is_some():
+            auto u9 = input.architecture.unwrap()
+            parts.append("\"architecture\":" + u9.to_json())
+        if input.imageConfiguration.is_some():
+            auto u10 = input.imageConfiguration.unwrap()
+            parts.append("\"imageConfiguration\":" + u10.to_json())
+        if input.workerTypeSpecifications.is_some():
+            auto u11 = input.workerTypeSpecifications.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(emr_serverless_json_str(k12) + ":" + u11[k12].to_json())
+            parts.append("\"workerTypeSpecifications\":" + emr_serverless_json_obj(m12))
+        if input.runtimeConfiguration.is_some():
+            auto u13 = input.runtimeConfiguration.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(configuration_to_json(x14))
+            parts.append("\"runtimeConfiguration\":" + emr_serverless_json_arr(e14))
+        if input.monitoringConfiguration.is_some():
+            auto u15 = input.monitoringConfiguration.unwrap()
+            parts.append("\"monitoringConfiguration\":" + monitoring_configuration_to_json(u15))
+        if input.diskEncryptionConfiguration.is_some():
+            auto u16 = input.diskEncryptionConfiguration.unwrap()
+            parts.append("\"diskEncryptionConfiguration\":" + disk_encryption_configuration_to_json(u16))
+        if input.interactiveConfiguration.is_some():
+            auto u17 = input.interactiveConfiguration.unwrap()
+            parts.append("\"interactiveConfiguration\":" + u17.to_json())
+        if input.schedulerConfiguration.is_some():
+            auto u18 = input.schedulerConfiguration.unwrap()
+            parts.append("\"schedulerConfiguration\":" + u18.to_json())
+        if input.identityCenterConfiguration.is_some():
+            auto u19 = input.identityCenterConfiguration.unwrap()
+            parts.append("\"identityCenterConfiguration\":" + u19.to_json())
+        if input.jobLevelCostAllocationConfiguration.is_some():
+            auto u20 = input.jobLevelCostAllocationConfiguration.unwrap()
+            parts.append("\"jobLevelCostAllocationConfiguration\":" + u20.to_json())
+        auto bp = restjson.rest_json_document(b, emr_serverless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_serverless_service(), self.region, host)
 
     # DeleteApplication  DELETE /applications/{applicationId}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -907,6 +1187,74 @@ struct EMR_ServerlessClient:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
+    # StartJobRun  POST /applications/{applicationId}/jobruns
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def start_job_run(self, StartJobRunRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/jobruns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
+        parts.append("\"executionRoleArn\":" + emr_serverless_json_str(input.executionRoleArn))
+        if input.executionIamPolicy.is_some():
+            auto u0 = input.executionIamPolicy.unwrap()
+            parts.append("\"executionIamPolicy\":" + job_run_execution_iam_policy_to_json(u0))
+        if input.jobDriver.is_some():
+            auto u1 = input.jobDriver.unwrap()
+            parts.append("\"jobDriver\":" + job_driver_to_json(u1))
+        if input.configurationOverrides.is_some():
+            auto u2 = input.configurationOverrides.unwrap()
+            parts.append("\"configurationOverrides\":" + configuration_overrides_to_json(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(emr_serverless_json_str(k4) + ":" + emr_serverless_json_str(u3[k4]))
+            parts.append("\"tags\":" + emr_serverless_json_obj(m4))
+        if input.executionTimeoutMinutes.is_some():
+            auto u5 = input.executionTimeoutMinutes.unwrap()
+            parts.append("\"executionTimeoutMinutes\":" + str(u5))
+        if input.name.is_some():
+            auto u6 = input.name.unwrap()
+            parts.append("\"name\":" + emr_serverless_json_str(u6))
+        if input.mode.is_some():
+            auto u7 = input.mode.unwrap()
+            parts.append("\"mode\":" + u7.to_json())
+        if input.retryPolicy.is_some():
+            auto u8 = input.retryPolicy.unwrap()
+            parts.append("\"retryPolicy\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, emr_serverless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_serverless_service(), self.region, host)
+
+    # StartSession  POST /applications/{applicationId}/sessions
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def start_session(self, StartSessionRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
+        parts.append("\"executionRoleArn\":" + emr_serverless_json_str(input.executionRoleArn))
+        if input.configurationOverrides.is_some():
+            auto u0 = input.configurationOverrides.unwrap()
+            parts.append("\"configurationOverrides\":" + session_configuration_overrides_to_json(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(emr_serverless_json_str(k2) + ":" + emr_serverless_json_str(u1[k2]))
+            parts.append("\"tags\":" + emr_serverless_json_obj(m2))
+        if input.idleTimeoutMinutes.is_some():
+            auto u3 = input.idleTimeoutMinutes.unwrap()
+            parts.append("\"idleTimeoutMinutes\":" + str(u3))
+        if input.name.is_some():
+            auto u4 = input.name.unwrap()
+            parts.append("\"name\":" + emr_serverless_json_str(u4))
+        auto bp = restjson.rest_json_document(b, emr_serverless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_serverless_service(), self.region, host)
+
     # StopApplication  POST /applications/{applicationId}/stop
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def stop_application(self, StopApplicationRequest input) -> str:
@@ -915,6 +1263,21 @@ struct EMR_ServerlessClient:
         labels["applicationId"] = input.applicationId
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(emr_serverless_json_str(k0) + ":" + emr_serverless_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + emr_serverless_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, emr_serverless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_serverless_service(), self.region, host)
 
     # TerminateSession  DELETE /applications/{applicationId}/sessions/{sessionId}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -925,6 +1288,75 @@ struct EMR_ServerlessClient:
         labels["sessionId"] = input.sessionId
         auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
+
+    # UpdateApplication  PATCH /applications/{applicationId}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def update_application(self, UpdateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
+        if input.initialCapacity.is_some():
+            auto u0 = input.initialCapacity.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(emr_serverless_json_str(k1) + ":" + u0[k1].to_json())
+            parts.append("\"initialCapacity\":" + emr_serverless_json_obj(m1))
+        if input.maximumCapacity.is_some():
+            auto u2 = input.maximumCapacity.unwrap()
+            parts.append("\"maximumCapacity\":" + u2.to_json())
+        if input.autoStartConfiguration.is_some():
+            auto u3 = input.autoStartConfiguration.unwrap()
+            parts.append("\"autoStartConfiguration\":" + u3.to_json())
+        if input.autoStopConfiguration.is_some():
+            auto u4 = input.autoStopConfiguration.unwrap()
+            parts.append("\"autoStopConfiguration\":" + u4.to_json())
+        if input.networkConfiguration.is_some():
+            auto u5 = input.networkConfiguration.unwrap()
+            parts.append("\"networkConfiguration\":" + network_configuration_to_json(u5))
+        if input.architecture.is_some():
+            auto u6 = input.architecture.unwrap()
+            parts.append("\"architecture\":" + u6.to_json())
+        if input.imageConfiguration.is_some():
+            auto u7 = input.imageConfiguration.unwrap()
+            parts.append("\"imageConfiguration\":" + u7.to_json())
+        if input.workerTypeSpecifications.is_some():
+            auto u8 = input.workerTypeSpecifications.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(emr_serverless_json_str(k9) + ":" + u8[k9].to_json())
+            parts.append("\"workerTypeSpecifications\":" + emr_serverless_json_obj(m9))
+        if input.interactiveConfiguration.is_some():
+            auto u10 = input.interactiveConfiguration.unwrap()
+            parts.append("\"interactiveConfiguration\":" + u10.to_json())
+        if input.releaseLabel.is_some():
+            auto u11 = input.releaseLabel.unwrap()
+            parts.append("\"releaseLabel\":" + emr_serverless_json_str(u11))
+        if input.runtimeConfiguration.is_some():
+            auto u12 = input.runtimeConfiguration.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(configuration_to_json(x13))
+            parts.append("\"runtimeConfiguration\":" + emr_serverless_json_arr(e13))
+        if input.monitoringConfiguration.is_some():
+            auto u14 = input.monitoringConfiguration.unwrap()
+            parts.append("\"monitoringConfiguration\":" + monitoring_configuration_to_json(u14))
+        if input.diskEncryptionConfiguration.is_some():
+            auto u15 = input.diskEncryptionConfiguration.unwrap()
+            parts.append("\"diskEncryptionConfiguration\":" + disk_encryption_configuration_to_json(u15))
+        if input.schedulerConfiguration.is_some():
+            auto u16 = input.schedulerConfiguration.unwrap()
+            parts.append("\"schedulerConfiguration\":" + u16.to_json())
+        if input.identityCenterConfiguration.is_some():
+            auto u17 = input.identityCenterConfiguration.unwrap()
+            parts.append("\"identityCenterConfiguration\":" + u17.to_json())
+        if input.jobLevelCostAllocationConfiguration.is_some():
+            auto u18 = input.jobLevelCostAllocationConfiguration.unwrap()
+            parts.append("\"jobLevelCostAllocationConfiguration\":" + u18.to_json())
+        auto bp = restjson.rest_json_document(b, emr_serverless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, emr_serverless_service(), self.region, host)
 
     # Paginator for ListJobRunAttempts — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: jobRunAttempts).

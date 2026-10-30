@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 64 operations — 37 with a generated method,
-#   27 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 64 operations — 62 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   202 structs (106 @derive(Json)), 17 enums, 7 error variants.
-#   10 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,8 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
+import datetime
 
 # The Location rest-json protocol: SigV4 service "geo" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -196,8 +198,9 @@ struct AndroidApp:
 struct ApiKeyFilter:
     Optional[Status] KeyStatus
 
-# no @derive(Json): member(s) AllowActions: list[str], AllowResources: list[str], AllowReferers: list[str], AllowAndroidApps: list[AndroidApp], AllowAppleApps: list[AppleApp] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowActions: list[str], AllowResources: list[str], AllowReferers: list[str], AllowAndroidApps: list[AndroidApp], AllowAppleApps: list[AppleApp] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiKeyRestrictions:
     list[str] AllowActions
     list[str] AllowResources
@@ -231,8 +234,9 @@ struct BatchDeleteDevicePositionHistoryRequest:
     str TrackerName
     list[str] DeviceIds
 
-# no @derive(Json): member(s) Errors: list[BatchDeleteDevicePositionHistoryError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchDeleteDevicePositionHistoryError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDevicePositionHistoryResponse:
     list[BatchDeleteDevicePositionHistoryError] Errors
 
@@ -247,8 +251,9 @@ struct BatchDeleteGeofenceRequest:
     str CollectionName
     list[str] GeofenceIds
 
-# no @derive(Json): member(s) Errors: list[BatchDeleteGeofenceError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchDeleteGeofenceError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteGeofenceResponse:
     list[BatchDeleteGeofenceError] Errors
 
@@ -265,8 +270,9 @@ struct BatchEvaluateGeofencesRequest:
     str CollectionName
     list[DevicePositionUpdate] DevicePositionUpdates
 
-# no @derive(Json): member(s) Errors: list[BatchEvaluateGeofencesError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchEvaluateGeofencesError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchEvaluateGeofencesResponse:
     list[BatchEvaluateGeofencesError] Errors
 
@@ -281,8 +287,9 @@ struct BatchGetDevicePositionRequest:
     str TrackerName
     list[str] DeviceIds
 
-# no @derive(Json): member(s) Errors: list[BatchGetDevicePositionError], DevicePositions: list[DevicePosition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchGetDevicePositionError], DevicePositions: list[DevicePosition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDevicePositionResponse:
     list[BatchGetDevicePositionError] Errors
     list[DevicePosition] DevicePositions
@@ -303,15 +310,17 @@ struct BatchPutGeofenceRequest:
     str CollectionName
     list[BatchPutGeofenceRequestEntry] Entries
 
-# no @derive(Json): member(s) Geometry: GeofenceGeometry, GeofenceProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: GeofenceGeometry, GeofenceProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutGeofenceRequestEntry:
     str GeofenceId
     GeofenceGeometry Geometry
     Optional[dict[str, str]] GeofenceProperties
 
-# no @derive(Json): member(s) Successes: list[BatchPutGeofenceSuccess], Errors: list[BatchPutGeofenceError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successes: list[BatchPutGeofenceSuccess], Errors: list[BatchPutGeofenceError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutGeofenceResponse:
     list[BatchPutGeofenceSuccess] Successes
     list[BatchPutGeofenceError] Errors
@@ -337,8 +346,9 @@ struct BatchUpdateDevicePositionRequest:
     str TrackerName
     list[DevicePositionUpdate] Updates
 
-# no @derive(Json): member(s) Errors: list[BatchUpdateDevicePositionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchUpdateDevicePositionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateDevicePositionResponse:
     list[BatchUpdateDevicePositionError] Errors
 
@@ -361,8 +371,9 @@ struct CalculateRouteMatrixRequest:
     Optional[CalculateRouteTruckModeOptions] TruckModeOptions
     Optional[str] Key
 
-# no @derive(Json): member(s) RouteMatrix: list[list[RouteMatrixEntry]], SnappedDeparturePositions: list[list[float64]], SnappedDestinationPositions: list[list[float64]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteMatrix: list[list[RouteMatrixEntry]], SnappedDeparturePositions: list[list[float64]], SnappedDestinationPositions: list[list[float64]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculateRouteMatrixResponse:
     list[list[RouteMatrixEntry]] RouteMatrix
     Optional[list[list[float64]]] SnappedDeparturePositions
@@ -394,14 +405,16 @@ struct CalculateRouteRequest:
     Optional[OptimizationMode] OptimizeFor
     Optional[str] Key
 
-# no @derive(Json): member(s) Legs: list[Leg], Summary: CalculateRouteSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Legs: list[Leg], Summary: CalculateRouteSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculateRouteResponse:
     list[Leg] Legs
     CalculateRouteSummary Summary
 
-# no @derive(Json): member(s) RouteBBox: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteBBox: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculateRouteSummary:
     list[float64] RouteBBox
     str DataSource
@@ -427,13 +440,15 @@ struct CancelJobResponse:
     str JobId
     JobStatus Status
 
-# no @derive(Json): member(s) LteCellDetails: list[LteCellDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LteCellDetails: list[LteCellDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CellSignals:
     list[LteCellDetails] LteCellDetails
 
-# no @derive(Json): member(s) Center: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Center: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Circle:
     list[float64] Center
     float64 Radius
@@ -616,8 +631,9 @@ struct DeleteTrackerResponse:
 struct DescribeGeofenceCollectionRequest:
     str CollectionName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGeofenceCollectionResponse:
     str CollectionName
     str CollectionArn
@@ -635,8 +651,9 @@ struct DescribeGeofenceCollectionResponse:
 struct DescribeKeyRequest:
     str KeyName
 
-# no @derive(Json): member(s) Restrictions: ApiKeyRestrictions, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Restrictions: ApiKeyRestrictions, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeyResponse:
     str Key
     str KeyArn
@@ -653,8 +670,9 @@ struct DescribeKeyResponse:
 struct DescribeMapRequest:
     str MapName
 
-# no @derive(Json): member(s) Configuration: MapConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: MapConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMapResponse:
     str MapName
     str MapArn
@@ -671,8 +689,9 @@ struct DescribeMapResponse:
 struct DescribePlaceIndexRequest:
     str IndexName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePlaceIndexResponse:
     str IndexName
     str IndexArn
@@ -689,8 +708,9 @@ struct DescribePlaceIndexResponse:
 struct DescribeRouteCalculatorRequest:
     str CalculatorName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRouteCalculatorResponse:
     str CalculatorName
     str CalculatorArn
@@ -706,8 +726,9 @@ struct DescribeRouteCalculatorResponse:
 struct DescribeTrackerRequest:
     str TrackerName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrackerResponse:
     str TrackerName
     str TrackerArn
@@ -722,8 +743,9 @@ struct DescribeTrackerResponse:
     Optional[bool] EventBridgeEnabled
     Optional[bool] KmsKeyEnableGeospatialQueries
 
-# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevicePosition:
     Optional[str] DeviceId
     DateTime SampleTime
@@ -732,8 +754,9 @@ struct DevicePosition:
     Optional[PositionalAccuracy] Accuracy
     Optional[dict[str, str]] PositionProperties
 
-# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevicePositionUpdate:
     str DeviceId
     DateTime SampleTime
@@ -741,8 +764,9 @@ struct DevicePositionUpdate:
     Optional[PositionalAccuracy] Accuracy
     Optional[dict[str, str]] PositionProperties
 
-# no @derive(Json): member(s) Position: list[float64], WiFiAccessPoints: list[WiFiAccessPoint], CellSignals: CellSignals not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64], WiFiAccessPoints: list[WiFiAccessPoint], CellSignals: CellSignals not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeviceState:
     str DeviceId
     DateTime SampleTime
@@ -763,8 +787,9 @@ struct DisassociateTrackerConsumerResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForecastGeofenceEventsDeviceState:
     list[float64] Position
     Optional[float64] Speed
@@ -780,16 +805,18 @@ struct ForecastGeofenceEventsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ForecastedEvents: list[ForecastedEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastedEvents: list[ForecastedEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForecastGeofenceEventsResponse:
     list[ForecastedEvent] ForecastedEvents
     Optional[str] NextToken
     DistanceUnit DistanceUnit
     SpeedUnit SpeedUnit
 
-# no @derive(Json): member(s) GeofenceProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeofenceProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForecastedEvent:
     str EventId
     str GeofenceId
@@ -799,8 +826,9 @@ struct ForecastedEvent:
     Optional[DateTime] ForecastedBreachTime
     Optional[dict[str, str]] GeofenceProperties
 
-# no @derive(Json): member(s) Polygon: list[list[list[float64]]], Circle: Circle, MultiPolygon: list[list[list[list[float64]]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[list[list[float64]]], Circle: Circle, MultiPolygon: list[list[list[list[float64]]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeofenceGeometry:
     Optional[list[list[list[float64]]]] Polygon
     Optional[Circle] Circle
@@ -817,8 +845,9 @@ struct GetDevicePositionHistoryRequest:
     Optional[DateTime] EndTimeExclusive
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DevicePositions: list[DevicePosition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DevicePositions: list[DevicePosition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevicePositionHistoryResponse:
     list[DevicePosition] DevicePositions
     Optional[str] NextToken
@@ -829,8 +858,9 @@ struct GetDevicePositionRequest:
     str TrackerName
     str DeviceId
 
-# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevicePositionResponse:
     Optional[str] DeviceId
     DateTime SampleTime
@@ -845,8 +875,9 @@ struct GetGeofenceRequest:
     str CollectionName
     str GeofenceId
 
-# no @derive(Json): member(s) Geometry: GeofenceGeometry, GeofenceProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: GeofenceGeometry, GeofenceProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGeofenceResponse:
     str GeofenceId
     GeofenceGeometry Geometry
@@ -860,8 +891,9 @@ struct GetGeofenceResponse:
 struct GetJobRequest:
     str JobId
 
-# no @derive(Json): member(s) ActionOptions: JobActionOptions, Error: JobError, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionOptions: JobActionOptions, Error: JobError, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResponse:
     str Action
     Optional[JobActionOptions] ActionOptions
@@ -940,13 +972,15 @@ struct GetPlaceRequest:
     Optional[str] Language
     Optional[str] Key
 
-# no @derive(Json): member(s) Place: Place not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: Place not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPlaceResponse:
     Place Place
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferredState:
     Optional[list[float64]] Position
     Optional[PositionalAccuracy] Accuracy
@@ -957,13 +991,15 @@ struct InferredState:
 struct InternalServerException:
     str Message
 
-# no @derive(Json): member(s) ValidateAddress: ValidateAddressActionOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidateAddress: ValidateAddressActionOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobActionOptions:
     Optional[ValidateAddressActionOptions] ValidateAddress
 
-# no @derive(Json): member(s) Messages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobError:
     JobErrorCode Code
     Optional[list[str]] Messages
@@ -982,8 +1018,9 @@ struct JobOutputOptions:
 struct JobsFilter:
     Optional[JobStatus] JobStatus
 
-# no @derive(Json): member(s) StartPosition: list[float64], EndPosition: list[float64], Geometry: LegGeometry, Steps: list[Step] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StartPosition: list[float64], EndPosition: list[float64], Geometry: LegGeometry, Steps: list[Step] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Leg:
     list[float64] StartPosition
     list[float64] EndPosition
@@ -992,8 +1029,9 @@ struct Leg:
     Optional[LegGeometry] Geometry
     list[Step] Steps
 
-# no @derive(Json): member(s) LineString: list[list[float64]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineString: list[list[float64]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LegGeometry:
     Optional[list[list[float64]]] LineString
 
@@ -1005,14 +1043,16 @@ struct ListDevicePositionsRequest:
     Optional[str] NextToken
     Optional[TrackingFilterGeometry] FilterGeometry
 
-# no @derive(Json): member(s) Entries: list[ListDevicePositionsResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListDevicePositionsResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicePositionsResponse:
     list[ListDevicePositionsResponseEntry] Entries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64], PositionProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicePositionsResponseEntry:
     str DeviceId
     DateTime SampleTime
@@ -1026,8 +1066,9 @@ struct ListGeofenceCollectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entries: list[ListGeofenceCollectionsResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListGeofenceCollectionsResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGeofenceCollectionsResponse:
     list[ListGeofenceCollectionsResponseEntry] Entries
     Optional[str] NextToken
@@ -1043,8 +1084,9 @@ struct ListGeofenceCollectionsResponseEntry:
     @json(timestamp="iso8601")
     DateTime UpdateTime
 
-# no @derive(Json): member(s) Geometry: GeofenceGeometry, GeofenceProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: GeofenceGeometry, GeofenceProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGeofenceResponseEntry:
     str GeofenceId
     GeofenceGeometry Geometry
@@ -1060,8 +1102,9 @@ struct ListGeofencesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Entries: list[ListGeofenceResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListGeofenceResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGeofencesResponse:
     list[ListGeofenceResponseEntry] Entries
     Optional[str] NextToken
@@ -1073,14 +1116,16 @@ struct ListJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entries: list[ListJobsResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListJobsResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     list[ListJobsResponseEntry] Entries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ActionOptions: JobActionOptions, Error: JobError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionOptions: JobActionOptions, Error: JobError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponseEntry:
     str Action
     Optional[JobActionOptions] ActionOptions
@@ -1103,14 +1148,16 @@ struct ListKeysRequest:
     Optional[str] NextToken
     Optional[ApiKeyFilter] Filter
 
-# no @derive(Json): member(s) Entries: list[ListKeysResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListKeysResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeysResponse:
     list[ListKeysResponseEntry] Entries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Restrictions: ApiKeyRestrictions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Restrictions: ApiKeyRestrictions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeysResponseEntry:
     str KeyName
     DateTime ExpireTime
@@ -1125,8 +1172,9 @@ struct ListMapsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entries: list[ListMapsResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListMapsResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMapsResponse:
     list[ListMapsResponseEntry] Entries
     Optional[str] NextToken
@@ -1148,8 +1196,9 @@ struct ListPlaceIndexesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entries: list[ListPlaceIndexesResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListPlaceIndexesResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPlaceIndexesResponse:
     list[ListPlaceIndexesResponseEntry] Entries
     Optional[str] NextToken
@@ -1171,8 +1220,9 @@ struct ListRouteCalculatorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entries: list[ListRouteCalculatorsResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListRouteCalculatorsResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRouteCalculatorsResponse:
     list[ListRouteCalculatorsResponseEntry] Entries
     Optional[str] NextToken
@@ -1193,8 +1243,9 @@ struct ListRouteCalculatorsResponseEntry:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -1205,8 +1256,9 @@ struct ListTrackerConsumersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConsumerArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumerArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrackerConsumersResponse:
     list[str] ConsumerArns
     Optional[str] NextToken
@@ -1217,8 +1269,9 @@ struct ListTrackersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entries: list[ListTrackersResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ListTrackersResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrackersResponse:
     list[ListTrackersResponseEntry] Entries
     Optional[str] NextToken
@@ -1234,8 +1287,9 @@ struct ListTrackersResponseEntry:
     @json(timestamp="iso8601")
     DateTime UpdateTime
 
-# no @derive(Json): member(s) NetworkMeasurements: list[LteNetworkMeasurements] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkMeasurements: list[LteNetworkMeasurements] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LteCellDetails:
     int64 CellId
     int64 Mcc
@@ -1261,21 +1315,24 @@ struct LteNetworkMeasurements:
     Optional[int64] Rsrp
     Optional[float64] Rsrq
 
-# no @derive(Json): member(s) CustomLayers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomLayers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MapConfiguration:
     str Style
     Optional[str] PoliticalView
     Optional[list[str]] CustomLayers
 
-# no @derive(Json): member(s) CustomLayers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomLayers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MapConfigurationUpdate:
     Optional[str] PoliticalView
     Optional[list[str]] CustomLayers
 
-# no @derive(Json): member(s) Geometry: PlaceGeometry, Categories: list[str], SupplementalCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: PlaceGeometry, Categories: list[str], SupplementalCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Place:
     Optional[str] Label
     PlaceGeometry Geometry
@@ -1295,8 +1352,9 @@ struct Place:
     Optional[list[str]] SupplementalCategories
     Optional[str] SubMunicipality
 
-# no @derive(Json): member(s) Point: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Point: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PlaceGeometry:
     Optional[list[float64]] Point
 
@@ -1335,23 +1393,26 @@ struct RouteMatrixEntryError:
     RouteMatrixErrorCode Code
     Optional[str] Message
 
-# no @derive(Json): member(s) Place: Place not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: Place not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchForPositionResult:
     Place Place
     float64 Distance
     Optional[str] PlaceId
 
-# no @derive(Json): member(s) Categories: list[str], SupplementalCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[str], SupplementalCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchForSuggestionsResult:
     str Text
     Optional[str] PlaceId
     Optional[list[str]] Categories
     Optional[list[str]] SupplementalCategories
 
-# no @derive(Json): member(s) Place: Place not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: Place not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchForTextResult:
     Place Place
     Optional[float64] Distance
@@ -1367,14 +1428,16 @@ struct SearchPlaceIndexForPositionRequest:
     Optional[str] Language
     Optional[str] Key
 
-# no @derive(Json): member(s) Summary: SearchPlaceIndexForPositionSummary, Results: list[SearchForPositionResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summary: SearchPlaceIndexForPositionSummary, Results: list[SearchForPositionResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPlaceIndexForPositionResponse:
     SearchPlaceIndexForPositionSummary Summary
     list[SearchForPositionResult] Results
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPlaceIndexForPositionSummary:
     list[float64] Position
     Optional[int64] MaxResults
@@ -1394,14 +1457,16 @@ struct SearchPlaceIndexForSuggestionsRequest:
     Optional[list[str]] FilterCategories
     Optional[str] Key
 
-# no @derive(Json): member(s) Summary: SearchPlaceIndexForSuggestionsSummary, Results: list[SearchForSuggestionsResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summary: SearchPlaceIndexForSuggestionsSummary, Results: list[SearchForSuggestionsResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPlaceIndexForSuggestionsResponse:
     SearchPlaceIndexForSuggestionsSummary Summary
     list[SearchForSuggestionsResult] Results
 
-# no @derive(Json): member(s) BiasPosition: list[float64], FilterBBox: list[float64], FilterCountries: list[str], FilterCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BiasPosition: list[float64], FilterBBox: list[float64], FilterCountries: list[str], FilterCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPlaceIndexForSuggestionsSummary:
     str Text
     Optional[list[float64]] BiasPosition
@@ -1425,14 +1490,16 @@ struct SearchPlaceIndexForTextRequest:
     Optional[list[str]] FilterCategories
     Optional[str] Key
 
-# no @derive(Json): member(s) Summary: SearchPlaceIndexForTextSummary, Results: list[SearchForTextResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summary: SearchPlaceIndexForTextSummary, Results: list[SearchForTextResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPlaceIndexForTextResponse:
     SearchPlaceIndexForTextSummary Summary
     list[SearchForTextResult] Results
 
-# no @derive(Json): member(s) BiasPosition: list[float64], FilterBBox: list[float64], FilterCountries: list[str], ResultBBox: list[float64], FilterCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BiasPosition: list[float64], FilterBBox: list[float64], FilterCountries: list[str], ResultBBox: list[float64], FilterCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchPlaceIndexForTextSummary:
     str Text
     Optional[list[float64]] BiasPosition
@@ -1468,8 +1535,9 @@ struct StartJobResponse:
     str JobId
     JobStatus Status
 
-# no @derive(Json): member(s) StartPosition: list[float64], EndPosition: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StartPosition: list[float64], EndPosition: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Step:
     list[float64] StartPosition
     list[float64] EndPosition
@@ -1497,8 +1565,9 @@ struct TimeZone:
     str Name
     Optional[int64] Offset
 
-# no @derive(Json): member(s) Polygon: list[list[list[float64]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[list[list[float64]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrackingFilterGeometry:
     Optional[list[list[list[float64]]]] Polygon
 
@@ -1619,13 +1688,15 @@ struct UpdateTrackerResponse:
     @json(timestamp="iso8601")
     DateTime UpdateTime
 
-# no @derive(Json): member(s) AdditionalFeatures: list[ValidateAddressAdditionalFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalFeatures: list[ValidateAddressAdditionalFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateAddressActionOptions:
     Optional[list[ValidateAddressAdditionalFeature]] AdditionalFeatures
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -1643,8 +1714,9 @@ struct VerifyDevicePositionRequest:
     DeviceState DeviceState
     Optional[DistanceUnit] DistanceUnit
 
-# no @derive(Json): member(s) InferredState: InferredState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferredState: InferredState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VerifyDevicePositionResponse:
     InferredState InferredState
     str DeviceId
@@ -1695,38 +1767,8 @@ def geo_error_from_code(str code) -> LocationError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDeleteDevicePositionHistory (document member `DeviceIds: list[str]` is not serializable by derive)
-#   BatchDeleteGeofence (document member `GeofenceIds: list[str]` is not serializable by derive)
-#   BatchEvaluateGeofences (document member `DevicePositionUpdates: list[DevicePositionUpdate]` is not serializable by derive)
-#   BatchGetDevicePosition (document member `DeviceIds: list[str]` is not serializable by derive)
-#   BatchPutGeofence (document member `Entries: list[BatchPutGeofenceRequestEntry]` is not serializable by derive)
-#   BatchUpdateDevicePosition (document member `Updates: list[DevicePositionUpdate]` is not serializable by derive)
-#   CalculateRoute (document member `DeparturePosition: list[float64]` is not serializable by derive)
-#   CalculateRouteMatrix (document member `DeparturePositions: list[list[float64]]` is not serializable by derive)
-#   CreateGeofenceCollection (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateKey (document member `Restrictions: ApiKeyRestrictions` is not serializable by derive)
-#   CreateMap (document member `Configuration: MapConfiguration` is not serializable by derive)
-#   CreatePlaceIndex (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRouteCalculator (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTracker (document member `Tags: dict[str, str]` is not serializable by derive)
 #   DeleteKey (httpQuery `ForceDelete` has unsupported type bool)
-#   ForecastGeofenceEvents (document member `DeviceState: ForecastGeofenceEventsDeviceState` is not serializable by derive)
-#   ListDevicePositions (document member `FilterGeometry: TrackingFilterGeometry` is not serializable by derive)
-#   PutGeofence (document member `Geometry: GeofenceGeometry` is not serializable by derive)
-#   SearchPlaceIndexForPosition (document member `Position: list[float64]` is not serializable by derive)
-#   SearchPlaceIndexForSuggestions (document member `BiasPosition: list[float64]` is not serializable by derive)
-#   SearchPlaceIndexForText (document member `BiasPosition: list[float64]` is not serializable by derive)
-#   StartJob (document member `ActionOptions: JobActionOptions` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateKey (document member `Restrictions: ApiKeyRestrictions` is not serializable by derive)
-#   UpdateMap (document member `ConfigurationUpdate: MapConfigurationUpdate` is not serializable by derive)
-#   VerifyDevicePosition (document member `DeviceState: DeviceState` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ForecastGeofenceEvents (operation not generated)
-#   ListDevicePositions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1835,6 +1877,296 @@ struct UpdateTrackerDocument:
     Optional[bool] EventBridgeEnabled
     Optional[bool] KmsKeyEnableGeospatialQueries
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def geo_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def geo_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def geo_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def geo_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApiKeyRestrictions to a compact JSON object (declaration order).
+def api_key_restrictions_to_json(ApiKeyRestrictions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AllowActions:
+        e0.append(geo_json_str(x0))
+    parts.append("\"AllowActions\":" + geo_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.AllowResources:
+        e1.append(geo_json_str(x1))
+    parts.append("\"AllowResources\":" + geo_json_arr(e1))
+    if v.AllowReferers.is_some():
+        auto u2 = v.AllowReferers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(geo_json_str(x3))
+        parts.append("\"AllowReferers\":" + geo_json_arr(e3))
+    if v.AllowAndroidApps.is_some():
+        auto u4 = v.AllowAndroidApps.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"AllowAndroidApps\":" + geo_json_arr(e5))
+    if v.AllowAppleApps.is_some():
+        auto u6 = v.AllowAppleApps.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"AllowAppleApps\":" + geo_json_arr(e7))
+    return geo_json_obj(parts)
+
+# Serialize BatchPutGeofenceRequestEntry to a compact JSON object (declaration order).
+def batch_put_geofence_request_entry_to_json(BatchPutGeofenceRequestEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"GeofenceId\":" + geo_json_str(v.GeofenceId))
+    parts.append("\"Geometry\":" + geofence_geometry_to_json(v.Geometry))
+    if v.GeofenceProperties.is_some():
+        auto u0 = v.GeofenceProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(geo_json_str(k1) + ":" + geo_json_str(u0[k1]))
+        parts.append("\"GeofenceProperties\":" + geo_json_obj(m1))
+    return geo_json_obj(parts)
+
+# Serialize CellSignals to a compact JSON object (declaration order).
+def cell_signals_to_json(CellSignals v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.LteCellDetails:
+        e0.append(lte_cell_details_to_json(x0))
+    parts.append("\"LteCellDetails\":" + geo_json_arr(e0))
+    return geo_json_obj(parts)
+
+# Serialize Circle to a compact JSON object (declaration order).
+def circle_to_json(Circle v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Center:
+        e0.append(str(x0))
+    parts.append("\"Center\":" + geo_json_arr(e0))
+    parts.append("\"Radius\":" + str(v.Radius))
+    return geo_json_obj(parts)
+
+# Serialize DevicePositionUpdate to a compact JSON object (declaration order).
+def device_position_update_to_json(DevicePositionUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceId\":" + geo_json_str(v.DeviceId))
+    parts.append("\"SampleTime\":" + geo_json_ts_iso(v.SampleTime))
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_json_arr(e0))
+    if v.Accuracy.is_some():
+        auto u1 = v.Accuracy.unwrap()
+        parts.append("\"Accuracy\":" + u1.to_json())
+    if v.PositionProperties.is_some():
+        auto u2 = v.PositionProperties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(geo_json_str(k3) + ":" + geo_json_str(u2[k3]))
+        parts.append("\"PositionProperties\":" + geo_json_obj(m3))
+    return geo_json_obj(parts)
+
+# Serialize DeviceState to a compact JSON object (declaration order).
+def device_state_to_json(DeviceState v) -> str:
+    list[str] parts = []
+    parts.append("\"DeviceId\":" + geo_json_str(v.DeviceId))
+    parts.append("\"SampleTime\":" + geo_json_ts_iso(v.SampleTime))
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_json_arr(e0))
+    if v.Accuracy.is_some():
+        auto u1 = v.Accuracy.unwrap()
+        parts.append("\"Accuracy\":" + u1.to_json())
+    if v.Ipv4Address.is_some():
+        auto u2 = v.Ipv4Address.unwrap()
+        parts.append("\"Ipv4Address\":" + geo_json_str(u2))
+    if v.WiFiAccessPoints.is_some():
+        auto u3 = v.WiFiAccessPoints.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"WiFiAccessPoints\":" + geo_json_arr(e4))
+    if v.CellSignals.is_some():
+        auto u5 = v.CellSignals.unwrap()
+        parts.append("\"CellSignals\":" + cell_signals_to_json(u5))
+    return geo_json_obj(parts)
+
+# Serialize ForecastGeofenceEventsDeviceState to a compact JSON object (declaration order).
+def forecast_geofence_events_device_state_to_json(ForecastGeofenceEventsDeviceState v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_json_arr(e0))
+    if v.Speed.is_some():
+        auto u1 = v.Speed.unwrap()
+        parts.append("\"Speed\":" + str(u1))
+    return geo_json_obj(parts)
+
+# Serialize GeofenceGeometry to a compact JSON object (declaration order).
+def geofence_geometry_to_json(GeofenceGeometry v) -> str:
+    list[str] parts = []
+    if v.Polygon.is_some():
+        auto u0 = v.Polygon.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            list[str] e2 = []
+            for x2 in x1:
+                list[str] e3 = []
+                for x3 in x2:
+                    e3.append(str(x3))
+                e2.append(geo_json_arr(e3))
+            e1.append(geo_json_arr(e2))
+        parts.append("\"Polygon\":" + geo_json_arr(e1))
+    if v.Circle.is_some():
+        auto u4 = v.Circle.unwrap()
+        parts.append("\"Circle\":" + circle_to_json(u4))
+    if v.Geobuf.is_some():
+        auto u5 = v.Geobuf.unwrap()
+        parts.append("\"Geobuf\":" + geo_json_str(base64.encode(u5)))
+    if v.MultiPolygon.is_some():
+        auto u6 = v.MultiPolygon.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            list[str] e8 = []
+            for x8 in x7:
+                list[str] e9 = []
+                for x9 in x8:
+                    list[str] e10 = []
+                    for x10 in x9:
+                        e10.append(str(x10))
+                    e9.append(geo_json_arr(e10))
+                e8.append(geo_json_arr(e9))
+            e7.append(geo_json_arr(e8))
+        parts.append("\"MultiPolygon\":" + geo_json_arr(e7))
+    return geo_json_obj(parts)
+
+# Serialize JobActionOptions to a compact JSON object (declaration order).
+def job_action_options_to_json(JobActionOptions v) -> str:
+    list[str] parts = []
+    if v.ValidateAddress.is_some():
+        auto u0 = v.ValidateAddress.unwrap()
+        parts.append("\"ValidateAddress\":" + validate_address_action_options_to_json(u0))
+    return geo_json_obj(parts)
+
+# Serialize LteCellDetails to a compact JSON object (declaration order).
+def lte_cell_details_to_json(LteCellDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"CellId\":" + str(v.CellId))
+    parts.append("\"Mcc\":" + str(v.Mcc))
+    parts.append("\"Mnc\":" + str(v.Mnc))
+    if v.LocalId.is_some():
+        auto u0 = v.LocalId.unwrap()
+        parts.append("\"LocalId\":" + u0.to_json())
+    if v.NetworkMeasurements.is_some():
+        auto u1 = v.NetworkMeasurements.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"NetworkMeasurements\":" + geo_json_arr(e2))
+    if v.TimingAdvance.is_some():
+        auto u3 = v.TimingAdvance.unwrap()
+        parts.append("\"TimingAdvance\":" + str(u3))
+    if v.NrCapable.is_some():
+        auto u4 = v.NrCapable.unwrap()
+        parts.append("\"NrCapable\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Rsrp.is_some():
+        auto u5 = v.Rsrp.unwrap()
+        parts.append("\"Rsrp\":" + str(u5))
+    if v.Rsrq.is_some():
+        auto u6 = v.Rsrq.unwrap()
+        parts.append("\"Rsrq\":" + str(u6))
+    if v.Tac.is_some():
+        auto u7 = v.Tac.unwrap()
+        parts.append("\"Tac\":" + str(u7))
+    return geo_json_obj(parts)
+
+# Serialize MapConfiguration to a compact JSON object (declaration order).
+def map_configuration_to_json(MapConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Style\":" + geo_json_str(v.Style))
+    if v.PoliticalView.is_some():
+        auto u0 = v.PoliticalView.unwrap()
+        parts.append("\"PoliticalView\":" + geo_json_str(u0))
+    if v.CustomLayers.is_some():
+        auto u1 = v.CustomLayers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(geo_json_str(x2))
+        parts.append("\"CustomLayers\":" + geo_json_arr(e2))
+    return geo_json_obj(parts)
+
+# Serialize MapConfigurationUpdate to a compact JSON object (declaration order).
+def map_configuration_update_to_json(MapConfigurationUpdate v) -> str:
+    list[str] parts = []
+    if v.PoliticalView.is_some():
+        auto u0 = v.PoliticalView.unwrap()
+        parts.append("\"PoliticalView\":" + geo_json_str(u0))
+    if v.CustomLayers.is_some():
+        auto u1 = v.CustomLayers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(geo_json_str(x2))
+        parts.append("\"CustomLayers\":" + geo_json_arr(e2))
+    return geo_json_obj(parts)
+
+# Serialize TrackingFilterGeometry to a compact JSON object (declaration order).
+def tracking_filter_geometry_to_json(TrackingFilterGeometry v) -> str:
+    list[str] parts = []
+    if v.Polygon.is_some():
+        auto u0 = v.Polygon.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            list[str] e2 = []
+            for x2 in x1:
+                list[str] e3 = []
+                for x3 in x2:
+                    e3.append(str(x3))
+                e2.append(geo_json_arr(e3))
+            e1.append(geo_json_arr(e2))
+        parts.append("\"Polygon\":" + geo_json_arr(e1))
+    return geo_json_obj(parts)
+
+# Serialize ValidateAddressActionOptions to a compact JSON object (declaration order).
+def validate_address_action_options_to_json(ValidateAddressActionOptions v) -> str:
+    list[str] parts = []
+    if v.AdditionalFeatures.is_some():
+        auto u0 = v.AdditionalFeatures.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AdditionalFeatures\":" + geo_json_arr(e1))
+    return geo_json_obj(parts)
+
 # A bound Location client: credentials + region, threaded into every operation.
 struct LocationClient:
     core.Credentials creds
@@ -1851,6 +2183,200 @@ struct LocationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
 
+    # BatchDeleteDevicePositionHistory  POST /tracking/v0/trackers/{TrackerName}/delete-positions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_device_position_history(self, BatchDeleteDevicePositionHistoryRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TrackerName"] = input.TrackerName
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/delete-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DeviceIds:
+            e0.append(geo_json_str(x0))
+        parts.append("\"DeviceIds\":" + geo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # BatchDeleteGeofence  POST /geofencing/v0/collections/{CollectionName}/delete-geofences
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_geofence(self, BatchDeleteGeofenceRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CollectionName"] = input.CollectionName
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/delete-geofences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GeofenceIds:
+            e0.append(geo_json_str(x0))
+        parts.append("\"GeofenceIds\":" + geo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # BatchEvaluateGeofences  POST /geofencing/v0/collections/{CollectionName}/positions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_evaluate_geofences(self, BatchEvaluateGeofencesRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CollectionName"] = input.CollectionName
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DevicePositionUpdates:
+            e0.append(device_position_update_to_json(x0))
+        parts.append("\"DevicePositionUpdates\":" + geo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # BatchGetDevicePosition  POST /tracking/v0/trackers/{TrackerName}/get-positions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_device_position(self, BatchGetDevicePositionRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TrackerName"] = input.TrackerName
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/get-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DeviceIds:
+            e0.append(geo_json_str(x0))
+        parts.append("\"DeviceIds\":" + geo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # BatchPutGeofence  POST /geofencing/v0/collections/{CollectionName}/put-geofences
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_put_geofence(self, BatchPutGeofenceRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CollectionName"] = input.CollectionName
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/put-geofences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Entries:
+            e0.append(batch_put_geofence_request_entry_to_json(x0))
+        parts.append("\"Entries\":" + geo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # BatchUpdateDevicePosition  POST /tracking/v0/trackers/{TrackerName}/positions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_device_position(self, BatchUpdateDevicePositionRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TrackerName"] = input.TrackerName
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Updates:
+            e0.append(device_position_update_to_json(x0))
+        parts.append("\"Updates\":" + geo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CalculateRoute  POST /routes/v0/calculators/{CalculatorName}/calculate/route
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def calculate_route(self, CalculateRouteRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CalculatorName"] = input.CalculatorName
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators/{CalculatorName}/calculate/route", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DeparturePosition:
+            e0.append(str(x0))
+        parts.append("\"DeparturePosition\":" + geo_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.DestinationPosition:
+            e1.append(str(x1))
+        parts.append("\"DestinationPosition\":" + geo_json_arr(e1))
+        if input.WaypointPositions.is_some():
+            auto u2 = input.WaypointPositions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                list[str] e4 = []
+                for x4 in x3:
+                    e4.append(str(x4))
+                e3.append(geo_json_arr(e4))
+            parts.append("\"WaypointPositions\":" + geo_json_arr(e3))
+        if input.TravelMode.is_some():
+            auto u5 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u5.to_json())
+        if input.DepartureTime.is_some():
+            auto u6 = input.DepartureTime.unwrap()
+            parts.append("\"DepartureTime\":" + geo_json_ts_iso(u6))
+        if input.DepartNow.is_some():
+            auto u7 = input.DepartNow.unwrap()
+            parts.append("\"DepartNow\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.DistanceUnit.is_some():
+            auto u8 = input.DistanceUnit.unwrap()
+            parts.append("\"DistanceUnit\":" + u8.to_json())
+        if input.IncludeLegGeometry.is_some():
+            auto u9 = input.IncludeLegGeometry.unwrap()
+            parts.append("\"IncludeLegGeometry\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.CarModeOptions.is_some():
+            auto u10 = input.CarModeOptions.unwrap()
+            parts.append("\"CarModeOptions\":" + u10.to_json())
+        if input.TruckModeOptions.is_some():
+            auto u11 = input.TruckModeOptions.unwrap()
+            parts.append("\"TruckModeOptions\":" + u11.to_json())
+        if input.ArrivalTime.is_some():
+            auto u12 = input.ArrivalTime.unwrap()
+            parts.append("\"ArrivalTime\":" + geo_json_ts_iso(u12))
+        if input.OptimizeFor.is_some():
+            auto u13 = input.OptimizeFor.unwrap()
+            parts.append("\"OptimizeFor\":" + u13.to_json())
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CalculateRouteMatrix  POST /routes/v0/calculators/{CalculatorName}/calculate/route-matrix
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def calculate_route_matrix(self, CalculateRouteMatrixRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CalculatorName"] = input.CalculatorName
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators/{CalculatorName}/calculate/route-matrix", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.DeparturePositions:
+            list[str] e1 = []
+            for x1 in x0:
+                e1.append(str(x1))
+            e0.append(geo_json_arr(e1))
+        parts.append("\"DeparturePositions\":" + geo_json_arr(e0))
+        list[str] e2 = []
+        for x2 in input.DestinationPositions:
+            list[str] e3 = []
+            for x3 in x2:
+                e3.append(str(x3))
+            e2.append(geo_json_arr(e3))
+        parts.append("\"DestinationPositions\":" + geo_json_arr(e2))
+        if input.TravelMode.is_some():
+            auto u4 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u4.to_json())
+        if input.DepartureTime.is_some():
+            auto u5 = input.DepartureTime.unwrap()
+            parts.append("\"DepartureTime\":" + geo_json_ts_iso(u5))
+        if input.DepartNow.is_some():
+            auto u6 = input.DepartNow.unwrap()
+            parts.append("\"DepartNow\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.DistanceUnit.is_some():
+            auto u7 = input.DistanceUnit.unwrap()
+            parts.append("\"DistanceUnit\":" + u7.to_json())
+        if input.CarModeOptions.is_some():
+            auto u8 = input.CarModeOptions.unwrap()
+            parts.append("\"CarModeOptions\":" + u8.to_json())
+        if input.TruckModeOptions.is_some():
+            auto u9 = input.TruckModeOptions.unwrap()
+            parts.append("\"TruckModeOptions\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
     # CancelJob  POST /metadata/v0/jobs/cancel-job
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def cancel_job(self, CancelJobRequest input) -> str:
@@ -1858,6 +2384,169 @@ struct LocationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs/cancel-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelJobDocument(JobId=input.JobId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CreateGeofenceCollection  POST /geofencing/v0/collections
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_geofence_collection(self, CreateGeofenceCollectionRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CollectionName\":" + geo_json_str(input.CollectionName))
+        if input.PricingPlan.is_some():
+            auto u0 = input.PricingPlan.unwrap()
+            parts.append("\"PricingPlan\":" + u0.to_json())
+        if input.PricingPlanDataSource.is_some():
+            auto u1 = input.PricingPlanDataSource.unwrap()
+            parts.append("\"PricingPlanDataSource\":" + geo_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(geo_json_str(k4) + ":" + geo_json_str(u3[k4]))
+            parts.append("\"Tags\":" + geo_json_obj(m4))
+        if input.KmsKeyId.is_some():
+            auto u5 = input.KmsKeyId.unwrap()
+            parts.append("\"KmsKeyId\":" + geo_json_str(u5))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CreateKey  POST /metadata/v0/keys
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_key(self, CreateKeyRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/keys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"KeyName\":" + geo_json_str(input.KeyName))
+        parts.append("\"Restrictions\":" + api_key_restrictions_to_json(input.Restrictions))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u0))
+        if input.ExpireTime.is_some():
+            auto u1 = input.ExpireTime.unwrap()
+            parts.append("\"ExpireTime\":" + geo_json_ts_iso(u1))
+        if input.NoExpiry.is_some():
+            auto u2 = input.NoExpiry.unwrap()
+            parts.append("\"NoExpiry\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(geo_json_str(k4) + ":" + geo_json_str(u3[k4]))
+            parts.append("\"Tags\":" + geo_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CreateMap  POST /maps/v0/maps
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_map(self, CreateMapRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/maps/v0/maps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"MapName\":" + geo_json_str(input.MapName))
+        parts.append("\"Configuration\":" + map_configuration_to_json(input.Configuration))
+        if input.PricingPlan.is_some():
+            auto u0 = input.PricingPlan.unwrap()
+            parts.append("\"PricingPlan\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(geo_json_str(k3) + ":" + geo_json_str(u2[k3]))
+            parts.append("\"Tags\":" + geo_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CreatePlaceIndex  POST /places/v0/indexes
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_place_index(self, CreatePlaceIndexRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"IndexName\":" + geo_json_str(input.IndexName))
+        parts.append("\"DataSource\":" + geo_json_str(input.DataSource))
+        if input.PricingPlan.is_some():
+            auto u0 = input.PricingPlan.unwrap()
+            parts.append("\"PricingPlan\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u1))
+        if input.DataSourceConfiguration.is_some():
+            auto u2 = input.DataSourceConfiguration.unwrap()
+            parts.append("\"DataSourceConfiguration\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(geo_json_str(k4) + ":" + geo_json_str(u3[k4]))
+            parts.append("\"Tags\":" + geo_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CreateRouteCalculator  POST /routes/v0/calculators
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_route_calculator(self, CreateRouteCalculatorRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CalculatorName\":" + geo_json_str(input.CalculatorName))
+        parts.append("\"DataSource\":" + geo_json_str(input.DataSource))
+        if input.PricingPlan.is_some():
+            auto u0 = input.PricingPlan.unwrap()
+            parts.append("\"PricingPlan\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(geo_json_str(k3) + ":" + geo_json_str(u2[k3]))
+            parts.append("\"Tags\":" + geo_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # CreateTracker  POST /tracking/v0/trackers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_tracker(self, CreateTrackerRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TrackerName\":" + geo_json_str(input.TrackerName))
+        if input.PricingPlan.is_some():
+            auto u0 = input.PricingPlan.unwrap()
+            parts.append("\"PricingPlan\":" + u0.to_json())
+        if input.KmsKeyId.is_some():
+            auto u1 = input.KmsKeyId.unwrap()
+            parts.append("\"KmsKeyId\":" + geo_json_str(u1))
+        if input.PricingPlanDataSource.is_some():
+            auto u2 = input.PricingPlanDataSource.unwrap()
+            parts.append("\"PricingPlanDataSource\":" + geo_json_str(u2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(geo_json_str(k5) + ":" + geo_json_str(u4[k5]))
+            parts.append("\"Tags\":" + geo_json_obj(m5))
+        if input.PositionFiltering.is_some():
+            auto u6 = input.PositionFiltering.unwrap()
+            parts.append("\"PositionFiltering\":" + u6.to_json())
+        if input.EventBridgeEnabled.is_some():
+            auto u7 = input.EventBridgeEnabled.unwrap()
+            parts.append("\"EventBridgeEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.KmsKeyEnableGeospatialQueries.is_some():
+            auto u8 = input.KmsKeyEnableGeospatialQueries.unwrap()
+            parts.append("\"KmsKeyEnableGeospatialQueries\":" + json.dumps(JsonValue.Bool(u8)))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
 
     # DeleteGeofenceCollection  DELETE /geofencing/v0/collections/{CollectionName}
@@ -1969,6 +2658,33 @@ struct LocationClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/tracking/v0/trackers/{TrackerName}/consumers/{ConsumerArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
+    # ForecastGeofenceEvents  POST /geofencing/v0/collections/{CollectionName}/forecast-geofence-events
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def forecast_geofence_events(self, ForecastGeofenceEventsRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CollectionName"] = input.CollectionName
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/forecast-geofence-events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DeviceState\":" + forecast_geofence_events_device_state_to_json(input.DeviceState))
+        if input.TimeHorizonMinutes.is_some():
+            auto u0 = input.TimeHorizonMinutes.unwrap()
+            parts.append("\"TimeHorizonMinutes\":" + str(u0))
+        if input.DistanceUnit.is_some():
+            auto u1 = input.DistanceUnit.unwrap()
+            parts.append("\"DistanceUnit\":" + u1.to_json())
+        if input.SpeedUnit.is_some():
+            auto u2 = input.SpeedUnit.unwrap()
+            parts.append("\"SpeedUnit\":" + u2.to_json())
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + geo_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
     # GetDevicePosition  GET /tracking/v0/trackers/{TrackerName}/devices/{DeviceId}/positions/latest
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_device_position(self, GetDevicePositionRequest input) -> str:
@@ -2079,6 +2795,26 @@ struct LocationClient:
         auto b = binding.HttpBinding(method="GET", path_template="/places/v0/indexes/{IndexName}/places/{PlaceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
+    # ListDevicePositions  POST /tracking/v0/trackers/{TrackerName}/list-positions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_device_positions(self, ListDevicePositionsRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TrackerName"] = input.TrackerName
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/list-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + geo_json_str(u1))
+        if input.FilterGeometry.is_some():
+            auto u2 = input.FilterGeometry.unwrap()
+            parts.append("\"FilterGeometry\":" + tracking_filter_geometry_to_json(u2))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
     # ListGeofenceCollections  POST /geofencing/v0/list-collections
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_geofence_collections(self, ListGeofenceCollectionsRequest input) -> str:
@@ -2173,6 +2909,182 @@ struct LocationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
 
+    # PutGeofence  PUT /geofencing/v0/collections/{CollectionName}/geofences/{GeofenceId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_geofence(self, PutGeofenceRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CollectionName"] = input.CollectionName
+        labels["GeofenceId"] = input.GeofenceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/geofencing/v0/collections/{CollectionName}/geofences/{GeofenceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Geometry\":" + geofence_geometry_to_json(input.Geometry))
+        if input.GeofenceProperties.is_some():
+            auto u0 = input.GeofenceProperties.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(geo_json_str(k1) + ":" + geo_json_str(u0[k1]))
+            parts.append("\"GeofenceProperties\":" + geo_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # SearchPlaceIndexForPosition  POST /places/v0/indexes/{IndexName}/search/position
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_place_index_for_position(self, SearchPlaceIndexForPositionRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["IndexName"] = input.IndexName
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/position", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Position:
+            e0.append(str(x0))
+        parts.append("\"Position\":" + geo_json_arr(e0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.Language.is_some():
+            auto u2 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_json_str(u2))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # SearchPlaceIndexForSuggestions  POST /places/v0/indexes/{IndexName}/search/suggestions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_place_index_for_suggestions(self, SearchPlaceIndexForSuggestionsRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["IndexName"] = input.IndexName
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/suggestions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Text\":" + geo_json_str(input.Text))
+        if input.BiasPosition.is_some():
+            auto u0 = input.BiasPosition.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(str(x1))
+            parts.append("\"BiasPosition\":" + geo_json_arr(e1))
+        if input.FilterBBox.is_some():
+            auto u2 = input.FilterBBox.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(str(x3))
+            parts.append("\"FilterBBox\":" + geo_json_arr(e3))
+        if input.FilterCountries.is_some():
+            auto u4 = input.FilterCountries.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(geo_json_str(x5))
+            parts.append("\"FilterCountries\":" + geo_json_arr(e5))
+        if input.MaxResults.is_some():
+            auto u6 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u6))
+        if input.Language.is_some():
+            auto u7 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_json_str(u7))
+        if input.FilterCategories.is_some():
+            auto u8 = input.FilterCategories.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(geo_json_str(x9))
+            parts.append("\"FilterCategories\":" + geo_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # SearchPlaceIndexForText  POST /places/v0/indexes/{IndexName}/search/text
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_place_index_for_text(self, SearchPlaceIndexForTextRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["IndexName"] = input.IndexName
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/text", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Text\":" + geo_json_str(input.Text))
+        if input.BiasPosition.is_some():
+            auto u0 = input.BiasPosition.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(str(x1))
+            parts.append("\"BiasPosition\":" + geo_json_arr(e1))
+        if input.FilterBBox.is_some():
+            auto u2 = input.FilterBBox.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(str(x3))
+            parts.append("\"FilterBBox\":" + geo_json_arr(e3))
+        if input.FilterCountries.is_some():
+            auto u4 = input.FilterCountries.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(geo_json_str(x5))
+            parts.append("\"FilterCountries\":" + geo_json_arr(e5))
+        if input.MaxResults.is_some():
+            auto u6 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u6))
+        if input.Language.is_some():
+            auto u7 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_json_str(u7))
+        if input.FilterCategories.is_some():
+            auto u8 = input.FilterCategories.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(geo_json_str(x9))
+            parts.append("\"FilterCategories\":" + geo_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # StartJob  POST /metadata/v0/jobs
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def start_job(self, StartJobRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + geo_json_str(u0))
+        parts.append("\"Action\":" + geo_json_str(input.Action))
+        if input.ActionOptions.is_some():
+            auto u1 = input.ActionOptions.unwrap()
+            parts.append("\"ActionOptions\":" + job_action_options_to_json(u1))
+        parts.append("\"ExecutionRoleArn\":" + geo_json_str(input.ExecutionRoleArn))
+        parts.append("\"InputOptions\":" + input.InputOptions.to_json())
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"Name\":" + geo_json_str(u2))
+        parts.append("\"OutputOptions\":" + input.OutputOptions.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(geo_json_str(k4) + ":" + geo_json_str(u3[k4]))
+            parts.append("\"Tags\":" + geo_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(geo_json_str(k0) + ":" + geo_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + geo_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
     # UpdateGeofenceCollection  PATCH /geofencing/v0/collections/{CollectionName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_geofence_collection(self, UpdateGeofenceCollectionRequest input) -> str:
@@ -2182,6 +3094,52 @@ struct LocationClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGeofenceCollectionDocument(PricingPlan=input.PricingPlan, PricingPlanDataSource=input.PricingPlanDataSource, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # UpdateKey  PATCH /metadata/v0/keys/{KeyName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_key(self, UpdateKeyRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["KeyName"] = input.KeyName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/metadata/v0/keys/{KeyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u0))
+        if input.ExpireTime.is_some():
+            auto u1 = input.ExpireTime.unwrap()
+            parts.append("\"ExpireTime\":" + geo_json_ts_iso(u1))
+        if input.NoExpiry.is_some():
+            auto u2 = input.NoExpiry.unwrap()
+            parts.append("\"NoExpiry\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.ForceUpdate.is_some():
+            auto u3 = input.ForceUpdate.unwrap()
+            parts.append("\"ForceUpdate\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.Restrictions.is_some():
+            auto u4 = input.Restrictions.unwrap()
+            parts.append("\"Restrictions\":" + api_key_restrictions_to_json(u4))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # UpdateMap  PATCH /maps/v0/maps/{MapName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_map(self, UpdateMapRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MapName"] = input.MapName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.PricingPlan.is_some():
+            auto u0 = input.PricingPlan.unwrap()
+            parts.append("\"PricingPlan\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + geo_json_str(u1))
+        if input.ConfigurationUpdate.is_some():
+            auto u2 = input.ConfigurationUpdate.unwrap()
+            parts.append("\"ConfigurationUpdate\":" + map_configuration_update_to_json(u2))
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
 
     # UpdatePlaceIndex  PATCH /places/v0/indexes/{IndexName}
@@ -2217,12 +3175,53 @@ struct LocationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
 
+    # VerifyDevicePosition  POST /tracking/v0/trackers/{TrackerName}/positions/verify
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def verify_device_position(self, VerifyDevicePositionRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TrackerName"] = input.TrackerName
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/positions/verify", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DeviceState\":" + device_state_to_json(input.DeviceState))
+        if input.DistanceUnit.is_some():
+            auto u0 = input.DistanceUnit.unwrap()
+            parts.append("\"DistanceUnit\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
+
+    # Paginator for ForecastGeofenceEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ForecastedEvents).
+    def paginate_forecast_geofence_events(self, ForecastGeofenceEventsRequest input):
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        while True:
+            auto raw = self.forecast_geofence_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetDevicePositionHistory — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: DevicePositions).
     def paginate_get_device_position_history(self, GetDevicePositionHistoryRequest input):
         auto host = endpoints.regional_host(geo_service(), self.region)
         while True:
             auto raw = self.get_device_position_history(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDevicePositions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Entries).
+    def paginate_list_device_positions(self, ListDevicePositionsRequest input):
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        while True:
+            auto raw = self.list_device_positions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

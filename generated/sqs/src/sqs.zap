@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 12 with a generated method,
-#   11 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 23 operations — 21 with a generated method,
+#   2 skipped (input has a non-string-keyed map or free-form document member).
 #   76 structs (52 @derive(Json)), 2 enums, 28 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The SQS awsJson protocol: version 1.0, API id "AmazonSQS".
 def sqs_protocol() -> awsjson.AwsJson:
@@ -79,8 +80,9 @@ enum QueueAttributeName:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) AWSAccountIds: list[str], Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AWSAccountIds: list[str], Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddPermissionRequest:
     str QueueUrl
     str Label
@@ -110,8 +112,9 @@ struct CancelMessageMoveTaskRequest:
 struct CancelMessageMoveTaskResult:
     Optional[int64] ApproximateNumberOfMessagesMoved
 
-# no @derive(Json): member(s) Entries: list[ChangeMessageVisibilityBatchRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[ChangeMessageVisibilityBatchRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeMessageVisibilityBatchRequest:
     str QueueUrl
     list[ChangeMessageVisibilityBatchRequestEntry] Entries
@@ -122,8 +125,9 @@ struct ChangeMessageVisibilityBatchRequestEntry:
     str ReceiptHandle
     Optional[int64] VisibilityTimeout
 
-# no @derive(Json): member(s) Successful: list[ChangeMessageVisibilityBatchResultEntry], Failed: list[BatchResultErrorEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[ChangeMessageVisibilityBatchResultEntry], Failed: list[BatchResultErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeMessageVisibilityBatchResult:
     list[ChangeMessageVisibilityBatchResultEntry] Successful
     list[BatchResultErrorEntry] Failed
@@ -138,8 +142,9 @@ struct ChangeMessageVisibilityRequest:
     str ReceiptHandle
     int64 VisibilityTimeout
 
-# no @derive(Json): member(s) Attributes: dict[QueueAttributeName, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[QueueAttributeName, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQueueRequest:
     str QueueName
     Optional[dict[QueueAttributeName, str]] Attributes
@@ -149,8 +154,9 @@ struct CreateQueueRequest:
 struct CreateQueueResult:
     Optional[str] QueueUrl
 
-# no @derive(Json): member(s) Entries: list[DeleteMessageBatchRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[DeleteMessageBatchRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMessageBatchRequest:
     str QueueUrl
     list[DeleteMessageBatchRequestEntry] Entries
@@ -160,8 +166,9 @@ struct DeleteMessageBatchRequestEntry:
     str Id
     str ReceiptHandle
 
-# no @derive(Json): member(s) Successful: list[DeleteMessageBatchResultEntry], Failed: list[BatchResultErrorEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[DeleteMessageBatchResultEntry], Failed: list[BatchResultErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMessageBatchResult:
     list[DeleteMessageBatchResultEntry] Successful
     list[BatchResultErrorEntry] Failed
@@ -183,14 +190,16 @@ struct DeleteQueueRequest:
 struct EmptyBatchRequest:
     Optional[str] message
 
-# no @derive(Json): member(s) AttributeNames: list[QueueAttributeName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[QueueAttributeName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueueAttributesRequest:
     str QueueUrl
     Optional[list[QueueAttributeName]] AttributeNames
 
-# no @derive(Json): member(s) Attributes: dict[QueueAttributeName, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[QueueAttributeName, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueueAttributesResult:
     Optional[dict[QueueAttributeName, str]] Attributes
 
@@ -266,8 +275,9 @@ struct ListDeadLetterSourceQueuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) queueUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queueUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeadLetterSourceQueuesResult:
     list[str] queueUrls
     Optional[str] NextToken
@@ -277,8 +287,9 @@ struct ListMessageMoveTasksRequest:
     str SourceArn
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[ListMessageMoveTasksResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[ListMessageMoveTasksResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMessageMoveTasksResult:
     Optional[list[ListMessageMoveTasksResultEntry]] Results
 
@@ -298,8 +309,9 @@ struct ListMessageMoveTasksResultEntry:
 struct ListQueueTagsRequest:
     str QueueUrl
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueueTagsResult:
     Optional[dict[str, str]] Tags
 
@@ -309,14 +321,16 @@ struct ListQueuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) QueueUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueueUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueuesResult:
     Optional[list[str]] QueueUrls
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Attributes: dict[MessageSystemAttributeName, str], MessageAttributes: dict[str, MessageAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[MessageSystemAttributeName, str], MessageAttributes: dict[str, MessageAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Message:
     Optional[str] MessageId
     Optional[str] ReceiptHandle
@@ -326,8 +340,9 @@ struct Message:
     Optional[str] MD5OfMessageAttributes
     Optional[dict[str, MessageAttributeValue]] MessageAttributes
 
-# no @derive(Json): member(s) StringListValues: list[str], BinaryListValues: list[bytes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringListValues: list[str], BinaryListValues: list[bytes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageAttributeValue:
     Optional[str] StringValue
     Optional[bytes] BinaryValue
@@ -340,8 +355,9 @@ struct MessageNotInflight:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) StringListValues: list[str], BinaryListValues: list[bytes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringListValues: list[str], BinaryListValues: list[bytes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageSystemAttributeValue:
     Optional[str] StringValue
     Optional[bytes] BinaryValue
@@ -377,8 +393,9 @@ struct QueueNameExists:
 struct ReceiptHandleIsInvalid:
     Optional[str] message
 
-# no @derive(Json): member(s) AttributeNames: list[QueueAttributeName], MessageSystemAttributeNames: list[MessageSystemAttributeName], MessageAttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[QueueAttributeName], MessageSystemAttributeNames: list[MessageSystemAttributeName], MessageAttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReceiveMessageRequest:
     str QueueUrl
     Optional[list[QueueAttributeName]] AttributeNames
@@ -389,8 +406,9 @@ struct ReceiveMessageRequest:
     Optional[int64] WaitTimeSeconds
     Optional[str] ReceiveRequestAttemptId
 
-# no @derive(Json): member(s) Messages: list[Message] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[Message] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReceiveMessageResult:
     Optional[list[Message]] Messages
 
@@ -407,14 +425,16 @@ struct RequestThrottled:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) Entries: list[SendMessageBatchRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[SendMessageBatchRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendMessageBatchRequest:
     str QueueUrl
     list[SendMessageBatchRequestEntry] Entries
 
-# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], MessageSystemAttributes: dict[str, MessageSystemAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], MessageSystemAttributes: dict[str, MessageSystemAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendMessageBatchRequestEntry:
     str Id
     str MessageBody
@@ -424,8 +444,9 @@ struct SendMessageBatchRequestEntry:
     Optional[str] MessageDeduplicationId
     Optional[str] MessageGroupId
 
-# no @derive(Json): member(s) Successful: list[SendMessageBatchResultEntry], Failed: list[BatchResultErrorEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[SendMessageBatchResultEntry], Failed: list[BatchResultErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendMessageBatchResult:
     list[SendMessageBatchResultEntry] Successful
     list[BatchResultErrorEntry] Failed
@@ -439,8 +460,9 @@ struct SendMessageBatchResultEntry:
     Optional[str] MD5OfMessageSystemAttributes
     Optional[str] SequenceNumber
 
-# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], MessageSystemAttributes: dict[str, MessageSystemAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageAttributes: dict[str, MessageAttributeValue], MessageSystemAttributes: dict[str, MessageSystemAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendMessageRequest:
     str QueueUrl
     str MessageBody
@@ -458,8 +480,9 @@ struct SendMessageResult:
     Optional[str] MessageId
     Optional[str] SequenceNumber
 
-# no @derive(Json): member(s) Attributes: dict[QueueAttributeName, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[QueueAttributeName, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetQueueAttributesRequest:
     str QueueUrl
     dict[QueueAttributeName, str] Attributes
@@ -474,8 +497,9 @@ struct StartMessageMoveTaskRequest:
 struct StartMessageMoveTaskResult:
     Optional[str] TaskHandle
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagQueueRequest:
     str QueueUrl
     dict[str, str] Tags
@@ -488,8 +512,9 @@ struct TooManyEntriesInBatchRequest:
 struct UnsupportedOperation:
     Optional[str] message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagQueueRequest:
     str QueueUrl
     list[str] TagKeys
@@ -591,24 +616,268 @@ def sqs_error_from_code(str code) -> SQSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddPermission (input AddPermissionRequest)
-#   ChangeMessageVisibilityBatch (input ChangeMessageVisibilityBatchRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateQueue (input CreateQueueRequest)
-#   DeleteMessageBatch (input DeleteMessageBatchRequest)
-#   GetQueueAttributes (input GetQueueAttributesRequest)
-#   ReceiveMessage (input ReceiveMessageRequest)
-#   SendMessage (input SendMessageRequest)
-#   SendMessageBatch (input SendMessageBatchRequest)
 #   SetQueueAttributes (input SetQueueAttributesRequest)
-#   TagQueue (input TagQueueRequest)
-#   UntagQueue (input UntagQueueRequest)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def sqs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def sqs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def sqs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddPermissionRequest to a compact JSON object (declaration order).
+def add_permission_request_to_json(AddPermissionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    parts.append("\"Label\":" + sqs_json_str(v.Label))
+    list[str] e0 = []
+    for x0 in v.AWSAccountIds:
+        e0.append(sqs_json_str(x0))
+    parts.append("\"AWSAccountIds\":" + sqs_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Actions:
+        e1.append(sqs_json_str(x1))
+    parts.append("\"Actions\":" + sqs_json_arr(e1))
+    return sqs_json_obj(parts)
+
+# Serialize ChangeMessageVisibilityBatchRequest to a compact JSON object (declaration order).
+def change_message_visibility_batch_request_to_json(ChangeMessageVisibilityBatchRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(x0.to_json())
+    parts.append("\"Entries\":" + sqs_json_arr(e0))
+    return sqs_json_obj(parts)
+
+# Serialize DeleteMessageBatchRequest to a compact JSON object (declaration order).
+def delete_message_batch_request_to_json(DeleteMessageBatchRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(x0.to_json())
+    parts.append("\"Entries\":" + sqs_json_arr(e0))
+    return sqs_json_obj(parts)
+
+# Serialize GetQueueAttributesRequest to a compact JSON object (declaration order).
+def get_queue_attributes_request_to_json(GetQueueAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    if v.AttributeNames.is_some():
+        auto u0 = v.AttributeNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributeNames\":" + sqs_json_arr(e1))
+    return sqs_json_obj(parts)
+
+# Serialize MessageAttributeValue to a compact JSON object (declaration order).
+def message_attribute_value_to_json(MessageAttributeValue v) -> str:
+    list[str] parts = []
+    if v.StringValue.is_some():
+        auto u0 = v.StringValue.unwrap()
+        parts.append("\"StringValue\":" + sqs_json_str(u0))
+    if v.BinaryValue.is_some():
+        auto u1 = v.BinaryValue.unwrap()
+        parts.append("\"BinaryValue\":" + sqs_json_str(base64.encode(u1)))
+    if v.StringListValues.is_some():
+        auto u2 = v.StringListValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sqs_json_str(x3))
+        parts.append("\"StringListValues\":" + sqs_json_arr(e3))
+    if v.BinaryListValues.is_some():
+        auto u4 = v.BinaryListValues.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(sqs_json_str(base64.encode(x5)))
+        parts.append("\"BinaryListValues\":" + sqs_json_arr(e5))
+    parts.append("\"DataType\":" + sqs_json_str(v.DataType))
+    return sqs_json_obj(parts)
+
+# Serialize MessageSystemAttributeValue to a compact JSON object (declaration order).
+def message_system_attribute_value_to_json(MessageSystemAttributeValue v) -> str:
+    list[str] parts = []
+    if v.StringValue.is_some():
+        auto u0 = v.StringValue.unwrap()
+        parts.append("\"StringValue\":" + sqs_json_str(u0))
+    if v.BinaryValue.is_some():
+        auto u1 = v.BinaryValue.unwrap()
+        parts.append("\"BinaryValue\":" + sqs_json_str(base64.encode(u1)))
+    if v.StringListValues.is_some():
+        auto u2 = v.StringListValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sqs_json_str(x3))
+        parts.append("\"StringListValues\":" + sqs_json_arr(e3))
+    if v.BinaryListValues.is_some():
+        auto u4 = v.BinaryListValues.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(sqs_json_str(base64.encode(x5)))
+        parts.append("\"BinaryListValues\":" + sqs_json_arr(e5))
+    parts.append("\"DataType\":" + sqs_json_str(v.DataType))
+    return sqs_json_obj(parts)
+
+# Serialize ReceiveMessageRequest to a compact JSON object (declaration order).
+def receive_message_request_to_json(ReceiveMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    if v.AttributeNames.is_some():
+        auto u0 = v.AttributeNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributeNames\":" + sqs_json_arr(e1))
+    if v.MessageSystemAttributeNames.is_some():
+        auto u2 = v.MessageSystemAttributeNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MessageSystemAttributeNames\":" + sqs_json_arr(e3))
+    if v.MessageAttributeNames.is_some():
+        auto u4 = v.MessageAttributeNames.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(sqs_json_str(x5))
+        parts.append("\"MessageAttributeNames\":" + sqs_json_arr(e5))
+    if v.MaxNumberOfMessages.is_some():
+        auto u6 = v.MaxNumberOfMessages.unwrap()
+        parts.append("\"MaxNumberOfMessages\":" + str(u6))
+    if v.VisibilityTimeout.is_some():
+        auto u7 = v.VisibilityTimeout.unwrap()
+        parts.append("\"VisibilityTimeout\":" + str(u7))
+    if v.WaitTimeSeconds.is_some():
+        auto u8 = v.WaitTimeSeconds.unwrap()
+        parts.append("\"WaitTimeSeconds\":" + str(u8))
+    if v.ReceiveRequestAttemptId.is_some():
+        auto u9 = v.ReceiveRequestAttemptId.unwrap()
+        parts.append("\"ReceiveRequestAttemptId\":" + sqs_json_str(u9))
+    return sqs_json_obj(parts)
+
+# Serialize SendMessageBatchRequest to a compact JSON object (declaration order).
+def send_message_batch_request_to_json(SendMessageBatchRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(send_message_batch_request_entry_to_json(x0))
+    parts.append("\"Entries\":" + sqs_json_arr(e0))
+    return sqs_json_obj(parts)
+
+# Serialize SendMessageBatchRequestEntry to a compact JSON object (declaration order).
+def send_message_batch_request_entry_to_json(SendMessageBatchRequestEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + sqs_json_str(v.Id))
+    parts.append("\"MessageBody\":" + sqs_json_str(v.MessageBody))
+    if v.DelaySeconds.is_some():
+        auto u0 = v.DelaySeconds.unwrap()
+        parts.append("\"DelaySeconds\":" + str(u0))
+    if v.MessageAttributes.is_some():
+        auto u1 = v.MessageAttributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(sqs_json_str(k2) + ":" + message_attribute_value_to_json(u1[k2]))
+        parts.append("\"MessageAttributes\":" + sqs_json_obj(m2))
+    if v.MessageSystemAttributes.is_some():
+        auto u3 = v.MessageSystemAttributes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(sqs_json_str(k4) + ":" + message_system_attribute_value_to_json(u3[k4]))
+        parts.append("\"MessageSystemAttributes\":" + sqs_json_obj(m4))
+    if v.MessageDeduplicationId.is_some():
+        auto u5 = v.MessageDeduplicationId.unwrap()
+        parts.append("\"MessageDeduplicationId\":" + sqs_json_str(u5))
+    if v.MessageGroupId.is_some():
+        auto u6 = v.MessageGroupId.unwrap()
+        parts.append("\"MessageGroupId\":" + sqs_json_str(u6))
+    return sqs_json_obj(parts)
+
+# Serialize SendMessageRequest to a compact JSON object (declaration order).
+def send_message_request_to_json(SendMessageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    parts.append("\"MessageBody\":" + sqs_json_str(v.MessageBody))
+    if v.DelaySeconds.is_some():
+        auto u0 = v.DelaySeconds.unwrap()
+        parts.append("\"DelaySeconds\":" + str(u0))
+    if v.MessageAttributes.is_some():
+        auto u1 = v.MessageAttributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(sqs_json_str(k2) + ":" + message_attribute_value_to_json(u1[k2]))
+        parts.append("\"MessageAttributes\":" + sqs_json_obj(m2))
+    if v.MessageSystemAttributes.is_some():
+        auto u3 = v.MessageSystemAttributes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(sqs_json_str(k4) + ":" + message_system_attribute_value_to_json(u3[k4]))
+        parts.append("\"MessageSystemAttributes\":" + sqs_json_obj(m4))
+    if v.MessageDeduplicationId.is_some():
+        auto u5 = v.MessageDeduplicationId.unwrap()
+        parts.append("\"MessageDeduplicationId\":" + sqs_json_str(u5))
+    if v.MessageGroupId.is_some():
+        auto u6 = v.MessageGroupId.unwrap()
+        parts.append("\"MessageGroupId\":" + sqs_json_str(u6))
+    return sqs_json_obj(parts)
+
+# Serialize TagQueueRequest to a compact JSON object (declaration order).
+def tag_queue_request_to_json(TagQueueRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(sqs_json_str(k0) + ":" + sqs_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + sqs_json_obj(m0))
+    return sqs_json_obj(parts)
+
+# Serialize UntagQueueRequest to a compact JSON object (declaration order).
+def untag_queue_request_to_json(UntagQueueRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"QueueUrl\":" + sqs_json_str(v.QueueUrl))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(sqs_json_str(x0))
+    parts.append("\"TagKeys\":" + sqs_json_arr(e0))
+    return sqs_json_obj(parts)
 
 # A bound SQS client: credentials + region, threaded into every operation.
 struct SQSClient:
     core.Credentials creds
     str region
+
+    # AddPermission
+    # errors: InvalidAddress, InvalidSecurity, OverLimit, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
+    def add_permission(self, AddPermissionRequest input) -> str:
+        auto body = add_permission_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "AddPermission", body)
 
     # CancelMessageMoveTask
     # errors: InvalidAddress, InvalidSecurity, RequestThrottled, ResourceNotFoundException, UnsupportedOperation
@@ -622,17 +891,35 @@ struct SQSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "ChangeMessageVisibility", body)
 
+    # ChangeMessageVisibilityBatch
+    # errors: BatchEntryIdsNotDistinct, EmptyBatchRequest, InvalidAddress, InvalidBatchEntryId, InvalidSecurity, QueueDoesNotExist, RequestThrottled, TooManyEntriesInBatchRequest, UnsupportedOperation
+    def change_message_visibility_batch(self, ChangeMessageVisibilityBatchRequest input) -> str:
+        auto body = change_message_visibility_batch_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "ChangeMessageVisibilityBatch", body)
+
     # DeleteMessage
     # errors: InvalidAddress, InvalidIdFormat, InvalidSecurity, QueueDoesNotExist, ReceiptHandleIsInvalid, RequestThrottled, UnsupportedOperation
     def delete_message(self, DeleteMessageRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "DeleteMessage", body)
 
+    # DeleteMessageBatch
+    # errors: BatchEntryIdsNotDistinct, EmptyBatchRequest, InvalidAddress, InvalidBatchEntryId, InvalidSecurity, QueueDoesNotExist, RequestThrottled, TooManyEntriesInBatchRequest, UnsupportedOperation
+    def delete_message_batch(self, DeleteMessageBatchRequest input) -> str:
+        auto body = delete_message_batch_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "DeleteMessageBatch", body)
+
     # DeleteQueue
     # errors: InvalidAddress, InvalidSecurity, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
     def delete_queue(self, DeleteQueueRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "DeleteQueue", body)
+
+    # GetQueueAttributes
+    # errors: InvalidAddress, InvalidAttributeName, InvalidSecurity, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
+    def get_queue_attributes(self, GetQueueAttributesRequest input) -> str:
+        auto body = get_queue_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "GetQueueAttributes", body)
 
     # GetQueueUrl
     # errors: InvalidAddress, InvalidSecurity, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
@@ -670,17 +957,47 @@ struct SQSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "PurgeQueue", body)
 
+    # ReceiveMessage
+    # errors: InvalidAddress, InvalidSecurity, KmsAccessDenied, KmsDisabled, KmsInvalidKeyUsage, KmsInvalidState, KmsNotFound, KmsOptInRequired, KmsThrottled, OverLimit, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
+    def receive_message(self, ReceiveMessageRequest input) -> str:
+        auto body = receive_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "ReceiveMessage", body)
+
     # RemovePermission
     # errors: InvalidAddress, InvalidSecurity, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
     def remove_permission(self, RemovePermissionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "RemovePermission", body)
 
+    # SendMessage
+    # errors: InvalidAddress, InvalidMessageContents, InvalidSecurity, KmsAccessDenied, KmsDisabled, KmsInvalidKeyUsage, KmsInvalidState, KmsNotFound, KmsOptInRequired, KmsThrottled, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
+    def send_message(self, SendMessageRequest input) -> str:
+        auto body = send_message_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "SendMessage", body)
+
+    # SendMessageBatch
+    # errors: BatchEntryIdsNotDistinct, BatchRequestTooLong, EmptyBatchRequest, InvalidAddress, InvalidBatchEntryId, InvalidSecurity, KmsAccessDenied, KmsDisabled, KmsInvalidKeyUsage, KmsInvalidState, KmsNotFound, KmsOptInRequired, KmsThrottled, QueueDoesNotExist, RequestThrottled, TooManyEntriesInBatchRequest, UnsupportedOperation
+    def send_message_batch(self, SendMessageBatchRequest input) -> str:
+        auto body = send_message_batch_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "SendMessageBatch", body)
+
     # StartMessageMoveTask
     # errors: InvalidAddress, InvalidSecurity, RequestThrottled, ResourceNotFoundException, UnsupportedOperation
     def start_message_move_task(self, StartMessageMoveTaskRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "StartMessageMoveTask", body)
+
+    # TagQueue
+    # errors: InvalidAddress, InvalidSecurity, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
+    def tag_queue(self, TagQueueRequest input) -> str:
+        auto body = tag_queue_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "TagQueue", body)
+
+    # UntagQueue
+    # errors: InvalidAddress, InvalidSecurity, QueueDoesNotExist, RequestThrottled, UnsupportedOperation
+    def untag_queue(self, UntagQueueRequest input) -> str:
+        auto body = untag_queue_request_to_json(input)
+        return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, "UntagQueue", body)
 
     # Paginator for ListDeadLetterSourceQueues — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: queueUrls).

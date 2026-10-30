@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 11 with a generated method,
-#   12 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 23 operations — 23 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   57 structs (34 @derive(Json)), 4 enums, 11 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -77,8 +77,9 @@ struct CognitoIdentityProvider:
 struct ConcurrentModificationException:
     Optional[str] message
 
-# no @derive(Json): member(s) SupportedLoginProviders: dict[str, str], OpenIdConnectProviderARNs: list[str], CognitoIdentityProviders: list[CognitoIdentityProvider], SamlProviderARNs: list[str], IdentityPoolTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedLoginProviders: dict[str, str], OpenIdConnectProviderARNs: list[str], CognitoIdentityProviders: list[CognitoIdentityProvider], SamlProviderARNs: list[str], IdentityPoolTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIdentityPoolInput:
     str IdentityPoolName
     bool AllowUnauthenticatedIdentities
@@ -97,13 +98,15 @@ struct Credentials:
     Optional[str] SessionToken
     Optional[DateTime] Expiration
 
-# no @derive(Json): member(s) IdentityIdsToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityIdsToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteIdentitiesInput:
     list[str] IdentityIdsToDelete
 
-# no @derive(Json): member(s) UnprocessedIdentityIds: list[UnprocessedIdentityId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedIdentityIds: list[UnprocessedIdentityId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteIdentitiesResponse:
     Optional[list[UnprocessedIdentityId]] UnprocessedIdentityIds
 
@@ -127,8 +130,9 @@ struct DeveloperUserAlreadyRegisteredException:
 struct ExternalServiceException:
     Optional[str] message
 
-# no @derive(Json): member(s) Logins: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Logins: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCredentialsForIdentityInput:
     str IdentityId
     Optional[dict[str, str]] Logins
@@ -139,8 +143,9 @@ struct GetCredentialsForIdentityResponse:
     Optional[str] IdentityId
     Optional[Credentials] Credentials
 
-# no @derive(Json): member(s) Logins: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Logins: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdInput:
     Optional[str] AccountId
     str IdentityPoolId
@@ -154,15 +159,17 @@ struct GetIdResponse:
 struct GetIdentityPoolRolesInput:
     str IdentityPoolId
 
-# no @derive(Json): member(s) Roles: dict[str, str], RoleMappings: dict[str, RoleMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: dict[str, str], RoleMappings: dict[str, RoleMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentityPoolRolesResponse:
     Optional[str] IdentityPoolId
     Optional[dict[str, str]] Roles
     Optional[dict[str, RoleMapping]] RoleMappings
 
-# no @derive(Json): member(s) Logins: dict[str, str], PrincipalTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Logins: dict[str, str], PrincipalTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpenIdTokenForDeveloperIdentityInput:
     str IdentityPoolId
     Optional[str] IdentityId
@@ -175,8 +182,9 @@ struct GetOpenIdTokenForDeveloperIdentityResponse:
     Optional[str] IdentityId
     Optional[str] Token
 
-# no @derive(Json): member(s) Logins: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Logins: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpenIdTokenInput:
     str IdentityId
     Optional[dict[str, str]] Logins
@@ -191,24 +199,27 @@ struct GetPrincipalTagAttributeMapInput:
     str IdentityPoolId
     str IdentityProviderName
 
-# no @derive(Json): member(s) PrincipalTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrincipalTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPrincipalTagAttributeMapResponse:
     Optional[str] IdentityPoolId
     Optional[str] IdentityProviderName
     Optional[bool] UseDefaults
     Optional[dict[str, str]] PrincipalTags
 
-# no @derive(Json): member(s) Logins: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Logins: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityDescription:
     Optional[str] IdentityId
     Optional[list[str]] Logins
     Optional[DateTime] CreationDate
     Optional[DateTime] LastModifiedDate
 
-# no @derive(Json): member(s) SupportedLoginProviders: dict[str, str], OpenIdConnectProviderARNs: list[str], CognitoIdentityProviders: list[CognitoIdentityProvider], SamlProviderARNs: list[str], IdentityPoolTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedLoginProviders: dict[str, str], OpenIdConnectProviderARNs: list[str], CognitoIdentityProviders: list[CognitoIdentityProvider], SamlProviderARNs: list[str], IdentityPoolTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityPool:
     str IdentityPoolId
     str IdentityPoolName
@@ -249,8 +260,9 @@ struct ListIdentitiesInput:
     Optional[str] NextToken
     Optional[bool] HideDisabled
 
-# no @derive(Json): member(s) Identities: list[IdentityDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identities: list[IdentityDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentitiesResponse:
     Optional[str] IdentityPoolId
     Optional[list[IdentityDescription]] Identities
@@ -261,8 +273,9 @@ struct ListIdentityPoolsInput:
     int64 MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IdentityPools: list[IdentityPoolShortDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityPools: list[IdentityPoolShortDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityPoolsResponse:
     Optional[list[IdentityPoolShortDescription]] IdentityPools
     Optional[str] NextToken
@@ -271,8 +284,9 @@ struct ListIdentityPoolsResponse:
 struct ListTagsForResourceInput:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -284,8 +298,9 @@ struct LookupDeveloperIdentityInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DeveloperUserIdentifierList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeveloperUserIdentifierList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LookupDeveloperIdentityResponse:
     Optional[str] IdentityId
     Optional[list[str]] DeveloperUserIdentifierList
@@ -321,43 +336,49 @@ struct ResourceConflictException:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) RulesConfiguration: RulesConfigurationType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RulesConfiguration: RulesConfigurationType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoleMapping:
     RoleMappingType Type
     Optional[AmbiguousRoleResolutionType] AmbiguousRoleResolution
     Optional[RulesConfigurationType] RulesConfiguration
 
-# no @derive(Json): member(s) Rules: list[MappingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[MappingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RulesConfigurationType:
     list[MappingRule] Rules
 
-# no @derive(Json): member(s) Roles: dict[str, str], RoleMappings: dict[str, RoleMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: dict[str, str], RoleMappings: dict[str, RoleMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetIdentityPoolRolesInput:
     str IdentityPoolId
     dict[str, str] Roles
     Optional[dict[str, RoleMapping]] RoleMappings
 
-# no @derive(Json): member(s) PrincipalTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrincipalTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetPrincipalTagAttributeMapInput:
     str IdentityPoolId
     str IdentityProviderName
     Optional[bool] UseDefaults
     Optional[dict[str, str]] PrincipalTags
 
-# no @derive(Json): member(s) PrincipalTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrincipalTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetPrincipalTagAttributeMapResponse:
     Optional[str] IdentityPoolId
     Optional[str] IdentityProviderName
     Optional[bool] UseDefaults
     Optional[dict[str, str]] PrincipalTags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceArn
     dict[str, str] Tags
@@ -378,8 +399,9 @@ struct UnlinkDeveloperIdentityInput:
     str DeveloperProviderName
     str DeveloperUserIdentifier
 
-# no @derive(Json): member(s) Logins: dict[str, str], LoginsToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Logins: dict[str, str], LoginsToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnlinkIdentityInput:
     str IdentityId
     dict[str, str] Logins
@@ -390,8 +412,9 @@ struct UnprocessedIdentityId:
     Optional[str] IdentityId
     Optional[ErrorCode] ErrorCode
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceArn
     list[str] TagKeys
@@ -447,25 +470,299 @@ def cognito_identity_error_from_code(str code) -> Cognito_IdentityError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateIdentityPool (input CreateIdentityPoolInput)
-#   DeleteIdentities (input DeleteIdentitiesInput)
-#   GetCredentialsForIdentity (input GetCredentialsForIdentityInput)
-#   GetId (input GetIdInput)
-#   GetOpenIdToken (input GetOpenIdTokenInput)
-#   GetOpenIdTokenForDeveloperIdentity (input GetOpenIdTokenForDeveloperIdentityInput)
-#   SetIdentityPoolRoles (input SetIdentityPoolRolesInput)
-#   SetPrincipalTagAttributeMap (input SetPrincipalTagAttributeMapInput)
-#   TagResource (input TagResourceInput)
-#   UnlinkIdentity (input UnlinkIdentityInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateIdentityPool (input IdentityPool)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cognito_identity_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cognito_identity_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cognito_identity_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateIdentityPoolInput to a compact JSON object (declaration order).
+def create_identity_pool_input_to_json(CreateIdentityPoolInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityPoolName\":" + cognito_identity_json_str(v.IdentityPoolName))
+    parts.append("\"AllowUnauthenticatedIdentities\":" + json.dumps(JsonValue.Bool(v.AllowUnauthenticatedIdentities)))
+    if v.AllowClassicFlow.is_some():
+        auto u0 = v.AllowClassicFlow.unwrap()
+        parts.append("\"AllowClassicFlow\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.SupportedLoginProviders.is_some():
+        auto u1 = v.SupportedLoginProviders.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_identity_json_str(k2) + ":" + cognito_identity_json_str(u1[k2]))
+        parts.append("\"SupportedLoginProviders\":" + cognito_identity_json_obj(m2))
+    if v.DeveloperProviderName.is_some():
+        auto u3 = v.DeveloperProviderName.unwrap()
+        parts.append("\"DeveloperProviderName\":" + cognito_identity_json_str(u3))
+    if v.OpenIdConnectProviderARNs.is_some():
+        auto u4 = v.OpenIdConnectProviderARNs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cognito_identity_json_str(x5))
+        parts.append("\"OpenIdConnectProviderARNs\":" + cognito_identity_json_arr(e5))
+    if v.CognitoIdentityProviders.is_some():
+        auto u6 = v.CognitoIdentityProviders.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"CognitoIdentityProviders\":" + cognito_identity_json_arr(e7))
+    if v.SamlProviderARNs.is_some():
+        auto u8 = v.SamlProviderARNs.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(cognito_identity_json_str(x9))
+        parts.append("\"SamlProviderARNs\":" + cognito_identity_json_arr(e9))
+    if v.IdentityPoolTags.is_some():
+        auto u10 = v.IdentityPoolTags.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(cognito_identity_json_str(k11) + ":" + cognito_identity_json_str(u10[k11]))
+        parts.append("\"IdentityPoolTags\":" + cognito_identity_json_obj(m11))
+    return cognito_identity_json_obj(parts)
+
+# Serialize DeleteIdentitiesInput to a compact JSON object (declaration order).
+def delete_identities_input_to_json(DeleteIdentitiesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.IdentityIdsToDelete:
+        e0.append(cognito_identity_json_str(x0))
+    parts.append("\"IdentityIdsToDelete\":" + cognito_identity_json_arr(e0))
+    return cognito_identity_json_obj(parts)
+
+# Serialize GetCredentialsForIdentityInput to a compact JSON object (declaration order).
+def get_credentials_for_identity_input_to_json(GetCredentialsForIdentityInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityId\":" + cognito_identity_json_str(v.IdentityId))
+    if v.Logins.is_some():
+        auto u0 = v.Logins.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_identity_json_str(k1) + ":" + cognito_identity_json_str(u0[k1]))
+        parts.append("\"Logins\":" + cognito_identity_json_obj(m1))
+    if v.CustomRoleArn.is_some():
+        auto u2 = v.CustomRoleArn.unwrap()
+        parts.append("\"CustomRoleArn\":" + cognito_identity_json_str(u2))
+    return cognito_identity_json_obj(parts)
+
+# Serialize GetIdInput to a compact JSON object (declaration order).
+def get_id_input_to_json(GetIdInput v) -> str:
+    list[str] parts = []
+    if v.AccountId.is_some():
+        auto u0 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + cognito_identity_json_str(u0))
+    parts.append("\"IdentityPoolId\":" + cognito_identity_json_str(v.IdentityPoolId))
+    if v.Logins.is_some():
+        auto u1 = v.Logins.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_identity_json_str(k2) + ":" + cognito_identity_json_str(u1[k2]))
+        parts.append("\"Logins\":" + cognito_identity_json_obj(m2))
+    return cognito_identity_json_obj(parts)
+
+# Serialize GetOpenIdTokenForDeveloperIdentityInput to a compact JSON object (declaration order).
+def get_open_id_token_for_developer_identity_input_to_json(GetOpenIdTokenForDeveloperIdentityInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityPoolId\":" + cognito_identity_json_str(v.IdentityPoolId))
+    if v.IdentityId.is_some():
+        auto u0 = v.IdentityId.unwrap()
+        parts.append("\"IdentityId\":" + cognito_identity_json_str(u0))
+    list[str] m1 = []
+    for k1 in sorted(v.Logins.keys()):
+        m1.append(cognito_identity_json_str(k1) + ":" + cognito_identity_json_str(v.Logins[k1]))
+    parts.append("\"Logins\":" + cognito_identity_json_obj(m1))
+    if v.PrincipalTags.is_some():
+        auto u2 = v.PrincipalTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(cognito_identity_json_str(k3) + ":" + cognito_identity_json_str(u2[k3]))
+        parts.append("\"PrincipalTags\":" + cognito_identity_json_obj(m3))
+    if v.TokenDuration.is_some():
+        auto u4 = v.TokenDuration.unwrap()
+        parts.append("\"TokenDuration\":" + str(u4))
+    return cognito_identity_json_obj(parts)
+
+# Serialize GetOpenIdTokenInput to a compact JSON object (declaration order).
+def get_open_id_token_input_to_json(GetOpenIdTokenInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityId\":" + cognito_identity_json_str(v.IdentityId))
+    if v.Logins.is_some():
+        auto u0 = v.Logins.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cognito_identity_json_str(k1) + ":" + cognito_identity_json_str(u0[k1]))
+        parts.append("\"Logins\":" + cognito_identity_json_obj(m1))
+    return cognito_identity_json_obj(parts)
+
+# Serialize IdentityPool to a compact JSON object (declaration order).
+def identity_pool_to_json(IdentityPool v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityPoolId\":" + cognito_identity_json_str(v.IdentityPoolId))
+    parts.append("\"IdentityPoolName\":" + cognito_identity_json_str(v.IdentityPoolName))
+    parts.append("\"AllowUnauthenticatedIdentities\":" + json.dumps(JsonValue.Bool(v.AllowUnauthenticatedIdentities)))
+    if v.AllowClassicFlow.is_some():
+        auto u0 = v.AllowClassicFlow.unwrap()
+        parts.append("\"AllowClassicFlow\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.SupportedLoginProviders.is_some():
+        auto u1 = v.SupportedLoginProviders.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_identity_json_str(k2) + ":" + cognito_identity_json_str(u1[k2]))
+        parts.append("\"SupportedLoginProviders\":" + cognito_identity_json_obj(m2))
+    if v.DeveloperProviderName.is_some():
+        auto u3 = v.DeveloperProviderName.unwrap()
+        parts.append("\"DeveloperProviderName\":" + cognito_identity_json_str(u3))
+    if v.OpenIdConnectProviderARNs.is_some():
+        auto u4 = v.OpenIdConnectProviderARNs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cognito_identity_json_str(x5))
+        parts.append("\"OpenIdConnectProviderARNs\":" + cognito_identity_json_arr(e5))
+    if v.CognitoIdentityProviders.is_some():
+        auto u6 = v.CognitoIdentityProviders.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"CognitoIdentityProviders\":" + cognito_identity_json_arr(e7))
+    if v.SamlProviderARNs.is_some():
+        auto u8 = v.SamlProviderARNs.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(cognito_identity_json_str(x9))
+        parts.append("\"SamlProviderARNs\":" + cognito_identity_json_arr(e9))
+    if v.IdentityPoolTags.is_some():
+        auto u10 = v.IdentityPoolTags.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(cognito_identity_json_str(k11) + ":" + cognito_identity_json_str(u10[k11]))
+        parts.append("\"IdentityPoolTags\":" + cognito_identity_json_obj(m11))
+    return cognito_identity_json_obj(parts)
+
+# Serialize RoleMapping to a compact JSON object (declaration order).
+def role_mapping_to_json(RoleMapping v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.AmbiguousRoleResolution.is_some():
+        auto u0 = v.AmbiguousRoleResolution.unwrap()
+        parts.append("\"AmbiguousRoleResolution\":" + u0.to_json())
+    if v.RulesConfiguration.is_some():
+        auto u1 = v.RulesConfiguration.unwrap()
+        parts.append("\"RulesConfiguration\":" + rules_configuration_type_to_json(u1))
+    return cognito_identity_json_obj(parts)
+
+# Serialize RulesConfigurationType to a compact JSON object (declaration order).
+def rules_configuration_type_to_json(RulesConfigurationType v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(x0.to_json())
+    parts.append("\"Rules\":" + cognito_identity_json_arr(e0))
+    return cognito_identity_json_obj(parts)
+
+# Serialize SetIdentityPoolRolesInput to a compact JSON object (declaration order).
+def set_identity_pool_roles_input_to_json(SetIdentityPoolRolesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityPoolId\":" + cognito_identity_json_str(v.IdentityPoolId))
+    list[str] m0 = []
+    for k0 in sorted(v.Roles.keys()):
+        m0.append(cognito_identity_json_str(k0) + ":" + cognito_identity_json_str(v.Roles[k0]))
+    parts.append("\"Roles\":" + cognito_identity_json_obj(m0))
+    if v.RoleMappings.is_some():
+        auto u1 = v.RoleMappings.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_identity_json_str(k2) + ":" + role_mapping_to_json(u1[k2]))
+        parts.append("\"RoleMappings\":" + cognito_identity_json_obj(m2))
+    return cognito_identity_json_obj(parts)
+
+# Serialize SetPrincipalTagAttributeMapInput to a compact JSON object (declaration order).
+def set_principal_tag_attribute_map_input_to_json(SetPrincipalTagAttributeMapInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityPoolId\":" + cognito_identity_json_str(v.IdentityPoolId))
+    parts.append("\"IdentityProviderName\":" + cognito_identity_json_str(v.IdentityProviderName))
+    if v.UseDefaults.is_some():
+        auto u0 = v.UseDefaults.unwrap()
+        parts.append("\"UseDefaults\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.PrincipalTags.is_some():
+        auto u1 = v.PrincipalTags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(cognito_identity_json_str(k2) + ":" + cognito_identity_json_str(u1[k2]))
+        parts.append("\"PrincipalTags\":" + cognito_identity_json_obj(m2))
+    return cognito_identity_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + cognito_identity_json_str(v.ResourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(cognito_identity_json_str(k0) + ":" + cognito_identity_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + cognito_identity_json_obj(m0))
+    return cognito_identity_json_obj(parts)
+
+# Serialize UnlinkIdentityInput to a compact JSON object (declaration order).
+def unlink_identity_input_to_json(UnlinkIdentityInput v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityId\":" + cognito_identity_json_str(v.IdentityId))
+    list[str] m0 = []
+    for k0 in sorted(v.Logins.keys()):
+        m0.append(cognito_identity_json_str(k0) + ":" + cognito_identity_json_str(v.Logins[k0]))
+    parts.append("\"Logins\":" + cognito_identity_json_obj(m0))
+    list[str] e1 = []
+    for x1 in v.LoginsToRemove:
+        e1.append(cognito_identity_json_str(x1))
+    parts.append("\"LoginsToRemove\":" + cognito_identity_json_arr(e1))
+    return cognito_identity_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + cognito_identity_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(cognito_identity_json_str(x0))
+    parts.append("\"TagKeys\":" + cognito_identity_json_arr(e0))
+    return cognito_identity_json_obj(parts)
 
 # A bound Cognito_Identity client: credentials + region, threaded into every operation.
 struct Cognito_IdentityClient:
     core.Credentials creds
     str region
+
+    # CreateIdentityPool
+    # errors: InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, ResourceConflictException, TooManyRequestsException
+    def create_identity_pool(self, CreateIdentityPoolInput input) -> str:
+        auto body = create_identity_pool_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "CreateIdentityPool", body)
+
+    # DeleteIdentities
+    # errors: InternalErrorException, InvalidParameterException, TooManyRequestsException
+    def delete_identities(self, DeleteIdentitiesInput input) -> str:
+        auto body = delete_identities_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "DeleteIdentities", body)
 
     # DeleteIdentityPool
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
@@ -485,11 +782,35 @@ struct Cognito_IdentityClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "DescribeIdentityPool", body)
 
+    # GetCredentialsForIdentity
+    # errors: ExternalServiceException, InternalErrorException, InvalidIdentityPoolConfigurationException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def get_credentials_for_identity(self, GetCredentialsForIdentityInput input) -> str:
+        auto body = get_credentials_for_identity_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "GetCredentialsForIdentity", body)
+
+    # GetId
+    # errors: ExternalServiceException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def get_id(self, GetIdInput input) -> str:
+        auto body = get_id_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "GetId", body)
+
     # GetIdentityPoolRoles
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
     def get_identity_pool_roles(self, GetIdentityPoolRolesInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "GetIdentityPoolRoles", body)
+
+    # GetOpenIdToken
+    # errors: ExternalServiceException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def get_open_id_token(self, GetOpenIdTokenInput input) -> str:
+        auto body = get_open_id_token_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "GetOpenIdToken", body)
+
+    # GetOpenIdTokenForDeveloperIdentity
+    # errors: DeveloperUserAlreadyRegisteredException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def get_open_id_token_for_developer_identity(self, GetOpenIdTokenForDeveloperIdentityInput input) -> str:
+        auto body = get_open_id_token_for_developer_identity_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "GetOpenIdTokenForDeveloperIdentity", body)
 
     # GetPrincipalTagAttributeMap
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
@@ -527,11 +848,47 @@ struct Cognito_IdentityClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "MergeDeveloperIdentities", body)
 
+    # SetIdentityPoolRoles
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def set_identity_pool_roles(self, SetIdentityPoolRolesInput input) -> str:
+        auto body = set_identity_pool_roles_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "SetIdentityPoolRoles", body)
+
+    # SetPrincipalTagAttributeMap
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def set_principal_tag_attribute_map(self, SetPrincipalTagAttributeMapInput input) -> str:
+        auto body = set_principal_tag_attribute_map_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "SetPrincipalTagAttributeMap", body)
+
+    # TagResource
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "TagResource", body)
+
     # UnlinkDeveloperIdentity
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
     def unlink_developer_identity(self, UnlinkDeveloperIdentityInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "UnlinkDeveloperIdentity", body)
+
+    # UnlinkIdentity
+    # errors: ExternalServiceException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def unlink_identity(self, UnlinkIdentityInput input) -> str:
+        auto body = unlink_identity_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "UnlinkIdentity", body)
+
+    # UntagResource
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateIdentityPool
+    # errors: ConcurrentModificationException, InternalErrorException, InvalidParameterException, LimitExceededException, NotAuthorizedException, ResourceConflictException, ResourceNotFoundException, TooManyRequestsException
+    def update_identity_pool(self, IdentityPool input) -> str:
+        auto body = identity_pool_to_json(input)
+        return awsjson.awsjson_request_now(cognito_identity_protocol(), self.creds, self.region, "UpdateIdentityPool", body)
 
     # Paginator for ListIdentityPools — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: IdentityPools).

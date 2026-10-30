@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 47 operations — 14 with a generated method,
-#   33 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 47 operations — 47 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   210 structs (108 @derive(Json)), 37 enums, 15 error variants.
-#   3 paginators generated (10 paginated ops skipped) from paginators-1.json.
+#   13 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -387,8 +387,9 @@ enum TermInYears:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) SavingsPlansPurchaseAnalysisDetails: SavingsPlansPurchaseAnalysisDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansPurchaseAnalysisDetails: SavingsPlansPurchaseAnalysisDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisDetails:
     Optional[SavingsPlansPurchaseAnalysisDetails] SavingsPlansPurchaseAnalysisDetails
 
@@ -396,8 +397,9 @@ struct AnalysisDetails:
 struct AnalysisNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CommitmentPurchaseAnalysisConfiguration: CommitmentPurchaseAnalysisConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommitmentPurchaseAnalysisConfiguration: CommitmentPurchaseAnalysisConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisSummary:
     Optional[str] EstimatedCompletionTime
     Optional[str] AnalysisCompletionTime
@@ -407,8 +409,9 @@ struct AnalysisSummary:
     Optional[str] AnalysisId
     Optional[CommitmentPurchaseAnalysisConfiguration] CommitmentPurchaseAnalysisConfiguration
 
-# no @derive(Json): member(s) RootCauses: list[RootCause] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootCauses: list[RootCause] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Anomaly:
     str AnomalyId
     Optional[str] AnomalyStartDate
@@ -425,8 +428,9 @@ struct AnomalyDateInterval:
     str StartDate
     Optional[str] EndDate
 
-# no @derive(Json): member(s) MonitorSpecification: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitorSpecification: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalyMonitor:
     Optional[str] MonitorArn
     str MonitorName
@@ -443,8 +447,9 @@ struct AnomalyScore:
     float64 MaxScore
     float64 CurrentScore
 
-# no @derive(Json): member(s) MonitorArnList: list[str], Subscribers: list[Subscriber], ThresholdExpression: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitorArnList: list[str], Subscribers: list[Subscriber], ThresholdExpression: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalySubscription:
     Optional[str] SubscriptionArn
     Optional[str] AccountId
@@ -467,8 +472,9 @@ struct BillExpirationException:
 struct BillingViewHealthStatusException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SavingsPlansPurchaseAnalysisConfiguration: SavingsPlansPurchaseAnalysisConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansPurchaseAnalysisConfiguration: SavingsPlansPurchaseAnalysisConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommitmentPurchaseAnalysisConfiguration:
     Optional[SavingsPlansPurchaseAnalysisConfiguration] SavingsPlansPurchaseAnalysisConfiguration
 
@@ -500,14 +506,16 @@ struct CostAllocationTagStatusEntry:
     str TagKey
     CostAllocationTagStatus Status
 
-# no @derive(Json): member(s) CostAndUsageSelector: Expression, Metrics: dict[str, ComparisonMetricValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostAndUsageSelector: Expression, Metrics: dict[str, ComparisonMetricValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostAndUsageComparison:
     Optional[Expression] CostAndUsageSelector
     Optional[dict[str, ComparisonMetricValue]] Metrics
 
-# no @derive(Json): member(s) Rules: list[CostCategoryRule], SplitChargeRules: list[CostCategorySplitChargeRule], ProcessingStatus: list[CostCategoryProcessingStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[CostCategoryRule], SplitChargeRules: list[CostCategorySplitChargeRule], ProcessingStatus: list[CostCategoryProcessingStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategory:
     str CostCategoryArn
     str EffectiveStart
@@ -529,8 +537,9 @@ struct CostCategoryProcessingStatus:
     Optional[str] Component
     Optional[CostCategoryStatus] Status
 
-# no @derive(Json): member(s) ProcessingStatus: list[CostCategoryProcessingStatus], Values: list[str], SupportedResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessingStatus: list[CostCategoryProcessingStatus], Values: list[str], SupportedResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategoryReference:
     Optional[str] CostCategoryArn
     Optional[str] Name
@@ -548,44 +557,50 @@ struct CostCategoryResourceAssociation:
     Optional[str] CostCategoryName
     Optional[str] CostCategoryArn
 
-# no @derive(Json): member(s) Rule: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategoryRule:
     Optional[str] Value
     Optional[Expression] Rule
     Optional[CostCategoryInheritedValueDimension] InheritedValue
     Optional[CostCategoryRuleType] Type
 
-# no @derive(Json): member(s) Targets: list[str], Parameters: list[CostCategorySplitChargeRuleParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[str], Parameters: list[CostCategorySplitChargeRuleParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategorySplitChargeRule:
     str Source
     list[str] Targets
     CostCategorySplitChargeMethod Method
     Optional[list[CostCategorySplitChargeRuleParameter]] Parameters
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategorySplitChargeRuleParameter:
     str Type
     list[str] Values
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostCategoryValues:
     Optional[str] Key
     Optional[list[str]] Values
     Optional[list[MatchOption]] MatchOptions
 
-# no @derive(Json): member(s) CostSelector: Expression, Metrics: dict[str, ComparisonMetricValue], CostDrivers: list[CostDriver] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostSelector: Expression, Metrics: dict[str, ComparisonMetricValue], CostDrivers: list[CostDriver] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostComparisonDriver:
     Optional[Expression] CostSelector
     Optional[dict[str, ComparisonMetricValue]] Metrics
     Optional[list[CostDriver]] CostDrivers
 
-# no @derive(Json): member(s) Metrics: dict[str, ComparisonMetricValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: dict[str, ComparisonMetricValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostDriver:
     Optional[str] Type
     Optional[str] Name
@@ -597,8 +612,9 @@ struct Coverage:
     Optional[CoverageNormalizedUnits] CoverageNormalizedUnits
     Optional[CoverageCost] CoverageCost
 
-# no @derive(Json): member(s) Groups: list[ReservationCoverageGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[ReservationCoverageGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageByTime:
     Optional[DateInterval] TimePeriod
     Optional[list[ReservationCoverageGroup]] Groups
@@ -622,8 +638,9 @@ struct CoverageNormalizedUnits:
     Optional[str] TotalRunningNormalizedUnits
     Optional[str] CoverageNormalizedUnitsPercentage
 
-# no @derive(Json): member(s) AnomalyMonitor: AnomalyMonitor, ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnomalyMonitor: AnomalyMonitor, ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAnomalyMonitorRequest:
     AnomalyMonitor AnomalyMonitor
     Optional[list[ResourceTag]] ResourceTags
@@ -632,8 +649,9 @@ struct CreateAnomalyMonitorRequest:
 struct CreateAnomalyMonitorResponse:
     str MonitorArn
 
-# no @derive(Json): member(s) AnomalySubscription: AnomalySubscription, ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnomalySubscription: AnomalySubscription, ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAnomalySubscriptionRequest:
     AnomalySubscription AnomalySubscription
     Optional[list[ResourceTag]] ResourceTags
@@ -642,8 +660,9 @@ struct CreateAnomalySubscriptionRequest:
 struct CreateAnomalySubscriptionResponse:
     str SubscriptionArn
 
-# no @derive(Json): member(s) Rules: list[CostCategoryRule], SplitChargeRules: list[CostCategorySplitChargeRule], ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[CostCategoryRule], SplitChargeRules: list[CostCategorySplitChargeRule], ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCostCategoryDefinitionRequest:
     str Name
     Optional[str] EffectiveStart
@@ -658,8 +677,9 @@ struct CreateCostCategoryDefinitionResponse:
     Optional[str] CostCategoryArn
     Optional[str] EffectiveStart
 
-# no @derive(Json): member(s) Tags: list[TagValues] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[TagValues] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CurrentInstance:
     Optional[str] ResourceId
     Optional[str] InstanceName
@@ -714,20 +734,23 @@ struct DescribeCostCategoryDefinitionRequest:
     str CostCategoryArn
     Optional[str] EffectiveOn
 
-# no @derive(Json): member(s) CostCategory: CostCategory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostCategory: CostCategory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCostCategoryDefinitionResponse:
     Optional[CostCategory] CostCategory
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DimensionValues:
     Optional[Dimension] Key
     Optional[list[str]] Values
     Optional[list[MatchOption]] MatchOptions
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DimensionValuesWithAttributes:
     Optional[str] Value
     Optional[dict[str, str]] Attributes
@@ -804,8 +827,9 @@ struct ElastiCacheInstanceDetails:
     Optional[bool] CurrentGeneration
     Optional[bool] SizeFlexEligible
 
-# no @derive(Json): member(s) Or: list[Expression], And: list[Expression], Not: Expression, Dimensions: DimensionValues, Tags: TagValues, CostCategories: CostCategoryValues, ProductAttributes: ProductAttributeValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Or: list[Expression], And: list[Expression], Not: Expression, Dimensions: DimensionValues, Tags: TagValues, CostCategories: CostCategoryValues, ProductAttributes: ProductAttributeValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     Optional[list[Expression]] Or
     Optional[list[Expression]] And
@@ -843,48 +867,55 @@ struct GetAnomaliesRequest:
     Optional[str] NextPageToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Anomalies: list[Anomaly] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Anomalies: list[Anomaly] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnomaliesResponse:
     list[Anomaly] Anomalies
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) MonitorArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitorArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnomalyMonitorsRequest:
     Optional[list[str]] MonitorArnList
     Optional[str] NextPageToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnomalyMonitors: list[AnomalyMonitor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnomalyMonitors: list[AnomalyMonitor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnomalyMonitorsResponse:
     list[AnomalyMonitor] AnomalyMonitors
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) SubscriptionArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubscriptionArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnomalySubscriptionsRequest:
     Optional[list[str]] SubscriptionArnList
     Optional[str] MonitorArn
     Optional[str] NextPageToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnomalySubscriptions: list[AnomalySubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnomalySubscriptions: list[AnomalySubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnomalySubscriptionsResponse:
     list[AnomalySubscription] AnomalySubscriptions
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Services: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApproximateUsageRecordsRequest:
     Granularity Granularity
     Optional[list[str]] Services
     ApproximationDimension ApproximationDimension
 
-# no @derive(Json): member(s) Services: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApproximateUsageRecordsResponse:
     Optional[dict[str, int64]] Services
     Optional[int64] TotalRecords
@@ -894,8 +925,9 @@ struct GetApproximateUsageRecordsResponse:
 struct GetCommitmentPurchaseAnalysisRequest:
     str AnalysisId
 
-# no @derive(Json): member(s) AnalysisDetails: AnalysisDetails, CommitmentPurchaseAnalysisConfiguration: CommitmentPurchaseAnalysisConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisDetails: AnalysisDetails, CommitmentPurchaseAnalysisConfiguration: CommitmentPurchaseAnalysisConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommitmentPurchaseAnalysisResponse:
     str EstimatedCompletionTime
     Optional[str] AnalysisCompletionTime
@@ -906,8 +938,9 @@ struct GetCommitmentPurchaseAnalysisResponse:
     Optional[AnalysisDetails] AnalysisDetails
     CommitmentPurchaseAnalysisConfiguration CommitmentPurchaseAnalysisConfiguration
 
-# no @derive(Json): member(s) Filter: Expression, GroupBy: list[GroupDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, GroupBy: list[GroupDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostAndUsageComparisonsRequest:
     Optional[str] BillingViewArn
     DateInterval BaselineTimePeriod
@@ -918,15 +951,17 @@ struct GetCostAndUsageComparisonsRequest:
     Optional[int64] MaxResults
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) CostAndUsageComparisons: list[CostAndUsageComparison], TotalCostAndUsage: dict[str, ComparisonMetricValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostAndUsageComparisons: list[CostAndUsageComparison], TotalCostAndUsage: dict[str, ComparisonMetricValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostAndUsageComparisonsResponse:
     Optional[list[CostAndUsageComparison]] CostAndUsageComparisons
     Optional[dict[str, ComparisonMetricValue]] TotalCostAndUsage
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filter: Expression, Metrics: list[str], GroupBy: list[GroupDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, Metrics: list[str], GroupBy: list[GroupDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostAndUsageRequest:
     DateInterval TimePeriod
     Granularity Granularity
@@ -936,16 +971,18 @@ struct GetCostAndUsageRequest:
     Optional[str] BillingViewArn
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) GroupDefinitions: list[GroupDefinition], ResultsByTime: list[ResultByTime], DimensionValueAttributes: list[DimensionValuesWithAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupDefinitions: list[GroupDefinition], ResultsByTime: list[ResultByTime], DimensionValueAttributes: list[DimensionValuesWithAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostAndUsageResponse:
     Optional[str] NextPageToken
     Optional[list[GroupDefinition]] GroupDefinitions
     Optional[list[ResultByTime]] ResultsByTime
     Optional[list[DimensionValuesWithAttributes]] DimensionValueAttributes
 
-# no @derive(Json): member(s) Filter: Expression, Metrics: list[str], GroupBy: list[GroupDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, Metrics: list[str], GroupBy: list[GroupDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostAndUsageWithResourcesRequest:
     DateInterval TimePeriod
     Granularity Granularity
@@ -955,16 +992,18 @@ struct GetCostAndUsageWithResourcesRequest:
     Optional[str] BillingViewArn
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) GroupDefinitions: list[GroupDefinition], ResultsByTime: list[ResultByTime], DimensionValueAttributes: list[DimensionValuesWithAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupDefinitions: list[GroupDefinition], ResultsByTime: list[ResultByTime], DimensionValueAttributes: list[DimensionValuesWithAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostAndUsageWithResourcesResponse:
     Optional[str] NextPageToken
     Optional[list[GroupDefinition]] GroupDefinitions
     Optional[list[ResultByTime]] ResultsByTime
     Optional[list[DimensionValuesWithAttributes]] DimensionValueAttributes
 
-# no @derive(Json): member(s) Filter: Expression, SortBy: list[SortDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, SortBy: list[SortDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostCategoriesRequest:
     Optional[str] SearchString
     DateInterval TimePeriod
@@ -975,8 +1014,9 @@ struct GetCostCategoriesRequest:
     Optional[int64] MaxResults
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) CostCategoryNames: list[str], CostCategoryValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostCategoryNames: list[str], CostCategoryValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostCategoriesResponse:
     Optional[str] NextPageToken
     Optional[list[str]] CostCategoryNames
@@ -984,8 +1024,9 @@ struct GetCostCategoriesResponse:
     int64 ReturnSize
     int64 TotalSize
 
-# no @derive(Json): member(s) Filter: Expression, GroupBy: list[GroupDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, GroupBy: list[GroupDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostComparisonDriversRequest:
     Optional[str] BillingViewArn
     DateInterval BaselineTimePeriod
@@ -996,14 +1037,16 @@ struct GetCostComparisonDriversRequest:
     Optional[int64] MaxResults
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) CostComparisonDrivers: list[CostComparisonDriver] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostComparisonDrivers: list[CostComparisonDriver] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostComparisonDriversResponse:
     Optional[list[CostComparisonDriver]] CostComparisonDrivers
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostForecastRequest:
     DateInterval TimePeriod
     Metric Metric
@@ -1012,14 +1055,16 @@ struct GetCostForecastRequest:
     Optional[str] BillingViewArn
     Optional[int64] PredictionIntervalLevel
 
-# no @derive(Json): member(s) ForecastResultsByTime: list[ForecastResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastResultsByTime: list[ForecastResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostForecastResponse:
     Optional[MetricValue] Total
     Optional[list[ForecastResult]] ForecastResultsByTime
 
-# no @derive(Json): member(s) Filter: Expression, SortBy: list[SortDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, SortBy: list[SortDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDimensionValuesRequest:
     Optional[str] SearchString
     DateInterval TimePeriod
@@ -1032,16 +1077,18 @@ struct GetDimensionValuesRequest:
     Optional[int64] MaxResults
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) DimensionValues: list[DimensionValuesWithAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionValues: list[DimensionValuesWithAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDimensionValuesResponse:
     list[DimensionValuesWithAttributes] DimensionValues
     int64 ReturnSize
     int64 TotalSize
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) GroupBy: list[GroupDefinition], Filter: Expression, Metrics: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: list[GroupDefinition], Filter: Expression, Metrics: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReservationCoverageRequest:
     DateInterval TimePeriod
     Optional[list[GroupDefinition]] GroupBy
@@ -1052,15 +1099,17 @@ struct GetReservationCoverageRequest:
     Optional[SortDefinition] SortBy
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CoveragesByTime: list[CoverageByTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoveragesByTime: list[CoverageByTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReservationCoverageResponse:
     list[CoverageByTime] CoveragesByTime
     Optional[Coverage] Total
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReservationPurchaseRecommendationRequest:
     Optional[str] AccountId
     str Service
@@ -1073,15 +1122,17 @@ struct GetReservationPurchaseRecommendationRequest:
     Optional[int64] PageSize
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Recommendations: list[ReservationPurchaseRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommendations: list[ReservationPurchaseRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReservationPurchaseRecommendationResponse:
     Optional[ReservationPurchaseRecommendationMetadata] Metadata
     Optional[list[ReservationPurchaseRecommendation]] Recommendations
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) GroupBy: list[GroupDefinition], Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: list[GroupDefinition], Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReservationUtilizationRequest:
     DateInterval TimePeriod
     Optional[list[GroupDefinition]] GroupBy
@@ -1091,15 +1142,17 @@ struct GetReservationUtilizationRequest:
     Optional[str] NextPageToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UtilizationsByTime: list[UtilizationByTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UtilizationsByTime: list[UtilizationByTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReservationUtilizationResponse:
     list[UtilizationByTime] UtilizationsByTime
     Optional[ReservationAggregates] Total
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRightsizingRecommendationRequest:
     Optional[Expression] Filter
     Optional[RightsizingRecommendationConfiguration] Configuration
@@ -1107,8 +1160,9 @@ struct GetRightsizingRecommendationRequest:
     Optional[int64] PageSize
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) RightsizingRecommendations: list[RightsizingRecommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RightsizingRecommendations: list[RightsizingRecommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRightsizingRecommendationResponse:
     Optional[RightsizingRecommendationMetadata] Metadata
     Optional[RightsizingRecommendationSummary] Summary
@@ -1120,14 +1174,16 @@ struct GetRightsizingRecommendationResponse:
 struct GetSavingsPlanPurchaseRecommendationDetailsRequest:
     str RecommendationDetailId
 
-# no @derive(Json): member(s) RecommendationDetailData: RecommendationDetailData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationDetailData: RecommendationDetailData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlanPurchaseRecommendationDetailsResponse:
     Optional[str] RecommendationDetailId
     Optional[RecommendationDetailData] RecommendationDetailData
 
-# no @derive(Json): member(s) GroupBy: list[GroupDefinition], Filter: Expression, Metrics: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: list[GroupDefinition], Filter: Expression, Metrics: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansCoverageRequest:
     DateInterval TimePeriod
     Optional[list[GroupDefinition]] GroupBy
@@ -1138,14 +1194,16 @@ struct GetSavingsPlansCoverageRequest:
     Optional[int64] MaxResults
     Optional[SortDefinition] SortBy
 
-# no @derive(Json): member(s) SavingsPlansCoverages: list[SavingsPlansCoverage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansCoverages: list[SavingsPlansCoverage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansCoverageResponse:
     list[SavingsPlansCoverage] SavingsPlansCoverages
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansPurchaseRecommendationRequest:
     SupportedSavingsPlansType SavingsPlansType
     TermInYears TermInYears
@@ -1156,15 +1214,17 @@ struct GetSavingsPlansPurchaseRecommendationRequest:
     LookbackPeriodInDays LookbackPeriodInDays
     Optional[Expression] Filter
 
-# no @derive(Json): member(s) SavingsPlansPurchaseRecommendation: SavingsPlansPurchaseRecommendation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansPurchaseRecommendation: SavingsPlansPurchaseRecommendation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansPurchaseRecommendationResponse:
     Optional[SavingsPlansPurchaseRecommendationMetadata] Metadata
     Optional[SavingsPlansPurchaseRecommendation] SavingsPlansPurchaseRecommendation
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filter: Expression, DataType: list[SavingsPlansDataType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, DataType: list[SavingsPlansDataType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansUtilizationDetailsRequest:
     DateInterval TimePeriod
     Optional[Expression] Filter
@@ -1173,30 +1233,34 @@ struct GetSavingsPlansUtilizationDetailsRequest:
     Optional[int64] MaxResults
     Optional[SortDefinition] SortBy
 
-# no @derive(Json): member(s) SavingsPlansUtilizationDetails: list[SavingsPlansUtilizationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansUtilizationDetails: list[SavingsPlansUtilizationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansUtilizationDetailsResponse:
     list[SavingsPlansUtilizationDetail] SavingsPlansUtilizationDetails
     Optional[SavingsPlansUtilizationAggregates] Total
     DateInterval TimePeriod
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansUtilizationRequest:
     DateInterval TimePeriod
     Optional[Granularity] Granularity
     Optional[Expression] Filter
     Optional[SortDefinition] SortBy
 
-# no @derive(Json): member(s) SavingsPlansUtilizationsByTime: list[SavingsPlansUtilizationByTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansUtilizationsByTime: list[SavingsPlansUtilizationByTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSavingsPlansUtilizationResponse:
     Optional[list[SavingsPlansUtilizationByTime]] SavingsPlansUtilizationsByTime
     SavingsPlansUtilizationAggregates Total
 
-# no @derive(Json): member(s) Filter: Expression, SortBy: list[SortDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression, SortBy: list[SortDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagsRequest:
     Optional[str] SearchString
     DateInterval TimePeriod
@@ -1207,16 +1271,18 @@ struct GetTagsRequest:
     Optional[int64] MaxResults
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Tags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagsResponse:
     Optional[str] NextPageToken
     list[str] Tags
     int64 ReturnSize
     int64 TotalSize
 
-# no @derive(Json): member(s) Filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUsageForecastRequest:
     DateInterval TimePeriod
     Metric Metric
@@ -1225,14 +1291,16 @@ struct GetUsageForecastRequest:
     Optional[str] BillingViewArn
     Optional[int64] PredictionIntervalLevel
 
-# no @derive(Json): member(s) ForecastResultsByTime: list[ForecastResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastResultsByTime: list[ForecastResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUsageForecastResponse:
     Optional[MetricValue] Total
     Optional[list[ForecastResult]] ForecastResultsByTime
 
-# no @derive(Json): member(s) Keys: list[str], Metrics: dict[str, MetricValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[str], Metrics: dict[str, MetricValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Group:
     Optional[list[str]] Keys
     Optional[dict[str, MetricValue]] Metrics
@@ -1267,16 +1335,18 @@ struct InvalidNextTokenException:
 struct LimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AnalysisIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommitmentPurchaseAnalysesRequest:
     Optional[AnalysisStatus] AnalysisStatus
     Optional[str] NextPageToken
     Optional[int64] PageSize
     Optional[list[str]] AnalysisIds
 
-# no @derive(Json): member(s) AnalysisSummaryList: list[AnalysisSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisSummaryList: list[AnalysisSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommitmentPurchaseAnalysesResponse:
     Optional[list[AnalysisSummary]] AnalysisSummaryList
     Optional[str] NextPageToken
@@ -1286,14 +1356,16 @@ struct ListCostAllocationTagBackfillHistoryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BackfillRequests: list[CostAllocationTagBackfillRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackfillRequests: list[CostAllocationTagBackfillRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCostAllocationTagBackfillHistoryResponse:
     Optional[list[CostAllocationTagBackfillRequest]] BackfillRequests
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCostAllocationTagsRequest:
     Optional[CostAllocationTagStatus] Status
     Optional[list[str]] TagKeys
@@ -1301,22 +1373,25 @@ struct ListCostAllocationTagsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CostAllocationTags: list[CostAllocationTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostAllocationTags: list[CostAllocationTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCostAllocationTagsResponse:
     Optional[list[CostAllocationTag]] CostAllocationTags
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SupportedResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCostCategoryDefinitionsRequest:
     Optional[str] EffectiveOn
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[str]] SupportedResourceTypes
 
-# no @derive(Json): member(s) CostCategoryReferences: list[CostCategoryReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostCategoryReferences: list[CostCategoryReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCostCategoryDefinitionsResponse:
     Optional[list[CostCategoryReference]] CostCategoryReferences
     Optional[str] NextToken
@@ -1327,22 +1402,25 @@ struct ListCostCategoryResourceAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CostCategoryResourceAssociations: list[CostCategoryResourceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostCategoryResourceAssociations: list[CostCategoryResourceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCostCategoryResourceAssociationsResponse:
     Optional[list[CostCategoryResourceAssociation]] CostCategoryResourceAssociations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RecommendationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSavingsPlansPurchaseRecommendationGenerationRequest:
     Optional[GenerationStatus] GenerationStatus
     Optional[list[str]] RecommendationIds
     Optional[int64] PageSize
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) GenerationSummaryList: list[GenerationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GenerationSummaryList: list[GenerationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSavingsPlansPurchaseRecommendationGenerationResponse:
     Optional[list[GenerationSummary]] GenerationSummaryList
     Optional[str] NextPageToken
@@ -1351,8 +1429,9 @@ struct ListSavingsPlansPurchaseRecommendationGenerationResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[ResourceTag]] ResourceTags
 
@@ -1369,8 +1448,9 @@ struct MetricValue:
     Optional[str] Amount
     Optional[str] Unit
 
-# no @derive(Json): member(s) TargetInstances: list[TargetInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetInstances: list[TargetInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyRecommendationDetail:
     Optional[list[TargetInstance]] TargetInstances
 
@@ -1381,8 +1461,9 @@ struct NetworkResourceUtilization:
     Optional[str] NetworkPacketsInPerSecond
     Optional[str] NetworkPacketsOutPerSecond
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductAttributeValues:
     str Key
     Optional[list[str]] Values
@@ -1410,8 +1491,9 @@ struct RDSInstanceDetails:
     Optional[bool] SizeFlexEligible
     Optional[str] DeploymentModel
 
-# no @derive(Json): member(s) MetricsOverLookbackPeriod: list[RecommendationDetailHourlyMetrics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricsOverLookbackPeriod: list[RecommendationDetailHourlyMetrics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationDetailData:
     Optional[AccountScope] AccountScope
     Optional[LookbackPeriodInDays] LookbackPeriodInDays
@@ -1483,14 +1565,16 @@ struct ReservationAggregates:
     Optional[str] RealizedSavings
     Optional[str] UnrealizedSavings
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservationCoverageGroup:
     Optional[dict[str, str]] Attributes
     Optional[Coverage] Coverage
 
-# no @derive(Json): member(s) RecommendationDetails: list[ReservationPurchaseRecommendationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationDetails: list[ReservationPurchaseRecommendationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservationPurchaseRecommendation:
     Optional[AccountScope] AccountScope
     Optional[LookbackPeriodInDays] LookbackPeriodInDays
@@ -1539,8 +1623,9 @@ struct ReservationPurchaseRecommendationSummary:
     Optional[str] TotalEstimatedMonthlySavingsPercentage
     Optional[str] CurrencyCode
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservationUtilizationGroup:
     Optional[str] Key
     Optional[str] Value
@@ -1569,16 +1654,18 @@ struct ResourceTag:
 struct ResourceUtilization:
     Optional[EC2ResourceUtilization] EC2ResourceUtilization
 
-# no @derive(Json): member(s) Total: dict[str, MetricValue], Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Total: dict[str, MetricValue], Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultByTime:
     Optional[DateInterval] TimePeriod
     Optional[dict[str, MetricValue]] Total
     Optional[list[Group]] Groups
     Optional[bool] Estimated
 
-# no @derive(Json): member(s) CurrentInstance: CurrentInstance, ModifyRecommendationDetail: ModifyRecommendationDetail, FindingReasonCodes: list[FindingReasonCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CurrentInstance: CurrentInstance, ModifyRecommendationDetail: ModifyRecommendationDetail, FindingReasonCodes: list[FindingReasonCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RightsizingRecommendation:
     Optional[str] AccountId
     Optional[CurrentInstance] CurrentInstance
@@ -1635,8 +1722,9 @@ struct SavingsPlansAmortizedCommitment:
     Optional[str] AmortizedUpfrontCommitment
     Optional[str] TotalAmortizedCommitment
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansCoverage:
     Optional[dict[str, str]] Attributes
     Optional[SavingsPlansCoverageData] Coverage
@@ -1655,8 +1743,9 @@ struct SavingsPlansDetails:
     Optional[str] InstanceFamily
     Optional[str] OfferingId
 
-# no @derive(Json): member(s) SavingsPlansToAdd: list[SavingsPlans], SavingsPlansToExclude: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansToAdd: list[SavingsPlans], SavingsPlansToExclude: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansPurchaseAnalysisConfiguration:
     Optional[AccountScope] AccountScope
     Optional[str] AccountId
@@ -1666,8 +1755,9 @@ struct SavingsPlansPurchaseAnalysisConfiguration:
     DateInterval LookBackTimePeriod
     Optional[int64] SavingsPlansTargetCoverage
 
-# no @derive(Json): member(s) MetricsOverLookbackPeriod: list[RecommendationDetailHourlyMetrics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricsOverLookbackPeriod: list[RecommendationDetailHourlyMetrics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansPurchaseAnalysisDetails:
     Optional[str] CurrencyCode
     Optional[str] LookbackPeriodInHours
@@ -1692,8 +1782,9 @@ struct SavingsPlansPurchaseAnalysisDetails:
     Optional[str] AdditionalMetadata
     Optional[list[RecommendationDetailHourlyMetrics]] MetricsOverLookbackPeriod
 
-# no @derive(Json): member(s) SavingsPlansPurchaseRecommendationDetails: list[SavingsPlansPurchaseRecommendationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SavingsPlansPurchaseRecommendationDetails: list[SavingsPlansPurchaseRecommendationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansPurchaseRecommendation:
     Optional[AccountScope] AccountScope
     Optional[SupportedSavingsPlansType] SavingsPlansType
@@ -1768,8 +1859,9 @@ struct SavingsPlansUtilizationByTime:
     Optional[SavingsPlansSavings] Savings
     Optional[SavingsPlansAmortizedCommitment] AmortizedCommitment
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlansUtilizationDetail:
     Optional[str] SavingsPlanArn
     Optional[dict[str, str]] Attributes
@@ -1790,8 +1882,9 @@ struct SortDefinition:
     str Key
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) CommitmentPurchaseAnalysisConfiguration: CommitmentPurchaseAnalysisConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommitmentPurchaseAnalysisConfiguration: CommitmentPurchaseAnalysisConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCommitmentPurchaseAnalysisRequest:
     CommitmentPurchaseAnalysisConfiguration CommitmentPurchaseAnalysisConfiguration
 
@@ -1826,8 +1919,9 @@ struct Subscriber:
     Optional[SubscriberType] Type
     Optional[SubscriberStatus] Status
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[ResourceTag] ResourceTags
@@ -1837,15 +1931,17 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagValues:
     Optional[str] Key
     Optional[list[str]] Values
     Optional[list[MatchOption]] MatchOptions
 
-# no @derive(Json): member(s) PlatformDifferences: list[PlatformDifference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PlatformDifferences: list[PlatformDifference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetInstance:
     Optional[str] EstimatedMonthlyCost
     Optional[str] EstimatedMonthlySavings
@@ -1883,8 +1979,9 @@ struct UnknownSubscriptionException:
 struct UnresolvableUsageUnitException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ResourceTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] ResourceTagKeys
@@ -1903,8 +2000,9 @@ struct UpdateAnomalyMonitorRequest:
 struct UpdateAnomalyMonitorResponse:
     str MonitorArn
 
-# no @derive(Json): member(s) MonitorArnList: list[str], Subscribers: list[Subscriber], ThresholdExpression: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitorArnList: list[str], Subscribers: list[Subscriber], ThresholdExpression: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAnomalySubscriptionRequest:
     str SubscriptionArn
     Optional[float64] Threshold
@@ -1924,18 +2022,21 @@ struct UpdateCostAllocationTagsStatusError:
     Optional[str] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) CostAllocationTagsStatus: list[CostAllocationTagStatusEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CostAllocationTagsStatus: list[CostAllocationTagStatusEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCostAllocationTagsStatusRequest:
     list[CostAllocationTagStatusEntry] CostAllocationTagsStatus
 
-# no @derive(Json): member(s) Errors: list[UpdateCostAllocationTagsStatusError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[UpdateCostAllocationTagsStatusError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCostAllocationTagsStatusResponse:
     Optional[list[UpdateCostAllocationTagsStatusError]] Errors
 
-# no @derive(Json): member(s) Rules: list[CostCategoryRule], SplitChargeRules: list[CostCategorySplitChargeRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[CostCategoryRule], SplitChargeRules: list[CostCategorySplitChargeRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCostCategoryDefinitionRequest:
     str CostCategoryArn
     Optional[str] EffectiveStart
@@ -1949,8 +2050,9 @@ struct UpdateCostCategoryDefinitionResponse:
     Optional[str] CostCategoryArn
     Optional[str] EffectiveStart
 
-# no @derive(Json): member(s) Groups: list[ReservationUtilizationGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[ReservationUtilizationGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UtilizationByTime:
     Optional[DateInterval] TimePeriod
     Optional[list[ReservationUtilizationGroup]] Groups
@@ -2014,59 +2116,1011 @@ def ce_error_from_code(str code) -> Cost_ExplorerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAnomalyMonitor (input CreateAnomalyMonitorRequest)
-#   CreateAnomalySubscription (input CreateAnomalySubscriptionRequest)
-#   CreateCostCategoryDefinition (input CreateCostCategoryDefinitionRequest)
-#   GetAnomalyMonitors (input GetAnomalyMonitorsRequest)
-#   GetAnomalySubscriptions (input GetAnomalySubscriptionsRequest)
-#   GetApproximateUsageRecords (input GetApproximateUsageRecordsRequest)
-#   GetCostAndUsage (input GetCostAndUsageRequest)
-#   GetCostAndUsageComparisons (input GetCostAndUsageComparisonsRequest)
-#   GetCostAndUsageWithResources (input GetCostAndUsageWithResourcesRequest)
-#   GetCostCategories (input GetCostCategoriesRequest)
-#   GetCostComparisonDrivers (input GetCostComparisonDriversRequest)
-#   GetCostForecast (input GetCostForecastRequest)
-#   GetDimensionValues (input GetDimensionValuesRequest)
-#   GetReservationCoverage (input GetReservationCoverageRequest)
-#   GetReservationPurchaseRecommendation (input GetReservationPurchaseRecommendationRequest)
-#   GetReservationUtilization (input GetReservationUtilizationRequest)
-#   GetRightsizingRecommendation (input GetRightsizingRecommendationRequest)
-#   GetSavingsPlansCoverage (input GetSavingsPlansCoverageRequest)
-#   GetSavingsPlansPurchaseRecommendation (input GetSavingsPlansPurchaseRecommendationRequest)
-#   GetSavingsPlansUtilization (input GetSavingsPlansUtilizationRequest)
-#   GetSavingsPlansUtilizationDetails (input GetSavingsPlansUtilizationDetailsRequest)
-#   GetTags (input GetTagsRequest)
-#   GetUsageForecast (input GetUsageForecastRequest)
-#   ListCommitmentPurchaseAnalyses (input ListCommitmentPurchaseAnalysesRequest)
-#   ListCostAllocationTags (input ListCostAllocationTagsRequest)
-#   ListCostCategoryDefinitions (input ListCostCategoryDefinitionsRequest)
-#   ListSavingsPlansPurchaseRecommendationGeneration (input ListSavingsPlansPurchaseRecommendationGenerationRequest)
-#   StartCommitmentPurchaseAnalysis (input StartCommitmentPurchaseAnalysisRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAnomalySubscription (input UpdateAnomalySubscriptionRequest)
-#   UpdateCostAllocationTagsStatus (input UpdateCostAllocationTagsStatusRequest)
-#   UpdateCostCategoryDefinition (input UpdateCostCategoryDefinitionRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ce_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   GetAnomalyMonitors (input not derivable (no generated method))
-#   GetAnomalySubscriptions (input not derivable (no generated method))
-#   GetCostAndUsageComparisons (input not derivable (no generated method))
-#   GetCostComparisonDrivers (input not derivable (no generated method))
-#   GetReservationPurchaseRecommendation (input not derivable (no generated method))
-#   GetRightsizingRecommendation (input not derivable (no generated method))
-#   ListCommitmentPurchaseAnalyses (input not derivable (no generated method))
-#   ListCostAllocationTags (input not derivable (no generated method))
-#   ListCostCategoryDefinitions (input not derivable (no generated method))
-#   ListSavingsPlansPurchaseRecommendationGeneration (input not derivable (no generated method))
+def ce_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ce_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AnomalyMonitor to a compact JSON object (declaration order).
+def anomaly_monitor_to_json(AnomalyMonitor v) -> str:
+    list[str] parts = []
+    if v.MonitorArn.is_some():
+        auto u0 = v.MonitorArn.unwrap()
+        parts.append("\"MonitorArn\":" + ce_json_str(u0))
+    parts.append("\"MonitorName\":" + ce_json_str(v.MonitorName))
+    if v.CreationDate.is_some():
+        auto u1 = v.CreationDate.unwrap()
+        parts.append("\"CreationDate\":" + ce_json_str(u1))
+    if v.LastUpdatedDate.is_some():
+        auto u2 = v.LastUpdatedDate.unwrap()
+        parts.append("\"LastUpdatedDate\":" + ce_json_str(u2))
+    if v.LastEvaluatedDate.is_some():
+        auto u3 = v.LastEvaluatedDate.unwrap()
+        parts.append("\"LastEvaluatedDate\":" + ce_json_str(u3))
+    parts.append("\"MonitorType\":" + v.MonitorType.to_json())
+    if v.MonitorDimension.is_some():
+        auto u4 = v.MonitorDimension.unwrap()
+        parts.append("\"MonitorDimension\":" + u4.to_json())
+    if v.MonitorSpecification.is_some():
+        auto u5 = v.MonitorSpecification.unwrap()
+        parts.append("\"MonitorSpecification\":" + expression_to_json(u5))
+    if v.DimensionalValueCount.is_some():
+        auto u6 = v.DimensionalValueCount.unwrap()
+        parts.append("\"DimensionalValueCount\":" + str(u6))
+    return ce_json_obj(parts)
+
+# Serialize AnomalySubscription to a compact JSON object (declaration order).
+def anomaly_subscription_to_json(AnomalySubscription v) -> str:
+    list[str] parts = []
+    if v.SubscriptionArn.is_some():
+        auto u0 = v.SubscriptionArn.unwrap()
+        parts.append("\"SubscriptionArn\":" + ce_json_str(u0))
+    if v.AccountId.is_some():
+        auto u1 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + ce_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.MonitorArnList:
+        e2.append(ce_json_str(x2))
+    parts.append("\"MonitorArnList\":" + ce_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.Subscribers:
+        e3.append(x3.to_json())
+    parts.append("\"Subscribers\":" + ce_json_arr(e3))
+    if v.Threshold.is_some():
+        auto u4 = v.Threshold.unwrap()
+        parts.append("\"Threshold\":" + str(u4))
+    parts.append("\"Frequency\":" + v.Frequency.to_json())
+    parts.append("\"SubscriptionName\":" + ce_json_str(v.SubscriptionName))
+    if v.ThresholdExpression.is_some():
+        auto u5 = v.ThresholdExpression.unwrap()
+        parts.append("\"ThresholdExpression\":" + expression_to_json(u5))
+    return ce_json_obj(parts)
+
+# Serialize CommitmentPurchaseAnalysisConfiguration to a compact JSON object (declaration order).
+def commitment_purchase_analysis_configuration_to_json(CommitmentPurchaseAnalysisConfiguration v) -> str:
+    list[str] parts = []
+    if v.SavingsPlansPurchaseAnalysisConfiguration.is_some():
+        auto u0 = v.SavingsPlansPurchaseAnalysisConfiguration.unwrap()
+        parts.append("\"SavingsPlansPurchaseAnalysisConfiguration\":" + savings_plans_purchase_analysis_configuration_to_json(u0))
+    return ce_json_obj(parts)
+
+# Serialize CostCategoryRule to a compact JSON object (declaration order).
+def cost_category_rule_to_json(CostCategoryRule v) -> str:
+    list[str] parts = []
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + ce_json_str(u0))
+    if v.Rule.is_some():
+        auto u1 = v.Rule.unwrap()
+        parts.append("\"Rule\":" + expression_to_json(u1))
+    if v.InheritedValue.is_some():
+        auto u2 = v.InheritedValue.unwrap()
+        parts.append("\"InheritedValue\":" + u2.to_json())
+    if v.Type.is_some():
+        auto u3 = v.Type.unwrap()
+        parts.append("\"Type\":" + u3.to_json())
+    return ce_json_obj(parts)
+
+# Serialize CostCategorySplitChargeRule to a compact JSON object (declaration order).
+def cost_category_split_charge_rule_to_json(CostCategorySplitChargeRule v) -> str:
+    list[str] parts = []
+    parts.append("\"Source\":" + ce_json_str(v.Source))
+    list[str] e0 = []
+    for x0 in v.Targets:
+        e0.append(ce_json_str(x0))
+    parts.append("\"Targets\":" + ce_json_arr(e0))
+    parts.append("\"Method\":" + v.Method.to_json())
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(cost_category_split_charge_rule_parameter_to_json(x2))
+        parts.append("\"Parameters\":" + ce_json_arr(e2))
+    return ce_json_obj(parts)
+
+# Serialize CostCategorySplitChargeRuleParameter to a compact JSON object (declaration order).
+def cost_category_split_charge_rule_parameter_to_json(CostCategorySplitChargeRuleParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + ce_json_str(v.Type))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ce_json_str(x0))
+    parts.append("\"Values\":" + ce_json_arr(e0))
+    return ce_json_obj(parts)
+
+# Serialize CostCategoryValues to a compact JSON object (declaration order).
+def cost_category_values_to_json(CostCategoryValues v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ce_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ce_json_str(x2))
+        parts.append("\"Values\":" + ce_json_arr(e2))
+    if v.MatchOptions.is_some():
+        auto u3 = v.MatchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MatchOptions\":" + ce_json_arr(e4))
+    return ce_json_obj(parts)
+
+# Serialize CreateAnomalyMonitorRequest to a compact JSON object (declaration order).
+def create_anomaly_monitor_request_to_json(CreateAnomalyMonitorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AnomalyMonitor\":" + anomaly_monitor_to_json(v.AnomalyMonitor))
+    if v.ResourceTags.is_some():
+        auto u0 = v.ResourceTags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ResourceTags\":" + ce_json_arr(e1))
+    return ce_json_obj(parts)
+
+# Serialize CreateAnomalySubscriptionRequest to a compact JSON object (declaration order).
+def create_anomaly_subscription_request_to_json(CreateAnomalySubscriptionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AnomalySubscription\":" + anomaly_subscription_to_json(v.AnomalySubscription))
+    if v.ResourceTags.is_some():
+        auto u0 = v.ResourceTags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ResourceTags\":" + ce_json_arr(e1))
+    return ce_json_obj(parts)
+
+# Serialize CreateCostCategoryDefinitionRequest to a compact JSON object (declaration order).
+def create_cost_category_definition_request_to_json(CreateCostCategoryDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ce_json_str(v.Name))
+    if v.EffectiveStart.is_some():
+        auto u0 = v.EffectiveStart.unwrap()
+        parts.append("\"EffectiveStart\":" + ce_json_str(u0))
+    parts.append("\"RuleVersion\":" + ce_json_str(v.RuleVersion))
+    list[str] e1 = []
+    for x1 in v.Rules:
+        e1.append(cost_category_rule_to_json(x1))
+    parts.append("\"Rules\":" + ce_json_arr(e1))
+    if v.DefaultValue.is_some():
+        auto u2 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + ce_json_str(u2))
+    if v.SplitChargeRules.is_some():
+        auto u3 = v.SplitChargeRules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(cost_category_split_charge_rule_to_json(x4))
+        parts.append("\"SplitChargeRules\":" + ce_json_arr(e4))
+    if v.ResourceTags.is_some():
+        auto u5 = v.ResourceTags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ResourceTags\":" + ce_json_arr(e6))
+    return ce_json_obj(parts)
+
+# Serialize DimensionValues to a compact JSON object (declaration order).
+def dimension_values_to_json(DimensionValues v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ce_json_str(x2))
+        parts.append("\"Values\":" + ce_json_arr(e2))
+    if v.MatchOptions.is_some():
+        auto u3 = v.MatchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MatchOptions\":" + ce_json_arr(e4))
+    return ce_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.Or.is_some():
+        auto u0 = v.Or.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(expression_to_json(x1))
+        parts.append("\"Or\":" + ce_json_arr(e1))
+    if v.And.is_some():
+        auto u2 = v.And.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(expression_to_json(x3))
+        parts.append("\"And\":" + ce_json_arr(e3))
+    if v.Not.is_some():
+        auto u4 = v.Not.unwrap()
+        parts.append("\"Not\":" + expression_to_json(u4))
+    if v.Dimensions.is_some():
+        auto u5 = v.Dimensions.unwrap()
+        parts.append("\"Dimensions\":" + dimension_values_to_json(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        parts.append("\"Tags\":" + tag_values_to_json(u6))
+    if v.CostCategories.is_some():
+        auto u7 = v.CostCategories.unwrap()
+        parts.append("\"CostCategories\":" + cost_category_values_to_json(u7))
+    if v.ProductAttributes.is_some():
+        auto u8 = v.ProductAttributes.unwrap()
+        parts.append("\"ProductAttributes\":" + product_attribute_values_to_json(u8))
+    return ce_json_obj(parts)
+
+# Serialize GetAnomalyMonitorsRequest to a compact JSON object (declaration order).
+def get_anomaly_monitors_request_to_json(GetAnomalyMonitorsRequest v) -> str:
+    list[str] parts = []
+    if v.MonitorArnList.is_some():
+        auto u0 = v.MonitorArnList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ce_json_str(x1))
+        parts.append("\"MonitorArnList\":" + ce_json_arr(e1))
+    if v.NextPageToken.is_some():
+        auto u2 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return ce_json_obj(parts)
+
+# Serialize GetAnomalySubscriptionsRequest to a compact JSON object (declaration order).
+def get_anomaly_subscriptions_request_to_json(GetAnomalySubscriptionsRequest v) -> str:
+    list[str] parts = []
+    if v.SubscriptionArnList.is_some():
+        auto u0 = v.SubscriptionArnList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ce_json_str(x1))
+        parts.append("\"SubscriptionArnList\":" + ce_json_arr(e1))
+    if v.MonitorArn.is_some():
+        auto u2 = v.MonitorArn.unwrap()
+        parts.append("\"MonitorArn\":" + ce_json_str(u2))
+    if v.NextPageToken.is_some():
+        auto u3 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return ce_json_obj(parts)
+
+# Serialize GetApproximateUsageRecordsRequest to a compact JSON object (declaration order).
+def get_approximate_usage_records_request_to_json(GetApproximateUsageRecordsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Granularity\":" + v.Granularity.to_json())
+    if v.Services.is_some():
+        auto u0 = v.Services.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ce_json_str(x1))
+        parts.append("\"Services\":" + ce_json_arr(e1))
+    parts.append("\"ApproximationDimension\":" + v.ApproximationDimension.to_json())
+    return ce_json_obj(parts)
+
+# Serialize GetCostAndUsageComparisonsRequest to a compact JSON object (declaration order).
+def get_cost_and_usage_comparisons_request_to_json(GetCostAndUsageComparisonsRequest v) -> str:
+    list[str] parts = []
+    if v.BillingViewArn.is_some():
+        auto u0 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u0))
+    parts.append("\"BaselineTimePeriod\":" + v.BaselineTimePeriod.to_json())
+    parts.append("\"ComparisonTimePeriod\":" + v.ComparisonTimePeriod.to_json())
+    parts.append("\"MetricForComparison\":" + ce_json_str(v.MetricForComparison))
+    if v.Filter.is_some():
+        auto u1 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u1))
+    if v.GroupBy.is_some():
+        auto u2 = v.GroupBy.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextPageToken.is_some():
+        auto u5 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u5))
+    return ce_json_obj(parts)
+
+# Serialize GetCostAndUsageRequest to a compact JSON object (declaration order).
+def get_cost_and_usage_request_to_json(GetCostAndUsageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    parts.append("\"Granularity\":" + v.Granularity.to_json())
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.Metrics:
+        e1.append(ce_json_str(x1))
+    parts.append("\"Metrics\":" + ce_json_arr(e1))
+    if v.GroupBy.is_some():
+        auto u2 = v.GroupBy.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e3))
+    if v.BillingViewArn.is_some():
+        auto u4 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u4))
+    if v.NextPageToken.is_some():
+        auto u5 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u5))
+    return ce_json_obj(parts)
+
+# Serialize GetCostAndUsageWithResourcesRequest to a compact JSON object (declaration order).
+def get_cost_and_usage_with_resources_request_to_json(GetCostAndUsageWithResourcesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    parts.append("\"Granularity\":" + v.Granularity.to_json())
+    parts.append("\"Filter\":" + expression_to_json(v.Filter))
+    if v.Metrics.is_some():
+        auto u0 = v.Metrics.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ce_json_str(x1))
+        parts.append("\"Metrics\":" + ce_json_arr(e1))
+    if v.GroupBy.is_some():
+        auto u2 = v.GroupBy.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e3))
+    if v.BillingViewArn.is_some():
+        auto u4 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u4))
+    if v.NextPageToken.is_some():
+        auto u5 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u5))
+    return ce_json_obj(parts)
+
+# Serialize GetCostCategoriesRequest to a compact JSON object (declaration order).
+def get_cost_categories_request_to_json(GetCostCategoriesRequest v) -> str:
+    list[str] parts = []
+    if v.SearchString.is_some():
+        auto u0 = v.SearchString.unwrap()
+        parts.append("\"SearchString\":" + ce_json_str(u0))
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.CostCategoryName.is_some():
+        auto u1 = v.CostCategoryName.unwrap()
+        parts.append("\"CostCategoryName\":" + ce_json_str(u1))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u2))
+    if v.SortBy.is_some():
+        auto u3 = v.SortBy.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SortBy\":" + ce_json_arr(e4))
+    if v.BillingViewArn.is_some():
+        auto u5 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    if v.NextPageToken.is_some():
+        auto u7 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u7))
+    return ce_json_obj(parts)
+
+# Serialize GetCostComparisonDriversRequest to a compact JSON object (declaration order).
+def get_cost_comparison_drivers_request_to_json(GetCostComparisonDriversRequest v) -> str:
+    list[str] parts = []
+    if v.BillingViewArn.is_some():
+        auto u0 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u0))
+    parts.append("\"BaselineTimePeriod\":" + v.BaselineTimePeriod.to_json())
+    parts.append("\"ComparisonTimePeriod\":" + v.ComparisonTimePeriod.to_json())
+    parts.append("\"MetricForComparison\":" + ce_json_str(v.MetricForComparison))
+    if v.Filter.is_some():
+        auto u1 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u1))
+    if v.GroupBy.is_some():
+        auto u2 = v.GroupBy.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextPageToken.is_some():
+        auto u5 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u5))
+    return ce_json_obj(parts)
+
+# Serialize GetCostForecastRequest to a compact JSON object (declaration order).
+def get_cost_forecast_request_to_json(GetCostForecastRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    parts.append("\"Metric\":" + v.Metric.to_json())
+    parts.append("\"Granularity\":" + v.Granularity.to_json())
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u0))
+    if v.BillingViewArn.is_some():
+        auto u1 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u1))
+    if v.PredictionIntervalLevel.is_some():
+        auto u2 = v.PredictionIntervalLevel.unwrap()
+        parts.append("\"PredictionIntervalLevel\":" + str(u2))
+    return ce_json_obj(parts)
+
+# Serialize GetDimensionValuesRequest to a compact JSON object (declaration order).
+def get_dimension_values_request_to_json(GetDimensionValuesRequest v) -> str:
+    list[str] parts = []
+    if v.SearchString.is_some():
+        auto u0 = v.SearchString.unwrap()
+        parts.append("\"SearchString\":" + ce_json_str(u0))
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    parts.append("\"Dimension\":" + v.Dimension.to_json())
+    if v.DimensionKey.is_some():
+        auto u1 = v.DimensionKey.unwrap()
+        parts.append("\"DimensionKey\":" + ce_json_str(u1))
+    if v.Context.is_some():
+        auto u2 = v.Context.unwrap()
+        parts.append("\"Context\":" + u2.to_json())
+    if v.Filter.is_some():
+        auto u3 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u3))
+    if v.SortBy.is_some():
+        auto u4 = v.SortBy.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SortBy\":" + ce_json_arr(e5))
+    if v.BillingViewArn.is_some():
+        auto u6 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u6))
+    if v.MaxResults.is_some():
+        auto u7 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u7))
+    if v.NextPageToken.is_some():
+        auto u8 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u8))
+    return ce_json_obj(parts)
+
+# Serialize GetReservationCoverageRequest to a compact JSON object (declaration order).
+def get_reservation_coverage_request_to_json(GetReservationCoverageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e1))
+    if v.Granularity.is_some():
+        auto u2 = v.Granularity.unwrap()
+        parts.append("\"Granularity\":" + u2.to_json())
+    if v.Filter.is_some():
+        auto u3 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u3))
+    if v.Metrics.is_some():
+        auto u4 = v.Metrics.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(ce_json_str(x5))
+        parts.append("\"Metrics\":" + ce_json_arr(e5))
+    if v.NextPageToken.is_some():
+        auto u6 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u6))
+    if v.SortBy.is_some():
+        auto u7 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u7.to_json())
+    if v.MaxResults.is_some():
+        auto u8 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u8))
+    return ce_json_obj(parts)
+
+# Serialize GetReservationPurchaseRecommendationRequest to a compact JSON object (declaration order).
+def get_reservation_purchase_recommendation_request_to_json(GetReservationPurchaseRecommendationRequest v) -> str:
+    list[str] parts = []
+    if v.AccountId.is_some():
+        auto u0 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + ce_json_str(u0))
+    parts.append("\"Service\":" + ce_json_str(v.Service))
+    if v.Filter.is_some():
+        auto u1 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u1))
+    if v.AccountScope.is_some():
+        auto u2 = v.AccountScope.unwrap()
+        parts.append("\"AccountScope\":" + u2.to_json())
+    if v.LookbackPeriodInDays.is_some():
+        auto u3 = v.LookbackPeriodInDays.unwrap()
+        parts.append("\"LookbackPeriodInDays\":" + u3.to_json())
+    if v.TermInYears.is_some():
+        auto u4 = v.TermInYears.unwrap()
+        parts.append("\"TermInYears\":" + u4.to_json())
+    if v.PaymentOption.is_some():
+        auto u5 = v.PaymentOption.unwrap()
+        parts.append("\"PaymentOption\":" + u5.to_json())
+    if v.ServiceSpecification.is_some():
+        auto u6 = v.ServiceSpecification.unwrap()
+        parts.append("\"ServiceSpecification\":" + u6.to_json())
+    if v.PageSize.is_some():
+        auto u7 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u7))
+    if v.NextPageToken.is_some():
+        auto u8 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u8))
+    return ce_json_obj(parts)
+
+# Serialize GetReservationUtilizationRequest to a compact JSON object (declaration order).
+def get_reservation_utilization_request_to_json(GetReservationUtilizationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e1))
+    if v.Granularity.is_some():
+        auto u2 = v.Granularity.unwrap()
+        parts.append("\"Granularity\":" + u2.to_json())
+    if v.Filter.is_some():
+        auto u3 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u3))
+    if v.SortBy.is_some():
+        auto u4 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u4.to_json())
+    if v.NextPageToken.is_some():
+        auto u5 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    return ce_json_obj(parts)
+
+# Serialize GetRightsizingRecommendationRequest to a compact JSON object (declaration order).
+def get_rightsizing_recommendation_request_to_json(GetRightsizingRecommendationRequest v) -> str:
+    list[str] parts = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u0))
+    if v.Configuration.is_some():
+        auto u1 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + u1.to_json())
+    parts.append("\"Service\":" + ce_json_str(v.Service))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u2))
+    if v.NextPageToken.is_some():
+        auto u3 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u3))
+    return ce_json_obj(parts)
+
+# Serialize GetSavingsPlansCoverageRequest to a compact JSON object (declaration order).
+def get_savings_plans_coverage_request_to_json(GetSavingsPlansCoverageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GroupBy\":" + ce_json_arr(e1))
+    if v.Granularity.is_some():
+        auto u2 = v.Granularity.unwrap()
+        parts.append("\"Granularity\":" + u2.to_json())
+    if v.Filter.is_some():
+        auto u3 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u3))
+    if v.Metrics.is_some():
+        auto u4 = v.Metrics.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(ce_json_str(x5))
+        parts.append("\"Metrics\":" + ce_json_arr(e5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ce_json_str(u6))
+    if v.MaxResults.is_some():
+        auto u7 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u7))
+    if v.SortBy.is_some():
+        auto u8 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u8.to_json())
+    return ce_json_obj(parts)
+
+# Serialize GetSavingsPlansPurchaseRecommendationRequest to a compact JSON object (declaration order).
+def get_savings_plans_purchase_recommendation_request_to_json(GetSavingsPlansPurchaseRecommendationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SavingsPlansType\":" + v.SavingsPlansType.to_json())
+    parts.append("\"TermInYears\":" + v.TermInYears.to_json())
+    parts.append("\"PaymentOption\":" + v.PaymentOption.to_json())
+    if v.AccountScope.is_some():
+        auto u0 = v.AccountScope.unwrap()
+        parts.append("\"AccountScope\":" + u0.to_json())
+    if v.NextPageToken.is_some():
+        auto u1 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u2))
+    parts.append("\"LookbackPeriodInDays\":" + v.LookbackPeriodInDays.to_json())
+    if v.Filter.is_some():
+        auto u3 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u3))
+    return ce_json_obj(parts)
+
+# Serialize GetSavingsPlansUtilizationDetailsRequest to a compact JSON object (declaration order).
+def get_savings_plans_utilization_details_request_to_json(GetSavingsPlansUtilizationDetailsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u0))
+    if v.DataType.is_some():
+        auto u1 = v.DataType.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"DataType\":" + ce_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ce_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.SortBy.is_some():
+        auto u5 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u5.to_json())
+    return ce_json_obj(parts)
+
+# Serialize GetSavingsPlansUtilizationRequest to a compact JSON object (declaration order).
+def get_savings_plans_utilization_request_to_json(GetSavingsPlansUtilizationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.Granularity.is_some():
+        auto u0 = v.Granularity.unwrap()
+        parts.append("\"Granularity\":" + u0.to_json())
+    if v.Filter.is_some():
+        auto u1 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u1))
+    if v.SortBy.is_some():
+        auto u2 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u2.to_json())
+    return ce_json_obj(parts)
+
+# Serialize GetTagsRequest to a compact JSON object (declaration order).
+def get_tags_request_to_json(GetTagsRequest v) -> str:
+    list[str] parts = []
+    if v.SearchString.is_some():
+        auto u0 = v.SearchString.unwrap()
+        parts.append("\"SearchString\":" + ce_json_str(u0))
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    if v.TagKey.is_some():
+        auto u1 = v.TagKey.unwrap()
+        parts.append("\"TagKey\":" + ce_json_str(u1))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u2))
+    if v.SortBy.is_some():
+        auto u3 = v.SortBy.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SortBy\":" + ce_json_arr(e4))
+    if v.BillingViewArn.is_some():
+        auto u5 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    if v.NextPageToken.is_some():
+        auto u7 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u7))
+    return ce_json_obj(parts)
+
+# Serialize GetUsageForecastRequest to a compact JSON object (declaration order).
+def get_usage_forecast_request_to_json(GetUsageForecastRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimePeriod\":" + v.TimePeriod.to_json())
+    parts.append("\"Metric\":" + v.Metric.to_json())
+    parts.append("\"Granularity\":" + v.Granularity.to_json())
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + expression_to_json(u0))
+    if v.BillingViewArn.is_some():
+        auto u1 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + ce_json_str(u1))
+    if v.PredictionIntervalLevel.is_some():
+        auto u2 = v.PredictionIntervalLevel.unwrap()
+        parts.append("\"PredictionIntervalLevel\":" + str(u2))
+    return ce_json_obj(parts)
+
+# Serialize ListCommitmentPurchaseAnalysesRequest to a compact JSON object (declaration order).
+def list_commitment_purchase_analyses_request_to_json(ListCommitmentPurchaseAnalysesRequest v) -> str:
+    list[str] parts = []
+    if v.AnalysisStatus.is_some():
+        auto u0 = v.AnalysisStatus.unwrap()
+        parts.append("\"AnalysisStatus\":" + u0.to_json())
+    if v.NextPageToken.is_some():
+        auto u1 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u2))
+    if v.AnalysisIds.is_some():
+        auto u3 = v.AnalysisIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ce_json_str(x4))
+        parts.append("\"AnalysisIds\":" + ce_json_arr(e4))
+    return ce_json_obj(parts)
+
+# Serialize ListCostAllocationTagsRequest to a compact JSON object (declaration order).
+def list_cost_allocation_tags_request_to_json(ListCostAllocationTagsRequest v) -> str:
+    list[str] parts = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    if v.TagKeys.is_some():
+        auto u1 = v.TagKeys.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ce_json_str(x2))
+        parts.append("\"TagKeys\":" + ce_json_arr(e2))
+    if v.Type.is_some():
+        auto u3 = v.Type.unwrap()
+        parts.append("\"Type\":" + u3.to_json())
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ce_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return ce_json_obj(parts)
+
+# Serialize ListCostCategoryDefinitionsRequest to a compact JSON object (declaration order).
+def list_cost_category_definitions_request_to_json(ListCostCategoryDefinitionsRequest v) -> str:
+    list[str] parts = []
+    if v.EffectiveOn.is_some():
+        auto u0 = v.EffectiveOn.unwrap()
+        parts.append("\"EffectiveOn\":" + ce_json_str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ce_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.SupportedResourceTypes.is_some():
+        auto u3 = v.SupportedResourceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ce_json_str(x4))
+        parts.append("\"SupportedResourceTypes\":" + ce_json_arr(e4))
+    return ce_json_obj(parts)
+
+# Serialize ListSavingsPlansPurchaseRecommendationGenerationRequest to a compact JSON object (declaration order).
+def list_savings_plans_purchase_recommendation_generation_request_to_json(ListSavingsPlansPurchaseRecommendationGenerationRequest v) -> str:
+    list[str] parts = []
+    if v.GenerationStatus.is_some():
+        auto u0 = v.GenerationStatus.unwrap()
+        parts.append("\"GenerationStatus\":" + u0.to_json())
+    if v.RecommendationIds.is_some():
+        auto u1 = v.RecommendationIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ce_json_str(x2))
+        parts.append("\"RecommendationIds\":" + ce_json_arr(e2))
+    if v.PageSize.is_some():
+        auto u3 = v.PageSize.unwrap()
+        parts.append("\"PageSize\":" + str(u3))
+    if v.NextPageToken.is_some():
+        auto u4 = v.NextPageToken.unwrap()
+        parts.append("\"NextPageToken\":" + ce_json_str(u4))
+    return ce_json_obj(parts)
+
+# Serialize ProductAttributeValues to a compact JSON object (declaration order).
+def product_attribute_values_to_json(ProductAttributeValues v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ce_json_str(v.Key))
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ce_json_str(x1))
+        parts.append("\"Values\":" + ce_json_arr(e1))
+    if v.MatchOptions.is_some():
+        auto u2 = v.MatchOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MatchOptions\":" + ce_json_arr(e3))
+    return ce_json_obj(parts)
+
+# Serialize SavingsPlansPurchaseAnalysisConfiguration to a compact JSON object (declaration order).
+def savings_plans_purchase_analysis_configuration_to_json(SavingsPlansPurchaseAnalysisConfiguration v) -> str:
+    list[str] parts = []
+    if v.AccountScope.is_some():
+        auto u0 = v.AccountScope.unwrap()
+        parts.append("\"AccountScope\":" + u0.to_json())
+    if v.AccountId.is_some():
+        auto u1 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + ce_json_str(u1))
+    parts.append("\"AnalysisType\":" + v.AnalysisType.to_json())
+    list[str] e2 = []
+    for x2 in v.SavingsPlansToAdd:
+        e2.append(x2.to_json())
+    parts.append("\"SavingsPlansToAdd\":" + ce_json_arr(e2))
+    if v.SavingsPlansToExclude.is_some():
+        auto u3 = v.SavingsPlansToExclude.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ce_json_str(x4))
+        parts.append("\"SavingsPlansToExclude\":" + ce_json_arr(e4))
+    parts.append("\"LookBackTimePeriod\":" + v.LookBackTimePeriod.to_json())
+    if v.SavingsPlansTargetCoverage.is_some():
+        auto u5 = v.SavingsPlansTargetCoverage.unwrap()
+        parts.append("\"SavingsPlansTargetCoverage\":" + str(u5))
+    return ce_json_obj(parts)
+
+# Serialize StartCommitmentPurchaseAnalysisRequest to a compact JSON object (declaration order).
+def start_commitment_purchase_analysis_request_to_json(StartCommitmentPurchaseAnalysisRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CommitmentPurchaseAnalysisConfiguration\":" + commitment_purchase_analysis_configuration_to_json(v.CommitmentPurchaseAnalysisConfiguration))
+    return ce_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + ce_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTags:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTags\":" + ce_json_arr(e0))
+    return ce_json_obj(parts)
+
+# Serialize TagValues to a compact JSON object (declaration order).
+def tag_values_to_json(TagValues v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ce_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ce_json_str(x2))
+        parts.append("\"Values\":" + ce_json_arr(e2))
+    if v.MatchOptions.is_some():
+        auto u3 = v.MatchOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MatchOptions\":" + ce_json_arr(e4))
+    return ce_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + ce_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTagKeys:
+        e0.append(ce_json_str(x0))
+    parts.append("\"ResourceTagKeys\":" + ce_json_arr(e0))
+    return ce_json_obj(parts)
+
+# Serialize UpdateAnomalySubscriptionRequest to a compact JSON object (declaration order).
+def update_anomaly_subscription_request_to_json(UpdateAnomalySubscriptionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SubscriptionArn\":" + ce_json_str(v.SubscriptionArn))
+    if v.Threshold.is_some():
+        auto u0 = v.Threshold.unwrap()
+        parts.append("\"Threshold\":" + str(u0))
+    if v.Frequency.is_some():
+        auto u1 = v.Frequency.unwrap()
+        parts.append("\"Frequency\":" + u1.to_json())
+    if v.MonitorArnList.is_some():
+        auto u2 = v.MonitorArnList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ce_json_str(x3))
+        parts.append("\"MonitorArnList\":" + ce_json_arr(e3))
+    if v.Subscribers.is_some():
+        auto u4 = v.Subscribers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Subscribers\":" + ce_json_arr(e5))
+    if v.SubscriptionName.is_some():
+        auto u6 = v.SubscriptionName.unwrap()
+        parts.append("\"SubscriptionName\":" + ce_json_str(u6))
+    if v.ThresholdExpression.is_some():
+        auto u7 = v.ThresholdExpression.unwrap()
+        parts.append("\"ThresholdExpression\":" + expression_to_json(u7))
+    return ce_json_obj(parts)
+
+# Serialize UpdateCostAllocationTagsStatusRequest to a compact JSON object (declaration order).
+def update_cost_allocation_tags_status_request_to_json(UpdateCostAllocationTagsStatusRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CostAllocationTagsStatus:
+        e0.append(x0.to_json())
+    parts.append("\"CostAllocationTagsStatus\":" + ce_json_arr(e0))
+    return ce_json_obj(parts)
+
+# Serialize UpdateCostCategoryDefinitionRequest to a compact JSON object (declaration order).
+def update_cost_category_definition_request_to_json(UpdateCostCategoryDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CostCategoryArn\":" + ce_json_str(v.CostCategoryArn))
+    if v.EffectiveStart.is_some():
+        auto u0 = v.EffectiveStart.unwrap()
+        parts.append("\"EffectiveStart\":" + ce_json_str(u0))
+    parts.append("\"RuleVersion\":" + ce_json_str(v.RuleVersion))
+    list[str] e1 = []
+    for x1 in v.Rules:
+        e1.append(cost_category_rule_to_json(x1))
+    parts.append("\"Rules\":" + ce_json_arr(e1))
+    if v.DefaultValue.is_some():
+        auto u2 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + ce_json_str(u2))
+    if v.SplitChargeRules.is_some():
+        auto u3 = v.SplitChargeRules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(cost_category_split_charge_rule_to_json(x4))
+        parts.append("\"SplitChargeRules\":" + ce_json_arr(e4))
+    return ce_json_obj(parts)
 
 # A bound Cost_Explorer client: credentials + region, threaded into every operation.
 struct Cost_ExplorerClient:
     core.Credentials creds
     str region
+
+    # CreateAnomalyMonitor
+    # errors: LimitExceededException
+    def create_anomaly_monitor(self, CreateAnomalyMonitorRequest input) -> str:
+        auto body = create_anomaly_monitor_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "CreateAnomalyMonitor", body)
+
+    # CreateAnomalySubscription
+    # errors: LimitExceededException, UnknownMonitorException
+    def create_anomaly_subscription(self, CreateAnomalySubscriptionRequest input) -> str:
+        auto body = create_anomaly_subscription_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "CreateAnomalySubscription", body)
+
+    # CreateCostCategoryDefinition
+    # errors: LimitExceededException, ServiceQuotaExceededException
+    def create_cost_category_definition(self, CreateCostCategoryDefinitionRequest input) -> str:
+        auto body = create_cost_category_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "CreateCostCategoryDefinition", body)
 
     # DeleteAnomalyMonitor
     # errors: LimitExceededException, UnknownMonitorException
@@ -2098,11 +3152,95 @@ struct Cost_ExplorerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetAnomalies", body)
 
+    # GetAnomalyMonitors
+    # errors: InvalidNextTokenException, LimitExceededException, UnknownMonitorException
+    def get_anomaly_monitors(self, GetAnomalyMonitorsRequest input) -> str:
+        auto body = get_anomaly_monitors_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetAnomalyMonitors", body)
+
+    # GetAnomalySubscriptions
+    # errors: InvalidNextTokenException, LimitExceededException, UnknownSubscriptionException
+    def get_anomaly_subscriptions(self, GetAnomalySubscriptionsRequest input) -> str:
+        auto body = get_anomaly_subscriptions_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetAnomalySubscriptions", body)
+
+    # GetApproximateUsageRecords
+    # errors: DataUnavailableException, LimitExceededException
+    def get_approximate_usage_records(self, GetApproximateUsageRecordsRequest input) -> str:
+        auto body = get_approximate_usage_records_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetApproximateUsageRecords", body)
+
     # GetCommitmentPurchaseAnalysis
     # errors: AnalysisNotFoundException, DataUnavailableException, LimitExceededException
     def get_commitment_purchase_analysis(self, GetCommitmentPurchaseAnalysisRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCommitmentPurchaseAnalysis", body)
+
+    # GetCostAndUsage
+    # errors: BillExpirationException, BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, RequestChangedException, ResourceNotFoundException
+    def get_cost_and_usage(self, GetCostAndUsageRequest input) -> str:
+        auto body = get_cost_and_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostAndUsage", body)
+
+    # GetCostAndUsageComparisons
+    # errors: BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException
+    def get_cost_and_usage_comparisons(self, GetCostAndUsageComparisonsRequest input) -> str:
+        auto body = get_cost_and_usage_comparisons_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostAndUsageComparisons", body)
+
+    # GetCostAndUsageWithResources
+    # errors: BillExpirationException, BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, RequestChangedException, ResourceNotFoundException
+    def get_cost_and_usage_with_resources(self, GetCostAndUsageWithResourcesRequest input) -> str:
+        auto body = get_cost_and_usage_with_resources_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostAndUsageWithResources", body)
+
+    # GetCostCategories
+    # errors: BillExpirationException, BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, RequestChangedException, ResourceNotFoundException
+    def get_cost_categories(self, GetCostCategoriesRequest input) -> str:
+        auto body = get_cost_categories_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostCategories", body)
+
+    # GetCostComparisonDrivers
+    # errors: BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException
+    def get_cost_comparison_drivers(self, GetCostComparisonDriversRequest input) -> str:
+        auto body = get_cost_comparison_drivers_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostComparisonDrivers", body)
+
+    # GetCostForecast
+    # errors: BillingViewHealthStatusException, DataUnavailableException, LimitExceededException, ResourceNotFoundException
+    def get_cost_forecast(self, GetCostForecastRequest input) -> str:
+        auto body = get_cost_forecast_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostForecast", body)
+
+    # GetDimensionValues
+    # errors: BillExpirationException, BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, RequestChangedException, ResourceNotFoundException
+    def get_dimension_values(self, GetDimensionValuesRequest input) -> str:
+        auto body = get_dimension_values_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetDimensionValues", body)
+
+    # GetReservationCoverage
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def get_reservation_coverage(self, GetReservationCoverageRequest input) -> str:
+        auto body = get_reservation_coverage_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetReservationCoverage", body)
+
+    # GetReservationPurchaseRecommendation
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def get_reservation_purchase_recommendation(self, GetReservationPurchaseRecommendationRequest input) -> str:
+        auto body = get_reservation_purchase_recommendation_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetReservationPurchaseRecommendation", body)
+
+    # GetReservationUtilization
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def get_reservation_utilization(self, GetReservationUtilizationRequest input) -> str:
+        auto body = get_reservation_utilization_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetReservationUtilization", body)
+
+    # GetRightsizingRecommendation
+    # errors: InvalidNextTokenException, LimitExceededException
+    def get_rightsizing_recommendation(self, GetRightsizingRecommendationRequest input) -> str:
+        auto body = get_rightsizing_recommendation_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetRightsizingRecommendation", body)
 
     # GetSavingsPlanPurchaseRecommendationDetails
     # errors: DataUnavailableException, LimitExceededException
@@ -2110,17 +3248,77 @@ struct Cost_ExplorerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetSavingsPlanPurchaseRecommendationDetails", body)
 
+    # GetSavingsPlansCoverage
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def get_savings_plans_coverage(self, GetSavingsPlansCoverageRequest input) -> str:
+        auto body = get_savings_plans_coverage_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetSavingsPlansCoverage", body)
+
+    # GetSavingsPlansPurchaseRecommendation
+    # errors: InvalidNextTokenException, LimitExceededException
+    def get_savings_plans_purchase_recommendation(self, GetSavingsPlansPurchaseRecommendationRequest input) -> str:
+        auto body = get_savings_plans_purchase_recommendation_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetSavingsPlansPurchaseRecommendation", body)
+
+    # GetSavingsPlansUtilization
+    # errors: DataUnavailableException, LimitExceededException
+    def get_savings_plans_utilization(self, GetSavingsPlansUtilizationRequest input) -> str:
+        auto body = get_savings_plans_utilization_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetSavingsPlansUtilization", body)
+
+    # GetSavingsPlansUtilizationDetails
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def get_savings_plans_utilization_details(self, GetSavingsPlansUtilizationDetailsRequest input) -> str:
+        auto body = get_savings_plans_utilization_details_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetSavingsPlansUtilizationDetails", body)
+
+    # GetTags
+    # errors: BillExpirationException, BillingViewHealthStatusException, DataUnavailableException, InvalidNextTokenException, LimitExceededException, RequestChangedException, ResourceNotFoundException
+    def get_tags(self, GetTagsRequest input) -> str:
+        auto body = get_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetTags", body)
+
+    # GetUsageForecast
+    # errors: BillingViewHealthStatusException, DataUnavailableException, LimitExceededException, ResourceNotFoundException, UnresolvableUsageUnitException
+    def get_usage_forecast(self, GetUsageForecastRequest input) -> str:
+        auto body = get_usage_forecast_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetUsageForecast", body)
+
+    # ListCommitmentPurchaseAnalyses
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def list_commitment_purchase_analyses(self, ListCommitmentPurchaseAnalysesRequest input) -> str:
+        auto body = list_commitment_purchase_analyses_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCommitmentPurchaseAnalyses", body)
+
     # ListCostAllocationTagBackfillHistory
     # errors: InvalidNextTokenException, LimitExceededException
     def list_cost_allocation_tag_backfill_history(self, ListCostAllocationTagBackfillHistoryRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCostAllocationTagBackfillHistory", body)
 
+    # ListCostAllocationTags
+    # errors: InvalidNextTokenException, LimitExceededException
+    def list_cost_allocation_tags(self, ListCostAllocationTagsRequest input) -> str:
+        auto body = list_cost_allocation_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCostAllocationTags", body)
+
+    # ListCostCategoryDefinitions
+    # errors: LimitExceededException
+    def list_cost_category_definitions(self, ListCostCategoryDefinitionsRequest input) -> str:
+        auto body = list_cost_category_definitions_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCostCategoryDefinitions", body)
+
     # ListCostCategoryResourceAssociations
     # errors: LimitExceededException, ResourceNotFoundException
     def list_cost_category_resource_associations(self, ListCostCategoryResourceAssociationsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCostCategoryResourceAssociations", body)
+
+    # ListSavingsPlansPurchaseRecommendationGeneration
+    # errors: DataUnavailableException, InvalidNextTokenException, LimitExceededException
+    def list_savings_plans_purchase_recommendation_generation(self, ListSavingsPlansPurchaseRecommendationGenerationRequest input) -> str:
+        auto body = list_savings_plans_purchase_recommendation_generation_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListSavingsPlansPurchaseRecommendationGeneration", body)
 
     # ListTagsForResource
     # errors: LimitExceededException, ResourceNotFoundException
@@ -2134,6 +3332,12 @@ struct Cost_ExplorerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ProvideAnomalyFeedback", body)
 
+    # StartCommitmentPurchaseAnalysis
+    # errors: DataUnavailableException, GenerationExistsException, LimitExceededException, ServiceQuotaExceededException
+    def start_commitment_purchase_analysis(self, StartCommitmentPurchaseAnalysisRequest input) -> str:
+        auto body = start_commitment_purchase_analysis_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "StartCommitmentPurchaseAnalysis", body)
+
     # StartCostAllocationTagBackfill
     # errors: BackfillLimitExceededException, LimitExceededException
     def start_cost_allocation_tag_backfill(self, StartCostAllocationTagBackfillRequest input) -> str:
@@ -2146,11 +3350,41 @@ struct Cost_ExplorerClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "StartSavingsPlansPurchaseRecommendationGeneration", body)
 
+    # TagResource
+    # errors: LimitExceededException, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: LimitExceededException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAnomalyMonitor
     # errors: LimitExceededException, UnknownMonitorException
     def update_anomaly_monitor(self, UpdateAnomalyMonitorRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "UpdateAnomalyMonitor", body)
+
+    # UpdateAnomalySubscription
+    # errors: LimitExceededException, UnknownMonitorException, UnknownSubscriptionException
+    def update_anomaly_subscription(self, UpdateAnomalySubscriptionRequest input) -> str:
+        auto body = update_anomaly_subscription_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "UpdateAnomalySubscription", body)
+
+    # UpdateCostAllocationTagsStatus
+    # errors: LimitExceededException
+    def update_cost_allocation_tags_status(self, UpdateCostAllocationTagsStatusRequest input) -> str:
+        auto body = update_cost_allocation_tags_status_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "UpdateCostAllocationTagsStatus", body)
+
+    # UpdateCostCategoryDefinition
+    # errors: LimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException
+    def update_cost_category_definition(self, UpdateCostCategoryDefinitionRequest input) -> str:
+        auto body = update_cost_category_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "UpdateCostCategoryDefinition", body)
 
     # Paginator for GetAnomalies — yields each Response page, threading the
     # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: Anomalies).
@@ -2159,6 +3393,104 @@ struct Cost_ExplorerClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetAnomalies", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for GetAnomalyMonitors — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: AnomalyMonitors).
+    def paginate_get_anomaly_monitors(self, GetAnomalyMonitorsRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = get_anomaly_monitors_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetAnomalyMonitors", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for GetAnomalySubscriptions — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: AnomalySubscriptions).
+    def paginate_get_anomaly_subscriptions(self, GetAnomalySubscriptionsRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = get_anomaly_subscriptions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetAnomalySubscriptions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for GetCostAndUsageComparisons — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: CostAndUsageComparisons).
+    def paginate_get_cost_and_usage_comparisons(self, GetCostAndUsageComparisonsRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = get_cost_and_usage_comparisons_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostAndUsageComparisons", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for GetCostComparisonDrivers — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: CostComparisonDrivers).
+    def paginate_get_cost_comparison_drivers(self, GetCostComparisonDriversRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = get_cost_comparison_drivers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetCostComparisonDrivers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for GetReservationPurchaseRecommendation — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: Recommendations).
+    def paginate_get_reservation_purchase_recommendation(self, GetReservationPurchaseRecommendationRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = get_reservation_purchase_recommendation_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetReservationPurchaseRecommendation", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for GetRightsizingRecommendation — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: RightsizingRecommendations).
+    def paginate_get_rightsizing_recommendation(self, GetRightsizingRecommendationRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = get_rightsizing_recommendation_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "GetRightsizingRecommendation", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
+
+    # Paginator for ListCommitmentPurchaseAnalyses — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: AnalysisSummaryList).
+    def paginate_list_commitment_purchase_analyses(self, ListCommitmentPurchaseAnalysesRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = list_commitment_purchase_analyses_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCommitmentPurchaseAnalyses", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextPageToken")
@@ -2180,6 +3512,34 @@ struct Cost_ExplorerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListCostAllocationTags — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CostAllocationTags).
+    def paginate_list_cost_allocation_tags(self, ListCostAllocationTagsRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = list_cost_allocation_tags_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCostAllocationTags", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCostCategoryDefinitions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CostCategoryReferences).
+    def paginate_list_cost_category_definitions(self, ListCostCategoryDefinitionsRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = list_cost_category_definitions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListCostCategoryDefinitions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListCostCategoryResourceAssociations — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: CostCategoryResourceAssociations).
     def paginate_list_cost_category_resource_associations(self, ListCostCategoryResourceAssociationsRequest input):
@@ -2193,6 +3553,20 @@ struct Cost_ExplorerClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSavingsPlansPurchaseRecommendationGeneration — yields each Response page, threading the
+    # NextPageToken -> NextPageToken continuation token until the output token is absent (result key: GenerationSummaryList).
+    def paginate_list_savings_plans_purchase_recommendation_generation(self, ListSavingsPlansPurchaseRecommendationGenerationRequest input):
+        auto host = endpoints.regional_host(ce_protocol().service, self.region)
+        while True:
+            auto body = list_savings_plans_purchase_recommendation_generation_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ce_protocol(), self.creds, self.region, "ListSavingsPlansPurchaseRecommendationGeneration", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextPageToken")
+            if not np.has_more:
+                break
+            input.NextPageToken = Optional.Some(np.token)
 
 # Construct a Cost_ExplorerClient bound to credentials + region.
 def ce_client(core.Credentials creds, str region) -> Cost_ExplorerClient:

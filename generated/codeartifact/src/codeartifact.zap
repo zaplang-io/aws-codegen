@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 35 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 48 operations — 45 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   132 structs (85 @derive(Json)), 15 enums, 7 error variants.
 #   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -177,8 +177,9 @@ enum ValidationExceptionReason:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) hashes: dict[HashAlgorithm, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hashes: dict[HashAlgorithm, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetSummary:
     str name
     Optional[int64] size
@@ -192,8 +193,9 @@ struct AssociateExternalConnectionRequest:
     str repository
     str externalConnection
 
-# no @derive(Json): member(s) repository: RepositoryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repository: RepositoryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateExternalConnectionResult:
     Optional[RepositoryDescription] repository
 
@@ -226,8 +228,9 @@ struct CopyPackageVersionsRequest:
     Optional[bool] allowOverwrite
     Optional[bool] includeFromUpstream
 
-# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyPackageVersionsResult:
     Optional[dict[str, SuccessfulPackageVersionInfo]] successfulVersions
     Optional[dict[str, PackageVersionError]] failedVersions
@@ -253,8 +256,9 @@ struct CreatePackageGroupRequest:
     Optional[str] description
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) packageGroup: PackageGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroup: PackageGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePackageGroupResult:
     Optional[PackageGroupDescription] packageGroup
 
@@ -268,8 +272,9 @@ struct CreateRepositoryRequest:
     Optional[list[UpstreamRepository]] upstreams
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) repository: RepositoryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repository: RepositoryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRepositoryResult:
     Optional[RepositoryDescription] repository
 
@@ -301,8 +306,9 @@ struct DeletePackageGroupRequest:
     Optional[str] domainOwner
     str packageGroup
 
-# no @derive(Json): member(s) packageGroup: PackageGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroup: PackageGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePackageGroupResult:
     Optional[PackageGroupDescription] packageGroup
 
@@ -334,8 +340,9 @@ struct DeletePackageVersionsRequest:
     list[str] versions
     Optional[PackageVersionStatus] expectedStatus
 
-# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePackageVersionsResult:
     Optional[dict[str, SuccessfulPackageVersionInfo]] successfulVersions
     Optional[dict[str, PackageVersionError]] failedVersions
@@ -359,8 +366,9 @@ struct DeleteRepositoryRequest:
     Optional[str] domainOwner
     str repository
 
-# no @derive(Json): member(s) repository: RepositoryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repository: RepositoryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRepositoryResult:
     Optional[RepositoryDescription] repository
 
@@ -381,8 +389,9 @@ struct DescribePackageGroupRequest:
     Optional[str] domainOwner
     str packageGroup
 
-# no @derive(Json): member(s) packageGroup: PackageGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroup: PackageGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePackageGroupResult:
     Optional[PackageGroupDescription] packageGroup
 
@@ -413,8 +422,9 @@ struct DescribePackageVersionRequest:
     str package
     str packageVersion
 
-# no @derive(Json): member(s) packageVersion: PackageVersionDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageVersion: PackageVersionDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePackageVersionResult:
     PackageVersionDescription packageVersion
 
@@ -425,8 +435,9 @@ struct DescribeRepositoryRequest:
     Optional[str] domainOwner
     str repository
 
-# no @derive(Json): member(s) repository: RepositoryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repository: RepositoryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRepositoryResult:
     Optional[RepositoryDescription] repository
 
@@ -438,8 +449,9 @@ struct DisassociateExternalConnectionRequest:
     str repository
     str externalConnection
 
-# no @derive(Json): member(s) repository: RepositoryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repository: RepositoryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateExternalConnectionResult:
     Optional[RepositoryDescription] repository
 
@@ -457,8 +469,9 @@ struct DisposePackageVersionsRequest:
     Optional[dict[str, str]] versionRevisions
     Optional[PackageVersionStatus] expectedStatus
 
-# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisposePackageVersionsResult:
     Optional[dict[str, SuccessfulPackageVersionInfo]] successfulVersions
     Optional[dict[str, PackageVersionError]] failedVersions
@@ -499,8 +512,9 @@ struct GetAssociatedPackageGroupRequest:
     Optional[str] namespace
     str package
 
-# no @derive(Json): member(s) packageGroup: PackageGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroup: PackageGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssociatedPackageGroupResult:
     Optional[PackageGroupDescription] packageGroup
     Optional[PackageGroupAssociationType] associationType
@@ -615,8 +629,9 @@ struct ListAllowedRepositoriesForGroupRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) allowedRepositories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedRepositories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAllowedRepositoriesForGroupResult:
     Optional[list[str]] allowedRepositories
     Optional[str] nextToken
@@ -631,8 +646,9 @@ struct ListAssociatedPackagesRequest:
     Optional[str] nextToken
     Optional[bool] preview
 
-# no @derive(Json): member(s) packages: list[AssociatedPackage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packages: list[AssociatedPackage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedPackagesResult:
     Optional[list[AssociatedPackage]] packages
     Optional[str] nextToken
@@ -643,8 +659,9 @@ struct ListDomainsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) domains: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domains: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResult:
     Optional[list[DomainSummary]] domains
     Optional[str] nextToken
@@ -658,8 +675,9 @@ struct ListPackageGroupsRequest:
     Optional[str] nextToken
     Optional[str] prefix
 
-# no @derive(Json): member(s) packageGroups: list[PackageGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroups: list[PackageGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackageGroupsResult:
     Optional[list[PackageGroupSummary]] packageGroups
     Optional[str] nextToken
@@ -678,8 +696,9 @@ struct ListPackageVersionAssetsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assets: list[AssetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: list[AssetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackageVersionAssetsResult:
     Optional[PackageFormat] format
     Optional[str] namespace
@@ -702,8 +721,9 @@ struct ListPackageVersionDependenciesRequest:
     str packageVersion
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dependencies: list[PackageDependency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependencies: list[PackageDependency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackageVersionDependenciesResult:
     Optional[PackageFormat] format
     Optional[str] namespace
@@ -731,8 +751,9 @@ struct ListPackageVersionsRequest:
     # wire string of the PackageVersionOriginType enum (querystring binding)
     Optional[str] originType
 
-# no @derive(Json): member(s) versions: list[PackageVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versions: list[PackageVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackageVersionsResult:
     Optional[str] defaultDisplayVersion
     Optional[PackageFormat] format
@@ -758,8 +779,9 @@ struct ListPackagesRequest:
     # wire string of the AllowUpstream enum (querystring binding)
     Optional[str] upstream
 
-# no @derive(Json): member(s) packages: list[PackageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packages: list[PackageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPackagesResult:
     Optional[list[PackageSummary]] packages
     Optional[str] nextToken
@@ -774,8 +796,9 @@ struct ListRepositoriesInDomainRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) repositories: list[RepositorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[RepositorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoriesInDomainResult:
     Optional[list[RepositorySummary]] repositories
     Optional[str] nextToken
@@ -787,8 +810,9 @@ struct ListRepositoriesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) repositories: list[RepositorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[RepositorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoriesResult:
     Optional[list[RepositorySummary]] repositories
     Optional[str] nextToken
@@ -802,8 +826,9 @@ struct ListSubPackageGroupsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) packageGroups: list[PackageGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroups: list[PackageGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubPackageGroupsResult:
     Optional[list[PackageGroupSummary]] packageGroups
     Optional[str] nextToken
@@ -813,8 +838,9 @@ struct ListSubPackageGroupsResult:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[list[Tag]] tags
 
@@ -837,8 +863,9 @@ struct PackageGroupAllowedRepository:
     Optional[str] repositoryName
     Optional[PackageGroupOriginRestrictionType] originRestrictionType
 
-# no @derive(Json): member(s) originConfiguration: PackageGroupOriginConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) originConfiguration: PackageGroupOriginConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageGroupDescription:
     Optional[str] arn
     Optional[str] pattern
@@ -850,8 +877,9 @@ struct PackageGroupDescription:
     Optional[PackageGroupOriginConfiguration] originConfiguration
     Optional[PackageGroupReference] parent
 
-# no @derive(Json): member(s) restrictions: dict[PackageGroupOriginRestrictionType, PackageGroupOriginRestriction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) restrictions: dict[PackageGroupOriginRestrictionType, PackageGroupOriginRestriction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageGroupOriginConfiguration:
     Optional[dict[PackageGroupOriginRestrictionType, PackageGroupOriginRestriction]] restrictions
 
@@ -867,8 +895,9 @@ struct PackageGroupReference:
     Optional[str] arn
     Optional[str] pattern
 
-# no @derive(Json): member(s) originConfiguration: PackageGroupOriginConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) originConfiguration: PackageGroupOriginConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageGroupSummary:
     Optional[str] arn
     Optional[str] pattern
@@ -896,8 +925,9 @@ struct PackageSummary:
     Optional[str] package
     Optional[PackageOriginConfiguration] originConfiguration
 
-# no @derive(Json): member(s) licenses: list[LicenseInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) licenses: list[LicenseInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageVersionDescription:
     Optional[PackageFormat] format
     Optional[str] namespace
@@ -946,8 +976,9 @@ struct PublishPackageVersionRequest:
     str assetSHA256
     Optional[bool] unfinished
 
-# no @derive(Json): member(s) asset: AssetSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) asset: AssetSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublishPackageVersionResult:
     Optional[PackageFormat] format
     Optional[str] namespace
@@ -998,8 +1029,9 @@ struct PutRepositoryPermissionsPolicyRequest:
 struct PutRepositoryPermissionsPolicyResult:
     Optional[ResourcePolicy] policy
 
-# no @derive(Json): member(s) upstreams: list[UpstreamRepositoryInfo], externalConnections: list[RepositoryExternalConnectionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) upstreams: list[UpstreamRepositoryInfo], externalConnections: list[RepositoryExternalConnectionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositoryDescription:
     Optional[str] name
     Optional[str] administratorAccount
@@ -1092,8 +1124,9 @@ struct UpdatePackageGroupOriginConfigurationRequest:
     Optional[list[PackageGroupAllowedRepository]] addAllowedRepositories
     Optional[list[PackageGroupAllowedRepository]] removeAllowedRepositories
 
-# no @derive(Json): member(s) packageGroup: PackageGroupDescription, allowedRepositoryUpdates: dict[PackageGroupOriginRestrictionType, dict[PackageGroupAllowedRepositoryUpdateType, list[str]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroup: PackageGroupDescription, allowedRepositoryUpdates: dict[PackageGroupOriginRestrictionType, dict[PackageGroupAllowedRepositoryUpdateType, list[str]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePackageGroupOriginConfigurationResult:
     Optional[PackageGroupDescription] packageGroup
     Optional[dict[PackageGroupOriginRestrictionType, dict[PackageGroupAllowedRepositoryUpdateType, list[str]]]] allowedRepositoryUpdates
@@ -1107,8 +1140,9 @@ struct UpdatePackageGroupRequest:
     Optional[str] contactInfo
     Optional[str] description
 
-# no @derive(Json): member(s) packageGroup: PackageGroupDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) packageGroup: PackageGroupDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePackageGroupResult:
     Optional[PackageGroupDescription] packageGroup
 
@@ -1127,8 +1161,9 @@ struct UpdatePackageVersionsStatusRequest:
     Optional[PackageVersionStatus] expectedStatus
     PackageVersionStatus targetStatus
 
-# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulVersions: dict[str, SuccessfulPackageVersionInfo], failedVersions: dict[str, PackageVersionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePackageVersionsStatusResult:
     Optional[dict[str, SuccessfulPackageVersionInfo]] successfulVersions
     Optional[dict[str, PackageVersionError]] failedVersions
@@ -1142,8 +1177,9 @@ struct UpdateRepositoryRequest:
     Optional[str] description
     Optional[list[UpstreamRepository]] upstreams
 
-# no @derive(Json): member(s) repository: RepositoryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repository: RepositoryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRepositoryResult:
     Optional[RepositoryDescription] repository
 
@@ -1198,19 +1234,9 @@ def codeartifact_error_from_code(str code) -> codeartifactError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CopyPackageVersions (document member `versions: list[str]` is not serializable by derive)
-#   CreateDomain (document member `tags: list[Tag]` is not serializable by derive)
-#   CreatePackageGroup (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateRepository (document member `upstreams: list[UpstreamRepository]` is not serializable by derive)
-#   DeletePackageVersions (document member `versions: list[str]` is not serializable by derive)
-#   DisposePackageVersions (document member `versions: list[str]` is not serializable by derive)
 #   ListAssociatedPackages (httpQuery `preview` has unsupported type bool)
 #   PublishPackageVersion (httpQuery `unfinished` has unsupported type bool)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdatePackageGroupOriginConfiguration (document member `restrictions: dict[PackageGroupOriginRestrictionType, PackageGroupOriginRestrictionMode]` is not serializable by derive)
-#   UpdatePackageVersionsStatus (document member `versions: list[str]` is not serializable by derive)
-#   UpdateRepository (document member `upstreams: list[UpstreamRepository]` is not serializable by derive)
+#   UpdatePackageGroupOriginConfiguration (document member `restrictions: dict[PackageGroupOriginRestrictionType, PackageGroupOriginRestrictionMode]` is not serializable)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1269,6 +1295,118 @@ struct codeartifactClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/repository/external-connection", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
+    # CopyPackageVersions  POST /v1/package/versions/copy
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def copy_package_versions(self, CopyPackageVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["source-repository"] = input.sourceRepository
+        query["destination-repository"] = input.destinationRepository
+        query["format"] = input.format
+        if input.namespace.is_some():
+            query["namespace"] = input.namespace.unwrap_or("")
+        query["package"] = input.package
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/copy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.versions.is_some():
+            auto u0 = input.versions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(codeartifact_json_str(x1))
+            parts.append("\"versions\":" + codeartifact_json_arr(e1))
+        if input.versionRevisions.is_some():
+            auto u2 = input.versionRevisions.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(codeartifact_json_str(k3) + ":" + codeartifact_json_str(u2[k3]))
+            parts.append("\"versionRevisions\":" + codeartifact_json_obj(m3))
+        if input.allowOverwrite.is_some():
+            auto u4 = input.allowOverwrite.unwrap()
+            parts.append("\"allowOverwrite\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.includeFromUpstream.is_some():
+            auto u5 = input.includeFromUpstream.unwrap()
+            parts.append("\"includeFromUpstream\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
+    # CreateDomain  POST /v1/domain
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_domain(self, CreateDomainRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.encryptionKey.is_some():
+            auto u0 = input.encryptionKey.unwrap()
+            parts.append("\"encryptionKey\":" + codeartifact_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + codeartifact_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
+    # CreatePackageGroup  POST /v1/package-group
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_package_group(self, CreatePackageGroupRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"packageGroup\":" + codeartifact_json_str(input.packageGroup))
+        if input.contactInfo.is_some():
+            auto u0 = input.contactInfo.unwrap()
+            parts.append("\"contactInfo\":" + codeartifact_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + codeartifact_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + codeartifact_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
+    # CreateRepository  POST /v1/repository
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_repository(self, CreateRepositoryRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["repository"] = input.repository
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + codeartifact_json_str(u0))
+        if input.upstreams.is_some():
+            auto u1 = input.upstreams.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"upstreams\":" + codeartifact_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + codeartifact_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
     # DeleteDomain  DELETE /v1/domain
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def delete_domain(self, DeleteDomainRequest input) -> str:
@@ -1320,6 +1458,31 @@ struct codeartifactClient:
         query["package-group"] = input.packageGroup
         auto b = binding.HttpBinding(method="DELETE", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
+
+    # DeletePackageVersions  POST /v1/package/versions/delete
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_package_versions(self, DeletePackageVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["repository"] = input.repository
+        query["format"] = input.format
+        if input.namespace.is_some():
+            query["namespace"] = input.namespace.unwrap_or("")
+        query["package"] = input.package
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/delete", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.versions:
+            e0.append(codeartifact_json_str(x0))
+        parts.append("\"versions\":" + codeartifact_json_arr(e0))
+        if input.expectedStatus.is_some():
+            auto u1 = input.expectedStatus.unwrap()
+            parts.append("\"expectedStatus\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
 
     # DeleteRepository  DELETE /v1/repository
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1427,6 +1590,37 @@ struct codeartifactClient:
         query["external-connection"] = input.externalConnection
         auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository/external-connection", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
+
+    # DisposePackageVersions  POST /v1/package/versions/dispose
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def dispose_package_versions(self, DisposePackageVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["repository"] = input.repository
+        query["format"] = input.format
+        if input.namespace.is_some():
+            query["namespace"] = input.namespace.unwrap_or("")
+        query["package"] = input.package
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/dispose", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.versions:
+            e0.append(codeartifact_json_str(x0))
+        parts.append("\"versions\":" + codeartifact_json_arr(e0))
+        if input.versionRevisions.is_some():
+            auto u1 = input.versionRevisions.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(codeartifact_json_str(k2) + ":" + codeartifact_json_str(u1[k2]))
+            parts.append("\"versionRevisions\":" + codeartifact_json_obj(m2))
+        if input.expectedStatus.is_some():
+            auto u3 = input.expectedStatus.unwrap()
+            parts.append("\"expectedStatus\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
 
     # GetAssociatedPackageGroup  GET /v1/get-associated-package-group
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -1765,6 +1959,36 @@ struct codeartifactClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
 
+    # TagResource  POST /v1/tag
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + codeartifact_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
+    # UntagResource  POST /v1/untag
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/untag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(codeartifact_json_str(x0))
+        parts.append("\"tagKeys\":" + codeartifact_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
     # UpdatePackageGroup  PUT /v1/package-group
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_package_group(self, UpdatePackageGroupRequest input) -> str:
@@ -1776,6 +2000,61 @@ struct codeartifactClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageGroupDocument(packageGroup=input.packageGroup, contactInfo=input.contactInfo, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
+    # UpdatePackageVersionsStatus  POST /v1/package/versions/update_status
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_package_versions_status(self, UpdatePackageVersionsStatusRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["repository"] = input.repository
+        query["format"] = input.format
+        if input.namespace.is_some():
+            query["namespace"] = input.namespace.unwrap_or("")
+        query["package"] = input.package
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/update_status", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.versions:
+            e0.append(codeartifact_json_str(x0))
+        parts.append("\"versions\":" + codeartifact_json_arr(e0))
+        if input.versionRevisions.is_some():
+            auto u1 = input.versionRevisions.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(codeartifact_json_str(k2) + ":" + codeartifact_json_str(u1[k2]))
+            parts.append("\"versionRevisions\":" + codeartifact_json_obj(m2))
+        if input.expectedStatus.is_some():
+            auto u3 = input.expectedStatus.unwrap()
+            parts.append("\"expectedStatus\":" + u3.to_json())
+        parts.append("\"targetStatus\":" + input.targetStatus.to_json())
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
+
+    # UpdateRepository  PUT /v1/repository
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_repository(self, UpdateRepositoryRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["repository"] = input.repository
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + codeartifact_json_str(u0))
+        if input.upstreams.is_some():
+            auto u1 = input.upstreams.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"upstreams\":" + codeartifact_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, codeartifact_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
 
     # Paginator for ListAllowedRepositoriesForGroup — yields each Response page, threading the
